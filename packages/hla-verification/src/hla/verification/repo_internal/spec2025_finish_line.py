@@ -210,6 +210,40 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-standard-route-runtime-capability",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-BND-001",
+            "HLA2025-BND-002",
+            "HLA2025-FR-001",
+            "HLA2025-FR-004",
+            "HLA2025-FI-001",
+            "HLA2025-FI-003",
+            "HLA2025-FI-004",
+            "HLA2025-FI-005",
+            "HLA2025-FI-006",
+            "HLA2025-FI-009",
+            "HLA2025-MOD-005",
+            "HLA2025-MOD-006",
+            "HLA2025-MOD-007",
+            "HLA2025-NEW-004",
+            "HLA2025-NEW-007",
+        ),
+        "evidence": (
+            "tests/backends/test_standard_shim_artifacts.py",
+            "packages/hla-verification/src/hla/verification/shim_route_evidence.py",
+            "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_standard_2025.py",
+            "packages/hla-backend-cpp-shim/src/hla/backends/cpp_shim/standard.py",
+        ),
+        "supported_scope": (
+            "Artifact-gated 2025 standard Java and C++ routes now share a runtime-capability trace that loads a "
+            "2025 FOM, resolves object/attribute/dimension/transport handles, stores default attribute policy, "
+            "registers an object, divests and reacquires ownership with 2025 tag callbacks, advances logical time, "
+            "and serializes a MOM service report. C++ artifacts exercise this locally; Java runtime evidence runs "
+            "when the Java 2025 shim jar is built. This is not full Java/C++ behavior conformance or object exchange."
+        ),
+    },
+    {
         "id": "2025-fedpro-transport-contract",
         "status": "implemented-slice",
         "requirements": ("HLA2025-BND-003", "HLA2025-FI-004"),

@@ -13,6 +13,7 @@ from hla.rti import available_backend_plugins, create_rti_ambassador
 from hla.verification.cpp_intake_certification import certify_cpp_sdk_core, certify_cpp_standard_core
 
 CPP_2010_STANDARD_ARTIFACT = Path("build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a")
+CPP_2025_STANDARD_ARTIFACT = Path("build/shim_routes/cpp-standard-2025/librti1516_2025_standard_cpp_shim.a")
 
 
 def _write_fake_sdk_profile(tmp_path: Path, *, edition: str = "2010") -> Path:
@@ -136,6 +137,23 @@ def test_cpp_standard_2010_certify_core_reaches_trace_green_when_built() -> None
     assert report.status == "trace-green"
     assert report.callback_status == "callback-green"
     assert report.core_scenario_status == "core-exchange-green"
+
+
+@pytest.mark.skipif(not CPP_2025_STANDARD_ARTIFACT.exists(), reason="C++ 2025 standard shim artifact is not built")
+def test_cpp_standard_2025_certify_core_reaches_runtime_capability_when_built() -> None:
+    report = certify_cpp_standard_core("2025", "pybind")
+    events = {event["event"] for event in report.trace}
+
+    assert report.status == "trace-green"
+    assert report.callback_status == "callback-runtime-green"
+    assert report.core_scenario_status == "runtime-capability-green"
+    assert {
+        "resolveFomHandles",
+        "registerObjectInstance",
+        "attributeOwnershipAcquisitionNotification",
+        "timeAdvanceGrant",
+        "serializeMOMServiceReport",
+    } <= events
 
 
 def test_generic_cpp_sdk_routes_are_registered_separately_from_standard_shims() -> None:

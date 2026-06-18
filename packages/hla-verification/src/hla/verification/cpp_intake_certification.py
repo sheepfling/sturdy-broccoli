@@ -31,8 +31,18 @@ REQUIRED_2025_TRACE_EVENTS = {
     "connect",
     "createFederationExecution",
     "joinFederationExecution",
-    "evokeCallback",
-    "evokeMultipleCallbacks",
+    "resolveFomHandles",
+    "changeDefaultAttributeTransportationType",
+    "changeDefaultAttributeOrderType",
+    "registerObjectInstance",
+    "unconditionalAttributeOwnershipDivestiture",
+    "attributeOwnershipAcquisitionIfAvailable",
+    "attributeIsNotOwned",
+    "attributeOwnershipAcquisitionNotification",
+    "getTimeFactory",
+    "timeAdvanceRequest",
+    "timeAdvanceGrant",
+    "serializeMOMServiceReport",
     "resignFederationExecution",
     "destroyFederationExecution",
     "disconnect",
@@ -90,9 +100,9 @@ def certify_cpp_standard_core(edition: str, transport: str) -> CppRtiCoreCertifi
 
             evidence = run_standard_2010_exchange_trace(route)
         elif edition == "2025":
-            from hla.verification.shim_route_evidence import run_standard_2025_lifecycle_trace
+            from hla.verification.shim_route_evidence import run_standard_2025_runtime_capability_trace
 
-            evidence = run_standard_2025_lifecycle_trace(route)
+            evidence = run_standard_2025_runtime_capability_trace(route)
         else:
             raise ValueError("C++ certification edition must be one of: 2010, 2025")
         trace = tuple(evidence.get("trace", ()))
@@ -101,9 +111,14 @@ def certify_cpp_standard_core(edition: str, transport: str) -> CppRtiCoreCertifi
         callback_status = "failed"
         if edition == "2010" and {"discoverObjectInstance", "reflectAttributeValues", "receiveInteraction"} <= events:
             callback_status = "callback-green"
-        elif edition == "2025" and {"evokeCallback", "evokeMultipleCallbacks"} <= events:
-            callback_status = "callback-poll-green"
+        elif edition == "2025" and {"attributeIsNotOwned", "attributeOwnershipAcquisitionNotification", "timeAdvanceGrant"} <= events:
+            callback_status = "callback-runtime-green"
         connect_green = "connect" in events and "disconnect" in events
+        core_scenario_status = "failed"
+        if edition == "2010" and evidence.get("status") in CORE_SCENARIO_GREEN_STATUSES:
+            core_scenario_status = "core-exchange-green"
+        elif edition == "2025" and evidence.get("status") == "trace-green":
+            core_scenario_status = "runtime-capability-green"
         return CppRtiCoreCertificationReport(
             edition=edition,
             transport=transport,
@@ -111,7 +126,7 @@ def certify_cpp_standard_core(edition: str, transport: str) -> CppRtiCoreCertifi
             artifact=artifact,
             connect_status="connect-green" if connect_green else "failed",
             callback_status=callback_status,
-            core_scenario_status="core-exchange-green" if evidence.get("status") in CORE_SCENARIO_GREEN_STATUSES else "failed",
+            core_scenario_status=core_scenario_status,
             trace_comparison_status=status,
             status=status,
             trace=trace,

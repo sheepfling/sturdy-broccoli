@@ -144,3 +144,46 @@ def test_standard_2025_routes_pass_lifecycle_core_when_built(backend_name: str) 
         "destroyFederationExecution",
         "disconnect",
     ]
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
+def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_runtime_capability_trace
+
+    evidence = run_standard_2025_runtime_capability_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "runtime-capability"
+    if "java-standard-2025" in backend_name:
+        assert "HLA2025-BND-001" in evidence["requirements_exercised"]
+    if "cpp-standard-2025" in backend_name:
+        assert "HLA2025-BND-002" in evidence["requirements_exercised"]
+    assert {
+        "resolveFomHandles",
+        "changeDefaultAttributeTransportationType",
+        "changeDefaultAttributeOrderType",
+        "registerObjectInstance",
+        "unconditionalAttributeOwnershipDivestiture",
+        "attributeOwnershipAcquisitionIfAvailable",
+        "attributeIsNotOwned",
+        "attributeOwnershipAcquisitionNotification",
+        "getTimeFactory",
+        "timeAdvanceRequest",
+        "timeAdvanceGrant",
+        "serializeMOMServiceReport",
+        "disconnect",
+    } <= event_names

@@ -2,6 +2,11 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+import shutil
+import tempfile
+import textwrap
+import uuid
+from pathlib import Path
 from typing import Any
 
 LIFECYCLE_REQUIREMENTS_2025 = [
@@ -29,6 +34,125 @@ TIME_MANAGEMENT_REQUIREMENTS_2025 = [
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
 ]
+
+RUNTIME_CAPABILITY_REQUIREMENTS_2025 = [
+    "HLA2025-FR-001",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-003",
+    "HLA2025-FI-004",
+    "HLA2025-FI-005",
+    "HLA2025-FI-006",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-005",
+    "HLA2025-MOD-006",
+    "HLA2025-MOD-007",
+    "HLA2025-NEW-004",
+    "HLA2025-NEW-007",
+]
+
+
+def _route_runtime_requirements_2025(backend_name: str) -> list[str]:
+    requirements = list(RUNTIME_CAPABILITY_REQUIREMENTS_2025)
+    if backend_name.startswith("java-standard-2025"):
+        requirements.append("HLA2025-BND-001")
+    if backend_name.startswith("cpp-standard-2025"):
+        requirements.append("HLA2025-BND-002")
+    return requirements
+
+
+class _Recording2025FederateAmbassador:
+    def __init__(self) -> None:
+        self.events: list[tuple[str, Any]] = []
+
+    def timeRegulationEnabled(self, time: Any) -> None:  # noqa: N802
+        self.events.append(("timeRegulationEnabled", time))
+
+    def timeConstrainedEnabled(self, time: Any) -> None:  # noqa: N802
+        self.events.append(("timeConstrainedEnabled", time))
+
+    def timeAdvanceGrant(self, time: Any) -> None:  # noqa: N802
+        self.events.append(("timeAdvanceGrant", time))
+
+    def attributeOwnershipAcquisitionNotification(  # noqa: N802
+        self,
+        objectInstance: Any,
+        securedAttributes: Any,
+        userSuppliedTag: Any,
+    ) -> None:
+        self.events.append(("attributeOwnershipAcquisitionNotification", (objectInstance, securedAttributes, userSuppliedTag)))
+
+    def attributeOwnershipUnavailable(self, objectInstance: Any, attributes: Any, userSuppliedTag: Any) -> None:  # noqa: N802
+        self.events.append(("attributeOwnershipUnavailable", (objectInstance, attributes, userSuppliedTag)))
+
+    def informAttributeOwnership(self, objectInstance: Any, attributes: Any, owner: Any) -> None:  # noqa: N802
+        self.events.append(("informAttributeOwnership", (objectInstance, attributes, owner)))
+
+    def attributeIsNotOwned(self, objectInstance: Any, attributes: Any) -> None:  # noqa: N802
+        self.events.append(("attributeIsNotOwned", (objectInstance, attributes)))
+
+
+def _write_2025_runtime_capability_fom() -> tuple[Path, Path]:
+    temp_dir = Path(tempfile.mkdtemp(prefix="hla-2025-route-fom-"))
+    fom = temp_dir / "RouteCapability2025.xml"
+    fom.write_text(
+        textwrap.dedent(
+            """\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+              <modelIdentification>
+                <name>Route Capability 2025 FOM</name>
+                <type>FOM</type>
+                <version>1.0</version>
+                <modificationDate>2026-01-01</modificationDate>
+                <securityClassification>UNCLASSIFIED</securityClassification>
+                <description>Runtime route capability test FOM.</description>
+                <poc>HLA-X</poc>
+                <reference>HLA-X 2025 route capability trace</reference>
+              </modelIdentification>
+              <objects>
+                <objectClass>
+                  <name>HLAobjectRoot</name>
+                  <objectClass>
+                    <name>RouteTarget</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <attribute>
+                      <name>Position</name>
+                      <dataType>HLAfloat64BE</dataType>
+                      <updateType>Periodic</updateType>
+                      <updateCondition>Route trace update</updateCondition>
+                      <valueRequired>true</valueRequired>
+                      <ownership>DivestAcquire</ownership>
+                      <sharing>PublishSubscribe</sharing>
+                      <transportation>HLAreliable</transportation>
+                      <order>Receive</order>
+                      <dimensions>RoutingSpace</dimensions>
+                      <semantics>Route target position.</semantics>
+                    </attribute>
+                  </objectClass>
+                </objectClass>
+              </objects>
+              <interactions>
+                <interactionClass><name>HLAinteractionRoot</name><sharing>Neither</sharing></interactionClass>
+              </interactions>
+              <dimensions>
+                <dimension>
+                  <name>RoutingSpace</name>
+                  <dataType>HLAinteger32BE</dataType>
+                  <upperBound>1024</upperBound>
+                  <normalization>Route trace normalization.</normalization>
+                </dimension>
+              </dimensions>
+              <transportations>
+                <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+                <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+              </transportations>
+            </objectModel>
+            """
+        ),
+        encoding="utf-8",
+    )
+    return temp_dir, fom
 
 
 def _jsonable(value: Any) -> Any:
@@ -238,6 +362,142 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
     }
 
 
+def run_standard_2025_runtime_capability_trace(backend_name: str) -> dict[str, Any]:
+    """Run a 2025 route capability trace beyond lifecycle without claiming conformance."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.time import HLAfloat64Interval, HLAfloat64Time
+
+    temp_dir, fom_module = _write_2025_runtime_capability_fom()
+    federation_name = f"ShimRouteRuntime{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    federate = _Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=rti.getHLAversion()),
+    ]
+    connected = False
+    joined = False
+    federation_created = False
+    try:
+        result = rti.connect(federate, CallbackModel.HLA_EVOKED)
+        connected = True
+        trace.append(_event("connect", result=result, callbackModel=CallbackModel.HLA_EVOKED))
+
+        rti.createFederationExecution(
+            federationName=federation_name,
+            fomModule=str(fom_module),
+            logicalTimeImplementationName="HLAfloat64Time",
+        )
+        federation_created = True
+        trace.append(
+            _event(
+                "createFederationExecution",
+                federation=federation_name,
+                fomModule=fom_module.name,
+                logicalTimeImplementationName="HLAfloat64Time",
+            )
+        )
+        federate_handle = rti.joinFederationExecution(
+            federateName="runtime-federate",
+            federateType="route-capability",
+            federationName=federation_name,
+        )
+        joined = True
+        trace.append(_event("joinFederationExecution", federate="runtime-federate", federateHandle=federate_handle))
+
+        object_class = rti.getObjectClassHandle("HLAobjectRoot.RouteTarget")
+        attribute = rti.getAttributeHandle(object_class, "Position")
+        dimension = rti.getDimensionHandle("RoutingSpace")
+        available_dimensions = rti.getAvailableDimensionsForObjectClass(object_class)
+        trace.append(
+            _event(
+                "resolveFomHandles",
+                objectClass=object_class,
+                attribute=attribute,
+                dimension=dimension,
+                dimensionUpperBound=rti.getDimensionUpperBound(dimension),
+                availableDimensions=available_dimensions,
+            )
+        )
+
+        best_effort = rti.getTransportationTypeHandle("HLAbestEffort")
+        rti.changeDefaultAttributeTransportationType(object_class, {attribute}, best_effort)
+        trace.append(_event("changeDefaultAttributeTransportationType", objectClass=object_class, attributes={attribute}, transportation=best_effort))
+        rti.changeDefaultAttributeOrderType(object_class, {attribute}, OrderType.TIMESTAMP)
+        trace.append(_event("changeDefaultAttributeOrderType", objectClass=object_class, attributes={attribute}, order=OrderType.TIMESTAMP))
+        trace.append(_event("defaultAttributePolicySnapshot", value=rti.defaultAttributePolicySnapshot()))
+
+        object_instance = rti.registerObjectInstance(object_class, f"RouteTarget-{uuid.uuid4().hex[:8]}")
+        trace.append(
+            _event(
+                "registerObjectInstance",
+                objectClass=object_class,
+                objectInstance=object_instance,
+                initiallyOwned=rti.isAttributeOwnedByFederate(object_instance, attribute),
+            )
+        )
+        rti.unconditionalAttributeOwnershipDivestiture(object_instance, {attribute}, b"runtime-divest")
+        trace.append(_event("unconditionalAttributeOwnershipDivestiture", objectInstance=object_instance, attributes={attribute}, tag=b"runtime-divest"))
+        rti.queryAttributeOwnership(object_instance, {attribute})
+        trace.append(_event("queryAttributeOwnership", objectInstance=object_instance, attributes={attribute}))
+        rti.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"runtime-claim")
+        trace.append(_event("attributeOwnershipAcquisitionIfAvailable", objectInstance=object_instance, attributes={attribute}, tag=b"runtime-claim"))
+
+        time_factory = rti.getTimeFactory()
+        trace.append(_event("getTimeFactory", factoryName=time_factory.getName()))
+        rti.enableTimeRegulation(HLAfloat64Interval(0.5))
+        trace.append(_event("enableTimeRegulation", lookahead=HLAfloat64Interval(0.5)))
+        rti.enableTimeConstrained()
+        trace.append(_event("enableTimeConstrained"))
+        rti.timeAdvanceRequest(HLAfloat64Time(5.0))
+        trace.append(_event("timeAdvanceRequest", value=HLAfloat64Time(5.0)))
+        trace.append(_event("queryLogicalTime", value=rti.queryLogicalTime()))
+
+        rti.setServiceReportingSwitch(True)
+        trace.append(_event("setServiceReportingSwitch", value=True))
+        service_report = rti.serializeMOMServiceReport(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",
+            arguments={"objectInstance": object_instance, "attribute": attribute},
+            result={"scenario": "runtime-capability"},
+        )
+        trace.append(
+            _event(
+                "serializeMOMServiceReport",
+                serialNumber=service_report["serialNumber"],
+                service=service_report["service"],
+                serviceReportingEnabled=service_report["serviceReportingEnabled"],
+            )
+        )
+        trace.extend(_callback_events(federate.events))
+    finally:
+        try:
+            if joined:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", action=ResignAction.NO_ACTION))
+            if federation_created:
+                rti.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if connected:
+                rti.disconnect()
+                trace.append(_event("disconnect"))
+        finally:
+            close = getattr(rti, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "runtime-capability",
+        "status": "trace-green",
+        "requirements_exercised": _route_runtime_requirements_2025(backend_name),
+        "trace": trace,
+    }
+
+
 def run_2025_time_management_trace(backend_name: str = "shim") -> dict[str, Any]:
     """Run a focused 2025 logical-time trace and return normalized evidence."""
 
@@ -306,4 +566,5 @@ __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
     "run_standard_2025_lifecycle_trace",
+    "run_standard_2025_runtime_capability_trace",
 ]

@@ -96,6 +96,12 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "full Java behavior conformance" in slices["2025-java-binding-source-trace"]["supported_scope"]
     assert slices["2025-cpp-binding-source-trace"]["status"] == "implemented-slice"
     assert "full C++ RTI behavior pass" in slices["2025-cpp-binding-source-trace"]["supported_scope"]
+    assert slices["2025-standard-route-runtime-capability"]["status"] == "implemented-slice"
+    assert "HLA2025-BND-001" in slices["2025-standard-route-runtime-capability"]["requirements"]
+    assert "HLA2025-BND-002" in slices["2025-standard-route-runtime-capability"]["requirements"]
+    assert "C++ artifacts exercise this locally" in slices["2025-standard-route-runtime-capability"]["supported_scope"]
+    assert "Java runtime evidence runs when the Java 2025 shim jar is built" in slices["2025-standard-route-runtime-capability"]["supported_scope"]
+    assert "not full Java/C++ behavior conformance or object exchange" in slices["2025-standard-route-runtime-capability"]["supported_scope"]
     assert slices["2025-fedpro-transport-contract"]["status"] == "implemented-slice"
     assert "hosted loopback lifecycle session" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "Full object exchange" in slices["2025-fedpro-transport-contract"]["supported_scope"]
