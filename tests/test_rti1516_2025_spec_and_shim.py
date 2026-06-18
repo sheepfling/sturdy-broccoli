@@ -19,6 +19,9 @@ class Recording2025FederateAmbassador:
     def reportFederationExecutionDoesNotExist(self, federationName) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("reportFederationExecutionDoesNotExist", (federationName,)))
 
+    def federateResigned(self, reasonForResignDescription) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("federateResigned", (reasonForResignDescription,)))
+
     def timeRegulationEnabled(self, time) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("timeRegulationEnabled", (time,)))
 
@@ -171,6 +174,39 @@ def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     late.disconnect()
     wing.disconnect()
     leader.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-NEW-003", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_reports_federate_resigned_callback_with_reason_context() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-resign-{uuid.uuid4().hex[:8]}"
+    federate = Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(backend="shim")
+
+    rti.connect(federate, CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    rti.joinFederationExecution(
+        federateName="ResigningFederate",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    rti.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+
+    resigned = federate.last_callback("federateResigned")
+    assert resigned is not None
+    reason = resigned[0]
+    assert "federateName=ResigningFederate" in reason
+    assert f"federationName={federation_name}" in reason
+    assert "resignAction=UNCONDITIONALLY_DIVEST_ATTRIBUTES" in reason
+
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-NEW-002", "HLA2025-FI-001", "HLA2025-FI-005")

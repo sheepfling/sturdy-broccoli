@@ -43,7 +43,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-lifecycle-and-members",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-NEW-002"),
+        "requirements": ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-NEW-002", "HLA2025-NEW-003"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
@@ -77,6 +77,7 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-MOD-003": "partial",
     "HLA2025-MOD-006": "partial",
     "HLA2025-NEW-002": "implemented-slice",
+    "HLA2025-NEW-003": "implemented-slice",
     "HLA2025-NEW-006": "partial",
     "HLA2025-VER-001": "partial",
     "HLA2025-VER-002": "implemented-slice",

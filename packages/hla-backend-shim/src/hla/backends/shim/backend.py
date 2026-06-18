@@ -255,6 +255,8 @@ class Shim2025RTIAmbassador:
     def resignFederationExecution(self, resignAction: ResignAction) -> None:  # noqa: N802
         self._record("resignFederationExecution", resignAction)
         self._require_joined("resignFederationExecution")
+        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "federateResigned"):
+            self._deliver_callback("federateResigned", self._resign_reason_description(resignAction))
         self._release_join()
         self._joined = False
         self._federation_name = None
@@ -617,6 +619,14 @@ class Shim2025RTIAmbassador:
         federation = _FEDERATION_REGISTRY.get(self._federation_name)
         if federation is not None:
             federation.members.pop(self._federate_name, None)
+
+    def _resign_reason_description(self, resign_action: ResignAction) -> str:
+        action = getattr(resign_action, "name", str(resign_action))
+        return (
+            f"federateName={self._federate_name}; "
+            f"federationName={self._federation_name}; "
+            f"resignAction={action}"
+        )
 
 
 class Shim2025Backend:
