@@ -101,6 +101,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent": "413",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived": "414",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived": "415",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation": "416",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation": "417",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -133,6 +135,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("414", "HLAfederate"): "526",
             ("415", "HLAfederate"): "527",
             ("415", "HLAreflectionsReceived"): "528",
+            ("416", "HLAfederate"): "529",
+            ("416", "HLAobjectInstance"): "530",
+            ("417", "HLAfederate"): "531",
+            ("417", "HLAobjectInstance"): "532",
+            ("417", "HLAobjectClass"): "533",
+            ("417", "HLAobjectInstanceName"): "534",
+            ("417", "HLAattributeList"): "535",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -890,6 +899,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     self.reflections_received,
                 )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]:
+                self._queue_object_instance_information_report(payload.parameterValues)
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
@@ -1328,6 +1340,48 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             {
                 "HLAfederate": b"1",
                 count_parameter: str(count).encode("ascii"),
+            },
+        )
+
+    def _queue_object_instance_information_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        request_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"
+        ]
+        requested_object = ""
+        requested_parameter = self.parameters[(request_class, "HLAobjectInstance")]
+        for item in parameters.parameterHandleValue:
+            if item.parameterHandle.data.decode("ascii") == requested_parameter:
+                requested_object = item.value.decode("ascii")
+                break
+        rows = []
+        for object_instance, record in sorted(self.object_instances.items(), key=lambda item: int(item[0])):
+            if requested_object and object_instance != requested_object:
+                continue
+            object_class = record["objectClass"]
+            attributes = sorted(
+                attribute for (attribute_class, _name), attribute in self.attributes.items() if attribute_class == object_class
+            )
+            rows.append(
+                {
+                    "objectInstance": object_instance,
+                    "objectClass": object_class,
+                    "objectInstanceName": record["name"],
+                    "attributeList": ",".join(attributes),
+                }
+            )
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAfederate": b"1",
+                "HLAobjectInstance": ";".join(row["objectInstance"] for row in rows).encode("ascii"),
+                "HLAobjectClass": ";".join(row["objectClass"] for row in rows).encode("ascii"),
+                "HLAobjectInstanceName": ";".join(row["objectInstanceName"] for row in rows).encode("ascii"),
+                "HLAattributeList": ";".join(row["attributeList"] for row in rows).encode("ascii"),
             },
         )
 

@@ -1401,6 +1401,85 @@ def test_2025_transport_server_reports_object_subscriptions_for_mom_request_over
         server.close()
 
 
+def test_2025_transport_server_reports_object_instance_information_for_mom_request_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-object-info"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomObjectInfo2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MomObjectInfo", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "MomInfoTarget"))).fields[0]
+
+        request_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation",),
+            )
+        ).fields[0]
+        request_federate_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(request_class, "HLAfederate"))
+        ).fields[0]
+        request_object_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(request_class, "HLAobjectInstance"))
+        ).fields[0]
+        report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",),
+            )
+        ).fields[0]
+        report_federate_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAfederate"))).fields[0]
+        report_object_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAobjectInstance"))).fields[0]
+        report_class_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAobjectClass"))).fields[0]
+        report_name_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAobjectInstanceName"))).fields[0]
+        report_attributes_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAattributeList"))).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(report_class,))).fields == ()
+
+        assert transport.request(
+            TransportRequest(
+                command="SEND_INTERACTION",
+                fields=(
+                    request_class,
+                    f"{request_federate_param}:31,{request_object_param}:{object_instance.encode('ascii').hex()}",
+                    "6f626a2d696e666f",
+                ),
+            )
+        ).fields == ()
+
+        report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert report[:3] == ("1", "INTERACTION", report_class)
+        payloads = dict(item.split(":", 1) for item in report[3].split(","))
+        assert bytes.fromhex(payloads[report_federate_param]).decode("ascii") == "1"
+        assert bytes.fromhex(payloads[report_object_param]).decode("ascii") == object_instance
+        assert bytes.fromhex(payloads[report_class_param]).decode("ascii") == object_class
+        assert bytes.fromhex(payloads[report_name_param]).decode("ascii") == "MomInfoTarget"
+        assert bytes.fromhex(payloads[report_attributes_param]).decode("ascii") == attribute
+        assert report[4:] == ("4d4f4d", "1", "1")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "registerObjectInstanceWithNameRequest",
+            "subscribeInteractionClassRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_reports_activity_counts_for_mom_requests_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

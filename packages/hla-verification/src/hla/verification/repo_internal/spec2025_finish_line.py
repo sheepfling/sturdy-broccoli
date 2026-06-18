@@ -355,7 +355,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "active service-reporting switches, source-local record snapshots, and service-report callback delivery "
             "to joined federates with service reporting enabled. The FedPro hosted route also reports standard MIM "
             "data for HLArequestMIMdata and object publication/subscription state for HLArequestPublications and "
-            "HLArequestSubscriptions, plus activity counts for updates, reflections, interactions sent, and "
+            "HLArequestSubscriptions, object instance information for HLArequestObjectInstanceInformation, "
+            "plus activity counts for updates, reflections, interactions sent, and "
             "interactions received. This is not full MOM manager interaction routing or a conformance claim."
         ),
     },
