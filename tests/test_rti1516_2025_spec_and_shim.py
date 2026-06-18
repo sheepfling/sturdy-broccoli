@@ -2052,6 +2052,103 @@ def test_2025_shim_routes_mom_set_switches_adjust_interactions() -> None:
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FR-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_timing_and_attribute_state_adjust_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import ObjectClassNotPublished
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-state-adjust-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    owner_callbacks = Recording2025FederateAmbassador()
+    acquirer_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    owner = create_rti_ambassador(backend="shim")
+    acquirer = create_rti_ambassador(backend="shim")
+    nonpublisher = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    owner.connect(owner_callbacks, CallbackModel.HLA_EVOKED)
+    acquirer.connect(acquirer_callbacks, CallbackModel.HLA_EVOKED)
+    nonpublisher.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("StateAdjustController", "TestFederate", federation_name)
+    owner.joinFederationExecution("StateAdjustOwner", "TestFederate", federation_name)
+    acquirer_handle = acquirer.joinFederationExecution("StateAdjustAcquirer", "TestFederate", federation_name)
+    nonpublisher_handle = nonpublisher.joinFederationExecution("StateAdjustNonpublisher", "TestFederate", federation_name)
+
+    object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = owner.getAttributeHandle(object_class, "Position")
+    owner.publishObjectClassAttributes(object_class, {attribute})
+    acquirer.publishObjectClassAttributes(object_class, {attribute})
+    object_instance = owner.registerObjectInstance(object_class, "MOM-State-Adjust-Target")
+    assert owner.isAttributeOwnedByFederate(object_instance, attribute) is True
+    assert acquirer.isAttributeOwnedByFederate(object_instance, attribute) is False
+
+    timing = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetTiming"
+    )
+    controller.sendInteraction(
+        timing,
+        {
+            controller.getParameterHandle(timing, "HLAfederate"): str(acquirer_handle.value).encode("ascii"),
+            controller.getParameterHandle(timing, "HLAreportPeriod"): b"2.5",
+        },
+        b"mom-set-timing",
+    )
+    assert acquirer.momReportPeriodSecondsSnapshot() == 2.5
+
+    modify_state = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState"
+    )
+
+    def send_modify_state(target_handle, state: bytes) -> None:  # noqa: ANN001
+        controller.sendInteraction(
+            modify_state,
+            {
+                controller.getParameterHandle(modify_state, "HLAfederate"): str(target_handle.value).encode("ascii"),
+                controller.getParameterHandle(modify_state, "HLAobjectInstance"): str(object_instance.value).encode(
+                    "ascii"
+                ),
+                controller.getParameterHandle(modify_state, "HLAattribute"): str(attribute.value).encode("ascii"),
+                controller.getParameterHandle(modify_state, "HLAattributeState"): state,
+            },
+            b"mom-modify-attribute-state",
+        )
+
+    owner_callbacks.callbacks.clear()
+    acquirer_callbacks.callbacks.clear()
+    send_modify_state(acquirer_handle, b"Owned")
+    assert owner.isAttributeOwnedByFederate(object_instance, attribute) is False
+    assert acquirer.isAttributeOwnedByFederate(object_instance, attribute) is True
+    assert owner_callbacks.last_callback("requestDivestitureConfirmation") is None
+    assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") is None
+
+    send_modify_state(acquirer_handle, b"0")
+    assert acquirer.isAttributeOwnedByFederate(object_instance, attribute) is False
+
+    with pytest.raises(ObjectClassNotPublished):
+        send_modify_state(nonpublisher_handle, b"1")
+    report = controller_callbacks.last_callback("receiveInteraction")
+    assert report is not None
+    report_name = controller.getInteractionClassName(report[0])
+    assert report_name == "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
+    assert b"ObjectClassNotPublished" in report[1][controller.getParameterHandle(report[0], "HLAexception")]
+    assert nonpublisher.isAttributeOwnedByFederate(object_instance, attribute) is False
+
+    nonpublisher.resignFederationExecution(ResignAction.NO_ACTION)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    nonpublisher.disconnect()
+    acquirer.disconnect()
+    owner.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_routes_mom_declaration_service_interactions() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

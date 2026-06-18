@@ -240,6 +240,7 @@ class Shim2025RTIAmbassador:
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
+        self._mom_report_period_seconds: float | None = None
         self._default_attribute_transportation: dict[tuple[str, str], str] = {}
         self._default_attribute_order: dict[tuple[str, str], OrderType] = {}
         self._service_report_serial_number = 0
@@ -295,6 +296,7 @@ class Shim2025RTIAmbassador:
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
+        self._mom_report_period_seconds = None
         self._default_attribute_transportation.clear()
         self._default_attribute_order.clear()
         self._service_report_serial_number = 0
@@ -1231,6 +1233,11 @@ class Shim2025RTIAmbassador:
         self._record("serviceReportRecordsSnapshot")
         self._require_joined("serviceReportRecordsSnapshot")
         return tuple(dict(record) for record in self._service_report_records)
+
+    def momReportPeriodSecondsSnapshot(self) -> float | None:  # noqa: N802
+        self._record("momReportPeriodSecondsSnapshot")
+        self._require_joined("momReportPeriodSecondsSnapshot")
+        return self._mom_report_period_seconds
 
     def registerObjectInstance(  # noqa: N802
         self,
@@ -2974,6 +2981,15 @@ class Shim2025RTIAmbassador:
         if interaction_class_name.endswith("HLAsetExceptionReporting"):
             target._switches["exception_reporting"] = self._mom_bool(params.get("HLAreportingState"), False)
             return True
+        if interaction_class_name.endswith("HLAsetTiming"):
+            target._mom_report_period_seconds = float(self._mom_number(params.get("HLAreportPeriod"), "HLAreportPeriod"))
+            return True
+        if interaction_class_name.endswith("HLAmodifyAttributeState"):
+            object_instance = ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance"))
+            attribute = AttributeHandle(self._mom_int(params.get("HLAattribute"), "HLAattribute"))
+            ownership_state = self._mom_ownership_state(params.get("HLAattributeState"), "HLAattributeState")
+            target._modify_mom_attribute_state(object_instance, attribute, ownership_state)
+            return True
         if interaction_class_name.endswith("HLAsetSwitches") and ".HLAfederate." in interaction_class_name:
             if "HLAconveyRegionDesignatorSets" in params:
                 target._switches["convey_region_designator_sets"] = self._mom_bool(
@@ -2988,6 +3004,27 @@ class Shim2025RTIAmbassador:
                     member_rti._switches["auto_provide"] = auto_provide
             return True
         return False
+
+    def _modify_mom_attribute_state(
+        self,
+        object_instance: ObjectInstanceHandle,
+        attribute: AttributeHandle,
+        ownership_state: str,
+    ) -> None:
+        record = self._object_instance_record(object_instance)
+        attribute_name = self._attribute_names_from_handles(record.object_class_name, {attribute})[0]
+        if ownership_state == "owned":
+            if attribute_name not in self._published_attributes_for_current_federate(record.object_class_name):
+                raise ObjectClassNotPublished(record.object_class_name)
+            record.attribute_owners[attribute_name] = self._current_federate_handle()
+            record.attribute_divesting.discard(attribute_name)
+            record.attribute_candidates.pop(attribute_name, None)
+            return
+        if record.attribute_owners.get(attribute_name) != self._current_federate_handle():
+            raise AttributeNotOwned(attribute_name)
+        record.attribute_owners[attribute_name] = None
+        record.attribute_divesting.discard(attribute_name)
+        record.attribute_candidates.pop(attribute_name, None)
 
     def _mom_request_params_by_name(
         self,
@@ -3072,6 +3109,18 @@ class Shim2025RTIAmbassador:
             return float(text) if any(char in text for char in ".eE") else int(text)
         except ValueError as exc:
             raise RTIinternalError(f"Invalid MOM numeric value for {field_name}") from exc
+
+    @staticmethod
+    def _mom_ownership_state(value: bytes | None, field_name: str) -> str:
+        if value is None:
+            raise RTIinternalError(f"Missing MOM parameter {field_name}")
+        text = value.decode("ascii", errors="ignore").strip()
+        normalized = text.removeprefix("HLA").replace("_", "").replace("-", "").lower()
+        if normalized in {"1", "owned", "owner", "ownedbyfederate", "attributeowned"}:
+            return "owned"
+        if normalized in {"0", "unowned", "notowned", "attributeisnotowned", "none"}:
+            return "unowned"
+        raise RTIinternalError(f"Invalid MOM ownership state for {field_name}")
 
     @classmethod
     def _mom_resign_action(cls, value: bytes | None) -> ResignAction:
