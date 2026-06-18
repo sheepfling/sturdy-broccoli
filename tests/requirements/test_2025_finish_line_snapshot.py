@@ -33,7 +33,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert backlog["by_current_status"]["implemented-slice"] >= 20
     assert backlog["by_current_status"].get("partial", 0) == 0
     assert "planned" not in backlog["by_current_status"]
-    assert backlog["by_current_status"]["unsupported-boundary"] >= 1
+    assert backlog["by_current_status"].get("unsupported-boundary", 0) == 0
     assert backlog["by_current_status"]["legacy-only"] == 1
     assert backlog["high_priority_open_count"] == 0
 
@@ -89,8 +89,10 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-MOD-003" in slices["2025-fom-mim-error-taxonomy"]["requirements"]
     assert slices["2025-callback-context-parameters"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-004" in slices["2025-callback-context-parameters"]["requirements"]
-    assert slices["2025-directed-interaction-boundary"]["status"] == "unsupported-boundary"
+    assert slices["2025-directed-interaction-boundary"]["status"] == "implemented-slice"
     assert "HLA2025-NEW-001" in slices["2025-directed-interaction-boundary"]["requirements"]
+    assert "receiveDirectedInteraction callback delivery" in slices["2025-directed-interaction-boundary"]["supported_scope"]
+    assert "Java/C++/FedPro route parity remain later behavior work" in slices["2025-directed-interaction-boundary"]["supported_scope"]
     assert slices["2025-omt-reference-value-required"]["status"] == "implemented-slice"
     assert "HLA2025-NEW-006" in slices["2025-omt-reference-value-required"]["requirements"]
     assert slices["2025-carry-forward-cleanup"]["status"] == "implemented-slice"
@@ -133,7 +135,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-VER-001" in slices["2025-verification-anchor-matrix"]["requirements"]
 
     matrix_rows = {row["id"]: row for row in snapshot["verification_matrix"]["rows"]}
-    assert matrix_rows["HLA2025-NEW-001"]["explicit_disposition_anchor"] is True
+    assert matrix_rows["HLA2025-NEW-001"]["explicit_disposition_anchor"] is False
+    assert "2025-directed-interaction-boundary" in matrix_rows["HLA2025-NEW-001"]["evidence_slices"]
     assert matrix_rows["HLA2025-RET-003"]["explicit_disposition_anchor"] is True
     assert "2025-verification-anchor-matrix" in matrix_rows["HLA2025-VER-001"]["evidence_slices"]
 

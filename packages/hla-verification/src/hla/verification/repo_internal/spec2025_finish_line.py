@@ -118,8 +118,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     },
     {
         "id": "2025-directed-interaction-boundary",
-        "status": "unsupported-boundary",
-        "requirements": ("HLA2025-NEW-001", "HLA2025-REQ-002", "HLA2025-FI-005"),
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-NEW-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
@@ -127,9 +127,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "2025 directed interaction RTI and callback method surface is present; the Python shim "
-            "returns structured RTIinternalError unsupported-boundary evidence for directed publish, "
-            "subscribe, and send services until two-federate directed delivery is implemented."
+            "Python 2025 shim supports FOM-backed directed interaction publish, subscribe, unsubscribe, "
+            "unpublish, and receiveDirectedInteraction callback delivery from a publisher to object-class "
+            "directed subscribers. Timestamped directed ordering, directed interaction DDM-region routing, "
+            "and Java/C++/FedPro route parity remain later behavior work."
         ),
     },
     {
@@ -366,7 +367,7 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-MOD-008": "implemented-slice",
     "HLA2025-MOD-009": "implemented-slice",
     "HLA2025-MOD-010": "implemented-slice",
-    "HLA2025-NEW-001": "unsupported-boundary",
+    "HLA2025-NEW-001": "implemented-slice",
     "HLA2025-NEW-002": "implemented-slice",
     "HLA2025-NEW-003": "implemented-slice",
     "HLA2025-NEW-004": "implemented-slice",

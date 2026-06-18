@@ -101,6 +101,37 @@ class Recording2025FederateAmbassador:
             )
         )
 
+    def receiveDirectedInteraction(  # noqa: N802, ANN001
+        self,
+        interactionClass,
+        objectInstance,
+        parameterValues,
+        userSuppliedTag,
+        transportationType,
+        producingFederate,
+        time=None,
+        sentOrderType=None,
+        receivedOrderType=None,
+        optionalRetraction=None,
+    ) -> None:
+        self.callbacks.append(
+            (
+                "receiveDirectedInteraction",
+                (
+                    interactionClass,
+                    objectInstance,
+                    parameterValues,
+                    userSuppliedTag,
+                    transportationType,
+                    producingFederate,
+                    time,
+                    sentOrderType,
+                    receivedOrderType,
+                    optionalRetraction,
+                ),
+            )
+        )
+
     def attributeOwnershipAcquisitionNotification(  # noqa: N802, ANN001
         self,
         objectInstance,
@@ -415,46 +446,119 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
     assert rti.connected is False
 
 
-@pytest.mark.requirements("HLA2025-NEW-001", "HLA2025-FI-005", "HLA2025-REQ-002")
-def test_2025_shim_records_directed_interaction_services_as_explicit_unsupported_boundary() -> None:
-    from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.exceptions import RTIinternalError
+@pytest.mark.requirements("HLA2025-NEW-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")
+def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import InteractionClassNotPublished
     from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.handles import InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle
+
+    fom = tmp_path / "DirectedInteraction2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed Interaction 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused directed interaction fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
 
     federation_name = f"shim-directed-{uuid.uuid4().hex[:8]}"
-    rti = create_rti_ambassador(backend="shim")
-    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
-    rti.createFederationExecution(
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(
         federationName=federation_name,
-        fomModule="TargetRadarFOMmodule.xml",
+        fomModule=str(fom),
     )
-    rti.joinFederationExecution(
-        federateName="DirectedFederate",
-        federateType="TestFederate",
-        federationName=federation_name,
+    publisher_handle = publisher.joinFederationExecution("DirectedPublisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("DirectedSubscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+    object_instance = publisher.registerObjectInstance(object_class, "Directed-Target-1")
+
+    with pytest.raises(InteractionClassNotPublished):
+        publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"T-1"}, b"not-published")
+
+    publisher.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+    subscriber.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+    publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"T-1"}, b"directed-tag")
+
+    received = subscriber_callbacks.last_callback("receiveDirectedInteraction")
+    assert received == (
+        interaction_class,
+        object_instance,
+        {parameter: b"T-1"},
+        b"directed-tag",
+        reliable,
+        publisher_handle,
+        None,
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
     )
+    assert subscriber_callbacks.last_callback("receiveInteraction") is None
 
-    object_class = ObjectClassHandle(1)
-    interaction_class = InteractionClassHandle(2)
-    object_instance = ObjectInstanceHandle(3)
+    subscriber_callbacks.callbacks.clear()
+    subscriber.unsubscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+    publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"T-2"}, b"after-unsubscribe")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
 
-    with pytest.raises(RTIinternalError, match="sendDirectedInteraction"):
-        rti.sendDirectedInteraction(interaction_class, object_instance, {}, b"directed")
-    with pytest.raises(RTIinternalError, match="publishObjectClassDirectedInteractions"):
-        rti.publishObjectClassDirectedInteractions(object_class, {interaction_class})
-    with pytest.raises(RTIinternalError, match="subscribeObjectClassDirectedInteractions"):
-        rti.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+    publisher.unpublishObjectClassDirectedInteractions(object_class, {interaction_class})
+    with pytest.raises(InteractionClassNotPublished):
+        publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"T-3"}, b"after-unpublish")
 
-    assert [call[0] for call in rti.calls[-3:]] == [
-        "sendDirectedInteraction",
-        "publishObjectClassDirectedInteractions",
-        "subscribeObjectClassDirectedInteractions",
-    ]
-
-    rti.resignFederationExecution(ResignAction.NO_ACTION)
-    rti.destroyFederationExecution(federationName=federation_name)
-    rti.disconnect()
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-FI-005")
