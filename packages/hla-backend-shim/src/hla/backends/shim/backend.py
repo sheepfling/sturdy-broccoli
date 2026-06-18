@@ -2900,6 +2900,12 @@ class Shim2025RTIAmbassador:
             object_instance = ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance"))
             target._send_mom_object_instance_information_report(target_federate, object_instance)
             return True
+        if interaction_class_name.endswith("HLArequestFOMmoduleData"):
+            report_name = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData"
+            values = target._mom_request_report_values(interaction_class_name, report_name, values_by_handle)
+            values["HLAfederate"] = str(target_federate.value).encode("ascii")
+            target._send_mom_report_interaction(report_name, values)
+            return True
         if interaction_class_name.endswith("HLArequestObjectInstancesThatCanBeDeleted"):
             target._send_mom_object_class_count_report(
                 "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",

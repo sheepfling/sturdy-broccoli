@@ -357,7 +357,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "FOM module data, synchronization point MOM request/report interactions, and service/exception "
             "reporting MOM adjust interactions plus exposed HLAsetSwitches, HLAsetTiming, and "
             "HLAmodifyAttributeState adjust interactions through receiveInteraction callbacks, and routes "
-            "federate publication/subscription and object-instance information MOM reports plus "
+            "federate-level FOM module data, publication/subscription, and object-instance information MOM reports plus "
             "declaration-management MOM service actions through the "
             "normal publish/subscribe service paths plus federation-management MOM service actions through "
             "normal synchronization, save/restore, and resign service paths plus supported time-management MOM "

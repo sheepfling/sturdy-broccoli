@@ -1862,7 +1862,7 @@ def test_2025_shim_routes_mom_mim_and_fom_module_reports_through_interactions(tm
         federationName=federation_name,
         fomModules=(str(core_fom), str(extension_fom)),
     )
-    rti.joinFederationExecution("MomDataLeader", "TestFederate", federation_name)
+    leader_handle = rti.joinFederationExecution("MomDataLeader", "TestFederate", federation_name)
     observer.joinFederationExecution("MomDataObserver", "ObserverFederate", federation_name)
 
     fom_request = observer.getInteractionClassHandle(
@@ -1900,6 +1900,36 @@ def test_2025_shim_routes_mom_mim_and_fom_module_reports_through_interactions(tm
     assert b"Standard MOM and Initialization Module" in mim_callback[1][mim_data]
     assert b"HLArequestMIMdata" in mim_callback[1][mim_data]
     assert mim_callback[2] == b"MOM"
+
+    federate_fom_request = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData"
+    )
+    federate_fom_report = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData"
+    )
+    federate_param = observer.getParameterHandle(federate_fom_request, "HLAfederate")
+    federate_request_indicator = observer.getParameterHandle(federate_fom_request, "HLAFOMmoduleIndicator")
+    federate_report_target = observer.getParameterHandle(federate_fom_report, "HLAfederate")
+    federate_report_indicator = observer.getParameterHandle(federate_fom_report, "HLAFOMmoduleIndicator")
+    federate_report_data = observer.getParameterHandle(federate_fom_report, "HLAFOMmoduleData")
+    observer.subscribeInteractionClass(federate_fom_report)
+    observer_callbacks.callbacks.clear()
+    observer.sendInteraction(
+        federate_fom_request,
+        {
+            federate_param: str(leader_handle.value).encode("ascii"),
+            federate_request_indicator: b"0",
+        },
+        b"mom-federate-fom-module-request",
+    )
+    federate_fom_callback = observer_callbacks.last_callback("receiveInteraction")
+    assert federate_fom_callback is not None
+    assert federate_fom_callback[0] == federate_fom_report
+    assert federate_fom_callback[1][federate_report_target] == str(leader_handle.value).encode("ascii")
+    assert federate_fom_callback[1][federate_report_indicator] == b"0"
+    assert b"MOM Core FOM" in federate_fom_callback[1][federate_report_data]
+    assert b"<name>Target</name>" in federate_fom_callback[1][federate_report_data]
+    assert federate_fom_callback[2] == b"MOM"
 
     observer.resignFederationExecution(ResignAction.NO_ACTION)
     rti.resignFederationExecution(ResignAction.NO_ACTION)
