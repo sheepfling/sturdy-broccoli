@@ -27,6 +27,7 @@ TIME_MANAGEMENT_REQUIREMENTS_2025 = [
     "HLA2025-FR-010",
     "HLA2025-FI-005",
     "HLA2025-FI-009",
+    "HLA2025-MOD-006",
 ]
 
 
@@ -279,6 +280,8 @@ def run_2025_time_management_trace(backend_name: str = "shim") -> dict[str, Any]
     trace.append(_event("queryLookahead", value=rti.queryLookahead()))
     rti.timeAdvanceRequest(HLAfloat64Time(12.5))
     trace.append(_event("timeAdvanceRequest", value=HLAfloat64Time(12.5)))
+    rti.flushQueueRequest(HLAfloat64Time(20.0))
+    trace.append(_event("flushQueueRequest", value=HLAfloat64Time(20.0)))
     trace.append(_event("queryLogicalTime", value=rti.queryLogicalTime()))
     trace.append(_event("queryGALT", value=rti.queryGALT()))
     trace.append(_event("queryLITS", value=rti.queryLITS()))

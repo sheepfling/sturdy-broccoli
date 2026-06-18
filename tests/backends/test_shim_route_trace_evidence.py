@@ -70,7 +70,9 @@ def test__2025_time_management_trace_exercises_selected_logical_time_runtime() -
     assert evidence["edition"] == "2025"
     assert evidence["scenario"] == "logical-time-runtime"
     assert evidence["status"] == "trace-green"
-    assert {"HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009"} <= set(evidence["requirements_exercised"])
+    assert {"HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006"} <= set(
+        evidence["requirements_exercised"]
+    )
     assert events == [
         "routeSelected",
         "connect",
@@ -83,6 +85,7 @@ def test__2025_time_management_trace_exercises_selected_logical_time_runtime() -
         "modifyLookahead",
         "queryLookahead",
         "timeAdvanceRequest",
+        "flushQueueRequest",
         "queryLogicalTime",
         "queryGALT",
         "queryLITS",

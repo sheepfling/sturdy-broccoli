@@ -81,6 +81,7 @@ class ObjectClassSpec:
     attribute_datatypes: Mapping[str, str] = field(default_factory=dict)
     attribute_transportations: Mapping[str, str] = field(default_factory=dict)
     attribute_update_rates: Mapping[str, str] = field(default_factory=dict)
+    attribute_value_required: Mapping[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -674,6 +675,7 @@ def _walk_object_class(
     inherited_datatypes: Mapping[str, str] | None = None,
     inherited_transportations: Mapping[str, str] | None = None,
     inherited_update_rates: Mapping[str, str] | None = None,
+    inherited_value_required: Mapping[str, str] | None = None,
     path: Path | None = None,
 ) -> list[ObjectClassSpec]:
     name = _child_text(element, "name")
@@ -682,12 +684,14 @@ def _walk_object_class(
     inherited_datatypes = dict(inherited_datatypes or {})
     inherited_transportations = dict(inherited_transportations or {})
     inherited_update_rates = dict(inherited_update_rates or {})
+    inherited_value_required = dict(inherited_value_required or {})
     full_name = _append_path(parent, name)
     declared_names: list[str] = []
     declared_seen: dict[str, bool] = {}
     declared_datatypes: dict[str, str] = {}
     declared_transportations: dict[str, str] = {}
     declared_update_rates: dict[str, str] = {}
+    declared_value_required: dict[str, str] = {}
     for attr in _direct_children(element, "attribute"):
         attr_name = (_child_text(attr, "name") or "").strip()
         if not attr_name:
@@ -709,6 +713,9 @@ def _walk_object_class(
         ).strip()
         if update_rate:
             declared_update_rates[attr_name] = update_rate
+        value_required = (_child_text(attr, "valueRequired") or "").strip()
+        if value_required:
+            declared_value_required[attr_name] = value_required
     declared = tuple(declared_names)
     if path is not None:
         inherited_names = set(inherited_attributes)
@@ -719,7 +726,19 @@ def _walk_object_class(
     datatypes = _stable_mapping_union(inherited_datatypes, declared_datatypes)
     transportations = _stable_mapping_union(inherited_transportations, declared_transportations)
     update_rates = _stable_mapping_union(inherited_update_rates, declared_update_rates)
-    result = [ObjectClassSpec(full_name, available, parent or None, declared, datatypes, transportations, update_rates)]
+    value_required = _stable_mapping_union(inherited_value_required, declared_value_required)
+    result = [
+        ObjectClassSpec(
+            full_name,
+            available,
+            parent or None,
+            declared,
+            datatypes,
+            transportations,
+            update_rates,
+            value_required,
+        )
+    ]
     child_names: dict[str, bool] = {}
     for child in _direct_children(element, "objectClass"):
         child_name = (_child_text(child, "name") or "").strip()
@@ -734,6 +753,7 @@ def _walk_object_class(
                 datatypes,
                 transportations,
                 update_rates,
+                value_required,
                 path=path,
             )
         )
@@ -1941,6 +1961,7 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
                     _stable_mapping_union(existing.attribute_datatypes, spec.attribute_datatypes),
                     _stable_mapping_union(existing.attribute_transportations, spec.attribute_transportations),
                     _stable_mapping_union(existing.attribute_update_rates, spec.attribute_update_rates),
+                    _stable_mapping_union(existing.attribute_value_required, spec.attribute_value_required),
                 )
 
         for spec in module.interaction_classes:
@@ -2375,6 +2396,9 @@ def _serialize_object_class_tree(parent: ET.Element, specs: tuple[ObjectClassSpe
             transportation = dict(spec.attribute_transportations).get(attribute_name)
             if transportation:
                 ET.SubElement(attribute, f"{{{_IEEE_1516_2010_NAMESPACE}}}transportation").text = transportation
+            value_required = dict(spec.attribute_value_required).get(attribute_name)
+            if value_required:
+                ET.SubElement(attribute, f"{{{_IEEE_1516_2010_NAMESPACE}}}valueRequired").text = value_required
         for child_spec in sorted(children_by_parent.get(spec.full_name, []), key=lambda item: item.full_name):
             emit(child_spec, element)
 

@@ -190,6 +190,18 @@ def _validate_object_classes(module: Any) -> list[ValidationIssue]:
             )
         )
         issues.extend(_validate_name_collection(spec.declared_attributes, table="attributeTable"))
+        for attribute_name, value in getattr(spec, "attribute_value_required", {}).items():
+            if str(value).lower() not in {"true", "false"}:
+                issues.append(
+                    ValidationIssue(
+                        requirement="HLA2025-NEW-006",
+                        table="attributeTable",
+                        field="valueRequired",
+                        value=str(value),
+                        status="fail",
+                        message=f"valueRequired for attribute {attribute_name!r} must be true or false",
+                    )
+                )
     return issues
 
 

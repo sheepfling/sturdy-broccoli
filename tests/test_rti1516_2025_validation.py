@@ -6,6 +6,119 @@ from pathlib import Path
 import pytest
 
 
+@pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-002", "HLA2025-OMT-006")
+def test_2025_parser_preserves_reference_datatypes_and_value_required_metadata(tmp_path: Path) -> None:
+    from hla.rti1516_2025.validation import validate_fom_module
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "reference-value-required.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Reference Value Required FOM</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Reference datatype and valueRequired validation fixture.</description>
+    <poc><pocName>Test</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Entity</name>
+        <attribute>
+          <name>EntityId</name>
+          <dataType>HLAunicodeString</dataType>
+          <valueRequired>true</valueRequired>
+        </attribute>
+        <attribute>
+          <name>OptionalLabel</name>
+          <dataType>HLAunicodeString</dataType>
+          <valueRequired>false</valueRequired>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <dataTypes>
+    <referenceDataTypes>
+      <referenceDataType>
+        <name>EntityIdReference</name>
+        <representation>HLAunicodeString</representation>
+        <referenceClass>HLAobjectRoot.Entity</referenceClass>
+        <referencedAttribute>EntityId</referencedAttribute>
+        <semantics>Reference to an Entity object by EntityId.</semantics>
+      </referenceDataType>
+    </referenceDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    reference = module.reference_datatypes["EntityIdReference"]
+
+    assert entity.attribute_value_required == {"EntityId": "true", "OptionalLabel": "false"}
+    assert reference.representation == "HLAunicodeString"
+    assert reference.reference_class == "HLAobjectRoot.Entity"
+    assert reference.referenced_attribute == "EntityId"
+    assert validate_fom_module(module) == []
+
+    roundtrip = tmp_path / "roundtrip.xml"
+    roundtrip.write_text(serialize_fom_module(module), encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip)
+    reparsed_entity = next(spec for spec in reparsed.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+
+    assert "EntityIdReference" in reparsed.reference_datatypes
+    assert reparsed_entity.attribute_value_required == {"EntityId": "true", "OptionalLabel": "false"}
+
+
+@pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-006")
+def test_2025_validation_rejects_invalid_value_required_metadata(tmp_path: Path) -> None:
+    from hla.rti1516_2025.validation import validate_fom_module
+    from hla.rti1516e.fom import parse_fom_xml
+
+    source = tmp_path / "invalid-value-required.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Invalid Value Required FOM</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Invalid valueRequired validation fixture.</description>
+    <poc><pocName>Test</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Entity</name>
+        <attribute><name>EntityId</name><dataType>HLAunicodeString</dataType><valueRequired>maybe</valueRequired></attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    issues = validate_fom_module(parse_fom_xml(source))
+
+    assert [issue.requirement for issue in issues] == ["HLA2025-NEW-006"]
+    assert issues[0].table == "attributeTable"
+    assert issues[0].field == "valueRequired"
+    assert issues[0].value == "maybe"
+
+
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:
     from hla.rti1516_2025.validation import validate_hla_name

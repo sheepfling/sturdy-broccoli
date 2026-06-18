@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import uuid
 from pathlib import Path
 
@@ -30,6 +31,9 @@ class Recording2025FederateAmbassador:
 
     def timeAdvanceGrant(self, time) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("timeAdvanceGrant", (time,)))
+
+    def flushQueueGrant(self, time, optimisticTime) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("flushQueueGrant", (time, optimisticTime)))
 
     def last_callback(self, method_name: str) -> tuple[object, ...] | None:
         for recorded_name, args in reversed(self.callbacks):
@@ -94,6 +98,70 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     assert backends["java-2025-py4j"].supports == ("rti1516_2025",)
 
 
+@pytest.mark.requirements("HLA2025-MOD-004", "HLA2025-RET-002", "HLA2025-FI-001")
+def test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers() -> None:
+    import hla.rti1516_2025 as rti2025
+    from hla.rti1516_2025.federate_ambassador import FederateAmbassador
+
+    callback_parameters = {
+        "discoverObjectInstance": ("objectInstance", "objectClass", "objectInstanceName", "producingFederate"),
+        "reflectAttributeValues": (
+            "objectInstance",
+            "attributeValues",
+            "userSuppliedTag",
+            "transportationType",
+            "producingFederate",
+            "optionalSentRegions",
+            "time",
+            "sentOrderType",
+            "receivedOrderType",
+            "optionalRetraction",
+        ),
+        "receiveInteraction": (
+            "interactionClass",
+            "parameterValues",
+            "userSuppliedTag",
+            "transportationType",
+            "producingFederate",
+            "optionalSentRegions",
+            "time",
+            "sentOrderType",
+            "receivedOrderType",
+            "optionalRetraction",
+        ),
+        "receiveDirectedInteraction": (
+            "interactionClass",
+            "objectInstance",
+            "parameterValues",
+            "userSuppliedTag",
+            "transportationType",
+            "producingFederate",
+            "time",
+            "sentOrderType",
+            "receivedOrderType",
+            "optionalRetraction",
+        ),
+        "removeObjectInstance": (
+            "objectInstance",
+            "userSuppliedTag",
+            "producingFederate",
+            "time",
+            "sentOrderType",
+            "receivedOrderType",
+            "optionalRetraction",
+        ),
+    }
+
+    for method_name, expected in callback_parameters.items():
+        signature = inspect.signature(getattr(FederateAmbassador, method_name))
+        assert tuple(name for name in signature.parameters if name != "self") == expected
+        assert not any("Supplemental" in name for name in signature.parameters)
+
+    assert not hasattr(rti2025, "SupplementalReflectInfo")
+    assert not hasattr(rti2025, "SupplementalReceiveInfo")
+    assert not hasattr(rti2025, "SupplementalRemoveInfo")
+
+
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006")
 def test_2025_shim_is_first_green_runtime_path() -> None:
     from hla.rti import create_rti_ambassador
@@ -117,6 +185,48 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
 
     rti.disconnect()
     assert rti.connected is False
+
+
+@pytest.mark.requirements("HLA2025-NEW-001", "HLA2025-FI-005", "HLA2025-REQ-002")
+def test_2025_shim_records_directed_interaction_services_as_explicit_unsupported_boundary() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.handles import InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle
+
+    federation_name = f"shim-directed-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    rti.joinFederationExecution(
+        federateName="DirectedFederate",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    object_class = ObjectClassHandle(1)
+    interaction_class = InteractionClassHandle(2)
+    object_instance = ObjectInstanceHandle(3)
+
+    with pytest.raises(RTIinternalError, match="sendDirectedInteraction"):
+        rti.sendDirectedInteraction(interaction_class, object_instance, {}, b"directed")
+    with pytest.raises(RTIinternalError, match="publishObjectClassDirectedInteractions"):
+        rti.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+    with pytest.raises(RTIinternalError, match="subscribeObjectClassDirectedInteractions"):
+        rti.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+
+    assert [call[0] for call in rti.calls[-3:]] == [
+        "sendDirectedInteraction",
+        "publishObjectClassDirectedInteractions",
+        "subscribeObjectClassDirectedInteractions",
+    ]
+
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-FI-005")
@@ -614,10 +724,10 @@ def test_2025_shim_distinguishes_fom_mim_open_read_invalid_and_merge_errors(tmp_
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009")
+@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006")
 def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
+    from hla.rti1516_2025.exceptions import LogicalTimeAlreadyPassed, TimeRegulationIsNotEnabled
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAfloat64Interval, HLAfloat64Time
 
@@ -657,6 +767,15 @@ def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -
     assert federate.last_callback("timeRegulationEnabled") == (HLAfloat64Time(0.0),)
     assert federate.last_callback("timeConstrainedEnabled") == (HLAfloat64Time(0.0),)
     assert federate.last_callback("timeAdvanceGrant") == (HLAfloat64Time(12.5),)
+
+    with pytest.raises(LogicalTimeAlreadyPassed):
+        rti.flushQueueRequest(HLAfloat64Time(12.0))
+
+    rti.flushQueueRequest(HLAfloat64Time(20.0))
+    assert rti.queryLogicalTime() == HLAfloat64Time(20.0)
+    assert federate.last_callback("flushQueueGrant") == (HLAfloat64Time(20.0), HLAfloat64Time(20.0))
+    assert rti.queryGALT().time == HLAfloat64Time(20.0)
+    assert rti.queryLITS().time == HLAfloat64Time(20.0)
 
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 HIGH_PRIORITIES = frozenset({"high", "very-high"})
+CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary"})
 
 IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
@@ -51,14 +52,18 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     },
     {
         "id": "2025-logical-time",
-        "status": "partial",
+        "status": "implemented-slice",
         "requirements": ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/backends/test_shim_route_trace_evidence.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
-        "remaining": "flushQueueGrant ordering and full generic binding checks are still open.",
+        "supported_scope": (
+            "Python 2025 shim covers default logical-time factory selection, lookahead query/modify, "
+            "timeAdvanceRequest, flushQueueRequest, timeAdvanceGrant, flushQueueGrant, and GALT/LITS queries. "
+            "Full queued TSO ordering and cross-binding parity remain separate backlog work."
+        ),
     },
     {
         "id": "2025-fom-showcase",
@@ -97,19 +102,66 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
     },
+    {
+        "id": "2025-callback-context-parameters",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-MOD-004", "HLA2025-RET-002", "HLA2025-FI-001"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
+        ),
+        "supported_scope": (
+            "Python 2025 federate ambassador surface exposes direct callback context parameters "
+            "for discovery, reflection, interaction, directed interaction, and remove callbacks "
+            "without native Supplemental*Info helper objects."
+        ),
+    },
+    {
+        "id": "2025-directed-interaction-boundary",
+        "status": "unsupported-boundary",
+        "requirements": ("HLA2025-NEW-001", "HLA2025-REQ-002", "HLA2025-FI-005"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
+            "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "2025 directed interaction RTI and callback method surface is present; the Python shim "
+            "returns structured RTIinternalError unsupported-boundary evidence for directed publish, "
+            "subscribe, and send services until two-federate directed delivery is implemented."
+        ),
+    },
+    {
+        "id": "2025-omt-reference-value-required",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-NEW-006", "HLA2025-OMT-002", "HLA2025-OMT-006"),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser preserves referenceDataTypes and attribute valueRequired metadata, "
+            "serializer round-trips the metadata, and 2025 validation rejects invalid valueRequired values."
+        ),
+    },
 )
 
 BACKLOG_STATUS_BY_ROW = {
     "HLA2025-MOD-001": "implemented-slice",
     "HLA2025-MOD-002": "implemented-slice",
     "HLA2025-MOD-003": "implemented-slice",
-    "HLA2025-MOD-006": "partial",
+    "HLA2025-MOD-004": "implemented-slice",
+    "HLA2025-MOD-006": "implemented-slice",
     "HLA2025-MOD-008": "implemented-slice",
+    "HLA2025-NEW-001": "unsupported-boundary",
     "HLA2025-NEW-002": "implemented-slice",
     "HLA2025-NEW-003": "implemented-slice",
     "HLA2025-NEW-005": "implemented-slice",
-    "HLA2025-NEW-006": "partial",
+    "HLA2025-NEW-006": "implemented-slice",
     "HLA2025-RET-001": "implemented-slice",
+    "HLA2025-RET-002": "implemented-slice",
     "HLA2025-VER-001": "partial",
     "HLA2025-VER-002": "implemented-slice",
 }
@@ -176,7 +228,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     high_priority_open = [
         row
         for row in completion_with_status
-        if row["priority"] in HIGH_PRIORITIES and row["current_status"] != "implemented-slice"
+        if row["priority"] in HIGH_PRIORITIES and row["current_status"] not in CLOSED_STATUSES
     ]
     high_priority_open = sorted(high_priority_open, key=_priority_rank)
 
@@ -219,7 +271,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
         "finish_rule": (
             "Each remaining row needs a positive test, a negative unsupported-boundary test, "
-            "or an explicit supported-subset row before it can be counted as closed."
+            "or an explicit supported-subset/unsupported-boundary row before it can be counted as closed."
         ),
     }
 

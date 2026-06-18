@@ -342,6 +342,16 @@ class Shim2025RTIAmbassador:
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeAdvanceGrant"):
             self._deliver_callback("timeAdvanceGrant", self._logical_time)
 
+    def flushQueueRequest(self, time: Any) -> None:  # noqa: N802
+        self._record("flushQueueRequest", time)
+        self._require_joined("flushQueueRequest")
+        requested_time = self._coerce_time(time)
+        if requested_time < self._logical_time:
+            raise LogicalTimeAlreadyPassed(str(requested_time))
+        self._logical_time = requested_time
+        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "flushQueueGrant"):
+            self._deliver_callback("flushQueueGrant", self._logical_time, self._logical_time)
+
     def queryGALT(self) -> TimeQueryReturn:  # noqa: N802
         self._record("queryGALT")
         self._require_joined("queryGALT")
