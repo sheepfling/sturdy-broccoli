@@ -42,6 +42,13 @@ OWNERSHIP_REQUIREMENTS_2025 = [
     "HLA2025-FI-005",
 ]
 
+DDM_REQUIREMENTS_2025 = [
+    "HLA2025-MOD-007",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+]
+
 RUNTIME_CAPABILITY_REQUIREMENTS_2025 = [
     "HLA2025-FR-001",
     "HLA2025-FR-004",
@@ -312,7 +319,12 @@ def _callback_events(raw_events: Iterable[tuple[str, Any]]) -> list[dict[str, An
                 )
             )
         elif name == "reflect":
-            object_instance, attributes, tag, order, _transport, _extra = payload
+            object_instance, attributes, tag, order, transport, extra = payload
+            producing_federate = extra[0] if len(extra) > 0 else None
+            sent_regions = extra[1] if len(extra) > 1 else None
+            time = extra[2] if len(extra) > 2 else None
+            received_order = extra[3] if len(extra) > 3 else None
+            optional_retraction = extra[4] if len(extra) > 4 else None
             events.append(
                 _event(
                     "reflectAttributeValues",
@@ -320,10 +332,21 @@ def _callback_events(raw_events: Iterable[tuple[str, Any]]) -> list[dict[str, An
                     attributes=attributes,
                     tag=tag,
                     order=order,
+                    transportation=transport,
+                    producingFederate=producing_federate,
+                    sentRegions=sent_regions,
+                    time=time,
+                    receivedOrder=received_order,
+                    retraction=optional_retraction,
                 )
             )
         elif name == "interaction":
-            interaction_class, parameters, tag, order, _transport, _extra = payload
+            interaction_class, parameters, tag, order, transport, extra = payload
+            producing_federate = extra[0] if len(extra) > 0 else None
+            sent_regions = extra[1] if len(extra) > 1 else None
+            time = extra[2] if len(extra) > 2 else None
+            received_order = extra[3] if len(extra) > 3 else None
+            optional_retraction = extra[4] if len(extra) > 4 else None
             events.append(
                 _event(
                     "receiveInteraction",
@@ -331,6 +354,12 @@ def _callback_events(raw_events: Iterable[tuple[str, Any]]) -> list[dict[str, An
                     parameters=parameters,
                     tag=tag,
                     order=order,
+                    transportation=transport,
+                    producingFederate=producing_federate,
+                    sentRegions=sent_regions,
+                    time=time,
+                    receivedOrder=received_order,
+                    retraction=optional_retraction,
                 )
             )
         elif name == "time_regulation_enabled":
@@ -925,9 +954,147 @@ def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
     }
 
 
+def run_standard_2025_ddm_trace(backend_name: str) -> dict[str, Any]:
+    """Run a two-federate 2025 object DDM region-overlap trace for a standard route."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    temp_dir, fom_module = _write_2025_runtime_capability_fom()
+    federation_name = f"ShimRouteDdm{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    publisher_fed = _Recording2025FederateAmbassador()
+    subscriber_fed = _Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(spec="2025", backend=backend_name)
+    subscriber = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=publisher.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=publisher.getHLAversion()),
+    ]
+    publisher_connected = False
+    subscriber_connected = False
+    publisher_joined = False
+    subscriber_joined = False
+    federation_created = False
+    try:
+        publisher.connect(publisher_fed, CallbackModel.HLA_EVOKED)
+        publisher_connected = True
+        subscriber.connect(subscriber_fed, CallbackModel.HLA_EVOKED)
+        subscriber_connected = True
+        trace.append(_event("connect", federates=["publisher", "subscriber"], callbackModel=CallbackModel.HLA_EVOKED))
+
+        publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom_module))
+        federation_created = True
+        trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module.name))
+        publisher_handle = publisher.joinFederationExecution("route-publisher", "route-ddm", federation_name)
+        publisher_joined = True
+        subscriber_handle = subscriber.joinFederationExecution("route-subscriber", "route-ddm", federation_name)
+        subscriber_joined = True
+        trace.append(_event("joinFederationExecution", publisherHandle=publisher_handle, subscriberHandle=subscriber_handle))
+
+        object_class = publisher.getObjectClassHandle("HLAobjectRoot.RouteTarget")
+        attribute = publisher.getAttributeHandle(object_class, "Position")
+        dimension = publisher.getDimensionHandle("RoutingSpace")
+        subscriber_dimension = subscriber.getDimensionHandle("RoutingSpace")
+        publisher.publishObjectClassAttributes(object_class, {attribute})
+        trace.append(_event("publishObjectClassAttributes", objectClass=object_class, attributes={attribute}))
+
+        publisher_region = publisher.createRegion({dimension})
+        subscriber_region = subscriber.createRegion({subscriber_dimension})
+        publisher.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+        subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(50, 60))
+        publisher.commitRegionModifications({publisher_region})
+        subscriber.commitRegionModifications({subscriber_region})
+        trace.append(
+            _event(
+                "createAndCommitRegions",
+                publisherRegion=publisher_region,
+                subscriberRegion=subscriber_region,
+                publisherBounds=RangeBounds(0, 10),
+                subscriberBounds=RangeBounds(50, 60),
+            )
+        )
+
+        object_instance = publisher.registerObjectInstance(object_class, f"RouteDdmTarget-{uuid.uuid4().hex[:8]}")
+        publisher.associateRegionsForUpdates(object_instance, [({attribute}, {publisher_region})])
+        subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+        trace.append(
+            _event(
+                "subscribeObjectClassAttributesWithRegions",
+                objectClass=object_class,
+                attributes={attribute},
+                subscriberRegion=subscriber_region,
+                overlapsPublisherRegion=False,
+                discovered=any(event[0] == "discover" for event in subscriber_fed.events),
+            )
+        )
+
+        publisher.updateAttributeValues(object_instance, {attribute: b"outside"}, b"outside-region")
+        trace.append(
+            _event(
+                "outsideRegionUpdateSuppressed",
+                objectInstance=object_instance,
+                reflected=any(event[0] == "reflect" for event in subscriber_fed.events),
+            )
+        )
+
+        subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(5, 15))
+        subscriber.commitRegionModifications({subscriber_region})
+        subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+        trace.append(
+            _event(
+                "commitOverlappingRegion",
+                subscriberRegion=subscriber_region,
+                subscriberBounds=RangeBounds(5, 15),
+                discovered=any(event[0] == "discover" for event in subscriber_fed.events),
+            )
+        )
+        trace.extend(_callback_events(subscriber_fed.events))
+
+        subscriber_fed.events.clear()
+        publisher.updateAttributeValues(object_instance, {attribute: b"inside"}, b"inside-region")
+        trace.append(_event("insideRegionUpdate", objectInstance=object_instance, attributes={attribute}, publisherRegion=publisher_region))
+        trace.extend(_callback_events(subscriber_fed.events))
+    finally:
+        try:
+            if subscriber_joined:
+                subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="subscriber", action=ResignAction.NO_ACTION))
+            if publisher_joined:
+                publisher.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="publisher", action=ResignAction.NO_ACTION))
+            if federation_created:
+                publisher.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if subscriber_connected:
+                subscriber.disconnect()
+            if publisher_connected:
+                publisher.disconnect()
+            if subscriber_connected or publisher_connected:
+                trace.append(_event("disconnect", federates=["publisher", "subscriber"]))
+        finally:
+            close = getattr(subscriber, "close", None)
+            if callable(close):
+                close()
+            close = getattr(publisher, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "ddm-region-runtime",
+        "status": "trace-green",
+        "requirements_exercised": DDM_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
 __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
+    "run_standard_2025_ddm_trace",
     "run_standard_2025_lifecycle_trace",
     "run_standard_2025_object_exchange_trace",
     "run_standard_2025_ownership_trace",

@@ -287,18 +287,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "ddm",
         "cpp-standard-2025-pybind",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-BND-002"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 DDM parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the DDM region runtime trace: object attribute region "
+        "subscription, outside-region suppression, discovery after region overlap, and conveyed sent-region reflection evidence.",
     ),
     _row(
         "ddm",
         "cpp-standard-2025-grpc",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-BND-002"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 DDM parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the DDM region runtime trace: object attribute region "
+        "subscription, outside-region suppression, discovery after region overlap, and conveyed sent-region reflection evidence.",
     ),
     _row(
         "time_management",

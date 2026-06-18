@@ -285,6 +285,55 @@ def test_standard_2025_routes_pass_ownership_when_built(backend_name: str) -> No
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_ddm_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_ddm_trace
+
+    evidence = run_standard_2025_ddm_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+    outside_subscription = next(event for event in evidence["trace"] if event["event"] == "subscribeObjectClassAttributesWithRegions")
+    outside_update = next(event for event in evidence["trace"] if event["event"] == "outsideRegionUpdateSuppressed")
+    overlapping_region = next(event for event in evidence["trace"] if event["event"] == "commitOverlappingRegion")
+    reflection = next(event for event in evidence["trace"] if event["event"] == "reflectAttributeValues")
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "ddm-region-runtime"
+    assert "HLA2025-MOD-007" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "publishObjectClassAttributes",
+        "createAndCommitRegions",
+        "subscribeObjectClassAttributesWithRegions",
+        "outsideRegionUpdateSuppressed",
+        "commitOverlappingRegion",
+        "discoverObjectInstance",
+        "insideRegionUpdate",
+        "reflectAttributeValues",
+        "disconnect",
+    } <= event_names
+    assert outside_subscription["discovered"] is False
+    assert outside_update["reflected"] is False
+    assert overlapping_region["discovered"] is True
+    assert reflection["tag"] == "inside-region"
+    assert reflection["sentRegions"]
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")
