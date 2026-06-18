@@ -2669,6 +2669,7 @@ def test_2025_shim_routes_mom_federation_management_service_interactions() -> No
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-009", "HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
     from hla.rti1516_2025.factory import create_rti_ambassador
 
     federation_name = f"shim-mom-time-service-{uuid.uuid4().hex[:8]}"
@@ -2713,6 +2714,30 @@ def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
         target.getTimeFactory().makeTime(12),
         target.getTimeFactory().makeTime(12),
     )
+
+    send_service("HLAtimeAdvanceRequestAvailable", {"HLAtimeStamp": b"14"})
+    assert target.queryLogicalTime() == target.getTimeFactory().makeTime(14)
+    assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(14),)
+
+    send_service("HLAnextMessageRequest", {"HLAtimeStamp": b"16"})
+    assert target.queryLogicalTime() == target.getTimeFactory().makeTime(16)
+    assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(16),)
+
+    send_service("HLAnextMessageRequestAvailable", {"HLAtimeStamp": b"18"})
+    assert target.queryLogicalTime() == target.getTimeFactory().makeTime(18)
+    assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(18),)
+
+    send_service("HLAenableAsynchronousDelivery", {})
+    send_service("HLAdisableAsynchronousDelivery", {})
+    assert any(call[0] == "enableAsynchronousDelivery" for call in target.calls)
+    assert any(call[0] == "disableAsynchronousDelivery" for call in target.calls)
+
+    send_service("HLAdisableTimeConstrained", {})
+    assert any(call[0] == "disableTimeConstrained" for call in target.calls)
+
+    send_service("HLAdisableTimeRegulation", {})
+    with pytest.raises(TimeRegulationIsNotEnabled):
+        target.queryLookahead()
 
     target.resignFederationExecution(ResignAction.NO_ACTION)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
@@ -3539,6 +3564,25 @@ def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -
     assert federate.last_callback("flushQueueGrant") == (HLAfloat64Time(20.0), HLAfloat64Time(20.0))
     assert rti.queryGALT().time == HLAfloat64Time(20.0)
     assert rti.queryLITS().time == HLAfloat64Time(20.0)
+
+    rti.timeAdvanceRequestAvailable(HLAfloat64Time(21.0))
+    assert rti.queryLogicalTime() == HLAfloat64Time(21.0)
+    assert federate.last_callback("timeAdvanceGrant") == (HLAfloat64Time(21.0),)
+    rti.nextMessageRequest(HLAfloat64Time(22.0))
+    assert rti.queryLogicalTime() == HLAfloat64Time(22.0)
+    rti.nextMessageRequestAvailable(HLAfloat64Time(23.0))
+    assert rti.queryLogicalTime() == HLAfloat64Time(23.0)
+
+    rti.enableAsynchronousDelivery()
+    rti.disableAsynchronousDelivery()
+    assert any(call[0] == "enableAsynchronousDelivery" for call in rti.calls)
+    assert any(call[0] == "disableAsynchronousDelivery" for call in rti.calls)
+
+    rti.disableTimeConstrained()
+    assert any(call[0] == "disableTimeConstrained" for call in rti.calls)
+    rti.disableTimeRegulation()
+    with pytest.raises(TimeRegulationIsNotEnabled):
+        rti.queryLookahead()
 
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)

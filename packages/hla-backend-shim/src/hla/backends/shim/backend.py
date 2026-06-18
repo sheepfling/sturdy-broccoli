@@ -245,6 +245,7 @@ class Shim2025RTIAmbassador:
         self._lookahead = self._logical_time_factory.makeZero()
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
+        self._asynchronous_delivery_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
         self._mom_report_period_seconds: float | None = None
         self._default_attribute_transportation: dict[tuple[str, str], str] = {}
@@ -301,6 +302,7 @@ class Shim2025RTIAmbassador:
         self._lookahead = self._logical_time_factory.makeZero()
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
+        self._asynchronous_delivery_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
         self._mom_report_period_seconds = None
         self._default_attribute_transportation.clear()
@@ -651,12 +653,33 @@ class Shim2025RTIAmbassador:
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeRegulationEnabled"):
             self._deliver_callback("timeRegulationEnabled", self._logical_time)
 
+    def disableTimeRegulation(self) -> None:  # noqa: N802
+        self._record("disableTimeRegulation")
+        self._require_joined("disableTimeRegulation")
+        self._time_regulation_enabled = False
+        self._lookahead = self._logical_time_factory.makeZero()
+
     def enableTimeConstrained(self) -> None:  # noqa: N802
         self._record("enableTimeConstrained")
         self._require_joined("enableTimeConstrained")
         self._time_constrained_enabled = True
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeConstrainedEnabled"):
             self._deliver_callback("timeConstrainedEnabled", self._logical_time)
+
+    def disableTimeConstrained(self) -> None:  # noqa: N802
+        self._record("disableTimeConstrained")
+        self._require_joined("disableTimeConstrained")
+        self._time_constrained_enabled = False
+
+    def enableAsynchronousDelivery(self) -> None:  # noqa: N802
+        self._record("enableAsynchronousDelivery")
+        self._require_joined("enableAsynchronousDelivery")
+        self._asynchronous_delivery_enabled = True
+
+    def disableAsynchronousDelivery(self) -> None:  # noqa: N802
+        self._record("disableAsynchronousDelivery")
+        self._require_joined("disableAsynchronousDelivery")
+        self._asynchronous_delivery_enabled = False
 
     def timeAdvanceRequest(self, time: Any) -> None:  # noqa: N802
         self._record("timeAdvanceRequest", time)
@@ -668,6 +691,18 @@ class Shim2025RTIAmbassador:
         self._deliver_due_tso_callbacks()
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeAdvanceGrant"):
             self._deliver_callback("timeAdvanceGrant", self._logical_time)
+
+    def timeAdvanceRequestAvailable(self, time: Any) -> None:  # noqa: N802
+        self._record("timeAdvanceRequestAvailable", time)
+        self.timeAdvanceRequest(time)
+
+    def nextMessageRequest(self, time: Any) -> None:  # noqa: N802
+        self._record("nextMessageRequest", time)
+        self.timeAdvanceRequest(time)
+
+    def nextMessageRequestAvailable(self, time: Any) -> None:  # noqa: N802
+        self._record("nextMessageRequestAvailable", time)
+        self.timeAdvanceRequest(time)
 
     def flushQueueRequest(self, time: Any) -> None:  # noqa: N802
         self._record("flushQueueRequest", time)
@@ -3159,11 +3194,32 @@ class Shim2025RTIAmbassador:
         if leaf == "HLAenableTimeRegulation":
             target.enableTimeRegulation(target._mom_interval(params.get("HLAlookahead"), "HLAlookahead"))
             return True
+        if leaf == "HLAdisableTimeRegulation":
+            target.disableTimeRegulation()
+            return True
         if leaf == "HLAenableTimeConstrained":
             target.enableTimeConstrained()
             return True
+        if leaf == "HLAdisableTimeConstrained":
+            target.disableTimeConstrained()
+            return True
+        if leaf == "HLAenableAsynchronousDelivery":
+            target.enableAsynchronousDelivery()
+            return True
+        if leaf == "HLAdisableAsynchronousDelivery":
+            target.disableAsynchronousDelivery()
+            return True
         if leaf == "HLAtimeAdvanceRequest":
             target.timeAdvanceRequest(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
+            return True
+        if leaf == "HLAtimeAdvanceRequestAvailable":
+            target.timeAdvanceRequestAvailable(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
+            return True
+        if leaf == "HLAnextMessageRequest":
+            target.nextMessageRequest(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
+            return True
+        if leaf == "HLAnextMessageRequestAvailable":
+            target.nextMessageRequestAvailable(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
             return True
         if leaf == "HLAflushQueueRequest":
             target.flushQueueRequest(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
