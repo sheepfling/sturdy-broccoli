@@ -218,7 +218,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARTIAL,
         ("HLA2025-MOD-007", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers object attribute region-overlap filtering, not the full DDM matrix.",
+        "Hosted FedPro 2025 route covers object attribute and interaction class region-overlap filtering "
+        "with conveyed region evidence, not the full DDM matrix.",
     ),
     _row(
         "ddm",

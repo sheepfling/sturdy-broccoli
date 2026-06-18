@@ -38,6 +38,9 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert rows[("ownership", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "negotiated divestiture" in rows[("ownership", "python-2025-fedpro-grpc")].notes
     assert "resign-time ownership policy remains in-process only" in rows[("ownership", "python-2025-fedpro-grpc")].notes
+    assert rows[("ddm", "python-2025-fedpro-grpc")].status == PARTIAL
+    assert "interaction class region-overlap filtering" in rows[("ddm", "python-2025-fedpro-grpc")].notes
+    assert "conveyed region evidence" in rows[("ddm", "python-2025-fedpro-grpc")].notes
     assert rows[("save_restore", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "status callbacks" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
     assert "rollback remains in-process only" in rows[("save_restore", "python-2025-fedpro-grpc")].notes

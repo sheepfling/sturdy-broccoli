@@ -741,6 +741,85 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
         server.close()
 
 
+def test_2025_transport_server_filters_interactions_by_ddm_region_overlap():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-interaction-ddm"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "InteractionDDM2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025InteractionDDM", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        dimension = transport.request(TransportRequest(command="GET_DIMENSION_HANDLE", fields=("RoutingSpace",))).fields[0]
+        assert transport.request(TransportRequest(command="GET_AVAILABLE_DIMENSIONS_FOR_INTERACTION_CLASS", fields=(interaction_class,))).fields == (dimension,)
+        assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+
+        publisher_region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        subscriber_region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(publisher_region, dimension, "0:10"))).fields == ()
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "50:60"))).fields == ()
+        assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(f"{publisher_region},{subscriber_region}",))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    fields=(interaction_class, "1", subscriber_region),
+                )
+            ).fields
+            == ()
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION_WITH_REGIONS",
+                    fields=(interaction_class, f"{parameter}:4e4f2d44454c49564552", publisher_region, "6e6f2d64656c69766572"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "INTERACTION")
+
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "5:15"))).fields == ()
+        assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(subscriber_region,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION_WITH_REGIONS",
+                    fields=(interaction_class, f"{parameter}:44454c49564552", publisher_region, "64656c69766572"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INTERACTION",
+            interaction_class,
+            f"{parameter}:44454c49564552",
+            "64656c69766572",
+            "1",
+            "1",
+            f"{dimension}:0:10",
+        )
+
+        assert {
+            "getAvailableDimensionsForInteractionClassRequest",
+            "subscribeInteractionClassWithRegionsRequest",
+            "sendInteractionWithRegionsRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_reports_mom_service_invocation_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

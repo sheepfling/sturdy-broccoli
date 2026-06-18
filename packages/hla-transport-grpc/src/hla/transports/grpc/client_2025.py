@@ -427,6 +427,17 @@ def _decode_handle_value_map(value: Any, repeated_name: str) -> str:
     return ",".join(parts)
 
 
+def _decode_conveyed_regions(value: Any) -> str:
+    parts = []
+    for conveyed in value.conveyedRegions:
+        ranges = []
+        for item in conveyed.dimensionAndRange:
+            ranges.append(f"{_opaque_text(item.dimensionHandle.data)}:{item.rangeBounds.lower}:{item.rangeBounds.upper}")
+        if ranges:
+            parts.append(",".join(ranges))
+    return ";".join(parts)
+
+
 def _decode_logical_time(value: Any) -> tuple[str, str]:
     raw = value.data.decode("ascii") if value.data else "HLAfloat64Time:0.0"
     if ":" in raw:
@@ -469,7 +480,7 @@ def _callback_reflect_tso(value: Any) -> tuple[str, ...]:
 
 
 def _callback_interaction(value: Any) -> tuple[str, ...]:
-    return (
+    fields = (
         "INTERACTION",
         _opaque_text(value.interactionClass.data),
         _decode_handle_value_map(value.parameterValues, "parameterHandleValue"),
@@ -477,11 +488,13 @@ def _callback_interaction(value: Any) -> tuple[str, ...]:
         _enum_wire_number(datatypes_pb2.RECEIVE),
         _opaque_text(value.transportationType.data),
     )
+    regions = _decode_conveyed_regions(value.optionalSentRegions)
+    return (*fields, regions) if regions else fields
 
 
 def _callback_interaction_tso(value: Any) -> tuple[str, ...]:
     time_type, time_value = _decode_logical_time(value.time)
-    return (
+    fields = (
         "INTERACTION_TSO",
         _opaque_text(value.interactionClass.data),
         _decode_handle_value_map(value.parameterValues, "parameterHandleValue"),
@@ -492,6 +505,8 @@ def _callback_interaction_tso(value: Any) -> tuple[str, ...]:
         time_value,
         _enum_wire_number(value.receivedOrderType),
     )
+    regions = _decode_conveyed_regions(value.optionalSentRegions)
+    return (*fields, regions) if regions else fields
 
 
 def _callback_remove(value: Any) -> tuple[str, ...]:

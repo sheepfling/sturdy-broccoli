@@ -95,6 +95,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.region_bounds: dict[str, dict[str, tuple[int, int]]] = {}
         self.published_interactions: set[str] = set()
         self.subscribed_interactions: set[str] = set()
+        self.subscribed_interaction_regions: dict[str, set[str]] = {}
         self.unowned_attributes: set[tuple[str, str]] = set()
         self.offered_attributes: set[tuple[str, str]] = set()
         self.pending_attribute_acquisitions: dict[tuple[str, str], bytes] = {}
@@ -240,6 +241,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "getAvailableDimensionsForObjectClassRequest":
             return rti_pb2.CallResponse(
                 getAvailableDimensionsForObjectClassResponse=rti_pb2.GetAvailableDimensionsForObjectClassResponse(
+                    result=_dimension_set(("300",))
+                )
+            )
+        if request_kind == "getAvailableDimensionsForInteractionClassRequest":
+            return rti_pb2.CallResponse(
+                getAvailableDimensionsForInteractionClassResponse=rti_pb2.GetAvailableDimensionsForInteractionClassResponse(
                     result=_dimension_set(("300",))
                 )
             )
@@ -469,6 +476,14 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             interaction_class = request.subscribeInteractionClassRequest.interactionClass.data.decode("ascii")
             self.subscribed_interactions.add(interaction_class)
             return rti_pb2.CallResponse(subscribeInteractionClassResponse=rti_pb2.SubscribeInteractionClassResponse())
+        if request_kind == "subscribeInteractionClassWithRegionsRequest":
+            payload = request.subscribeInteractionClassWithRegionsRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            self.subscribed_interactions.add(interaction_class)
+            self.subscribed_interaction_regions.setdefault(interaction_class, set()).update(
+                region.data.decode("ascii") for region in payload.regions.regionHandle
+            )
+            return rti_pb2.CallResponse(subscribeInteractionClassWithRegionsResponse=rti_pb2.SubscribeInteractionClassWithRegionsResponse())
         if request_kind in {"registerObjectInstanceRequest", "registerObjectInstanceWithNameRequest"}:
             payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
@@ -572,7 +587,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "sendInteractionRequest":
             payload = request.sendInteractionRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
-            if interaction_class in self.subscribed_interactions:
+            if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
                         receiveInteraction=callback_pb2.ReceiveInteraction(
@@ -585,11 +600,29 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
                 )
             return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+        if request_kind == "sendInteractionWithRegionsRequest":
+            payload = request.sendInteractionWithRegionsRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            source_regions = tuple(region.data.decode("ascii") for region in payload.regions.regionHandle)
+            if self._interaction_subscriber_matches(interaction_class, source_regions):
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        receiveInteraction=callback_pb2.ReceiveInteraction(
+                            interactionClass=payload.interactionClass,
+                            parameterValues=payload.parameterValues,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                            optionalSentRegions=self._conveyed_regions_from(source_regions),
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(sendInteractionWithRegionsResponse=rti_pb2.SendInteractionWithRegionsResponse())
         if request_kind == "sendInteractionWithTimeRequest":
             payload = request.sendInteractionWithTimeRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
             retraction_handle = self._next_retraction_handle()
-            if interaction_class in self.subscribed_interactions:
+            if self._interaction_subscriber_matches(interaction_class, ()):
                 self._queue_tso_callback(
                     retraction_handle,
                     payload.time,
@@ -989,6 +1022,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return True
         return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
 
+    def _interaction_subscriber_matches(self, interaction_class: str, source_regions: tuple[str, ...]) -> bool:
+        if interaction_class not in self.subscribed_interactions:
+            return False
+        target_regions = self.subscribed_interaction_regions.get(interaction_class, set())
+        if not target_regions:
+            return True
+        if not source_regions:
+            return True
+        return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
+
     def _reflectable_attribute_names(self, object_instance: str, object_class: str) -> set[str]:
         return {
             attribute
@@ -1003,6 +1046,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for item in reflected
             for region in self.object_update_regions.get(object_instance, {}).get(item.attributeHandle.data.decode("ascii"), set())
         }
+        self._fill_conveyed_regions(result, region_values)
+        return result
+
+    def _conveyed_regions_from(self, region_values: tuple[str, ...]) -> datatypes_pb2.ConveyedRegionSet:
+        result = datatypes_pb2.ConveyedRegionSet()
+        self._fill_conveyed_regions(result, set(region_values))
+        return result
+
+    def _fill_conveyed_regions(self, result: datatypes_pb2.ConveyedRegionSet, region_values: set[str]) -> None:
         for region_value in sorted(region_values):
             conveyed = result.conveyedRegions.add()
             for dimension in sorted(self.regions.get(region_value, ())):
@@ -1011,7 +1063,6 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 lower, upper = self.region_bounds.get(region_value, {}).get(dimension, (0, 1024))
                 row.rangeBounds.lower = lower
                 row.rangeBounds.upper = upper
-        return result
 
 
 class RTI2025GrpcServer:
