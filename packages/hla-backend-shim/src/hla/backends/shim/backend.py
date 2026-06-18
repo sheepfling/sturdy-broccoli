@@ -11,6 +11,8 @@ from typing import Any, Callable, Mapping
 from hla.rti.plugin_api import BackendRequest
 from hla.rti1516_2025.datatypes import (
     ConfigurationResult,
+    FederateHandleSaveStatusPair,
+    FederateRestoreStatus,
     FederationExecutionInformation,
     FederationExecutionInformationSet,
     FederationExecutionMemberInformation,
@@ -18,7 +20,17 @@ from hla.rti1516_2025.datatypes import (
     RangeBounds,
     TimeQueryReturn,
 )
-from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, OrderType, ResignAction, ServiceGroup
+from hla.rti1516_2025.enums import (
+    AdditionalSettingsResultCode,
+    CallbackModel,
+    OrderType,
+    ResignAction,
+    RestoreFailureReason,
+    RestoreStatus,
+    SaveFailureReason,
+    SaveStatus,
+    ServiceGroup,
+)
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
     AttributeAcquisitionWasNotRequested,
@@ -72,7 +84,13 @@ from hla.rti1516_2025.exceptions import (
     ObjectInstanceNameInUse,
     ObjectInstanceNotKnown,
     RegionDoesNotContainSpecifiedDimension,
+    RestoreInProgress,
+    RestoreNotInProgress,
+    RestoreNotRequested,
     RTIinternalError,
+    SaveInProgress,
+    SaveNotInitiated,
+    SaveNotInProgress,
     TimeRegulationIsNotEnabled,
     Unauthorized,
     UnsupportedCallbackModel,
@@ -136,6 +154,11 @@ class _FederationRecord:
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
     object_instance_names: dict[str, int] = field(default_factory=dict)
     interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
+    saved_labels: set[str] = field(default_factory=set)
+    save_label: str | None = None
+    save_status: dict[int, SaveStatus] = field(default_factory=dict)
+    restore_label: str | None = None
+    restore_status: dict[int, RestoreStatus] = field(default_factory=dict)
     next_object_instance_handle: int = 1
     next_region_handle: int = 1
 
@@ -399,6 +422,126 @@ class Shim2025RTIAmbassador:
     def disableCallbacks(self) -> None:  # noqa: N802
         self._record("disableCallbacks")
         self._require_connected("disableCallbacks")
+
+    def requestFederationSave(self, label: str, time: Any | None = None) -> None:  # noqa: N802
+        self._record("requestFederationSave", label, time)
+        self._require_joined("requestFederationSave")
+        federation = self._federation_record()
+        if federation.save_label is not None:
+            raise SaveInProgress("A federation save is already in progress")
+        if federation.restore_label is not None:
+            raise RestoreInProgress("A federation restore is already in progress")
+        if time is not None:
+            save_time = self._coerce_time(time)
+            if save_time < self._logical_time:
+                raise LogicalTimeAlreadyPassed(str(time))
+        else:
+            save_time = None
+        federation.save_label = str(label)
+        federation.save_status = {
+            handle.value: SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE
+            for handle in federation.member_handles.values()
+        }
+        for federate_handle in federation.member_handles.values():
+            if save_time is None:
+                self._deliver_to_federate_handle(federate_handle, "initiateFederateSave", str(label))
+            else:
+                self._deliver_to_federate_handle(federate_handle, "initiateFederateSave", str(label), save_time)
+
+    def federateSaveBegun(self) -> None:  # noqa: N802
+        self._record("federateSaveBegun")
+        self._require_joined("federateSaveBegun")
+        federation = self._federation_record()
+        if federation.save_label is None:
+            raise SaveNotInitiated("No federation save is in progress")
+        federation.save_status[self._current_federate_key()] = SaveStatus.FEDERATE_SAVING
+
+    def federateSaveComplete(self) -> None:  # noqa: N802
+        self._record("federateSaveComplete")
+        self._complete_save(success=True)
+
+    def federateSaveNotComplete(self) -> None:  # noqa: N802
+        self._record("federateSaveNotComplete")
+        self._complete_save(success=False)
+
+    def abortFederationSave(self) -> None:  # noqa: N802
+        self._record("abortFederationSave")
+        self._require_joined("abortFederationSave")
+        federation = self._federation_record()
+        if federation.save_label is None:
+            raise SaveNotInProgress("No federation save is in progress")
+        for federate_handle in federation.member_handles.values():
+            self._deliver_to_federate_handle(federate_handle, "federationNotSaved", SaveFailureReason.SAVE_ABORTED)
+        federation.save_label = None
+        federation.save_status.clear()
+
+    def queryFederationSaveStatus(self) -> None:  # noqa: N802
+        self._record("queryFederationSaveStatus")
+        self._require_joined("queryFederationSaveStatus")
+        federation = self._federation_record()
+        response = [
+            FederateHandleSaveStatusPair(
+                handle,
+                federation.save_status.get(handle.value, SaveStatus.NO_SAVE_IN_PROGRESS),
+            )
+            for handle in federation.member_handles.values()
+        ]
+        self._deliver_callback("federationSaveStatusResponse", response)
+
+    def requestFederationRestore(self, label: str) -> None:  # noqa: N802
+        self._record("requestFederationRestore", label)
+        self._require_joined("requestFederationRestore")
+        federation = self._federation_record()
+        if federation.save_label is not None:
+            raise SaveInProgress("A federation save is already in progress")
+        if federation.restore_label is not None:
+            raise RestoreInProgress("A federation restore is already in progress")
+        restore_label = str(label)
+        if restore_label not in federation.saved_labels:
+            self._deliver_callback("requestFederationRestoreFailed", restore_label)
+            return
+        federation.restore_label = restore_label
+        federation.restore_status = {
+            handle.value: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
+            for handle in federation.member_handles.values()
+        }
+        self._deliver_callback("requestFederationRestoreSucceeded", restore_label)
+        for federate_name, federate_handle in federation.member_handles.items():
+            self._deliver_to_federate_handle(federate_handle, "federationRestoreBegun")
+            self._deliver_to_federate_handle(federate_handle, "initiateFederateRestore", restore_label, federate_name, federate_handle)
+
+    def federateRestoreComplete(self) -> None:  # noqa: N802
+        self._record("federateRestoreComplete")
+        self._complete_restore(success=True)
+
+    def federateRestoreNotComplete(self) -> None:  # noqa: N802
+        self._record("federateRestoreNotComplete")
+        self._complete_restore(success=False)
+
+    def abortFederationRestore(self) -> None:  # noqa: N802
+        self._record("abortFederationRestore")
+        self._require_joined("abortFederationRestore")
+        federation = self._federation_record()
+        if federation.restore_label is None:
+            raise RestoreNotInProgress("No federation restore is in progress")
+        for federate_handle in federation.member_handles.values():
+            self._deliver_to_federate_handle(federate_handle, "federationNotRestored", RestoreFailureReason.RESTORE_ABORTED)
+        federation.restore_label = None
+        federation.restore_status.clear()
+
+    def queryFederationRestoreStatus(self) -> None:  # noqa: N802
+        self._record("queryFederationRestoreStatus")
+        self._require_joined("queryFederationRestoreStatus")
+        federation = self._federation_record()
+        response = [
+            FederateRestoreStatus(
+                handle,
+                handle,
+                federation.restore_status.get(handle.value, RestoreStatus.NO_RESTORE_IN_PROGRESS),
+            )
+            for handle in federation.member_handles.values()
+        ]
+        self._deliver_callback("federationRestoreStatusResponse", response)
 
     def enableTimeRegulation(self, lookahead: Any) -> None:  # noqa: N802
         self._record("enableTimeRegulation", lookahead)
@@ -1816,6 +1959,56 @@ class Shim2025RTIAmbassador:
         if not candidates:
             record.attribute_candidates.pop(attribute_name, None)
         return candidate
+
+    def _complete_save(self, *, success: bool) -> None:
+        self._require_joined("federateSaveComplete")
+        federation = self._federation_record()
+        if federation.save_label is None:
+            raise SaveNotInitiated("No federation save is in progress")
+        federation.save_status[self._current_federate_key()] = SaveStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE
+        if not success:
+            for federate_handle in federation.member_handles.values():
+                self._deliver_to_federate_handle(
+                    federate_handle,
+                    "federationNotSaved",
+                    SaveFailureReason.FEDERATE_REPORTED_FAILURE_DURING_SAVE,
+                )
+            federation.save_label = None
+            federation.save_status.clear()
+            return
+        if federation.save_status and all(status is SaveStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE for status in federation.save_status.values()):
+            label = federation.save_label
+            assert label is not None
+            federation.saved_labels.add(label)
+            for federate_handle in federation.member_handles.values():
+                self._deliver_to_federate_handle(federate_handle, "federationSaved")
+            federation.save_label = None
+            federation.save_status.clear()
+
+    def _complete_restore(self, *, success: bool) -> None:
+        self._require_joined("federateRestoreComplete")
+        federation = self._federation_record()
+        if federation.restore_label is None:
+            raise RestoreNotRequested("No federation restore is in progress")
+        federation.restore_status[self._current_federate_key()] = RestoreStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
+        if not success:
+            for federate_handle in federation.member_handles.values():
+                self._deliver_to_federate_handle(
+                    federate_handle,
+                    "federationNotRestored",
+                    RestoreFailureReason.FEDERATE_REPORTED_FAILURE_DURING_RESTORE,
+                )
+            federation.restore_label = None
+            federation.restore_status.clear()
+            return
+        if federation.restore_status and all(
+            status is RestoreStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
+            for status in federation.restore_status.values()
+        ):
+            for federate_handle in federation.member_handles.values():
+                self._deliver_to_federate_handle(federate_handle, "federationRestored")
+            federation.restore_label = None
+            federation.restore_status.clear()
 
     def _require_connected(self, method_name: str) -> None:
         if not self._connected:

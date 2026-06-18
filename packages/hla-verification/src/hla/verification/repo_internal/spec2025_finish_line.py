@@ -66,6 +66,21 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-save-restore-lifecycle",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports federation save/restore lifecycle callbacks, status responses, "
+            "successful federationSaved/federationRestored completion, missing-label restore failure, "
+            "federate-reported save/restore failure, and save/restore abort callbacks. Deep object/time "
+            "state rollback remains later parity work."
+        ),
+    },
+    {
         "id": "2025-fom-showcase",
         "status": "implemented-slice",
         "requirements": ("HLA2025-FR-001", "HLA2025-FR-003", "HLA2025-FR-004"),

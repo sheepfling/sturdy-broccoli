@@ -24,6 +24,40 @@ class Recording2025FederateAmbassador:
     def federateResigned(self, reasonForResignDescription) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("federateResigned", (reasonForResignDescription,)))
 
+    def initiateFederateSave(self, label, time=None) -> None:  # noqa: N802, ANN001
+        args = (label,) if time is None else (label, time)
+        self.callbacks.append(("initiateFederateSave", args))
+
+    def federationSaved(self) -> None:  # noqa: N802
+        self.callbacks.append(("federationSaved", ()))
+
+    def federationNotSaved(self, reason) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("federationNotSaved", (reason,)))
+
+    def federationSaveStatusResponse(self, response) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("federationSaveStatusResponse", (response,)))
+
+    def requestFederationRestoreSucceeded(self, label) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("requestFederationRestoreSucceeded", (label,)))
+
+    def requestFederationRestoreFailed(self, label) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("requestFederationRestoreFailed", (label,)))
+
+    def federationRestoreBegun(self) -> None:  # noqa: N802
+        self.callbacks.append(("federationRestoreBegun", ()))
+
+    def initiateFederateRestore(self, label, federateName, postRestoreFederateHandle) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("initiateFederateRestore", (label, federateName, postRestoreFederateHandle)))
+
+    def federationRestored(self) -> None:  # noqa: N802
+        self.callbacks.append(("federationRestored", ()))
+
+    def federationNotRestored(self, reason) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("federationNotRestored", (reason,)))
+
+    def federationRestoreStatusResponse(self, response) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("federationRestoreStatusResponse", (response,)))
+
     def timeRegulationEnabled(self, time) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("timeRegulationEnabled", (time,)))
 
@@ -484,6 +518,127 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
 
     rti.disconnect()
     assert rti.connected is False
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002")
+def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
+    from hla.rti1516_2025.exceptions import RestoreNotRequested, SaveInProgress, SaveNotInitiated
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "SaveRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Save Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused save/restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>SavedTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-save-restore-{uuid.uuid4().hex[:8]}"
+    leader_callbacks = Recording2025FederateAmbassador()
+    wing_callbacks = Recording2025FederateAmbassador()
+    leader = create_rti_ambassador(backend="shim")
+    wing = create_rti_ambassador(backend="shim")
+
+    leader.connect(leader_callbacks, CallbackModel.HLA_EVOKED)
+    wing.connect(wing_callbacks, CallbackModel.HLA_EVOKED)
+    leader.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    leader_handle = leader.joinFederationExecution("Leader", "TestFederate", federation_name)
+    wing_handle = wing.joinFederationExecution("Wing", "TestFederate", federation_name)
+
+    with pytest.raises(SaveNotInitiated):
+        leader.federateSaveComplete()
+    leader.requestFederationSave("SAVE-1")
+    assert leader_callbacks.last_callback("initiateFederateSave") == ("SAVE-1",)
+    assert wing_callbacks.last_callback("initiateFederateSave") == ("SAVE-1",)
+    with pytest.raises(SaveInProgress):
+        wing.requestFederationSave("SAVE-2")
+    leader.federateSaveBegun()
+    leader.queryFederationSaveStatus()
+    save_status = {pair.handle: pair.status for pair in leader_callbacks.last_callback("federationSaveStatusResponse")[0]}
+    assert save_status[leader_handle] is SaveStatus.FEDERATE_SAVING
+    assert save_status[wing_handle] is SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE
+    wing.federateSaveBegun()
+    leader.federateSaveComplete()
+    assert leader_callbacks.last_callback("federationSaved") is None
+    wing.federateSaveComplete()
+    assert leader_callbacks.last_callback("federationSaved") == ()
+    assert wing_callbacks.last_callback("federationSaved") == ()
+    leader.queryFederationSaveStatus()
+    save_status = {pair.handle: pair.status for pair in leader_callbacks.last_callback("federationSaveStatusResponse")[0]}
+    assert save_status == {
+        leader_handle: SaveStatus.NO_SAVE_IN_PROGRESS,
+        wing_handle: SaveStatus.NO_SAVE_IN_PROGRESS,
+    }
+
+    leader.requestFederationRestore("MISSING-SAVE")
+    assert leader_callbacks.last_callback("requestFederationRestoreFailed") == ("MISSING-SAVE",)
+    leader.requestFederationRestore("SAVE-1")
+    assert leader_callbacks.last_callback("requestFederationRestoreSucceeded") == ("SAVE-1",)
+    assert leader_callbacks.last_callback("federationRestoreBegun") == ()
+    assert wing_callbacks.last_callback("initiateFederateRestore") == ("SAVE-1", "Wing", wing_handle)
+    leader.queryFederationRestoreStatus()
+    restore_status = {pair.preRestoreHandle: pair.status for pair in leader_callbacks.last_callback("federationRestoreStatusResponse")[0]}
+    assert restore_status[leader_handle] is RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
+    assert restore_status[wing_handle] is RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
+    leader.federateRestoreComplete()
+    assert leader_callbacks.last_callback("federationRestored") is None
+    wing.federateRestoreComplete()
+    assert leader_callbacks.last_callback("federationRestored") == ()
+    assert wing_callbacks.last_callback("federationRestored") == ()
+    with pytest.raises(RestoreNotRequested):
+        leader.federateRestoreComplete()
+
+    leader.requestFederationSave("SAVE-FAIL")
+    leader.federateSaveBegun()
+    wing.federateSaveBegun()
+    leader.federateSaveComplete()
+    wing.federateSaveNotComplete()
+    assert leader_callbacks.last_callback("federationNotSaved") == (SaveFailureReason.FEDERATE_REPORTED_FAILURE_DURING_SAVE,)
+
+    leader.requestFederationSave("SAVE-ABORT")
+    leader.abortFederationSave()
+    assert wing_callbacks.last_callback("federationNotSaved") == (SaveFailureReason.SAVE_ABORTED,)
+
+    leader.requestFederationRestore("SAVE-1")
+    leader.abortFederationRestore()
+    assert wing_callbacks.last_callback("federationNotRestored") == (RestoreFailureReason.RESTORE_ABORTED,)
+
+    wing.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.destroyFederationExecution(federationName=federation_name)
+    leader.disconnect()
+    wing.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-NEW-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")

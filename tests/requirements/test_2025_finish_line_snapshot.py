@@ -83,6 +83,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert slices["2025-logical-time"]["status"] == "implemented-slice"
     assert "flushQueueRequest" in slices["2025-logical-time"]["supported_scope"]
     assert "cross-binding parity" in slices["2025-logical-time"]["supported_scope"]
+    assert slices["2025-save-restore-lifecycle"]["status"] == "implemented-slice"
+    assert "federation save/restore lifecycle callbacks" in slices["2025-save-restore-lifecycle"]["supported_scope"]
+    assert "Deep object/time state rollback remains later parity work" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert slices["2025-switch-inquiry-control"]["status"] == "implemented-slice"
     assert "HLA2025-RET-001" in slices["2025-switch-inquiry-control"]["requirements"]
     assert slices["2025-fom-mim-error-taxonomy"]["status"] == "implemented-slice"
