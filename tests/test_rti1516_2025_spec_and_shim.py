@@ -2283,6 +2283,128 @@ def test_2025_shim_reports_mom_federate_publication_subscription_and_object_info
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_reports_mom_federate_activity_counts() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-activity-{uuid.uuid4().hex[:8]}"
+    observer_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomActivityController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomActivityTarget", "TestFederate", federation_name)
+    observer_handle = observer.joinFederationExecution("MomActivityObserver", "TestFederate", federation_name)
+
+    object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = target.getAttributeHandle(object_class, "Position")
+    interaction_class = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    target.publishObjectClassAttributes(object_class, {attribute})
+    observer.subscribeObjectClassAttributes(object_class, {attribute})
+    target.publishInteractionClass(interaction_class)
+    observer.subscribeInteractionClass(interaction_class)
+
+    object_instance = target.registerObjectInstance(object_class, "MOM-Activity-Target")
+    target.updateAttributeValues(object_instance, {attribute: b"1,2,3"}, b"mom-activity-update")
+    target.sendInteraction(interaction_class, {}, b"mom-activity-interaction")
+    assert observer_callbacks.last_callback("reflectAttributeValues") is not None
+    assert observer_callbacks.last_callback("receiveInteraction") is not None
+
+    report_names = (
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+    )
+    for report_name in report_names:
+        observer.subscribeInteractionClass(observer.getInteractionClassHandle(report_name))
+
+    def send_request(target_federate, name: str) -> None:  # noqa: ANN001
+        request = controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.{name}")
+        controller.sendInteraction(
+            request,
+            {controller.getParameterHandle(request, "HLAfederate"): str(target_federate.value).encode("ascii")},
+            f"mom-{name}".encode("ascii"),
+        )
+
+    def last_report(report_name: str):  # noqa: ANN202
+        for callback_name, args in reversed(observer_callbacks.callbacks):
+            if callback_name == "receiveInteraction" and observer.getInteractionClassName(args[0]) == report_name:
+                return args
+        return None
+
+    def count_payload(report, parameter_name: str) -> dict[int, int]:  # noqa: ANN001
+        payload = report[1][observer.getParameterHandle(report[0], parameter_name)]
+        result: dict[int, int] = {}
+        for item in payload.decode("ascii").split(","):
+            if not item:
+                continue
+            handle, count = item.split(":", 1)
+            result[int(handle)] = int(count)
+        return result
+
+    send_request(target_handle, "HLArequestObjectInstancesThatCanBeDeleted")
+    deletable = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted"
+    )
+    assert deletable is not None
+    assert count_payload(deletable, "HLAobjectInstanceCounts") == {object_class.value: 1}
+
+    send_request(target_handle, "HLArequestObjectInstancesUpdated")
+    updated = last_report("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated")
+    assert updated is not None
+    assert count_payload(updated, "HLAobjectInstanceCounts") == {object_class.value: 1}
+
+    send_request(observer_handle, "HLArequestObjectInstancesReflected")
+    reflected = last_report("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected")
+    assert reflected is not None
+    assert count_payload(reflected, "HLAobjectInstanceCounts") == {object_class.value: 1}
+
+    send_request(target_handle, "HLArequestUpdatesSent")
+    updates_sent = last_report("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent")
+    assert updates_sent is not None
+    assert updates_sent[1][observer.getParameterHandle(updates_sent[0], "HLAtransportation")] == b"HLAreliable"
+    assert count_payload(updates_sent, "HLAupdateCounts") == {object_class.value: 1}
+
+    send_request(observer_handle, "HLArequestReflectionsReceived")
+    reflections_received = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived"
+    )
+    assert reflections_received is not None
+    assert count_payload(reflections_received, "HLAreflectCounts") == {object_class.value: 1}
+
+    send_request(target_handle, "HLArequestInteractionsSent")
+    interactions_sent = last_report("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent")
+    assert interactions_sent is not None
+    assert count_payload(interactions_sent, "HLAinteractionCounts") == {interaction_class.value: 1}
+
+    send_request(observer_handle, "HLArequestInteractionsReceived")
+    interactions_received = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived"
+    )
+    assert interactions_received is not None
+    assert count_payload(interactions_received, "HLAinteractionCounts") == {interaction_class.value: 1}
+
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_routes_mom_declaration_service_interactions() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

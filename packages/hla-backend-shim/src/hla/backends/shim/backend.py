@@ -160,6 +160,12 @@ class _FederationRecord:
     member_region_bounds: dict[int, dict[int, dict[str, RangeBounds]]] = field(default_factory=dict)
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
     object_instance_names: dict[str, int] = field(default_factory=dict)
+    mom_object_instances_updated: dict[tuple[int, str], int] = field(default_factory=dict)
+    mom_object_instances_reflected: dict[tuple[int, str], int] = field(default_factory=dict)
+    mom_updates_sent: dict[tuple[int, str, str], int] = field(default_factory=dict)
+    mom_reflections_received: dict[tuple[int, str, str], int] = field(default_factory=dict)
+    mom_interactions_sent: dict[tuple[int, str, str], int] = field(default_factory=dict)
+    mom_interactions_received: dict[tuple[int, str, str], int] = field(default_factory=dict)
     attribute_scope_state: dict[tuple[int, int, str], bool] = field(default_factory=dict)
     interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
     queued_tso_callbacks: dict[int, "_QueuedTsoCallback"] = field(default_factory=dict)
@@ -1310,7 +1316,13 @@ class Shim2025RTIAmbassador:
         transportation = self._default_transportation_for(object_class_name, values_by_handle)
         callback_time = self._coerce_time(time) if time is not None else None
         retraction_handles: list[MessageRetractionHandle] = []
-        for federate_key, subscriptions in self._federation_record().subscribed_object_attributes.items():
+        federation = self._federation_record()
+        self._increment_mom_count(federation.mom_object_instances_updated, (self._current_federate_key(), object_class_name))
+        self._increment_mom_count(
+            federation.mom_updates_sent,
+            (self._current_federate_key(), object_class_name, self.getTransportationTypeName(transportation)),
+        )
+        for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             if federate_key == self._current_federate_key():
                 continue
             subscribed_names = self._reflectable_attribute_names_for_subscriber(
@@ -1326,6 +1338,11 @@ class Shim2025RTIAmbassador:
             }
             if not reflected:
                 continue
+            self._increment_mom_count(federation.mom_object_instances_reflected, (federate_key, object_class_name))
+            self._increment_mom_count(
+                federation.mom_reflections_received,
+                (federate_key, object_class_name, self.getTransportationTypeName(transportation)),
+            )
             sent_regions = {
                 RegionHandle(region_value)
                 for handle in reflected
@@ -1390,9 +1407,18 @@ class Shim2025RTIAmbassador:
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
         retraction_handles: list[MessageRetractionHandle] = []
-        for federate_key, subscriptions in self._federation_record().subscribed_interactions.items():
+        federation = self._federation_record()
+        self._increment_mom_count(
+            federation.mom_interactions_sent,
+            (self._current_federate_key(), interaction_class_name, self.getTransportationTypeName(transportation)),
+        )
+        for federate_key, subscriptions in federation.subscribed_interactions.items():
             if federate_key == self._current_federate_key() or interaction_class_name not in subscriptions:
                 continue
+            self._increment_mom_count(
+                federation.mom_interactions_received,
+                (federate_key, interaction_class_name, self.getTransportationTypeName(transportation)),
+            )
             if callback_time is not None:
                 retraction_handles.append(
                     self._queue_tso_callback(
@@ -1451,7 +1477,12 @@ class Shim2025RTIAmbassador:
             values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
-        for federate_key, subscriptions in self._federation_record().subscribed_interactions.items():
+        federation = self._federation_record()
+        self._increment_mom_count(
+            federation.mom_interactions_sent,
+            (self._current_federate_key(), interaction_class_name, self.getTransportationTypeName(transportation)),
+        )
+        for federate_key, subscriptions in federation.subscribed_interactions.items():
             if federate_key == self._current_federate_key() or interaction_class_name not in subscriptions:
                 continue
             target_regions = self._federation_record().subscribed_interaction_regions.get(federate_key, {}).get(
@@ -1460,6 +1491,10 @@ class Shim2025RTIAmbassador:
             )
             if target_regions and not self._region_sets_overlap(self._current_federate_key(), source_regions, federate_key, target_regions):
                 continue
+            self._increment_mom_count(
+                federation.mom_interactions_received,
+                (federate_key, interaction_class_name, self.getTransportationTypeName(transportation)),
+            )
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "receiveInteraction",
@@ -1505,11 +1540,20 @@ class Shim2025RTIAmbassador:
 
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
-        for federate_key, subscriptions in self._federation_record().subscribed_directed_interactions.items():
+        federation = self._federation_record()
+        self._increment_mom_count(
+            federation.mom_interactions_sent,
+            (self._current_federate_key(), interaction_class_name, self.getTransportationTypeName(transportation)),
+        )
+        for federate_key, subscriptions in federation.subscribed_directed_interactions.items():
             if federate_key == self._current_federate_key():
                 continue
             if interaction_class_name not in subscriptions.get(object_class_name, set()):
                 continue
+            self._increment_mom_count(
+                federation.mom_interactions_received,
+                (federate_key, interaction_class_name, self.getTransportationTypeName(transportation)),
+            )
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "receiveDirectedInteraction",
@@ -2856,6 +2900,62 @@ class Shim2025RTIAmbassador:
             object_instance = ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance"))
             target._send_mom_object_instance_information_report(target_federate, object_instance)
             return True
+        if interaction_class_name.endswith("HLArequestObjectInstancesThatCanBeDeleted"):
+            target._send_mom_object_class_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+                target_federate,
+                target._mom_deletable_object_counts(target_federate),
+                "HLAobjectInstanceCounts",
+            )
+            return True
+        if interaction_class_name.endswith("HLArequestObjectInstancesUpdated"):
+            target._send_mom_object_class_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+                target_federate,
+                target._mom_counts_for_federate(target._federation_record().mom_object_instances_updated, target_federate),
+                "HLAobjectInstanceCounts",
+            )
+            return True
+        if interaction_class_name.endswith("HLArequestObjectInstancesReflected"):
+            target._send_mom_object_class_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+                target_federate,
+                target._mom_counts_for_federate(target._federation_record().mom_object_instances_reflected, target_federate),
+                "HLAobjectInstanceCounts",
+            )
+            return True
+        if interaction_class_name.endswith("HLArequestUpdatesSent"):
+            target._send_mom_transport_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+                target_federate,
+                target._mom_transport_counts_for_federate(target._federation_record().mom_updates_sent, target_federate),
+                "HLAupdateCounts",
+            )
+            return True
+        if interaction_class_name.endswith("HLArequestReflectionsReceived"):
+            target._send_mom_transport_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+                target_federate,
+                target._mom_transport_counts_for_federate(target._federation_record().mom_reflections_received, target_federate),
+                "HLAreflectCounts",
+            )
+            return True
+        if interaction_class_name.endswith("HLArequestInteractionsSent"):
+            target._send_mom_transport_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+                target_federate,
+                target._mom_transport_counts_for_federate(target._federation_record().mom_interactions_sent, target_federate),
+                "HLAinteractionCounts",
+            )
+            return True
+        if interaction_class_name.endswith("HLArequestInteractionsReceived"):
+            target._send_mom_transport_count_report(
+                "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+                target_federate,
+                target._mom_transport_counts_for_federate(target._federation_record().mom_interactions_received, target_federate),
+                "HLAinteractionCounts",
+            )
+            return True
         return False
 
     def _send_mom_publication_reports(self, target_federate: FederateHandle) -> None:
@@ -2956,6 +3056,67 @@ class Shim2025RTIAmbassador:
                 "HLAknownClass": str(object_class_handle).encode("ascii"),
             },
         )
+
+    def _send_mom_object_class_count_report(
+        self,
+        report_name: str,
+        target_federate: FederateHandle,
+        counts_by_class: Mapping[str, int],
+        count_parameter_name: str,
+    ) -> None:
+        self._send_mom_report_interaction(
+            report_name,
+            {
+                "HLAfederate": str(target_federate.value).encode("ascii"),
+                count_parameter_name: self._mom_object_class_counts_payload(counts_by_class),
+            },
+        )
+
+    def _send_mom_transport_count_report(
+        self,
+        report_name: str,
+        target_federate: FederateHandle,
+        counts_by_transport: Mapping[str, Mapping[str, int]],
+        count_parameter_name: str,
+    ) -> None:
+        if not counts_by_transport:
+            counts_by_transport = {"HLAreliable": {}}
+        for transportation_name, counts_by_name in sorted(counts_by_transport.items()):
+            self._send_mom_report_interaction(
+                report_name,
+                {
+                    "HLAfederate": str(target_federate.value).encode("ascii"),
+                    "HLAtransportation": transportation_name.encode("ascii"),
+                    count_parameter_name: self._mom_object_class_counts_payload(counts_by_name),
+                },
+            )
+
+    def _mom_deletable_object_counts(self, target_federate: FederateHandle) -> dict[str, int]:
+        counts: dict[str, int] = {}
+        for record in self._federation_record().object_instances.values():
+            if target_federate not in set(record.attribute_owners.values()):
+                continue
+            counts[record.object_class_name] = counts.get(record.object_class_name, 0) + 1
+        return counts
+
+    @staticmethod
+    def _mom_counts_for_federate(counts: Mapping[tuple[int, str], int], target_federate: FederateHandle) -> dict[str, int]:
+        result: dict[str, int] = {}
+        for (federate_key, class_name), count in counts.items():
+            if federate_key == target_federate.value:
+                result[class_name] = count
+        return result
+
+    @staticmethod
+    def _mom_transport_counts_for_federate(
+        counts: Mapping[tuple[int, str, str], int],
+        target_federate: FederateHandle,
+    ) -> dict[str, dict[str, int]]:
+        result: dict[str, dict[str, int]] = {}
+        for (federate_key, class_name, transportation_name), count in counts.items():
+            if federate_key == target_federate.value:
+                result.setdefault(transportation_name, {})[class_name] = count
+        return result
 
     def _handle_mom_service_interaction(
         self,
@@ -3238,6 +3399,20 @@ class Shim2025RTIAmbassador:
     @staticmethod
     def _mom_handle_list_payload(values: Iterable[int]) -> bytes:
         return ",".join(str(value) for value in values).encode("ascii")
+
+    @staticmethod
+    def _increment_mom_count(counts: dict[Any, int], key: Any) -> None:
+        counts[key] = counts.get(key, 0) + 1
+
+    def _mom_object_class_counts_payload(self, counts_by_class: Mapping[str, int]) -> bytes:
+        handle_pairs: list[tuple[int, int]] = []
+        object_class_handles = self._object_class_handles()
+        interaction_class_handles = self._interaction_class_handles()
+        for class_name, count in counts_by_class.items():
+            handle = object_class_handles.get(class_name, interaction_class_handles.get(class_name))
+            if handle is not None:
+                handle_pairs.append((handle, count))
+        return ",".join(f"{handle}:{count}" for handle, count in sorted(handle_pairs)).encode("ascii")
 
     @staticmethod
     def _mom_ownership_state(value: bytes | None, field_name: str) -> str:
