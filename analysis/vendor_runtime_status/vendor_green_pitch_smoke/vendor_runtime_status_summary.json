@@ -31,17 +31,17 @@
       "note": "vendor runtime prerequisites are ready",
       "present": true,
       "required_markers": {
-        "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+        "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
       },
       "required_ports": {
         "crc": {
-          "detail": "ok: 127.0.0.1:8989 is available",
+          "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
           "host": "127.0.0.1",
           "port": 8989,
           "status": "ok"
         },
         "fedpro": {
-          "detail": "ok: 127.0.0.1:15164 is available",
+          "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
           "host": "127.0.0.1",
           "port": 15164,
           "status": "ok"

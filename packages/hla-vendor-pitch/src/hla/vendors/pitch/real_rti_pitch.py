@@ -416,6 +416,23 @@ def _launcher_mode_attempts(explicit_mode: str | None, env: dict[str, str]) -> t
     return modes or ("raw",)
 
 
+class _AttachedRuntimeProcess:
+    returncode = None
+
+    def poll(self) -> int | None:
+        return self.returncode
+
+    def terminate(self) -> None:
+        self.returncode = 0
+
+    def wait(self, timeout: float | None = None) -> int:
+        self.returncode = 0
+        return self.returncode
+
+    def kill(self) -> None:
+        self.returncode = -9
+
+
 def launch_pitch_py4j_gateway(
     *,
     pitch_home: str | os.PathLike[str] | None = None,
@@ -488,6 +505,20 @@ def launch_pitch_runtime(
 
         _wait_for_process_boot = _wait_for_process_boot or _default_wait_for_process_boot
         _wait_for_tcp_listener = _wait_for_tcp_listener or _default_wait_for_tcp_listener
+
+    if selected_crc_mode == "docker" and env.get("HLA2010_PITCH_DOCKER_ATTACH_EXISTING") == "1":
+        _wait_for_tcp_listener("127.0.0.1", fedpro_port, timeout=fedpro_listener_timeout)
+        _wait_for_tcp_listener("127.0.0.1", crc_port, timeout=crc_listener_timeout)
+        attached_env = dict(env)
+        attached_env["HLA2010_PITCH_HOME"] = str(runtime.home)
+        attached_env["HLA2010_PITCH_CRC_MODE"] = selected_crc_mode
+        attached_env["HLA2010_PITCH_CRC_PORT"] = str(crc_port)
+        attached_env["HLA2010_PITCH_FEDPRO_PORT"] = str(fedpro_port)
+        return RuntimeProcess(
+            name="pitch-docker-attached",
+            process=_AttachedRuntimeProcess(),  # type: ignore[arg-type]
+            env=attached_env,
+        )
 
     last_exc: BaseException | None = None
     diagnostics: list[str] = []

@@ -238,6 +238,45 @@ def test_launch_pitch_runtime_honors_docker_crc_mode_env(tmp_path, monkeypatch):
     assert runtime.name == "pitch-docker"
 
 
+def test_launch_pitch_runtime_can_attach_existing_docker_crc(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_CRC_MODE", "docker")
+    monkeypatch.setenv("HLA2010_PITCH_DOCKER_ATTACH_EXISTING", "1")
+    monkeypatch.setenv("HLA2010_PITCH_CRC_PORT", "59103")
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_PORT", "59104")
+    popen_calls: list[object] = []
+    listener_calls: list[tuple[str, int, float]] = []
+
+    def fake_popen(*args, **kwargs):
+        popen_calls.append((args, kwargs))
+        raise AssertionError("attach-existing Pitch Docker mode must not spawn a CRC process")
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        listener_calls.append((host, port, timeout))
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
+
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=lambda *args, **kwargs: None,
+        _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+    )
+    runtime.terminate()
+
+    assert runtime.name == "pitch-docker-attached"
+    assert popen_calls == []
+    assert ("127.0.0.1", 59104, 20.0) in listener_calls
+    assert ("127.0.0.1", 59103, 45.0) in listener_calls
+    assert runtime.env["HLA2010_PITCH_CRC_PORT"] == "59103"
+    assert runtime.env["HLA2010_PITCH_FEDPRO_PORT"] == "59104"
+    assert runtime.poll() == 0
+
+
 def test_launch_pitch_runtime_honors_listener_and_boot_timeout_env(tmp_path, monkeypatch):
     home = tmp_path / "pitch-install"
     (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)

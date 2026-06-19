@@ -12,7 +12,7 @@
 | pitch | ready | ready | 0 |  | /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json | vendor runtime prerequisites are ready |
 
 Required markers for `pitch`:
-- `runtime_home`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
+- `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch`:
 - `crc`: `127.0.0.1:8989` [ok]
