@@ -5,6 +5,7 @@ from __future__ import annotations
 from concurrent import futures
 from copy import deepcopy
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
 from hla.transports.grpc.fedpro2025 import HLA2025RTITransport_pb2_grpc as pb2_grpc
@@ -64,6 +65,7 @@ class _FederationSnapshot:
     handle_time_regulating: dict[str, bool] = field(default_factory=dict)
     handle_time_constrained: dict[str, bool] = field(default_factory=dict)
     handle_asynchronous_delivery_enabled: dict[str, bool] = field(default_factory=dict)
+    handle_pending_time_advance: dict[str, tuple[str, datatypes_pb2.LogicalTime]] = field(default_factory=dict)
     callback_delivery_enabled: bool = True
     peer_callback_delivery_enabled: dict[str, bool] = field(default_factory=dict)
     directed_interaction_region_gates: set[str] = field(default_factory=set)
@@ -75,7 +77,7 @@ class _FederationSnapshot:
 
 
 def _callback_request() -> callback_pb2.CallbackRequest:
-    return callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:7")))
+    return callback_pb2.CallbackRequest()
 
 
 def _logical_time_value(time: datatypes_pb2.LogicalTime) -> float:
@@ -365,6 +367,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.handle_time_regulating: dict[str, bool] = {}
         self.handle_time_constrained: dict[str, bool] = {}
         self.handle_asynchronous_delivery_enabled: dict[str, bool] = {}
+        self.handle_pending_time_advance: dict[str, tuple[str, datatypes_pb2.LogicalTime]] = {}
         self.callback_delivery_enabled = True
         self.peer_callback_delivery_enabled: dict[str, bool] = {}
         self.peer_federate_handles: dict[str, str] = {}
@@ -1579,6 +1582,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "updateAttributeValuesWithTimeRequest":
             payload = request.updateAttributeValuesWithTimeRequest
             source_handle = self._current_federate_handle(peer)
+            if not self._validate_tso_send_time(source_handle, payload.time):
+                return self._error("InvalidLogicalTime", "Timestamp is earlier than the logical-time/lookahead lower bound")
             self.updates_sent += 1
             self.object_instances_updated += 1
             self._increment_counter(self.handle_updates_sent, source_handle)
@@ -1953,6 +1958,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             interaction_class = payload.interactionClass.data.decode("ascii")
             if interaction_class not in self.published_interactions:
                 return self._error("InteractionClassNotPublished", interaction_class)
+            source_handle = self._current_federate_handle(peer)
+            if not self._validate_tso_send_time(source_handle, payload.time):
+                return self._error("InvalidLogicalTime", "Timestamp is earlier than the logical-time/lookahead lower bound")
             retraction_handle = self._next_retraction_handle()
             target_handles = self._interaction_target_handles(interaction_class, ())
             for target_handle in sorted(target_handles, key=int):
@@ -2347,6 +2355,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 ),
                 target_peers={peer},
             )
+            self._process_time_advances()
             return rti_pb2.CallResponse(enableTimeRegulationResponse=rti_pb2.EnableTimeRegulationResponse())
         if request_kind == "enableTimeConstrainedRequest":
             handle = self._current_federate_handle(peer)
@@ -2360,16 +2369,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 ),
                 target_peers={peer},
             )
+            self._process_time_advances()
             return rti_pb2.CallResponse(enableTimeConstrainedResponse=rti_pb2.EnableTimeConstrainedResponse())
         if request_kind == "disableTimeRegulationRequest":
             handle = self._current_federate_handle(peer)
             self.handle_time_regulating[handle] = False
             self._sync_time_globals(handle)
+            self._process_time_advances()
             return rti_pb2.CallResponse(disableTimeRegulationResponse=rti_pb2.DisableTimeRegulationResponse())
         if request_kind == "disableTimeConstrainedRequest":
             handle = self._current_federate_handle(peer)
             self.handle_time_constrained[handle] = False
             self._sync_time_globals(handle)
+            self._process_time_advances()
             return rti_pb2.CallResponse(disableTimeConstrainedResponse=rti_pb2.DisableTimeConstrainedResponse())
         if request_kind == "enableAsynchronousDeliveryRequest":
             handle = self._current_federate_handle(peer)
@@ -2382,19 +2394,27 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self._sync_time_globals(handle)
             return rti_pb2.CallResponse(disableAsynchronousDeliveryResponse=rti_pb2.DisableAsynchronousDeliveryResponse())
         if request_kind == "timeAdvanceRequestRequest":
-            self._grant_time(self._current_federate_handle(peer), request.timeAdvanceRequestRequest.time)
+            self._request_time_advance(self._current_federate_handle(peer), "timeAdvanceRequest", request.timeAdvanceRequestRequest.time)
             return rti_pb2.CallResponse(timeAdvanceRequestResponse=rti_pb2.TimeAdvanceRequestResponse())
         if request_kind == "timeAdvanceRequestAvailableRequest":
-            self._grant_time(self._current_federate_handle(peer), request.timeAdvanceRequestAvailableRequest.time)
+            self._request_time_advance(
+                self._current_federate_handle(peer),
+                "timeAdvanceRequestAvailable",
+                request.timeAdvanceRequestAvailableRequest.time,
+            )
             return rti_pb2.CallResponse(timeAdvanceRequestAvailableResponse=rti_pb2.TimeAdvanceRequestAvailableResponse())
         if request_kind == "nextMessageRequestRequest":
-            self._grant_time(self._current_federate_handle(peer), request.nextMessageRequestRequest.time)
+            self._request_time_advance(self._current_federate_handle(peer), "nextMessageRequest", request.nextMessageRequestRequest.time)
             return rti_pb2.CallResponse(nextMessageRequestResponse=rti_pb2.NextMessageRequestResponse())
         if request_kind == "nextMessageRequestAvailableRequest":
-            self._grant_time(self._current_federate_handle(peer), request.nextMessageRequestAvailableRequest.time)
+            self._request_time_advance(
+                self._current_federate_handle(peer),
+                "nextMessageRequestAvailable",
+                request.nextMessageRequestAvailableRequest.time,
+            )
             return rti_pb2.CallResponse(nextMessageRequestAvailableResponse=rti_pb2.NextMessageRequestAvailableResponse())
         if request_kind == "flushQueueRequestRequest":
-            self._grant_time(self._current_federate_handle(peer), request.flushQueueRequestRequest.time, flush_queue=True)
+            self._request_time_advance(self._current_federate_handle(peer), "flushQueueRequest", request.flushQueueRequestRequest.time)
             return rti_pb2.CallResponse(flushQueueRequestResponse=rti_pb2.FlushQueueRequestResponse())
         if request_kind == "queryLogicalTimeRequest":
             return rti_pb2.CallResponse(
@@ -2672,11 +2692,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 ),
                 target_handles={target_handle},
             )
+            self._process_time_advances()
             return
         if leaf == "HLAdisableTimeRegulation":
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
             self.handle_time_regulating[target_handle] = False
             self._sync_time_globals(target_handle)
+            self._process_time_advances()
             return
         if leaf == "HLAenableTimeConstrained":
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
@@ -2688,11 +2710,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 ),
                 target_handles={target_handle},
             )
+            self._process_time_advances()
             return
         if leaf == "HLAdisableTimeConstrained":
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
             self.handle_time_constrained[target_handle] = False
             self._sync_time_globals(target_handle)
+            self._process_time_advances()
             return
         if leaf == "HLAenableAsynchronousDelivery":
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
@@ -2711,15 +2735,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAnextMessageRequestAvailable",
         }:
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
-            self._grant_time(target_handle, self._mom_time(params))
+            self._request_time_advance(target_handle, leaf.removeprefix("HLA"), self._mom_time(params))
             return
         if leaf == "HLAflushQueueRequest":
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
-            self._grant_time(target_handle, self._mom_time(params), flush_queue=True)
+            self._request_time_advance(target_handle, "flushQueueRequest", self._mom_time(params))
             return
         if leaf == "HLAmodifyLookahead":
             target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
             self._set_handle_lookahead(target_handle, self._mom_interval(params))
+            self._process_time_advances()
 
     @classmethod
     def _mom_order(cls, params: dict[str, bytes]) -> int:
@@ -3223,6 +3248,93 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.queued_tso_callbacks[retraction_handle] = (queued_time, callbacks)
         if target_handles is not None:
             self.callback_targets[id(callback)] = (None, frozenset(target_handles))
+        self._process_time_advances()
+
+    def _request_time_advance(self, handle: str, mode: str, time: datatypes_pb2.LogicalTime) -> None:
+        if _logical_time_value(time) < _logical_time_value(self._handle_current_time(handle)):
+            raise ValueError("requested time is earlier than current logical time")
+        self.handle_pending_time_advance[handle] = (mode, datatypes_pb2.LogicalTime(data=time.data))
+        self._process_time_advances()
+
+    def _process_time_advances(self) -> None:
+        progressed = True
+        while progressed:
+            progressed = False
+            for handle in self._joined_handle_values():
+                if self._try_grant_pending_time_advance(handle):
+                    progressed = True
+
+    def _try_grant_pending_time_advance(self, handle: str) -> bool:
+        request = self._handle_pending_request(handle)
+        if request is None:
+            return False
+        mode, requested_time = request
+        requested_value = _logical_time_value(requested_time)
+        current_value = _logical_time_value(self._handle_current_time(handle))
+        if requested_value < current_value:
+            self.handle_pending_time_advance.pop(handle, None)
+            return False
+
+        queued = [
+            (time_value, int(retraction_handle), retraction_handle)
+            for retraction_handle, (time_value, callbacks) in self.queued_tso_callbacks.items()
+            if any(
+                (target_handles is None or handle in target_handles)
+                for callback in callbacks
+                for _peers, target_handles in [self.callback_targets.get(id(callback), (None, None))]
+            )
+        ]
+        queued.sort()
+        queued_through_requested = [row for row in queued if row[0] <= requested_value]
+        queued_before_requested = [row for row in queued if row[0] < requested_value]
+
+        grant_time: datatypes_pb2.LogicalTime | None = None
+        deliver_through: datatypes_pb2.LogicalTime | None = None
+        optimistic_time: datatypes_pb2.LogicalTime | None = None
+        gilt = self._query_galt(handle)
+        galt_value = _logical_time_value(gilt.logicalTime) if gilt.logicalTimeIsValid else None
+        constrained = self.handle_time_constrained.get(handle, False)
+
+        if mode == "flushQueueRequest":
+            candidates = [requested_value]
+            if queued_through_requested:
+                candidates.append(queued_through_requested[0][0])
+            if constrained and galt_value is not None:
+                candidates.append(galt_value)
+            grant_time = self._logical_time_from_value(min(candidates))
+            deliver_through = grant_time
+            optimistic_time = self._logical_time_from_value(min([requested_value, queued_through_requested[0][0]]) if queued_through_requested else requested_value)
+        else:
+            if mode in {"nextMessageRequest", "nextMessageRequestAvailable"} and queued_through_requested:
+                grant_time = datatypes_pb2.LogicalTime(data=requested_time.data)
+                deliver_through = grant_time
+            else:
+                allowed = True
+                if constrained and galt_value is not None:
+                    if mode in {"timeAdvanceRequest", "nextMessageRequest"}:
+                        allowed = requested_value < galt_value
+                    else:
+                        allowed = requested_value <= galt_value
+                if allowed:
+                    grant_time = datatypes_pb2.LogicalTime(data=requested_time.data)
+                    deliver_through = grant_time
+                elif galt_value is not None:
+                    if mode == "timeAdvanceRequestAvailable" and queued_through_requested and queued_through_requested[0][0] <= galt_value:
+                        grant_time = self._logical_time_from_value(queued_through_requested[0][0])
+                        deliver_through = grant_time
+                    elif mode == "nextMessageRequest" and queued_before_requested and queued_before_requested[0][0] < galt_value:
+                        grant_time = self._logical_time_from_value(queued_before_requested[0][0])
+                        deliver_through = grant_time
+                    elif mode == "nextMessageRequestAvailable" and queued_through_requested and queued_through_requested[0][0] <= galt_value:
+                        grant_time = self._logical_time_from_value(queued_through_requested[0][0])
+                        deliver_through = grant_time
+
+        if grant_time is None or deliver_through is None:
+            return False
+
+        self.handle_pending_time_advance.pop(handle, None)
+        self._grant_time(handle, grant_time, flush_queue=(mode == "flushQueueRequest"), optimistic_time=optimistic_time, delivery_time=deliver_through)
+        return True
 
     def _deliver_due_tso_callbacks(self, handle: str, time: datatypes_pb2.LogicalTime) -> None:
         requested = _logical_time_value(time)
@@ -3266,14 +3378,22 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     self.delivered_retractions.add(retraction_handle)
         self.queued_tso_callbacks = retained_tso_callbacks
 
-    def _grant_time(self, handle: str, time: datatypes_pb2.LogicalTime, *, flush_queue: bool = False) -> None:
-        self._deliver_due_tso_callbacks(handle, time)
+    def _grant_time(
+        self,
+        handle: str,
+        time: datatypes_pb2.LogicalTime,
+        *,
+        flush_queue: bool = False,
+        optimistic_time: datatypes_pb2.LogicalTime | None = None,
+        delivery_time: datatypes_pb2.LogicalTime | None = None,
+    ) -> None:
+        self._deliver_due_tso_callbacks(handle, delivery_time or time)
         self.handle_current_times[handle] = datatypes_pb2.LogicalTime(data=time.data)
         self._sync_time_globals(handle)
         if flush_queue:
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
-                    flushQueueGrant=callback_pb2.FlushQueueGrant(time=time, optimisticTime=time)
+                    flushQueueGrant=callback_pb2.FlushQueueGrant(time=time, optimisticTime=optimistic_time or time)
                 ),
                 target_handles={handle},
             )
@@ -3367,6 +3487,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.handle_time_regulating.pop(handle, None)
         self.handle_time_constrained.pop(handle, None)
         self.handle_asynchronous_delivery_enabled.pop(handle, None)
+        self.handle_pending_time_advance.pop(handle, None)
         self.handle_updates_sent.pop(handle, None)
         self.handle_reflections_received.pop(handle, None)
         self.handle_interactions_sent.pop(handle, None)
@@ -3535,20 +3656,41 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.time_constrained = self.handle_time_constrained.get(handle, False)
         self.asynchronous_delivery_enabled = self.handle_asynchronous_delivery_enabled.get(handle, False)
 
+    @staticmethod
+    def _logical_time_from_value(value: float) -> datatypes_pb2.LogicalTime:
+        if float(value).is_integer():
+            rendered = str(int(value))
+        else:
+            rendered = f"{value:g}"
+        return datatypes_pb2.LogicalTime(data=f"HLAinteger64Time:{rendered}".encode("ascii"))
+
+    def _handle_pending_request(self, handle: str) -> tuple[str, datatypes_pb2.LogicalTime] | None:
+        return self.handle_pending_time_advance.get(handle)
+
+    def _regulating_lower_bound(self, handle: str) -> float | None:
+        if not self.handle_time_regulating.get(handle, False):
+            return None
+        request = self._handle_pending_request(handle)
+        base = request[1] if request is not None else self._handle_current_time(handle)
+        return _logical_time_value(base) + _logical_interval_value(self._handle_lookahead(handle))
+
     def _query_galt(self, handle: str) -> datatypes_pb2.TimeQueryReturn:
-        candidates: list[float] = [_logical_time_value(self._handle_current_time(handle))]
-        candidates.extend(
-            _logical_time_value(self._handle_current_time(other_handle))
-            + _logical_interval_value(self._handle_lookahead(other_handle))
+        candidates = [
+            lower_bound
             for other_handle in self._joined_handle_values()
-            if other_handle != handle and self.handle_time_regulating.get(other_handle, False)
-        )
+            if other_handle != handle
+            for lower_bound in [self._regulating_lower_bound(other_handle)]
+            if lower_bound is not None
+        ]
         if not candidates:
-            return datatypes_pb2.TimeQueryReturn(logicalTimeIsValid=False)
+            return datatypes_pb2.TimeQueryReturn(
+                logicalTimeIsValid=True,
+                logicalTime=datatypes_pb2.LogicalTime(data=self._handle_current_time(handle).data),
+            )
         value = min(candidates)
         return datatypes_pb2.TimeQueryReturn(
             logicalTimeIsValid=True,
-            logicalTime=datatypes_pb2.LogicalTime(data=f"HLAinteger64Time:{value:g}".encode("ascii")),
+            logicalTime=self._logical_time_from_value(value),
         )
 
     def _query_lits(self, handle: str) -> datatypes_pb2.TimeQueryReturn:
@@ -3567,8 +3709,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         value = min(candidates)
         return datatypes_pb2.TimeQueryReturn(
             logicalTimeIsValid=True,
-            logicalTime=datatypes_pb2.LogicalTime(data=f"HLAinteger64Time:{value:g}".encode("ascii")),
+            logicalTime=self._logical_time_from_value(value),
         )
+
+    def _validate_tso_send_time(self, handle: str, time: datatypes_pb2.LogicalTime) -> bool:
+        if not self.handle_time_regulating.get(handle, False):
+            return False
+        timestamp = _logical_time_value(time)
+        for other_handle in self._joined_handle_values():
+            if other_handle == handle or not self.handle_time_constrained.get(other_handle, False):
+                continue
+            if _logical_time_value(self._handle_current_time(other_handle)) > timestamp:
+                return False
+        return True
 
     def _apply_resign_action(self, action: int) -> None:
         if action in {
@@ -3640,6 +3793,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             handle_time_regulating=dict(self.handle_time_regulating),
             handle_time_constrained=dict(self.handle_time_constrained),
             handle_asynchronous_delivery_enabled=dict(self.handle_asynchronous_delivery_enabled),
+            handle_pending_time_advance={
+                handle: (mode, datatypes_pb2.LogicalTime(data=time.data))
+                for handle, (mode, time) in self.handle_pending_time_advance.items()
+            },
             callback_delivery_enabled=self.callback_delivery_enabled,
             peer_callback_delivery_enabled=dict(self.peer_callback_delivery_enabled),
             directed_interaction_region_gates=set(self.directed_interaction_region_gates),
@@ -3691,6 +3848,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.handle_time_regulating = dict(snapshot.handle_time_regulating)
         self.handle_time_constrained = dict(snapshot.handle_time_constrained)
         self.handle_asynchronous_delivery_enabled = dict(snapshot.handle_asynchronous_delivery_enabled)
+        self.handle_pending_time_advance = {
+            handle: (mode, datatypes_pb2.LogicalTime(data=time.data))
+            for handle, (mode, time) in snapshot.handle_pending_time_advance.items()
+        }
         self.callback_delivery_enabled = snapshot.callback_delivery_enabled
         self.peer_callback_delivery_enabled = dict(snapshot.peer_callback_delivery_enabled)
         self.directed_interaction_region_gates = set(snapshot.directed_interaction_region_gates)

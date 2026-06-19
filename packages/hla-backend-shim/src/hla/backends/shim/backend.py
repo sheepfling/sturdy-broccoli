@@ -7,8 +7,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from importlib import import_module
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Callable, Iterable, Mapping
 
+from hla.backends.common import time_management as tm
 from hla.rti.plugin_api import BackendRequest
 from hla.rti1516_2025.datatypes import (
     ConfigurationResult,
@@ -338,6 +340,7 @@ class Shim2025RTIAmbassador:
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
         self._asynchronous_delivery_enabled = False
+        self._pending_time_advance: tm.TimeAdvanceRequestState | None = None
         self._switches = dict(_SWITCH_DEFAULTS)
         self._automatic_resign_directive = ResignAction.NO_ACTION
         self._mom_report_period_seconds: float | None = None
@@ -400,6 +403,7 @@ class Shim2025RTIAmbassador:
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
         self._asynchronous_delivery_enabled = False
+        self._pending_time_advance = None
         self._switches = dict(_SWITCH_DEFAULTS)
         self._automatic_resign_directive = ResignAction.NO_ACTION
         self._mom_report_period_seconds = None
@@ -777,6 +781,7 @@ class Shim2025RTIAmbassador:
         self._require_joined("disableTimeRegulation")
         self._time_regulation_enabled = False
         self._lookahead = self._logical_time_factory.makeZero()
+        self._process_time_advances()
 
     def enableTimeConstrained(self) -> None:  # noqa: N802
         self._record("enableTimeConstrained")
@@ -784,11 +789,13 @@ class Shim2025RTIAmbassador:
         self._time_constrained_enabled = True
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeConstrainedEnabled"):
             self._deliver_callback("timeConstrainedEnabled", self._logical_time)
+        self._process_time_advances()
 
     def disableTimeConstrained(self) -> None:  # noqa: N802
         self._record("disableTimeConstrained")
         self._require_joined("disableTimeConstrained")
         self._time_constrained_enabled = False
+        self._process_time_advances()
 
     def enableAsynchronousDelivery(self) -> None:  # noqa: N802
         self._record("enableAsynchronousDelivery")
@@ -803,41 +810,32 @@ class Shim2025RTIAmbassador:
     def timeAdvanceRequest(self, time: Any) -> None:  # noqa: N802
         self._record("timeAdvanceRequest", time)
         self._require_joined("timeAdvanceRequest")
-        requested_time = self._coerce_time(time)
-        if requested_time < self._logical_time:
-            raise LogicalTimeAlreadyPassed(str(requested_time))
-        self._logical_time = requested_time
-        self._deliver_due_tso_callbacks()
-        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeAdvanceGrant"):
-            self._deliver_callback("timeAdvanceGrant", self._logical_time)
+        self._request_time_advance("timeAdvanceRequest", time)
 
     def timeAdvanceRequestAvailable(self, time: Any) -> None:  # noqa: N802
         self._record("timeAdvanceRequestAvailable", time)
-        self.timeAdvanceRequest(time)
+        self._require_joined("timeAdvanceRequestAvailable")
+        self._request_time_advance("timeAdvanceRequestAvailable", time)
 
     def nextMessageRequest(self, time: Any) -> None:  # noqa: N802
         self._record("nextMessageRequest", time)
-        self.timeAdvanceRequest(time)
+        self._require_joined("nextMessageRequest")
+        self._request_time_advance("nextMessageRequest", time)
 
     def nextMessageRequestAvailable(self, time: Any) -> None:  # noqa: N802
         self._record("nextMessageRequestAvailable", time)
-        self.timeAdvanceRequest(time)
+        self._require_joined("nextMessageRequestAvailable")
+        self._request_time_advance("nextMessageRequestAvailable", time)
 
     def flushQueueRequest(self, time: Any) -> None:  # noqa: N802
         self._record("flushQueueRequest", time)
         self._require_joined("flushQueueRequest")
-        requested_time = self._coerce_time(time)
-        if requested_time < self._logical_time:
-            raise LogicalTimeAlreadyPassed(str(requested_time))
-        self._logical_time = requested_time
-        self._deliver_due_tso_callbacks()
-        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "flushQueueGrant"):
-            self._deliver_callback("flushQueueGrant", self._logical_time, self._logical_time)
+        self._request_time_advance("flushQueueRequest", time)
 
     def queryGALT(self) -> TimeQueryReturn:  # noqa: N802
         self._record("queryGALT")
         self._require_joined("queryGALT")
-        return TimeQueryReturn(True, self._logical_time)
+        return self._query_galt_for(self)
 
     def queryLogicalTime(self) -> Any:  # noqa: N802
         self._record("queryLogicalTime")
@@ -847,7 +845,7 @@ class Shim2025RTIAmbassador:
     def queryLITS(self) -> TimeQueryReturn:  # noqa: N802
         self._record("queryLITS")
         self._require_joined("queryLITS")
-        return TimeQueryReturn(True, self._logical_time)
+        return self._query_lits_for(self)
 
     def modifyLookahead(self, lookahead: Any) -> None:  # noqa: N802
         self._record("modifyLookahead", lookahead)
@@ -855,6 +853,7 @@ class Shim2025RTIAmbassador:
         if not self._time_regulation_enabled:
             raise TimeRegulationIsNotEnabled("Cannot modify lookahead before enableTimeRegulation")
         self._lookahead = self._coerce_interval(lookahead)
+        self._process_time_advances()
 
     def retract(self, retraction: Any) -> None:
         self._record("retract", retraction)
@@ -881,6 +880,132 @@ class Shim2025RTIAmbassador:
         if not self._time_regulation_enabled:
             raise TimeRegulationIsNotEnabled("Cannot query lookahead before enableTimeRegulation")
         return self._lookahead
+
+    def _request_time_advance(self, mode: str, time: Any) -> None:
+        requested_time = self._coerce_time(time)
+        if requested_time < self._logical_time:
+            raise LogicalTimeAlreadyPassed(str(requested_time))
+        self._pending_time_advance = tm.TimeAdvanceRequestState(mode, requested_time)
+        self._process_time_advances()
+
+    def _process_time_advances(self) -> None:
+        if not self._joined or self._federation_name is None:
+            return
+        federation = self._federation_record()
+        progressed = True
+        while progressed:
+            progressed = False
+            for member in list(federation.member_rtis.values()):
+                if member._pending_time_advance is None:
+                    continue
+                if member._try_grant_pending_time_advance():
+                    progressed = True
+
+    def _try_grant_pending_time_advance(self) -> bool:
+        request = self._pending_time_advance
+        if request is None:
+            return False
+        federation = self._federation_record()
+        state = self._time_management_state()
+        decision = tm.compute_grant_decision(
+            self._time_management_federation(federation),
+            state,
+            request,
+            enforce_galt=True,
+            factory=self._logical_time_factory,
+        )
+        if not decision.can_grant or decision.grant_time is None:
+            return False
+        self._deliver_due_tso_callbacks_for_request(decision.deliverable_messages)
+        self._logical_time = decision.grant_time
+        self._pending_time_advance = None
+        if request.mode == "flushQueueRequest":
+            self._deliver_callback("flushQueueGrant", decision.grant_time, decision.optimistic_time or decision.grant_time)
+        else:
+            self._deliver_callback("timeAdvanceGrant", decision.grant_time)
+        return True
+
+    def _time_management_state(self) -> Any:
+        return SimpleNamespace(
+            handle=self._current_federate_handle(),
+            current_time=self._logical_time,
+            lookahead=self._lookahead,
+            time_regulation_enabled=self._time_regulation_enabled,
+            time_constrained_enabled=self._time_constrained_enabled,
+            pending_time_advance=self._pending_time_advance,
+            zero_lookahead_tarnmr_restriction=False,
+        )
+
+    def _time_management_federation(self, federation: _FederationRecord) -> Any:
+        federates = {handle: member._time_management_state() for handle, member in federation.member_rtis.items()}
+        messages = [
+            SimpleNamespace(
+                timestamp=queued.callback_time,
+                recipient=queued.target_federate,
+                sequence=queued.serial,
+                retraction_handle=MessageRetractionHandle(handle_value),
+                retracted=False,
+                delivered=False,
+                queued_handle=handle_value,
+            )
+            for handle_value, queued in federation.queued_tso_callbacks.items()
+        ]
+        return SimpleNamespace(federates=federates, tso_messages=messages)
+
+    def _query_galt_for(self, target: "Shim2025RTIAmbassador") -> TimeQueryReturn:
+        federation = target._federation_record()
+        others = [
+            member._time_management_state()
+            for handle, member in federation.member_rtis.items()
+            if handle != target._current_federate_key() and member._time_regulation_enabled
+        ]
+        if others:
+            query = tm.compute_galt(
+                SimpleNamespace(federates={index: state for index, state in enumerate(others, start=1)}, tso_messages=[]),
+                target._time_management_state(),
+                include_self=False,
+                factory=target._logical_time_factory,
+            )
+            return TimeQueryReturn(query.time_is_valid, query.time)
+        return TimeQueryReturn(True, target._logical_time)
+
+    def _query_lits_for(self, target: "Shim2025RTIAmbassador") -> TimeQueryReturn:
+        federation = target._federation_record()
+        query = tm.compute_lits(
+            target._time_management_federation(federation),
+            target._time_management_state(),
+            include_galt=False,
+            factory=target._logical_time_factory,
+        )
+        galt = target._query_galt_for(target)
+        candidates = [query.time] if query.time_is_valid and query.time is not None else []
+        if galt.timeIsValid and galt.time is not None:
+            candidates.append(galt.time)
+        if not candidates:
+            return TimeQueryReturn(False, None)
+        return TimeQueryReturn(True, min(candidates))
+
+    def _validate_tso_send_time(self, timestamp: Any) -> None:
+        if not self._time_regulation_enabled:
+            raise InvalidLogicalTime("Timestamp-order messages require time regulation to be enabled")
+        lower_bound = tm.valid_tso_lower_bound(self._time_management_state(), factory=self._logical_time_factory)
+        if lower_bound is not None and timestamp < lower_bound:
+            raise InvalidLogicalTime(
+                f"TSO timestamp {timestamp!r} is earlier than logical time/lookahead bound {lower_bound!r}"
+            )
+
+    def _deliver_due_tso_callbacks_for_request(self, deliverable_messages: tuple[Any, ...]) -> None:
+        federation = self._federation_record()
+        for message in deliverable_messages:
+            handle_value = getattr(message, "queued_handle", None)
+            if handle_value is None:
+                continue
+            queued = federation.queued_tso_callbacks.pop(handle_value, None)
+            if queued is None:
+                continue
+            federation.delivered_retraction_handles.add(handle_value)
+            federation.delivered_retraction_targets[handle_value] = queued.target_federate
+            self._deliver_to_federate_handle(queued.target_federate, queued.method_name, *queued.args)
 
     def getObjectClassHandle(self, objectClassName: str) -> ObjectClassHandle:  # noqa: N802
         self._record("getObjectClassHandle", objectClassName)
@@ -1551,6 +1676,8 @@ class Shim2025RTIAmbassador:
 
         transportation = self._default_transportation_for(object_class_name, values_by_handle)
         callback_time = self._coerce_time(time) if time is not None else None
+        if callback_time is not None:
+            self._validate_tso_send_time(callback_time)
         retraction_handles: list[MessageRetractionHandle] = []
         federation = self._federation_record()
         self._increment_mom_count(federation.mom_object_instances_updated, (self._current_federate_key(), object_class_name))
@@ -1642,6 +1769,8 @@ class Shim2025RTIAmbassador:
             raise InteractionClassNotPublished(interaction_class_name)
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
+        if callback_time is not None:
+            self._validate_tso_send_time(callback_time)
         retraction_handles: list[MessageRetractionHandle] = []
         federation = self._federation_record()
         self._increment_mom_count(
@@ -1713,6 +1842,8 @@ class Shim2025RTIAmbassador:
             values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
+        if callback_time is not None:
+            self._validate_tso_send_time(callback_time)
         federation = self._federation_record()
         self._increment_mom_count(
             federation.mom_interactions_sent,
@@ -2510,6 +2641,7 @@ class Shim2025RTIAmbassador:
             method_name=method_name,
             args=(*args, handle),
         )
+        self._process_time_advances()
         return handle
 
     def _deliver_due_tso_callbacks(self) -> None:
@@ -2921,6 +3053,7 @@ class Shim2025RTIAmbassador:
     def _release_join(self) -> None:
         if self._federation_name is None:
             return
+        self._pending_time_advance = None
         federation = _FEDERATION_REGISTRY.get(self._federation_name)
         if federation is not None:
             if self._federate_name is not None:

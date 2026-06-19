@@ -283,6 +283,13 @@ class Recording2025FederateAmbassador:
         return None
 
 
+def _callbacks_named_2025(
+    federate: Recording2025FederateAmbassador,
+    method_name: str,
+) -> list[tuple[object, ...]]:
+    return [args for recorded_name, args in federate.callbacks if recorded_name == method_name]
+
+
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003", "HLA2025-FI-004")
 def test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010() -> None:
     import hla.rti1516_2025 as rti2025
@@ -5192,6 +5199,470 @@ def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)
     rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_blocks_window_closure_until_future_inputs_are_excluded() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import InvalidLogicalTime
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-future-exclusion-{uuid.uuid4().hex[:8]}"
+    slow_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    slow = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+
+    try:
+        slow.connect(slow_federate, CallbackModel.HLA_EVOKED)
+        radar.connect(radar_federate, CallbackModel.HLA_EVOKED)
+        slow.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        slow.joinFederationExecution(
+            federateName="SlowRegulator",
+            federateType="TimeWindowFederate",
+            federationName=federation_name,
+        )
+        radar.joinFederationExecution(
+            federateName="Radar",
+            federateType="TimeWindowFederate",
+            federationName=federation_name,
+        )
+
+        interaction_class = slow.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = slow.getParameterHandle(interaction_class, "TrackId")
+        slow.publishInteractionClass(interaction_class)
+        radar.subscribeInteractionClass(interaction_class)
+
+        slow.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        assert slow_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert radar_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+
+        slow.timeAdvanceRequestAvailable(HLAinteger64Time(100))
+        assert slow_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(100),)
+
+        blocked_galt = radar.queryGALT()
+        blocked_lits = radar.queryLITS()
+        assert blocked_galt.timeIsValid is True
+        assert blocked_lits.timeIsValid is True
+        assert blocked_galt.time == HLAinteger64Time(101)
+        assert blocked_lits.time == HLAinteger64Time(101)
+
+        grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
+        radar.timeAdvanceRequestAvailable(HLAinteger64Time(110))
+        blocked_grants = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[grant_baseline:]
+        assert blocked_grants == []
+
+        slow.timeAdvanceRequestAvailable(HLAinteger64Time(109))
+        assert slow_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(109),)
+
+        cleared_galt = radar.queryGALT()
+        cleared_lits = radar.queryLITS()
+        assert cleared_galt.timeIsValid is True
+        assert cleared_lits.timeIsValid is True
+        assert cleared_galt.time == HLAinteger64Time(110)
+        assert cleared_lits.time == HLAinteger64Time(110)
+
+        final_grants = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[grant_baseline:]
+        assert final_grants == [(HLAinteger64Time(110),)]
+
+        with pytest.raises(InvalidLogicalTime):
+            slow.sendInteraction(
+                interaction_class,
+                {parameter: b"late-track-109"},
+                b"late-track-109",
+                HLAinteger64Time(109),
+            )
+
+        receive_baseline = len(_callbacks_named_2025(radar_federate, "receiveInteraction"))
+        slow.sendInteraction(
+            interaction_class,
+            {parameter: b"boundary-track-110"},
+            b"boundary-track-110",
+            HLAinteger64Time(110),
+        )
+        slow.timeAdvanceRequestAvailable(HLAinteger64Time(120))
+        radar.nextMessageRequestAvailable(HLAinteger64Time(120))
+
+        receives = _callbacks_named_2025(radar_federate, "receiveInteraction")[receive_baseline:]
+        assert len(receives) == 1
+        assert receives[0][2] == b"boundary-track-110"
+        assert receives[0][6] == HLAinteger64Time(110)
+    finally:
+        try:
+            radar.resignFederationExecution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            slow.resignFederationExecution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            slow.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        try:
+            radar.disconnect()
+        except Exception:
+            pass
+        try:
+            slow.disconnect()
+        except Exception:
+            pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_delivers_post_closure_timestamped_output_to_consumer() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-output-delivery-{uuid.uuid4().hex[:8]}"
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+
+    try:
+        truth.connect(truth_federate, CallbackModel.HLA_EVOKED)
+        radar.connect(radar_federate, CallbackModel.HLA_EVOKED)
+        consumer.connect(consumer_federate, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        for rti, name in (
+            (truth, "Truth"),
+            (radar, "Radar"),
+            (consumer, "Consumer"),
+        ):
+            rti.joinFederationExecution(
+                federateName=name,
+                federateType="TimeWindowFederate",
+                federationName=federation_name,
+            )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(target_class, {position})
+        radar.publishInteractionClass(track_interaction)
+        consumer.subscribeInteractionClass(track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        assert truth_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert radar_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+
+        target_object = truth.registerObjectInstance(target_class, "OutputTarget-1")
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+        truth.updateAttributeValues(target_object, {position: b"truth-105"}, b"truth-105", HLAinteger64Time(105))
+        truth.updateAttributeValues(target_object, {position: b"truth-106"}, b"truth-106", HLAinteger64Time(106))
+        truth.timeAdvanceRequest(HLAinteger64Time(120))
+
+        radar.nextMessageRequest(HLAinteger64Time(110))
+        first_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        first_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert first_reflect[2] == b"truth-105"
+        assert first_reflect[6] == HLAinteger64Time(105)
+        assert first_grant == (HLAinteger64Time(105),)
+
+        radar.nextMessageRequest(HLAinteger64Time(110))
+        second_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert second_reflect[2] == b"truth-106"
+        assert second_reflect[6] == HLAinteger64Time(106)
+        assert second_grant == (HLAinteger64Time(106),)
+
+        radar.nextMessageRequest(HLAinteger64Time(110))
+        window_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert window_close_grant == (HLAinteger64Time(110),)
+        assert _callbacks_named_2025(consumer_federate, "receiveInteraction") == []
+
+        radar.enableTimeRegulation(HLAinteger64Interval(1))
+        consumer.enableTimeConstrained()
+        assert radar_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(110),)
+        assert consumer_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+
+        radar.changeInteractionOrderType(track_interaction, OrderType.TIMESTAMP)
+        consumer.nextMessageRequest(HLAinteger64Time(120))
+        radar.sendInteraction(
+            track_interaction,
+            {track_parameter: b"track-100-110[from truth-105,truth-106]"},
+            b"radar-track-output",
+            HLAinteger64Time(111),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(120))
+
+        consumer_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert len(consumer_receives) == 1
+        consumer_receive = consumer_receives[-1]
+        assert consumer_receive[2] == b"radar-track-output"
+        assert consumer_receive[6] == HLAinteger64Time(111)
+        assert consumer_receive[1] == {track_parameter: b"track-100-110[from truth-105,truth-106]"}
+
+        consumer.nextMessageRequest(HLAinteger64Time(130))
+        truth.timeAdvanceRequest(HLAinteger64Time(130))
+        radar.timeAdvanceRequest(HLAinteger64Time(130))
+        assert len(_callbacks_named_2025(consumer_federate, "receiveInteraction")) == 1
+    finally:
+        for rti in (consumer, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (consumer, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_preserves_consumer_timestamp_order_between_competing_output_and_radar_output() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-consumer-order-{uuid.uuid4().hex[:8]}"
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    other_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    other = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, fed in (
+            (truth, truth_federate),
+            (radar, radar_federate),
+            (other, other_federate),
+            (consumer, consumer_federate),
+        ):
+            rti.connect(fed, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        for rti, name in (
+            (truth, "Truth"),
+            (radar, "Radar"),
+            (other, "Other"),
+            (consumer, "Consumer"),
+        ):
+            rti.joinFederationExecution(
+                federateName=name,
+                federateType="TimeWindowFederate",
+                federationName=federation_name,
+            )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(target_class, {position})
+        radar.publishInteractionClass(track_interaction)
+        other.publishInteractionClass(track_interaction)
+        consumer.subscribeInteractionClass(track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        target_object = truth.registerObjectInstance(target_class, "ConsumerOrderTarget-1")
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+        truth.updateAttributeValues(target_object, {position: b"truth-105"}, b"truth-105", HLAinteger64Time(105))
+        truth.updateAttributeValues(target_object, {position: b"truth-106"}, b"truth-106", HLAinteger64Time(106))
+        truth.timeAdvanceRequest(HLAinteger64Time(120))
+
+        for _ in range(3):
+            radar.nextMessageRequest(HLAinteger64Time(110))
+        assert _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1] == (HLAinteger64Time(110),)
+
+        radar.enableTimeRegulation(HLAinteger64Interval(1))
+        other.enableTimeRegulation(HLAinteger64Interval(1))
+        consumer.enableTimeConstrained()
+        radar.changeInteractionOrderType(track_interaction, OrderType.TIMESTAMP)
+        other.changeInteractionOrderType(track_interaction, OrderType.TIMESTAMP)
+
+        consumer.nextMessageRequest(HLAinteger64Time(120))
+        other.sendInteraction(
+            track_interaction,
+            {track_parameter: b"other-track-110[gate]"},
+            b"other-track-output",
+            HLAinteger64Time(110),
+        )
+        radar.sendInteraction(
+            track_interaction,
+            {track_parameter: b"radar-track-111[from truth-105,truth-106]"},
+            b"radar-track-output",
+            HLAinteger64Time(111),
+        )
+        other.timeAdvanceRequest(HLAinteger64Time(120))
+        radar.timeAdvanceRequest(HLAinteger64Time(120))
+        consumer.nextMessageRequest(HLAinteger64Time(120))
+
+        receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert len(receives) == 2
+        assert [receive[2] for receive in receives] == [b"other-track-output", b"radar-track-output"]
+        assert [receive[6] for receive in receives] == [HLAinteger64Time(110), HLAinteger64Time(111)]
+        assert receives[0][1] == {track_parameter: b"other-track-110[gate]"}
+        assert receives[1][1] == {track_parameter: b"radar-track-111[from truth-105,truth-106]"}
+
+        consumer.nextMessageRequest(HLAinteger64Time(130))
+        truth.timeAdvanceRequest(HLAinteger64Time(130))
+        other.timeAdvanceRequest(HLAinteger64Time(130))
+        radar.timeAdvanceRequest(HLAinteger64Time(130))
+        assert len(_callbacks_named_2025(consumer_federate, "receiveInteraction")) == 2
+    finally:
+        for rti in (consumer, other, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (consumer, other, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_keeps_two_scan_pipeline_outputs_separated() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-pipeline-{uuid.uuid4().hex[:8]}"
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, fed in (
+            (truth, truth_federate),
+            (radar, radar_federate),
+            (consumer, consumer_federate),
+        ):
+            rti.connect(fed, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        for rti, name in (
+            (truth, "Truth"),
+            (radar, "Radar"),
+            (consumer, "Consumer"),
+        ):
+            rti.joinFederationExecution(
+                federateName=name,
+                federateType="TimeWindowFederate",
+                federationName=federation_name,
+            )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(target_class, {position})
+        radar.publishInteractionClass(track_interaction)
+        consumer.subscribeInteractionClass(track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        target_object = truth.registerObjectInstance(target_class, "PipelineTarget-1")
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+
+        truth.updateAttributeValues(target_object, {position: b"scan1-input-a"}, b"scan1-input-a", HLAinteger64Time(105))
+        truth.updateAttributeValues(target_object, {position: b"scan1-input-b"}, b"scan1-input-b", HLAinteger64Time(106))
+        truth.timeAdvanceRequest(HLAinteger64Time(110))
+        for _ in range(3):
+            radar.nextMessageRequest(HLAinteger64Time(110))
+        assert _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1] == (HLAinteger64Time(110),)
+
+        radar.enableTimeRegulation(HLAinteger64Interval(1))
+        consumer.enableTimeConstrained()
+        radar.changeInteractionOrderType(track_interaction, OrderType.TIMESTAMP)
+
+        truth.updateAttributeValues(target_object, {position: b"scan2-input"}, b"scan2-input", HLAinteger64Time(112))
+        truth.timeAdvanceRequest(HLAinteger64Time(130))
+        radar.nextMessageRequest(HLAinteger64Time(120))
+        scan2_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        assert scan2_reflect[2] == b"scan2-input"
+        assert scan2_reflect[6] == HLAinteger64Time(112)
+
+        consumer.nextMessageRequest(HLAinteger64Time(130))
+        radar.sendInteraction(
+            track_interaction,
+            {track_parameter: b"track-scan-1[from scan1-input-a,scan1-input-b]"},
+            b"scan1-track-output",
+            HLAinteger64Time(115),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(115))
+
+        radar.nextMessageRequest(HLAinteger64Time(120))
+        assert _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1] == (HLAinteger64Time(120),)
+
+        consumer.nextMessageRequest(HLAinteger64Time(130))
+        radar.sendInteraction(
+            track_interaction,
+            {track_parameter: b"track-scan-2[from scan2-input]"},
+            b"scan2-track-output",
+            HLAinteger64Time(122),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(130))
+
+        receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert len(receives) == 2
+        assert [receive[2] for receive in receives] == [b"scan1-track-output", b"scan2-track-output"]
+        assert [receive[6] for receive in receives] == [HLAinteger64Time(115), HLAinteger64Time(122)]
+        assert receives[0][1] == {track_parameter: b"track-scan-1[from scan1-input-a,scan1-input-b]"}
+        assert receives[1][1] == {track_parameter: b"track-scan-2[from scan2-input]"}
+
+        consumer.nextMessageRequest(HLAinteger64Time(140))
+        truth.timeAdvanceRequest(HLAinteger64Time(140))
+        radar.timeAdvanceRequest(HLAinteger64Time(140))
+        assert len(_callbacks_named_2025(consumer_federate, "receiveInteraction")) == 2
+    finally:
+        for rti in (consumer, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (consumer, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")
