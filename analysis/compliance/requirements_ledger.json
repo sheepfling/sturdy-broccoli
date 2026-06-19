@@ -6,7 +6,11 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -19,7 +23,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_name": "start_registration_for_object_class",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -28,7 +35,7 @@
       "service_group": "Declaration Management",
       "title": "Start Registration For Object Class service",
       "verification_asset_id": "ASSET-DECLARATION-MGMT-SMOKE",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -36,7 +43,11 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -49,7 +60,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_name": "stop_registration_for_object_class",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -58,7 +72,7 @@
       "service_group": "Declaration Management",
       "title": "Stop Registration For Object Class service",
       "verification_asset_id": "ASSET-DECLARATION-MGMT-SMOKE",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -66,7 +80,11 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -79,7 +97,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_name": "turn_interactions_on",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -88,7 +109,7 @@
       "service_group": "Declaration Management",
       "title": "Turn Interactions On service",
       "verification_asset_id": "ASSET-DECLARATION-MGMT-SMOKE",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -96,7 +117,11 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -109,7 +134,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_name": "turn_interactions_off",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -118,7 +146,7 @@
       "service_group": "Declaration Management",
       "title": "Turn Interactions Off service",
       "verification_asset_id": "ASSET-DECLARATION-MGMT-SMOKE",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -304,7 +332,12 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -317,7 +350,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
       "python_name": "federation_not_saved",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -326,7 +362,7 @@
       "service_group": "Federation Management",
       "title": "Federation Saved service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -334,7 +370,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -347,7 +385,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_name": "federation_saved",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -356,7 +395,7 @@
       "service_group": "Federation Management",
       "title": "Federation Saved service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -637,7 +676,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -650,7 +691,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix"
       ],
       "python_name": "connection_lost",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -659,7 +701,7 @@
       "service_group": "Federation Management",
       "title": "Connection Lost service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -985,7 +1027,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -998,7 +1042,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_name": "confirm_attribute_transportation_type_change",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1007,7 +1052,7 @@
       "service_group": "Object Management",
       "title": "Confirm Attribute Transportation Type Change service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1048,7 +1093,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1061,7 +1108,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_name": "confirm_interaction_transportation_type_change",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1070,7 +1118,7 @@
       "service_group": "Object Management",
       "title": "Confirm Interaction Transportation Type Change service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1078,7 +1126,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1091,7 +1141,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_name": "object_instance_name_reservation_failed",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1100,7 +1151,7 @@
       "service_group": "Object Management",
       "title": "Object Instance Name Reserved service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1108,7 +1159,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1121,7 +1174,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_name": "object_instance_name_reservation_succeeded",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1130,7 +1184,7 @@
       "service_group": "Object Management",
       "title": "Object Instance Name Reserved service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1171,7 +1225,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1184,7 +1240,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_name": "multiple_object_instance_name_reservation_failed",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1193,7 +1250,7 @@
       "service_group": "Object Management",
       "title": "Multiple Object Instance Names Reserved service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1201,7 +1258,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1214,7 +1273,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_name": "multiple_object_instance_name_reservation_succeeded",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1223,7 +1283,7 @@
       "service_group": "Object Management",
       "title": "Multiple Object Instance Names Reserved service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1269,7 +1329,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1282,7 +1343,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_name": "get_producing_federate",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1291,7 +1352,7 @@
       "service_group": "Object Management",
       "title": "Discover Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1299,7 +1360,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1312,7 +1374,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_name": "get_sent_regions",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1321,7 +1383,7 @@
       "service_group": "Object Management",
       "title": "Discover Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1329,7 +1391,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1342,7 +1405,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_name": "has_producing_federate",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1351,7 +1414,7 @@
       "service_group": "Object Management",
       "title": "Discover Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1359,7 +1422,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1372,7 +1436,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_name": "has_sent_regions",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1381,7 +1445,7 @@
       "service_group": "Object Management",
       "title": "Discover Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1422,7 +1486,12 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1435,7 +1504,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_name": "request_attribute_ownership_release",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1444,7 +1516,7 @@
       "service_group": "Ownership Management",
       "title": "Request Attribute Ownership Release service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1452,7 +1524,9 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1465,7 +1539,8 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_name": "confirm_attribute_ownership_acquisition_cancellation",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1474,7 +1549,7 @@
       "service_group": "Ownership Management",
       "title": "Confirm Attribute Ownership Acquisition Cancellation service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1614,7 +1689,12 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1627,7 +1707,10 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_name": "request_divestiture_confirmation",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1636,7 +1719,7 @@
       "service_group": "Ownership Management",
       "title": "Request Divestiture Confirmation service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1644,7 +1727,15 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1657,7 +1748,12 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_name": "attribute_ownership_acquisition_notification",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1666,7 +1762,7 @@
       "service_group": "Ownership Management",
       "title": "Attribute Ownership Acquisition Notification service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [

@@ -96,6 +96,34 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
     ),
+    "startRegistrationForObjectClass": (
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+    ),
+    "stopRegistrationForObjectClass": (
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+    ),
+    "turnInteractionsOn": (
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+    ),
+    "turnInteractionsOff": (
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+    ),
     "subscribeInteractionClassPassively": (
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
@@ -117,6 +145,26 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
     ),
     "reserveMultipleObjectInstanceName": (
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
+    ),
+    "objectInstanceNameReservationSucceeded": (
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
+    ),
+    "objectInstanceNameReservationFailed": (
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
+    ),
+    "multipleObjectInstanceNameReservationSucceeded": (
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
+    ),
+    "multipleObjectInstanceNameReservationFailed": (
         "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
@@ -175,6 +223,16 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
+    ),
+    "confirmAttributeTransportationTypeChange": (
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+    ),
+    "confirmInteractionTransportationTypeChange": (
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
     ),
     "registerFederationSynchronizationPoint": (
         "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
@@ -264,6 +322,19 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
     ),
+    "federationSaved": (
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+    ),
+    "federationNotSaved": (
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix",
+    ),
     "requestFederationRestore": (
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario",
@@ -331,6 +402,11 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix",
+    ),
+    "connectionLost": (
+        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix",
     ),
     "federationRestoreStatusResponse": (
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
@@ -462,6 +538,22 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
     ),
+    "hasProducingFederate": (
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+    ),
+    "getProducingFederate": (
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+    ),
+    "hasSentRegions": (
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+    ),
+    "getSentRegions": (
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+    ),
     "reflectAttributeValues": (
         "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
@@ -550,10 +642,42 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_unavailable_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix",
     ),
+    "requestDivestitureConfirmation": (
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
+    ),
+    "attributeOwnershipAcquisitionNotification": (
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
+    ),
     "attributeOwnershipReleaseDenied": (
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_denied_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_release_denied_ownership_matrix",
+    ),
+    "requestAttributeOwnershipRelease": (
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
+    ),
+    "confirmAttributeOwnershipAcquisitionCancellation": (
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
     ),
     "attributeOwnershipDivestitureIfWanted": (
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",

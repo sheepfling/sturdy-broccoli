@@ -24486,7 +24486,10 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -24524,7 +24527,10 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -24562,7 +24568,10 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -24600,7 +24609,10 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -24878,7 +24890,10 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -24924,7 +24939,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -25334,7 +25350,8 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -25768,7 +25785,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -25855,7 +25873,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -25898,7 +25917,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -25941,7 +25961,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26028,7 +26049,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26071,7 +26093,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26160,7 +26183,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26203,7 +26226,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26246,7 +26269,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26289,7 +26312,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26376,7 +26399,10 @@
       "pitch_runtime_status": "blocked",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26425,7 +26451,8 @@
       "pitch_runtime_status": "blocked",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26664,7 +26691,10 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26707,7 +26737,12 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -36176,7 +36211,10 @@
       "policy_basis": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -36222,7 +36260,10 @@
       "policy_basis": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -36268,7 +36309,10 @@
       "policy_basis": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -36314,7 +36358,10 @@
       "policy_basis": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "",
@@ -37648,7 +37695,8 @@
       "policy_basis": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -37813,7 +37861,8 @@
       "policy_basis": "",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -39975,8 +40024,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -40542,8 +40592,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",

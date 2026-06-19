@@ -319,8 +319,9 @@
           "policy_basis": "reliable-best-effort-transport-only",
           "positive_test_refs": [
             "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/time/test_mom_mim_time_v10.py",
-            "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
           ],
           "python_runtime_status": "yes",
           "requirement_id": "HLA1516.1-OM-6.24-001",
@@ -530,8 +531,9 @@
           "policy_basis": "reliable-best-effort-transport-only",
           "positive_test_refs": [
             "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/time/test_mom_mim_time_v10.py",
-            "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
           ],
           "python_runtime_status": "yes",
           "requirement_id": "HLA1516.1-OM-6.28-001",
