@@ -31,6 +31,27 @@
         "encoding_auth_work_packet/02-requirements/traceability_matrix.csv"
       ],
       "status": "imported"
+    },
+    {
+      "id": "hla-2025-requirement-depth-expansion",
+      "path": "../../../requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
+      "json_path": "../../../requirements/2025/depth/hla_2025_requirement_depth_expansion.json",
+      "summary_path": "../../../requirements/2025/depth/hla_2025_requirement_depth_expansion_summary.json",
+      "manifest_path": "../../../requirements/2025/depth/source_manifest.json",
+      "row_count": 691,
+      "status": "imported-harmonization-candidate"
+    },
+    {
+      "id": "hla-2025-requirement-coverage-disposition",
+      "path": "../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+      "json_path": "../../../requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.json",
+      "fi_binding_surface_matrix_path": "../../../requirements/2025/harmonization/hla_2025_fi_binding_surface_matrix.csv",
+      "worklist_path": "../../../requirements/2025/harmonization/hla_2025_harmonization_worklist.csv",
+      "review_queue_path": "../../../requirements/2025/harmonization/hla_2025_review_queue.csv",
+      "rollup_path": "../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json",
+      "manifest_path": "../../../requirements/2025/harmonization/source_manifest.json",
+      "row_count": 691,
+      "status": "imported-provisional-disposition"
     }
   ],
   "requirements": [

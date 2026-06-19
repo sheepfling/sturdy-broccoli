@@ -16,6 +16,13 @@ Contents:
   work
 - `differentials/`: 2025-vs-2010 surface differential and code reuse disposition
   packets used to seed carry-forward, modified, new, and retired requirements
+- `depth/`: imported requirement-depth expansion packet with 691 source-derived
+  rows for FI service depth, SOM/FOM service usage, OMT component/schema
+  conformance, validator-negative checks, framework rules, binding/configuration
+  deltas, and retired/replacement mapping candidates
+- `harmonization/`: imported provisional disposition layer over the depth packet,
+  with row-level disposition, FI binding surface accounting, review queue,
+  execution worklist, coverage rollup, and promotion guardrails
 
 Use this folder when you want to point at "all of the 2025 reqts" or the 2025
 source-trace/data block without mixing it into the 2010 requirements ledgers.
@@ -25,3 +32,13 @@ Initial executable implementation work is tracked against the differential
 packets. The first 2025-native Python RTI slice covers federation execution
 listing and federation member discovery in the `shim` backend while preserving
 explicit failures for unsupported services.
+
+The `depth/` packet is an import/harmonization candidate, not direct evidence
+that all rows are implemented. Use it to split broad 2025 umbrella rows into
+reviewable service, schema, validator, and migration-mapping rows before
+promoting any claim in the completion backlog or finish-line report.
+
+The `harmonization/` packet is the next review layer. It assigns provisional
+dispositions and closure tasks to the depth rows, but intentionally promotes no
+row to `covered`; promotion still requires concrete repo evidence and executable
+test or fixture anchors.

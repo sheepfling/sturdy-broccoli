@@ -6,6 +6,8 @@ This inventory is deliberately conservative. It records implemented slices, part
 
 - Initial curated registry rows: 28
 - Imported executable-test rows: 1117
+- Imported requirement-depth rows: 691
+- Imported provisional disposition rows: 691
 - Completion-backlog rows: 27
 - High-priority rows still open: 0
 

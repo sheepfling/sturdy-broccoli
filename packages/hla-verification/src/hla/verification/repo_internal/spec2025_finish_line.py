@@ -446,6 +446,10 @@ class Spec2025Paths:
     completion_backlog: Path
     executable_summary: Path
     executable_rows: Path
+    depth_summary: Path
+    depth_rows: Path
+    harmonization_rollup: Path
+    harmonization_rows: Path
     registry: Path
 
 
@@ -456,6 +460,10 @@ def _paths(project_root: Path) -> Spec2025Paths:
         completion_backlog=project_root / "requirements" / "2025" / "requirement_completion_backlog.csv",
         executable_summary=req_dir / "executable_tests" / "hla_2025_executable_test_requirements_v3_summary.json",
         executable_rows=req_dir / "executable_tests" / "hla_2025_executable_test_requirements_v3.csv",
+        depth_summary=project_root / "requirements" / "2025" / "depth" / "hla_2025_requirement_depth_expansion_summary.json",
+        depth_rows=project_root / "requirements" / "2025" / "depth" / "hla_2025_requirement_depth_expansion.csv",
+        harmonization_rollup=project_root / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_coverage_rollup.json",
+        harmonization_rows=project_root / "requirements" / "2025" / "harmonization" / "hla_2025_requirement_disposition_ledger.csv",
         registry=req_dir / "requirements.json",
     )
 
@@ -548,6 +556,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     completion_rows = _read_csv(paths.completion_backlog)
     executable_summary = json.loads(paths.executable_summary.read_text(encoding="utf-8"))
     executable_rows = _read_csv(paths.executable_rows)
+    depth_summary = json.loads(paths.depth_summary.read_text(encoding="utf-8"))
+    depth_rows = _read_csv(paths.depth_rows)
+    harmonization_rollup = json.loads(paths.harmonization_rollup.read_text(encoding="utf-8"))
+    harmonization_rows = _read_csv(paths.harmonization_rows)
     registry = json.loads(paths.registry.read_text(encoding="utf-8"))
     registry_requirements = registry.get("requirements", ())
 
@@ -597,6 +609,27 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "by_priority": executable_priority_counts,
             "expected_status_counts_from_rows": executable_status_counts,
         },
+        "requirement_depth_expansion": {
+            "row_count": depth_summary["total_rows"],
+            "row_count_from_csv": len(depth_rows),
+            "by_area": depth_summary["by_area"],
+            "by_delta_type": depth_summary["by_delta_type"],
+            "by_source_document": depth_summary["by_source_document"],
+            "source": "requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
+            "status": "imported-harmonization-candidate",
+        },
+        "requirement_coverage_disposition": {
+            "row_count": harmonization_rollup["total_rows"],
+            "row_count_from_csv": len(harmonization_rows),
+            "by_disposition": harmonization_rollup["by_disposition"],
+            "by_priority": harmonization_rollup["by_priority"],
+            "by_area_and_disposition": harmonization_rollup["by_area_and_disposition"],
+            "by_closure_wave": harmonization_rollup["by_closure_wave"],
+            "fi_binding_surface": harmonization_rollup["fi_binding_surface"],
+            "covered_row_count": harmonization_rollup["by_disposition"].get("covered", 0),
+            "source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+            "status": "imported-provisional-disposition",
+        },
         "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
         "verification_matrix": verification_matrix,
         "route_parity_matrix": summarize_spec2025_route_parity(),
@@ -611,6 +644,8 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     snapshot = build_spec2025_finish_line_snapshot(project_root)
     backlog = snapshot["completion_backlog"]
     executable = snapshot["executable_test_backlog"]
+    depth = snapshot["requirement_depth_expansion"]
+    disposition = snapshot["requirement_coverage_disposition"]
     lines = [
         "# IEEE 1516-2025 Requirements Finish Line",
         "",
@@ -620,6 +655,8 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
         "",
         f"- Initial curated registry rows: {snapshot['registry']['initial_tranche_requirements']}",
         f"- Imported executable-test rows: {executable['row_count']}",
+        f"- Imported requirement-depth rows: {depth['row_count']}",
+        f"- Imported provisional disposition rows: {disposition['row_count']}",
         f"- Completion-backlog rows: {backlog['row_count']}",
         f"- High-priority rows still open: {backlog['high_priority_open_count']}",
         "",

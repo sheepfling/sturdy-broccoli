@@ -1,0 +1,37 @@
+[
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_disposition_ledger.csv",
+    "sha256": "4d9a8521a11e3dd95225b97d1c52bb55e6788358de6ecd200b976997ee60fcce",
+    "bytes": 1370851
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_disposition_ledger.json",
+    "sha256": "1cfad1215f007074e928edb82d5cb6c6ee79d3c3ab6ef25c8d77a540f50540f9",
+    "bytes": 1983749
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_fi_binding_surface_matrix.csv",
+    "sha256": "c51fca6cb08eed7b9e6552b2cc11563a0ad7732239023601342b4f136e0cbeee",
+    "bytes": 74486
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_harmonization_worklist.csv",
+    "sha256": "3b1c6199450ff3dfe8a568d5fa0cf17c9b428a1c55c82776a3a19312c84cf331",
+    "bytes": 25787
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_review_queue.csv",
+    "sha256": "17d7cf9eb850c8bb98fc91c729b632f4d7f957a6b299a4662e081d80b1ff6c66",
+    "bytes": 442766
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_coverage_rollup.json",
+    "sha256": "8ee00ade1b8203bace71c7b40f8af15ff58518de0d84b1b1c660e57cb067f4a9",
+    "bytes": 2165
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_coverage_closure_report.md",
+    "sha256": "0c9ace6729d82adfaa1ab0027476e4bdcaa947dfdff1fc7bc62e29a1099212fb",
+    "bytes": 3474
+  }
+]

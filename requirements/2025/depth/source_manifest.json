@@ -1,0 +1,92 @@
+[
+  {
+    "path": "/mnt/data/HLA Federate Interface Specification 15161-2025.pdf",
+    "sha256": "0a2a71120a97d864dbc2466287196b0189f952478071a8d2b4cabb415edf35d1",
+    "bytes": 4046801
+  },
+  {
+    "path": "/mnt/data/HLA Object Model Template Specification 15162-2025.pdf",
+    "sha256": "1ac6168097dfbb2e1a8a9af5c6c957a7e99b01584784ccb754844107da1ba251",
+    "bytes": 1248467
+  },
+  {
+    "path": "/mnt/data/HLA Framework and Rules 1516-2025.pdf",
+    "sha256": "455f7962f7a3a979ae98901d6ce7648dbec0d7a68dd5ea7f98aa44297ce3e83b",
+    "bytes": 813933
+  },
+  {
+    "path": "/mnt/data/1516-2025_downloads.zip",
+    "sha256": "61e537450f25ce28c4be373add7d0c6c946e5d10116e8a84377efee82d516121",
+    "bytes": 264520
+  },
+  {
+    "path": "/mnt/data/1516.1-2025_downloads.zip",
+    "sha256": "27b81429f46fe10af26d961ed22661dfcc98535d77a92f135c43d6b4f74d16f4",
+    "bytes": 266504
+  },
+  {
+    "path": "/mnt/data/1516.2-2025_downloads.zip",
+    "sha256": "385d7951982083114438342b2eee627a2674cfb7847dde07ce5a4be00cb19b9f",
+    "bytes": 71442
+  },
+  {
+    "path": "/mnt/data/1516.1-2010_downloads.zip",
+    "sha256": "e6343f40b066d51b7f435c9aae6788be24f5d585e370d972c032ab0b503e27c1",
+    "bytes": 211966
+  },
+  {
+    "path": "/mnt/data/1516.2-2010_downloads.zip",
+    "sha256": "1fb3d77318d87f55938ec74e4bc2a1a90f3bf62aa56937850f1073c9d446bb2b",
+    "bytes": 33220
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla4xml-submission-ready-2025-05-07_unzipped/IEEE1516-OMT-2025.xsd",
+    "sha256": "82c72670a7bb7f053c0268038a72e552f5e438b2dce4fcc26f7fff5897956c28",
+    "bytes": 169458
+  },
+  {
+    "path": "/mnt/data/hla_work/1516.2-2010_downloads/1516.2-2010_downloads/IEEE1516-OMT-2010.xsd",
+    "sha256": "b93ecf2a23ab028e2082e81b2bd7c60464a121506e4fe750c532f3e7e172a1b6",
+    "bytes": 116430
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla-4-java-api-20250514_unzipped/src/hla/rti1516_2025/RTIambassador.java",
+    "sha256": "3548656faa1b266c28a862ae3ec64ecf18c3d3aa6963c4e63df80334279a6611",
+    "bytes": 66834
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla-4-java-api-20250514_unzipped/src/hla/rti1516_2025/FederateAmbassador.java",
+    "sha256": "aff35e716b6055d627b5d9d6960e1814d2f1438c739f89ca6acb850a5013f09f",
+    "bytes": 15289
+  },
+  {
+    "path": "/mnt/data/hla_work/1516.1-2010_downloads/1516.1-2010_downloads/IEEE1516-2010_Java_API_unzipped/java/src/hla/rti1516e/RTIambassador.java",
+    "sha256": "e110a9d2d433d36e257f22a0cd22219a687bb04a4b9db3f29fde78489a5103d9",
+    "bytes": 55833
+  },
+  {
+    "path": "/mnt/data/hla_work/1516.1-2010_downloads/1516.1-2010_downloads/IEEE1516-2010_Java_API_unzipped/java/src/hla/rti1516e/FederateAmbassador.java",
+    "sha256": "c7d53b17248606ea80684480544d2fe13c6afa189675f60c4d414c52554d3767",
+    "bytes": 15283
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla-4-api-fedpro-20250210_unzipped/RTIambassador.proto",
+    "sha256": "f2efd5112a73887ca63dd928f45b9f9c4ffcd6c1fc29442bd93ea0fae139a5d6",
+    "bytes": 62746
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla-4-api-fedpro-20250210_unzipped/FederateAmbassador.proto",
+    "sha256": "0cbc107fd36c284e0c48925e650abdc1e62eb565db636aa10ccf706f2a0e2353",
+    "bytes": 14823
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla-4-cpp-api-20250210_unzipped/RTI/RTIambassador.h",
+    "sha256": "72b3fd63004e45ec986fcafcf73561af0ef1272af7eb5f9759627d075fd1e7cb",
+    "bytes": 76944
+  },
+  {
+    "path": "/mnt/data/hla_work/1516-2025_downloads/hla-4-cpp-api-20250210_unzipped/RTI/FederateAmbassador.h",
+    "sha256": "9e627a0cd880f38f132b649a7fe45a3e90d9439f577c27422da848f49c5e8c5b",
+    "bytes": 17297
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "total_rows": 691,
+  "by_area": {
+    "Callback/configuration/binding deltas": 12,
+    "Federate Interface service catalog": 196,
+    "Framework and Rules": 10,
+    "OMT component-level conformance": 224,
+    "OMT validator-negative conformance": 29,
+    "Retired / replacement mapping candidates": 24,
+    "SOM/FOM service-usage requirements": 196
+  },
+  "by_delta_type": {
+    "binding-specific": 2,
+    "carry-forward": 328,
+    "modified": 237,
+    "new": 71,
+    "retired": 24,
+    "verification": 29
+  },
+  "by_source_document": {
+    "1516.1-2025 FI / FederateAmbassador": 2,
+    "1516.1-2025 FI / Java CallbackModel": 1,
+    "1516.1-2025 FI / Java RtiConfiguration": 1,
+    "1516.1-2025 FI / Object management": 1,
+    "1516.1-2025 FI / Support services": 3,
+    "1516.1-2025 FI / Time management": 1,
+    "1516.1-2025 FI / auth API": 1,
+    "1516.1-2025 FedPro protobuf API": 1,
+    "1516.1-2025 Java/C++ API packages and headers": 1,
+    "IEEE 1516.1-2010 Java API to IEEE 1516.1-2025 Java API comparison": 11,
+    "IEEE Std 1516-2025 Framework and Rules": 10,
+    "IEEE Std 1516.1-2025 Federate Interface Specification": 196,
+    "IEEE Std 1516.2-2025 OMT Specification / IEEE1516-OMT-2025.xsd": 224,
+    "IEEE Std 1516.2-2025 OMT Specification / serviceUtilizationType": 196,
+    "IEEE1516-OMT-2010.xsd to IEEE1516-OMT-2025.xsd comparison": 13,
+    "IEEE1516-OMT-2025.xsd enumeration constraint": 15,
+    "IEEE1516-OMT-2025.xsd validation constraint": 14
+  }
+}

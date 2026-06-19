@@ -1,0 +1,86 @@
+{
+  "total_rows": 691,
+  "by_disposition": {
+    "duplicate/umbrella": 22,
+    "partial": 516,
+    "planned": 129,
+    "retired/legacy-only": 24
+  },
+  "by_priority": {
+    "P0": 89,
+    "P1": 430,
+    "P2": 172
+  },
+  "by_area_and_disposition": {
+    "Callback/configuration/binding deltas": {
+      "duplicate/umbrella": 12
+    },
+    "Federate Interface service catalog": {
+      "partial": 96,
+      "planned": 100
+    },
+    "Framework and Rules": {
+      "duplicate/umbrella": 10
+    },
+    "OMT component-level conformance": {
+      "partial": 224
+    },
+    "OMT validator-negative conformance": {
+      "planned": 29
+    },
+    "Retired / replacement mapping candidates": {
+      "retired/legacy-only": 24
+    },
+    "SOM/FOM service-usage requirements": {
+      "partial": 196
+    }
+  },
+  "by_area_and_priority": {
+    "Callback/configuration/binding deltas": {
+      "P0": 9,
+      "P1": 3
+    },
+    "Federate Interface service catalog": {
+      "P0": 51,
+      "P1": 145
+    },
+    "Framework and Rules": {
+      "P1": 4,
+      "P2": 6
+    },
+    "OMT component-level conformance": {
+      "P1": 58,
+      "P2": 166
+    },
+    "OMT validator-negative conformance": {
+      "P0": 29
+    },
+    "Retired / replacement mapping candidates": {
+      "P1": 24
+    },
+    "SOM/FOM service-usage requirements": {
+      "P1": 196
+    }
+  },
+  "by_closure_wave": {
+    "0-retired-filter-and-replacement-map": 24,
+    "1-fi-service-and-binding-disposition": 208,
+    "2-omt-field-and-validator-fixtures": 253,
+    "3-som-fom-service-usage-crosscheck": 196,
+    "4-framework-som-rule-decomposition": 10
+  },
+  "fi_binding_surface": {
+    "fi_rows": 196,
+    "java_present": 196,
+    "cpp_present": 196,
+    "fedpro_present": 191,
+    "fedpro_present_via_alias": 1,
+    "fedpro_route_boundary_or_missing_review": 4,
+    "fedpro_status_counts": {
+      "not-present-route-boundary-callback-pump-control": 4,
+      "present": 191,
+      "present-via-class-and-instance-split": 1
+    }
+  },
+  "important_guardrail": "No row is promoted to harmonization_disposition=covered in this packet because the local repo evidence matrix was not accessible in this workspace."
+}

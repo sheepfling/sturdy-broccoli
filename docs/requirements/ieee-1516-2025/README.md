@@ -29,6 +29,8 @@ Source anchors for modal terms:
 - `traceability_matrix.md`: initial requirement-to-project-lane and language-shim route scenario mapping.
 - `executable_tests/`: imported v3 executable-test backlog with 1117 candidate test rows.
 - `encoding_auth_work_packet/`: imported encoding/auth requirements, vectors, schemas, smoke FOM, and contract-test skeletons.
+- `../../../requirements/2025/depth/`: imported 691-row requirement-depth expansion used as a harmonization candidate for FI service, SOM/FOM service usage, OMT component/schema, validator-negative, framework, binding/configuration, and retired/replacement rows.
+- `../../../requirements/2025/harmonization/`: imported provisional disposition layer over the 691-row depth packet, including FI binding surface accounting, worklist, review queue, coverage rollup, and promotion guardrails.
 
 ## Conformance Language
 
