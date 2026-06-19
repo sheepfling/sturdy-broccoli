@@ -254,6 +254,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.published_interactions: set[str] = set()
         self.subscribed_interactions: set[str] = set()
         self.subscribed_interaction_regions: dict[str, set[str]] = {}
+        self.published_directed_interactions: dict[str, set[str]] = {}
+        self.subscribed_directed_interactions: dict[str, set[str]] = {}
         self.unowned_attributes: set[tuple[str, str]] = set()
         self.offered_attributes: set[tuple[str, str]] = set()
         self.pending_attribute_acquisitions: dict[tuple[str, str], bytes] = {}
@@ -850,6 +852,32 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             interaction_class = request.publishInteractionClassRequest.interactionClass.data.decode("ascii")
             self.published_interactions.add(interaction_class)
             return rti_pb2.CallResponse(publishInteractionClassResponse=rti_pb2.PublishInteractionClassResponse())
+        if request_kind == "publishObjectClassDirectedInteractionsRequest":
+            payload = request.publishObjectClassDirectedInteractionsRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            published = self.published_directed_interactions.setdefault(object_class, set())
+            published.update(interaction.data.decode("ascii") for interaction in payload.interactionClasses.interactionClassHandle)
+            return rti_pb2.CallResponse(
+                publishObjectClassDirectedInteractionsResponse=rti_pb2.PublishObjectClassDirectedInteractionsResponse()
+            )
+        if request_kind in {
+            "unpublishObjectClassDirectedInteractionsRequest",
+            "unpublishObjectClassDirectedInteractionsWithSetRequest",
+        }:
+            payload = getattr(request, request_kind)
+            object_class = payload.objectClass.data.decode("ascii")
+            if request_kind == "unpublishObjectClassDirectedInteractionsRequest":
+                self.published_directed_interactions.pop(object_class, None)
+                return rti_pb2.CallResponse(
+                    unpublishObjectClassDirectedInteractionsResponse=rti_pb2.UnpublishObjectClassDirectedInteractionsResponse()
+                )
+            published = self.published_directed_interactions.setdefault(object_class, set())
+            published.difference_update(interaction.data.decode("ascii") for interaction in payload.interactionClasses.interactionClassHandle)
+            if not published:
+                self.published_directed_interactions.pop(object_class, None)
+            return rti_pb2.CallResponse(
+                unpublishObjectClassDirectedInteractionsWithSetResponse=rti_pb2.UnpublishObjectClassDirectedInteractionsWithSetResponse()
+            )
         if request_kind == "subscribeInteractionClassRequest":
             interaction_class = request.subscribeInteractionClassRequest.interactionClass.data.decode("ascii")
             self.subscribed_interactions.add(interaction_class)
@@ -871,6 +899,39 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 self.subscribed_interaction_regions.pop(interaction_class, None)
                 self.subscribed_interactions.discard(interaction_class)
             return rti_pb2.CallResponse(unsubscribeInteractionClassWithRegionsResponse=rti_pb2.UnsubscribeInteractionClassWithRegionsResponse())
+        if request_kind in {
+            "subscribeObjectClassDirectedInteractionsRequest",
+            "subscribeObjectClassDirectedInteractionsUniversallyRequest",
+        }:
+            payload = getattr(request, request_kind)
+            object_class = payload.objectClass.data.decode("ascii")
+            subscribed = self.subscribed_directed_interactions.setdefault(object_class, set())
+            subscribed.update(interaction.data.decode("ascii") for interaction in payload.interactionClasses.interactionClassHandle)
+            response_kind = (
+                "subscribeObjectClassDirectedInteractionsUniversallyResponse"
+                if request_kind == "subscribeObjectClassDirectedInteractionsUniversallyRequest"
+                else "subscribeObjectClassDirectedInteractionsResponse"
+            )
+            response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
+            return rti_pb2.CallResponse(**{response_kind: response_type()})
+        if request_kind in {
+            "unsubscribeObjectClassDirectedInteractionsRequest",
+            "unsubscribeObjectClassDirectedInteractionsWithSetRequest",
+        }:
+            payload = getattr(request, request_kind)
+            object_class = payload.objectClass.data.decode("ascii")
+            if request_kind == "unsubscribeObjectClassDirectedInteractionsRequest":
+                self.subscribed_directed_interactions.pop(object_class, None)
+                return rti_pb2.CallResponse(
+                    unsubscribeObjectClassDirectedInteractionsResponse=rti_pb2.UnsubscribeObjectClassDirectedInteractionsResponse()
+                )
+            subscribed = self.subscribed_directed_interactions.setdefault(object_class, set())
+            subscribed.difference_update(interaction.data.decode("ascii") for interaction in payload.interactionClasses.interactionClassHandle)
+            if not subscribed:
+                self.subscribed_directed_interactions.pop(object_class, None)
+            return rti_pb2.CallResponse(
+                unsubscribeObjectClassDirectedInteractionsWithSetResponse=rti_pb2.UnsubscribeObjectClassDirectedInteractionsWithSetResponse()
+            )
         if request_kind in {"registerObjectInstanceRequest", "registerObjectInstanceWithNameRequest"}:
             payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
@@ -1127,6 +1188,69 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.interactions_sent += 1
             return rti_pb2.CallResponse(
                 sendInteractionWithTimeResponse=rti_pb2.SendInteractionWithTimeResponse(
+                    result=self._message_retraction_return(retraction_handle)
+                )
+            )
+        if request_kind == "sendDirectedInteractionRequest":
+            payload = request.sendDirectedInteractionRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            record = self.object_instances.get(object_instance)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            object_class = record["objectClass"]
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            if interaction_class not in self.published_directed_interactions.get(object_class, set()):
+                return self._error("InteractionClassNotPublished", interaction_class)
+            if interaction_class in self.subscribed_directed_interactions.get(object_class, set()):
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        receiveDirectedInteraction=callback_pb2.ReceiveDirectedInteraction(
+                            interactionClass=payload.interactionClass,
+                            objectInstance=payload.objectInstance,
+                            parameterValues=payload.parameterValues,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                        )
+                    )
+                )
+                self.interactions_received += 1
+            self.interactions_sent += 1
+            return rti_pb2.CallResponse(sendDirectedInteractionResponse=rti_pb2.SendDirectedInteractionResponse())
+        if request_kind == "sendDirectedInteractionWithTimeRequest":
+            payload = request.sendDirectedInteractionWithTimeRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            record = self.object_instances.get(object_instance)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            object_class = record["objectClass"]
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            if interaction_class not in self.published_directed_interactions.get(object_class, set()):
+                return self._error("InteractionClassNotPublished", interaction_class)
+            retraction_handle = self._next_retraction_handle()
+            if interaction_class in self.subscribed_directed_interactions.get(object_class, set()):
+                self._queue_tso_callback(
+                    retraction_handle,
+                    payload.time,
+                    callback_pb2.CallbackRequest(
+                        receiveDirectedInteractionWithTime=callback_pb2.ReceiveDirectedInteractionWithTime(
+                            interactionClass=payload.interactionClass,
+                            objectInstance=payload.objectInstance,
+                            parameterValues=payload.parameterValues,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                            time=payload.time,
+                            sentOrderType=datatypes_pb2.TIMESTAMP,
+                            receivedOrderType=datatypes_pb2.TIMESTAMP,
+                            optionalRetraction=_handle(datatypes_pb2.MessageRetractionHandle, retraction_handle),
+                        )
+                    ),
+                )
+                self.interactions_received += 1
+            self.interactions_sent += 1
+            return rti_pb2.CallResponse(
+                sendDirectedInteractionWithTimeResponse=rti_pb2.SendDirectedInteractionWithTimeResponse(
                     result=self._message_retraction_return(retraction_handle)
                 )
             )

@@ -165,7 +165,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers object discovery, attribute reflection, interaction receipt, and timestamped variants.",
+        "Hosted FedPro 2025 route covers object discovery, attribute reflection, interaction receipt, directed interaction receipt, and timestamped variants.",
     ),
     _row(
         "object_exchange",

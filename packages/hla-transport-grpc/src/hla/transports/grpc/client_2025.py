@@ -78,6 +78,7 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "REQUEST_FEDERATION_SAVE": "requestFederationSaveWithTimeRequest",
     "RESIGN": "resignFederationExecutionRequest",
     "RETRACT": "retractRequest",
+    "SEND_DIRECTED_INTERACTION_TIMESTAMP": "sendDirectedInteractionWithTimeRequest",
     "SEND_INTERACTION": "sendInteractionRequest",
     "SEND_INTERACTION_TIMESTAMP": "sendInteractionWithTimeRequest",
     "SEND_INTERACTION_WITH_REGIONS": "sendInteractionWithRegionsRequest",
@@ -152,6 +153,7 @@ _TRAILING_TIME_REQUESTS = frozenset(
     {
         "updateAttributeValuesWithTimeRequest",
         "sendInteractionWithTimeRequest",
+        "sendDirectedInteractionWithTimeRequest",
         "deleteObjectInstanceWithTimeRequest",
         "sendInteractionWithRegionsAndTimeRequest",
         "requestFederationSaveWithTimeRequest",
@@ -512,6 +514,34 @@ def _callback_interaction_tso(value: Any) -> tuple[str, ...]:
     return (*fields, regions) if regions else fields
 
 
+def _callback_directed_interaction(value: Any) -> tuple[str, ...]:
+    return (
+        "DIRECTED_INTERACTION",
+        _opaque_text(value.interactionClass.data),
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_value_map(value.parameterValues, "parameterHandleValue"),
+        bytes(value.userSuppliedTag).hex(),
+        _enum_wire_number(datatypes_pb2.RECEIVE),
+        _opaque_text(value.transportationType.data),
+    )
+
+
+def _callback_directed_interaction_tso(value: Any) -> tuple[str, ...]:
+    time_type, time_value = _decode_logical_time(value.time)
+    return (
+        "DIRECTED_INTERACTION_TSO",
+        _opaque_text(value.interactionClass.data),
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_value_map(value.parameterValues, "parameterHandleValue"),
+        bytes(value.userSuppliedTag).hex(),
+        _enum_wire_number(value.sentOrderType),
+        _opaque_text(value.transportationType.data),
+        time_type,
+        time_value,
+        _enum_wire_number(value.receivedOrderType),
+    )
+
+
 def _callback_remove(value: Any) -> tuple[str, ...]:
     if not hasattr(value, "sentOrderType"):
         return (
@@ -547,6 +577,8 @@ _CALLBACK_RESPONSE_FIELDS = {
     "reflectAttributeValuesWithTime": _callback_reflect_tso,
     "receiveInteraction": _callback_interaction,
     "receiveInteractionWithTime": _callback_interaction_tso,
+    "receiveDirectedInteraction": _callback_directed_interaction,
+    "receiveDirectedInteractionWithTime": _callback_directed_interaction_tso,
     "removeObjectInstance": _callback_remove,
     "timeRegulationEnabled": _callback_time("TIME_REGULATION_ENABLED"),
     "timeConstrainedEnabled": _callback_time("TIME_CONSTRAINED_ENABLED"),

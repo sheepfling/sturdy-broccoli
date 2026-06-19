@@ -186,6 +186,91 @@ def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_
         server.close()
 
 
+def test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-directed"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Directed2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Directed", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+
+        assert transport.request(
+            TransportRequest(command="PUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+        assert transport.request(
+            TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProDirectedTarget-1"))).fields[0]
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:545241434b2d44", "64697265637465642d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION",
+            interaction_class,
+            object_instance,
+            f"{parameter}:545241434b2d44",
+            "64697265637465642d746167",
+            "1",
+            "1",
+        )
+
+        assert transport.request(TransportRequest(command="UNSUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:4e4f2d44454c4956455259", "756e737562"),
+                )
+            ).fields
+            == ()
+        )
+        assert server.servicer.callback_queue == []
+
+        assert transport.request(TransportRequest(command="UNPUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class,))).fields == ()
+        with pytest.raises(TransportError) as error:
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:455252", "756e707562"),
+                )
+            )
+        assert error.value.code == "InteractionClassNotPublished"
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "publishObjectClassDirectedInteractionsRequest",
+            "subscribeObjectClassDirectedInteractionsRequest",
+            "sendDirectedInteractionRequest",
+            "unsubscribeObjectClassDirectedInteractionsRequest",
+            "unpublishObjectClassDirectedInteractionsRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
@@ -278,6 +363,90 @@ def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fed
         assert {
             "updateAttributeValuesWithTimeRequest",
             "sendInteractionWithTimeRequest",
+            "retractRequest",
+            "timeAdvanceRequestRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
+def test_2025_transport_server_queues_timestamped_directed_interactions_and_retracts_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-directed-tso"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "DirectedTso2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025DirectedTSO", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+
+        assert transport.request(
+            TransportRequest(command="PUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+        assert transport.request(
+            TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProDirectedTsoTarget-1"))).fields[0]
+        assert server.servicer.callback_queue == []
+
+        late = transport.request(
+            TransportRequest(
+                command="SEND_DIRECTED_INTERACTION_TIMESTAMP",
+                fields=(interaction_class, object_instance, f"{parameter}:6c617465", "6c6174652d746167", "HLAinteger64Time", "20"),
+            )
+        ).fields[0]
+        retracted = transport.request(
+            TransportRequest(
+                command="SEND_DIRECTED_INTERACTION_TIMESTAMP",
+                fields=(interaction_class, object_instance, f"{parameter}:64726f70", "64726f702d746167", "HLAinteger64Time", "15"),
+            )
+        ).fields[0]
+        assert (late, retracted) == ("1", "2")
+
+        assert transport.request(TransportRequest(command="RETRACT", fields=(retracted,))).fields == ()
+        assert server.servicer.queued_tso_callbacks.keys() == {"1"}
+
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "12"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "12")
+
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION_TSO",
+            interaction_class,
+            object_instance,
+            f"{parameter}:6c617465",
+            "6c6174652d746167",
+            "2",
+            "1",
+            "HLAinteger64Time",
+            "20",
+            "2",
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
+        with pytest.raises(TransportError) as error:
+            transport.request(TransportRequest(command="RETRACT", fields=(late,)))
+        assert error.value.code == "MessageCanNoLongerBeRetracted"
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "publishObjectClassDirectedInteractionsRequest",
+            "subscribeObjectClassDirectedInteractionsRequest",
+            "sendDirectedInteractionWithTimeRequest",
             "retractRequest",
             "timeAdvanceRequestRequest",
         } <= set(server.servicer.calls)

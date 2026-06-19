@@ -529,11 +529,12 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "loopback runtime session are present for connect, create federation, join, FOM handle lookup, "
             "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
             "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
-            "callbacks, queued timestamped attribute reflection/interaction receipt with retraction handles and "
-            "pre-delivery retract, object discovery, attribute reflection, interaction receipt, basic DDM "
-            "region-overlap filtering for object attributes, service-reporting switch state, MOM service-invocation "
-            "report callbacks over FedPro, synchronization point/status MOM reports over FedPro, resign, destroy, "
-            "and disconnect. Full MOM action/request routing and full RTI semantics remain outside this slice."
+            "callbacks, queued timestamped attribute reflection/interaction receipt, plus directed-interaction "
+            "receipt with retraction handles and pre-delivery retract, object discovery, attribute reflection, "
+            "interaction receipt, directed interaction receipt, basic DDM region-overlap filtering for object attributes, "
+            "service-reporting switch state, MOM service-invocation report callbacks over FedPro, "
+            "synchronization point/status MOM reports over FedPro, resign, destroy, and disconnect. Full MOM "
+            "action/request routing and full RTI semantics remain outside this slice."
         ),
     },
     {
