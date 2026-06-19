@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from hla.rti1516e.fom import FOMCatalog, FOMResolutionError, FOMResolver, merge_fom_modules
 from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
@@ -859,6 +859,14 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       color: var(--ink);
       margin-bottom: 12px;
     }}
+    button {{
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.82);
+      color: var(--ink);
+      cursor: pointer;
+    }}
     .family-list {{
       max-height: 72vh;
       overflow: auto;
@@ -937,8 +945,19 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }}
+    .builder-grid {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }}
+    .checkbox-list label {{
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }}
     @media (max-width: 1100px) {{
-      .hero, .grid, .split {{ grid-template-columns: 1fr; }}
+      .hero, .grid, .split, .builder-grid {{ grid-template-columns: 1fr; }}
       .family-list {{ max-height: none; }}
     }}
   </style>
@@ -948,7 +967,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     <div class="hero">
       <section class="panel">
         <h1>{html.escape(snapshot.title)}</h1>
-        <p class="muted">Display, inspect, search, and compare FOM families without reparsing XML in the browser. Editing is intentionally out of scope for this first slice.</p>
+        <p class="muted">Display, inspect, search, compare, and compose FOM load sets without reparsing XML in the browser. Repo-owned edit flow stays guarded and precomputed validation packets remain explicit.</p>
         <div>
           <span class="pill">families: {len(snapshot.families)}</span>
           <span class="pill">entries: {len(snapshot.entries)}</span>
@@ -970,6 +989,23 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         </select>
         <input id="family-filter" type="search" placeholder="Filter families, custom load sets, editions, or load modes">
         <div id="family-list" class="family-list"></div>
+        <div class="edit-box" style="margin-top: 14px;">
+          <h3>Custom Load Set Builder</h3>
+          <input id="builder-name" type="text" placeholder="saved load set name">
+          <input id="builder-filter" type="search" placeholder="Filter baseline entries by id, family, edition, or path">
+          <div id="builder-entry-list" class="list checkbox-list"></div>
+          <div class="builder-grid">
+            <button id="builder-save" type="button">save in browser</button>
+            <button id="builder-clear" type="button">clear selection</button>
+          </div>
+          <div class="builder-grid">
+            <button id="builder-export" type="button">export saved sets</button>
+            <button id="builder-import" type="button">import saved sets</button>
+          </div>
+          <textarea id="builder-transfer" placeholder="paste exported custom load set JSON here"></textarea>
+          <div id="builder-saved" class="list" style="margin-top: 10px;"></div>
+          <div id="builder-command" class="list" style="margin-top: 10px;"></div>
+        </div>
       </section>
       <section class="panel">
         <h2>Inspect</h2>
@@ -1014,11 +1050,16 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
   </div>
   <script>
     const snapshot = {payload};
+    const browserStorageKey = "hla2010-fom-workbench-custom-load-sets";
     const familyMap = new Map(snapshot.families.map((family) => [family.scenario_family, family]));
-    const customLoadSetMap = new Map(snapshot.custom_load_sets.map((loadSet) => [loadSet.name, loadSet]));
     const diffMap = new Map(snapshot.diffs.map((diff) => [`${{diff.left_family}}::${{diff.right_family}}`, diff]));
+    const entryMap = new Map(snapshot.entries.map((entry) => [entry.id, entry]));
+    const fixedCustomLoadSetNames = new Set(snapshot.custom_load_sets.map((loadSet) => loadSet.name));
+    const fixedFamilyNames = new Set(snapshot.families.map((family) => family.scenario_family));
+    let browserCustomLoadSets = loadBrowserCustomLoadSets();
+    let builderSelectedMemberIds = new Set();
     let selectedCatalogKind = snapshot.families[0] ? "family" : "custom-load-set";
-    let selectedCatalogName = snapshot.families[0]?.scenario_family || snapshot.custom_load_sets[0]?.name || null;
+    let selectedCatalogName = snapshot.families[0]?.scenario_family || customLoadSets()[0]?.name || null;
     let selectedNodeName = null;
 
     function setCapabilities() {{
@@ -1028,12 +1069,86 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         .join("");
     }}
 
+    function loadBrowserCustomLoadSets() {{
+      try {{
+        const raw = window.localStorage.getItem(browserStorageKey);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((row) => row && typeof row.name === "string" && Array.isArray(row.member_ids));
+      }} catch (_error) {{
+        return [];
+      }}
+    }}
+
+    function saveBrowserCustomLoadSets() {{
+      window.localStorage.setItem(browserStorageKey, JSON.stringify(browserCustomLoadSets));
+    }}
+
+    function normalizeBrowserCustomLoadSets(rows) {{
+      if (!Array.isArray(rows)) return [];
+      const normalized = [];
+      for (const row of rows) {{
+        if (!row || typeof row.name !== "string" || !Array.isArray(row.member_ids)) continue;
+        const name = row.name.trim();
+        if (!name || fixedFamilyNames.has(name) || fixedCustomLoadSetNames.has(name)) continue;
+        const memberIds = [...new Set(row.member_ids.filter((id) => entryMap.has(id)))].sort();
+        if (!memberIds.length) continue;
+        normalized.push({{ name, member_ids: memberIds }});
+      }}
+      const deduped = new Map();
+      for (const row of normalized) deduped.set(row.name, row);
+      return [...deduped.values()].sort((left, right) => left.name.localeCompare(right.name));
+    }}
+
+    function customLoadSetCommand(name, memberIds) {{
+      return `./tools/fom-workbench --html --custom-load-set ${{name}}=${{memberIds.join(",")}}`;
+    }}
+
+    function hydratedBrowserLoadSet(row) {{
+      const members = row.member_ids.map((id) => entryMap.get(id)).filter(Boolean);
+      const editionClasses = [...new Set(members.map((entry) => entry.edition_class))].sort();
+      const baselineKinds = [...new Set(members.map((entry) => entry.baseline_kind))].sort();
+      return {{
+        name: row.name,
+        member_ids: [...row.member_ids],
+        member_paths: members.map((entry) => entry.path),
+        parse_status: "browser-pending",
+        parse_error: "Regenerate the workbench snapshot with the command below to compute parsed trees, diffs, and validation packets.",
+        module_names: members.map((entry) => entry.path.split("/").slice(-1)[0]),
+        object_class_count: 0,
+        interaction_class_count: 0,
+        datatype_count: 0,
+        dimensions: [],
+        object_classes: [],
+        interaction_classes: [],
+        datatype_names: [],
+        object_nodes: [],
+        interaction_nodes: [],
+        validation_command: customLoadSetCommand(row.name, row.member_ids),
+        validation_json_path: null,
+        validation_md_path: null,
+        validation_html_path: null,
+        edition_classes: editionClasses,
+        baseline_kinds: baselineKinds,
+        load_mode: "browser-saved",
+        source_kind: "browser-saved-custom-load-set",
+      }};
+    }}
+
+    function customLoadSets() {{
+      return [
+        ...snapshot.custom_load_sets.map((loadSet) => ({{ ...loadSet, source_kind: "snapshot-custom-load-set" }})),
+        ...browserCustomLoadSets.map(hydratedBrowserLoadSet),
+      ];
+    }}
+
     function currentCatalogItems() {{
-      return selectedCatalogKind === "custom-load-set" ? snapshot.custom_load_sets : snapshot.families;
+      return selectedCatalogKind === "custom-load-set" ? customLoadSets() : snapshot.families;
     }}
 
     function currentCatalogItem() {{
-      if (selectedCatalogKind === "custom-load-set") return customLoadSetMap.get(selectedCatalogName) || null;
+      if (selectedCatalogKind === "custom-load-set") return customLoadSets().find((loadSet) => loadSet.name === selectedCatalogName) || null;
       return familyMap.get(selectedCatalogName) || null;
     }}
 
@@ -1220,6 +1335,174 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       command.innerHTML = `<code>${{cmd}}</code>`;
     }}
 
+    function renderBuilder() {{
+      const nameBox = document.getElementById("builder-name");
+      const filter = document.getElementById("builder-filter").value.trim().toLowerCase();
+      const listHost = document.getElementById("builder-entry-list");
+      const savedHost = document.getElementById("builder-saved");
+      const commandHost = document.getElementById("builder-command");
+      const rows = snapshot.entries.filter((entry) => {{
+        if (!filter) return true;
+        return [entry.id, entry.scenario_family, entry.edition_class, entry.path, entry.load_mode, entry.baseline_kind]
+          .join(" ")
+          .toLowerCase()
+          .includes(filter);
+      }});
+      listHost.innerHTML = rows.map((entry) => {{
+        const checked = builderSelectedMemberIds.has(entry.id) ? "checked" : "";
+        return `<label><input type="checkbox" data-entry-id="${{entry.id}}" ${{checked}}> <code>${{entry.id}}</code> <span class="muted">${{entry.scenario_family}} | ${{entry.edition_class}} | ${{entry.load_mode}}</span></label>`;
+      }}).join("");
+      listHost.querySelectorAll("input[type=checkbox]").forEach((node) => {{
+        node.addEventListener("change", () => {{
+          if (node.checked) builderSelectedMemberIds.add(node.dataset.entryId);
+          else builderSelectedMemberIds.delete(node.dataset.entryId);
+          renderBuilder();
+        }});
+      }});
+      const selectedIds = [...builderSelectedMemberIds].sort();
+      const candidateName = nameBox.value.trim();
+      if (!selectedIds.length) {{
+        commandHost.innerHTML = "<span class='muted'>Select one or more baseline entries to build a named custom load set.</span>";
+      }} else if (!candidateName) {{
+        commandHost.innerHTML = `<code>${{customLoadSetCommand("custom-name", selectedIds)}}</code>`;
+      }} else {{
+        commandHost.innerHTML = `<code>${{customLoadSetCommand(candidateName, selectedIds)}}</code>`;
+      }}
+      if (!browserCustomLoadSets.length) {{
+        savedHost.innerHTML = "<span class='muted'>No browser-saved custom load sets yet.</span>";
+        return;
+      }}
+      savedHost.innerHTML = browserCustomLoadSets.map((row) => `
+        <div style="margin-bottom: 10px;">
+          <strong>${{row.name}}</strong><br>
+          <span class="muted">${{row.member_ids.join(", ")}}</span><br>
+          <button type="button" data-action="load" data-name="${{row.name}}">load selection</button>
+          <button type="button" data-action="inspect" data-name="${{row.name}}">inspect</button>
+          <button type="button" data-action="delete" data-name="${{row.name}}">delete</button>
+        </div>
+      `).join("");
+      savedHost.querySelectorAll("button").forEach((button) => {{
+        button.addEventListener("click", () => {{
+          const row = browserCustomLoadSets.find((item) => item.name === button.dataset.name);
+          if (!row) return;
+          if (button.dataset.action === "load") {{
+            document.getElementById("builder-name").value = row.name;
+            builderSelectedMemberIds = new Set(row.member_ids);
+            renderBuilder();
+            return;
+          }}
+          if (button.dataset.action === "inspect") {{
+            document.getElementById("catalog-mode").value = "custom-load-set";
+            selectedCatalogKind = "custom-load-set";
+            selectedCatalogName = row.name;
+            selectedNodeName = null;
+            renderFamilyList();
+            renderInspect();
+            renderSearch();
+            setDiffSelectors();
+            renderDiff();
+            return;
+          }}
+          browserCustomLoadSets = browserCustomLoadSets.filter((item) => item.name !== row.name);
+          saveBrowserCustomLoadSets();
+          if (selectedCatalogKind === "custom-load-set" && selectedCatalogName === row.name) {{
+            selectedCatalogName = customLoadSets()[0]?.name || null;
+          }}
+          renderBuilder();
+          renderFamilyList();
+          renderInspect();
+          renderSearch();
+          setDiffSelectors();
+          renderDiff();
+        }});
+      }});
+    }}
+
+    function saveBuilderSelection() {{
+      const name = document.getElementById("builder-name").value.trim();
+      const memberIds = [...builderSelectedMemberIds].sort();
+      const commandHost = document.getElementById("builder-command");
+      if (!name) {{
+        commandHost.innerHTML = "<span class='muted'>Name the custom load set before saving it in the browser.</span>";
+        return;
+      }}
+      if (!memberIds.length) {{
+        commandHost.innerHTML = "<span class='muted'>Select at least one baseline entry before saving a custom load set.</span>";
+        return;
+      }}
+      if (fixedFamilyNames.has(name) || fixedCustomLoadSetNames.has(name)) {{
+        commandHost.innerHTML = `<span class='muted'>${{name}} is already used by a family or generated custom load set. Pick another name.</span>`;
+        return;
+      }}
+      browserCustomLoadSets = browserCustomLoadSets.filter((row) => row.name !== name);
+      browserCustomLoadSets.push({{ name, member_ids: memberIds }});
+      browserCustomLoadSets.sort((left, right) => left.name.localeCompare(right.name));
+      saveBrowserCustomLoadSets();
+      selectedCatalogKind = "custom-load-set";
+      selectedCatalogName = name;
+      selectedNodeName = null;
+      renderBuilder();
+      renderFamilyList();
+      renderInspect();
+      renderSearch();
+      setDiffSelectors();
+      renderDiff();
+    }}
+
+    function exportBuilderSets() {{
+      const transfer = document.getElementById("builder-transfer");
+      const commandHost = document.getElementById("builder-command");
+      if (!browserCustomLoadSets.length) {{
+        commandHost.innerHTML = "<span class='muted'>No browser-saved custom load sets to export.</span>";
+        return;
+      }}
+      const payload = JSON.stringify(browserCustomLoadSets, null, 2);
+      transfer.value = payload;
+      if (window.URL && window.Blob) {{
+        const blob = new Blob([payload], {{ type: "application/json" }});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "hla2010-fom-workbench-custom-load-sets.json";
+        link.click();
+        URL.revokeObjectURL(url);
+      }}
+      commandHost.innerHTML = "<span class='muted'>Exported browser-saved custom load sets to the transfer box and download prompt.</span>";
+    }}
+
+    function importBuilderSets() {{
+      const transfer = document.getElementById("builder-transfer");
+      const commandHost = document.getElementById("builder-command");
+      const raw = transfer.value.trim();
+      if (!raw) {{
+        commandHost.innerHTML = "<span class='muted'>Paste exported custom load set JSON into the transfer box before importing.</span>";
+        return;
+      }}
+      let parsed;
+      try {{
+        parsed = JSON.parse(raw);
+      }} catch (_error) {{
+        commandHost.innerHTML = "<span class='muted'>Import JSON is malformed.</span>";
+        return;
+      }}
+      const imported = normalizeBrowserCustomLoadSets(parsed);
+      if (!imported.length) {{
+        commandHost.innerHTML = "<span class='muted'>Import JSON did not contain any valid browser custom load sets.</span>";
+        return;
+      }}
+      const merged = new Map(browserCustomLoadSets.map((row) => [row.name, row]));
+      for (const row of imported) merged.set(row.name, row);
+      browserCustomLoadSets = [...merged.values()].sort((left, right) => left.name.localeCompare(right.name));
+      saveBrowserCustomLoadSets();
+      renderBuilder();
+      renderFamilyList();
+      renderInspect();
+      renderSearch();
+      setDiffSelectors();
+      renderDiff();
+      commandHost.innerHTML = `<span class='muted'>Imported ${{imported.length}} browser custom load set(s).</span>`;
+    }}
+
     function diffKey(left, right) {{
       return `${{left}}::${{right}}`;
     }}
@@ -1229,18 +1512,18 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const right = document.getElementById("right-family");
       const options = [
         ...snapshot.families.map((family) => family.scenario_family),
-        ...snapshot.custom_load_sets.map((loadSet) => loadSet.name),
+        ...customLoadSets().map((loadSet) => loadSet.name),
       ].map((name) => `<option value="${{name}}">${{name}}</option>`).join("");
       left.innerHTML = options;
       right.innerHTML = options;
       left.value = snapshot.families[0]?.scenario_family || "";
-      right.value = snapshot.custom_load_sets[0]?.name || snapshot.families[1]?.scenario_family || snapshot.families[0]?.scenario_family || "";
+      right.value = customLoadSets()[0]?.name || snapshot.families[1]?.scenario_family || snapshot.families[0]?.scenario_family || "";
       left.onchange = renderDiff;
       right.onchange = renderDiff;
     }}
 
     function loadSetByName(name) {{
-      return snapshot.custom_load_sets.find((row) => row.name === name) || null;
+      return customLoadSets().find((row) => row.name === name) || null;
     }}
 
     function renderDiff() {{
@@ -1259,6 +1542,25 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       }}
       const diff = diffMap.get(diffKey(left, right)) || diffMap.get(diffKey(right, left));
       if (!diff) {{
+        const leftLoadSet = loadSetByName(left);
+        const rightLoadSet = loadSetByName(right);
+        if (leftLoadSet || rightLoadSet) {{
+          const leftCommand = leftLoadSet ? customLoadSetCommand(leftLoadSet.name, leftLoadSet.member_ids) : null;
+          const rightCommand = rightLoadSet ? customLoadSetCommand(rightLoadSet.name, rightLoadSet.member_ids) : null;
+          host.innerHTML = `
+            <p class="muted">No precomputed diff row is available for this pair in the current snapshot.</p>
+            <div class="list">
+              ${{
+                leftCommand ? `<code>${{leftCommand}}</code>` : ""
+              }}
+              ${{
+                rightCommand ? `<code>${{rightCommand}}</code>` : ""
+              }}
+              <code>./tools/fom-workbench --html${{leftLoadSet ? ` --custom-load-set ${{leftLoadSet.name}}=${{leftLoadSet.member_ids.join(",")}}` : ""}}${{rightLoadSet ? ` --custom-load-set ${{rightLoadSet.name}}=${{rightLoadSet.member_ids.join(",")}}` : ""}} --diff ${{left}}:${{right}}</code>
+            </div>
+          `;
+          return;
+        }}
         host.textContent = "No diff row available.";
         return;
       }}
@@ -1314,7 +1616,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     document.getElementById("catalog-mode").addEventListener("change", (event) => {{
       selectedCatalogKind = event.target.value;
       selectedCatalogName = selectedCatalogKind === "custom-load-set"
-        ? (snapshot.custom_load_sets[0]?.name || null)
+        ? (customLoadSets()[0]?.name || null)
         : (snapshot.families[0]?.scenario_family || null);
       selectedNodeName = null;
       renderFamilyList();
@@ -1327,9 +1629,20 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     document.getElementById("edit-description").addEventListener("input", renderEditFlow);
     document.getElementById("edit-keywords").addEventListener("input", renderEditFlow);
     document.getElementById("edit-notes").addEventListener("input", renderEditFlow);
+    document.getElementById("builder-filter").addEventListener("input", renderBuilder);
+    document.getElementById("builder-name").addEventListener("input", renderBuilder);
+    document.getElementById("builder-save").addEventListener("click", saveBuilderSelection);
+    document.getElementById("builder-clear").addEventListener("click", () => {{
+      builderSelectedMemberIds = new Set();
+      document.getElementById("builder-name").value = "";
+      renderBuilder();
+    }});
+    document.getElementById("builder-export").addEventListener("click", exportBuilderSets);
+    document.getElementById("builder-import").addEventListener("click", importBuilderSets);
     document.getElementById("custom-left").addEventListener("input", renderDiff);
     document.getElementById("custom-right").addEventListener("input", renderDiff);
     setCapabilities();
+    renderBuilder();
     renderFamilyList();
     renderInspect();
     renderSearch();

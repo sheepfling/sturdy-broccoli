@@ -202,9 +202,100 @@ def _module_counts(module: FOMModule | None) -> tuple[int, int, int, tuple[str, 
     )
 
 
+def _local_name(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1]
+
+
+def _direct_children(element: ET.Element, local_name: str) -> tuple[ET.Element, ...]:
+    return tuple(child for child in list(element) if _local_name(child.tag) == local_name)
+
+
+def _find_text(element: ET.Element, local_name: str) -> str | None:
+    child = next((node for node in list(element) if _local_name(node.tag) == local_name), None)
+    if child is None or child.text is None:
+        return None
+    value = child.text.strip()
+    return value or None
+
+
+def _dimension_names(element: ET.Element) -> tuple[str, ...]:
+    names: list[str] = []
+    for child in list(element):
+        if _local_name(child.tag) != "dimension":
+            continue
+        value = _find_text(child, "name")
+        if value is None and child.text:
+            value = child.text.strip() or None
+        if value and value not in names:
+            names.append(value)
+    return tuple(names)
+
+
+def _declared_member_metadata(module: FOMModule) -> dict[str, dict[str, dict[str, tuple[str, ...]]]]:
+    if module.path is None or not module.path.exists():
+        return {"object": {}, "interaction": {}}
+    root = ET.parse(module.path).getroot()
+    object_meta: dict[str, dict[str, tuple[str, ...]]] = {}
+    interaction_meta: dict[str, dict[str, tuple[str, ...]]] = {}
+
+    def walk_object(node: ET.Element, prefix: str | None) -> None:
+        name = _find_text(node, "name")
+        if not name:
+            return
+        full_name = name if not prefix else f"{prefix}.{name}"
+        declared_datatypes: list[str] = []
+        dimension_usage: list[str] = []
+        for attribute in _direct_children(node, "attribute"):
+            datatype = _find_text(attribute, "dataType")
+            if datatype and datatype not in declared_datatypes:
+                declared_datatypes.append(datatype)
+            for dimension in _dimension_names(attribute):
+                if dimension not in dimension_usage:
+                    dimension_usage.append(dimension)
+        object_meta[full_name] = {
+            "declared_datatype_hints": tuple(declared_datatypes),
+            "declared_dimension_usage": tuple(dimension_usage),
+        }
+        for child in _direct_children(node, "objectClass"):
+            walk_object(child, full_name)
+
+    def walk_interaction(node: ET.Element, prefix: str | None) -> None:
+        name = _find_text(node, "name")
+        if not name:
+            return
+        full_name = name if not prefix else f"{prefix}.{name}"
+        declared_datatypes: list[str] = []
+        dimension_usage: list[str] = []
+        for parameter in _direct_children(node, "parameter"):
+            datatype = _find_text(parameter, "dataType")
+            if datatype and datatype not in declared_datatypes:
+                declared_datatypes.append(datatype)
+            for dimension in _dimension_names(parameter):
+                if dimension not in dimension_usage:
+                    dimension_usage.append(dimension)
+        interaction_meta[full_name] = {
+            "declared_datatype_hints": tuple(declared_datatypes),
+            "declared_dimension_usage": tuple(dimension_usage),
+        }
+        for child in _direct_children(node, "interactionClass"):
+            walk_interaction(child, full_name)
+
+    objects_section = next((child for child in list(root) if _local_name(child.tag) == "objects"), None)
+    if objects_section is not None:
+        for object_class in _direct_children(objects_section, "objectClass"):
+            walk_object(object_class, None)
+    interactions_section = next((child for child in list(root) if _local_name(child.tag) == "interactions"), None)
+    if interactions_section is not None:
+        for interaction_class in _direct_children(interactions_section, "interactionClass"):
+            walk_interaction(interaction_class, None)
+    return {"object": object_meta, "interaction": interaction_meta}
+
+
 def _member_summary(module: FOMModule) -> dict[str, Any]:
+    declared_meta = _declared_member_metadata(module)
     object_nodes = []
     for spec in sorted(module.object_classes, key=lambda row: row.full_name):
+        spec_meta = declared_meta["object"].get(spec.full_name, {})
         object_nodes.append(
             {
                 "full_name": spec.full_name,
@@ -212,10 +303,14 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
                 "lineage": tuple(spec.full_name.split(".")),
                 "declared_names": tuple(getattr(spec, "declared_attributes", ())),
                 "total_names": tuple(getattr(spec, "attributes", ())),
+                "datatype_hints": tuple(dict.fromkeys(getattr(spec, "attribute_datatypes", {}).values())),
+                "declared_datatype_hints": tuple(spec_meta.get("declared_datatype_hints", ())),
+                "declared_dimension_usage": tuple(spec_meta.get("declared_dimension_usage", ())),
             }
         )
     interaction_nodes = []
     for spec in sorted(module.interaction_classes, key=lambda row: row.full_name):
+        spec_meta = declared_meta["interaction"].get(spec.full_name, {})
         interaction_nodes.append(
             {
                 "full_name": spec.full_name,
@@ -223,6 +318,9 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
                 "lineage": tuple(spec.full_name.split(".")),
                 "declared_names": tuple(getattr(spec, "declared_parameters", ())),
                 "total_names": tuple(getattr(spec, "parameters", ())),
+                "datatype_hints": tuple(dict.fromkeys(getattr(spec, "parameter_datatypes", {}).values())),
+                "declared_datatype_hints": tuple(spec_meta.get("declared_datatype_hints", ())),
+                "declared_dimension_usage": tuple(spec_meta.get("declared_dimension_usage", ())),
             }
         )
     return {
@@ -587,9 +685,21 @@ function sharedNodeMemberDiffs(leftNodes, rightNodes) {{
     const right = rightMap.get(name);
     const declared = diffLists(left.declared_names || [], right.declared_names || []);
     const total = diffLists(left.total_names || [], right.total_names || []);
-    return {{ name, lineage: left.lineage || [name], declared, total }};
+    const datatypeHints = diffLists(left.datatype_hints || [], right.datatype_hints || []);
+    const declaredDatatypeHints = diffLists(left.declared_datatype_hints || [], right.declared_datatype_hints || []);
+    const dimensionUsage = diffLists(left.declared_dimension_usage || [], right.declared_dimension_usage || []);
+    return {{ name, lineage: left.lineage || [name], declared, total, datatypeHints, declaredDatatypeHints, dimensionUsage }};
   }}).filter((row) =>
-    row.declared.onlyLeft.length || row.declared.onlyRight.length || row.total.onlyLeft.length || row.total.onlyRight.length
+    row.declared.onlyLeft.length
+    || row.declared.onlyRight.length
+    || row.total.onlyLeft.length
+    || row.total.onlyRight.length
+    || row.datatypeHints.onlyLeft.length
+    || row.datatypeHints.onlyRight.length
+    || row.declaredDatatypeHints.onlyLeft.length
+    || row.declaredDatatypeHints.onlyRight.length
+    || row.dimensionUsage.onlyLeft.length
+    || row.dimensionUsage.onlyRight.length
   );
 }}
 function listBlock(items) {{
@@ -610,6 +720,12 @@ function sharedNodeDiffBlock(rows) {{
       <div class="muted">declared right-only: ${{row.declared.onlyRight.join(", ") || "none"}}</div>
       <div class="muted">inherited/total left-only: ${{row.total.onlyLeft.join(", ") || "none"}}</div>
       <div class="muted">inherited/total right-only: ${{row.total.onlyRight.join(", ") || "none"}}</div>
+      <div class="muted">datatype hints left-only: ${{row.datatypeHints.onlyLeft.join(", ") || "none"}}</div>
+      <div class="muted">datatype hints right-only: ${{row.datatypeHints.onlyRight.join(", ") || "none"}}</div>
+      <div class="muted">declared datatype hints left-only: ${{row.declaredDatatypeHints.onlyLeft.join(", ") || "none"}}</div>
+      <div class="muted">declared datatype hints right-only: ${{row.declaredDatatypeHints.onlyRight.join(", ") || "none"}}</div>
+      <div class="muted">dimension usage left-only: ${{row.dimensionUsage.onlyLeft.join(", ") || "none"}}</div>
+      <div class="muted">dimension usage right-only: ${{row.dimensionUsage.onlyRight.join(", ") || "none"}}</div>
     </div>
   `).join("")}}</div>`;
 }}

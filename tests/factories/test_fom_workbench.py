@@ -103,6 +103,12 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert "Overlay / Diff" in html_text
     assert "Node Drill-Down" in html_text
     assert "Guarded Edit Flow" in html_text
+    assert "Custom Load Set Builder" in html_text
+    assert "save in browser" in html_text
+    assert "export saved sets" in html_text
+    assert "import saved sets" in html_text
+    assert "hla2010-fom-workbench-custom-load-sets.json" in html_text
+    assert "hla2010-fom-workbench-custom-load-sets" in html_text
     assert "custom-target-plus-demo" in html_text
     assert "open HTML validation packet" in html_text
     assert "validation_packets/target-radar/fom_validation_report.html" in html_text
@@ -139,6 +145,8 @@ def test_tools_fom_workbench_writes_snapshot_artifact(tmp_path: Path) -> None:
     assert "Inspect" in html_text
     assert "Overlay / Diff" in html_text
     assert "Guarded Edit Flow" in html_text
+    assert "Custom Load Set Builder" in html_text
+    assert "export saved sets" in html_text
     assert (output_dir / "validation_packets" / "target-radar" / "fom_validation_report.html").exists()
     assert (output_dir / "validation_packets" / "custom-target-plus-demo" / "fom_validation_report.html").exists()
 

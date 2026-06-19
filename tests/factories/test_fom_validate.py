@@ -153,3 +153,5 @@ def test_write_fom_validation_html_renders_member_side_by_side_diff_for_multi_mo
     assert "Only Right Interaction Tree" in text
     assert "Shared Object Member Deltas" in text
     assert "inherited/total left-only" in text
+    assert "datatype hints left-only" in text
+    assert "dimension usage left-only" in text

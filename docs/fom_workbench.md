@@ -129,6 +129,8 @@ The current HTML slice implements:
 
 - family catalog
 - direct inspect-pane browsing for named custom load sets
+- browser-side custom load-set builder/save flow backed by local storage
+- browser-side export/import for saved custom load sets
 - family inspect panel
 - per-family precomputed validation packet links
 - per-custom-load-set precomputed validation packet links
@@ -136,6 +138,13 @@ The current HTML slice implements:
 - pairwise family overlay/diff over precomputed default load sets
 - hierarchy-aware object/interaction drill-down
 - guarded edit command generation for repo-owned XML only
+
+Browser-saved custom load sets are intentionally lightweight:
+
+- they persist in the browser without editing the repo
+- they can be exported/imported as JSON for reuse across machines or snapshots
+- they generate exact rerun commands for `./tools/fom-workbench --html --custom-load-set ...`
+- they do not claim parsed trees, validation packets, or diff rows until the tool is rerun and materializes them
 
 The generated workbench packet now also materializes:
 
@@ -164,10 +173,13 @@ The workbench now connects directly to the validator surface:
 - family inspect panel shows the exact `./tools/fom-validate --family ... --html` command
 - generated workbench artifacts include precomputed validation packets per family
 - generated workbench artifacts include precomputed validation packets per named custom load set
-- validation HTML supports side-by-side hierarchy-aware member tree diffing for multi-module load sets, including declared-vs-total member deltas on shared nodes
+- validation HTML supports side-by-side hierarchy-aware member tree diffing for multi-module load sets, including:
+  - declared-vs-total member deltas on shared nodes
+  - datatype-hint deltas on shared nodes
+  - dimension-usage deltas on shared nodes
 
 ## Next Implementation Slices
 
-1. surface custom load-set builders and saved sets directly from the browser UI
-2. expand hierarchy-aware diffing into datatype-hint deltas and dimension usage deltas on shared nodes
-3. expand guarded repo-owned edit flows into selected safe structural edits
+1. expand guarded repo-owned edit flows into selected safe structural edits
+2. add richer semantic merge-repair guidance when a browser-saved load set is regenerated and fails to merge
+3. add browser-side validation command synthesis for imported sets with multiple candidate diff partners
