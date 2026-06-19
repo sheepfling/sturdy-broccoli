@@ -1,9 +1,9 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 27,
+    "covered": 53,
     "duplicate/umbrella": 22,
-    "partial": 502,
+    "partial": 476,
     "planned": 116,
     "retired/legacy-only": 24
   },
@@ -17,8 +17,8 @@
       "duplicate/umbrella": 12
     },
     "Federate Interface service catalog": {
-      "covered": 27,
-      "partial": 82,
+      "covered": 53,
+      "partial": 56,
       "planned": 87
     },
     "Framework and Rules": {

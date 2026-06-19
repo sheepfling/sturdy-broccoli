@@ -8,9 +8,9 @@ to `covered` where direct repo evidence and executable anchors are present.
 ## Result
 
 - Total rows dispositioned: 691
-- Disposition counts: covered=27, duplicate/umbrella=22, partial=502, planned=116, retired/legacy-only=24
+- Disposition counts: covered=53, duplicate/umbrella=22, partial=476, planned=116, retired/legacy-only=24
 - Priority counts: P0=89, P1=430, P2=172
-- Covered rows promoted in this pass: 27
+- Covered rows promoted in this pass: 53
 
 The covered subset is deliberate and limited. This pass does not claim blanket
 implementation proof. Each row still carries a closure wave, priority, source
