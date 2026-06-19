@@ -72,15 +72,37 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-save-restore-lifecycle",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
+        "requirements": (
+            "HLA2025-FI-SVC-018",
+            "HLA2025-FI-SVC-019",
+            "HLA2025-FI-SVC-020",
+            "HLA2025-FI-SVC-021",
+            "HLA2025-FI-SVC-022",
+            "HLA2025-FI-SVC-023",
+            "HLA2025-FI-SVC-024",
+            "HLA2025-FI-SVC-025",
+            "HLA2025-FI-SVC-026",
+            "HLA2025-FI-SVC-027",
+            "HLA2025-FI-SVC-028",
+            "HLA2025-FI-SVC-029",
+            "HLA2025-FI-SVC-030",
+            "HLA2025-FI-SVC-031",
+            "HLA2025-FI-SVC-032",
+            "HLA2025-FI-SVC-033",
+            "HLA2025-FI-SVC-034",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+            "HLA2025-REQ-002",
+        ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "Python 2025 shim supports federation save/restore lifecycle callbacks, status responses, "
-            "successful federationSaved/federationRestored completion, missing-label restore failure, "
-            "federate-reported save/restore failure, save/restore abort callbacks, object registry rollback, "
+            "Python 2025 shim supports requestFederationSave and requestFederationRestore with initiate, begun, "
+            "complete, abort, and query-status flows; federation save/restore lifecycle callbacks and status "
+            "responses; successful federationSaved/federationRestored completion; missing-label restore failure; "
+            "federate-reported save/restore failure; save/restore abort callbacks; object registry rollback; "
             "and joined-federate logical-time rollback."
         ),
     },
@@ -451,6 +473,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": (
             "HLA2025-FI-SVC-001",
+            "HLA2025-FI-SVC-005",
+            "HLA2025-FI-SVC-007",
+            "HLA2025-FI-SVC-013",
+            "HLA2025-FI-SVC-014",
+            "HLA2025-FI-SVC-015",
+            "HLA2025-FI-SVC-016",
+            "HLA2025-FI-SVC-017",
             "HLA2025-FI-SVC-004",
             "HLA2025-FI-SVC-008",
             "HLA2025-FI-SVC-009",
@@ -464,9 +493,37 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "supported_scope": (
             "Python 2025 shim accepts 2025 connect requests, creates federation executions with resolved FOM "
-            "modules and selected logical-time implementation, joins named federates, reports federation "
-            "execution members and missing-federation callbacks, resigns joined federates, and emits the "
-            "federateResigned callback with resign context on local resign."
+            "modules and selected logical-time implementation, lists federation executions, joins named federates, "
+            "reports federation execution members and missing-federation callbacks, registers synchronization "
+            "points with announce/achieved/federationSynchronized callback flow, resigns joined federates, emits "
+            "the federateResigned callback with resign context on local resign, and destroys federation executions "
+            "once they are empty."
+        ),
+    },
+    {
+        "id": "2025-basic-declaration-services",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-FI-SVC-035",
+            "HLA2025-FI-SVC-036",
+            "HLA2025-FI-SVC-037",
+            "HLA2025-FI-SVC-038",
+            "HLA2025-FI-SVC-041",
+            "HLA2025-FI-SVC-042",
+            "HLA2025-FI-SVC-043",
+            "HLA2025-FI-SVC-044",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports publish and unpublish for object class attributes and interaction classes "
+            "plus subscribe and unsubscribe for object class attributes and interaction classes. Published state "
+            "gates updateAttributeValues and sendInteraction delivery, and unsubscribe state stops subsequent "
+            "reflectAttributeValues and receiveInteraction callbacks for the affected target federate."
         ),
     },
     {

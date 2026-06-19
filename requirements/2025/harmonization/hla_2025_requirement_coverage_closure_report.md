@@ -8,9 +8,9 @@ to `covered` where direct repo evidence and executable anchors are present.
 ## Result
 
 - Total rows dispositioned: 691
-- Disposition counts: covered=89, duplicate/umbrella=22, partial=476, planned=80, retired/legacy-only=24
+- Disposition counts: covered=121, duplicate/umbrella=22, partial=476, planned=48, retired/legacy-only=24
 - Priority counts: P0=89, P1=430, P2=172
-- Covered rows promoted in this pass: 89
+- Covered rows promoted in this pass: 121
 
 The covered subset is deliberate and limited. This pass does not claim blanket
 implementation proof. Each row still carries a closure wave, priority, source
@@ -37,6 +37,8 @@ FedPro request messages in the provided protocol packet.
 |---|---|---|
 | Imported rows are only candidates | Every row now has `harmonization_disposition`, `priority`, `closure_wave`, `repo_evidence_status`, and `promotion_rule`, and a subset is promoted where repo evidence is reconciled. | Keep non-covered rows tied to direct anchors before promotion. |
 | FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and a covered subset now points at direct shim evidence. | Map each remaining service to Python shim route, vendor route, callback path, and executable tests. |
+| Federation lifecycle rows lacked harmonized promotion | Federation execution listing, synchronization-point lifecycle, save/restore request-status flows, abort paths, and restore/save completion callbacks now point at explicit finish-line slices with direct shim tests. | Keep slice scope synchronized with future save/restore or synchronization behavior changes. |
+| Declaration baseline rows lacked harmonized promotion | Basic publish/unpublish and subscribe/unsubscribe rows now point at a dedicated declaration slice with delivery-gating evidence for updates and interactions. | Add equally direct evidence before promoting registration-availability and turn-interactions callbacks. |
 | OMT component depth is not proof | OMT component rows are separated from validator-negative rows and assigned fixture-level closure tasks. | Add positive/negative XML fixtures and parser/import-export assertions per row/group. |
 | OMT validator-negative constraints lacked reconciled promotion | All 29 `HLA2025-OMT-CV-*` rows now point at `2025-omt-schema-constraint-validation`, the validator implementation, and executable positive/negative assertions. | Keep the finish-line slice, schema validator, and validation tests aligned when constraints or fixtures change. |
 | DDM region services lacked harmonized promotion | A first P1 DDM tranche now points at `2025-ddm-default-attribute-policy` for create/commit/associate plus regional object and interaction subscription/send behavior. | Add equally direct runtime evidence before promoting delete, register-with-regions, unassociate, object-region unsubscribe, and request-update-with-regions rows. |

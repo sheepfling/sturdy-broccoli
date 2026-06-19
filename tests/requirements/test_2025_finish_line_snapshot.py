@@ -43,12 +43,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert disposition["status"] == "repo-reconciled-disposition"
     assert disposition["row_count"] == 691
     assert disposition["row_count_from_csv"] == 691
-    assert disposition["covered_row_count"] == 89
+    assert disposition["covered_row_count"] == 121
     assert disposition["by_disposition"] == {
         "duplicate/umbrella": 22,
-        "covered": 89,
+        "covered": 121,
         "partial": 476,
-        "planned": 80,
+        "planned": 48,
         "retired/legacy-only": 24,
     }
     assert disposition["by_priority"] == {"P0": 89, "P1": 430, "P2": 172}
@@ -123,7 +123,10 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "message retraction before delivery" in slices["2025-logical-time"]["supported_scope"]
     assert "Cross-binding parity" in slices["2025-logical-time"]["supported_scope"]
     assert slices["2025-save-restore-lifecycle"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-018" in slices["2025-save-restore-lifecycle"]["requirements"]
+    assert "HLA2025-FI-SVC-034" in slices["2025-save-restore-lifecycle"]["requirements"]
     assert "federation save/restore lifecycle callbacks" in slices["2025-save-restore-lifecycle"]["supported_scope"]
+    assert "requestFederationSave and requestFederationRestore" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert "object registry rollback" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert "joined-federate logical-time rollback" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert slices["2025-switch-inquiry-control"]["status"] == "implemented-slice"
@@ -210,10 +213,19 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "connectionLost callback" in slices["2025-connection-lifecycle-services"]["supported_scope"]
     assert slices["2025-federation-lifecycle-services"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-001" in slices["2025-federation-lifecycle-services"]["requirements"]
+    assert "HLA2025-FI-SVC-005" in slices["2025-federation-lifecycle-services"]["requirements"]
+    assert "HLA2025-FI-SVC-017" in slices["2025-federation-lifecycle-services"]["requirements"]
     assert "HLA2025-FI-SVC-012" in slices["2025-federation-lifecycle-services"]["requirements"]
     assert "creates federation executions with resolved FOM modules" in slices["2025-federation-lifecycle-services"]["supported_scope"]
+    assert "lists federation executions" in slices["2025-federation-lifecycle-services"]["supported_scope"]
+    assert "registers synchronization points" in slices["2025-federation-lifecycle-services"]["supported_scope"]
     assert "reports federation execution members" in slices["2025-federation-lifecycle-services"]["supported_scope"]
     assert "federateResigned callback" in slices["2025-federation-lifecycle-services"]["supported_scope"]
+    assert slices["2025-basic-declaration-services"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-035" in slices["2025-basic-declaration-services"]["requirements"]
+    assert "HLA2025-FI-SVC-044" in slices["2025-basic-declaration-services"]["requirements"]
+    assert "publish and unpublish for object class attributes and interaction classes" in slices["2025-basic-declaration-services"]["supported_scope"]
+    assert "unsubscribe state stops subsequent reflectAttributeValues and receiveInteraction callbacks" in slices["2025-basic-declaration-services"]["supported_scope"]
     assert slices["2025-support-handle-normalization-and-switches"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-167" in slices["2025-support-handle-normalization-and-switches"]["requirements"]
     assert "HLA2025-FI-SVC-181" in slices["2025-support-handle-normalization-and-switches"]["requirements"]
@@ -288,7 +300,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["executable_test_backlog"]["row_count"] == 1117
     assert payload["requirement_depth_expansion"]["row_count"] == 691
-    assert payload["requirement_coverage_disposition"]["covered_row_count"] == 89
+    assert payload["requirement_coverage_disposition"]["covered_row_count"] == 121
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
 
