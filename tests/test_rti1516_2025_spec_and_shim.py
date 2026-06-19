@@ -544,6 +544,149 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     publisher.disconnect()
 
 
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-MOD-006",
+    "HLA2025-MOD-007",
+)
+def test_2025_shim_passive_and_universal_subscription_aliases_match_active_exchange(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "AliasExchange2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Alias Exchange 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Passive and universal alias exchange fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-alias-exchange-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("AliasPublisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("AliasSubscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = publisher.getAttributeHandle(object_class, "Position")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+
+    object_instance = publisher.registerObjectInstance(object_class, "AliasTarget-1")
+
+    subscriber.subscribeObjectClassAttributesPassively(object_class, {attribute})
+    assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
+        object_instance,
+        object_class,
+        "AliasTarget-1",
+        publisher_handle,
+    )
+
+    publisher.publishObjectClassAttributes(object_class, {attribute})
+    subscriber_callbacks.callbacks.clear()
+    publisher.updateAttributeValues(object_instance, {attribute: b"alias-position"}, b"alias-update")
+    reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection[:6] == (
+        object_instance,
+        {attribute: b"alias-position"},
+        b"alias-update",
+        reliable,
+        publisher_handle,
+        set(),
+    )
+    assert reflection[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+
+    subscriber.subscribeInteractionClassPassively(interaction_class)
+    publisher.publishInteractionClass(interaction_class)
+    subscriber_callbacks.callbacks.clear()
+    publisher.sendInteraction(interaction_class, {parameter: b"passive-track"}, b"passive-interaction")
+    received = subscriber_callbacks.last_callback("receiveInteraction")
+    assert received is not None
+    assert received[:6] == (
+        interaction_class,
+        {parameter: b"passive-track"},
+        b"passive-interaction",
+        reliable,
+        publisher_handle,
+        set(),
+    )
+    assert received[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+
+    subscriber.subscribeObjectClassDirectedInteractionsUniversally(object_class, {interaction_class})
+    publisher.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+    subscriber_callbacks.callbacks.clear()
+    publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"universal-track"}, b"universal-directed")
+    directed = subscriber_callbacks.last_callback("receiveDirectedInteraction")
+    assert directed is not None
+    assert directed[:6] == (
+        interaction_class,
+        object_instance,
+        {parameter: b"universal-track"},
+        b"universal-directed",
+        reliable,
+        publisher_handle,
+    )
+    assert directed[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-FI-SVC-001", "HLA2025-FI-SVC-002")
 def test_2025_shim_is_first_green_runtime_path() -> None:
     from hla.rti import create_rti_ambassador

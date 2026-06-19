@@ -186,6 +186,151 @@ def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_
         server.close()
 
 
+def test_2025_transport_server_routes_passive_and_universal_subscription_aliases_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-aliases"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Alias2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Aliases", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProAliasTarget-1"))).fields[0]
+
+        passive_object_response = server.servicer.Call(
+            rti_pb2.CallRequest(
+                subscribeObjectClassAttributesPassivelyRequest=rti_pb2.SubscribeObjectClassAttributesPassivelyRequest(
+                    objectClass=datatypes_pb2.ObjectClassHandle(data=object_class.encode("ascii")),
+                    attributes=datatypes_pb2.AttributeHandleSet(
+                        attributeHandle=[datatypes_pb2.AttributeHandle(data=attribute.encode("ascii"))]
+                    ),
+                )
+            ),
+            None,
+        )
+        assert passive_object_response.WhichOneof("callResponse") == "subscribeObjectClassAttributesPassivelyResponse"
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_instance,
+            object_class,
+            "FedProAliasTarget-1",
+        )
+
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:616c6961732d706f736974696f6e", "706173736976652d757064617465"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REFLECT",
+            object_instance,
+            f"{attribute}:616c6961732d706f736974696f6e",
+            "706173736976652d757064617465",
+            "1",
+            "1",
+        )
+
+        passive_interaction_response = server.servicer.Call(
+            rti_pb2.CallRequest(
+                subscribeInteractionClassPassivelyRequest=rti_pb2.SubscribeInteractionClassPassivelyRequest(
+                    interactionClass=datatypes_pb2.InteractionClassHandle(data=interaction_class.encode("ascii"))
+                )
+            ),
+            None,
+        )
+        assert passive_interaction_response.WhichOneof("callResponse") == "subscribeInteractionClassPassivelyResponse"
+
+        assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION",
+                    fields=(interaction_class, f"{parameter}:706173736976652d747261636b", "706173736976652d696e746572616374696f6e"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INTERACTION",
+            interaction_class,
+            f"{parameter}:706173736976652d747261636b",
+            "706173736976652d696e746572616374696f6e",
+            "1",
+            "1",
+        )
+
+        universal_directed_response = server.servicer.Call(
+            rti_pb2.CallRequest(
+                subscribeObjectClassDirectedInteractionsUniversallyRequest=(
+                    rti_pb2.SubscribeObjectClassDirectedInteractionsUniversallyRequest(
+                        objectClass=datatypes_pb2.ObjectClassHandle(data=object_class.encode("ascii")),
+                        interactionClasses=datatypes_pb2.InteractionClassHandleSet(
+                            interactionClassHandle=[datatypes_pb2.InteractionClassHandle(data=interaction_class.encode("ascii"))]
+                        ),
+                    )
+                )
+            ),
+            None,
+        )
+        assert universal_directed_response.WhichOneof("callResponse") == "subscribeObjectClassDirectedInteractionsUniversallyResponse"
+
+        assert transport.request(
+            TransportRequest(command="PUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(
+                        interaction_class,
+                        object_instance,
+                        f"{parameter}:756e6976657273616c2d747261636b",
+                        "756e6976657273616c2d6469726563746564",
+                    ),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION",
+            interaction_class,
+            object_instance,
+            f"{parameter}:756e6976657273616c2d747261636b",
+            "756e6976657273616c2d6469726563746564",
+            "1",
+            "1",
+        )
+
+        assert {
+            "subscribeObjectClassAttributesPassivelyRequest",
+            "subscribeInteractionClassPassivelyRequest",
+            "subscribeObjectClassDirectedInteractionsUniversallyRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

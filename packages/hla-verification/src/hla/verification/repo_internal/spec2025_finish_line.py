@@ -527,6 +527,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "2025 FedPro protobuf package, gRPC service binding, typed request/callback oneofs, and a hosted "
             "loopback runtime session are present for connect, create federation, join, FOM handle lookup, "
+            "passive object-attribute and passive interaction subscribe alias routes, universal directed "
+            "subscribe alias routing, "
             "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
             "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
             "callbacks, queued timestamped attribute reflection/interaction receipt, plus directed-interaction "

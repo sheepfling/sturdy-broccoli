@@ -815,8 +815,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle
             )
             return rti_pb2.CallResponse(publishObjectClassAttributesResponse=rti_pb2.PublishObjectClassAttributesResponse())
-        if request_kind == "subscribeObjectClassAttributesRequest":
-            payload = request.subscribeObjectClassAttributesRequest
+        if request_kind in {
+            "subscribeObjectClassAttributesRequest",
+            "subscribeObjectClassAttributesWithRateRequest",
+            "subscribeObjectClassAttributesPassivelyRequest",
+            "subscribeObjectClassAttributesPassivelyWithRateRequest",
+        }:
+            payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
             self.subscribed_object_attributes.setdefault(object_class, set()).update(
                 attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle
@@ -824,7 +829,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for object_instance, record in self.object_instances.items():
                 if record["objectClass"] == object_class:
                     self._queue_discovery(object_instance, object_class, record["name"])
-            return rti_pb2.CallResponse(subscribeObjectClassAttributesResponse=rti_pb2.SubscribeObjectClassAttributesResponse())
+            response_kind = request_kind.replace("Request", "Response")
+            response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
+            return rti_pb2.CallResponse(**{response_kind: response_type()})
         if request_kind == "subscribeObjectClassAttributesWithRegionsRequest":
             payload = request.subscribeObjectClassAttributesWithRegionsRequest
             object_class = payload.objectClass.data.decode("ascii")
@@ -881,10 +888,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(
                 unpublishObjectClassDirectedInteractionsWithSetResponse=rti_pb2.UnpublishObjectClassDirectedInteractionsWithSetResponse()
             )
-        if request_kind == "subscribeInteractionClassRequest":
-            interaction_class = request.subscribeInteractionClassRequest.interactionClass.data.decode("ascii")
+        if request_kind in {
+            "subscribeInteractionClassRequest",
+            "subscribeInteractionClassPassivelyRequest",
+        }:
+            payload = getattr(request, request_kind)
+            interaction_class = payload.interactionClass.data.decode("ascii")
             self.subscribed_interactions.add(interaction_class)
-            return rti_pb2.CallResponse(subscribeInteractionClassResponse=rti_pb2.SubscribeInteractionClassResponse())
+            response_kind = request_kind.replace("Request", "Response")
+            response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
+            return rti_pb2.CallResponse(**{response_kind: response_type()})
         if request_kind == "subscribeInteractionClassWithRegionsRequest":
             payload = request.subscribeInteractionClassWithRegionsRequest
             interaction_class = payload.interactionClass.data.decode("ascii")

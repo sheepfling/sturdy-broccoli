@@ -157,7 +157,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers FOM-backed publish/subscribe, discovery, attribute reflection, and interaction receipt.",
+        "Python 2025 shim covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, "
+        "universal directed subscribe alias, discovery, attribute reflection, interaction receipt, and directed interaction receipt.",
     ),
     _row(
         "object_exchange",
@@ -165,7 +166,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers object discovery, attribute reflection, interaction receipt, directed interaction receipt, selective directed set unsubscribe/unpublish, and timestamped variants.",
+        "Hosted FedPro 2025 route covers passive object and interaction subscribe aliases, universal directed subscribe alias, "
+        "object discovery, attribute reflection, interaction receipt, directed interaction receipt, selective directed set unsubscribe/unpublish, and timestamped variants.",
     ),
     _row(
         "object_exchange",
