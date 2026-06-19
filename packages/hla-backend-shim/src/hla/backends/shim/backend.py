@@ -2812,7 +2812,7 @@ class Shim2025RTIAmbassador:
             raise RTIinternalError(f"Cannot deliver {method_name} without a connected federate ambassador")
         callback = getattr(self._federate_ambassador, method_name, None)
         if callback is None:
-            raise RTIinternalError(f"Connected federate ambassador does not implement {method_name}")
+            return
         callback(*args)
 
     def _deliver_to_federate_handle(self, federate_handle: FederateHandle, method_name: str, *args: Any) -> None:

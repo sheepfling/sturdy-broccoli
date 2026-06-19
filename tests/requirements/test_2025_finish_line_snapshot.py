@@ -110,8 +110,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert matrix["high_priority_missing_anchor_count"] == 0
     assert matrix["high_priority_missing_anchors"] == []
     pytest_anchor_audit = snapshot["requirement_pytest_anchor_audit"]
-    assert pytest_anchor_audit["row_count"] == 700
-    assert pytest_anchor_audit["anchored_requirement_count"] == 700
+    assert pytest_anchor_audit["row_count"] == 706
+    assert pytest_anchor_audit["anchored_requirement_count"] == 706
     assert "direct pytest-function anchors" in pytest_anchor_audit["current_assessment"]
     pytest_rows = {row["requirement_id"]: row for row in pytest_anchor_audit["rows"]}
     for prefix in ("HLA2025-FI-", "HLA2025-BND-", "HLA2025-MOD-", "HLA2025-NEW-", "HLA2025-FR-"):
@@ -123,7 +123,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         assert single_anchor_rows == []
     assert pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchor_count"] == 2
     assert any("test_2025_shim_is_first_green_runtime_path" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchor_count"] == 6
     assert any("test_2025_shim_rejects_duplicate_federation_and_federate_names" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_keeps_other_federates_joined_after_disconnect_and_resign_over_fedpro_schema"
@@ -140,7 +140,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchor_count"] == 5
     assert any("test_2025_shim_routes_mom_synchronization_point_reports_through_interactions" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema"
@@ -200,7 +200,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-101"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-121"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-FI-SVC-121"]["pytest_anchor_count"] == 7
     assert any("test_2025_shim_queues_timestamped_messages_and_supports_retraction" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-121"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_reports_lits_from_queued_tso_for_target_federate_over_fedpro_schema"
@@ -390,7 +390,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 21
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 22
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"
@@ -1281,7 +1281,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA conformance" in markdown
     assert "Closeout Readiness" in markdown
     assert "Pytest Anchor Audit" in markdown
-    assert "Anchored requirements: 700" in markdown
+    assert "Anchored requirements: 706" in markdown
     assert "Unanchored Requirement Audit" in markdown
     assert "Unanchored ledger requirements: 0" in markdown
     assert "FI Service Proof Audit" in markdown
@@ -1331,7 +1331,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["requirement_depth_expansion"]["row_count"] == 691
     assert payload["requirement_coverage_disposition"]["covered_row_count"] == 564
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
-    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 700
+    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 706
     assert payload["unanchored_requirement_audit"]["row_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
     assert payload["fi_service_proof_audit"]["row_count"] == 196

@@ -1234,7 +1234,7 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     assert subscriber_callbacks.last_callback("receiveInteraction") is None
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -2838,7 +2838,7 @@ def test_2025_shim_passive_and_universal_subscription_aliases_match_active_excha
     assert directed[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -2871,7 +2871,7 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
 
 @pytest.mark.requirements("HLA2025-FI-SVC-003")
 def test_2025_shim_connection_lost_callback_tears_down_connection() -> None:
-    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NotConnected
     from hla.rti1516_2025.factory import create_rti_ambassador
 
@@ -2977,7 +2977,7 @@ def test_2025_shim_enable_disable_callbacks_controls_evoked_delivery(tmp_path: P
     assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is False
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -3135,7 +3135,7 @@ def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> Non
     assert wing_callbacks.last_callback("federationNotRestored") == (RestoreFailureReason.RESTORE_ABORTED,)
 
     wing.resignFederationExecution(ResignAction.NO_ACTION)
-    leader.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     leader.destroyFederationExecution(federationName=federation_name)
     leader.disconnect()
     wing.disconnect()
@@ -3781,7 +3781,7 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
         publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"T-3"}, b"after-unpublish")
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -3805,7 +3805,7 @@ def test_2025_shim_queues_timestamped_directed_interactions_until_time_advance(t
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
     from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.time import HLAinteger64Time
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "TimedDirectedInteraction2025.xml"
     fom.write_text(
@@ -3920,7 +3920,7 @@ def test_2025_shim_queues_timestamped_directed_interactions_until_time_advance(t
         publisher.retract(late.handle)
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -4066,7 +4066,7 @@ def test_2025_shim_filters_directed_interactions_by_ddm_region_overlap(tmp_path:
     assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -4220,7 +4220,7 @@ def test_2025_shim_directed_interaction_set_unsubscribe_and_unpublish_are_select
     )
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
@@ -4657,7 +4657,7 @@ def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Pa
     subscriber.commitRegionModifications({subscriber_region})
     assert subscriber_callbacks.last_callback("attributesInScope") == (object_instance, {attribute})
 
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
     publisher.destroyFederationExecution(federationName=federation_name)
     publisher.disconnect()
@@ -4774,7 +4774,7 @@ def test_2025_shim_filters_interactions_by_ddm_region_overlap(tmp_path: Path) ->
     publisher.sendInteractionWithRegions(interaction_class, {parameter: b"after"}, {publisher_region}, b"after-unsubscribe")
     assert subscriber_callbacks.last_callback("receiveInteraction") is None
 
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
     publisher.destroyFederationExecution(federationName=federation_name)
     publisher.disconnect()
@@ -4950,7 +4950,7 @@ def test_2025_shim_preserves_direct_callback_context_for_timed_region_delivery(t
     )
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     publisher.disconnect()
     subscriber.disconnect()
@@ -5124,7 +5124,7 @@ def test_2025_shim_passive_ddm_region_subscription_aliases_match_active_region_d
     assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
     assert subscriber_callbacks.last_callback("receiveInteraction") is None
 
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
     publisher.destroyFederationExecution(federationName=federation_name)
     publisher.disconnect()
@@ -5401,7 +5401,7 @@ def test_2025_shim_applies_resign_time_ownership_policies(tmp_path: Path) -> Non
     with pytest.raises(ObjectInstanceNotKnown):
         subscriber.requestAttributeValueUpdate(deleted, {subscriber_attribute}, b"deleted")
 
-    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    acquirer.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
     subscriber.destroyFederationExecution(federationName=federation_name)
     deleter.disconnect()
@@ -5540,8 +5540,8 @@ def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks
     )
     assert owner_handle != acquiring_handle
 
-    acquiring.resignFederationExecution(ResignAction.NO_ACTION)
-    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    acquiring.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    owner.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     owner.destroyFederationExecution(federationName=federation_name)
     acquiring.disconnect()
     owner.disconnect()
@@ -5682,8 +5682,8 @@ def test_2025_shim_negotiated_ownership_matches_python_parity_flow(tmp_path: Pat
     owner.unconditionalAttributeOwnershipDivestiture(cancellable, {attribute}, b"final-divest")
     assert owner.isAttributeOwnedByFederate(cancellable, attribute) is False
 
-    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
-    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    acquirer.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    owner.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     owner.destroyFederationExecution(federationName=federation_name)
     acquirer.disconnect()
     owner.disconnect()
@@ -5910,7 +5910,7 @@ def test_2025_shim_routes_mom_synchronization_point_reports_through_interactions
     assert status_callback[2] == b"MOM"
 
     observer.resignFederationExecution(ResignAction.NO_ACTION)
-    leader.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     leader.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
     leader.disconnect()
@@ -6129,7 +6129,7 @@ def test_2025_shim_routes_mom_adjust_interactions_for_reporting_switches() -> No
     )
     assert target.getExceptionReportingSwitch() is True
 
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     target.disconnect()
@@ -6199,7 +6199,7 @@ def test_2025_shim_routes_mom_set_switches_adjust_interactions() -> None:
     assert controller.getAutoProvideSwitch() is True
     assert target.getAutoProvideSwitch() is True
 
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     target.disconnect()
@@ -6292,9 +6292,9 @@ def test_2025_shim_routes_mom_timing_and_attribute_state_adjust_interactions() -
     assert b"ObjectClassNotPublished" in report[1][controller.getParameterHandle(report[0], "HLAexception")]
     assert nonpublisher.isAttributeOwnedByFederate(object_instance, attribute) is False
 
-    nonpublisher.resignFederationExecution(ResignAction.NO_ACTION)
-    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
-    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    nonpublisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    acquirer.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    owner.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     nonpublisher.disconnect()
@@ -6429,7 +6429,7 @@ def test_2025_shim_reports_mom_federate_publication_subscription_and_object_info
     ).encode("ascii")
 
     observer.resignFederationExecution(ResignAction.NO_ACTION)
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
@@ -6551,7 +6551,7 @@ def test_2025_shim_reports_mom_federate_activity_counts() -> None:
     assert count_payload(interactions_received, "HLAinteractionCounts") == {interaction_class.value: 1}
 
     observer.resignFederationExecution(ResignAction.NO_ACTION)
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
@@ -6687,7 +6687,7 @@ def test_2025_shim_routes_mom_declaration_service_interactions() -> None:
         target.sendInteraction(interaction_class, {}, b"mom-service-interaction-after-unpublish")
 
     observer.resignFederationExecution(ResignAction.NO_ACTION)
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
@@ -6884,7 +6884,7 @@ def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
     with pytest.raises(TimeRegulationIsNotEnabled):
         target.queryLookahead()
 
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     target.disconnect()
@@ -7025,9 +7025,9 @@ def test_2025_shim_routes_mom_object_and_ownership_service_interactions() -> Non
     )
     assert target.isAttributeOwnedByFederate(object_instance_to_forget, attribute) is True
 
-    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    acquirer.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     observer.resignFederationExecution(ResignAction.NO_ACTION)
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     acquirer.disconnect()
@@ -7079,7 +7079,7 @@ def test_2025_shim_reports_mom_service_failures_as_mom_exception_interactions() 
     assert parameter_values[parameter_error_param] == b"HLAfalse"
     assert target_callbacks.last_callback("receiveInteraction")[0] == report_class
 
-    target.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     controller.resignFederationExecution(ResignAction.NO_ACTION)
     controller.destroyFederationExecution(federationName=federation_name)
     target.disconnect()
@@ -7135,7 +7135,7 @@ def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
             federationName=federation_name,
         )
 
-    leader.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     wing.resignFederationExecution(ResignAction.NO_ACTION)
     leader.destroyFederationExecution(federationName=federation_name)
     late.disconnect()
@@ -7397,7 +7397,7 @@ def test_2025_shim_reports_federation_executions_and_members() -> None:
     missing_report = leader_fed.last_callback("reportFederationExecutionDoesNotExist")
     assert missing_report == (f"{federation_name}-missing",)
 
-    leader.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     wing.resignFederationExecution(ResignAction.NO_ACTION)
     leader.destroyFederationExecution(federationName=federation_name)
     wing.disconnect()
@@ -7467,7 +7467,7 @@ def test_2025_shim_requires_valid_fom_modules_and_default_logical_time() -> None
 
 @pytest.mark.requirements("HLA2025-MOD-003", "HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-OMT-007")
 def test_2025_shim_rejects_invalid_join_fom_modules_and_destroy_while_joined(tmp_path: Path) -> None:
-    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import DesignatorIsHLAstandardMIM, ErrorReadingFOM, FederatesCurrentlyJoined
     from hla.rti1516_2025.factory import create_rti_ambassador
 
@@ -7524,6 +7524,8 @@ def test_2025_shim_rejects_invalid_join_fom_modules_and_destroy_while_joined(tmp
     with pytest.raises(FederatesCurrentlyJoined):
         leader.destroyFederationExecution(federationName=federation_name)
 
+    leader.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    leader.destroyFederationExecution(federationName=federation_name)
     leader.disconnect()
     wing.disconnect()
 
@@ -7641,7 +7643,7 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
     from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.time import HLAinteger64Time
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "QueuedTso2025.xml"
     fom.write_text(
@@ -7704,6 +7706,7 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
     publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
     publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
     subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+    publisher.enableTimeRegulation(HLAinteger64Interval(1))
     subscriber.enableTimeConstrained()
 
     object_class = publisher.getObjectClassHandle("HLAobjectRoot.TimedTarget")
@@ -7723,6 +7726,7 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
     assert early.retractionHandleIsValid is True
     assert retracted.retractionHandleIsValid is True
     publisher.retract(retracted.handle)
+    publisher.timeAdvanceRequest(HLAinteger64Time(25))
 
     assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
     assert subscriber_callbacks.last_callback("receiveInteraction") is None
@@ -7745,7 +7749,7 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
         publisher.retract(late.handle)
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
-    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
     publisher.destroyFederationExecution(federationName=federation_name)
     publisher.disconnect()
     subscriber.disconnect()
