@@ -3239,7 +3239,14 @@ def test_2025_shim_reports_federate_resigned_callback_with_reason_context() -> N
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-NEW-005", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-NEW-005",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-167",
+    "HLA2025-FI-SVC-168",
+    "HLA2025-FI-SVC-169",
+)
 def test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, ServiceGroup
     from hla.rti1516_2025.exceptions import (
@@ -3294,7 +3301,24 @@ def test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family() ->
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-008", "HLA2025-RET-001", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-MOD-008",
+    "HLA2025-RET-001",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-170",
+    "HLA2025-FI-SVC-171",
+    "HLA2025-FI-SVC-172",
+    "HLA2025-FI-SVC-173",
+    "HLA2025-FI-SVC-174",
+    "HLA2025-FI-SVC-175",
+    "HLA2025-FI-SVC-176",
+    "HLA2025-FI-SVC-177",
+    "HLA2025-FI-SVC-178",
+    "HLA2025-FI-SVC-179",
+    "HLA2025-FI-SVC-180",
+    "HLA2025-FI-SVC-181",
+)
 def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
@@ -3326,12 +3350,14 @@ def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
     assert rti.getAdvisoriesUseKnownClassSwitch() is True
     assert rti.getAllowRelaxedDDMSwitch() is False
     assert rti.getNonRegulatedGrantSwitch() is False
+    assert rti.getAutomaticResignDirective() is ResignAction.NO_ACTION
 
     rti.setObjectClassRelevanceAdvisorySwitch(True)
     rti.setAttributeRelevanceAdvisorySwitch(True)
     rti.setAttributeScopeAdvisorySwitch(True)
     rti.setInteractionRelevanceAdvisorySwitch(True)
     rti.setConveyRegionDesignatorSetsSwitch(False)
+    rti.setAutomaticResignDirective(ResignAction.DELETE_OBJECTS)
     rti.setServiceReportingSwitch(True)
     rti.setExceptionReportingSwitch(False)
     rti.setSendServiceReportsToFileSwitch(True)
@@ -3341,12 +3367,15 @@ def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
     assert rti.getAttributeScopeAdvisorySwitch() is True
     assert rti.getInteractionRelevanceAdvisorySwitch() is True
     assert rti.getConveyRegionDesignatorSetsSwitch() is False
+    assert rti.getAutomaticResignDirective() is ResignAction.DELETE_OBJECTS
     assert rti.getServiceReportingSwitch() is True
     assert rti.getExceptionReportingSwitch() is False
     assert rti.getSendServiceReportsToFileSwitch() is True
 
     with pytest.raises(RTIinternalError, match="requires a bool"):
         rti.setServiceReportingSwitch("yes")
+    with pytest.raises(RTIinternalError, match="requires a ResignAction"):
+        rti.setAutomaticResignDirective("delete")
     with pytest.raises(RTIinternalError, match="does not implement"):
         rti.enableObjectClassRelevanceAdvisorySwitch()
 

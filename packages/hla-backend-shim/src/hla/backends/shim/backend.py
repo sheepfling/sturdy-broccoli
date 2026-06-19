@@ -334,6 +334,7 @@ class Shim2025RTIAmbassador:
         self._time_constrained_enabled = False
         self._asynchronous_delivery_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
+        self._automatic_resign_directive = ResignAction.NO_ACTION
         self._mom_report_period_seconds: float | None = None
         self._default_attribute_transportation: dict[tuple[str, str], str] = {}
         self._default_attribute_order: dict[tuple[str, str], OrderType] = {}
@@ -395,6 +396,7 @@ class Shim2025RTIAmbassador:
         self._time_constrained_enabled = False
         self._asynchronous_delivery_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
+        self._automatic_resign_directive = ResignAction.NO_ACTION
         self._mom_report_period_seconds = None
         self._default_attribute_transportation.clear()
         self._default_attribute_order.clear()
@@ -2259,6 +2261,19 @@ class Shim2025RTIAmbassador:
     def setConveyRegionDesignatorSetsSwitch(self, value: bool) -> None:  # noqa: N802
         self._record("setConveyRegionDesignatorSetsSwitch", value)
         self._set_switch("setConveyRegionDesignatorSetsSwitch", "convey_region_designator_sets", value)
+
+    def getAutomaticResignDirective(self) -> ResignAction:  # noqa: N802
+        self._record("getAutomaticResignDirective")
+        self._require_joined("getAutomaticResignDirective")
+        return self._automatic_resign_directive
+
+    def setAutomaticResignDirective(self, value: ResignAction) -> None:  # noqa: N802
+        self._record("setAutomaticResignDirective", value)
+        self._require_joined("setAutomaticResignDirective")
+        try:
+            self._automatic_resign_directive = value if isinstance(value, ResignAction) else ResignAction(value)
+        except Exception as exc:
+            raise RTIinternalError(f"setAutomaticResignDirective requires a ResignAction value; got {value!r}") from exc
 
     def getServiceReportingSwitch(self) -> bool:  # noqa: N802
         self._record("getServiceReportingSwitch")

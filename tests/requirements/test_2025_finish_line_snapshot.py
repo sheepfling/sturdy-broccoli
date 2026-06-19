@@ -192,6 +192,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-FI-SVC-003" in slices["2025-connection-lifecycle-services"]["requirements"]
     assert "orderly disconnect state teardown" in slices["2025-connection-lifecycle-services"]["supported_scope"]
     assert "connectionLost callback" in slices["2025-connection-lifecycle-services"]["supported_scope"]
+    assert slices["2025-support-handle-normalization-and-switches"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-167" in slices["2025-support-handle-normalization-and-switches"]["requirements"]
+    assert "HLA2025-FI-SVC-181" in slices["2025-support-handle-normalization-and-switches"]["requirements"]
+    assert "normalizes object class, interaction class, and object instance handles" in slices["2025-support-handle-normalization-and-switches"]["supported_scope"]
+    assert "automatic resign directive controls" in slices["2025-support-handle-normalization-and-switches"]["supported_scope"]
     assert slices["2025-callback-control-services"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-193" in slices["2025-callback-control-services"]["requirements"]
     assert "HLA2025-FI-SVC-194" in slices["2025-callback-control-services"]["requirements"]
