@@ -1766,6 +1766,7 @@ class Shim2025RTIAmbassador:
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
         federation = self._federation_record()
+        retraction_handles: list[MessageRetractionHandle] = []
         self._increment_mom_count(
             federation.mom_interactions_sent,
             (self._current_federate_key(), interaction_class_name, self.getTransportationTypeName(transportation)),
@@ -1779,6 +1780,24 @@ class Shim2025RTIAmbassador:
                 federation.mom_interactions_received,
                 (federate_key, interaction_class_name, self.getTransportationTypeName(transportation)),
             )
+            if callback_time is not None:
+                retraction_handles.append(
+                    self._queue_tso_callback(
+                        FederateHandle(federate_key),
+                        callback_time,
+                        "receiveDirectedInteraction",
+                        interactionClass,
+                        objectInstance,
+                        values_by_handle,
+                        bytes(userSuppliedTag),
+                        transportation,
+                        self._current_federate_handle(),
+                        callback_time,
+                        OrderType.TIMESTAMP,
+                        OrderType.TIMESTAMP,
+                    )
+                )
+                continue
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "receiveDirectedInteraction",
@@ -1793,6 +1812,9 @@ class Shim2025RTIAmbassador:
                 self._interaction_order_for(interaction_class_name),
                 None,
             )
+        if callback_time is not None:
+            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
     def deleteObjectInstance(  # noqa: N802

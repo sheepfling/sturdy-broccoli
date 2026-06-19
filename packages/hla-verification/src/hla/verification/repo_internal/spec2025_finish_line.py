@@ -212,8 +212,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 shim supports FOM-backed directed interaction publish, subscribe, unsubscribe, "
             "unpublish, and receiveDirectedInteraction callback delivery from a publisher to object-class "
-            "directed subscribers. Timestamped directed ordering, directed interaction DDM-region routing, "
-            "and Java/C++/FedPro route parity remain later behavior work."
+            "directed subscribers. It also queues timestamped directed interactions until subscriber time advance, "
+            "delivers timestamp order plus retraction handles on callback receipt, and honors pre-delivery retract. "
+            "Directed interaction DDM-region routing and Java/C++/FedPro route parity remain later behavior work."
         ),
     },
     {

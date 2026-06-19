@@ -946,6 +946,142 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
     publisher.disconnect()
 
 
+@pytest.mark.requirements(
+    "HLA2025-NEW-001",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-039",
+    "HLA2025-FI-SVC-040",
+    "HLA2025-FI-SVC-045",
+    "HLA2025-FI-SVC-046",
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+    "HLA2025-FR-010",
+    "HLA2025-FI-SVC-112",
+)
+def test_2025_shim_queues_timestamped_directed_interactions_until_time_advance(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Time
+
+    fom = tmp_path / "TimedDirectedInteraction2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Timed Directed Interaction 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Timestamped directed interaction fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Timestamp</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Timestamp</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-tso-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("DirectedPublisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("DirectedSubscriber", "TestFederate", federation_name)
+    subscriber.enableTimeConstrained()
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+    object_instance = publisher.registerObjectInstance(object_class, "Directed-Target-TSO")
+
+    publisher.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+    subscriber.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+
+    late = publisher.sendDirectedInteraction(
+        interaction_class,
+        object_instance,
+        {parameter: b"late"},
+        b"late",
+        HLAinteger64Time(20),
+    )
+    retracted = publisher.sendDirectedInteraction(
+        interaction_class,
+        object_instance,
+        {parameter: b"retracted"},
+        b"retracted",
+        HLAinteger64Time(15),
+    )
+    assert late.retractionHandleIsValid is True
+    assert retracted.retractionHandleIsValid is True
+    publisher.retract(retracted.handle)
+
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
+    subscriber.timeAdvanceRequest(HLAinteger64Time(12))
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
+
+    subscriber.timeAdvanceRequest(HLAinteger64Time(25))
+    received = subscriber_callbacks.last_callback("receiveDirectedInteraction")
+    assert received is not None
+    assert received[:6] == (
+        interaction_class,
+        object_instance,
+        {parameter: b"late"},
+        b"late",
+        reliable,
+        publisher_handle,
+    )
+    assert received[6:] == (HLAinteger64Time(20), OrderType.TIMESTAMP, OrderType.TIMESTAMP, late.handle)
+    with pytest.raises(MessageCanNoLongerBeRetracted):
+        publisher.retract(late.handle)
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_supports_single_object_instance_name_reservation_callback_and_release() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
