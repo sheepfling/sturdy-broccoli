@@ -5317,6 +5317,129 @@ def test_2025_shim_blocks_window_closure_until_future_inputs_are_excluded() -> N
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_ignores_receive_order_poison_after_window_close() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-receive-order-poison-{uuid.uuid4().hex[:8]}"
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, fed in (
+            (truth, truth_federate),
+            (radar, radar_federate),
+            (consumer, consumer_federate),
+        ):
+            rti.connect(fed, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        for rti, name in (
+            (truth, "Truth"),
+            (radar, "Radar"),
+            (consumer, "Consumer"),
+        ):
+            rti.joinFederationExecution(
+                federateName=name,
+                federateType="TimeWindowFederate",
+                federationName=federation_name,
+            )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(target_class, {position})
+        radar.publishInteractionClass(track_interaction)
+        consumer.subscribeInteractionClass(track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        assert truth_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert radar_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+
+        target_object = truth.registerObjectInstance(target_class, "ReceiveOrderPoisonTarget-1")
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+        truth.updateAttributeValues(target_object, {position: b"truth-105"}, b"truth-105", HLAinteger64Time(105))
+        truth.updateAttributeValues(target_object, {position: b"truth-106"}, b"truth-106", HLAinteger64Time(106))
+        truth.timeAdvanceRequest(HLAinteger64Time(110))
+
+        for _ in range(3):
+            radar.nextMessageRequest(HLAinteger64Time(110))
+        assert _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1] == (HLAinteger64Time(110),)
+
+        timestamped_reflections = [
+            callback
+            for callback in _callbacks_named_2025(radar_federate, "reflectAttributeValues")
+            if callback[6] is not None and callback[6] < HLAinteger64Time(110)
+        ]
+        closed_window_tags_before = [callback[2] for callback in timestamped_reflections]
+        assert closed_window_tags_before == [b"truth-105", b"truth-106"]
+
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.RECEIVE)
+        radar_federate.callbacks.clear()
+        truth.updateAttributeValues(target_object, {position: b"receive-order-poison"}, b"receive-order-poison")
+
+        poison_reflection = radar_federate.last_callback("reflectAttributeValues")
+        assert poison_reflection is not None
+        assert poison_reflection[2] == b"receive-order-poison"
+        assert poison_reflection[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+
+        closed_window_tags_after = [
+            callback[2]
+            for callback in _callbacks_named_2025(radar_federate, "reflectAttributeValues")
+            if callback[6] is not None and callback[6] < HLAinteger64Time(110)
+        ]
+        assert closed_window_tags_after == []
+
+        radar.enableTimeRegulation(HLAinteger64Interval(1))
+        consumer.enableTimeConstrained()
+        assert radar_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(110),)
+        assert consumer_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+
+        radar.changeInteractionOrderType(track_interaction, OrderType.TIMESTAMP)
+        truth.timeAdvanceRequest(HLAinteger64Time(120))
+        consumer.nextMessageRequest(HLAinteger64Time(120))
+        radar.sendInteraction(
+            track_interaction,
+            {track_parameter: b"track-poison-safe"},
+            b"radar-track-output",
+            HLAinteger64Time(111),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(120))
+
+        consumer_receive = _callbacks_named_2025(consumer_federate, "receiveInteraction")[-1]
+        assert consumer_receive[2] == b"radar-track-output"
+        assert consumer_receive[1] == {track_parameter: b"track-poison-safe"}
+        assert consumer_receive[6] == HLAinteger64Time(111)
+        assert closed_window_tags_before == [b"truth-105", b"truth-106"]
+    finally:
+        for rti in (consumer, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (consumer, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_delivers_post_closure_timestamped_output_to_consumer() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador

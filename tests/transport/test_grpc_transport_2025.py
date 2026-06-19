@@ -3039,6 +3039,154 @@ def test_2025_transport_server_blocks_window_closure_until_future_inputs_are_exc
         server.close()
 
 
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_ignores_receive_order_poison_after_window_close_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = "fedpro-2025-receive-order-poison"
+    try:
+        truth = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        radar = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        consumer = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        for transport in (truth, radar, consumer):
+            assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert truth.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "TargetRadarFOMmodule.xml"))
+        ).fields == ()
+        assert truth.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025PoisonTruth", "TimeWindowFederate", federation_name))
+        ).fields == ("1", "HLAinteger64Time")
+        assert radar.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025PoisonRadar", "TimeWindowFederate", federation_name))
+        ).fields == ("2", "HLAinteger64Time")
+        assert consumer.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025PoisonConsumer", "TimeWindowFederate", federation_name))
+        ).fields == ("3", "HLAinteger64Time")
+
+        target_class = truth.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        position = truth.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(target_class, "Position"))).fields[0]
+        track_interaction = truth.request(
+            TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
+        ).fields[0]
+        track_parameter = truth.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(track_interaction, "TrackId"))).fields[0]
+        assert truth.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(target_class, position))).fields == ()
+        assert radar.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(target_class, position))).fields == ()
+        assert radar.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(track_interaction,))).fields == ()
+        assert consumer.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(track_interaction,))).fields == ()
+
+        assert truth.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert truth.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert radar.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert radar.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+
+        object_instance = truth.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(target_class, "ReceiveOrderPoisonTarget-1"))
+        ).fields[0]
+        assert radar.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "DISCOVER")
+        assert truth.request(TransportRequest(command="CHANGE_ATTRIBUTE_ORDER_TYPE", fields=(object_instance, position, "TIMESTAMP"))).fields == ()
+        assert truth.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(object_instance, f"{position}:74727574682d313035", "74727574682d313035", "HLAinteger64Time", "105"),
+            )
+        ).fields == ("1",)
+        assert truth.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(object_instance, f"{position}:74727574682d313036", "74727574682d313036", "HLAinteger64Time", "106"),
+            )
+        ).fields == ("2",)
+        assert truth.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "110"))).fields == ()
+        assert truth.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "110")
+
+        assert radar.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "110"))).fields == ()
+        first_reflect = radar.request(TransportRequest(command="EVOKE")).fields
+        second_reflect = radar.request(TransportRequest(command="EVOKE")).fields
+        window_close_grant = radar.request(TransportRequest(command="EVOKE")).fields
+        assert first_reflect[:5] == ("1", "REFLECT_TSO", object_instance, f"{position}:74727574682d313035", "74727574682d313035")
+        assert first_reflect[7:9] == ("HLAinteger64Time", "105")
+        assert second_reflect[:5] == ("1", "REFLECT_TSO", object_instance, f"{position}:74727574682d313036", "74727574682d313036")
+        assert second_reflect[7:9] == ("HLAinteger64Time", "106")
+        assert window_close_grant == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "110")
+        closed_window_tags_before = [first_reflect[4], second_reflect[4]]
+
+        assert truth.request(TransportRequest(command="CHANGE_ATTRIBUTE_ORDER_TYPE", fields=(object_instance, position, "RECEIVE"))).fields == ()
+        assert truth.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES",
+                fields=(object_instance, f"{position}:726563656976652d6f726465722d706f69736f6e", "726563656976652d6f726465722d706f69736f6e"),
+            )
+        ).fields == ()
+        poison_reflection = radar.request(TransportRequest(command="EVOKE")).fields
+        assert poison_reflection == (
+            "1",
+            "REFLECT",
+            object_instance,
+            f"{position}:726563656976652d6f726465722d706f69736f6e",
+            "726563656976652d6f726465722d706f69736f6e",
+            "1",
+            "1",
+        )
+
+        assert radar.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert radar.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "110")
+        assert consumer.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert consumer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert radar.request(TransportRequest(command="CHANGE_INTERACTION_ORDER_TYPE", fields=(track_interaction, "TIMESTAMP"))).fields == ()
+
+        assert truth.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "120"))).fields == ()
+        assert truth.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "120")
+        assert consumer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "120"))).fields == ()
+        send_handle = radar.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(
+                    track_interaction,
+                    f"{track_parameter}:747261636b2d706f69736f6e2d73616665",
+                    "72616461722d747261636b2d6f7574707574",
+                    "HLAinteger64Time",
+                    "111",
+                ),
+            )
+        ).fields
+        assert len(send_handle) == 1
+        assert radar.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "120"))).fields == ()
+
+        delivered = consumer.request(TransportRequest(command="EVOKE")).fields
+        assert delivered[:5] == (
+            "1",
+            "INTERACTION_TSO",
+            track_interaction,
+            f"{track_parameter}:747261636b2d706f69736f6e2d73616665",
+            "72616461722d747261636b2d6f7574707574",
+        )
+        assert delivered[7:9] == ("HLAinteger64Time", "111")
+        assert consumer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "120")
+
+        closed_window_tags_after = [first_reflect[4], second_reflect[4]]
+        assert closed_window_tags_after == closed_window_tags_before
+    finally:
+        for transport in (truth, radar, consumer):
+            if transport is None:
+                continue
+            try:
+                transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",)))
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.request(TransportRequest(command="DESTROY", fields=(federation_name,)))
+            except Exception:
+                pass
+        for transport in (truth, radar, consumer):
+            if transport is not None:
+                transport.close()
+        server.close()
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_transport_server_delivers_post_closure_timestamped_output_to_consumer_over_fedpro_schema():
     server = start_2025_grpc_server()
