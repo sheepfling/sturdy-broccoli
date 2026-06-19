@@ -122,12 +122,12 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     assert worklist_rows
     assert rollup["by_disposition"] == {
         "duplicate/umbrella": 22,
-        "covered": 149,
-        "partial": 476,
-        "planned": 20,
+        "covered": 198,
+        "partial": 430,
+        "planned": 17,
         "retired/legacy-only": 24,
     }
-    assert rollup["by_disposition"]["covered"] == 149
+    assert rollup["by_disposition"]["covered"] == 198
     assert rollup["fi_binding_surface"]["java_present"] == 196
     assert rollup["fi_binding_surface"]["cpp_present"] == 196
     assert rollup["fi_binding_surface"]["fedpro_present"] == 191

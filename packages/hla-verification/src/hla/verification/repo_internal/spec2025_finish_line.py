@@ -55,18 +55,47 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-logical-time",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006", "HLA2025-FI-SVC-112"),
+        "requirements": (
+            "HLA2025-FI-SVC-101",
+            "HLA2025-FI-SVC-102",
+            "HLA2025-FI-SVC-103",
+            "HLA2025-FI-SVC-104",
+            "HLA2025-FI-SVC-105",
+            "HLA2025-FI-SVC-106",
+            "HLA2025-FI-SVC-107",
+            "HLA2025-FI-SVC-108",
+            "HLA2025-FI-SVC-109",
+            "HLA2025-FI-SVC-110",
+            "HLA2025-FI-SVC-111",
+            "HLA2025-FI-SVC-112",
+            "HLA2025-FI-SVC-113",
+            "HLA2025-FI-SVC-114",
+            "HLA2025-FI-SVC-115",
+            "HLA2025-FI-SVC-116",
+            "HLA2025-FI-SVC-117",
+            "HLA2025-FI-SVC-118",
+            "HLA2025-FI-SVC-119",
+            "HLA2025-FI-SVC-120",
+            "HLA2025-FI-SVC-121",
+            "HLA2025-FI-SVC-123",
+            "HLA2025-FI-SVC-125",
+            "HLA2025-FR-010",
+            "HLA2025-FI-009",
+            "HLA2025-MOD-006",
+        ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/backends/test_shim_route_trace_evidence.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
         "supported_scope": (
-            "Python 2025 shim covers default logical-time factory selection, lookahead query/modify, "
-            "timeAdvanceRequest, flushQueueRequest, timeAdvanceGrant, flushQueueGrant, GALT/LITS queries, "
-            "queued timestamped object updates/interactions, timestamp-order delivery on receiving federate "
-            "time advance, and message retraction before delivery. Cross-binding parity remains separate "
-            "backlog work."
+            "Python 2025 shim covers default logical-time factory selection, enable/disable time regulation, "
+            "enable/disable time constrained, enable/disable asynchronous delivery, lookahead query/modify, "
+            "timeAdvanceRequest, timeAdvanceRequestAvailable, nextMessageRequest, nextMessageRequestAvailable, "
+            "flushQueueRequest, timeAdvanceGrant, flushQueueGrant, GALT/LITS/logical-time/lookahead queries, "
+            "retract, attribute and interaction order-type changes, queued timestamped object updates/interactions, "
+            "timestamp-order delivery on receiving federate time advance, and message retraction before delivery. "
+            "Cross-binding parity remains separate backlog work."
         ),
     },
     {
@@ -329,6 +358,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-NEW-004",
             "HLA2025-FI-001",
             "HLA2025-FI-005",
+            "HLA2025-FI-SVC-159",
+            "HLA2025-FI-SVC-160",
+            "HLA2025-FI-SVC-161",
+            "HLA2025-FI-SVC-164",
             "HLA2025-FI-SVC-126",
             "HLA2025-FI-SVC-127",
             "HLA2025-FI-SVC-130",
@@ -439,6 +472,14 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-069",
             "HLA2025-FI-SVC-070",
             "HLA2025-FI-SVC-071",
+            "HLA2025-FI-SVC-074",
+            "HLA2025-FI-SVC-075",
+            "HLA2025-FI-SVC-077",
+            "HLA2025-FI-SVC-078",
+            "HLA2025-FI-SVC-079",
+            "HLA2025-FI-SVC-080",
+            "HLA2025-FI-SVC-081",
+            "HLA2025-FI-SVC-082",
             "HLA2025-FR-003",
             "HLA2025-FR-004",
             "HLA2025-FI-001",
@@ -459,14 +500,14 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-single-name-reservation-services",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "requirements": ("HLA2025-FI-SVC-051", "HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "Python 2025 shim supports single-name reservation success and failure callbacks, releaseObjectInstanceName, "
-            "not-connected and not-joined preconditions for release, save/restore in-progress blocking, reservation "
+            "Python 2025 shim supports single-name reservation requests, single-name reservation success and failure "
+            "callbacks, releaseObjectInstanceName, not-connected and not-joined preconditions for release, save/restore in-progress blocking, reservation "
             "preservation through save/restore completion, release-driven handoff to a rival federate, and "
             "ObjectInstanceNameNotReserved on invalid single-name release."
         ),
@@ -474,7 +515,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-multi-name-reservation-services",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "requirements": ("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-055", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
@@ -510,6 +551,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "requirements": (
             "HLA2025-FI-SVC-001",
             "HLA2025-FI-SVC-005",
+            "HLA2025-FI-SVC-006",
             "HLA2025-FI-SVC-007",
             "HLA2025-FI-SVC-013",
             "HLA2025-FI-SVC-014",
@@ -563,9 +605,36 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-support-query-lookups",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-FI-SVC-140",
+            "HLA2025-FI-SVC-141",
+            "HLA2025-FI-SVC-145",
+            "HLA2025-FI-SVC-146",
+            "HLA2025-FI-SVC-149",
+            "HLA2025-FI-SVC-150",
+            "HLA2025-FI-SVC-151",
+            "HLA2025-FI-SVC-155",
+            "HLA2025-FI-SVC-156",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports direct object-class, attribute, interaction-class, parameter, and "
+            "transportation handle/name lookups against the loaded FOM catalog."
+        ),
+    },
+    {
         "id": "2025-support-handle-normalization-and-switches",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-FI-SVC-165",
+            "HLA2025-FI-SVC-166",
             "HLA2025-FI-SVC-167",
             "HLA2025-FI-SVC-168",
             "HLA2025-FI-SVC-169",
@@ -631,6 +700,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "id": "2025-ownership-basic-tag-callbacks",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-FI-SVC-083",
             "HLA2025-FI-SVC-084",
             "HLA2025-FI-SVC-085",
             "HLA2025-FI-SVC-086",
