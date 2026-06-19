@@ -43,11 +43,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert disposition["status"] == "repo-reconciled-disposition"
     assert disposition["row_count"] == 691
     assert disposition["row_count_from_csv"] == 691
-    assert disposition["covered_row_count"] == 225
+    assert disposition["covered_row_count"] == 421
     assert disposition["by_disposition"] == {
         "duplicate/umbrella": 22,
-        "covered": 225,
-        "partial": 420,
+        "covered": 421,
+        "partial": 224,
         "planned": 0,
         "retired/legacy-only": 24,
     }
@@ -154,6 +154,12 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-NEW-006" in slices["2025-omt-reference-value-required"]["requirements"]
     assert slices["2025-carry-forward-cleanup"]["status"] == "implemented-slice"
     assert "HLA2025-BLG-001" in slices["2025-carry-forward-cleanup"]["requirements"]
+    assert slices["2025-service-utilization-crosscheck"]["status"] == "implemented-slice"
+    assert "HLA2025-OMT-SU-001" in slices["2025-service-utilization-crosscheck"]["requirements"]
+    assert "HLA2025-OMT-SU-196" in slices["2025-service-utilization-crosscheck"]["requirements"]
+    assert "optional serviceUtilization tables from SOM, FOM, and MIM modules" in slices["2025-service-utilization-crosscheck"]["supported_scope"]
+    assert "treats table absence as an empty mapping" in slices["2025-service-utilization-crosscheck"]["supported_scope"]
+    assert "preserves service-usage attributes through parse/serialize roundtrip" in slices["2025-service-utilization-crosscheck"]["supported_scope"]
     assert slices["2025-exception-and-logical-time-deltas"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-010" in slices["2025-exception-and-logical-time-deltas"]["requirements"]
     assert slices["2025-java-binding-source-trace"]["status"] == "implemented-slice"
@@ -352,7 +358,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["executable_test_backlog"]["row_count"] == 1117
     assert payload["requirement_depth_expansion"]["row_count"] == 691
-    assert payload["requirement_coverage_disposition"]["covered_row_count"] == 225
+    assert payload["requirement_coverage_disposition"]["covered_row_count"] == 421
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
 

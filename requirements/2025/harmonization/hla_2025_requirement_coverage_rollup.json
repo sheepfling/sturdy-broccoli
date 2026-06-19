@@ -1,9 +1,9 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 225,
+    "covered": 421,
     "duplicate/umbrella": 22,
-    "partial": 420,
+    "partial": 224,
     "planned": 0,
     "retired/legacy-only": 24
   },
@@ -17,7 +17,7 @@
       "covered": 196
     },
     "SOM/FOM service-usage requirements": {
-      "partial": 196
+      "covered": 196
     },
     "OMT component-level conformance": {
       "partial": 224
@@ -40,7 +40,7 @@
       "covered": 196
     },
     "SOM/FOM service-usage requirements": {
-      "partial": 196
+      "covered": 196
     },
     "OMT component-level conformance": {
       "partial": 224

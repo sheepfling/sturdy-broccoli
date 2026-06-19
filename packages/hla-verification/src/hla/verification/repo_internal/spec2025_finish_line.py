@@ -247,6 +247,23 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-service-utilization-crosscheck",
+        "status": "implemented-slice",
+        "requirements": tuple(f"HLA2025-OMT-SU-{index:03d}" for index in range(1, 197)),
+        "evidence": (
+            "tests/factories/test_fom_omt_parsing.py",
+            "tests/factories/test_fom_roundtrip.py",
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser extracts optional serviceUtilization tables from SOM, FOM, and MIM modules, "
+            "treats table absence as an empty mapping, preserves service-usage attributes through "
+            "parse/serialize roundtrip, and keeps renumbered 2025 service-utilization entries aligned with the "
+            "now-covered 2025 Federate Interface catalog."
+        ),
+    },
+    {
         "id": "2025-exception-and-logical-time-deltas",
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-009", "HLA2025-MOD-010", "HLA2025-VER-002"),
