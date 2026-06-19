@@ -307,6 +307,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-NEW-004",
             "HLA2025-FI-001",
             "HLA2025-FI-005",
+            "HLA2025-FI-SVC-126",
+            "HLA2025-FI-SVC-127",
+            "HLA2025-FI-SVC-130",
+            "HLA2025-FI-SVC-132",
+            "HLA2025-FI-SVC-134",
+            "HLA2025-FI-SVC-135",
+            "HLA2025-FI-SVC-136",
             "HLA2025-FI-SVC-076",
             "HLA2025-FI-SVC-124",
             "HLA2025-FI-SVC-157",
@@ -320,9 +327,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "loaded FOM/FDD catalog, reports available dimensions for object and interaction classes, returns "
             "dimension upper bounds, stores validated default attribute transportation/order policy changes, "
             "uses those defaults when delivering reflectAttributeValues callbacks, and filters object attribute "
-            "reflections through basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions/"
-            "associateRegionsForUpdates DDM region overlap. It also filters interaction delivery through "
-            "subscribeInteractionClassWithRegions/sendInteractionWithRegions region overlap and conveys sent "
+            "reflections through basic createRegion/commitRegionModifications/setRangeBounds/"
+            "subscribeObjectClassAttributesWithRegions/associateRegionsForUpdates DDM region overlap. It also "
+            "filters interaction delivery through subscribeInteractionClassWithRegions/"
+            "unsubscribeInteractionClassWithRegions/sendInteractionWithRegions region overlap and conveys sent "
             "regions on receiveInteraction callbacks. Attribute scope advisory callbacks report object-attribute "
             "in-scope and out-of-scope transitions for DDM region overlap changes."
         ),

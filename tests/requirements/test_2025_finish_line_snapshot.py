@@ -43,12 +43,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert disposition["status"] == "repo-reconciled-disposition"
     assert disposition["row_count"] == 691
     assert disposition["row_count_from_csv"] == 691
-    assert disposition["covered_row_count"] == 82
+    assert disposition["covered_row_count"] == 89
     assert disposition["by_disposition"] == {
         "duplicate/umbrella": 22,
-        "covered": 82,
+        "covered": 89,
         "partial": 476,
-        "planned": 87,
+        "planned": 80,
         "retired/legacy-only": 24,
     }
     assert disposition["by_priority"] == {"P0": 89, "P1": 430, "P2": 172}
@@ -176,9 +176,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "HLA2025-FI-SVC-076" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "HLA2025-FI-SVC-124" in slices["2025-ddm-default-attribute-policy"]["requirements"]
+    assert "HLA2025-FI-SVC-126" in slices["2025-ddm-default-attribute-policy"]["requirements"]
+    assert "HLA2025-FI-SVC-136" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "HLA2025-FI-SVC-157" in slices["2025-ddm-default-attribute-policy"]["requirements"]
-    assert "basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
-    assert "subscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert "basic createRegion/commitRegionModifications/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert "subscribeInteractionClassWithRegions/unsubscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "Attribute scope advisory callbacks" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "in-scope and out-of-scope transitions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert slices["2025-omt-schema-constraint-validation"]["status"] == "implemented-slice"
@@ -286,7 +288,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["executable_test_backlog"]["row_count"] == 1117
     assert payload["requirement_depth_expansion"]["row_count"] == 691
-    assert payload["requirement_coverage_disposition"]["covered_row_count"] == 82
+    assert payload["requirement_coverage_disposition"]["covered_row_count"] == 89
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
 
