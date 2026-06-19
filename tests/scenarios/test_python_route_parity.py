@@ -10,6 +10,7 @@ from hla.foms.target_radar._internal import run_target_radar_scenario
 from hla.rti1516e.enums import OrderType, ResignAction
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 from hla.verification import (
+    CallbackControlScenarioConfig,
     FederationLifecycleScenarioConfig,
     OwnershipScenarioConfig,
     SaveRestoreScenarioConfig,
@@ -25,6 +26,7 @@ from hla.verification import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_attribute_ownership_scenario,
+    run_callback_control_scenario,
     run_example_fom_save_restore_gauntlet_scenario,
     run_federation_lifecycle_scenario,
     run_smoke_fom_save_restore_ownership_gauntlet_scenario,
@@ -176,6 +178,49 @@ def test_python_route_parity_ownership(route) -> None:
             destroyer=pair.left,
             destroyer_resign_action=ResignAction.DELETE_OBJECTS,
             remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_callback_control(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = CallbackControlScenarioConfig(
+            federation_name=f"python-callback-control-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+        )
+        summary = run_callback_control_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            publisher_federate=RecordingFederateAmbassador(),
+            subscriber_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["first_queued_while_disabled"] is True
+        assert summary["first_evoke"] is False
+        assert summary["first_release"] is True
+        assert summary["first_delivery"].args[0] == summary["object_instance"]
+        assert summary["first_delivery"].args[1] == summary["subscriber_object_class"]
+        assert summary["first_delivery"].args[2] == config.object_instance_name
+        assert summary["first_reflection"].args[1] == {summary["subscriber_attribute"]: config.first_payload}
+        assert summary["first_reflection"].args[2] == config.first_tag
+        assert summary["second_batch_queued_while_disabled"] is True
+        assert summary["blocked_batch_evoke"] is False
+        assert summary["batch_evoke"] is True
+        assert summary["drained_tags"] == [config.second_tag, config.third_tag]
+        assert summary["drained_payloads"] == [
+            {summary["subscriber_attribute"]: config.second_payload},
+            {summary["subscriber_attribute"]: config.third_payload},
+        ]
+        assert summary["post_drain"] is False
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
             disconnect_rtis=(pair.right, pair.left),
         )
 

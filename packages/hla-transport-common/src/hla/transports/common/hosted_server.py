@@ -264,6 +264,12 @@ class HostedRTICommandProcessor:
         if command == "DISCONNECT":
             self.rti.disconnect()
             return TransportResponse()
+        if command == "ENABLE_CALLBACKS":
+            self.rti.enable_callbacks()
+            return TransportResponse()
+        if command == "DISABLE_CALLBACKS":
+            self.rti.disable_callbacks()
+            return TransportResponse()
         if command == "CREATE":
             federation_name = str(fields[0])
             logical_time_name = str(fields[1]) if len(fields) >= 2 else ""

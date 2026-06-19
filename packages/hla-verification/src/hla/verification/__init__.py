@@ -92,7 +92,12 @@ from .scenario_save_restore import (
     run_save_status_exception_scenario,
     run_save_restore_scenario,
 )
-from .scenario_support_services import SupportServicesScenarioConfig, run_support_factory_and_decode_scenario
+from .scenario_support_services import (
+    CallbackControlScenarioConfig,
+    SupportServicesScenarioConfig,
+    run_callback_control_scenario,
+    run_support_factory_and_decode_scenario,
+)
 from .scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     NonOwnerUpdateScenarioConfig,
@@ -207,6 +212,7 @@ __all__ = [
     "TimelineRecorder",
     "TwoFederateSuiteHooks",
     "DemoFederate",
+    "CallbackControlScenarioConfig",
     "DeclarationManagementScenarioConfig",
     "DdmDeclarationGatingScenarioConfig",
     "DdmObjectRegionLifecycleScenarioConfig",
@@ -269,6 +275,7 @@ __all__ = [
     "run_attribute_ownership_query_callback_scenario",
     "run_attribute_ownership_unavailable_scenario",
     "run_basic_federate_scenario",
+    "run_callback_control_scenario",
     "run_connection_lost_callback_scenario",
     "run_declaration_invalid_attribute_publication_scenario",
     "run_declaration_management_scenario",

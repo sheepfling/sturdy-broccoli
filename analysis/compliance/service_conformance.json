@@ -8914,6 +8914,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_callback_control_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -8935,6 +8938,8 @@
       "negative_expectation_count": 2,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -8944,6 +8949,8 @@
       ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -8977,6 +8984,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_callback_control_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -8998,6 +9008,8 @@
       "negative_expectation_count": 2,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -9007,6 +9019,8 @@
       ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -9041,6 +9055,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_callback_control_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -9060,6 +9077,8 @@
       "negative_expectation_count": 3,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -9067,6 +9086,8 @@
       ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -9099,6 +9120,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_callback_control_scenario",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -9118,6 +9142,8 @@
       "negative_expectation_count": 3,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -9125,6 +9151,8 @@
       ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",

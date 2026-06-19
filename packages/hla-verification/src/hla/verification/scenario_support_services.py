@@ -34,7 +34,9 @@ from hla.rti1516e.handles import (
 )
 
 from .scenario_support import register_named_object_instance
-from .startup import wait_for_callbacks
+from .scenario_support import safe_evoke_callback
+from .scenario_support import safe_evoke_multiple_callbacks
+from .startup import drain_callbacks
 
 
 @dataclass(frozen=True)
@@ -66,14 +68,53 @@ class CallbackControlScenarioConfig:
     publisher_name: str = "Publisher"
     subscriber_name: str = "Subscriber"
     federate_type: str = "SupportFederate"
-    interaction_class_name: str = "HLAinteractionRoot.SmokeInteraction"
-    parameter_name: str = "Message"
+    object_class_name: str = "HLAobjectRoot.SmokeObject"
+    attribute_name: str = "Payload"
+    object_instance_name: str = "callback-object"
     first_payload: bytes = b"one"
     first_tag: bytes = b"queued-one"
     second_payload: bytes = b"two"
     second_tag: bytes = b"queued-two"
     third_payload: bytes = b"three"
     third_tag: bytes = b"queued-three"
+
+
+def _invoke_rti_method(rti: Any, snake_name: str, camel_name: str, *args: Any) -> Any:
+    method = getattr(rti, snake_name, None)
+    if callable(method):
+        return method(*args)
+    method = getattr(rti, camel_name)
+    return method(*args)
+
+
+def _enable_callbacks(rti: Any) -> None:
+    _invoke_rti_method(rti, "enable_callbacks", "enableCallbacks")
+
+
+def _disable_callbacks(rti: Any) -> None:
+    _invoke_rti_method(rti, "disable_callbacks", "disableCallbacks")
+
+
+def _evoke_callback(rti: Any, minimum_seconds: float) -> bool:
+    method = getattr(rti, "evoke_callback", None)
+    if callable(method):
+        return safe_evoke_callback(rti, minimum_seconds)
+    return bool(_invoke_rti_method(rti, "evoke_callback", "evokeCallback", minimum_seconds))
+
+
+def _evoke_multiple_callbacks(rti: Any, minimum_seconds: float, maximum_seconds: float) -> bool:
+    method = getattr(rti, "evoke_multiple_callbacks", None)
+    if callable(method):
+        return safe_evoke_multiple_callbacks(rti, minimum_seconds, maximum_seconds)
+    return bool(
+        _invoke_rti_method(
+            rti,
+            "evoke_multiple_callbacks",
+            "evokeMultipleCallbacks",
+            minimum_seconds,
+            maximum_seconds,
+        )
+    )
 
 
 def run_support_factory_and_decode_scenario(
@@ -240,56 +281,94 @@ def run_callback_control_scenario(
         config.federation_name,
     )
 
-    interaction_class = publisher_rti.get_interaction_class_handle(config.interaction_class_name)
-    parameter = publisher_rti.get_parameter_handle(interaction_class, config.parameter_name)
-    subscriber_interaction_class = subscriber_rti.get_interaction_class_handle(config.interaction_class_name)
-    subscriber_parameter = subscriber_rti.get_parameter_handle(subscriber_interaction_class, config.parameter_name)
-    publisher_rti.publish_interaction_class(interaction_class)
-    subscriber_rti.subscribe_interaction_class(subscriber_interaction_class)
+    object_class = publisher_rti.get_object_class_handle(config.object_class_name)
+    attribute = publisher_rti.get_attribute_handle(object_class, config.attribute_name)
+    subscriber_object_class = subscriber_rti.get_object_class_handle(config.object_class_name)
+    subscriber_attribute = subscriber_rti.get_attribute_handle(subscriber_object_class, config.attribute_name)
+    publisher_rti.publish_object_class_attributes(object_class, {attribute})
+    subscriber_rti.subscribe_object_class_attributes(subscriber_object_class, {subscriber_attribute})
 
-    subscriber_rti.disable_callbacks()
-    publisher_rti.send_interaction(interaction_class, {parameter: config.first_payload}, config.first_tag)
-    wait_for_callbacks(publisher_rti, subscriber_rti, loops=24)
-    assert subscriber_federate.last_callback("receiveInteraction") is None
-    first_evoke = subscriber_rti.evoke_callback(0.0)
+    object_instance = register_named_object_instance(
+        publisher_rti,
+        publisher_federate,
+        object_class,
+        config.object_instance_name,
+    )
+    publisher_rti.update_attribute_values(object_instance, {attribute: config.first_payload}, config.first_tag)
+    first_queued_while_disabled = (
+        subscriber_federate.last_callback("discoverObjectInstance") is None
+        and subscriber_federate.last_callback("reflectAttributeValues") is None
+    )
+    assert first_queued_while_disabled
+    _disable_callbacks(subscriber_rti)
+    first_evoke = _evoke_callback(subscriber_rti, 0.0)
     assert first_evoke is False
 
-    subscriber_rti.enable_callbacks()
-    second_evoke = subscriber_rti.evoke_callback(0.0)
-    assert second_evoke is True
-    first_delivery = subscriber_federate.last_callback("receiveInteraction")
-    assert first_delivery is not None
-    assert first_delivery.args[0] == subscriber_interaction_class
-    assert first_delivery.args[1] == {subscriber_parameter: config.first_payload}
-    assert first_delivery.args[2] == config.first_tag
-    assert first_delivery.args[4] == publisher_handle
+    _enable_callbacks(subscriber_rti)
+    second_evoke = _evoke_callback(subscriber_rti, 0.0)
+    first_release = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
+    assert first_release is True
+    first_discoveries = subscriber_federate.callbacks_named("discoverObjectInstance")
+    assert first_discoveries
+    first_reflections = subscriber_federate.callbacks_named("reflectAttributeValues")
+    assert first_reflections
+    first_delivery = first_discoveries[-1]
+    assert first_delivery.args[0] == object_instance
+    assert first_delivery.args[1] == subscriber_object_class
+    assert first_delivery.args[2] == config.object_instance_name
+    first_reflection = first_reflections[-1]
+    assert first_reflection.args[1] == {subscriber_attribute: config.first_payload}
+    assert first_reflection.args[2] == config.first_tag
 
     subscriber_federate.clear()
-    subscriber_rti.disable_callbacks()
-    publisher_rti.send_interaction(interaction_class, {parameter: config.second_payload}, config.second_tag)
-    publisher_rti.send_interaction(interaction_class, {parameter: config.third_payload}, config.third_tag)
-    wait_for_callbacks(publisher_rti, subscriber_rti, loops=24)
-    assert subscriber_federate.last_callback("receiveInteraction") is None
+    publisher_rti.update_attribute_values(object_instance, {attribute: config.second_payload}, config.second_tag)
+    publisher_rti.update_attribute_values(object_instance, {attribute: config.third_payload}, config.third_tag)
+    second_batch_queued_while_disabled = subscriber_federate.last_callback("reflectAttributeValues") is None
+    assert second_batch_queued_while_disabled
+    _disable_callbacks(subscriber_rti)
+    blocked_batch_evoke = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
+    assert blocked_batch_evoke is False
 
-    subscriber_rti.enable_callbacks()
-    batch_evoke = subscriber_rti.evoke_multiple_callbacks(0.0, 0.0)
+    _enable_callbacks(subscriber_rti)
+    batch_evoke = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
     assert batch_evoke is True
-    drained_deliveries = subscriber_federate.callbacks_named("receiveInteraction")
+    batch_evoke_attempts = 1
+    drained_deliveries = subscriber_federate.callbacks_named("reflectAttributeValues")
+    while len(drained_deliveries) < 2 and batch_evoke_attempts < 8:
+        if not _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0):
+            break
+        batch_evoke_attempts += 1
+        drained_deliveries = subscriber_federate.callbacks_named("reflectAttributeValues")
     drained_tags = [record.args[2] for record in drained_deliveries]
     assert drained_tags == [config.second_tag, config.third_tag]
-    post_drain = subscriber_rti.evoke_multiple_callbacks(0.0, 0.0)
+    drained_payloads = [record.args[1] for record in drained_deliveries]
+    assert drained_payloads == [
+        {subscriber_attribute: config.second_payload},
+        {subscriber_attribute: config.third_payload},
+    ]
+    post_drain = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
     assert post_drain is False
 
     return {
         "publisher_handle": publisher_handle,
-        "interaction_class": interaction_class,
-        "parameter": parameter,
-        "subscriber_parameter": subscriber_parameter,
+        "object_instance": object_instance,
+        "object_class": object_class,
+        "attribute": attribute,
+        "subscriber_object_class": subscriber_object_class,
+        "subscriber_attribute": subscriber_attribute,
+        "first_queued_while_disabled": first_queued_while_disabled,
         "first_evoke": first_evoke,
         "second_evoke": second_evoke,
+        "first_release": first_release,
         "first_delivery": first_delivery,
+        "first_reflection": first_reflection,
+        "second_batch_queued_while_disabled": second_batch_queued_while_disabled,
+        "blocked_batch_evoke": blocked_batch_evoke,
         "batch_evoke": batch_evoke,
+        "batch_evoke_attempts": batch_evoke_attempts,
         "drained_deliveries": drained_deliveries,
+        "drained_tags": drained_tags,
+        "drained_payloads": drained_payloads,
         "post_drain": post_drain,
     }
 

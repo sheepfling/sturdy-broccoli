@@ -32307,6 +32307,8 @@
       "matrix_id": "REQ-RTI-SS-10_41-evokeCallback",
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -32321,6 +32323,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -32359,6 +32363,8 @@
       "matrix_id": "REQ-RTI-SS-10_42-evokeMultipleCallbacks",
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -32373,6 +32379,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/transport/test_rest_transport.py",
         "tests/transport/test_grpc_transport_python_server.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -32411,6 +32419,8 @@
       "matrix_id": "REQ-RTI-SS-10_43-enableCallbacks",
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -32423,6 +32433,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -32459,6 +32471,8 @@
       "matrix_id": "REQ-RTI-SS-10_44-disableCallbacks",
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
@@ -32471,6 +32485,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_callback_control_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_callback_control",
         "tests/backends/test_python_backend_support_services.py",
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",

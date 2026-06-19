@@ -692,6 +692,18 @@ message DisableAsynchronousDeliveryRequest {
 message DisableAsynchronousDeliveryResponse {
 }
 
+message EnableCallbacksRequest {
+}
+
+message EnableCallbacksResponse {
+}
+
+message DisableCallbacksRequest {
+}
+
+message DisableCallbacksResponse {
+}
+
 message QueryGALTRequest {
 }
 
@@ -1360,6 +1372,8 @@ message CallRequest {
         DisableAttributeScopeAdvisorySwitchRequest disableAttributeScopeAdvisorySwitchRequest = 149;
         EnableInteractionRelevanceAdvisorySwitchRequest enableInteractionRelevanceAdvisorySwitchRequest = 150;
         DisableInteractionRelevanceAdvisorySwitchRequest disableInteractionRelevanceAdvisorySwitchRequest = 151;
+        EnableCallbacksRequest enableCallbacksRequest = 152;
+        DisableCallbacksRequest disableCallbacksRequest = 153;
     }
 }
 
@@ -1517,5 +1531,7 @@ message CallResponse {
         DisableAttributeScopeAdvisorySwitchResponse disableAttributeScopeAdvisorySwitchResponse = 150;
         EnableInteractionRelevanceAdvisorySwitchResponse enableInteractionRelevanceAdvisorySwitchResponse = 151;
         DisableInteractionRelevanceAdvisorySwitchResponse disableInteractionRelevanceAdvisorySwitchResponse = 152;
+        EnableCallbacksResponse enableCallbacksResponse = 153;
+        DisableCallbacksResponse disableCallbacksResponse = 154;
     }
 }

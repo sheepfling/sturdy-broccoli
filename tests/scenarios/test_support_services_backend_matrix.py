@@ -7,7 +7,9 @@ from hla.rti1516e.enums import OrderType, ResignAction
 from hla.rti1516e.factory import create_rti_ambassador
 from hla.backends.inmemory import InMemoryRTIEngine
 from hla.verification import (
+    CallbackControlScenarioConfig,
     SupportServicesScenarioConfig,
+    run_callback_control_scenario,
     run_support_factory_and_decode_scenario,
 )
 from tests.vendors.runtime_support import cleanup_federation
@@ -53,4 +55,51 @@ def test_python_backend_support_factory_and_decode_matrix():
         destroyer=rti,
         destroyer_resign_action=ResignAction.DELETE_OBJECTS,
         disconnect_rtis=(rti,),
+    )
+
+
+def test_python_backend_callback_control_matrix():
+    engine = InMemoryRTIEngine()
+    publisher = create_rti_ambassador("python", engine=engine)
+    subscriber = create_rti_ambassador("python", engine=engine)
+    config = CallbackControlScenarioConfig(
+        federation_name=f"python-callback-control-{uuid.uuid4().hex[:8]}",
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+    )
+    publisher_federate = RecordingFederateAmbassador()
+    subscriber_federate = RecordingFederateAmbassador()
+
+    summary = run_callback_control_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+
+    assert summary["first_queued_while_disabled"] is True
+    assert summary["first_evoke"] is False
+    assert summary["first_release"] is True
+    assert summary["first_delivery"].args[0] == summary["object_instance"]
+    assert summary["first_delivery"].args[1] == summary["subscriber_object_class"]
+    assert summary["first_delivery"].args[2] == config.object_instance_name
+    assert summary["first_reflection"].args[1] == {summary["subscriber_attribute"]: config.first_payload}
+    assert summary["first_reflection"].args[2] == config.first_tag
+    assert summary["second_batch_queued_while_disabled"] is True
+    assert summary["blocked_batch_evoke"] is False
+    assert summary["batch_evoke"] is True
+    assert summary["drained_tags"] == [config.second_tag, config.third_tag]
+    assert summary["drained_payloads"] == [
+        {summary["subscriber_attribute"]: config.second_payload},
+        {summary["subscriber_attribute"]: config.third_payload},
+    ]
+    assert summary["post_drain"] is False
+
+    cleanup_federation(
+        config.federation_name,
+        destroyer=publisher,
+        destroyer_resign_action=ResignAction.NO_ACTION,
+        remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+        disconnect_rtis=(subscriber, publisher),
     )

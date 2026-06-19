@@ -557,6 +557,10 @@ class CERTIBackend(RTIBackend):
 
     def _invoke_callback_service(self, invocation: Invocation) -> Any:
         match invocation.method_name:
+            case "enableCallbacks":
+                return self._request_value("ENABLE_CALLBACKS")
+            case "disableCallbacks":
+                return self._request_value("DISABLE_CALLBACKS")
             case "evokeCallback":
                 return self._invoke_evoke(float(invocation.args[0] if invocation.args else 0.0), multiple=False)
             case "evokeMultipleCallbacks":

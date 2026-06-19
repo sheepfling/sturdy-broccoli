@@ -11,6 +11,7 @@ from hla.backends.inmemory import InMemoryRTIEngine
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.factory import create_rti_ambassador
 from hla.verification import (
+    CallbackControlScenarioConfig,
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     SynchronizationScenarioConfig,
@@ -18,6 +19,7 @@ from hla.verification import (
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
     run_attribute_ownership_scenario,
+    run_callback_control_scenario,
     run_negotiated_attribute_ownership_scenario,
     run_synchronization_scenario,
 )
@@ -427,6 +429,55 @@ def test_grpc_transport_polling_contract_drains_buffered_callbacks():
         subscriber.resign_federation_execution(ResignAction.NO_ACTION)
         publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
         publisher.destroy_federation_execution("GrpcPollingContractFederation")
+        subscriber.disconnect()
+        publisher.disconnect()
+    finally:
+        if subscriber is not None:
+            subscriber.close()
+        if publisher is not None:
+            publisher.close()
+        if subscriber_server is not None:
+            subscriber_server.close()
+        if publisher_server is not None:
+            publisher_server.close()
+
+
+def test_grpc_transport_callback_control_services_gate_evoked_delivery():
+    publisher_server = subscriber_server = None
+    publisher = subscriber = None
+    try:
+        publisher_server, subscriber_server, publisher, subscriber = _start_grpc_pair()
+        config = CallbackControlScenarioConfig(
+            federation_name="GrpcCallbackControlFederation",
+            fom_modules=(VENDOR_SMOKE_FOM,),
+            logical_time_implementation_name="HLAinteger64Time",
+            object_instance_name="GrpcCallbackObject-1",
+        )
+
+        summary = run_callback_control_scenario(
+            publisher,
+            subscriber,
+            config=config,
+            publisher_federate=RecordingFederateAmbassador(),
+            subscriber_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["first_queued_while_disabled"] is True
+        assert summary["first_evoke"] is False
+        assert summary["first_release"] is True
+        assert summary["first_reflection"].args[1] == {summary["subscriber_attribute"]: config.first_payload}
+        assert summary["first_reflection"].args[2] == config.first_tag
+        assert summary["blocked_batch_evoke"] is False
+        assert summary["batch_evoke"] is True
+        assert summary["drained_payloads"] == [
+            {summary["subscriber_attribute"]: config.second_payload},
+            {summary["subscriber_attribute"]: config.third_payload},
+        ]
+        assert summary["post_drain"] is False
+
+        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        publisher.destroy_federation_execution(config.federation_name)
         subscriber.disconnect()
         publisher.disconnect()
     finally:
