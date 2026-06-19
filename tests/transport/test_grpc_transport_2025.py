@@ -1322,6 +1322,148 @@ def test_2025_transport_server_filters_interactions_by_ddm_region_overlap():
         server.close()
 
 
+def test_2025_transport_server_filters_directed_interactions_by_ddm_region_overlap():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-directed-ddm"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "DirectedDDM2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025DirectedDDM", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        dimension = transport.request(TransportRequest(command="GET_DIMENSION_HANDLE", fields=("RoutingSpace",))).fields[0]
+
+        assert transport.request(
+            TransportRequest(command="PUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+        assert transport.request(
+            TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
+        ).fields == ()
+
+        publisher_region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        subscriber_region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(publisher_region, dimension, "0:10"))).fields == ()
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "50:60"))).fields == ()
+        assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(f"{publisher_region},{subscriber_region}",))).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProDirectedDDMTarget-1"))).fields[0]
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="ASSOCIATE_REGIONS_FOR_UPDATES",
+                    fields=(object_instance, f"{attribute}|{publisher_region}"),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    fields=(interaction_class, "1", subscriber_region),
+                )
+            ).fields
+            == ()
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:4e4f2d444952454354", "6f757473696465"),
+                )
+            ).fields
+            == ()
+        )
+        assert server.servicer.callback_queue == []
+
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "5:15"))).fields == ()
+        assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(subscriber_region,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:444952454354", "696e73696465"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION",
+            interaction_class,
+            object_instance,
+            f"{parameter}:444952454354",
+            "696e73696465",
+            "1",
+            "1",
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    fields=(interaction_class, subscriber_region),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:554e535542", "756e737562"),
+                )
+            ).fields
+            == ()
+        )
+        assert server.servicer.callback_queue == []
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    fields=(interaction_class, "1", subscriber_region),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="DELETE_REGION", fields=(subscriber_region,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(interaction_class, object_instance, f"{parameter}:44454c455445", "64656c657465"),
+                )
+            ).fields
+            == ()
+        )
+        assert server.servicer.callback_queue == []
+
+        assert {
+            "publishObjectClassDirectedInteractionsRequest",
+            "subscribeObjectClassDirectedInteractionsRequest",
+            "associateRegionsForUpdatesRequest",
+            "subscribeInteractionClassWithRegionsRequest",
+            "unsubscribeInteractionClassWithRegionsRequest",
+            "sendDirectedInteractionRequest",
+            "deleteRegionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_reports_mom_service_invocation_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

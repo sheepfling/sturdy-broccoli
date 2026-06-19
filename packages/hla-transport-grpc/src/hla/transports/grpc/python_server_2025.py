@@ -254,6 +254,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.published_interactions: set[str] = set()
         self.subscribed_interactions: set[str] = set()
         self.subscribed_interaction_regions: dict[str, set[str]] = {}
+        self.directed_interaction_region_gates: set[str] = set()
         self.published_directed_interactions: dict[str, set[str]] = {}
         self.subscribed_directed_interactions: dict[str, set[str]] = {}
         self.unowned_attributes: set[tuple[str, str]] = set()
@@ -886,6 +887,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.subscribeInteractionClassWithRegionsRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
             self.subscribed_interactions.add(interaction_class)
+            self.directed_interaction_region_gates.add(interaction_class)
             self.subscribed_interaction_regions.setdefault(interaction_class, set()).update(
                 region.data.decode("ascii") for region in payload.regions.regionHandle
             )
@@ -1201,7 +1203,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             interaction_class = payload.interactionClass.data.decode("ascii")
             if interaction_class not in self.published_directed_interactions.get(object_class, set()):
                 return self._error("InteractionClassNotPublished", interaction_class)
-            if interaction_class in self.subscribed_directed_interactions.get(object_class, set()):
+            if self._directed_interaction_subscriber_matches(object_instance, object_class, interaction_class):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
                         receiveDirectedInteraction=callback_pb2.ReceiveDirectedInteraction(
@@ -1228,7 +1230,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if interaction_class not in self.published_directed_interactions.get(object_class, set()):
                 return self._error("InteractionClassNotPublished", interaction_class)
             retraction_handle = self._next_retraction_handle()
-            if interaction_class in self.subscribed_directed_interactions.get(object_class, set()):
+            if self._directed_interaction_subscriber_matches(object_instance, object_class, interaction_class):
                 self._queue_tso_callback(
                     retraction_handle,
                     payload.time,
@@ -2154,6 +2156,30 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if not source_regions:
             return False
         return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
+
+    def _directed_interaction_subscriber_matches(self, object_instance: str, object_class: str, interaction_class: str) -> bool:
+        if interaction_class not in self.subscribed_directed_interactions.get(object_class, set()):
+            return False
+        if interaction_class not in self.directed_interaction_region_gates:
+            return True
+        target_regions = self.subscribed_interaction_regions.get(interaction_class, set())
+        if not target_regions:
+            return False
+        source_regions = self._object_instance_region_values(object_instance)
+        if not source_regions:
+            return False
+        return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
+
+    def _object_instance_region_values(self, object_instance: str) -> tuple[str, ...]:
+        return tuple(
+            sorted(
+                {
+                    region
+                    for regions in self.object_update_regions.get(object_instance, {}).values()
+                    for region in regions
+                }
+            )
+        )
 
     def _reflectable_attribute_names(self, object_instance: str, object_class: str) -> set[str]:
         return {
