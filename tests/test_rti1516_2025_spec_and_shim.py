@@ -2129,6 +2129,181 @@ def test_2025_shim_filters_interactions_by_ddm_region_overlap(tmp_path: Path) ->
     subscriber.disconnect()
 
 
+def test_2025_shim_preserves_direct_callback_context_for_timed_region_delivery(tmp_path: Path) -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    fom = tmp_path / "TimedRegionContext2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Timed Region Context 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Timed regional callback-context fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>RegionalTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>RegionalReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-timed-region-context-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.RegionalTarget")
+    attribute = publisher.getAttributeHandle(object_class, "Position")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.RegionalReport")
+    subscriber_interaction_class = subscriber.getInteractionClassHandle("HLAinteractionRoot.RegionalReport")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    dimension = publisher.getDimensionHandle("RoutingSpace")
+    subscriber_dimension = subscriber.getDimensionHandle("RoutingSpace")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+
+    publisher.publishObjectClassAttributes(object_class, {attribute})
+    publisher.publishInteractionClass(interaction_class)
+
+    publisher_region = publisher.createRegion({dimension})
+    subscriber_region = subscriber.createRegion({subscriber_dimension})
+    publisher.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(0, 10))
+    publisher.commitRegionModifications({publisher_region})
+    subscriber.commitRegionModifications({subscriber_region})
+
+    object_instance = publisher.registerObjectInstance(object_class, "TimedRegionTarget-1")
+    publisher.associateRegionsForUpdates(object_instance, [({attribute}, {publisher_region})])
+    subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+    subscriber.subscribeInteractionClassWithRegions(subscriber_interaction_class, {subscriber_region})
+
+    publisher.enableTimeRegulation(HLAinteger64Interval(1))
+    subscriber.enableTimeConstrained()
+    publisher.changeAttributeOrderType(object_instance, {attribute}, OrderType.TIMESTAMP)
+    publisher.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
+
+    attribute_result = publisher.updateAttributeValues(
+        object_instance,
+        {attribute: b"inside"},
+        b"inside-tag",
+        HLAinteger64Time(10),
+    )
+    interaction_result = publisher.sendInteractionWithRegions(
+        interaction_class,
+        {parameter: b"track"},
+        {publisher_region},
+        b"track-tag",
+        HLAinteger64Time(12),
+    )
+    remove_result = publisher.deleteObjectInstance(
+        object_instance,
+        b"gone",
+        HLAinteger64Time(14),
+    )
+    assert attribute_result is not None and attribute_result.retractionHandleIsValid is True
+    assert interaction_result is None
+    assert remove_result is None
+
+    publisher.timeAdvanceRequest(HLAinteger64Time(20))
+    subscriber.timeAdvanceRequest(HLAinteger64Time(20))
+
+    assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
+        object_instance,
+        object_class,
+        "TimedRegionTarget-1",
+        publisher_handle,
+    )
+    assert subscriber_callbacks.last_callback("reflectAttributeValues") == (
+        object_instance,
+        {attribute: b"inside"},
+        b"inside-tag",
+        reliable,
+        publisher_handle,
+        {publisher_region},
+        HLAinteger64Time(10),
+        OrderType.TIMESTAMP,
+        OrderType.TIMESTAMP,
+        attribute_result.handle,
+    )
+    assert subscriber_callbacks.last_callback("receiveInteraction") == (
+        interaction_class,
+        {parameter: b"track"},
+        b"track-tag",
+        reliable,
+        publisher_handle,
+        {publisher_region},
+        HLAinteger64Time(12),
+        OrderType.TIMESTAMP,
+        OrderType.TIMESTAMP,
+        None,
+    )
+    assert subscriber_callbacks.last_callback("removeObjectInstance") == (
+        object_instance,
+        b"gone",
+        publisher_handle,
+        HLAinteger64Time(14),
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
+    )
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    publisher.disconnect()
+    subscriber.disconnect()
+
+
 @pytest.mark.requirements(
     "HLA2025-MOD-007",
     "HLA2025-FR-003",

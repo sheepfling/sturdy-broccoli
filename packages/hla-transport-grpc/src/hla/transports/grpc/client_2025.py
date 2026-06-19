@@ -477,6 +477,14 @@ def _decode_federation_execution_members(value: Any) -> str:
     )
 
 
+def _decode_optional_retraction(value: Any) -> str | None:
+    handle = getattr(value, "optionalRetraction", None)
+    if handle is None:
+        return None
+    data = getattr(handle, "data", b"")
+    return _opaque_text(data) if data else None
+
+
 def _decode_logical_time(value: Any) -> tuple[str, str]:
     raw = value.data.decode("ascii") if value.data else "HLAfloat64Time:0.0"
     if ":" in raw:
@@ -626,6 +634,72 @@ def _callback_two_times(kind: str):
 
 def _callback_handle(kind: str, field_name: str):
     return lambda value: (kind, _opaque_text(getattr(value, field_name).data))
+
+
+def decode_callback_request_details(request: Any) -> dict[str, Any]:
+    callback_kind = request.WhichOneof("callbackRequest")
+    if callback_kind is None:
+        return {"kind": None}
+
+    payload = getattr(request, callback_kind)
+    if callback_kind == "reflectAttributeValuesWithTime":
+        time_type, time_value = _decode_logical_time(payload.time)
+        return {
+            "kind": callback_kind,
+            "object_instance": _opaque_text(payload.objectInstance.data),
+            "attribute_values": _decode_handle_value_map(payload.attributeValues, "attributeHandleValue"),
+            "user_supplied_tag": bytes(payload.userSuppliedTag).hex(),
+            "transportation_type": _opaque_text(payload.transportationType.data),
+            "producing_federate": _opaque_text(payload.producingFederate.data),
+            "sent_regions": _decode_conveyed_regions(payload.optionalSentRegions),
+            "time": (time_type, time_value),
+            "sent_order_type": _enum_wire_number(payload.sentOrderType),
+            "received_order_type": _enum_wire_number(payload.receivedOrderType),
+            "optional_retraction": _decode_optional_retraction(payload),
+        }
+    if callback_kind == "receiveInteractionWithTime":
+        time_type, time_value = _decode_logical_time(payload.time)
+        return {
+            "kind": callback_kind,
+            "interaction_class": _opaque_text(payload.interactionClass.data),
+            "parameter_values": _decode_handle_value_map(payload.parameterValues, "parameterHandleValue"),
+            "user_supplied_tag": bytes(payload.userSuppliedTag).hex(),
+            "transportation_type": _opaque_text(payload.transportationType.data),
+            "producing_federate": _opaque_text(payload.producingFederate.data),
+            "sent_regions": _decode_conveyed_regions(payload.optionalSentRegions),
+            "time": (time_type, time_value),
+            "sent_order_type": _enum_wire_number(payload.sentOrderType),
+            "received_order_type": _enum_wire_number(payload.receivedOrderType),
+            "optional_retraction": _decode_optional_retraction(payload),
+        }
+    if callback_kind == "receiveDirectedInteractionWithTime":
+        time_type, time_value = _decode_logical_time(payload.time)
+        return {
+            "kind": callback_kind,
+            "interaction_class": _opaque_text(payload.interactionClass.data),
+            "object_instance": _opaque_text(payload.objectInstance.data),
+            "parameter_values": _decode_handle_value_map(payload.parameterValues, "parameterHandleValue"),
+            "user_supplied_tag": bytes(payload.userSuppliedTag).hex(),
+            "transportation_type": _opaque_text(payload.transportationType.data),
+            "producing_federate": _opaque_text(payload.producingFederate.data),
+            "time": (time_type, time_value),
+            "sent_order_type": _enum_wire_number(payload.sentOrderType),
+            "received_order_type": _enum_wire_number(payload.receivedOrderType),
+            "optional_retraction": _decode_optional_retraction(payload),
+        }
+    if callback_kind == "removeObjectInstanceWithTime":
+        time_type, time_value = _decode_logical_time(payload.time)
+        return {
+            "kind": callback_kind,
+            "object_instance": _opaque_text(payload.objectInstance.data),
+            "user_supplied_tag": bytes(payload.userSuppliedTag).hex(),
+            "producing_federate": _opaque_text(payload.producingFederate.data),
+            "time": (time_type, time_value),
+            "sent_order_type": _enum_wire_number(payload.sentOrderType),
+            "received_order_type": _enum_wire_number(payload.receivedOrderType),
+            "optional_retraction": _decode_optional_retraction(payload),
+        }
+    return {"kind": callback_kind}
 
 
 _CALLBACK_RESPONSE_FIELDS = {
@@ -918,4 +992,4 @@ class FedPro2025ClientAdapter:
 
 GrpcTransportClientAdapter = FedPro2025ClientAdapter
 
-__all__ = ["FedPro2025ClientAdapter", "GrpcTransportClientAdapter"]
+__all__ = ["FedPro2025ClientAdapter", "GrpcTransportClientAdapter", "decode_callback_request_details"]

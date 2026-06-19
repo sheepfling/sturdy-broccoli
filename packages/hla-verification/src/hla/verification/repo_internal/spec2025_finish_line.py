@@ -181,12 +181,16 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "requirements": ("HLA2025-MOD-004", "HLA2025-RET-002", "HLA2025-FI-001"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
+            "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 federate ambassador surface exposes direct callback context parameters "
-            "for discovery, reflection, interaction, directed interaction, and remove callbacks "
-            "without native Supplemental*Info helper objects."
+            "Python 2025 callback proof now covers both API surface and executable callback context delivery: "
+            "the in-process shim emits direct producing-federate, region, time, order, and retraction parameters "
+            "for discovery, reflection, interaction, directed interaction, and remove callbacks without native "
+            "Supplemental*Info helper objects, and the hosted FedPro route preserves the corresponding direct "
+            "callback fields through its 2025 callback decoder."
         ),
     },
     {

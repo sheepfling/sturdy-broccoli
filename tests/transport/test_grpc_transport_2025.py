@@ -6,6 +6,7 @@ import grpc
 import pytest
 from hla.transports.common.transport import TransportError, TransportRequest
 from hla.transports.grpc import GrpcTransport, GrpcTransportConfig
+from hla.transports.grpc.client_2025 import decode_callback_request_details
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
 from hla.transports.grpc.fedpro2025 import HLA2025RTITransport_pb2_grpc as transport_pb2_grpc
 from hla.transports.grpc.fedpro2025 import RTIambassador_2025_pb2 as rti_pb2
@@ -8952,6 +8953,145 @@ def test_2025_transport_server_decodes_request_retraction_callback_over_fedpro_s
         if transport is not None:
             transport.close()
         server.close()
+
+
+def test_2025_transport_decoder_preserves_direct_callback_context_details():
+    conveyed = datatypes_pb2.ConveyedRegionSet(
+        conveyedRegions=[
+            datatypes_pb2.ConveyedRegion(
+                dimensionAndRange=[
+                    datatypes_pb2.DimensionAndRange(
+                        dimensionHandle=datatypes_pb2.DimensionHandle(data=b"700"),
+                        rangeBounds=datatypes_pb2.RangeBounds(lower=5, upper=15),
+                    )
+                ]
+            )
+        ]
+    )
+    reflect = callback_pb2.CallbackRequest(
+        reflectAttributeValuesWithTime=callback_pb2.ReflectAttributeValuesWithTime(
+            objectInstance=datatypes_pb2.ObjectInstanceHandle(data=b"17"),
+            attributeValues=datatypes_pb2.AttributeHandleValueMap(
+                attributeHandleValue=[
+                    datatypes_pb2.AttributeHandleValue(
+                        attributeHandle=datatypes_pb2.AttributeHandle(data=b"5"),
+                        value=b"inside",
+                    )
+                ]
+            ),
+            userSuppliedTag=b"reflect-tag",
+            transportationType=datatypes_pb2.TransportationTypeHandle(data=b"2"),
+            producingFederate=datatypes_pb2.FederateHandle(data=b"3"),
+            optionalSentRegions=conveyed,
+            time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:10"),
+            sentOrderType=datatypes_pb2.TIMESTAMP,
+            receivedOrderType=datatypes_pb2.TIMESTAMP,
+            optionalRetraction=datatypes_pb2.MessageRetractionHandle(data=b"41"),
+        )
+    )
+    interaction = callback_pb2.CallbackRequest(
+        receiveInteractionWithTime=callback_pb2.ReceiveInteractionWithTime(
+            interactionClass=datatypes_pb2.InteractionClassHandle(data=b"11"),
+            parameterValues=datatypes_pb2.ParameterHandleValueMap(
+                parameterHandleValue=[
+                    datatypes_pb2.ParameterHandleValue(
+                        parameterHandle=datatypes_pb2.ParameterHandle(data=b"9"),
+                        value=b"track",
+                    )
+                ]
+            ),
+            userSuppliedTag=b"interaction-tag",
+            transportationType=datatypes_pb2.TransportationTypeHandle(data=b"2"),
+            producingFederate=datatypes_pb2.FederateHandle(data=b"3"),
+            optionalSentRegions=conveyed,
+            time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:12"),
+            sentOrderType=datatypes_pb2.TIMESTAMP,
+            receivedOrderType=datatypes_pb2.TIMESTAMP,
+            optionalRetraction=datatypes_pb2.MessageRetractionHandle(data=b"42"),
+        )
+    )
+    directed = callback_pb2.CallbackRequest(
+        receiveDirectedInteractionWithTime=callback_pb2.ReceiveDirectedInteractionWithTime(
+            interactionClass=datatypes_pb2.InteractionClassHandle(data=b"11"),
+            objectInstance=datatypes_pb2.ObjectInstanceHandle(data=b"17"),
+            parameterValues=datatypes_pb2.ParameterHandleValueMap(
+                parameterHandleValue=[
+                    datatypes_pb2.ParameterHandleValue(
+                        parameterHandle=datatypes_pb2.ParameterHandle(data=b"9"),
+                        value=b"track-directed",
+                    )
+                ]
+            ),
+            userSuppliedTag=b"directed-tag",
+            transportationType=datatypes_pb2.TransportationTypeHandle(data=b"2"),
+            producingFederate=datatypes_pb2.FederateHandle(data=b"3"),
+            time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:13"),
+            sentOrderType=datatypes_pb2.TIMESTAMP,
+            receivedOrderType=datatypes_pb2.TIMESTAMP,
+            optionalRetraction=datatypes_pb2.MessageRetractionHandle(data=b"43"),
+        )
+    )
+    remove = callback_pb2.CallbackRequest(
+        removeObjectInstanceWithTime=callback_pb2.RemoveObjectInstanceWithTime(
+            objectInstance=datatypes_pb2.ObjectInstanceHandle(data=b"17"),
+            userSuppliedTag=b"gone",
+            producingFederate=datatypes_pb2.FederateHandle(data=b"3"),
+            time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:14"),
+            sentOrderType=datatypes_pb2.TIMESTAMP,
+            receivedOrderType=datatypes_pb2.TIMESTAMP,
+            optionalRetraction=datatypes_pb2.MessageRetractionHandle(data=b"44"),
+        )
+    )
+
+    assert decode_callback_request_details(reflect) == {
+        "kind": "reflectAttributeValuesWithTime",
+        "object_instance": "17",
+        "attribute_values": "5:696e73696465",
+        "user_supplied_tag": "7265666c6563742d746167",
+        "transportation_type": "2",
+        "producing_federate": "3",
+        "sent_regions": "700:5:15",
+        "time": ("HLAinteger64Time", "10"),
+        "sent_order_type": "2",
+        "received_order_type": "2",
+        "optional_retraction": "41",
+    }
+    assert decode_callback_request_details(interaction) == {
+        "kind": "receiveInteractionWithTime",
+        "interaction_class": "11",
+        "parameter_values": "9:747261636b",
+        "user_supplied_tag": "696e746572616374696f6e2d746167",
+        "transportation_type": "2",
+        "producing_federate": "3",
+        "sent_regions": "700:5:15",
+        "time": ("HLAinteger64Time", "12"),
+        "sent_order_type": "2",
+        "received_order_type": "2",
+        "optional_retraction": "42",
+    }
+    assert decode_callback_request_details(directed) == {
+        "kind": "receiveDirectedInteractionWithTime",
+        "interaction_class": "11",
+        "object_instance": "17",
+        "parameter_values": "9:747261636b2d6469726563746564",
+        "user_supplied_tag": "64697265637465642d746167",
+        "transportation_type": "2",
+        "producing_federate": "3",
+        "time": ("HLAinteger64Time", "13"),
+        "sent_order_type": "2",
+        "received_order_type": "2",
+        "optional_retraction": "43",
+    }
+    assert decode_callback_request_details(remove) == {
+        "kind": "removeObjectInstanceWithTime",
+        "object_instance": "17",
+        "user_supplied_tag": "676f6e65",
+        "producing_federate": "3",
+        "time": ("HLAinteger64Time", "14"),
+        "sent_order_type": "2",
+        "received_order_type": "2",
+        "optional_retraction": "44",
+    }
 
 
 @pytest.mark.requirements(
