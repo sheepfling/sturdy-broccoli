@@ -691,7 +691,18 @@ def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> Non
     wing.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-NEW-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")
+@pytest.mark.requirements(
+    "HLA2025-NEW-001",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-039",
+    "HLA2025-FI-SVC-040",
+    "HLA2025-FI-SVC-045",
+    "HLA2025-FI-SVC-046",
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+)
 def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished

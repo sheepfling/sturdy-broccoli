@@ -132,6 +132,14 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-MOD-004" in slices["2025-callback-context-parameters"]["requirements"]
     assert slices["2025-directed-interaction-boundary"]["status"] == "implemented-slice"
     assert "HLA2025-NEW-001" in slices["2025-directed-interaction-boundary"]["requirements"]
+    assert {
+        "HLA2025-FI-SVC-039",
+        "HLA2025-FI-SVC-040",
+        "HLA2025-FI-SVC-045",
+        "HLA2025-FI-SVC-046",
+        "HLA2025-FI-SVC-063",
+        "HLA2025-FI-SVC-064",
+    } <= set(slices["2025-directed-interaction-boundary"]["requirements"])
     assert "receiveDirectedInteraction callback delivery" in slices["2025-directed-interaction-boundary"]["supported_scope"]
     assert "Java/C++/FedPro route parity remain later behavior work" in slices["2025-directed-interaction-boundary"]["supported_scope"]
     assert slices["2025-omt-reference-value-required"]["status"] == "implemented-slice"

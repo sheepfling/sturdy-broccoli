@@ -138,7 +138,18 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-directed-interaction-boundary",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-NEW-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001"),
+        "requirements": (
+            "HLA2025-NEW-001",
+            "HLA2025-FR-003",
+            "HLA2025-FR-004",
+            "HLA2025-FI-001",
+            "HLA2025-FI-SVC-039",
+            "HLA2025-FI-SVC-040",
+            "HLA2025-FI-SVC-045",
+            "HLA2025-FI-SVC-046",
+            "HLA2025-FI-SVC-063",
+            "HLA2025-FI-SVC-064",
+        ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
