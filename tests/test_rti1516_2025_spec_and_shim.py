@@ -532,7 +532,7 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     publisher.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-FI-SVC-002")
+@pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-FI-SVC-001", "HLA2025-FI-SVC-002")
 def test_2025_shim_is_first_green_runtime_path() -> None:
     from hla.rti import create_rti_ambassador
     from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel
@@ -3206,7 +3206,13 @@ def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     leader.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-NEW-003", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-NEW-003",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-011",
+    "HLA2025-FI-SVC-012",
+)
 def test_2025_shim_reports_federate_resigned_callback_with_reason_context() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3384,7 +3390,15 @@ def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-NEW-002", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-NEW-002",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-004",
+    "HLA2025-FI-SVC-008",
+    "HLA2025-FI-SVC-009",
+    "HLA2025-FI-SVC-010",
+)
 def test_2025_shim_reports_federation_executions_and_members() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador

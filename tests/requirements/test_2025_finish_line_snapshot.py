@@ -192,6 +192,12 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-FI-SVC-003" in slices["2025-connection-lifecycle-services"]["requirements"]
     assert "orderly disconnect state teardown" in slices["2025-connection-lifecycle-services"]["supported_scope"]
     assert "connectionLost callback" in slices["2025-connection-lifecycle-services"]["supported_scope"]
+    assert slices["2025-federation-lifecycle-services"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-001" in slices["2025-federation-lifecycle-services"]["requirements"]
+    assert "HLA2025-FI-SVC-012" in slices["2025-federation-lifecycle-services"]["requirements"]
+    assert "creates federation executions with resolved FOM modules" in slices["2025-federation-lifecycle-services"]["supported_scope"]
+    assert "reports federation execution members" in slices["2025-federation-lifecycle-services"]["supported_scope"]
+    assert "federateResigned callback" in slices["2025-federation-lifecycle-services"]["supported_scope"]
     assert slices["2025-support-handle-normalization-and-switches"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-167" in slices["2025-support-handle-normalization-and-switches"]["requirements"]
     assert "HLA2025-FI-SVC-181" in slices["2025-support-handle-normalization-and-switches"]["requirements"]

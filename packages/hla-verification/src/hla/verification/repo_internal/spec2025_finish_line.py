@@ -407,6 +407,29 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-federation-lifecycle-services",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-FI-SVC-001",
+            "HLA2025-FI-SVC-004",
+            "HLA2025-FI-SVC-008",
+            "HLA2025-FI-SVC-009",
+            "HLA2025-FI-SVC-010",
+            "HLA2025-FI-SVC-011",
+            "HLA2025-FI-SVC-012",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim accepts 2025 connect requests, creates federation executions with resolved FOM "
+            "modules and selected logical-time implementation, joins named federates, reports federation "
+            "execution members and missing-federation callbacks, resigns joined federates, and emits the "
+            "federateResigned callback with resign context on local resign."
+        ),
+    },
+    {
         "id": "2025-support-handle-normalization-and-switches",
         "status": "implemented-slice",
         "requirements": (
