@@ -1,10 +1,10 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 53,
+    "covered": 82,
     "duplicate/umbrella": 22,
     "partial": 476,
-    "planned": 116,
+    "planned": 87,
     "retired/legacy-only": 24
   },
   "by_priority": {
@@ -28,7 +28,7 @@
       "partial": 224
     },
     "OMT validator-negative conformance": {
-      "planned": 29
+      "covered": 29
     },
     "Retired / replacement mapping candidates": {
       "retired/legacy-only": 24
