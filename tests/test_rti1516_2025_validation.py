@@ -6,6 +6,142 @@ from pathlib import Path
 import pytest
 
 
+OMT_2025_SCHEMA = Path("docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd")
+
+
+STRICT_OMT_2025_FIXTURE = """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Schema Valid Probe</name><type>FOM</type><version>1.0</version><modificationDate>2026-06-18</modificationDate><securityClassification>Unclassified</securityClassification><applicationDomain>Training</applicationDomain><description>Probe.</description><poc><pocType>Sponsor</pocType><pocName>Test</pocName></poc><reference><type>URL</type><identification>https://example.invalid/ref</identification></reference></modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing><semantics>Root</semantics><attribute><name>Status</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Status</semantics></attribute></objectClass></objects>
+  <interactions><interactionClass><name>HLAinteractionRoot</name><sharing>Neither</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Root</semantics><parameter><name>Message</name><dataType>HLAunicodeString</dataType><semantics>Message</semantics></parameter></interactionClass></interactions>
+  <dimensions><dimension><name>RoutingSpace</name><inputDataTypes><dataType>RouteEnum</dataType></inputDataTypes><inputDataDescription>Route</inputDataDescription><upperBound>1</upperBound><normalization>None</normalization><outputDataSemantics>None</outputDataSemantics><value>[0..1)</value></dimension></dimensions>
+  <synchronizations><synchronizationPoint><label>Ready</label><dataType>HLAunicodeString</dataType><capability>RegisterAchieve</capability><semantics>Ready</semantics></synchronizationPoint></synchronizations>
+  <transportations><transportation><name>HLAreliable</name><reliable>Yes</reliable><semantics>Reliable</semantics></transportation></transportations>
+  <switches><automaticResignAction resignAction="NoAction"/></switches>
+  <updateRates><updateRate><name>DefaultRate</name><rate>1</rate><semantics>Rate</semantics></updateRate></updateRates>
+  <dataTypes><basicDataRepresentations><basicData><name>HLAinteger32BE</name><size>32</size><interpretation>integer</interpretation><endian>Big</endian><encoding>HLAinteger32BE</encoding></basicData><basicData><name>HLAunicodeString</name><size>0</size><interpretation>string</interpretation><endian>Big</endian><encoding>HLAunicodeString</encoding></basicData></basicDataRepresentations><simpleDataTypes><simpleData><name>RouteSimple</name><representation>HLAinteger32BE</representation><semantics>Route</semantics></simpleData></simpleDataTypes><referenceDataTypes><referenceDataType><name>StatusRef</name><representation>HLAunicodeString</representation><referenceClass>HLAobjectRoot</referenceClass><referencedAttribute>Status</referencedAttribute><semantics>Status ref</semantics></referenceDataType></referenceDataTypes><enumeratedDataTypes><enumeratedData><name>RouteEnum</name><representation>HLAinteger32BE</representation><semantics>Route enum</semantics><enumerator><name>A</name><value>0</value></enumerator></enumeratedData></enumeratedDataTypes><arrayDataTypes></arrayDataTypes><fixedRecordDataTypes><fixedRecordData><name>FixedPayload</name><encoding>HLAfixedRecord</encoding><semantics>Fixed</semantics><field><name>FieldA</name><dataType>HLAunicodeString</dataType><semantics>Field</semantics></field></fixedRecordData></fixedRecordDataTypes><variantRecordDataTypes><variantRecordData><name>VariantPayload</name><discriminant>Kind</discriminant><dataType>RouteEnum</dataType><alternative><enumerator>A</enumerator><name>Text</name><dataType>HLAunicodeString</dataType><semantics>Text</semantics></alternative><encoding>HLAvariantRecord</encoding><semantics>Variant</semantics></variantRecordData></variantRecordDataTypes></dataTypes>
+</objectModel>
+"""
+
+
+def _write_strict_omt_fixture(tmp_path: Path, text: str = STRICT_OMT_2025_FIXTURE) -> Path:
+    source = tmp_path / f"strict-omt-{uuid.uuid4().hex[:8]}.xml"
+    source.write_text(text, encoding="utf-8")
+    return source
+
+
+def _schema_issue_requirements(tmp_path: Path, text: str) -> set[str]:
+    from hla.rti1516_2025.validation import validate_omt_xml_schema
+
+    return {issue.requirement for issue in validate_omt_xml_schema(_write_strict_omt_fixture(tmp_path, text), OMT_2025_SCHEMA)}
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-CV-015",
+    "HLA2025-OMT-CV-016",
+    "HLA2025-OMT-CV-017",
+    "HLA2025-OMT-CV-018",
+    "HLA2025-OMT-CV-019",
+    "HLA2025-OMT-CV-020",
+    "HLA2025-OMT-CV-021",
+    "HLA2025-OMT-CV-022",
+    "HLA2025-OMT-CV-023",
+    "HLA2025-OMT-CV-024",
+    "HLA2025-OMT-CV-025",
+    "HLA2025-OMT-CV-026",
+    "HLA2025-OMT-CV-027",
+    "HLA2025-OMT-CV-028",
+    "HLA2025-OMT-CV-029",
+)
+@pytest.mark.parametrize(
+    ("expected_requirement", "old", "new"),
+    [
+        ("HLA2025-OMT-CV-015", 'resignAction="NoAction"', 'resignAction="BadResign"'),
+        ("HLA2025-OMT-CV-016", "<reliable>Yes</reliable>", "<reliable>Maybe</reliable>"),
+        ("HLA2025-OMT-CV-017", "<sharing>Neither</sharing>", "<sharing>BadSharing</sharing>"),
+        ("HLA2025-OMT-CV-018", "<order>Receive</order>", "<order>BadOrder</order>"),
+        ("HLA2025-OMT-CV-019", "<endian>Big</endian>", "<endian>Middle</endian>"),
+        ("HLA2025-OMT-CV-020", "<type>FOM</type>", "<type>BadModel</type>"),
+        ("HLA2025-OMT-CV-021", "<capability>RegisterAchieve</capability>", "<capability>BadCapability</capability>"),
+        ("HLA2025-OMT-CV-022", "<updateType>Static</updateType>", "<updateType>BadUpdate</updateType>"),
+        ("HLA2025-OMT-CV-023", "<ownership>NoTransfer</ownership>", "<ownership>BadOwnership</ownership>"),
+        ("HLA2025-OMT-CV-024", "<valueRequired>true</valueRequired>", "<valueRequired>maybe</valueRequired>"),
+        ("HLA2025-OMT-CV-025", "<securityClassification>Unclassified</securityClassification>", "<securityClassification>BadSecurity</securityClassification>"),
+        ("HLA2025-OMT-CV-026", "<applicationDomain>Training</applicationDomain>", "<applicationDomain>BadDomain</applicationDomain>"),
+        ("HLA2025-OMT-CV-027", "<encoding>HLAfixedRecord</encoding>", "<encoding>BadFixedRecord</encoding>"),
+        ("HLA2025-OMT-CV-028", "<encoding>HLAvariantRecord</encoding>", "<encoding>BadVariantRecord</encoding>"),
+        ("HLA2025-OMT-CV-029", "<pocType>Sponsor</pocType>", "<pocType>BadPoc</pocType>"),
+    ],
+)
+def test_2025_omt_schema_validation_rejects_enumeration_domains(
+    tmp_path: Path,
+    expected_requirement: str,
+    old: str,
+    new: str,
+) -> None:
+    from hla.rti1516_2025.validation import validate_omt_xml_schema
+
+    assert validate_omt_xml_schema(_write_strict_omt_fixture(tmp_path), OMT_2025_SCHEMA) == []
+
+    requirements = _schema_issue_requirements(tmp_path, STRICT_OMT_2025_FIXTURE.replace(old, new, 1))
+
+    assert expected_requirement in requirements
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-CV-001",
+    "HLA2025-OMT-CV-002",
+    "HLA2025-OMT-CV-003",
+    "HLA2025-OMT-CV-004",
+    "HLA2025-OMT-CV-005",
+    "HLA2025-OMT-CV-006",
+    "HLA2025-OMT-CV-007",
+    "HLA2025-OMT-CV-008",
+    "HLA2025-OMT-CV-009",
+    "HLA2025-OMT-CV-010",
+    "HLA2025-OMT-CV-011",
+    "HLA2025-OMT-CV-012",
+    "HLA2025-OMT-CV-013",
+    "HLA2025-OMT-CV-014",
+)
+def test_2025_omt_schema_validation_rejects_named_keyref_and_unique_constraints(tmp_path: Path) -> None:
+    from hla.rti1516_2025.validation import validate_omt_xml_schema
+
+    schema_text = OMT_2025_SCHEMA.read_text(encoding="utf-8")
+    for constraint_name in (
+        "dimensionDataTypeKey",
+        "dimensionDataTypeRef",
+        "representationKey",
+        "representationRef",
+        "dataTypeKey",
+        "dataTypeRef",
+        "dimensionKey",
+        "dimensionRef",
+        "transportationKey",
+        "transportationRef",
+        "className",
+        "attributeName",
+        "interactionName",
+        "parameterName",
+    ):
+        assert constraint_name in schema_text
+
+    assert validate_omt_xml_schema(_write_strict_omt_fixture(tmp_path), OMT_2025_SCHEMA) == []
+    negative_cases = [
+        ("HLA2025-OMT-CV-006", "<dataType>HLAunicodeString</dataType>", "<dataType>MissingDataType</dataType>"),
+        ("HLA2025-OMT-CV-010", "<transportation>HLAreliable</transportation>", "<transportation>MissingTransport</transportation>"),
+        (
+            "HLA2025-OMT-CV-012",
+            "<attribute><name>Status</name>",
+            "<attribute><name>Status</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order></attribute><attribute><name>Status</name>",
+        ),
+    ]
+
+    for expected_requirement, old, new in negative_cases:
+        requirements = _schema_issue_requirements(tmp_path, STRICT_OMT_2025_FIXTURE.replace(old, new, 1))
+        assert expected_requirement in requirements
+
+
 @pytest.mark.requirements("HLA2025-MOD-010", "HLA2025-VER-002", "HLA2025-OMT-002")
 def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
     from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module

@@ -177,6 +177,12 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "subscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "Attribute scope advisory callbacks" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "in-scope and out-of-scope transitions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert slices["2025-omt-schema-constraint-validation"]["status"] == "implemented-slice"
+    assert "HLA2025-OMT-CV-001" in slices["2025-omt-schema-constraint-validation"]["requirements"]
+    assert "HLA2025-OMT-CV-029" in slices["2025-omt-schema-constraint-validation"]["requirements"]
+    assert "lxml-backed IEEE1516-OMT-2025 XML Schema validation path" in slices["2025-omt-schema-constraint-validation"]["supported_scope"]
+    assert "strict domain checks" in slices["2025-omt-schema-constraint-validation"]["supported_scope"]
+    assert "union-backed fields" in slices["2025-omt-schema-constraint-validation"]["supported_scope"]
     assert slices["2025-object-management-support-callbacks"]["status"] == "implemented-slice"
     assert "deleteObjectInstance/removeObjectInstance callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "requestAttributeValueUpdate callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]

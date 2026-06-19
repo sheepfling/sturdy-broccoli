@@ -326,6 +326,54 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-omt-schema-constraint-validation",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-CV-001",
+            "HLA2025-OMT-CV-002",
+            "HLA2025-OMT-CV-003",
+            "HLA2025-OMT-CV-004",
+            "HLA2025-OMT-CV-005",
+            "HLA2025-OMT-CV-006",
+            "HLA2025-OMT-CV-007",
+            "HLA2025-OMT-CV-008",
+            "HLA2025-OMT-CV-009",
+            "HLA2025-OMT-CV-010",
+            "HLA2025-OMT-CV-011",
+            "HLA2025-OMT-CV-012",
+            "HLA2025-OMT-CV-013",
+            "HLA2025-OMT-CV-014",
+            "HLA2025-OMT-CV-015",
+            "HLA2025-OMT-CV-016",
+            "HLA2025-OMT-CV-017",
+            "HLA2025-OMT-CV-018",
+            "HLA2025-OMT-CV-019",
+            "HLA2025-OMT-CV-020",
+            "HLA2025-OMT-CV-021",
+            "HLA2025-OMT-CV-022",
+            "HLA2025-OMT-CV-023",
+            "HLA2025-OMT-CV-024",
+            "HLA2025-OMT-CV-025",
+            "HLA2025-OMT-CV-026",
+            "HLA2025-OMT-CV-027",
+            "HLA2025-OMT-CV-028",
+            "HLA2025-OMT-CV-029",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
+            "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd",
+        ),
+        "supported_scope": (
+            "Python 2025 validation includes an lxml-backed IEEE1516-OMT-2025 XML Schema validation path, "
+            "a compact schema-valid positive fixture, named key/keyref/unique constraint anchors from the "
+            "bundled XSD, negative checks for datatype, transportation, and attribute uniqueness constraints, "
+            "and strict domain checks for the imported 2025 OMT enumeration/value-domain rows including "
+            "union-backed fields such as security classification, application domain, fixed/variant record "
+            "encoding, and POC type."
+        ),
+    },
+    {
         "id": "2025-object-management-support-callbacks",
         "status": "implemented-slice",
         "requirements": ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-FI-005"),
