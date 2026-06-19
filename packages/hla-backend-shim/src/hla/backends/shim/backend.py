@@ -401,6 +401,17 @@ class Shim2025RTIAmbassador:
         self._service_report_serial_number = 0
         self._service_report_records.clear()
 
+    def forceConnectionLost(self, faultDescription: str = "simulated connection lost") -> None:  # noqa: N802
+        """Test harness hook for injecting a non-orderly connection loss."""
+
+        self._record("forceConnectionLost", faultDescription)
+        self._require_connected("forceConnectionLost")
+        self._deliver_callback_now("connectionLost", str(faultDescription))
+        self.disconnect()
+
+    def force_connection_lost(self, fault_description: str = "simulated connection lost") -> None:
+        self.forceConnectionLost(fault_description)
+
     def createFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecution", *args, **kwargs)
         self._require_connected("createFederationExecution")

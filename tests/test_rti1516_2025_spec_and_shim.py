@@ -14,6 +14,9 @@ class Recording2025FederateAmbassador:
     def __init__(self) -> None:
         self.callbacks: list[tuple[str, tuple[object, ...]]] = []
 
+    def connectionLost(self, faultDescription) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("connectionLost", (faultDescription,)))
+
     def reportFederationExecutions(self, report) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("reportFederationExecutions", (report,)))
 
@@ -529,7 +532,7 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     publisher.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006")
+@pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-FI-SVC-002")
 def test_2025_shim_is_first_green_runtime_path() -> None:
     from hla.rti import create_rti_ambassador
     from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel
@@ -552,6 +555,24 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
 
     rti.disconnect()
     assert rti.connected is False
+
+
+@pytest.mark.requirements("HLA2025-FI-SVC-003")
+def test_2025_shim_connection_lost_callback_tears_down_connection() -> None:
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.exceptions import NotConnected
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    callbacks = Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(callbacks, CallbackModel.HLA_EVOKED)
+
+    rti.forceConnectionLost("transport fault")
+
+    assert callbacks.last_callback("connectionLost") == ("transport fault",)
+    assert rti.connected is False
+    with pytest.raises(NotConnected):
+        rti.disconnect()
 
 
 @pytest.mark.requirements(

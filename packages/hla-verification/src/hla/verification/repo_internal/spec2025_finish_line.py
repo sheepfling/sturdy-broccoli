@@ -341,6 +341,24 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-connection-lifecycle-services",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-FI-SVC-002",
+            "HLA2025-FI-SVC-003",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports orderly disconnect state teardown and NotConnected preconditions. "
+            "It also exposes a test-harness-only non-orderly connection-loss injector that delivers the "
+            "connectionLost callback and tears down the local connection state without treating orderly "
+            "disconnect as a fault."
+        ),
+    },
+    {
         "id": "2025-callback-control-services",
         "status": "implemented-slice",
         "requirements": (
