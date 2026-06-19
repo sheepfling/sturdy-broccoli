@@ -9,6 +9,7 @@ from importlib.resources import files
 from pathlib import Path
 
 import pytest
+from hla.backends.common import RecordingFederateAmbassador as CommonRecordingFederateAmbassador
 
 
 class Recording2025FederateAmbassador:
@@ -291,6 +292,284 @@ def _callbacks_named_2025(
     return [args for recorded_name, args in federate.callbacks if recorded_name == method_name]
 
 
+def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
+    value_type = type(value)
+    module_name = getattr(value_type, "__module__", "")
+    type_name = getattr(value_type, "__name__", "")
+
+    if module_name == "hla.rti1516_2025.time" and type_name == "HLAinteger64Time":
+        from hla.rti1516e.time import HLAinteger64Time
+
+        return HLAinteger64Time(int(value.value))
+    if module_name == "hla.rti1516_2025.time" and type_name == "HLAinteger64Interval":
+        from hla.rti1516e.time import HLAinteger64Interval
+
+        return HLAinteger64Interval(int(value.value))
+    if module_name == "hla.rti1516_2025.enums" and type_name == "OrderType":
+        from hla.rti1516e.enums import OrderType
+
+        return OrderType[value.name]
+    if isinstance(value, tuple):
+        return tuple(_normalize_2025_callback_value(item) for item in value)
+    if isinstance(value, list):
+        return [_normalize_2025_callback_value(item) for item in value]
+    if isinstance(value, set):
+        return {_normalize_2025_callback_value(item) for item in value}
+    if isinstance(value, dict):
+        return {
+            _normalize_2025_callback_value(key): _normalize_2025_callback_value(item)
+            for key, item in value.items()
+        }
+    return value
+
+
+class _TargetRadar2025RTIAdapter:
+    """Minimal version bridge for the backend-neutral target/radar scenario."""
+
+    def __init__(self, delegate) -> None:  # noqa: ANN001
+        self._delegate = delegate
+        self.backend_info = getattr(delegate, "backend_info", None)
+
+    def __getattr__(self, name: str):  # noqa: ANN201
+        return getattr(self._delegate, name)
+
+    @staticmethod
+    def _coerce_named_enum(enum_type, value):  # noqa: ANN001, ANN205
+        member_name = getattr(value, "name", None)
+        if isinstance(member_name, str) and member_name in enum_type.__members__:
+            return enum_type[member_name]
+        return value
+
+    @staticmethod
+    def _coerce_time_value(value):  # noqa: ANN001, ANN205
+        from hla.rti1516_2025.time import HLAinteger64Time
+
+        if isinstance(value, HLAinteger64Time):
+            return value
+        if hasattr(value, "getValue"):
+            return HLAinteger64Time(int(value.getValue()))
+        if hasattr(value, "value"):
+            return HLAinteger64Time(int(value.value))
+        return HLAinteger64Time(int(value))
+
+    @staticmethod
+    def _coerce_interval_value(value):  # noqa: ANN001, ANN205
+        from hla.rti1516_2025.time import HLAinteger64Interval
+
+        if isinstance(value, HLAinteger64Interval):
+            return value
+        if hasattr(value, "getValue"):
+            return HLAinteger64Interval(int(value.getValue()))
+        if hasattr(value, "value"):
+            return HLAinteger64Interval(int(value.value))
+        return HLAinteger64Interval(int(value))
+
+    def connect(self, federate_ambassador, callback_model) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.enums import CallbackModel
+
+        self._delegate.connect(
+            federate_ambassador,
+            self._coerce_named_enum(CallbackModel, callback_model),
+        )
+
+    def create_federation_execution(
+        self,
+        federation_name: str,
+        fom_modules,
+        logical_time_implementation_name: str | None = None,
+    ) -> None:  # noqa: ANN001
+        modules = list(fom_modules)
+        kwargs = {"federationName": federation_name}
+        if len(modules) == 1:
+            kwargs["fomModule"] = modules[0]
+        else:
+            kwargs["fomModules"] = modules
+        if logical_time_implementation_name is not None:
+            kwargs["logicalTimeImplementationName"] = logical_time_implementation_name
+        self._delegate.createFederationExecution(**kwargs)
+
+    def join_federation_execution(self, federate_name: str, federate_type: str, federation_name: str):  # noqa: ANN201
+        return self._delegate.joinFederationExecution(
+            federateName=federate_name,
+            federateType=federate_type,
+            federationName=federation_name,
+        )
+
+    def time_advance_request(self, time) -> None:  # noqa: ANN001
+        self._delegate.timeAdvanceRequest(self._coerce_time_value(time))
+
+    def time_advance_request_available(self, time) -> None:  # noqa: ANN001
+        self._delegate.timeAdvanceRequestAvailable(self._coerce_time_value(time))
+
+    def next_message_request_available(self, time) -> None:  # noqa: ANN001
+        self._delegate.nextMessageRequestAvailable(self._coerce_time_value(time))
+
+    def next_message_request(self, time) -> None:  # noqa: ANN001
+        self._delegate.nextMessageRequest(self._coerce_time_value(time))
+
+    def get_object_class_handle(self, object_class_name: str):  # noqa: ANN201
+        return self._delegate.getObjectClassHandle(object_class_name)
+
+    def get_attribute_handle(self, object_class, attribute_name: str):  # noqa: ANN001, ANN201
+        return self._delegate.getAttributeHandle(object_class, attribute_name)
+
+    def publish_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
+        self._delegate.publishObjectClassAttributes(object_class, attributes)
+
+    def subscribe_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
+        self._delegate.subscribeObjectClassAttributes(object_class, attributes)
+
+    def register_object_instance(self, object_class, object_instance_name: str | None = None):  # noqa: ANN001, ANN201
+        return self._delegate.registerObjectInstance(object_class, object_instance_name)
+
+    def update_attribute_values(self, object_instance, attribute_values, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
+        if time is None:
+            self._delegate.updateAttributeValues(object_instance, attribute_values, user_supplied_tag)
+            return
+        self._delegate.updateAttributeValues(
+            object_instance,
+            attribute_values,
+            user_supplied_tag,
+            self._coerce_time_value(time),
+        )
+
+    def request_attribute_value_update(self, object_instance, attributes, user_supplied_tag: bytes) -> None:  # noqa: ANN001
+        self._delegate.requestAttributeValueUpdate(object_instance, attributes, user_supplied_tag)
+
+    def change_attribute_order_type(self, object_instance, attributes, order_type) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.enums import OrderType
+
+        self._delegate.changeAttributeOrderType(
+            object_instance,
+            attributes,
+            self._coerce_named_enum(OrderType, order_type),
+        )
+
+    def get_interaction_class_handle(self, interaction_class_name: str):  # noqa: ANN201
+        return self._delegate.getInteractionClassHandle(interaction_class_name)
+
+    def get_parameter_handle(self, interaction_class, parameter_name: str):  # noqa: ANN001, ANN201
+        return self._delegate.getParameterHandle(interaction_class, parameter_name)
+
+    def publish_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
+        self._delegate.publishInteractionClass(interaction_class)
+
+    def subscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
+        self._delegate.subscribeInteractionClass(interaction_class)
+
+    def send_interaction(self, interaction_class, parameter_values, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.exceptions import InvalidLogicalTime as InvalidLogicalTime2025
+        from hla.rti1516e.exceptions import InvalidLogicalTime as InvalidLogicalTime2010
+
+        if time is None:
+            self._delegate.sendInteraction(interaction_class, parameter_values, user_supplied_tag)
+            return
+        try:
+            self._delegate.sendInteraction(
+                interaction_class,
+                parameter_values,
+                user_supplied_tag,
+                self._coerce_time_value(time),
+            )
+        except InvalidLogicalTime2025 as exc:
+            raise InvalidLogicalTime2010(str(exc)) from exc
+
+    def enable_time_regulation(self, lookahead) -> None:  # noqa: ANN001
+        self._delegate.enableTimeRegulation(self._coerce_interval_value(lookahead))
+
+    def enable_time_constrained(self) -> None:
+        self._delegate.enableTimeConstrained()
+
+    def query_galt(self):  # noqa: ANN201
+        return self._delegate.queryGALT()
+
+    def query_lits(self):  # noqa: ANN201
+        return self._delegate.queryLITS()
+
+    def query_logical_time(self):  # noqa: ANN201
+        return _normalize_2025_callback_value(self._delegate.queryLogicalTime())
+
+    def change_interaction_order_type(self, interaction_class, order_type) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.enums import OrderType
+
+        self._delegate.changeInteractionOrderType(
+            interaction_class,
+            self._coerce_named_enum(OrderType, order_type),
+        )
+
+    def request_federation_save(self, label: str, time=None) -> None:  # noqa: ANN001
+        if time is None:
+            self._delegate.requestFederationSave(label)
+            return
+        self._delegate.requestFederationSave(label, self._coerce_time_value(time))
+
+    def federate_save_begun(self) -> None:
+        self._delegate.federateSaveBegun()
+
+    def federate_save_complete(self) -> None:
+        self._delegate.federateSaveComplete()
+
+    def request_federation_restore(self, label: str) -> None:
+        self._delegate.requestFederationRestore(label)
+
+    def federate_restore_complete(self) -> None:
+        self._delegate.federateRestoreComplete()
+
+    def resign_federation_execution(self, resign_action) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.enums import ResignAction
+
+        self._delegate.resignFederationExecution(
+            self._coerce_named_enum(ResignAction, resign_action),
+        )
+
+    def destroy_federation_execution(self, federation_name: str) -> None:
+        self._delegate.destroyFederationExecution(federationName=federation_name)
+
+    def evoke_callback(self, minimum_seconds: float) -> bool:
+        return self._delegate.evokeMultipleCallbacks(minimum_seconds, minimum_seconds)
+
+    def evoke_multiple_callbacks(self, minimum_seconds: float, maximum_seconds: float) -> bool:
+        return self._delegate.evokeMultipleCallbacks(minimum_seconds, maximum_seconds)
+
+
+class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
+    """Record callbacks after normalizing 2025 callback values to 2010-compatible types."""
+
+    def record_callback(self, method_name: str, *args, **kwargs):  # noqa: ANN001, ANN201
+        if method_name == "reflectAttributeValues" and len(args) >= 10:
+            args = (
+                args[0],
+                args[1],
+                args[2],
+                args[7],
+                args[3],
+                args[6],
+                args[6],
+                args[7],
+                args[8],
+                args[9],
+            )
+        if method_name == "receiveInteraction" and len(args) >= 10:
+            args = (
+                args[0],
+                args[1],
+                args[2],
+                args[7],
+                args[3],
+                args[6],
+                args[4],
+                args[5],
+                args[8],
+                args[9],
+            )
+        normalized_args = tuple(_normalize_2025_callback_value(arg) for arg in args)
+        normalized_kwargs = {
+            key: _normalize_2025_callback_value(value)
+            for key, value in kwargs.items()
+        }
+        return super().record_callback(method_name, *normalized_args, **normalized_kwargs)
+
+
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003", "HLA2025-FI-004")
 def test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010() -> None:
     import hla.rti1516_2025 as rti2025
@@ -571,6 +850,491 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_example_target_radar_scenario_end_to_end() -> None:
+    from hla.foms.target_radar._internal import Vec3, run_target_radar_scenario, target_radar_fom_path
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-target-radar-{uuid.uuid4().hex[:8]}"
+    pair_by_role: dict[str, _TargetRadar2025RTIAdapter] = {}
+
+    def factory(role: str) -> _TargetRadar2025RTIAdapter:
+        if role not in pair_by_role:
+            pair_by_role[role] = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+        return pair_by_role[role]
+
+    result = run_target_radar_scenario(
+        factory,
+        federation_name=federation_name,
+        steps=3,
+        fom_modules=[target_radar_fom_path()],
+    )
+
+    assert result.backend_kinds == ("shim/2025", "shim/2025")
+    assert result.target_name == "Target-1"
+    assert result.final_target_position == Vec3(10_750.0, 1_090.0, 2_000.0)
+    assert [report.track_id for report in result.track_reports] == ["TRK-001", "TRK-002", "TRK-003"]
+    assert all(report.target_name == "Target-1" for report in result.track_reports)
+    assert [event_name for event_name, _payload in result.target_events].count("provide_attribute_value_update") == 3
+    assert [event_name for event_name, _payload in result.radar_events].count("query_rcs") == 3
+    assert [event_name for event_name, _payload in result.radar_events].count("track") == 3
+    assert result.track_reports[-1].position == result.final_target_position
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_future_exclusion_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarFutureExclusionConfig, run_target_radar_time_window_future_exclusion_scenario
+
+    federation_name = f"shim-2025-time-window-future-exclusion-{uuid.uuid4().hex[:8]}"
+    slow = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    slow_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarFutureExclusionConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_future_exclusion_scenario(
+        slow,
+        radar,
+        config=config,
+        slow_federate=slow_federate,
+        radar_federate=radar_federate,
+    )
+
+    assert summary["certification_target"] == "time-window-future-exclusion"
+    assert summary["oracle_report"]["certification_target"] == "time-window-future-exclusion"
+    assert summary["initial_slow_grant"].args[0].value == config.slow_initial_time
+    assert summary["blocked_galt"].time.value == config.slow_initial_time + config.slow_lookahead
+    assert summary["blocked_lits"].time.value == config.slow_initial_time + config.slow_lookahead
+    assert summary["blocked_grant"] is None
+    assert summary["clearance_slow_grant"].args[0].value == config.slow_clearance_time
+    assert summary["cleared_galt"].time.value == config.scan_window_end
+    assert summary["cleared_lits"].time.value == config.scan_window_end
+    assert summary["final_grant"].args[0].value == config.scan_window_end
+    assert summary["late_send_rejected"] is True
+    assert summary["boundary_receive"].args[2] == b"boundary-track-110"
+    assert summary["boundary_receive"].args[5].value == config.legal_boundary_time
+    assert summary["oracle_report"]["assertions"] == {
+        "radar_not_granted_to_window_end_while_future_input_possible": True,
+        "blocked_grant_matches_current_galt_or_none": True,
+        "future_input_exclusion_reaches_window_end": True,
+        "radar_granted_to_window_end_only_after_future_input_excluded": True,
+        "late_timestamp_into_closed_window_rejected": True,
+        "boundary_timestamp_delivered_after_window_closure": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_output_delivery_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarOutputDeliveryConfig, run_target_radar_time_window_output_delivery_scenario
+
+    federation_name = f"shim-2025-time-window-output-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarOutputDeliveryConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_output_delivery_scenario(
+        truth,
+        radar,
+        consumer,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+
+    assert summary["certification_target"] == "time-window-output-delivery"
+    assert summary["oracle_report"]["certification_target"] == "time-window-output-delivery"
+    assert summary["oracle_report"]["state_model"] == "OPEN -> CLOSED -> OUTPUT_PUBLISHED -> CONSUMED"
+    assert summary["window_close_grant"].args[0].value == config.scan_window_end
+    assert summary["consumer_receive"].args[2] == b"radar-track-output"
+    assert summary["consumer_receive"].args[5].value == config.radar_output_time
+    assert list(summary["consumer_receive"].args[1].values()) == [config.output_track_id.encode("utf-8")]
+    assert len(summary["post_delivery_receives"]) == 1
+    assert summary["oracle_report"]["assertions"] == {
+        "window_closed_before_output": True,
+        "output_timestamp_not_before_window_end": True,
+        "consumer_received_single_track_output": True,
+        "consumer_received_output_at_expected_time": True,
+        "output_payload_tied_to_closed_window_inputs": True,
+        "no_duplicate_output_after_consumer_readvance": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_consumer_order_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarConsumerOrderConfig, run_target_radar_time_window_consumer_order_scenario
+
+    federation_name = f"shim-2025-time-window-order-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    other = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    other_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarConsumerOrderConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_consumer_order_scenario(
+        truth,
+        radar,
+        other,
+        consumer,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        other_federate=other_federate,
+        consumer_federate=consumer_federate,
+    )
+
+    delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
+    assert delivered == [
+        (b"other-track-output", config.competing_event_time),
+        (b"radar-track-output", config.radar_output_time),
+    ]
+    assert list(summary["consumer_receives"][0].args[1].values()) == [config.competing_track_id.encode("utf-8")]
+    assert list(summary["consumer_receives"][1].args[1].values()) == [config.radar_output_track_id.encode("utf-8")]
+    assert len(summary["post_readvance_receives"]) == 2
+    assert summary["certification_target"] == "time-window-consumer-order"
+    assert summary["oracle_report"]["certification_target"] == "time-window-consumer-order"
+    assert summary["oracle_report"]["assertions"] == {
+        "consumer_delivery_timestamps_sorted": True,
+        "competing_event_arrives_before_radar_output": True,
+        "radar_output_timestamp_not_before_window_end": True,
+        "consumer_payloads_match_competing_and_radar_sources": True,
+        "no_duplicate_consumer_replay_after_readvance": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_pipeline_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarPipelineConfig, run_target_radar_time_window_pipeline_scenario
+
+    federation_name = f"shim-2025-time-window-pipeline-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarPipelineConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_pipeline_scenario(
+        truth,
+        radar,
+        consumer,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+
+    delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
+    assert delivered == [
+        (b"scan1-track-output", config.scan1_output_time),
+        (b"scan2-track-output", config.scan2_output_time),
+    ]
+    assert list(summary["consumer_receives"][0].args[1].values()) == [config.scan1_track_id.encode("utf-8")]
+    assert list(summary["consumer_receives"][1].args[1].values()) == [config.scan2_track_id.encode("utf-8")]
+    assert len(summary["post_readvance_receives"]) == 2
+    assert summary["scan1_close_grant"].args[0].value == config.scan1_end
+    assert summary["scan2_close_grant"].args[0].value == config.scan2_end
+    assert summary["scan2_reflect"].args[2] == b"scan2-input"
+    assert summary["certification_target"] == "time-window-pipeline-two-scans"
+    assert summary["oracle_report"]["certification_target"] == "time-window-pipeline-two-scans"
+    assert summary["oracle_report"]["assertions"] == {
+        "scan1_closes_before_scan2_input": True,
+        "scan2_input_collected_while_scan1_output_pending": True,
+        "scan1_output_precedes_scan2_output": True,
+        "no_cross_window_contamination": True,
+        "scan_outputs_tied_to_their_own_window_inputs": True,
+        "no_duplicate_pipeline_replay_after_readvance": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_pipeline_restore_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarPipelineRestoreConfig, run_target_radar_time_window_pipeline_restore_scenario
+
+    federation_name = f"shim-2025-time-window-pipeline-restore-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarPipelineRestoreConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_pipeline_restore_scenario(
+        truth,
+        radar,
+        consumer,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+
+    assert summary["saved_radar_time"].value == config.scan2_input_time
+    assert summary["saved_consumer_time"].value == config.scan1_end
+    assert [record.args[2] for record in summary["dirty_consumer_receives"]] == [
+        b"dirty-scan1-track-output",
+        b"dirty-scan2-track-output",
+    ]
+    assert summary["restored_radar_time"].value == config.scan2_input_time
+    assert summary["restored_consumer_time"].value == config.scan1_end
+    assert summary["post_restore_scan2_reflects"] == []
+    assert [record.args[2] for record in summary["restored_consumer_receives"]] == [
+        b"restored-scan1-track-output",
+        b"restored-scan2-track-output",
+    ]
+    assert list(summary["restored_consumer_receives"][0].args[1].values()) == [
+        config.restored_scan1_track_id.encode("utf-8")
+    ]
+    assert list(summary["restored_consumer_receives"][1].args[1].values()) == [
+        config.restored_scan2_track_id.encode("utf-8")
+    ]
+    assert len(summary["post_restore_duplicate_receives"]) == 2
+    assert summary["certification_target"] == "time-window-save-restore-pipeline-resume"
+    assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-pipeline-resume"
+    assert summary["oracle_report"]["assertions"] == {
+        "restore_reinstates_saved_radar_time": True,
+        "restore_reinstates_saved_consumer_time": True,
+        "dirty_pipeline_outputs_do_not_replay": True,
+        "scan2_collected_state_restored_without_reflection_replay": True,
+        "restored_outputs_match_saved_window_inputs": True,
+        "no_duplicate_restored_pipeline_outputs_after_readvance": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_receive_order_poison_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import OrderType
+    from hla.verification import TargetRadarReceiveOrderPoisonConfig, run_target_radar_time_window_receive_order_poison_scenario
+
+    federation_name = f"shim-2025-time-window-receive-order-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarReceiveOrderPoisonConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_receive_order_poison_scenario(
+        truth,
+        radar,
+        consumer,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+
+    assert summary["window_close_grant"].args[0].value == config.scan_window_end
+    assert summary["closed_window_tags_before"] == [b"truth-105", b"truth-106"]
+    assert summary["closed_window_tags_after"] == [b"truth-105", b"truth-106"]
+    assert summary["poison_reflection"].args[2] == b"receive-order-poison"
+    if len(summary["poison_reflection"].args) > 8:
+        assert summary["poison_reflection"].args[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+    assert summary["consumer_receive"].args[2] == b"radar-track-output"
+    assert summary["consumer_receive"].args[5].value == config.radar_output_time
+    assert summary["certification_target"] == "time-window-receive-order-poison"
+    assert summary["oracle_report"]["certification_target"] == "time-window-receive-order-poison"
+    assert summary["oracle_report"]["assertions"] == {
+        "closed_window_tags_unchanged_after_receive_order_poison": True,
+        "poison_reflection_has_no_timestamp": True,
+        "poison_reflection_is_receive_order": True,
+        "consumer_output_still_delivered_at_expected_time": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_restore_state_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarWindowRestoreConfig, run_target_radar_time_window_restore_state_scenario
+
+    federation_name = f"shim-2025-time-window-restore-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarWindowRestoreConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_restore_state_scenario(
+        truth,
+        radar,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+    )
+
+    assert summary["first_grant"].args[0].value == config.first_input_time
+    assert summary["dirty_close_grant"].args[0].value == config.scan_window_end
+    assert summary["open_restored_truth_time"].value == config.first_input_time
+    assert summary["open_restored_radar_time"].value == config.first_input_time
+    assert summary["reclosed_grant"].args[0].value == config.scan_window_end
+    assert summary["closed_restored_truth_time"].value == config.scan_window_end
+    assert summary["closed_restored_radar_time"].value == config.scan_window_end
+    assert summary["post_closed_restore_reflects"] == []
+    assert summary["saved_open_state"]["window_closed"] is False
+    assert summary["restored_open_state"]["window_closed"] is False
+    assert summary["saved_closed_state"]["window_closed"] is True
+    assert summary["restored_closed_state"]["window_closed"] is True
+    assert summary["dirty_post_close_reflect"].args[2] == b"dirty-post-close"
+    assert summary["certification_target"] == "time-window-save-restore-window-state"
+    assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-window-state"
+    assert summary["oracle_report"]["assertions"] == {
+        "open_restore_reinstates_preclosure_time": True,
+        "open_restore_reinstates_open_window_state": True,
+        "restored_open_branch_recloses_at_window_end": True,
+        "closed_restore_reinstates_window_end_time": True,
+        "closed_restore_reinstates_closed_window_state": True,
+        "closed_restore_discards_dirty_post_close_callbacks": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_restore_output_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarWindowRestoreOutputConfig, run_target_radar_time_window_restore_output_scenario
+
+    federation_name = f"shim-2025-time-window-restore-output-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarWindowRestoreOutputConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_restore_output_scenario(
+        truth,
+        radar,
+        consumer,
+        config=config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+
+    assert summary["window_close_grant"].args[0].value == config.scan_window_end
+    assert summary["saved_consumer_time"].value == config.scan_window_end
+    assert summary["dirty_consumer_receive"].args[2] == b"dirty-track-output"
+    assert summary["dirty_consumer_receive"].args[5].value == config.radar_output_time
+    assert summary["restored_truth_time"].value == config.scan_window_end
+    assert summary["restored_radar_time"].value == config.scan_window_end
+    assert summary["restored_consumer_time"].value == config.scan_window_end
+    assert [record.args[2] for record in summary["post_restore_receives"]] == [b"restored-track-output"]
+    assert summary["restored_consumer_receive"].args[5].value == config.radar_output_time
+    assert summary["certification_target"] == "time-window-save-restore-output-resume"
+    assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-output-resume"
+    assert summary["oracle_report"]["assertions"] == {
+        "closed_window_saved_before_output": True,
+        "dirty_branch_output_published_before_restore": True,
+        "restored_timeline_republishes_legal_output": True,
+        "dirty_output_not_replayed_after_restore": True,
+        "single_post_restore_output_delivery": True,
+    }
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_time_window_core_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarTimeWindowConfig, run_target_radar_time_window_core_scenario
+
+    federation_name = f"shim-2025-time-window-core-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    sensor = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    fast = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    slow = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    truth_federate = _CompatRecordingFederateAmbassador()
+    sensor_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    fast_federate = _CompatRecordingFederateAmbassador()
+    slow_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarTimeWindowConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_core_scenario(
+        truth,
+        sensor,
+        radar,
+        consumer,
+        fast,
+        slow,
+        config=config,
+        truth_federate=truth_federate,
+        sensor_federate=sensor_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+        fast_federate=fast_federate,
+        slow_federate=slow_federate,
+    )
+
+    assert summary["first_grant"].args[0].value == config.truth_update_time
+    assert summary["second_grant"].args[0].value == config.sensor_detection_time
+    assert summary["window_close_grant"].args[0].value == config.scan_window_end
+    assert summary["late_rejections"] == [
+        config.scan_window_start,
+        config.truth_update_time,
+        config.scan_window_end - 1,
+    ]
+    assert int(getattr(summary["processing_progress"]["fast_time"], "value", 0)) > config.scan_window_end
+    assert summary["published_output_time"].value == config.radar_output_time
+    assert summary["published_output_tag"] == b"radar-track-output"
+    assert all(timestamp >= config.scan_window_end for timestamp in summary["post_close_inputs"])
+    assert summary["certification_target"] == "time-window-core"
+    assert summary["oracle_report"]["certification_target"] == "time-window-core"
+    assert summary["oracle_report"]["state_model"] == "OPEN -> CLOSABLE -> CLOSED"
+    assert summary["oracle_report"]["assertions"] == {
+        "pending_timestamped_messages_not_skipped": True,
+        "window_not_closed_before_truth_update": True,
+        "window_not_closed_before_sensor_update": True,
+        "window_closed_only_at_end": True,
+        "no_post_close_input_less_than_window_end": True,
+    }
 
 
 @pytest.mark.requirements(
