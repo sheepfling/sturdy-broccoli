@@ -56,6 +56,7 @@ from hla.verification import (
     SaveRestoreScenarioConfig,
     SupportServicesScenarioConfig,
     SynchronizationScenarioConfig,
+    TargetRadarFutureExclusionConfig,
     TimedDeleteScenarioConfig,
     TransportationTypeScenarioConfig,
     TwoFederateExchangeConfig,
@@ -137,6 +138,7 @@ from hla.verification import (
     run_support_factory_and_decode_scenario,
     run_synchronization_registration_failure_scenario,
     run_synchronization_scenario,
+    run_target_radar_time_window_future_exclusion_scenario,
     run_timed_delete_scenario,
     run_transportation_type_rejection_scenario,
     run_transportation_type_restore_persistence_scenario,
@@ -1690,6 +1692,47 @@ def test_pitch_section8_available_and_flush_matrix(kind: str):
     assert summary["available_grant"] is not None
     assert summary["flush_grant"] is not None
     assert summary["flushed_receive"] is not None
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.xfail(reason="Pitch managed runtime currently reports no available pRTI federate seats for this two-federate future-exclusion proof")
+def test_pitch_time_window_future_exclusion_matrix(kind: str):
+    with _pitch_runtime_case(kind, 2) as (slow, radar):
+        config = TargetRadarFutureExclusionConfig(
+            federation_name=f"{kind}-time-window-future-exclusion-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_future_exclusion_scenario(
+            slow,
+            radar,
+            config=config,
+            slow_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["initial_slow_grant"].args[0] == HLAinteger64Time(config.slow_initial_time)
+        assert summary["blocked_galt"].time == HLAinteger64Time(config.slow_initial_time + config.slow_lookahead)
+        assert summary["blocked_lits"].time == HLAinteger64Time(config.slow_initial_time + config.slow_lookahead)
+        assert summary["clearance_slow_grant"].args[0] == HLAinteger64Time(config.slow_clearance_time)
+        assert summary["cleared_galt"].time == HLAinteger64Time(config.scan_window_end)
+        assert summary["cleared_lits"].time == HLAinteger64Time(config.scan_window_end)
+        assert summary["final_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["certification_target"] == "time-window-future-exclusion"
+        assert summary["oracle_report"]["certification_target"] == "time-window-future-exclusion"
+        assert summary["oracle_report"]["assertions"] == {
+            "radar_not_granted_to_window_end_while_future_input_possible": True,
+            "blocked_grant_matches_current_galt_or_none": True,
+            "future_input_exclusion_reaches_window_end": True,
+            "radar_granted_to_window_end_only_after_future_input_excluded": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=slow,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((radar, ResignAction.NO_ACTION),),
+            disconnect_rtis=(radar, slow),
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])

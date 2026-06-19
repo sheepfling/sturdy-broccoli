@@ -66,6 +66,8 @@ from .scenario_resign import (
     run_resign_precondition_scenario,
 )
 from .scenario_save_restore import (
+    run_example_fom_save_restore_gauntlet_scenario,
+    run_smoke_fom_save_restore_ownership_gauntlet_scenario,
     run_abort_save_exception_scenario,
     run_restore_callback_policy_scenario,
     run_restore_abort_exception_scenario,
@@ -149,6 +151,13 @@ from .scenario_transportation_type import (
     run_transportation_type_scenario,
 )
 from .scenario_timed_delete import TimedDeleteScenarioConfig, run_timed_delete_scenario
+from .scenario_target_radar_time import (
+    TargetRadarFutureExclusionConfig,
+    TargetRadarTimeWindowConfig,
+    run_target_radar_time_window_future_exclusion_scenario,
+    run_target_radar_time_window_core_scenario,
+    run_target_radar_time_window_gauntlet_scenario,
+)
 from .scenario_update_rate import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
 from .scenario_update_advisory import run_update_advisory_callback_scenario
 from .two_federate_suite_pairs import (
@@ -209,6 +218,8 @@ __all__ = [
     "Section8MatrixConfig",
     "SynchronizationScenarioConfig",
     "TimedDeleteScenarioConfig",
+    "TargetRadarFutureExclusionConfig",
+    "TargetRadarTimeWindowConfig",
     "UpdateRateScenarioConfig",
     "TransportationTypeScenarioConfig",
     "TwoFederateExchangeConfig",
@@ -270,6 +281,8 @@ __all__ = [
     "run_request_attribute_value_update_routing_scenario",
     "run_request_attribute_value_update_scenario",
     "run_disconnect_mom_cleanup_scenario",
+    "run_example_fom_save_restore_gauntlet_scenario",
+    "run_smoke_fom_save_restore_ownership_gauntlet_scenario",
     "run_resign_mom_cleanup_scenario",
     "run_resign_precondition_scenario",
     "run_resigned_federate_callback_silence_scenario",
@@ -310,6 +323,9 @@ __all__ = [
     "run_synchronization_registration_failure_scenario",
     "run_synchronization_scenario",
     "run_timed_delete_scenario",
+    "run_target_radar_time_window_future_exclusion_scenario",
+    "run_target_radar_time_window_core_scenario",
+    "run_target_radar_time_window_gauntlet_scenario",
     "run_transportation_type_rejection_scenario",
     "run_transportation_type_restore_persistence_scenario",
     "run_transportation_type_scenario",

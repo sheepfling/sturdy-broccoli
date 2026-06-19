@@ -12,13 +12,20 @@ from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 from hla.verification import (
     FederationLifecycleScenarioConfig,
     OwnershipScenarioConfig,
+    SaveRestoreScenarioConfig,
+    TargetRadarFutureExclusionConfig,
+    TargetRadarTimeWindowConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_attribute_ownership_scenario,
+    run_example_fom_save_restore_gauntlet_scenario,
     run_federation_lifecycle_scenario,
+    run_smoke_fom_save_restore_ownership_gauntlet_scenario,
+    run_target_radar_time_window_future_exclusion_scenario,
+    run_target_radar_time_window_core_scenario,
     run_two_federate_exchange_scenario,
 )
-from tests.scenarios.python_route_parity_support import python_route_params, python_rti_pair, python_single_rti
+from tests.scenarios.python_route_parity_support import python_route_params, python_rti_group, python_rti_pair, python_single_rti
 from tests.vendors.runtime_support import cleanup_federation
 
 
@@ -156,4 +163,206 @@ def test_python_route_parity_ownership(route) -> None:
             destroyer_resign_action=ResignAction.DELETE_OBJECTS,
             remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
             disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_example_fom_save_restore_gauntlet(route) -> None:
+    with python_rti_group(route, 4) as group:
+        owner, mirror, sender, observer = group.members
+        config = SaveRestoreScenarioConfig(
+            federation_name=f"python-save-restore-gauntlet-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Owner",
+            wing_name="Mirror",
+            federate_type="SaveRestoreGauntlet",
+            save_name=f"SAVE-GAUNTLET-{uuid.uuid4().hex[:8]}",
+        )
+        owner_federate = RecordingFederateAmbassador()
+        mirror_federate = RecordingFederateAmbassador()
+        sender_federate = RecordingFederateAmbassador()
+        observer_federate = RecordingFederateAmbassador()
+
+        summary = run_example_fom_save_restore_gauntlet_scenario(
+            owner,
+            mirror,
+            sender,
+            observer,
+            config=config,
+            owner_federate=owner_federate,
+            mirror_federate=mirror_federate,
+            sender_federate=sender_federate,
+            observer_federate=observer_federate,
+        )
+
+        assert summary["saved_fingerprints"] != summary["dirty_fingerprints"]
+        assert summary["restored_fingerprints"] == summary["saved_fingerprints"]
+        assert all(float(getattr(time, "value", time)) == 5.0 for time in summary["restored_times"].values())
+        assert summary["dirty_remove"].args[1] == b"dirty-delete"
+        assert summary["branch_interaction"].args[2] == b"branch-track"
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (mirror, ResignAction.NO_ACTION),
+                (sender, ResignAction.NO_ACTION),
+                (observer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(observer, sender, mirror, owner),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_smoke_fom_save_restore_ownership_gauntlet(route) -> None:
+    with python_rti_group(route, 4) as group:
+        owner, mirror, sender, observer = group.members
+        config = SaveRestoreScenarioConfig(
+            federation_name=f"python-save-restore-ownership-gauntlet-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Owner",
+            wing_name="Mirror",
+            federate_type="SaveRestoreGauntlet",
+            save_name=f"SAVE-OWNERSHIP-GAUNTLET-{uuid.uuid4().hex[:8]}",
+        )
+        owner_federate = RecordingFederateAmbassador()
+        mirror_federate = RecordingFederateAmbassador()
+        sender_federate = RecordingFederateAmbassador()
+        observer_federate = RecordingFederateAmbassador()
+
+        summary = run_smoke_fom_save_restore_ownership_gauntlet_scenario(
+            owner,
+            mirror,
+            sender,
+            observer,
+            config=config,
+            owner_federate=owner_federate,
+            mirror_federate=mirror_federate,
+            sender_federate=sender_federate,
+            observer_federate=observer_federate,
+        )
+
+        assert summary["saved_fingerprints"] != summary["dirty_fingerprints"]
+        assert summary["restored_fingerprints"] == summary["saved_fingerprints"]
+        assert all(float(getattr(time, "value", time)) == 5.0 for time in summary["restored_times"].values())
+        assert summary["dirty_acquired"].args[0] == summary["mirror_object_instance"]
+        assert summary["restored_informed"].args[0] == summary["object_instance"]
+        assert summary["branch_interaction"].args[2] == b"branch-message"
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (mirror, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),
+                (sender, ResignAction.NO_ACTION),
+                (observer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(observer, sender, mirror, owner),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_future_exclusion(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = TargetRadarFutureExclusionConfig(
+            federation_name=f"python-radar-time-window-future-exclusion-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_future_exclusion_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            slow_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["initial_slow_grant"].args[0] == HLAinteger64Time(config.slow_initial_time)
+        assert summary["blocked_galt"].time == HLAinteger64Time(config.slow_initial_time + config.slow_lookahead)
+        assert summary["blocked_lits"].time == HLAinteger64Time(config.slow_initial_time + config.slow_lookahead)
+        assert summary["blocked_grant"] is None
+        assert summary["clearance_slow_grant"].args[0] == HLAinteger64Time(config.slow_clearance_time)
+        assert summary["cleared_galt"].time == HLAinteger64Time(config.scan_window_end)
+        assert summary["cleared_lits"].time == HLAinteger64Time(config.scan_window_end)
+        assert summary["final_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["certification_target"] == "time-window-future-exclusion"
+        assert summary["oracle_report"]["certification_target"] == "time-window-future-exclusion"
+        assert summary["oracle_report"]["assertions"] == {
+            "radar_not_granted_to_window_end_while_future_input_possible": True,
+            "blocked_grant_matches_current_galt_or_none": True,
+            "future_input_exclusion_reaches_window_end": True,
+            "radar_granted_to_window_end_only_after_future_input_excluded": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_core(route) -> None:
+    with python_rti_group(route, 6) as group:
+        truth, sensor, radar, consumer, fast, slow = group.members
+        config = TargetRadarTimeWindowConfig(
+            federation_name=f"python-radar-time-window-core-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_core_scenario(
+            truth,
+            sensor,
+            radar,
+            consumer,
+            fast,
+            slow,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            sensor_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+            fast_federate=RecordingFederateAmbassador(),
+            slow_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["first_grant"].args[0] == HLAinteger64Time(config.truth_update_time)
+        assert summary["second_grant"].args[0] == HLAinteger64Time(config.sensor_detection_time)
+        assert summary["window_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["late_rejections"] == [
+            config.scan_window_start,
+            config.truth_update_time,
+            config.scan_window_end - 1,
+        ]
+        assert int(getattr(summary["processing_progress"]["fast_time"], "value", 0)) > config.scan_window_end
+        assert summary["published_output_time"] == HLAinteger64Time(config.radar_output_time)
+        assert summary["published_output_tag"] == b"radar-track-output"
+        assert all(timestamp >= config.scan_window_end for timestamp in summary["post_close_inputs"])
+        assert summary["certification_target"] == "time-window-core"
+        assert summary["oracle_report"]["certification_target"] == "time-window-core"
+        assert summary["oracle_report"]["state_model"] == "OPEN -> CLOSABLE -> CLOSED"
+        assert summary["oracle_report"]["assertions"] == {
+            "pending_timestamped_messages_not_skipped": True,
+            "window_not_closed_before_truth_update": True,
+            "window_not_closed_before_sensor_update": True,
+            "window_closed_only_at_end": True,
+            "no_post_close_input_less_than_window_end": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (sensor, ResignAction.NO_ACTION),
+                (radar, ResignAction.DELETE_OBJECTS),
+                (consumer, ResignAction.NO_ACTION),
+                (fast, ResignAction.NO_ACTION),
+                (slow, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(slow, fast, consumer, radar, sensor, truth),
         )

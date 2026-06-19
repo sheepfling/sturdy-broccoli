@@ -45,7 +45,18 @@ from hla.rti1516e.fom import module_uri
 from hla.rti1516e.raw_api import API_METADATA
 from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.datatypes import FederationExecutionInformation, RangeBounds
+from hla.rti1516e.datatypes import (
+    AttributeRegionAssociation,
+    FederationExecutionInformation,
+    FederateHandleSaveStatusPair,
+    FederateRestoreStatus,
+    MessageRetractionReturn,
+    RangeBounds,
+    SupplementalReceiveInfo,
+    SupplementalReflectInfo,
+    SupplementalRemoveInfo,
+    TimeQueryReturn,
+)
 
 _PYTHON_ENUM_BY_JAVA_SIMPLE_NAME: dict[str, type[Enum]] = {
     name: value
@@ -332,6 +343,11 @@ class JavaValueConverter(ValueConverter):
 
         if isinstance(value, RangeBounds):
             return self.bridge.range_bounds(value)
+        if isinstance(value, AttributeRegionAssociation):
+            return (
+                self.to_backend(value.ahset, expected_type_name="AttributeHandleSet"),
+                self.to_backend(value.rhset, expected_type_name="RegionHandleSet"),
+            )
         if isinstance(value, tuple):
             return tuple(self.to_backend(item) for item in value)
         if isinstance(value, list):
@@ -367,11 +383,69 @@ class JavaValueConverter(ValueConverter):
         if self.bridge.is_byte_array(value):
             return self.bridge.to_python_bytes(value)
 
-        expected_handle_type = handle_type_from_java_type_name(expected)
+        expected_handle_type = None if expected in _JAVA_COMPOSITE_DATATYPE_NAMES else handle_type_from_java_type_name(expected)
         if expected_handle_type is not None:
             return self.handle_registry.to_python(expected_handle_type, value)
 
         simple_name = self.bridge.simple_class_name(value)
+        time_query_return = self._from_backend_time_query_return(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if time_query_return is not None:
+            return time_query_return
+
+        message_retraction_return = self._from_backend_message_retraction_return(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if message_retraction_return is not None:
+            return message_retraction_return
+
+        save_status_pair = self._from_backend_federate_handle_save_status_pair(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if save_status_pair is not None:
+            return save_status_pair
+
+        restore_status = self._from_backend_federate_restore_status(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if restore_status is not None:
+            return restore_status
+
+        supplemental_reflect = self._from_backend_supplemental_reflect_info(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+            info_type=SupplementalReflectInfo,
+        )
+        if supplemental_reflect is not None:
+            return supplemental_reflect
+
+        supplemental_receive = self._from_backend_supplemental_reflect_info(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+            info_type=SupplementalReceiveInfo,
+        )
+        if supplemental_receive is not None:
+            return supplemental_receive
+
+        supplemental_remove = self._from_backend_supplemental_remove_info(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if supplemental_remove is not None:
+            return supplemental_remove
+
         class_text = " ".join(filter(None, [simple_name, self.bridge.full_class_name(value)]))
         inferred_handle_type = handle_type_from_java_class_name(class_text)
         if inferred_handle_type is not None:
@@ -508,8 +582,204 @@ class JavaValueConverter(ValueConverter):
         if federation_name is None:
             return None
         return FederationExecutionInformation(
-            federation_execution_name=str(federation_name),
-            logical_time_implementation_name=str(logical_time_name) if logical_time_name is not None else None,
+            federationExecutionName=str(federation_name),
+            logicalTimeImplementationName=str(logical_time_name) if logical_time_name is not None else "",
+        )
+
+    def _from_backend_time_query_return(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> TimeQueryReturn | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "TimeQueryReturn" not in class_text:
+            return None
+
+        valid = _maybe_call_noarg(
+            value,
+            "timeIsValid",
+            "getTimeIsValid",
+            "logicalTimeIsValid",
+            "getLogicalTimeIsValid",
+        )
+        if valid is None:
+            return None
+        raw_time = self.bridge.public_field(value, "time")
+        if raw_time is None:
+            raw_time = self.bridge.public_field(value, "logicalTime")
+        if raw_time is None:
+            raw_time = _maybe_call_noarg(value, "getTime", "getLogicalTime")
+        return TimeQueryReturn(bool(valid), self.from_backend(raw_time) if raw_time is not None else None)
+
+    def _from_backend_message_retraction_return(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> MessageRetractionReturn | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "MessageRetractionReturn" not in class_text:
+            return None
+
+        valid = _maybe_call_noarg(
+            value,
+            "retractionHandleIsValid",
+            "getRetractionHandleIsValid",
+            "messageRetractionHandleIsValid",
+        )
+        handle = self.bridge.public_field(value, "handle")
+        if handle is None:
+            handle = self.bridge.public_field(value, "messageRetractionHandle")
+        if handle is None:
+            handle = _maybe_call_noarg(value, "getHandle", "getMessageRetractionHandle")
+        if valid is None or handle is None:
+            return None
+        return MessageRetractionReturn(
+            bool(valid),
+            self.from_backend(handle, expected_type_name="MessageRetractionHandle"),
+        )
+
+    def _from_backend_federate_handle_save_status_pair(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> FederateHandleSaveStatusPair | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "FederateHandleSaveStatusPair" not in class_text:
+            return None
+
+        handle = self.bridge.public_field(value, "handle")
+        if handle is None:
+            handle = self.bridge.public_field(value, "federateHandle")
+        if handle is None:
+            handle = _maybe_call_noarg(value, "getHandle", "getFederateHandle")
+        status = self.bridge.public_field(value, "status")
+        if status is None:
+            status = self.bridge.public_field(value, "saveStatus")
+        if status is None:
+            status = _maybe_call_noarg(value, "getStatus", "getSaveStatus")
+        if handle is None or status is None:
+            return None
+        return FederateHandleSaveStatusPair(
+            self.from_backend(handle, expected_type_name="FederateHandle"),
+            self.from_backend(status),
+        )
+
+    def _from_backend_federate_restore_status(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> FederateRestoreStatus | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "FederateRestoreStatus" not in class_text:
+            return None
+
+        pre = self.bridge.public_field(value, "preRestoreHandle")
+        if pre is None:
+            pre = _maybe_call_noarg(value, "getPreRestoreHandle")
+        post = self.bridge.public_field(value, "postRestoreHandle")
+        if post is None:
+            post = _maybe_call_noarg(value, "getPostRestoreHandle")
+        status = self.bridge.public_field(value, "status")
+        if status is None:
+            status = self.bridge.public_field(value, "restoreStatus")
+        if status is None:
+            status = _maybe_call_noarg(value, "getStatus", "getRestoreStatus")
+        if pre is None or post is None or status is None:
+            return None
+        return FederateRestoreStatus(
+            self.from_backend(pre, expected_type_name="FederateHandle"),
+            self.from_backend(post, expected_type_name="FederateHandle"),
+            self.from_backend(status),
+        )
+
+    def _from_backend_supplemental_reflect_info(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+        info_type: type[SupplementalReflectInfo] = SupplementalReflectInfo,
+    ) -> SupplementalReflectInfo | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if info_type.__name__ not in class_text:
+            return None
+
+        has_producing = _maybe_call_noarg(
+            value,
+            "hasProducingFederate",
+            "getHasProducingFederate",
+            "producingFederateIsValid",
+            "getProducingFederateIsValid",
+        )
+        has_sent = _maybe_call_noarg(
+            value,
+            "hasSentRegions",
+            "getHasSentRegions",
+            "sentRegionsIsValid",
+            "getSentRegionsIsValid",
+            "conveyedRegionsIsValid",
+            "getConveyedRegionsIsValid",
+        )
+        producing = self.bridge.public_field(value, "producingFederate")
+        if producing is None:
+            producing = _maybe_call_noarg(value, "getProducingFederate")
+        sent_regions = self.bridge.public_field(value, "sentRegions")
+        if sent_regions is None:
+            sent_regions = self.bridge.public_field(value, "conveyedRegions")
+        if sent_regions is None:
+            sent_regions = _maybe_call_noarg(value, "getSentRegions", "getConveyedRegions")
+        if has_producing is None:
+            return None
+        return info_type(
+            hasProducingFederateValue=bool(has_producing),
+            hasSentRegionsValue=bool(has_sent) if has_sent is not None else False,
+            producingFederate=(
+                self.from_backend(producing, expected_type_name="FederateHandle")
+                if producing is not None else None
+            ),
+            sentRegions=(
+                self.from_backend(sent_regions, expected_type_name="RegionHandleSet")
+                if sent_regions is not None else None
+            ),
+        )
+
+    def _from_backend_supplemental_remove_info(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> SupplementalRemoveInfo | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "SupplementalRemoveInfo" not in class_text:
+            return None
+
+        has_producing = _maybe_call_noarg(
+            value,
+            "hasProducingFederate",
+            "getHasProducingFederate",
+            "producingFederateIsValid",
+            "getProducingFederateIsValid",
+        )
+        producing = self.bridge.public_field(value, "producingFederate")
+        if producing is None:
+            producing = _maybe_call_noarg(value, "getProducingFederate")
+        if has_producing is None:
+            return None
+        return SupplementalRemoveInfo(
+            hasProducingFederateValue=bool(has_producing),
+            producingFederate=(
+                self.from_backend(producing, expected_type_name="FederateHandle")
+                if producing is not None else None
+            ),
         )
 
 
@@ -524,6 +794,17 @@ _PY_HANDLE_SET_BY_JAVA_TYPE = {
 _PY_HANDLE_VALUE_MAP_BY_JAVA_TYPE = {
     "AttributeHandleValueMap": (hla_handles.AttributeHandleValueMap, "AttributeHandle"),
     "ParameterHandleValueMap": (hla_handles.ParameterHandleValueMap, "ParameterHandle"),
+}
+
+_JAVA_COMPOSITE_DATATYPE_NAMES = {
+    "FederateHandleSaveStatusPair",
+    "FederateRestoreStatus",
+    "FederationExecutionInformation",
+    "MessageRetractionReturn",
+    "SupplementalReflectInfo",
+    "SupplementalReceiveInfo",
+    "SupplementalRemoveInfo",
+    "TimeQueryReturn",
 }
 
 

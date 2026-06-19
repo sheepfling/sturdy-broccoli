@@ -5,11 +5,28 @@ import pytest
 from hla.backends.common import RecordingFederateAmbassador
 from hla.bridges.java.common import JavaValueConverter
 from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
-from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.enums import CallbackModel, RestoreStatus, SaveStatus
 from hla.rti1516e.exceptions import NameNotFound
-from hla.rti1516e.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
+from hla.rti1516e.handles import (
+    AttributeHandle,
+    AttributeHandleValueMap,
+    FederateHandleSet,
+    MessageRetractionHandle,
+    ObjectInstanceHandle,
+    RegionHandleSet,
+)
 from hla.rti1516e.factory import create_rti_ambassador
-from hla.rti1516e.datatypes import RangeBounds
+from hla.rti1516e.datatypes import (
+    FederateHandleSaveStatusPair,
+    FederateRestoreStatus,
+    FederationExecutionInformation,
+    MessageRetractionReturn,
+    RangeBounds,
+    SupplementalReceiveInfo,
+    SupplementalReflectInfo,
+    SupplementalRemoveInfo,
+    TimeQueryReturn,
+)
 from hla.verification import (
     SynchronizationScenarioConfig,
     run_failed_federate_synchronization_scenario,
@@ -22,7 +39,7 @@ from hla.verification.startup import (
     synchronize_ready_to_run,
 )
 from hla.bridges.java.common.java_shim_backend import ShimJavaBridge
-from hla.bridges.java.common.java_shim_types import JavaByteArray, JavaLikeObject, JavaRangeBounds
+from hla.bridges.java.common.java_shim_types import JavaByteArray, JavaEnumConstant, JavaLikeObject, JavaRangeBounds
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
@@ -232,3 +249,77 @@ def test_java_converter_round_trips_range_bounds():
     assert native.getUpperBound() == 20
 
     assert converter.from_backend(native, expected_type_name="RangeBounds") == RangeBounds(10, 20)
+
+
+def test_java_converter_normalizes_public_datatype_return_shapes():
+    converter = JavaValueConverter(ShimJavaBridge("jpype"))
+
+    time_query = JavaLikeObject("TimeQueryReturn")
+    time_query.timeIsValid = True
+    time_query.time = JavaLikeObject("HLAinteger64Time", 12)
+    converted_time_query = converter.from_backend(time_query, expected_type_name="TimeQueryReturn")
+    assert converted_time_query == TimeQueryReturn(True, converted_time_query.time)
+    assert converted_time_query.time_is_valid is True
+
+    retraction = JavaLikeObject("MessageRetractionReturn")
+    retraction.retractionHandleIsValid = True
+    retraction.messageRetractionHandle = JavaLikeObject("MessageRetractionHandle", 44)
+    converted_retraction = converter.from_backend(retraction, expected_type_name="MessageRetractionReturn")
+    assert isinstance(converted_retraction, MessageRetractionReturn)
+    assert converted_retraction.retraction_handle_is_valid is True
+    assert isinstance(converted_retraction.handle, MessageRetractionHandle)
+
+    federation_info = JavaLikeObject("FederationExecutionInformation")
+    federation_info.federationExecutionName = "fed-a"
+    federation_info.logicalTimeImplementationName = "HLAinteger64Time"
+    converted_federation_info = converter.from_backend(
+        federation_info,
+        expected_type_name="FederationExecutionInformation",
+    )
+    assert converted_federation_info == FederationExecutionInformation("fed-a", "HLAinteger64Time")
+    assert converted_federation_info.federation_execution_name == "fed-a"
+
+    save_pair = JavaLikeObject("FederateHandleSaveStatusPair")
+    save_pair.federateHandle = JavaLikeObject("FederateHandle", 7)
+    save_pair.saveStatus = JavaEnumConstant("SaveStatus", "FEDERATE_SAVING")
+    converted_save_pair = converter.from_backend(save_pair, expected_type_name="FederateHandleSaveStatusPair")
+    assert converted_save_pair == FederateHandleSaveStatusPair(converted_save_pair.handle, SaveStatus.FEDERATE_SAVING)
+    assert converted_save_pair.federate_handle == converted_save_pair.handle
+
+    restore_status = JavaLikeObject("FederateRestoreStatus")
+    restore_status.preRestoreHandle = JavaLikeObject("FederateHandle", 8)
+    restore_status.postRestoreHandle = JavaLikeObject("FederateHandle", 9)
+    restore_status.restoreStatus = JavaEnumConstant("RestoreStatus", "FEDERATE_RESTORING")
+    converted_restore_status = converter.from_backend(
+        restore_status,
+        expected_type_name="FederateRestoreStatus",
+    )
+    assert isinstance(converted_restore_status, FederateRestoreStatus)
+    assert converted_restore_status.restore_status is RestoreStatus.FEDERATE_RESTORING
+
+    sent_regions = {JavaLikeObject("RegionHandle", 3), JavaLikeObject("RegionHandle", 4)}
+    reflect = JavaLikeObject("SupplementalReflectInfo")
+    reflect.hasProducingFederate = lambda: True
+    reflect.hasSentRegions = lambda: True
+    reflect.getProducingFederate = lambda: JavaLikeObject("FederateHandle", 12)
+    reflect.getSentRegions = lambda: sent_regions
+    converted_reflect = converter.from_backend(reflect, expected_type_name="SupplementalReflectInfo")
+    assert isinstance(converted_reflect, SupplementalReflectInfo)
+    assert converted_reflect.hasProducingFederate() is True
+    assert isinstance(converted_reflect.getSentRegions(), RegionHandleSet)
+
+    receive = JavaLikeObject("SupplementalReceiveInfo")
+    receive.hasProducingFederate = lambda: True
+    receive.hasSentRegions = lambda: True
+    receive.getProducingFederate = lambda: JavaLikeObject("FederateHandle", 13)
+    receive.getSentRegions = lambda: sent_regions
+    converted_receive = converter.from_backend(receive, expected_type_name="SupplementalReceiveInfo")
+    assert isinstance(converted_receive, SupplementalReceiveInfo)
+    assert converted_receive.hasSentRegions() is True
+
+    remove = JavaLikeObject("SupplementalRemoveInfo")
+    remove.hasProducingFederate = lambda: True
+    remove.getProducingFederate = lambda: JavaLikeObject("FederateHandle", 14)
+    converted_remove = converter.from_backend(remove, expected_type_name="SupplementalRemoveInfo")
+    assert isinstance(converted_remove, SupplementalRemoveInfo)
+    assert converted_remove.hasProducingFederate() is True

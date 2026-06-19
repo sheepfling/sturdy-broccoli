@@ -3,9 +3,17 @@ from hla.backends.common import Invocation
 from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
 from hla.foms.target_radar._internal import target_radar_fom_path
 from hla.rti1516e.enums import CallbackModel, ResignAction
-from hla.rti1516e.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
+from hla.rti1516e.handles import (
+    AttributeHandle,
+    AttributeHandleSet,
+    AttributeHandleValueMap,
+    DimensionHandleSet,
+    RegionHandle,
+    RegionHandleSet,
+)
 from hla.rti1516e.raw_api import API_METADATA
 from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.datatypes import AttributeRegionAssociation
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
 
 TARGET_RADAR_FOM = target_radar_fom_path()
@@ -107,6 +115,10 @@ class RecordingBridge(JavaBridge):
         self.calls.append(("handle_map", type_name, tuple(items), rti_ambassador is not None))
         return ("handle_map", type_name, tuple(items))
 
+    def new_attribute_set_region_set_pair_list(self, values, *, rti_ambassador=None):
+        self.calls.append(("pair_list", tuple(values), rti_ambassador is not None))
+        return ("pair_list", tuple(values))
+
 
 def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections():
     overloads = tuple(API_METADATA["RTIambassador"]["createFederationExecution"])
@@ -132,3 +144,28 @@ def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections
     converted_map = converter.to_backend({py_attr: b"abc"}, expected_type_name="AttributeHandleValueMap")
     assert converted_map[0] == "handle_map"
     assert bridge.calls[-1][1] == "AttributeHandleValueMap"
+
+
+def test_java_converter_prepares_attribute_region_association_pair_lists():
+    bridge = RecordingBridge()
+    converter = JavaValueConverter(bridge, rti_ambassador=object())
+
+    native_attr = ("native-attribute", 7)
+    native_region = ("native-region", 9)
+    py_attr = converter.handle_registry.to_python(AttributeHandle, native_attr)
+    py_region = converter.handle_registry.to_python(RegionHandle, native_region)
+
+    pairs = [
+        AttributeRegionAssociation(
+            AttributeHandleSet({py_attr}),
+            RegionHandleSet({py_region}),
+        )
+    ]
+
+    converted = converter.to_backend(pairs, expected_type_name="AttributeSetRegionSetPairList")
+    assert converted[0] == "pair_list"
+    pair = converted[1][0]
+    assert pair[0][0] == "handle_set"
+    assert pair[0][1] == "AttributeHandleSet"
+    assert pair[1][0] == "handle_set"
+    assert pair[1][1] == "RegionHandleSet"
