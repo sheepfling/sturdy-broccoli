@@ -53,8 +53,10 @@ from hla.rti1516_2025.exceptions import (
     ErrorReadingFOM,
     ErrorReadingMIM,
     FederateAlreadyExecutionMember,
+    FederateIsExecutionMember,
     FederateNameAlreadyInUse,
     FederateNotExecutionMember,
+    FederateOwnsAttributes,
     FederatesCurrentlyJoined,
     FederationExecutionAlreadyExists,
     FederationExecutionDoesNotExist,
@@ -76,6 +78,7 @@ from hla.rti1516_2025.exceptions import (
     InvalidObjectInstanceHandle,
     InvalidOrderType,
     InvalidRangeBound,
+    InvalidResignAction,
     InvalidRegion,
     InvalidRegionContext,
     InvalidServiceGroup,
@@ -91,6 +94,7 @@ from hla.rti1516_2025.exceptions import (
     ObjectInstanceNameInUse,
     ObjectInstanceNameNotReserved,
     ObjectInstanceNotKnown,
+    OwnershipAcquisitionPending,
     RegionDoesNotContainSpecifiedDimension,
     RestoreInProgress,
     RestoreNotInProgress,
@@ -349,6 +353,9 @@ class Shim2025RTIAmbassador:
         self._default_attribute_order: dict[tuple[str, str], OrderType] = {}
         self._service_report_serial_number = 0
         self._service_report_records: list[dict[str, Any]] = []
+        self._known_object_classes: dict[int, str] = {}
+        self._known_object_names: dict[str, int] = {}
+        self._locally_deleted_objects: set[int] = set()
         self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
     @property
@@ -387,6 +394,8 @@ class Shim2025RTIAmbassador:
         self._record("disconnect")
         if not self._connected:
             raise NotConnected("2025 shim RTI ambassador is not connected")
+        if self._joined:
+            raise FederateIsExecutionMember("Cannot disconnect while joined to a federation execution")
         self._release_join()
         self._connected = False
         self._joined = False
@@ -412,6 +421,9 @@ class Shim2025RTIAmbassador:
         self._default_attribute_order.clear()
         self._service_report_serial_number = 0
         self._service_report_records.clear()
+        self._known_object_classes.clear()
+        self._known_object_names.clear()
+        self._locally_deleted_objects.clear()
 
     def forceConnectionLost(self, faultDescription: str = "simulated connection lost") -> None:  # noqa: N802
         """Test harness hook for injecting a non-orderly connection loss."""
@@ -513,6 +525,10 @@ class Shim2025RTIAmbassador:
         federation = _FEDERATION_REGISTRY.get(federation_name)
         if federation is None:
             raise FederationExecutionDoesNotExist(federation_name)
+        if federation.save_label is not None:
+            raise SaveInProgress("A federation save is already in progress")
+        if federation.restore_label is not None:
+            raise RestoreInProgress("A federation restore is already in progress")
         if self._joined:
             raise FederateAlreadyExecutionMember("2025 shim RTI ambassador is already joined")
         additional_fom_modules = self._extract_additional_fom_modules(args, kwargs)
@@ -565,6 +581,13 @@ class Shim2025RTIAmbassador:
     def resignFederationExecution(self, resignAction: ResignAction) -> None:  # noqa: N802
         self._record("resignFederationExecution", resignAction)
         self._require_joined("resignFederationExecution")
+        if not isinstance(resignAction, ResignAction):
+            raise InvalidResignAction(str(resignAction))
+        if resignAction is ResignAction.NO_ACTION:
+            if self._resigning_federate_has_pending_acquisitions():
+                raise OwnershipAcquisitionPending("Cannot resign with pending ownership acquisition using NO_ACTION")
+            if self._resigning_federate_owns_attributes():
+                raise FederateOwnsAttributes("Cannot resign while owning attributes using NO_ACTION")
         self._apply_resign_action(resignAction)
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "federateResigned"):
             self._deliver_callback("federateResigned", self._resign_reason_description(resignAction))
@@ -1101,34 +1124,69 @@ class Shim2025RTIAmbassador:
         self._record("publishObjectClassAttributes", objectClass, attributes)
         self._require_joined("publishObjectClassAttributes")
         object_class_name = self._object_class_name(objectClass)
-        attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+        try:
+            attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+        except InvalidAttributeHandle as exc:
+            raise AttributeNotDefined(str(exc)) from exc
         federation = self._federation_record()
-        federation.published_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set()).update(attribute_names)
+        published = federation.published_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set())
+        had_match = self._has_object_registration_interest(federation, self._current_federate_key(), object_class_name)
+        published.update(attribute_names)
+        has_match = self._has_object_registration_interest(federation, self._current_federate_key(), object_class_name)
+        if has_match and not had_match:
+            self._deliver_callback("startRegistrationForObjectClass", ObjectClassHandle(self._object_class_handles()[object_class_name]))
 
     def unpublishObjectClass(self, objectClass: Any) -> None:  # noqa: N802
         self._record("unpublishObjectClass", objectClass)
         self._require_joined("unpublishObjectClass")
         object_class_name = self._object_class_name(objectClass)
+        federation = self._federation_record()
+        had_match = self._has_object_registration_interest(federation, self._current_federate_key(), object_class_name)
         self._federation_record().published_object_attributes.setdefault(self._current_federate_key(), {}).pop(object_class_name, None)
+        if had_match:
+            self._deliver_callback("stopRegistrationForObjectClass", ObjectClassHandle(self._object_class_handles()[object_class_name]))
 
     def unpublishObjectClassAttributes(self, objectClass: Any, attributes: Any) -> None:  # noqa: N802
         self._record("unpublishObjectClassAttributes", objectClass, attributes)
         self._require_joined("unpublishObjectClassAttributes")
         object_class_name = self._object_class_name(objectClass)
-        attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
-        published = self._federation_record().published_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set())
+        try:
+            attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+        except InvalidAttributeHandle as exc:
+            raise AttributeNotDefined(str(exc)) from exc
+        federation = self._federation_record()
+        published = federation.published_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set())
+        had_match = self._has_object_registration_interest(federation, self._current_federate_key(), object_class_name)
         published.difference_update(attribute_names)
         if not published:
-            self._federation_record().published_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+            federation.published_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+        has_match = self._has_object_registration_interest(federation, self._current_federate_key(), object_class_name)
+        if had_match and not has_match:
+            self._deliver_callback("stopRegistrationForObjectClass", ObjectClassHandle(self._object_class_handles()[object_class_name]))
 
     def subscribeObjectClassAttributes(self, objectClass: Any, attributes: Any, *unused: Any) -> None:  # noqa: N802
         self._record("subscribeObjectClassAttributes", objectClass, attributes, *unused)
         self._require_joined("subscribeObjectClassAttributes")
         object_class_name = self._object_class_name(objectClass)
-        attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+        try:
+            attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+        except InvalidAttributeHandle as exc:
+            raise AttributeNotDefined(str(exc)) from exc
         federation = self._federation_record()
+        affected_publishers = self._matching_object_publishers(federation, object_class_name, attribute_names)
+        before_matches = {
+            publisher_key: self._has_object_registration_interest(federation, publisher_key, object_class_name)
+            for publisher_key in affected_publishers
+        }
         federation.subscribed_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set()).update(attribute_names)
         self._discover_existing_objects_for_current_subscription(object_class_name)
+        for publisher_key in affected_publishers:
+            if not before_matches[publisher_key] and self._has_object_registration_interest(federation, publisher_key, object_class_name):
+                self._deliver_to_federate_handle(
+                    FederateHandle(publisher_key),
+                    "startRegistrationForObjectClass",
+                    ObjectClassHandle(self._object_class_handles()[object_class_name]),
+                )
 
     def subscribeObjectClassAttributesPassively(self, objectClass: Any, attributes: Any, *unused: Any) -> None:  # noqa: N802
         self._record("subscribeObjectClassAttributesPassively", objectClass, attributes, *unused)
@@ -1138,32 +1196,90 @@ class Shim2025RTIAmbassador:
         self._record("unsubscribeObjectClass", objectClass)
         self._require_joined("unsubscribeObjectClass")
         object_class_name = self._object_class_name(objectClass)
-        self._federation_record().subscribed_object_attributes.setdefault(self._current_federate_key(), {}).pop(object_class_name, None)
+        federation = self._federation_record()
+        affected_publishers = self._matching_object_publishers(
+            federation,
+            object_class_name,
+            federation.subscribed_object_attributes.setdefault(self._current_federate_key(), {}).get(object_class_name, set()),
+        )
+        before_matches = {
+            publisher_key: self._has_object_registration_interest(federation, publisher_key, object_class_name)
+            for publisher_key in affected_publishers
+        }
+        federation.subscribed_object_attributes.setdefault(self._current_federate_key(), {}).pop(object_class_name, None)
+        for publisher_key in affected_publishers:
+            if before_matches[publisher_key] and not self._has_object_registration_interest(federation, publisher_key, object_class_name):
+                self._deliver_to_federate_handle(
+                    FederateHandle(publisher_key),
+                    "stopRegistrationForObjectClass",
+                    ObjectClassHandle(self._object_class_handles()[object_class_name]),
+                )
 
     def unsubscribeObjectClassAttributes(self, objectClass: Any, attributes: Any) -> None:  # noqa: N802
         self._record("unsubscribeObjectClassAttributes", objectClass, attributes)
         self._require_joined("unsubscribeObjectClassAttributes")
         object_class_name = self._object_class_name(objectClass)
-        attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
-        subscribed = self._federation_record().subscribed_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set())
+        try:
+            attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+        except InvalidAttributeHandle as exc:
+            raise AttributeNotDefined(str(exc)) from exc
+        federation = self._federation_record()
+        affected_publishers = self._matching_object_publishers(federation, object_class_name, attribute_names)
+        before_matches = {
+            publisher_key: self._has_object_registration_interest(federation, publisher_key, object_class_name)
+            for publisher_key in affected_publishers
+        }
+        subscribed = federation.subscribed_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set())
         subscribed.difference_update(attribute_names)
         if not subscribed:
-            self._federation_record().subscribed_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+            federation.subscribed_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+        for publisher_key in affected_publishers:
+            if before_matches[publisher_key] and not self._has_object_registration_interest(federation, publisher_key, object_class_name):
+                self._deliver_to_federate_handle(
+                    FederateHandle(publisher_key),
+                    "stopRegistrationForObjectClass",
+                    ObjectClassHandle(self._object_class_handles()[object_class_name]),
+                )
 
     def publishInteractionClass(self, interactionClass: Any) -> None:  # noqa: N802
         self._record("publishInteractionClass", interactionClass)
         self._require_joined("publishInteractionClass")
-        self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()).add(self._interaction_class_name(interactionClass))
+        federation = self._federation_record()
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        had_match = self._has_interaction_interest(federation, self._current_federate_key(), interaction_class_name)
+        federation.published_interactions.setdefault(self._current_federate_key(), set()).add(interaction_class_name)
+        has_match = self._has_interaction_interest(federation, self._current_federate_key(), interaction_class_name)
+        if has_match and not had_match:
+            self._deliver_callback("turnInteractionsOn", InteractionClassHandle(self._interaction_class_handles()[interaction_class_name]))
 
     def unpublishInteractionClass(self, interactionClass: Any) -> None:  # noqa: N802
         self._record("unpublishInteractionClass", interactionClass)
         self._require_joined("unpublishInteractionClass")
-        self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()).discard(self._interaction_class_name(interactionClass))
+        federation = self._federation_record()
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        had_match = self._has_interaction_interest(federation, self._current_federate_key(), interaction_class_name)
+        federation.published_interactions.setdefault(self._current_federate_key(), set()).discard(interaction_class_name)
+        if had_match:
+            self._deliver_callback("turnInteractionsOff", InteractionClassHandle(self._interaction_class_handles()[interaction_class_name]))
 
     def subscribeInteractionClass(self, interactionClass: Any) -> None:  # noqa: N802
         self._record("subscribeInteractionClass", interactionClass)
         self._require_joined("subscribeInteractionClass")
-        self._federation_record().subscribed_interactions.setdefault(self._current_federate_key(), set()).add(self._interaction_class_name(interactionClass))
+        federation = self._federation_record()
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        affected_publishers = self._matching_interaction_publishers(federation, interaction_class_name)
+        before_matches = {
+            publisher_key: self._has_interaction_interest(federation, publisher_key, interaction_class_name)
+            for publisher_key in affected_publishers
+        }
+        federation.subscribed_interactions.setdefault(self._current_federate_key(), set()).add(interaction_class_name)
+        for publisher_key in affected_publishers:
+            if not before_matches[publisher_key] and self._has_interaction_interest(federation, publisher_key, interaction_class_name):
+                self._deliver_to_federate_handle(
+                    FederateHandle(publisher_key),
+                    "turnInteractionsOn",
+                    InteractionClassHandle(self._interaction_class_handles()[interaction_class_name]),
+                )
 
     def subscribeInteractionClassPassively(self, interactionClass: Any) -> None:  # noqa: N802
         self._record("subscribeInteractionClassPassively", interactionClass)
@@ -1172,15 +1288,29 @@ class Shim2025RTIAmbassador:
     def unsubscribeInteractionClass(self, interactionClass: Any) -> None:  # noqa: N802
         self._record("unsubscribeInteractionClass", interactionClass)
         self._require_joined("unsubscribeInteractionClass")
-        subscribed = self._federation_record().subscribed_interactions.setdefault(self._current_federate_key(), set())
-        subscribed.discard(self._interaction_class_name(interactionClass))
-        self._federation_record().subscribed_interaction_regions.setdefault(self._current_federate_key(), {}).pop(
-            self._interaction_class_name(interactionClass),
+        federation = self._federation_record()
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        affected_publishers = self._matching_interaction_publishers(federation, interaction_class_name)
+        before_matches = {
+            publisher_key: self._has_interaction_interest(federation, publisher_key, interaction_class_name)
+            for publisher_key in affected_publishers
+        }
+        subscribed = federation.subscribed_interactions.setdefault(self._current_federate_key(), set())
+        subscribed.discard(interaction_class_name)
+        federation.subscribed_interaction_regions.setdefault(self._current_federate_key(), {}).pop(
+            interaction_class_name,
             None,
         )
-        self._federation_record().directed_interaction_region_gates.setdefault(self._current_federate_key(), set()).discard(
-            self._interaction_class_name(interactionClass)
+        federation.directed_interaction_region_gates.setdefault(self._current_federate_key(), set()).discard(
+            interaction_class_name
         )
+        for publisher_key in affected_publishers:
+            if before_matches[publisher_key] and not self._has_interaction_interest(federation, publisher_key, interaction_class_name):
+                self._deliver_to_federate_handle(
+                    FederateHandle(publisher_key),
+                    "turnInteractionsOff",
+                    InteractionClassHandle(self._interaction_class_handles()[interaction_class_name]),
+                )
 
     def subscribeInteractionClassWithRegions(self, interactionClass: Any, regions: Any) -> None:  # noqa: N802
         self._record("subscribeInteractionClassWithRegions", interactionClass, regions)
@@ -1650,14 +1780,24 @@ class Shim2025RTIAmbassador:
             federation.reserved_object_instance_names.pop(objectInstanceName, None)
         object_class_handle = ObjectClassHandle(self._object_class_handles()[object_class_name])
         source_key = self._current_federate_key()
+        self._known_object_classes[handle.value] = object_class_name
+        if objectInstanceName is not None:
+            self._known_object_names[objectInstanceName] = handle.value
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             if federate_key == self._current_federate_key():
                 continue
-            subscribed_names = set(subscriptions.get(object_class_name, set()))
+            discovery_class_name = self._subscribed_discovery_class_name(
+                federate_key,
+                object_class_name,
+            )
+            if discovery_class_name is None:
+                continue
+            subscribed_names = set(subscriptions.get(discovery_class_name, set()))
             reflected_names = self._reflectable_attribute_names_for_subscriber(
                 source_key,
                 federate_key,
                 federation.object_instances[handle.value],
+                discovery_class_name,
                 subscribed_names,
             )
             if reflected_names:
@@ -1665,7 +1805,7 @@ class Shim2025RTIAmbassador:
                     FederateHandle(federate_key),
                     "discoverObjectInstance",
                     handle,
-                    object_class_handle,
+                    ObjectClassHandle(self._object_class_handles()[discovery_class_name]),
                     objectInstanceName or "",
                     self._current_federate_handle(),
                 )
@@ -1706,19 +1846,37 @@ class Shim2025RTIAmbassador:
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             if federate_key == self._current_federate_key():
                 continue
+            discovery_class_name = self._known_object_classes_for_federate(
+                federate_key,
+                objectInstance,
+                record.object_class_name,
+            )
+            if discovery_class_name is None:
+                continue
             subscribed_names = self._reflectable_attribute_names_for_subscriber(
                 self._current_federate_key(),
                 federate_key,
                 record,
-                set(subscriptions.get(object_class_name, set())),
+                discovery_class_name,
+                set(subscriptions.get(discovery_class_name, set())),
             )
             reflected = {
-                handle: value
+                AttributeHandle(self._attribute_handles(discovery_class_name)[self._attribute_name_by_handle(object_class_name, handle)]): value
                 for handle, value in values_by_handle.items()
                 if self._attribute_name_by_handle(object_class_name, handle) in subscribed_names
             }
             if not reflected:
                 continue
+            target_rti = federation.member_rtis.get(federate_key)
+            if target_rti is not None and objectInstance.value in target_rti._locally_deleted_objects:
+                self._deliver_to_federate_handle(
+                    FederateHandle(federate_key),
+                    "discoverObjectInstance",
+                    objectInstance,
+                    ObjectClassHandle(self._object_class_handles()[discovery_class_name]),
+                    record.object_instance_name or "",
+                    self._current_federate_handle(),
+                )
             self._increment_mom_count(federation.mom_object_instances_reflected, (federate_key, object_class_name))
             self._increment_mom_count(
                 federation.mom_reflections_received,
@@ -2034,7 +2192,16 @@ class Shim2025RTIAmbassador:
     def localDeleteObjectInstance(self, objectInstance: Any) -> None:  # noqa: N802
         self._record("localDeleteObjectInstance", objectInstance)
         self._require_joined("localDeleteObjectInstance")
-        self._object_instance_record_known(objectInstance)
+        record = self._object_instance_record_known(objectInstance)
+        object_instance_value = self._normalize_handle(
+            objectInstance,
+            ObjectInstanceHandle,
+            InvalidObjectInstanceHandle,
+        )
+        self._known_object_classes.pop(object_instance_value, None)
+        if record.object_instance_name is not None:
+            self._known_object_names.pop(record.object_instance_name, None)
+        self._locally_deleted_objects.add(object_instance_value)
 
     def requestAttributeValueUpdate(self, objectClassOrInstance: Any, attributes: Any, userSuppliedTag: bytes) -> None:  # noqa: N802
         self._record("requestAttributeValueUpdate", objectClassOrInstance, attributes, userSuppliedTag)
@@ -2394,25 +2561,52 @@ class Shim2025RTIAmbassador:
     def getKnownObjectClassHandle(self, objectInstance: Any) -> ObjectClassHandle:  # noqa: N802
         self._record("getKnownObjectClassHandle", objectInstance)
         self._require_joined("getKnownObjectClassHandle")
-        record = self._object_instance_record(objectInstance)
-        return ObjectClassHandle(self._object_class_handles()[record.object_class_name])
+        object_instance_value = self._normalize_handle(
+            objectInstance,
+            ObjectInstanceHandle,
+            InvalidObjectInstanceHandle,
+        )
+        try:
+            record = self._federation_record().object_instances[object_instance_value]
+        except KeyError as exc:
+            raise ObjectInstanceNotKnown(str(objectInstance)) from exc
+        known_class_name = self._known_object_classes.get(object_instance_value)
+        if known_class_name is not None:
+            return ObjectClassHandle(self._object_class_handles()[known_class_name])
+        if self._current_federate_handle() in set(record.attribute_owners.values()):
+            self._known_object_classes[object_instance_value] = record.object_class_name
+            if record.object_instance_name is not None:
+                self._known_object_names[record.object_instance_name] = object_instance_value
+            return ObjectClassHandle(self._object_class_handles()[record.object_class_name])
+        raise ObjectInstanceNotKnown(str(objectInstance))
 
     def getObjectInstanceHandle(self, objectInstanceName: str) -> ObjectInstanceHandle:  # noqa: N802
         self._record("getObjectInstanceHandle", objectInstanceName)
         self._require_joined("getObjectInstanceHandle")
-        federation = self._federation_record()
         try:
-            return ObjectInstanceHandle(federation.object_instance_names[str(objectInstanceName)])
+            return ObjectInstanceHandle(self._known_object_names[str(objectInstanceName)])
         except KeyError as exc:
             raise ObjectInstanceNotKnown(str(objectInstanceName)) from exc
 
     def getObjectInstanceName(self, objectInstance: Any) -> str:  # noqa: N802
         self._record("getObjectInstanceName", objectInstance)
         self._require_joined("getObjectInstanceName")
-        record = self._object_instance_record(objectInstance)
-        if record.object_instance_name is None:
-            raise ObjectInstanceNotKnown(str(objectInstance))
-        return record.object_instance_name
+        object_instance_value = self._normalize_handle(
+            objectInstance,
+            ObjectInstanceHandle,
+            InvalidObjectInstanceHandle,
+        )
+        record = self._object_instance_record_known(objectInstance)
+        if object_instance_value in self._known_object_classes:
+            if record.object_instance_name is None:
+                raise ObjectInstanceNotKnown(str(objectInstance))
+            return record.object_instance_name
+        if self._current_federate_handle() in set(record.attribute_owners.values()):
+            self._known_object_classes[object_instance_value] = record.object_class_name
+            if record.object_instance_name is not None:
+                self._known_object_names[record.object_instance_name] = object_instance_value
+                return record.object_instance_name
+        raise ObjectInstanceNotKnown(str(objectInstance))
 
     def getOrderType(self, orderTypeName: str) -> OrderType:  # noqa: N802
         self._record("getOrderType", orderTypeName)
@@ -2580,6 +2774,11 @@ class Shim2025RTIAmbassador:
 
     def close(self) -> None:
         if self._connected:
+            if self._joined:
+                try:
+                    self.resignFederationExecution(self._automatic_resign_directive)
+                except (FederateOwnsAttributes, OwnershipAcquisitionPending):
+                    self.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
             self.disconnect()
 
     def __enter__(self) -> "Shim2025RTIAmbassador":
@@ -2629,10 +2828,49 @@ class Shim2025RTIAmbassador:
         ambassador = federation.member_ambassadors.get(federate_handle.value)
         if ambassador is None:
             raise InvalidFederateHandle(f"Unknown federate handle {federate_handle!r}")
+        target_rti = federation.member_rtis.get(federate_handle.value)
+        if target_rti is not None:
+            target_rti._apply_object_callback_state(method_name, args)
         callback = getattr(ambassador, method_name, None)
         if callback is None:
-            raise RTIinternalError(f"Federate ambassador {federate_handle!r} does not implement {method_name}")
+            return
         callback(*args)
+
+    def _apply_object_callback_state(self, method_name: str, args: tuple[Any, ...]) -> None:
+        if method_name == "discoverObjectInstance" and len(args) >= 3:
+            object_instance = args[0]
+            object_class = args[1]
+            object_name = args[2]
+            try:
+                object_instance_value = self._normalize_handle(
+                    object_instance,
+                    ObjectInstanceHandle,
+                    InvalidObjectInstanceHandle,
+                )
+                object_class_name = self._object_class_name(object_class)
+            except Exception:
+                return
+            self._known_object_classes[object_instance_value] = object_class_name
+            if isinstance(object_name, str) and object_name:
+                self._known_object_names[object_name] = object_instance_value
+            self._locally_deleted_objects.discard(object_instance_value)
+            return
+        if method_name == "removeObjectInstance" and args:
+            try:
+                object_instance_value = self._normalize_handle(
+                    args[0],
+                    ObjectInstanceHandle,
+                    InvalidObjectInstanceHandle,
+                )
+            except Exception:
+                return
+            object_names = [
+                name for name, known_handle in self._known_object_names.items() if known_handle == object_instance_value
+            ]
+            for object_name in object_names:
+                self._known_object_names.pop(object_name, None)
+            self._known_object_classes.pop(object_instance_value, None)
+            self._locally_deleted_objects.discard(object_instance_value)
 
     def _deliver_queued_callback(self, queued: _QueuedCallback) -> None:
         if queued.target_federate is None:
@@ -3072,6 +3310,9 @@ class Shim2025RTIAmbassador:
         if self._federation_name is None:
             return
         self._pending_time_advance = None
+        self._known_object_classes.clear()
+        self._known_object_names.clear()
+        self._locally_deleted_objects.clear()
         federation = _FEDERATION_REGISTRY.get(self._federation_name)
         if federation is not None:
             if self._federate_name is not None:
@@ -3126,6 +3367,21 @@ class Shim2025RTIAmbassador:
             for attribute_name in tuple(record.attribute_candidates):
                 self._remove_attribute_candidate(record, attribute_name, federate_handle)
 
+    def _resigning_federate_has_pending_acquisitions(self) -> bool:
+        federate_handle = self._current_federate_handle()
+        for record in self._federation_record().object_instances.values():
+            for attribute_name in tuple(record.attribute_candidates):
+                if self._has_attribute_candidate(record, attribute_name, federate_handle):
+                    return True
+        return False
+
+    def _resigning_federate_owns_attributes(self) -> bool:
+        federate_handle = self._current_federate_handle()
+        for record in self._federation_record().object_instances.values():
+            if federate_handle in set(record.attribute_owners.values()):
+                return True
+        return False
+
     def _delete_objects_owned_by_resigning_federate(self) -> None:
         federation = self._federation_record()
         federate_handle = self._current_federate_handle()
@@ -3157,6 +3413,62 @@ class Shim2025RTIAmbassador:
                         {attribute_handle},
                         acquisition_tag,
                     )
+
+    def _matching_object_publishers(
+        self,
+        federation: _FederationRecord,
+        object_class_name: str,
+        attribute_names: set[str],
+    ) -> set[int]:
+        publishers: set[int] = set()
+        for federate_key, classes in federation.published_object_attributes.items():
+            published = classes.get(object_class_name, set())
+            if published & attribute_names:
+                publishers.add(federate_key)
+        return publishers
+
+    def _has_object_registration_interest(
+        self,
+        federation: _FederationRecord,
+        publisher_key: int,
+        object_class_name: str,
+    ) -> bool:
+        published = federation.published_object_attributes.get(publisher_key, {}).get(object_class_name, set())
+        if not published:
+            return False
+        for subscriber_key, classes in federation.subscribed_object_attributes.items():
+            if subscriber_key == publisher_key:
+                continue
+            subscribed = classes.get(object_class_name, set())
+            if published & subscribed:
+                return True
+        return False
+
+    def _matching_interaction_publishers(
+        self,
+        federation: _FederationRecord,
+        interaction_class_name: str,
+    ) -> set[int]:
+        publishers: set[int] = set()
+        for federate_key, published in federation.published_interactions.items():
+            if interaction_class_name in published:
+                publishers.add(federate_key)
+        return publishers
+
+    def _has_interaction_interest(
+        self,
+        federation: _FederationRecord,
+        publisher_key: int,
+        interaction_class_name: str,
+    ) -> bool:
+        if interaction_class_name not in federation.published_interactions.get(publisher_key, set()):
+            return False
+        for subscriber_key, subscribed in federation.subscribed_interactions.items():
+            if subscriber_key == publisher_key:
+                continue
+            if interaction_class_name in subscribed:
+                return True
+        return False
 
     def _deliver_resign_remove_callbacks(self, object_instance: ObjectInstanceHandle, record: _ObjectInstanceRecord) -> None:
         for federate_key, subscriptions in self._federation_record().subscribed_object_attributes.items():
@@ -4332,12 +4644,13 @@ class Shim2025RTIAmbassador:
         source_key: int,
         subscriber_key: int,
         record: _ObjectInstanceRecord,
+        discovery_class_name: str,
         subscribed_names: set[str],
     ) -> set[str]:
         region_subscription = (
             self._federation_record()
             .subscribed_object_regions.get(subscriber_key, {})
-            .get(record.object_class_name, {})
+            .get(discovery_class_name, {})
         )
         if not region_subscription:
             return subscribed_names
@@ -4348,6 +4661,40 @@ class Shim2025RTIAmbassador:
             if self._region_sets_overlap(source_key, source_regions, subscriber_key, target_regions):
                 reflected.add(attribute_name)
         return reflected
+
+    def _known_object_classes_for_federate(
+        self,
+        federate_key: int,
+        object_instance: ObjectInstanceHandle,
+        object_class_name: str,
+    ) -> str | None:
+        federation = self._federation_record()
+        target_rti = federation.member_rtis.get(federate_key)
+        if target_rti is None:
+            return None
+        known_class_name = target_rti._known_object_classes.get(object_instance.value)
+        if known_class_name is not None:
+            return known_class_name
+        return self._subscribed_discovery_class_name(federate_key, object_class_name)
+
+    def _subscribed_discovery_class_name(self, federate_key: int, object_class_name: str) -> str | None:
+        subscriptions = self._federation_record().subscribed_object_attributes.get(federate_key, {})
+        for candidate_name in self._object_class_lineage(object_class_name):
+            if candidate_name in subscriptions:
+                return candidate_name
+        return None
+
+    def _object_class_lineage(self, object_class_name: str) -> tuple[str, ...]:
+        catalog = self._federation_record().fom_catalog
+        lineage: list[str] = []
+        current = catalog.object_classes.get(object_class_name)
+        while current is not None:
+            lineage.append(current.full_name)
+            parent_name = current.parent_name
+            if parent_name is None:
+                break
+            current = catalog.object_classes.get(parent_name)
+        return tuple(lineage)
 
     def _attribute_name_by_handle(self, object_class_name: str, attribute: AttributeHandle) -> str:
         attribute_value = self._normalize_handle(attribute, AttributeHandle, InvalidAttributeHandle)
@@ -4454,9 +4801,12 @@ class Shim2025RTIAmbassador:
 
     def _discover_existing_objects_for_current_subscription(self, object_class_name: str) -> None:
         federation = self._federation_record()
-        object_class_handle = ObjectClassHandle(self._object_class_handles()[object_class_name])
         for object_value, record in federation.object_instances.items():
-            if record.object_class_name != object_class_name:
+            discovery_class_name = self._subscribed_discovery_class_name(
+                self._current_federate_key(),
+                record.object_class_name,
+            )
+            if discovery_class_name != object_class_name:
                 continue
             owner_handles = {owner for owner in record.attribute_owners.values() if owner is not None}
             producing_federate = sorted(owner_handles, key=lambda handle: handle.value)[0] if owner_handles else self._current_federate_handle()
@@ -4470,6 +4820,7 @@ class Shim2025RTIAmbassador:
                 producing_federate.value,
                 self._current_federate_key(),
                 record,
+                discovery_class_name,
                 set(subscribed_names),
             )
             if not reflected_names:
@@ -4477,7 +4828,7 @@ class Shim2025RTIAmbassador:
             self._deliver_callback(
                 "discoverObjectInstance",
                 ObjectInstanceHandle(object_value),
-                object_class_handle,
+                ObjectClassHandle(self._object_class_handles()[discovery_class_name]),
                 record.object_instance_name or "",
                 producing_federate,
             )
