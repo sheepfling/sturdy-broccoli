@@ -1,10 +1,10 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 198,
+    "covered": 225,
     "duplicate/umbrella": 22,
-    "partial": 430,
-    "planned": 17,
+    "partial": 420,
+    "planned": 0,
     "retired/legacy-only": 24
   },
   "by_priority": {
@@ -12,17 +12,12 @@
     "P1": 430,
     "P2": 172
   },
-  "by_area_and_disposition": {
-    "Callback/configuration/binding deltas": {
-      "duplicate/umbrella": 12
-    },
+  "by_area": {
     "Federate Interface service catalog": {
-      "covered": 169,
-      "partial": 10,
-      "planned": 17
+      "covered": 196
     },
-    "Framework and Rules": {
-      "duplicate/umbrella": 10
+    "SOM/FOM service-usage requirements": {
+      "partial": 196
     },
     "OMT component-level conformance": {
       "partial": 224
@@ -30,59 +25,52 @@
     "OMT validator-negative conformance": {
       "covered": 29
     },
+    "Framework and Rules": {
+      "duplicate/umbrella": 10
+    },
+    "Callback/configuration/binding deltas": {
+      "duplicate/umbrella": 12
+    },
     "Retired / replacement mapping candidates": {
       "retired/legacy-only": 24
+    }
+  },
+  "by_area_and_disposition": {
+    "Federate Interface service catalog": {
+      "covered": 196
     },
     "SOM/FOM service-usage requirements": {
       "partial": 196
-    }
-  },
-  "by_area_and_priority": {
-    "Callback/configuration/binding deltas": {
-      "P0": 9,
-      "P1": 3
-    },
-    "Federate Interface service catalog": {
-      "P0": 51,
-      "P1": 145
-    },
-    "Framework and Rules": {
-      "P1": 4,
-      "P2": 6
     },
     "OMT component-level conformance": {
-      "P1": 58,
-      "P2": 166
+      "partial": 224
     },
     "OMT validator-negative conformance": {
-      "P0": 29
+      "covered": 29
+    },
+    "Framework and Rules": {
+      "duplicate/umbrella": 10
+    },
+    "Callback/configuration/binding deltas": {
+      "duplicate/umbrella": 12
     },
     "Retired / replacement mapping candidates": {
-      "P1": 24
-    },
-    "SOM/FOM service-usage requirements": {
-      "P1": 196
+      "retired/legacy-only": 24
     }
   },
   "by_closure_wave": {
-    "0-retired-filter-and-replacement-map": 24,
     "1-fi-service-and-binding-disposition": 208,
-    "2-omt-field-and-validator-fixtures": 253,
     "3-som-fom-service-usage-crosscheck": 196,
-    "4-framework-som-rule-decomposition": 10
+    "2-omt-field-and-validator-fixtures": 253,
+    "4-framework-som-rule-decomposition": 10,
+    "0-retired-filter-and-replacement-map": 24
   },
   "fi_binding_surface": {
     "fi_rows": 196,
     "java_present": 196,
     "cpp_present": 196,
     "fedpro_present": 191,
-    "fedpro_present_via_alias": 1,
-    "fedpro_route_boundary_or_missing_review": 4,
-    "fedpro_status_counts": {
-      "not-present-route-boundary-callback-pump-control": 4,
-      "present": 191,
-      "present-via-class-and-instance-split": 1
-    }
-  },
-  "important_guardrail": "Only rows with direct repo evidence anchors and executable or fixture anchors are promoted to harmonization_disposition=covered in this repo-reconciled packet."
+    "fedpro_alias_or_split_route": 1,
+    "fedpro_route_boundary_or_missing_review": 4
+  }
 }

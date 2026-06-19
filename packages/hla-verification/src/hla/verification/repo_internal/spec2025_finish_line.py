@@ -77,6 +77,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-119",
             "HLA2025-FI-SVC-120",
             "HLA2025-FI-SVC-121",
+            "HLA2025-FI-SVC-122",
             "HLA2025-FI-SVC-123",
             "HLA2025-FI-SVC-125",
             "HLA2025-FR-010",
@@ -85,6 +86,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/backends/test_shim_route_trace_evidence.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
@@ -93,9 +95,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "enable/disable time constrained, enable/disable asynchronous delivery, lookahead query/modify, "
             "timeAdvanceRequest, timeAdvanceRequestAvailable, nextMessageRequest, nextMessageRequestAvailable, "
             "flushQueueRequest, timeAdvanceGrant, flushQueueGrant, GALT/LITS/logical-time/lookahead queries, "
-            "retract, attribute and interaction order-type changes, queued timestamped object updates/interactions, "
-            "timestamp-order delivery on receiving federate time advance, and message retraction before delivery. "
-            "Cross-binding parity remains separate backlog work."
+            "retract, requestRetraction callback delivery, attribute and interaction order-type changes, queued "
+            "timestamped object updates/interactions, timestamp-order delivery on receiving federate time advance, "
+            "and message retraction before delivery. Cross-binding parity remains separate backlog work."
         ),
     },
     {
@@ -362,19 +364,25 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-160",
             "HLA2025-FI-SVC-161",
             "HLA2025-FI-SVC-164",
+            "HLA2025-FI-SVC-128",
+            "HLA2025-FI-SVC-129",
             "HLA2025-FI-SVC-126",
             "HLA2025-FI-SVC-127",
             "HLA2025-FI-SVC-130",
+            "HLA2025-FI-SVC-131",
             "HLA2025-FI-SVC-132",
+            "HLA2025-FI-SVC-133",
             "HLA2025-FI-SVC-134",
             "HLA2025-FI-SVC-135",
             "HLA2025-FI-SVC-136",
+            "HLA2025-FI-SVC-137",
             "HLA2025-FI-SVC-076",
             "HLA2025-FI-SVC-124",
             "HLA2025-FI-SVC-157",
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/backends/test_python_backend_time_ddm_extended.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
@@ -382,8 +390,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "loaded FOM/FDD catalog, reports available dimensions for object and interaction classes, returns "
             "dimension upper bounds, stores validated default attribute transportation/order policy changes, "
             "uses those defaults when delivering reflectAttributeValues callbacks, and filters object attribute "
-            "reflections through basic createRegion/commitRegionModifications/setRangeBounds/"
-            "subscribeObjectClassAttributesWithRegions/associateRegionsForUpdates DDM region overlap. It also "
+            "reflections through basic createRegion/commitRegionModifications/deleteRegion/setRangeBounds/"
+            "registerObjectInstanceWithRegions/subscribeObjectClassAttributesWithRegions/"
+            "unsubscribeObjectClassAttributesWithRegions/associateRegionsForUpdates/"
+            "unassociateRegionsForUpdates/requestAttributeValueUpdateWithRegions DDM region overlap. It also "
             "filters interaction delivery through subscribeInteractionClassWithRegions/"
             "unsubscribeInteractionClassWithRegions/sendInteractionWithRegions region overlap and conveys sent "
             "regions on receiveInteraction callbacks. Attribute scope advisory callbacks report object-attribute "
@@ -472,6 +482,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-069",
             "HLA2025-FI-SVC-070",
             "HLA2025-FI-SVC-071",
+            "HLA2025-FI-SVC-072",
+            "HLA2025-FI-SVC-073",
             "HLA2025-FI-SVC-074",
             "HLA2025-FI-SVC-075",
             "HLA2025-FI-SVC-077",
@@ -487,13 +499,15 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
             "Python 2025 shim supports FOM-backed deleteObjectInstance/removeObjectInstance callbacks, "
             "localDeleteObjectInstance validation, requestAttributeValueUpdate callbacks by object instance "
-            "and object class, attribute transportation type change/query callbacks, interaction "
-            "transportation type change/query callbacks, and DDM-driven attributesInScope and "
+            "and object class, turnUpdatesOnForObjectInstance and turnUpdatesOffForObjectInstance advisory "
+            "callbacks with update-rate designator delivery, attribute transportation type change/query callbacks, "
+            "interaction transportation type change/query callbacks, and DDM-driven attributesInScope and "
             "attributesOutOfScope transitions."
         ),
     },
@@ -582,6 +596,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "id": "2025-basic-declaration-services",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-FI-SVC-047",
+            "HLA2025-FI-SVC-048",
+            "HLA2025-FI-SVC-049",
+            "HLA2025-FI-SVC-050",
             "HLA2025-FI-SVC-035",
             "HLA2025-FI-SVC-036",
             "HLA2025-FI-SVC-037",
@@ -595,44 +613,64 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
             "Python 2025 shim supports publish and unpublish for object class attributes and interaction classes "
-            "plus subscribe and unsubscribe for object class attributes and interaction classes. Published state "
-            "gates updateAttributeValues and sendInteraction delivery, and unsubscribe state stops subsequent "
-            "reflectAttributeValues and receiveInteraction callbacks for the affected target federate."
+            "plus subscribe and unsubscribe for object class attributes and interaction classes. It also delivers "
+            "startRegistrationForObjectClass, stopRegistrationForObjectClass, turnInteractionsOn, and "
+            "turnInteractionsOff callbacks as publication and subscription state becomes relevant or irrelevant. "
+            "Published state gates updateAttributeValues and sendInteraction delivery, and unsubscribe state stops "
+            "subsequent reflectAttributeValues and receiveInteraction callbacks for the affected target federate."
         ),
     },
     {
         "id": "2025-support-query-lookups",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-FI-SVC-138",
+            "HLA2025-FI-SVC-139",
             "HLA2025-FI-SVC-140",
             "HLA2025-FI-SVC-141",
+            "HLA2025-FI-SVC-142",
+            "HLA2025-FI-SVC-143",
+            "HLA2025-FI-SVC-144",
             "HLA2025-FI-SVC-145",
             "HLA2025-FI-SVC-146",
+            "HLA2025-FI-SVC-147",
+            "HLA2025-FI-SVC-148",
             "HLA2025-FI-SVC-149",
             "HLA2025-FI-SVC-150",
             "HLA2025-FI-SVC-151",
+            "HLA2025-FI-SVC-152",
+            "HLA2025-FI-SVC-153",
+            "HLA2025-FI-SVC-154",
             "HLA2025-FI-SVC-155",
             "HLA2025-FI-SVC-156",
+            "HLA2025-FI-SVC-158",
+            "HLA2025-FI-SVC-163",
             "HLA2025-FI-001",
             "HLA2025-FI-005",
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/scenarios/test_support_services_backend_matrix.py",
+            "tests/backends/test_python_backend_support_services.py",
+            "tests/verification/test_spec_traceability_and_extended_python_rti.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "Python 2025 shim supports direct object-class, attribute, interaction-class, parameter, and "
-            "transportation handle/name lookups against the loaded FOM catalog."
+            "Python 2025 shim supports direct federate, object-class, known-object-class, object-instance, "
+            "attribute, interaction-class, parameter, order, update-rate, transportation, available-dimension, "
+            "and range-bounds handle/name lookups against the loaded FOM catalog."
         ),
     },
     {
         "id": "2025-support-handle-normalization-and-switches",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-FI-SVC-162",
             "HLA2025-FI-SVC-165",
             "HLA2025-FI-SVC-166",
             "HLA2025-FI-SVC-167",
@@ -664,11 +702,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/backends/test_python_backend_time_ddm_extended.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "Python 2025 shim normalizes object class, interaction class, and object instance handles with "
-            "typed-handle validation and wrong-family rejection. It also implements explicit get/set support "
+            "Python 2025 shim normalizes object class, interaction class, object instance, and federate handles "
+            "with typed-handle validation and wrong-family rejection, and returns dimension handle sets for joined "
+            "regions. It also implements explicit get/set support "
             "for object-class relevance, attribute relevance, attribute scope, interaction relevance, convey "
             "region designator sets, automatic resign directive, service reporting, exception reporting, "
             "send-service-reports-to-file, auto-provide, delay-subscription-evaluation, advisories-use-known-class, "
@@ -704,11 +744,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-084",
             "HLA2025-FI-SVC-085",
             "HLA2025-FI-SVC-086",
+            "HLA2025-FI-SVC-087",
             "HLA2025-FI-SVC-088",
             "HLA2025-FI-SVC-089",
             "HLA2025-FI-SVC-090",
             "HLA2025-FI-SVC-091",
             "HLA2025-FI-SVC-092",
+            "HLA2025-FI-SVC-093",
             "HLA2025-FI-SVC-094",
             "HLA2025-FI-SVC-095",
             "HLA2025-FI-SVC-096",
@@ -722,14 +764,17 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/scenarios/test_ownership_management_backend_matrix.py",
+            "tests/backends/test_python_backend_object_ownership_extended.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
             "Python 2025 shim supports FOM-backed object instance registration, initial attribute ownership by "
             "the registering federate, unconditional divestiture with ownership validation, acquire-if-available "
-            "with 2025 user-supplied tags, negotiated ownership offers, pending acquisition cancellation, "
-            "divestiture-if-wanted transfer, ownership unavailable/acquisition callbacks, ownership query "
-            "callbacks, isAttributeOwnedByFederate, requestAttributeOwnershipAssumption, "
+            "with 2025 user-supplied tags, negotiated ownership offers, confirmDivestiture transfer, release-denied "
+            "pending-acquisition clearing, pending acquisition cancellation, divestiture-if-wanted transfer, "
+            "ownership unavailable/acquisition callbacks, ownership query callbacks, "
+            "isAttributeOwnedByFederate, requestAttributeOwnershipAssumption, "
             "requestDivestitureConfirmation, requestAttributeOwnershipRelease, "
             "confirmAttributeOwnershipAcquisitionCancellation, and resign-time ownership policies for cancel pending "
             "acquisitions, delete owned objects, and divest/transfer owned attributes."
