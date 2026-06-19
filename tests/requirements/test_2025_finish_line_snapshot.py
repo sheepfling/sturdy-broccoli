@@ -116,6 +116,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert any(path.endswith("test_rti1516_2025_encoding_auth_contexts.py") for path in slices["2025-auth-connect"]["evidence"])
 
     assert slices["2025-logical-time"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-112" in slices["2025-logical-time"]["requirements"]
     assert "flushQueueRequest" in slices["2025-logical-time"]["supported_scope"]
     assert "queued timestamped object updates/interactions" in slices["2025-logical-time"]["supported_scope"]
     assert "message retraction before delivery" in slices["2025-logical-time"]["supported_scope"]
@@ -172,6 +173,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "full RTI semantics remain outside this slice" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
+    assert "HLA2025-FI-SVC-076" in slices["2025-ddm-default-attribute-policy"]["requirements"]
+    assert "HLA2025-FI-SVC-124" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "HLA2025-FI-SVC-157" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "subscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]

@@ -939,6 +939,8 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
     "HLA2025-NEW-004",
     "HLA2025-FI-001",
     "HLA2025-FI-005",
+    "HLA2025-FI-SVC-076",
+    "HLA2025-FI-SVC-124",
     "HLA2025-FI-SVC-157",
 )
 def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy(tmp_path: Path) -> None:
@@ -3802,7 +3804,7 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
     subscriber.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006")
+@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006", "HLA2025-FI-SVC-112")
 def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import LogicalTimeAlreadyPassed, TimeRegulationIsNotEnabled

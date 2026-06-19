@@ -55,7 +55,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-logical-time",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
+        "requirements": ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006", "HLA2025-FI-SVC-112"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/backends/test_shim_route_trace_evidence.py",
@@ -307,6 +307,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-NEW-004",
             "HLA2025-FI-001",
             "HLA2025-FI-005",
+            "HLA2025-FI-SVC-076",
+            "HLA2025-FI-SVC-124",
             "HLA2025-FI-SVC-157",
         ),
         "evidence": (
