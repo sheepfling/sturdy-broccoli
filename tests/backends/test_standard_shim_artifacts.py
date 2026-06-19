@@ -485,6 +485,7 @@ def test_standard_2025_routes_pass_mom_when_built(backend_name: str) -> None:
     assert adjust["sourceServiceReporting"] is True
 
 
+@pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002")
 @pytest.mark.parametrize(
     "backend_name",
     [

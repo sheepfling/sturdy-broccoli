@@ -113,7 +113,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls.",
+        "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls plus real "
+        "listFederationExecutions/listFederationExecutionMembers callback flow, missing-federation member notices, and federateResigned callback delivery.",
     ),
     _row(
         "federation_lifecycle",
@@ -220,7 +221,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FR-005", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers basic divest/acquire/query callbacks, negotiated divestiture, release requests, "
-        "release denial, acquisition cancellation, divestiture-if-wanted, and cancel-negotiated-offer callbacks; "
+        "release denial, acquisition cancellation, divestiture-if-wanted, RTI-owned MOM attribute ownership query callbacks, "
+        "and cancel-negotiated-offer callbacks; "
         "resign-time divest/delete/cancel ownership policies are exercised over the FedPro route.",
     ),
     _row(
@@ -278,8 +280,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers object attribute subscribe-with-rate and passive subscribe-with-rate aliases, "
         "object attribute, interaction class, and directed interaction "
-        "region-overlap filtering with conveyed region evidence plus region subscribe/unsubscribe, "
-        "associate/unassociate, and delete-region cleanup.",
+        "region-overlap filtering with conveyed region evidence plus DDM-driven attributesInScope/attributesOutOfScope "
+        "transitions, region subscribe/unsubscribe, associate/unassociate, and delete-region cleanup.",
     ),
     _row(
         "ddm",
@@ -323,7 +325,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers logical-time factories, regulation/constrained mode, grants, queued TSO, and retraction.",
+        "Python 2025 shim covers logical-time factories, regulation/constrained mode, lookahead query/modify, "
+        "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, and retraction.",
     ),
     _row(
         "time_management",
@@ -332,8 +335,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
-        "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, logical time/GALT/LITS/lookahead queries, "
-        "and pre-delivery retract.",
+        "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, bounded logical time/GALT/LITS/lookahead query "
+        "evidence, and pre-delivery retract.",
     ),
     _row(
         "time_management",
@@ -385,8 +388,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers save/restore lifecycle calls, status callbacks, "
-        "success/failure callbacks, abort callbacks, object registry rollback, and logical-time rollback.",
+        "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, "
+        "status callbacks, success/failure callbacks, abort callbacks, object registry rollback, and logical-time rollback.",
     ),
     _row(
         "save_restore",
@@ -452,7 +455,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "HLArequestMIMdata, reports FOM module data for HLArequestFOMmoduleData, reports object "
         "publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object "
         "instance information and object-instance counts, reports activity counts for updates/reflections/interactions, "
-        "reports synchronization points/status, round-trips 2025 switch services, emits HLAreportMOMexception "
+        "reports synchronization points/status, proves direct synchronization registration/announce/achieved/federation-synchronized callbacks, "
+        "proves requestRetraction callback delivery after delivered timestamp-order receipt, round-trips 2025 switch services, emits HLAreportMOMexception "
         "for failed routed MOM actions, and routes all hosted MOM manager adjust/service command leaves with "
         "representative state and callback effects.",
     ),
@@ -507,7 +511,9 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers FOM handle/name round trips, dimension/range, transportation/order, "
-        "update-rate, normalization, logical-time query, automatic resign directive get/set, "
+        "update-rate, normalization, logical-time query, single and multiple object-instance name reservation/release "
+        "callback flow, turnUpdatesOn/turnUpdatesOff advisory callback flow for object-class subscriptions, direct "
+        "attribute and interaction transportation change/query callback flow, automatic resign directive get/set, "
         "and 2025 switch get/set plus read-only switch inquiry services.",
     ),
     _row(

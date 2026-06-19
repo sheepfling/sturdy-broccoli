@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib
+import uuid
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence, cast
 
@@ -71,6 +72,9 @@ class GrpcTransport(RTITransport):
         self._channel = None
         self._stub = None
         self.client_adapter = self._adapter_cls()
+        metadata = dict(config.metadata)
+        metadata.setdefault("x-hla-session-id", uuid.uuid4().hex)
+        self._request_metadata = tuple(metadata.items())
 
     def start(self) -> "GrpcTransport":
         if self._channel is None:
@@ -93,13 +97,13 @@ class GrpcTransport(RTITransport):
             callback = self._stub.EvokeCallback(
                 self.client_adapter.encode_callback_poll(),
                 timeout=self.config.timeout,
-                metadata=tuple(self.config.metadata.items()),
+                metadata=self._request_metadata,
             )
             return self.client_adapter.decode_callback_request(callback)
         response = self._stub.Call(
             self.client_adapter.encode_request(request),
             timeout=self.config.timeout,
-            metadata=tuple(self.config.metadata.items()),
+            metadata=self._request_metadata,
         )
         try:
             return self.client_adapter.decode_response(request, response)

@@ -1,6 +1,9 @@
 """Federation save/restore verification scenario."""
 from __future__ import annotations
 
+import copy
+import json
+import struct
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -15,8 +18,15 @@ from hla.rti1516e.exceptions import (
     SaveNotInitiated,
     SaveNotInProgress,
 )
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 
-from .scenario_support import drain_callbacks_pair, order_value, wait_for_callback, wait_for_callback_count
+from .scenario_support import (
+    drain_callbacks_pair,
+    order_value,
+    register_named_object_instance,
+    wait_for_callback,
+    wait_for_callback_count,
+)
 
 
 @dataclass(frozen=True)
@@ -40,6 +50,549 @@ def _restore_statuses(record: Any) -> dict[Any, RestoreStatus]:
 
 def _time_value(value: Any) -> float:
     return float(getattr(value, "value", value))
+
+
+def _encode_vec3(x: float, y: float, z: float) -> bytes:
+    return struct.pack(">ddd", float(x), float(y), float(z))
+
+
+def _decode_vec3(data: bytes) -> tuple[float, float, float]:
+    return struct.unpack(">ddd", bytes(data)[:24])
+
+
+def _encode_float64(value: float) -> bytes:
+    return struct.pack(">d", float(value))
+
+
+def _encode_text(value: str) -> bytes:
+    return value.encode("utf-8")
+
+
+def _ledger_fingerprint(ledger: dict[str, Any]) -> str:
+    return json.dumps(ledger, sort_keys=True)
+
+
+def _advance_ledger(ledger: dict[str, Any], *, phase: str) -> None:
+    next_state = (int(ledger["random_state"]) * 1_103_515_245 + 12_345) % (2**31)
+    ledger["random_state"] = next_state
+    ledger["sequence_counter"] = int(ledger["sequence_counter"]) + 1
+    ledger["phase"] = phase
+
+
+def run_example_fom_save_restore_gauntlet_scenario(
+    owner_rti: Any,
+    mirror_rti: Any,
+    sender_rti: Any,
+    observer_rti: Any,
+    *,
+    config: SaveRestoreScenarioConfig,
+    owner_federate: Any,
+    mirror_federate: Any,
+    sender_federate: Any,
+    observer_federate: Any,
+    object_class_name: str = "HLAobjectRoot.Target",
+    object_instance_name: str = "Target-Checkpoint-1",
+    position_attribute_name: str = "Position",
+    velocity_attribute_name: str = "Velocity",
+    rcs_attribute_name: str = "RCS",
+    interaction_class_name: str = "HLAinteractionRoot.TrackReport",
+    interaction_parameter_name: str = "TrackId",
+    save_time: int = 5,
+    dirty_time: int = 8,
+    branch_time: int = 7,
+) -> dict[str, Any]:
+    members = (
+        (owner_rti, owner_federate, config.leader_name),
+        (mirror_rti, mirror_federate, config.wing_name),
+        (sender_rti, sender_federate, f"{config.leader_name}-Sender"),
+        (observer_rti, observer_federate, f"{config.wing_name}-Observer"),
+    )
+    role_ledgers = {
+        "owner": {"role": "owner", "random_state": 101, "sequence_counter": 0, "phase": "bootstrap"},
+        "mirror": {"role": "mirror", "random_state": 202, "sequence_counter": 0, "phase": "bootstrap"},
+        "sender": {"role": "sender", "random_state": 303, "sequence_counter": 0, "phase": "bootstrap"},
+        "observer": {"role": "observer", "random_state": 404, "sequence_counter": 0, "phase": "bootstrap"},
+    }
+    saved_ledgers: dict[str, dict[str, Any]] = {}
+
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    for rti, _federate, name in members:
+        rti.join_federation_execution(name, config.federate_type, config.federation_name)
+
+    lookahead = HLAinteger64Interval(1)
+    saved_time = HLAinteger64Time(save_time)
+    dirty_advance_time = HLAinteger64Time(dirty_time)
+    branch_event_time = HLAinteger64Time(branch_time)
+
+    owner_class = owner_rti.get_object_class_handle(object_class_name)
+    mirror_class = mirror_rti.get_object_class_handle(object_class_name)
+    owner_position = owner_rti.get_attribute_handle(owner_class, position_attribute_name)
+    owner_velocity = owner_rti.get_attribute_handle(owner_class, velocity_attribute_name)
+    owner_rcs = owner_rti.get_attribute_handle(owner_class, rcs_attribute_name)
+    mirror_position = mirror_rti.get_attribute_handle(mirror_class, position_attribute_name)
+    mirror_velocity = mirror_rti.get_attribute_handle(mirror_class, velocity_attribute_name)
+    mirror_rcs = mirror_rti.get_attribute_handle(mirror_class, rcs_attribute_name)
+    interaction_class = sender_rti.get_interaction_class_handle(interaction_class_name)
+    observer_interaction = observer_rti.get_interaction_class_handle(interaction_class_name)
+    interaction_parameter = sender_rti.get_parameter_handle(interaction_class, interaction_parameter_name)
+    observer_parameter = observer_rti.get_parameter_handle(observer_interaction, interaction_parameter_name)
+
+    owner_rti.publish_object_class_attributes(owner_class, {owner_position, owner_velocity, owner_rcs})
+    mirror_rti.subscribe_object_class_attributes(mirror_class, {mirror_position, mirror_velocity, mirror_rcs})
+    sender_rti.publish_interaction_class(interaction_class)
+    observer_rti.subscribe_interaction_class(observer_interaction)
+
+    owner_rti.enable_time_regulation(lookahead)
+    sender_rti.enable_time_regulation(lookahead)
+    mirror_rti.enable_time_constrained()
+    observer_rti.enable_time_constrained()
+    sender_rti.change_interaction_order_type(interaction_class, OrderType.TIMESTAMP)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+
+    object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, object_instance_name)
+    owner_rti.change_attribute_order_type(object_instance, {owner_position, owner_velocity, owner_rcs}, OrderType.TIMESTAMP)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    mirror_object_instance = mirror_rti.get_object_instance_handle(object_instance_name)
+
+    saved_position = (10_000.0, 1_000.0, 2_000.0)
+    saved_velocity = (250.0, 30.0, 0.0)
+    saved_rcs = 12.5
+    dirty_position = (99_999.0, 88_888.0, 77_777.0)
+    dirty_velocity = (0.0, 0.0, 0.0)
+    dirty_rcs = 0.5
+    branch_position = tuple(saved_position[index] + saved_velocity[index] for index in range(3))
+    dirty_delete_tag = b"dirty-delete"
+
+    owner_rti.update_attribute_values(
+        object_instance,
+        {
+            owner_position: _encode_vec3(*saved_position),
+            owner_velocity: _encode_vec3(*saved_velocity),
+            owner_rcs: _encode_float64(saved_rcs),
+        },
+        b"baseline-attributes",
+        HLAinteger64Time(save_time - 1),
+    )
+    sender_rti.send_interaction(
+        interaction_class,
+        {interaction_parameter: _encode_text("baseline-track")},
+        b"baseline-track",
+        saved_time,
+    )
+    for rti, _federate, _name in members:
+        rti.time_advance_request_available(saved_time)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=32)
+
+    baseline_reflect = wait_for_callback(mirror_rti, mirror_federate, "reflectAttributeValues", loops=120)
+    baseline_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
+    assert baseline_reflect is not None
+    assert baseline_interaction is not None
+    assert baseline_reflect.args[0] == mirror_object_instance
+    assert _decode_vec3(baseline_reflect.args[1][mirror_position]) == saved_position
+    assert _decode_vec3(baseline_reflect.args[1][mirror_velocity]) == saved_velocity
+    assert baseline_interaction.args[0] == observer_interaction
+    assert baseline_interaction.args[1] == {observer_parameter: _encode_text("baseline-track")}
+
+    for ledger in role_ledgers.values():
+        _advance_ledger(ledger, phase="saved")
+    saved_ledgers = {role: copy.deepcopy(ledger) for role, ledger in role_ledgers.items()}
+    saved_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in saved_ledgers.items()}
+
+    owner_rti.request_federation_save(config.save_name)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateSave", loops=120)
+        assert initiate is not None
+        assert initiate.args[0] == config.save_name
+
+    for rti, _federate, _name in members:
+        rti.federate_save_begun()
+    for rti, _federate, _name in members:
+        rti.federate_save_complete()
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationSaved", loops=120) is not None
+
+    for ledger in role_ledgers.values():
+        _advance_ledger(ledger, phase="dirty")
+    dirty_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in role_ledgers.items()}
+    assert dirty_fingerprints != saved_fingerprints
+
+    owner_rti.update_attribute_values(
+        object_instance,
+        {
+            owner_position: _encode_vec3(*dirty_position),
+            owner_velocity: _encode_vec3(*dirty_velocity),
+            owner_rcs: _encode_float64(dirty_rcs),
+        },
+        b"dirty-attributes",
+        HLAinteger64Time(dirty_time - 1),
+    )
+    sender_rti.send_interaction(
+        interaction_class,
+        {interaction_parameter: _encode_text("dirty-track")},
+        b"dirty-track",
+        dirty_advance_time,
+    )
+    for rti, _federate, _name in members:
+        rti.time_advance_request_available(dirty_advance_time)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=32)
+
+    dirty_reflect = mirror_federate.callbacks_named("reflectAttributeValues")[-1]
+    dirty_interaction = observer_federate.callbacks_named("receiveInteraction")[-1]
+    assert _decode_vec3(dirty_reflect.args[1][mirror_position]) == dirty_position
+    assert dirty_interaction.args[1] == {observer_parameter: _encode_text("dirty-track")}
+    owner_rti.delete_object_instance(object_instance, dirty_delete_tag)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    dirty_remove = wait_for_callback(mirror_rti, mirror_federate, "removeObjectInstance", loops=120)
+    assert dirty_remove is not None
+    assert dirty_remove.args[0] == mirror_object_instance
+    assert dirty_remove.args[1] == dirty_delete_tag
+
+    owner_rti.request_federation_restore(config.save_name)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateRestore", loops=120)
+        assert initiate is not None
+        assert initiate.args[0] == config.save_name
+    role_ledgers = {role: copy.deepcopy(snapshot) for role, snapshot in saved_ledgers.items()}
+
+    for rti, _federate, _name in members:
+        rti.federate_restore_complete()
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationRestored", loops=120) is not None
+
+    restored_times = {
+        "owner": owner_rti.query_logical_time(),
+        "mirror": mirror_rti.query_logical_time(),
+        "sender": sender_rti.query_logical_time(),
+        "observer": observer_rti.query_logical_time(),
+    }
+    for restored_time in restored_times.values():
+        assert restored_time == saved_time
+
+    restored_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in role_ledgers.items()}
+    assert restored_fingerprints == saved_fingerprints
+    assert owner_rti.get_object_instance_name(object_instance) == object_instance_name
+
+    mirror_federate.clear()
+    observer_federate.clear()
+    owner_rti.update_attribute_values(
+        object_instance,
+        {
+            owner_position: _encode_vec3(*branch_position),
+            owner_velocity: _encode_vec3(*saved_velocity),
+            owner_rcs: _encode_float64(saved_rcs),
+        },
+        b"branch-attributes",
+        branch_event_time,
+    )
+    sender_rti.send_interaction(
+        interaction_class,
+        {interaction_parameter: _encode_text("branch-track")},
+        b"branch-track",
+        branch_event_time,
+    )
+    for rti, _federate, _name in members:
+        rti.time_advance_request_available(dirty_advance_time)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=32)
+
+    branch_reflect = wait_for_callback(mirror_rti, mirror_federate, "reflectAttributeValues", loops=120)
+    branch_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
+    assert branch_reflect is not None
+    assert branch_interaction is not None
+    assert branch_reflect.args[0] == mirror_object_instance
+    assert _decode_vec3(branch_reflect.args[1][mirror_position]) == branch_position
+    assert branch_interaction.args[1] == {observer_parameter: _encode_text("branch-track")}
+    branch_tags = {record.args[2] for record in mirror_federate.callbacks_named("reflectAttributeValues")}
+    branch_tags.update(record.args[2] for record in observer_federate.callbacks_named("receiveInteraction"))
+    assert b"dirty-attributes" not in branch_tags
+    assert b"dirty-track" not in branch_tags
+    remove_tags = {record.args[1] for record in mirror_federate.callbacks_named("removeObjectInstance")}
+    assert dirty_delete_tag not in remove_tags
+
+    return {
+        "object_instance": object_instance,
+        "mirror_object_instance": mirror_object_instance,
+        "baseline_reflect": baseline_reflect,
+        "baseline_interaction": baseline_interaction,
+        "dirty_reflect": dirty_reflect,
+        "dirty_interaction": dirty_interaction,
+        "dirty_remove": dirty_remove,
+        "branch_reflect": branch_reflect,
+        "branch_interaction": branch_interaction,
+        "saved_fingerprints": saved_fingerprints,
+        "dirty_fingerprints": dirty_fingerprints,
+        "restored_fingerprints": restored_fingerprints,
+        "restored_times": restored_times,
+    }
+
+
+def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
+    owner_rti: Any,
+    mirror_rti: Any,
+    sender_rti: Any,
+    observer_rti: Any,
+    *,
+    config: SaveRestoreScenarioConfig,
+    owner_federate: Any,
+    mirror_federate: Any,
+    sender_federate: Any,
+    observer_federate: Any,
+    object_class_name: str = "HLAobjectRoot.SmokeObject",
+    object_instance_name: str = "Owned-Smoke-Checkpoint-1",
+    attribute_name: str = "Payload",
+    interaction_class_name: str = "HLAinteractionRoot.SmokeInteraction",
+    parameter_name: str = "Message",
+    save_time: int = 5,
+    dirty_time: int = 8,
+    branch_time: int = 7,
+) -> dict[str, Any]:
+    members = (
+        (owner_rti, owner_federate, config.leader_name),
+        (mirror_rti, mirror_federate, config.wing_name),
+        (sender_rti, sender_federate, f"{config.leader_name}-Sender"),
+        (observer_rti, observer_federate, f"{config.wing_name}-Observer"),
+    )
+    role_ledgers = {
+        "owner": {"role": "owner", "random_state": 111, "sequence_counter": 0, "phase": "bootstrap"},
+        "mirror": {"role": "mirror", "random_state": 222, "sequence_counter": 0, "phase": "bootstrap"},
+        "sender": {"role": "sender", "random_state": 333, "sequence_counter": 0, "phase": "bootstrap"},
+        "observer": {"role": "observer", "random_state": 444, "sequence_counter": 0, "phase": "bootstrap"},
+    }
+
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    for rti, _federate, name in members:
+        rti.join_federation_execution(name, config.federate_type, config.federation_name)
+
+    lookahead = HLAinteger64Interval(1)
+    saved_time = HLAinteger64Time(save_time)
+    dirty_advance_time = HLAinteger64Time(dirty_time)
+    branch_event_time = HLAinteger64Time(branch_time)
+
+    owner_class = owner_rti.get_object_class_handle(object_class_name)
+    mirror_class = mirror_rti.get_object_class_handle(object_class_name)
+    observer_class = observer_rti.get_object_class_handle(object_class_name)
+    owner_attribute = owner_rti.get_attribute_handle(owner_class, attribute_name)
+    mirror_attribute = mirror_rti.get_attribute_handle(mirror_class, attribute_name)
+    observer_attribute = observer_rti.get_attribute_handle(observer_class, attribute_name)
+    interaction_class = sender_rti.get_interaction_class_handle(interaction_class_name)
+    observer_interaction = observer_rti.get_interaction_class_handle(interaction_class_name)
+    interaction_parameter = sender_rti.get_parameter_handle(interaction_class, parameter_name)
+    observer_parameter = observer_rti.get_parameter_handle(observer_interaction, parameter_name)
+
+    owner_rti.publish_object_class_attributes(owner_class, {owner_attribute})
+    mirror_rti.publish_object_class_attributes(mirror_class, {mirror_attribute})
+    mirror_rti.subscribe_object_class_attributes(mirror_class, {mirror_attribute})
+    observer_rti.subscribe_object_class_attributes(observer_class, {observer_attribute})
+    sender_rti.publish_interaction_class(interaction_class)
+    observer_rti.subscribe_interaction_class(observer_interaction)
+
+    owner_rti.enable_time_regulation(lookahead)
+    sender_rti.enable_time_regulation(lookahead)
+    mirror_rti.enable_time_constrained()
+    observer_rti.enable_time_constrained()
+    sender_rti.change_interaction_order_type(interaction_class, OrderType.TIMESTAMP)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+
+    object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, object_instance_name)
+    owner_rti.change_attribute_order_type(object_instance, {owner_attribute}, OrderType.TIMESTAMP)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    mirror_object_instance = mirror_rti.get_object_instance_handle(object_instance_name)
+    observer_object_instance = observer_rti.get_object_instance_handle(object_instance_name)
+
+    saved_payload = b"saved-payload"
+    dirty_payload = b"dirty-payload"
+    branch_payload = b"branch-payload"
+
+    owner_rti.update_attribute_values(
+        object_instance,
+        {owner_attribute: saved_payload},
+        b"baseline-attributes",
+        HLAinteger64Time(save_time - 1),
+    )
+    sender_rti.send_interaction(
+        interaction_class,
+        {interaction_parameter: b"baseline-message"},
+        b"baseline-message",
+        saved_time,
+    )
+    for rti, _federate, _name in members:
+        rti.time_advance_request_available(saved_time)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=32)
+
+    baseline_reflect = wait_for_callback(observer_rti, observer_federate, "reflectAttributeValues", loops=120)
+    baseline_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
+    assert baseline_reflect is not None
+    assert baseline_interaction is not None
+    assert baseline_reflect.args[0] == observer_object_instance
+    assert baseline_reflect.args[1] == {observer_attribute: saved_payload}
+    assert baseline_interaction.args[1] == {observer_parameter: b"baseline-message"}
+    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attribute) is True
+    assert mirror_rti.is_attribute_owned_by_federate(mirror_object_instance, mirror_attribute) is False
+
+    for ledger in role_ledgers.values():
+        _advance_ledger(ledger, phase="saved")
+    saved_ledgers = {role: copy.deepcopy(ledger) for role, ledger in role_ledgers.items()}
+    saved_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in saved_ledgers.items()}
+
+    owner_rti.request_federation_save(config.save_name)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateSave", loops=120)
+        assert initiate is not None
+        assert initiate.args[0] == config.save_name
+    for rti, _federate, _name in members:
+        rti.federate_save_begun()
+    for rti, _federate, _name in members:
+        rti.federate_save_complete()
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationSaved", loops=120) is not None
+
+    for ledger in role_ledgers.values():
+        _advance_ledger(ledger, phase="dirty")
+    dirty_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in role_ledgers.items()}
+    assert dirty_fingerprints != saved_fingerprints
+
+    owner_rti.unconditional_attribute_ownership_divestiture(object_instance, {owner_attribute})
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=12)
+    owner_rti.query_attribute_ownership(object_instance, owner_attribute)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=12)
+    dirty_not_owned = wait_for_callback(owner_rti, owner_federate, "attributeIsNotOwned", loops=120)
+    assert dirty_not_owned is not None
+
+    mirror_rti.attribute_ownership_acquisition_if_available(mirror_object_instance, {mirror_attribute})
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=12)
+    dirty_acquired = wait_for_callback(
+        mirror_rti,
+        mirror_federate,
+        "attributeOwnershipAcquisitionNotification",
+        loops=120,
+    )
+    assert dirty_acquired is not None
+    assert mirror_rti.is_attribute_owned_by_federate(mirror_object_instance, mirror_attribute) is True
+    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attribute) is False
+
+    mirror_rti.update_attribute_values(
+        mirror_object_instance,
+        {mirror_attribute: dirty_payload},
+        b"dirty-attributes",
+        HLAinteger64Time(dirty_time - 1),
+    )
+    sender_rti.send_interaction(
+        interaction_class,
+        {interaction_parameter: b"dirty-message"},
+        b"dirty-message",
+        dirty_advance_time,
+    )
+    for rti, _federate, _name in members:
+        rti.time_advance_request_available(dirty_advance_time)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=32)
+
+    dirty_reflect = observer_federate.callbacks_named("reflectAttributeValues")[-1]
+    dirty_interaction = observer_federate.callbacks_named("receiveInteraction")[-1]
+    assert dirty_reflect.args[0] == observer_object_instance
+    assert dirty_reflect.args[1] == {observer_attribute: dirty_payload}
+    assert dirty_interaction.args[1] == {observer_parameter: b"dirty-message"}
+
+    owner_rti.request_federation_restore(config.save_name)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateRestore", loops=120)
+        assert initiate is not None
+        assert initiate.args[0] == config.save_name
+    role_ledgers = {role: copy.deepcopy(snapshot) for role, snapshot in saved_ledgers.items()}
+
+    for rti, _federate, _name in members:
+        rti.federate_restore_complete()
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationRestored", loops=120) is not None
+
+    restored_times = {
+        "owner": owner_rti.query_logical_time(),
+        "mirror": mirror_rti.query_logical_time(),
+        "sender": sender_rti.query_logical_time(),
+        "observer": observer_rti.query_logical_time(),
+    }
+    for restored_time in restored_times.values():
+        assert restored_time == saved_time
+    restored_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in role_ledgers.items()}
+    assert restored_fingerprints == saved_fingerprints
+
+    owner_federate.clear()
+    observer_federate.clear()
+
+    owner_rti.query_attribute_ownership(object_instance, owner_attribute)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=12)
+    restored_informed = wait_for_callback(owner_rti, owner_federate, "informAttributeOwnership", loops=120)
+    assert restored_informed is not None
+    assert restored_informed.args[0] == object_instance
+    assert restored_informed.args[1] == owner_attribute
+    assert owner_rti.get_federate_name(restored_informed.args[2]) == config.leader_name
+    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attribute) is True
+    assert mirror_rti.is_attribute_owned_by_federate(mirror_object_instance, mirror_attribute) is False
+
+    owner_rti.update_attribute_values(
+        object_instance,
+        {owner_attribute: branch_payload},
+        b"branch-attributes",
+        branch_event_time,
+    )
+    sender_rti.send_interaction(
+        interaction_class,
+        {interaction_parameter: b"branch-message"},
+        b"branch-message",
+        branch_event_time,
+    )
+    for rti, _federate, _name in members:
+        rti.time_advance_request_available(dirty_advance_time)
+    drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=32)
+
+    branch_reflect = wait_for_callback(observer_rti, observer_federate, "reflectAttributeValues", loops=120)
+    branch_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
+    assert branch_reflect is not None
+    assert branch_interaction is not None
+    assert branch_reflect.args[0] == observer_object_instance
+    assert branch_reflect.args[1] == {observer_attribute: branch_payload}
+    assert branch_interaction.args[1] == {observer_parameter: b"branch-message"}
+    branch_tags = {record.args[2] for record in observer_federate.callbacks_named("reflectAttributeValues")}
+    branch_tags.update(record.args[2] for record in observer_federate.callbacks_named("receiveInteraction"))
+    assert b"dirty-attributes" not in branch_tags
+    assert b"dirty-message" not in branch_tags
+
+    return {
+        "object_instance": object_instance,
+        "mirror_object_instance": mirror_object_instance,
+        "observer_object_instance": observer_object_instance,
+        "baseline_reflect": baseline_reflect,
+        "baseline_interaction": baseline_interaction,
+        "dirty_not_owned": dirty_not_owned,
+        "dirty_acquired": dirty_acquired,
+        "dirty_reflect": dirty_reflect,
+        "dirty_interaction": dirty_interaction,
+        "restored_informed": restored_informed,
+        "branch_reflect": branch_reflect,
+        "branch_interaction": branch_interaction,
+        "saved_fingerprints": saved_fingerprints,
+        "dirty_fingerprints": dirty_fingerprints,
+        "restored_fingerprints": restored_fingerprints,
+        "restored_times": restored_times,
+    }
 
 
 def run_save_restore_scenario(

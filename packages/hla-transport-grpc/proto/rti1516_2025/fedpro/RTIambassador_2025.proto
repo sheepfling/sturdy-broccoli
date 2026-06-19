@@ -763,6 +763,18 @@ message DisableAsynchronousDeliveryRequest {
 message DisableAsynchronousDeliveryResponse {
 }
 
+message EnableCallbacksRequest {
+}
+
+message EnableCallbacksResponse {
+}
+
+message DisableCallbacksRequest {
+}
+
+message DisableCallbacksResponse {
+}
+
 message QueryGALTRequest {
 }
 
@@ -1606,6 +1618,8 @@ message CallRequest {
     GetAdvisoriesUseKnownClassSwitchRequest getAdvisoriesUseKnownClassSwitchRequest = 176;
     GetAllowRelaxedDDMSwitchRequest getAllowRelaxedDDMSwitchRequest = 177;
     GetNonRegulatedGrantSwitchRequest getNonRegulatedGrantSwitchRequest = 178;
+    EnableCallbacksRequest enableCallbacksRequest = 179;
+    DisableCallbacksRequest disableCallbacksRequest = 180;
   }
 }
 
@@ -1790,5 +1804,7 @@ message CallResponse {
     GetAdvisoriesUseKnownClassSwitchResponse getAdvisoriesUseKnownClassSwitchResponse = 177;
     GetAllowRelaxedDDMSwitchResponse getAllowRelaxedDDMSwitchResponse = 178;
     GetNonRegulatedGrantSwitchResponse getNonRegulatedGrantSwitchResponse = 179;
+    EnableCallbacksResponse enableCallbacksResponse = 180;
+    DisableCallbacksResponse disableCallbacksResponse = 181;
   }
 }

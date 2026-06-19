@@ -403,7 +403,28 @@ def test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_h
     assert not hasattr(rti2025, "SupplementalRemoveInfo")
 
 
-@pytest.mark.requirements("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-MOD-006")
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-MOD-004",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-035",
+    "HLA2025-FI-SVC-036",
+    "HLA2025-FI-SVC-041",
+    "HLA2025-FI-SVC-042",
+    "HLA2025-FI-SVC-047",
+    "HLA2025-FI-SVC-049",
+    "HLA2025-FI-SVC-057",
+    "HLA2025-FI-SVC-058",
+    "HLA2025-FI-SVC-059",
+    "HLA2025-FI-SVC-060",
+    "HLA2025-FI-SVC-061",
+    "HLA2025-FI-SVC-062",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+)
 def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished, ObjectClassNotPublished
@@ -550,6 +571,10 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     "HLA2025-FI-001",
     "HLA2025-MOD-006",
     "HLA2025-MOD-007",
+    "HLA2025-FI-SVC-037",
+    "HLA2025-FI-SVC-038",
+    "HLA2025-FI-SVC-043",
+    "HLA2025-FI-SVC-044",
 )
 def test_2025_shim_passive_and_universal_subscription_aliases_match_active_exchange(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
@@ -826,7 +851,28 @@ def test_2025_shim_enable_disable_callbacks_controls_evoked_delivery(tmp_path: P
     publisher.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002")
+@pytest.mark.requirements(
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-REQ-002",
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-021",
+    "HLA2025-FI-SVC-022",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-024",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-027",
+    "HLA2025-FI-SVC-028",
+    "HLA2025-FI-SVC-029",
+    "HLA2025-FI-SVC-030",
+    "HLA2025-FI-SVC-031",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-033",
+    "HLA2025-FI-SVC-034",
+)
 def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown, RestoreNotRequested, SaveInProgress, SaveNotInitiated
@@ -1215,6 +1261,9 @@ def test_2025_shim_queues_timestamped_directed_interactions_until_time_advance(t
         publisher_handle,
     )
     assert received[6:] == (HLAinteger64Time(20), OrderType.TIMESTAMP, OrderType.TIMESTAMP, late.handle)
+    publisher.retract(late.handle)
+    request_retraction = subscriber_callbacks.last_callback("requestRetraction")
+    assert request_retraction == (late.handle,)
     with pytest.raises(MessageCanNoLongerBeRetracted):
         publisher.retract(late.handle)
 
@@ -1231,6 +1280,11 @@ def test_2025_shim_queues_timestamped_directed_interactions_until_time_advance(t
     "HLA2025-FR-003",
     "HLA2025-FR-004",
     "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
     "HLA2025-FI-SVC-039",
     "HLA2025-FI-SVC-040",
     "HLA2025-FI-SVC-045",
@@ -1520,7 +1574,7 @@ def test_2025_shim_directed_interaction_set_unsubscribe_and_unpublish_are_select
     publisher.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements("HLA2025-FI-SVC-051", "HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_supports_single_object_instance_name_reservation_callback_and_release() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -1602,7 +1656,7 @@ def test_2025_shim_supports_single_object_instance_name_reservation_callback_and
     owner.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-055", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_supports_multiple_object_instance_name_reservation_and_release() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -1704,11 +1758,17 @@ def test_2025_shim_supports_multiple_object_instance_name_reservation_and_releas
     "HLA2025-NEW-004",
     "HLA2025-FI-001",
     "HLA2025-FI-005",
+    "HLA2025-FI-SVC-162",
+    "HLA2025-FI-SVC-163",
+    "HLA2025-FI-SVC-164",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
     "HLA2025-FI-SVC-076",
     "HLA2025-FI-SVC-124",
     "HLA2025-FI-SVC-157",
 )
 def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy(tmp_path: Path) -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import (
         AttributeNotDefined,
@@ -1787,6 +1847,10 @@ def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy
     assert dimension in available_dimensions
     assert {rti.getDimensionName(handle) for handle in available_dimensions} >= {"RoutingSpace"}
     assert rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAbestEffort")) == "HLAbestEffort"
+    region = rti.createRegion({dimension})
+    rti.setRangeBounds(region, dimension, RangeBounds(0, 10))
+    assert dimension in rti.getDimensionHandleSet(region)
+    assert rti.getRangeBounds(region, dimension) == RangeBounds(0, 10)
 
     rti.changeDefaultAttributeTransportationType(
         object_class,
@@ -1815,7 +1879,16 @@ def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-007", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")
+@pytest.mark.requirements(
+    "HLA2025-MOD-007",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-130",
+    "HLA2025-FI-SVC-132",
+)
 def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Path) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
@@ -1939,7 +2012,17 @@ def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Pa
     subscriber.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-007", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")
+@pytest.mark.requirements(
+    "HLA2025-MOD-007",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
+    "HLA2025-FI-SVC-136",
+)
 def test_2025_shim_filters_interactions_by_ddm_region_overlap(tmp_path: Path) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
@@ -2046,7 +2129,20 @@ def test_2025_shim_filters_interactions_by_ddm_region_overlap(tmp_path: Path) ->
     subscriber.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-007", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")
+@pytest.mark.requirements(
+    "HLA2025-MOD-007",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-130",
+    "HLA2025-FI-SVC-132",
+    "HLA2025-FI-SVC-133",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
+    "HLA2025-FI-SVC-136",
+)
 def test_2025_shim_passive_ddm_region_subscription_aliases_match_active_region_delivery(tmp_path: Path) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
@@ -2208,7 +2304,29 @@ def test_2025_shim_passive_ddm_region_subscription_aliases_match_active_region_d
     subscriber.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+    "HLA2025-FI-SVC-069",
+    "HLA2025-FI-SVC-070",
+    "HLA2025-FI-SVC-071",
+    "HLA2025-FI-SVC-072",
+    "HLA2025-FI-SVC-073",
+    "HLA2025-FI-SVC-074",
+    "HLA2025-FI-SVC-075",
+    "HLA2025-FI-SVC-077",
+    "HLA2025-FI-SVC-078",
+    "HLA2025-FI-SVC-079",
+    "HLA2025-FI-SVC-080",
+    "HLA2025-FI-SVC-081",
+    "HLA2025-FI-SVC-082",
+)
 def test_2025_shim_object_management_and_support_callbacks(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import DeletePrivilegeNotHeld, ObjectInstanceNotKnown
@@ -2339,7 +2457,13 @@ def test_2025_shim_object_management_and_support_callbacks(tmp_path: Path) -> No
     subscriber.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-MOD-005",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-093",
+    "HLA2025-FI-SVC-100",
+)
 def test_2025_shim_applies_resign_time_ownership_policies(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NoAcquisitionPending, ObjectInstanceNotKnown
@@ -2459,7 +2583,21 @@ def test_2025_shim_applies_resign_time_ownership_policies(tmp_path: Path) -> Non
     owner.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-MOD-005",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-084",
+    "HLA2025-FI-SVC-085",
+    "HLA2025-FI-SVC-086",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-088",
+    "HLA2025-FI-SVC-089",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-091",
+    "HLA2025-FI-SVC-092",
+)
 def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -2582,7 +2720,19 @@ def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks
     owner.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-MOD-005",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-089",
+    "HLA2025-FI-SVC-093",
+    "HLA2025-FI-SVC-094",
+    "HLA2025-FI-SVC-095",
+    "HLA2025-FI-SVC-096",
+    "HLA2025-FI-SVC-097",
+    "HLA2025-FI-SVC-098",
+    "HLA2025-FI-SVC-099",
+)
 def test_2025_shim_negotiated_ownership_matches_python_parity_flow(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -2854,7 +3004,17 @@ def test_2025_shim_declares_all_bundled_mim_manager_command_leaves_as_routed() -
     assert set().union(*categories.values()) == set(MOM_2025_INPROCESS_ROUTED_MANAGER_LEAVES)
 
 
-@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
+@pytest.mark.requirements(
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-NEW-007",
+    "HLA2025-REQ-002",
+    "HLA2025-FI-SVC-013",
+    "HLA2025-FI-SVC-014",
+    "HLA2025-FI-SVC-015",
+    "HLA2025-FI-SVC-016",
+    "HLA2025-FI-SVC-017",
+)
 def test_2025_shim_routes_mom_synchronization_point_reports_through_interactions() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3803,7 +3963,28 @@ def test_2025_shim_routes_mom_federation_management_service_interactions() -> No
     controller.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-009", "HLA2025-NEW-007", "HLA2025-REQ-002")
+@pytest.mark.requirements(
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-NEW-007",
+    "HLA2025-REQ-002",
+    "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-102",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+    "HLA2025-FI-SVC-106",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-109",
+    "HLA2025-FI-SVC-110",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-113",
+    "HLA2025-FI-SVC-114",
+    "HLA2025-FI-SVC-115",
+    "HLA2025-FI-SVC-119",
+)
 def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
@@ -4078,7 +4259,7 @@ def test_2025_shim_reports_mom_service_failures_as_mom_exception_interactions() 
     controller.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-005")
+@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-SVC-005", "HLA2025-FI-SVC-006", "HLA2025-FI-SVC-007")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -4178,6 +4359,8 @@ def test_2025_shim_reports_federate_resigned_callback_with_reason_context() -> N
     "HLA2025-NEW-005",
     "HLA2025-FI-001",
     "HLA2025-FI-005",
+    "HLA2025-FI-SVC-165",
+    "HLA2025-FI-SVC-166",
     "HLA2025-FI-SVC-167",
     "HLA2025-FI-SVC-168",
     "HLA2025-FI-SVC-169",
@@ -4394,7 +4577,7 @@ def test_2025_shim_reports_federation_executions_and_members() -> None:
     leader.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-006")
+@pytest.mark.requirements("HLA2025-MOD-001", "HLA2025-MOD-009", "HLA2025-FI-005", "HLA2025-FI-006")
 def test_2025_shim_validates_callback_model_and_credentials_at_connect() -> None:
     from hla.rti1516_2025.auth import HLAplainTextPassword
     from hla.rti1516_2025.datatypes import Credentials
@@ -4455,7 +4638,7 @@ def test_2025_shim_requires_valid_fom_modules_and_default_logical_time() -> None
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-OMT-007")
+@pytest.mark.requirements("HLA2025-MOD-003", "HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-OMT-007")
 def test_2025_shim_rejects_invalid_join_fom_modules_and_destroy_while_joined(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.exceptions import DesignatorIsHLAstandardMIM, ErrorReadingFOM, FederatesCurrentlyJoined
@@ -4619,7 +4802,14 @@ def test_2025_shim_distinguishes_fom_mim_open_read_invalid_and_merge_errors(tmp_
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006")
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-005",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-122",
+)
 def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
@@ -4721,6 +4911,9 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
     assert received is not None
     assert received[:3] == (interaction_class, {parameter: b"late"}, b"late")
     assert received[6:] == (HLAinteger64Time(20), OrderType.TIMESTAMP, OrderType.TIMESTAMP, late.handle)
+    publisher.retract(late.handle)
+    request_retraction = subscriber_callbacks.last_callback("requestRetraction")
+    assert request_retraction == (late.handle,)
     with pytest.raises(MessageCanNoLongerBeRetracted):
         publisher.retract(late.handle)
 
@@ -4731,7 +4924,25 @@ def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path:
     subscriber.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006", "HLA2025-FI-SVC-112")
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-005",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-102",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-113",
+    "HLA2025-FI-SVC-116",
+    "HLA2025-FI-SVC-117",
+    "HLA2025-FI-SVC-118",
+    "HLA2025-FI-SVC-119",
+    "HLA2025-FI-SVC-120",
+)
 def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import LogicalTimeAlreadyPassed, TimeRegulationIsNotEnabled

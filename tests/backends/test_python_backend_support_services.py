@@ -172,6 +172,25 @@ def _write_transport_and_update_rate_fom(path: Path) -> None:
     )
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-138",
+    "HLA2025-FI-SVC-139",
+    "HLA2025-FI-SVC-140",
+    "HLA2025-FI-SVC-141",
+    "HLA2025-FI-SVC-142",
+    "HLA2025-FI-SVC-143",
+    "HLA2025-FI-SVC-144",
+    "HLA2025-FI-SVC-145",
+    "HLA2025-FI-SVC-146",
+    "HLA2025-FI-SVC-149",
+    "HLA2025-FI-SVC-150",
+    "HLA2025-FI-SVC-151",
+    "HLA2025-FI-SVC-152",
+    "HLA2025-FI-SVC-153",
+    "HLA2025-FI-SVC-154",
+    "HLA2025-FI-SVC-155",
+    "HLA2025-FI-SVC-156",
+)
 def test_support_lookups_round_trip_class_handle_and_name():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("support-lookups-fed")
     obj_cls = owner.get_object_class_handle("HLAobjectRoot.Target")
@@ -206,6 +225,14 @@ def test_support_lookups_round_trip_class_handle_and_name():
     owner.destroy_federation_execution("support-lookups-fed")
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-147",
+    "HLA2025-FI-SVC-148",
+    "HLA2025-FI-SVC-158",
+    "HLA2025-FI-SVC-159",
+    "HLA2025-FI-SVC-160",
+    "HLA2025-FI-SVC-161",
+)
 def test_support_dimension_and_update_rate_helpers():
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("support-dim-fed")
     obj_cls = owner.get_object_class_handle("HLAobjectRoot.Target")

@@ -19,6 +19,11 @@ class RtiPair:
     right: Any
 
 
+@dataclass(frozen=True)
+class RtiGroup:
+    members: tuple[Any, ...]
+
+
 PYTHON_ROUTES: tuple[PythonRoute, ...] = ("python-direct", "python-grpc")
 
 
@@ -71,3 +76,29 @@ def python_rti_pair(route: PythonRoute) -> Iterator[RtiPair]:
 def python_single_rti(route: PythonRoute) -> Iterator[Any]:
     with python_rti_pair(route) as pair:
         yield pair.left
+
+
+@contextmanager
+def python_rti_group(route: PythonRoute, count: int) -> Iterator[RtiGroup]:
+    with ExitStack() as stack:
+        if route == "python-direct":
+            engine = InMemoryRTIEngine()
+            members = tuple(create_rti_ambassador("python", engine=engine) for _ in range(count))
+            for member in reversed(members):
+                stack.callback(_close_rti, member)
+            yield RtiGroup(members=members)
+            return
+        if route == "python-grpc":
+            engine = InMemoryRTIEngine()
+            servers = tuple(start_python_grpc_server(engine=engine) for _ in range(count))
+            for server in reversed(servers):
+                stack.callback(server.close)
+            members = tuple(
+                create_rti_ambassador("certi", transport={"kind": "grpc", "target": server.target})
+                for server in servers
+            )
+            for member in reversed(members):
+                stack.callback(_close_rti, member)
+            yield RtiGroup(members=members)
+            return
+        raise ValueError(f"unsupported Python route: {route}")

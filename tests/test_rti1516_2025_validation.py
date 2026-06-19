@@ -36,6 +36,15 @@ def _schema_issue_requirements(tmp_path: Path, text: str) -> set[str]:
     return {issue.requirement for issue in validate_omt_xml_schema(_write_strict_omt_fixture(tmp_path, text), OMT_2025_SCHEMA)}
 
 
+def _wrap_omt_2025_fragment(body: str, *, extra_root_attrs: str = "") -> str:
+    return (
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        f'<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025"{extra_root_attrs}>\n'
+        f"{body}\n"
+        "</objectModel>\n"
+    )
+
+
 @pytest.mark.requirements(
     "HLA2025-OMT-CV-015",
     "HLA2025-OMT-CV-016",
@@ -451,6 +460,7 @@ def test_2025_parser_round_trips_typed_omt_metadata_subset(tmp_path: Path) -> No
 
 
 @pytest.mark.requirements(
+    "HLA2025-MOD-010",
     "HLA2025-OMT-COMP-078",
     "HLA2025-OMT-COMP-084",
     "HLA2025-OMT-COMP-085",
@@ -573,6 +583,118 @@ def test_2025_parser_round_trips_metadata_switches_transport_and_time_subset(tmp
     assert reparsed.lookahead_datatype == "HLAinteger64Time"
 
 
+@pytest.mark.requirements(
+    "HLA2025-MOD-010",
+    "HLA2025-OMT-COMP-001",
+    "HLA2025-OMT-COMP-002",
+    "HLA2025-OMT-COMP-003",
+    "HLA2025-OMT-COMP-005",
+    "HLA2025-OMT-COMP-007",
+    "HLA2025-OMT-COMP-009",
+    "HLA2025-OMT-COMP-010",
+    "HLA2025-OMT-COMP-016",
+    "HLA2025-OMT-COMP-020",
+    "HLA2025-OMT-COMP-022",
+    "HLA2025-OMT-COMP-023",
+    "HLA2025-OMT-COMP-024",
+    "HLA2025-OMT-COMP-025",
+    "HLA2025-OMT-COMP-026",
+    "HLA2025-OMT-COMP-028",
+    "HLA2025-OMT-COMP-029",
+    "HLA2025-OMT-COMP-031",
+    "HLA2025-OMT-COMP-032",
+    "HLA2025-OMT-COMP-033",
+    "HLA2025-OMT-COMP-034",
+    "HLA2025-OMT-COMP-036",
+    "HLA2025-OMT-COMP-046",
+    "HLA2025-OMT-COMP-050",
+    "HLA2025-OMT-COMP-051",
+    "HLA2025-OMT-COMP-052",
+    "HLA2025-OMT-COMP-053",
+    "HLA2025-OMT-COMP-054",
+    "HLA2025-OMT-COMP-055",
+    "HLA2025-OMT-COMP-058",
+    "HLA2025-OMT-COMP-060",
+    "HLA2025-OMT-COMP-061",
+    "HLA2025-OMT-COMP-062",
+    "HLA2025-OMT-COMP-063",
+    "HLA2025-OMT-COMP-064",
+    "HLA2025-OMT-COMP-065",
+    "HLA2025-OMT-COMP-066",
+    "HLA2025-OMT-COMP-069",
+    "HLA2025-OMT-COMP-071",
+    "HLA2025-OMT-COMP-072",
+    "HLA2025-OMT-COMP-073",
+    "HLA2025-OMT-COMP-086",
+    "HLA2025-OMT-COMP-088",
+    "HLA2025-OMT-COMP-089",
+    "HLA2025-OMT-COMP-091",
+    "HLA2025-OMT-COMP-092",
+    "HLA2025-OMT-COMP-093",
+    "HLA2025-OMT-COMP-095",
+    "HLA2025-OMT-COMP-096",
+    "HLA2025-OMT-COMP-097",
+    "HLA2025-OMT-COMP-098",
+    "HLA2025-OMT-COMP-099",
+    "HLA2025-OMT-COMP-100",
+    "HLA2025-OMT-COMP-101",
+    "HLA2025-OMT-COMP-103",
+    "HLA2025-OMT-COMP-104",
+    "HLA2025-OMT-COMP-105",
+    "HLA2025-OMT-COMP-108",
+    "HLA2025-OMT-COMP-116",
+    "HLA2025-OMT-COMP-117",
+    "HLA2025-OMT-COMP-118",
+    "HLA2025-OMT-COMP-119",
+    "HLA2025-OMT-COMP-120",
+    "HLA2025-OMT-COMP-121",
+    "HLA2025-OMT-COMP-122",
+    "HLA2025-OMT-COMP-123",
+    "HLA2025-OMT-COMP-124",
+    "HLA2025-OMT-COMP-126",
+    "HLA2025-OMT-COMP-127",
+    "HLA2025-OMT-COMP-128",
+    "HLA2025-OMT-COMP-131",
+    "HLA2025-OMT-COMP-132",
+    "HLA2025-OMT-COMP-135",
+    "HLA2025-OMT-COMP-136",
+    "HLA2025-OMT-COMP-137",
+    "HLA2025-OMT-COMP-138",
+    "HLA2025-OMT-COMP-139",
+    "HLA2025-OMT-COMP-148",
+    "HLA2025-OMT-COMP-149",
+    "HLA2025-OMT-COMP-153",
+    "HLA2025-OMT-COMP-155",
+    "HLA2025-OMT-COMP-172",
+    "HLA2025-OMT-COMP-173",
+    "HLA2025-OMT-COMP-174",
+    "HLA2025-OMT-COMP-175",
+    "HLA2025-OMT-COMP-177",
+    "HLA2025-OMT-COMP-179",
+    "HLA2025-OMT-COMP-180",
+    "HLA2025-OMT-COMP-182",
+    "HLA2025-OMT-COMP-183",
+    "HLA2025-OMT-COMP-184",
+    "HLA2025-OMT-COMP-185",
+    "HLA2025-OMT-COMP-186",
+    "HLA2025-OMT-COMP-187",
+    "HLA2025-OMT-COMP-188",
+    "HLA2025-OMT-COMP-199",
+    "HLA2025-OMT-COMP-203",
+    "HLA2025-OMT-COMP-205",
+    "HLA2025-OMT-COMP-206",
+    "HLA2025-OMT-COMP-209",
+    "HLA2025-OMT-COMP-211",
+    "HLA2025-OMT-COMP-212",
+    "HLA2025-OMT-COMP-213",
+    "HLA2025-OMT-COMP-214",
+    "HLA2025-OMT-COMP-216",
+    "HLA2025-OMT-COMP-217",
+    "HLA2025-OMT-COMP-218",
+    "HLA2025-OMT-COMP-220",
+    "HLA2025-OMT-COMP-221",
+    "HLA2025-OMT-COMP-223",
+)
 def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -> None:
     from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
 
@@ -850,6 +972,23 @@ def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -
     assert reparsed_report.parameter_datatypes["Payload"] == "HLAunicodeString"
 
 
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-011",
+    "HLA2025-OMT-COMP-012",
+    "HLA2025-OMT-COMP-014",
+    "HLA2025-OMT-COMP-017",
+    "HLA2025-OMT-COMP-018",
+    "HLA2025-OMT-COMP-041",
+    "HLA2025-OMT-COMP-044",
+    "HLA2025-OMT-COMP-080",
+    "HLA2025-OMT-COMP-083",
+    "HLA2025-OMT-COMP-109",
+    "HLA2025-OMT-COMP-114",
+    "HLA2025-OMT-COMP-133",
+    "HLA2025-OMT-COMP-200",
+    "HLA2025-OMT-COMP-201",
+    "HLA2025-OMT-COMP-207",
+)
 def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) -> None:
     from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
 
@@ -936,6 +1075,336 @@ def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) 
     assert "<value>[0..1)</value>" not in xml_text
     assert "Reliable semantics" not in xml_text
     assert "Fast semantics" not in xml_text
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-006",
+    "HLA2025-OMT-COMP-008",
+    "HLA2025-OMT-COMP-019",
+    "HLA2025-OMT-COMP-021",
+    "HLA2025-OMT-COMP-027",
+    "HLA2025-OMT-COMP-035",
+    "HLA2025-OMT-COMP-039",
+    "HLA2025-OMT-COMP-045",
+    "HLA2025-OMT-COMP-047",
+    "HLA2025-OMT-COMP-056",
+    "HLA2025-OMT-COMP-057",
+    "HLA2025-OMT-COMP-059",
+    "HLA2025-OMT-COMP-067",
+    "HLA2025-OMT-COMP-068",
+    "HLA2025-OMT-COMP-070",
+    "HLA2025-OMT-COMP-077",
+    "HLA2025-OMT-COMP-081",
+    "HLA2025-OMT-COMP-082",
+    "HLA2025-OMT-COMP-102",
+    "HLA2025-OMT-COMP-106",
+    "HLA2025-OMT-COMP-107",
+    "HLA2025-OMT-COMP-113",
+    "HLA2025-OMT-COMP-115",
+    "HLA2025-OMT-COMP-129",
+    "HLA2025-OMT-COMP-130",
+    "HLA2025-OMT-COMP-134",
+    "HLA2025-OMT-COMP-145",
+    "HLA2025-OMT-COMP-147",
+    "HLA2025-OMT-COMP-154",
+    "HLA2025-OMT-COMP-156",
+    "HLA2025-OMT-COMP-171",
+    "HLA2025-OMT-COMP-176",
+    "HLA2025-OMT-COMP-178",
+    "HLA2025-OMT-COMP-181",
+    "HLA2025-OMT-COMP-189",
+    "HLA2025-OMT-COMP-193",
+    "HLA2025-OMT-COMP-197",
+    "HLA2025-OMT-COMP-198",
+    "HLA2025-OMT-COMP-202",
+    "HLA2025-OMT-COMP-204",
+    "HLA2025-OMT-COMP-208",
+    "HLA2025-OMT-COMP-210",
+    "HLA2025-OMT-COMP-219",
+    "HLA2025-OMT-COMP-222",
+    "HLA2025-OMT-COMP-224",
+)
+@pytest.mark.parametrize(
+    ("case_name", "body"),
+    [
+        (
+            "array-data-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAinteger32BE</name><size>32</size><interpretation>Integer</interpretation><endian>Big</endian><encoding>32-bit</encoding></basicData>
+    </basicDataRepresentations>
+    <arrayDataTypes>
+      <arrayData><name>ArrayValue</name><dataType>HLAinteger32BE</dataType><cardinality>1</cardinality><ext:item /></arrayData>
+      <ext:arrayDataTypes />
+    </arrayDataTypes>
+  </dataTypes>
+""",
+        ),
+        (
+            "attribute-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <attribute><name>Status</name><dataType>HLAunicodeString</dataType><ext:attribute /></attribute>
+    </objectClass>
+  </objects>
+""",
+        ),
+        (
+            "basic-data-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAinteger32BE</name><size>32</size><interpretation>Integer</interpretation><endian>Big</endian><encoding>32-bit</encoding><ext:basic /></basicData>
+      <ext:basicDataRepresentations />
+    </basicDataRepresentations>
+    <ext:dataTypes />
+  </dataTypes>
+""",
+        ),
+        (
+            "dimension-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <dimensions>
+    <dimension>
+      <name>RouteDim</name>
+      <inputDataTypes><dataType>HLAinteger32BE</dataType><ext:inputDataTypes /></inputDataTypes>
+      <upperBound>1</upperBound>
+      <ext:dimension />
+    </dimension>
+    <ext:dimensions />
+  </dimensions>
+""",
+        ),
+        (
+            "enumerated-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAinteger32BE</name><size>32</size><interpretation>Integer</interpretation><endian>Big</endian><encoding>32-bit</encoding></basicData>
+    </basicDataRepresentations>
+    <enumeratedDataTypes>
+      <enumeratedData><name>Choice</name><representation>HLAinteger32BE</representation><enumerator><name>A</name><value>1</value><ext:enumerator /></enumerator><ext:enumeratedData /></enumeratedData>
+      <ext:enumeratedDataTypes />
+    </enumeratedDataTypes>
+  </dataTypes>
+""",
+        ),
+        (
+            "fixed-record-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAinteger32BE</name><size>32</size><interpretation>Integer</interpretation><endian>Big</endian><encoding>32-bit</encoding></basicData>
+    </basicDataRepresentations>
+    <fixedRecordDataTypes>
+      <fixedRecordData><name>Vector</name><field><name>X</name><dataType>HLAinteger32BE</dataType><ext:field /></field><ext:fixedRecordData /></fixedRecordData>
+      <ext:fixedRecordDataTypes />
+    </fixedRecordDataTypes>
+  </dataTypes>
+""",
+        ),
+        (
+            "interaction-and-parameter-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <dimensions><dimension>RouteDim</dimension><ext:dimensions /></dimensions>
+      <parameter><name>Payload</name><dataType>HLAunicodeString</dataType><ext:parameter /></parameter>
+      <ext:interactionClass />
+    </interactionClass>
+    <ext:interactions />
+  </interactions>
+""",
+        ),
+        (
+            "model-identification-and-notes-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type><ext:modelIdentification /></modelIdentification>
+  <notes><note><label>N1</label><semantics>alpha</semantics><ext:note /></note><ext:notes /></notes>
+""",
+        ),
+        (
+            "object-model-and-objects-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass><name>HLAobjectRoot</name><dimensions><dimension>ObjDim</dimension><ext:dimensions /></dimensions><ext:objectClass /></objectClass>
+    <ext:objects />
+  </objects>
+  <ext:objectModel />
+""",
+        ),
+        (
+            "reference-and-simple-data-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name></objectClass></objects>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAunicodeString</name><size>0</size><interpretation>String</interpretation><endian>Big</endian><encoding>Unicode</encoding></basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes><simpleData><name>RouteSimple</name><representation>HLAunicodeString</representation><ext:simpleData /></simpleData><ext:simpleDataTypes /></simpleDataTypes>
+    <referenceDataTypes><referenceDataType><name>StatusRef</name><representation>HLAunicodeString</representation><referenceClass>HLAobjectRoot</referenceClass><referencedAttribute>Status</referencedAttribute><ext:referenceDataType /></referenceDataType><ext:referenceDataTypes /></referenceDataTypes>
+  </dataTypes>
+""",
+        ),
+        (
+            "switch-sync-tag-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <switches><ext:switches /></switches>
+  <synchronizations><synchronizationPoint><label>Ready</label><dataType>NA</dataType><capability>RegisterAchieve</capability><ext:synchronizationPoint /></synchronizationPoint><ext:synchronizations /></synchronizations>
+  <tags><updateReflectTag><dataType>NA</dataType><semantics>tag</semantics><ext:tag /></updateReflectTag><ext:tags /></tags>
+""",
+        ),
+        (
+            "time-transport-update-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <time>
+    <logicalTime><dataType>HLAinteger64Time</dataType><ext:logicalTime /></logicalTime>
+    <logicalTimeInterval><dataType>HLAinteger64Time</dataType><ext:logicalTimeInterval /></logicalTimeInterval>
+    <ext:time />
+  </time>
+  <transportations><transportation><name>HLAreliable</name><reliable>Yes</reliable><ext:transportation /></transportation><ext:transportations /></transportations>
+  <updateRates><updateRate><name>Fast</name><rate>1</rate><ext:updateRate /></updateRate><ext:updateRates /></updateRates>
+""",
+        ),
+        (
+            "variant-record-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAinteger32BE</name><size>32</size><interpretation>Integer</interpretation><endian>Big</endian><encoding>32-bit</encoding></basicData>
+      <basicData><name>HLAunicodeString</name><size>0</size><interpretation>String</interpretation><endian>Big</endian><encoding>Unicode</encoding></basicData>
+    </basicDataRepresentations>
+    <enumeratedDataTypes><enumeratedData><name>Choice</name><representation>HLAinteger32BE</representation><enumerator><name>A</name><value>1</value></enumerator></enumeratedData></enumeratedDataTypes>
+    <simpleDataTypes><simpleData><name>Payload</name><representation>HLAunicodeString</representation></simpleData></simpleDataTypes>
+    <variantRecordDataTypes><variantRecordData><name>ChoiceRecord</name><discriminant>Choice</discriminant><dataType>Choice</dataType><alternative><enumerator>A</enumerator><name>Alpha</name><dataType>Payload</dataType><ext:alternative /></alternative><ext:variantRecordData /></variantRecordData><ext:variantRecordDataTypes /></variantRecordDataTypes>
+  </dataTypes>
+""",
+        ),
+    ],
+)
+def test_2025_parser_rejects_foreign_namespace_extension_points(tmp_path: Path, case_name: str, body: str) -> None:
+    from hla.rti1516e.fom import FOMResolutionError, parse_fom_xml
+
+    source = tmp_path / f"{case_name}.xml"
+    source.write_text(_wrap_omt_2025_fragment(body, extra_root_attrs=' xmlns:ext="urn:ext"'), encoding="utf-8")
+
+    with pytest.raises(FOMResolutionError, match="Unsupported XML namespace 'urn:ext'"):
+        parse_fom_xml(source)
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-015",
+    "HLA2025-OMT-COMP-048",
+    "HLA2025-OMT-COMP-049",
+    "HLA2025-OMT-COMP-074",
+    "HLA2025-OMT-COMP-075",
+    "HLA2025-OMT-COMP-076",
+    "HLA2025-OMT-COMP-079",
+    "HLA2025-OMT-COMP-110",
+    "HLA2025-OMT-COMP-111",
+    "HLA2025-OMT-COMP-112",
+    "HLA2025-OMT-COMP-192",
+    "HLA2025-OMT-COMP-196",
+)
+def test_2025_parser_flattens_or_drops_unmodeled_structural_omt_fields(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "unmodeled-structural-omt.xml"
+    source.write_text(
+        _wrap_omt_2025_fragment(
+            """
+  <modelIdentification><name>Probe</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <sharing>PublishSubscribe</sharing>
+      <objectClass>
+        <name>Entity</name>
+        <attribute><name>Status</name><dataType>HLAunicodeString</dataType><sharing>Subscribe</sharing></attribute>
+      </objectClass>
+      <directedInteraction><name>Ping</name><sharing>Subscribe</sharing></directedInteraction>
+      <dimensions><dimension>ObjDim</dimension></dimensions>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>PublishSubscribe</sharing>
+      <dimensions><dimension>IntDim</dimension></dimensions>
+      <order>Timestamp</order>
+      <transportation>HLAreliable</transportation>
+    </interactionClass>
+  </interactions>
+  <time>
+    <logicalTime><dataType>HLAinteger64Time</dataType><semantics>LT sem</semantics></logicalTime>
+    <logicalTimeInterval><dataType>HLAinteger64Time</dataType><semantics>LTI sem</semantics></logicalTimeInterval>
+  </time>
+  <transportations><transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation></transportations>
+  <dataTypes><basicDataRepresentations><basicData><name>HLAunicodeString</name><size>0</size><interpretation>String</interpretation><endian>Big</endian><encoding>Unicode</encoding></basicData></basicDataRepresentations></dataTypes>
+"""
+        ),
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+
+    assert entity.attribute_datatypes["Status"] == "HLAunicodeString"
+    assert set(module.dimensions) == {"IntDim", "ObjDim"}
+    assert module.time_stamp_datatype == "HLAinteger64Time"
+    assert module.lookahead_datatype == "HLAinteger64Time"
+
+    xml_text = serialize_fom_module(module, edition="2025")
+
+    assert "<directedInteraction>" not in xml_text
+    assert "<dimensions><dimension>ObjDim</dimension></dimensions>" not in xml_text
+    assert "<dimensions><dimension>IntDim</dimension></dimensions>" not in xml_text
+    assert "<attribute><name>Status</name><dataType>HLAunicodeString</dataType><sharing>" not in xml_text
+    assert "<interactionClass><name>HLAinteractionRoot</name><sharing>Neither</sharing>" in xml_text
+    assert "<order>Receive</order>" in xml_text
+    assert "LT sem" not in xml_text
+    assert "LTI sem" not in xml_text
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-166",
+    "HLA2025-OMT-COMP-168",
+    "HLA2025-OMT-COMP-169",
+    "HLA2025-OMT-COMP-170",
+)
+@pytest.mark.parametrize("switch_name", ("nonRegulatedGrant", "allowRelaxedDDM", "advisoriesUseKnownClass", "sendServiceReportsToFile"))
+def test_2025_parser_rejects_unknown_2025_switch_definitions(tmp_path: Path, switch_name: str) -> None:
+    from hla.rti1516e.fom import FOMResolutionError, parse_fom_xml
+
+    source = tmp_path / f"{switch_name}.xml"
+    source.write_text(
+        _wrap_omt_2025_fragment(
+            f"""
+  <modelIdentification><name>Probe</name><type>FOM</type></modelIdentification>
+  <switches><{switch_name} isEnabled="true" /></switches>
+"""
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(FOMResolutionError, match=rf"Unknown switch definition '{switch_name}'"):
+        parse_fom_xml(source)
 
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:

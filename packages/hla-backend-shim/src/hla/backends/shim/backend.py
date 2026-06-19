@@ -250,6 +250,7 @@ class _FederationRecord:
     interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
     queued_tso_callbacks: dict[int, "_QueuedTsoCallback"] = field(default_factory=dict)
     delivered_retraction_handles: set[int] = field(default_factory=set)
+    delivered_retraction_targets: dict[int, FederateHandle] = field(default_factory=dict)
     saved_labels: set[str] = field(default_factory=set)
     saved_object_instances: dict[str, dict[int, "_ObjectInstanceRecord"]] = field(default_factory=dict)
     saved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
@@ -867,6 +868,10 @@ class Shim2025RTIAmbassador:
         if federation.queued_tso_callbacks.pop(retraction_value, None) is not None:
             return
         if retraction_value in federation.delivered_retraction_handles:
+            target = federation.delivered_retraction_targets.pop(retraction_value, None)
+            if target is not None:
+                self._deliver_to_federate_handle(target, "requestRetraction", MessageRetractionHandle(retraction_value))
+                return
             raise MessageCanNoLongerBeRetracted(str(retraction))
         raise InvalidMessageRetractionHandle(str(retraction))
 
@@ -2520,6 +2525,7 @@ class Shim2025RTIAmbassador:
         for handle_value, queued in due:
             federation.queued_tso_callbacks.pop(handle_value, None)
             federation.delivered_retraction_handles.add(handle_value)
+            federation.delivered_retraction_targets[handle_value] = queued.target_federate
             self._deliver_to_federate_handle(queued.target_federate, queued.method_name, *queued.args)
 
     def _other_member_handles(self) -> tuple[FederateHandle, ...]:

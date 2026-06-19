@@ -1469,7 +1469,12 @@ def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attri
     owner.destroy_federation_execution("transport-runtime-behavior-fed")
 
 
-@pytest.mark.requirements("HLA1516.1-DM-5.10-001", "HLA1516.1-DM-5.11-001")
+@pytest.mark.requirements(
+    "HLA1516.1-DM-5.10-001",
+    "HLA1516.1-DM-5.11-001",
+    "HLA2025-FI-SVC-047",
+    "HLA2025-FI-SVC-048",
+)
 def test_start_and_stop_registration_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-registration-callback-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
@@ -1511,7 +1516,12 @@ def test_start_and_stop_registration_callbacks_are_delivered():
     owner.destroy_federation_execution("decl-registration-callback-fed")
 
 
-@pytest.mark.requirements("HLA1516.1-DM-5.12-001", "HLA1516.1-DM-5.13-001")
+@pytest.mark.requirements(
+    "HLA1516.1-DM-5.12-001",
+    "HLA1516.1-DM-5.13-001",
+    "HLA2025-FI-SVC-049",
+    "HLA2025-FI-SVC-050",
+)
 def test_turn_interactions_on_and_off_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-interaction-callback-fed")
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
@@ -2229,6 +2239,9 @@ def test_clause_9_service_signature_metadata_matches_source_bindings():
     "HLA1516.1-DDM-9.11-001",
     "HLA1516.1-DDM-9.12-001",
     "HLA1516.1-DDM-9.13-001",
+    "HLA2025-FI-SVC-128",
+    "HLA2025-FI-SVC-131",
+    "HLA2025-FI-SVC-137",
 )
 def test_clause_9_services_are_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("ddm-mom-service-report-fed")

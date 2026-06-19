@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import csv
 import json
 from collections import Counter
@@ -9,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-from hla.verification.repo_internal.verification.spec2025_route_parity_matrix import summarize_spec2025_route_parity
+from hla.verification.repo_internal.verification.spec2025_route_parity_matrix import ROUTE_IDS_2025, summarize_spec2025_route_parity
 
 HIGH_PRIORITIES = frozenset({"high", "very-high"})
 CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary", "legacy-only"})
@@ -529,17 +530,29 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "loopback runtime session are present for connect, create federation, join, FOM handle lookup, "
             "passive object-attribute and passive interaction subscribe alias routes, universal directed "
             "subscribe alias routing, subscribe-with-rate and passive subscribe-with-rate object-attribute "
-            "routing, "
+            "routing, federation execution/member reporting callbacks including missing-federation notices, "
             "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
-            "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
-            "callbacks, queued timestamped attribute reflection/interaction receipt, plus directed-interaction "
-            "receipt with selective directed set unsubscribe/unpublish, retraction handles, and pre-delivery retract, object discovery, attribute reflection, "
-            "interaction receipt, directed interaction receipt, basic DDM region-overlap filtering for object attributes "
-            "and directed interactions, "
-            "service-reporting switch state, automatic resign directive get/set, read-only 2025 switch inquiry state, "
-            "MOM service-invocation report callbacks over FedPro, "
-            "synchronization point/status MOM reports over FedPro, resign, destroy, and disconnect. Full MOM "
-            "action/request routing and full RTI semantics remain outside this slice."
+            "per-instance attribute/interactions order changes, callback-control enable/disable routing, "
+            "object registration, untimed and timestamped object delete/remove callback flow, basic ownership "
+            "divest/acquire callbacks, basic and negotiated "
+            "ownership divest/acquire/query callbacks including RTI-owned MOM attribute ownership query results, "
+            "time-regulation/time-constrained/time-advance callbacks, flushQueueGrant, queued timestamped "
+            "attribute reflection/interaction receipt, queued timestamped remove receipt, requestRetraction "
+            "callback delivery after delivered timestamp-order receipt, plus directed-interaction receipt with selective directed set "
+            "unsubscribe/unpublish, retraction handles, and pre-delivery retract, object discovery, attribute "
+            "reflection, interaction receipt, directed interaction receipt, object-class-attribute unpublish gating, "
+            "instance/class/region-scoped attribute value update requests, basic DDM region-overlap filtering for "
+            "object attributes and directed interactions, DDM-driven attributesInScope/attributesOutOfScope "
+            "transitions, "
+            "direct synchronization-point registration/announce/achieved/federation-synchronized callback flow, "
+            "save/restore lifecycle callbacks including timed initiateFederateSave, service-reporting switch state, "
+            "automatic resign directive get/set, read-only 2025 switch inquiry state, single and multiple object "
+            "instance name reservation/release callback flow, direct attribute and interaction transportation "
+            "change/query callbacks, MOM service-invocation report callbacks over FedPro, object publication/"
+            "subscription/object-instance-information/activity-count reports, synchronization point/status MOM "
+            "reports over FedPro, resign, destroy, and disconnect. Full MOM action/request routing and full RTI "
+            "semantics remain outside this slice. This is a hosted runtime slice, not a full FedPro RTI "
+            "conformance claim."
         ),
     },
     {
@@ -659,8 +672,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "supported_scope": (
             "Python 2025 shim supports FOM-backed object instance registration, discoverObjectInstance delivery, "
-            "attribute update publication gating, reflectAttributeValues delivery, interaction publication gating, "
-            "sendInteraction, and receiveInteraction delivery for subscribed federates."
+            "attribute update publication gating, reflectAttributeValues delivery, default and per-instance order "
+            "policy changes for reflected attributes, interaction publication gating, sendInteraction, "
+            "interaction order policy changes, and receiveInteraction delivery for subscribed federates."
         ),
     },
     {
@@ -699,8 +713,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "localDeleteObjectInstance validation, requestAttributeValueUpdate callbacks by object instance "
             "and object class, turnUpdatesOnForObjectInstance and turnUpdatesOffForObjectInstance advisory "
             "callbacks with update-rate designator delivery, attribute transportation type change/query callbacks, "
-            "interaction transportation type change/query callbacks, and DDM-driven attributesInScope and "
-            "attributesOutOfScope transitions."
+            "interaction transportation type change/query callbacks, region-scoped requestAttributeValueUpdate "
+            "callbacks, and DDM-driven attributesInScope and attributesOutOfScope transitions."
         ),
     },
     {
@@ -919,13 +933,19 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
+            "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
+            "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/RTIambassador_2025.proto",
         ),
         "supported_scope": (
             "Python 2025 shim supports callback control services for connected federates: disableCallbacks "
             "queues local and target federate callbacks, enableCallbacks permits delivery again, evokeCallback "
             "delivers one queued callback, and evokeMultipleCallbacks drains the pending callback queue. The "
-            "timing parameters are accepted but not used for wall-clock blocking in this in-process shim slice."
+            "hosted FedPro 2025 route now carries explicit enableCallbacks/disableCallbacks transport calls and "
+            "preserves queued callback delivery boundaries across callback polling. The timing parameters are "
+            "accepted but not used for wall-clock blocking in this in-process shim slice."
         ),
     },
     {
@@ -1040,7 +1060,880 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "is every high/very-high row has at least one reviewable anchor."
         ),
     },
+    {
+        "id": "2025-python-rti-milestone-ledger",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-MIL-001",
+            "HLA2025-MIL-002",
+            "HLA2025-MIL-003",
+            "HLA2025-MIL-004",
+            "HLA2025-MIL-005",
+            "HLA2025-MIL-006",
+        ),
+        "evidence": (
+            "tests/requirements/test_2025_finish_line_snapshot.py",
+            "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
+            "packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py",
+            "requirements/2025/requirement_completion_backlog.csv",
+        ),
+        "supported_scope": (
+            "Repo-owned milestone rows now make the bounded Python 2025 finish-line gates explicit for both the "
+            "in-process and hosted FedPro routes: best-attempt working surface, tracked FOM-backed scenarios, "
+            "message routing, time synchronization, GALT/LITS bounded query evidence, and lookahead bounded "
+            "runtime evidence."
+        ),
+    },
 )
+
+OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
+    {
+        "id": "federation_management",
+        "name": "Federation Management",
+        "evidence_level": "strong-slice",
+        "implemented_slice_ids": (
+            "2025-lifecycle-and-members",
+            "2025-connection-lifecycle-services",
+            "2025-federation-lifecycle-services",
+            "2025-save-restore-lifecycle",
+            "2025-fedpro-transport-contract",
+        ),
+        "route_scenarios": ("federation_lifecycle", "save_restore"),
+        "current_assessment": (
+            "Lifecycle, membership reporting, synchronization, and save/restore behavior are exercised directly "
+            "through the Python 2025 shim and the hosted FedPro route, with parity scenarios recorded across "
+            "all tracked routes."
+        ),
+        "residual_blockers": (
+            "The evidence is still slice-oriented rather than service-by-service proof.",
+            "Standard Java and C++ route coverage remains scenario parity/runtime capability evidence, not exhaustive behavior conformance.",
+        ),
+    },
+    {
+        "id": "object_management",
+        "name": "Object Management",
+        "evidence_level": "strong-slice",
+        "implemented_slice_ids": (
+            "2025-basic-object-exchange",
+            "2025-basic-declaration-services",
+            "2025-directed-interaction-boundary",
+            "2025-object-management-support-callbacks",
+            "2025-ddm-default-attribute-policy",
+            "2025-fedpro-transport-contract",
+        ),
+        "route_scenarios": ("object_exchange", "ownership", "ddm"),
+        "current_assessment": (
+            "The current repo proves a coherent object-management surface: object and interaction exchange, "
+            "directed interactions, ownership transfer/query callbacks, DDM overlap filtering, transportation "
+            "policy changes, and object deletion flows all execute end to end."
+        ),
+        "residual_blockers": (
+            "Requirement aggregation still hides per-service completion detail inside supported-scope slices.",
+            "FedPro coverage is a hosted runtime slice and does not yet constitute full RTI semantics proof.",
+        ),
+    },
+    {
+        "id": "time_management",
+        "name": "Time Management",
+        "evidence_level": "strong-slice",
+        "implemented_slice_ids": (
+            "2025-logical-time",
+            "2025-save-restore-lifecycle",
+            "2025-fedpro-transport-contract",
+            "2025-standard-route-runtime-capability",
+        ),
+        "route_scenarios": ("time_management", "save_restore"),
+        "current_assessment": (
+            "Logical-time factories, regulation/constrained enablement, advance requests, flush queue behavior, "
+            "timestamped delivery, retraction, and save/restore rollback are all backed by executable runtime traces."
+        ),
+        "residual_blockers": (
+            "The closeout still aggregates multiple time services into bounded slices instead of final per-requirement proof.",
+            "Cross-binding runtime evidence is narrower than the Python in-process and hosted FedPro slices.",
+        ),
+    },
+    {
+        "id": "support_services",
+        "name": "Support Services",
+        "evidence_level": "strong-slice",
+        "implemented_slice_ids": (
+            "2025-switch-inquiry-control",
+            "2025-single-name-reservation-services",
+            "2025-multi-name-reservation-services",
+            "2025-support-query-lookups",
+            "2025-ddm-default-attribute-policy",
+            "2025-fedpro-transport-contract",
+            "2025-standard-route-runtime-capability",
+        ),
+        "route_scenarios": ("support_services",),
+        "current_assessment": (
+            "Handle lookup, dimension bounds, default policy control, normalization and switch inquiry/set flows "
+            "are exercised through the Python runtime and are represented across tracked binding routes."
+        ),
+        "residual_blockers": (
+            "The support-services surface is validated around scenario needs, not yet as a complete FI catalog audit.",
+            "Java and C++ proof remains capability-oriented rather than a full standard-route behavior pass.",
+        ),
+    },
+    {
+        "id": "callbacks",
+        "name": "Callbacks",
+        "evidence_level": "bounded-slice",
+        "implemented_slice_ids": (
+            "2025-callback-context-parameters",
+            "2025-connection-lifecycle-services",
+            "2025-federation-lifecycle-services",
+            "2025-object-management-support-callbacks",
+            "2025-single-name-reservation-services",
+            "2025-multi-name-reservation-services",
+            "2025-save-restore-lifecycle",
+            "2025-fedpro-transport-contract",
+        ),
+        "route_scenarios": (
+            "federation_lifecycle",
+            "object_exchange",
+            "ownership",
+            "time_management",
+            "save_restore",
+            "mom",
+            "support_services",
+        ),
+        "current_assessment": (
+            "Callback delivery is broad and executable across lifecycle, object, ownership, DDM, time, MOM, and "
+            "support-service flows, including hosted FedPro callback decoding and direct Python ambassador behavior."
+        ),
+        "residual_blockers": (
+            "Callback proof is distributed across scenario slices rather than finalized as a callback-by-callback conformance ledger.",
+            "Binding-route callback parity is tracked at the scenario level, not as exhaustive callback signature/ordering proof.",
+        ),
+    },
+    {
+        "id": "omt_handling",
+        "name": "OMT Handling",
+        "evidence_level": "bounded-slice",
+        "implemented_slice_ids": (
+            "2025-fom-validation",
+            "2025-omt-reference-value-required",
+            "2025-omt-component-metadata-roundtrip",
+            "2025-omt-switch-and-transport-subset",
+            "2025-omt-extended-supported-subset",
+            "2025-service-utilization-crosscheck",
+            "2025-omt-schema-constraint-validation",
+            "2025-omt-unsupported-component-boundaries",
+            "2025-omt-unmodeled-component-boundaries-expanded",
+        ),
+        "route_scenarios": (),
+        "current_assessment": (
+            "The OMT path is well-instrumented for the supported parser/serializer/schema subset and now explicitly "
+            "records the unsupported boundaries instead of leaving them implicit."
+        ),
+        "residual_blockers": (
+            "OMT evidence includes explicit unsupported boundaries, so this area cannot be promoted to full 2025 conformance.",
+            "Parser/serializer support is intentionally narrower than the full 2025 schema/component space.",
+        ),
+    },
+    {
+        "id": "binding_routes",
+        "name": "Binding Routes",
+        "evidence_level": "bounded-slice",
+        "implemented_slice_ids": (
+            "2025-java-binding-source-trace",
+            "2025-cpp-binding-source-trace",
+            "2025-standard-route-runtime-capability",
+            "2025-fedpro-transport-contract",
+        ),
+        "route_scenarios": (
+            "federation_lifecycle",
+            "object_exchange",
+            "ownership",
+            "ddm",
+            "time_management",
+            "save_restore",
+            "mom",
+            "support_services",
+        ),
+        "current_assessment": (
+            "Every tracked 2025 route now has explicit scenario parity rows, and the Python in-process plus hosted "
+            "FedPro routes provide substantive runtime proof for the working surface."
+        ),
+        "residual_blockers": (
+            "Java and C++ routes are still backed by artifact/runtime-capability traces rather than exhaustive behavior equivalence proof.",
+            "The hosted FedPro route remains a bounded working slice, not a full RTI conformance route.",
+        ),
+    },
+)
+
+FI_SERVICE_FAMILY_RANGES: tuple[tuple[int, int, str], ...] = (
+    (1, 17, "federation_management"),
+    (18, 34, "save_restore"),
+    (35, 46, "declaration_management"),
+    (47, 50, "object_class_relevance"),
+    (51, 56, "name_reservation"),
+    (57, 82, "object_management"),
+    (83, 100, "ownership_management"),
+    (101, 125, "time_management"),
+    (126, 137, "ddm"),
+    (138, 192, "support_services"),
+    (193, 196, "callback_control"),
+)
+
+
+def _implemented_slice_index() -> dict[str, Mapping[str, Any]]:
+    return {slice_["id"]: slice_ for slice_ in IMPLEMENTED_EVIDENCE_SLICES}
+
+
+def _fi_service_family(requirement_id: str) -> str:
+    service_number = int(requirement_id.rsplit("-", 1)[1])
+    for start, end, family in FI_SERVICE_FAMILY_RANGES:
+        if start <= service_number <= end:
+            return family
+    return "unknown"
+
+
+def _build_fi_service_proof_audit() -> dict[str, Any]:
+    fi_service_rows: list[dict[str, Any]] = []
+    for requirement_id in sorted(
+        {
+            requirement_id
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for requirement_id in evidence_slice.get("requirements", ())
+            if requirement_id.startswith("HLA2025-FI-SVC-")
+        }
+    ):
+        supporting_slices = [
+            evidence_slice
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            if requirement_id in evidence_slice.get("requirements", ())
+        ]
+        proof_kind = "multi-slice-runtime" if len(supporting_slices) > 1 else "single-slice-runtime"
+        evidence_tests = sorted(
+            {
+                evidence_path
+                for evidence_slice in supporting_slices
+                for evidence_path in evidence_slice["evidence"]
+                if evidence_path.endswith(".py")
+            }
+        )
+        fi_service_rows.append(
+            {
+                "requirement_id": requirement_id,
+                "service_number": int(requirement_id.rsplit("-", 1)[1]),
+                "family": _fi_service_family(requirement_id),
+                "proof_status": "implemented-slice-traceable",
+                "proof_kind": proof_kind,
+                "supporting_slice_ids": [evidence_slice["id"] for evidence_slice in supporting_slices],
+                "evidence_tests": evidence_tests,
+                "evidence_artifacts": sorted(
+                    {
+                        evidence_path
+                        for evidence_slice in supporting_slices
+                        for evidence_path in evidence_slice["evidence"]
+                    }
+                ),
+            }
+        )
+
+    return {
+        "row_count": len(fi_service_rows),
+        "by_family": dict(sorted(Counter(row["family"] for row in fi_service_rows).items())),
+        "by_proof_kind": dict(sorted(Counter(row["proof_kind"] for row in fi_service_rows).items())),
+        "fully_traceable_service_count": len(fi_service_rows),
+        "ready_for_per_service_runtime_traceability_claim": len(fi_service_rows) == 196,
+        "ready_for_full_fi_service_conformance_claim": False,
+        "current_assessment": (
+            "All 196 Federate Interface service catalog rows now map to explicit runtime evidence rows, but many "
+            "services are still proven through clustered slice evidence rather than isolated one-service final "
+            "conformance tests."
+        ),
+        "rows": fi_service_rows,
+    }
+
+
+def _build_delta_requirement_proof_audit() -> dict[str, Any]:
+    delta_rows: list[dict[str, Any]] = []
+    for requirement_id in sorted(
+        {
+            requirement_id
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for requirement_id in evidence_slice.get("requirements", ())
+            if requirement_id.startswith(("HLA2025-MOD-", "HLA2025-NEW-", "HLA2025-RET-"))
+        }
+    ):
+        supporting_slices = [
+            evidence_slice
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            if requirement_id in evidence_slice.get("requirements", ())
+        ]
+        evidence_tests = sorted(
+            {
+                evidence_path
+                for evidence_slice in supporting_slices
+                for evidence_path in evidence_slice["evidence"]
+                if evidence_path.endswith(".py")
+            }
+        )
+        if requirement_id.startswith("HLA2025-MOD-"):
+            category = "modified-existing"
+        elif requirement_id.startswith("HLA2025-NEW-"):
+            category = "new-2025-requirement"
+        else:
+            category = "retired-mapped-2010"
+        delta_rows.append(
+            {
+                "requirement_id": requirement_id,
+                "category": category,
+                "proof_status": "implemented-slice-traceable",
+                "supporting_slice_ids": [evidence_slice["id"] for evidence_slice in supporting_slices],
+                "evidence_tests": evidence_tests,
+                "evidence_artifacts": sorted(
+                    {
+                        evidence_path
+                        for evidence_slice in supporting_slices
+                        for evidence_path in evidence_slice["evidence"]
+                    }
+                ),
+            }
+        )
+
+    return {
+        "row_count": len(delta_rows),
+        "by_category": dict(sorted(Counter(row["category"] for row in delta_rows).items())),
+        "fully_traceable_requirement_count": len(delta_rows),
+        "ready_for_delta_traceability_claim": len(delta_rows) == 20,
+        "ready_for_full_delta_conformance_claim": False,
+        "current_assessment": (
+            "All modified, new, and retired common delta rows now map to explicit evidence slices, but several are "
+            "still proven through grouped behavioral slices or retirement mappings rather than isolated final SHALL tests."
+        ),
+        "rows": delta_rows,
+    }
+
+
+def _build_binding_requirement_proof_audit(route_parity_matrix: Mapping[str, Any]) -> dict[str, Any]:
+    binding_rows: list[dict[str, Any]] = []
+    for requirement_id in ("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003"):
+        supporting_slices = [
+            evidence_slice
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            if requirement_id in evidence_slice.get("requirements", ())
+        ]
+        evidence_tests = sorted(
+            {
+                evidence_path
+                for evidence_slice in supporting_slices
+                for evidence_path in evidence_slice["evidence"]
+                if evidence_path.endswith(".py")
+            }
+        )
+        relevant_routes = {
+            "HLA2025-BND-001": ("java-standard-2025-jpype", "java-standard-2025-py4j"),
+            "HLA2025-BND-002": ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"),
+            "HLA2025-BND-003": ("python-2025-fedpro-grpc",),
+        }[requirement_id]
+        parity_rows = [row for row in route_parity_matrix["rows"] if row["route"] in relevant_routes]
+        binding_rows.append(
+            {
+                "requirement_id": requirement_id,
+                "routes": list(relevant_routes),
+                "proof_status": "implemented-slice-traceable",
+                "supporting_slice_ids": [evidence_slice["id"] for evidence_slice in supporting_slices],
+                "evidence_tests": evidence_tests,
+                "route_parity_counts": dict(sorted(Counter(row["status"] for row in parity_rows).items())),
+                "route_scenarios": sorted({row["scenario"] for row in parity_rows}),
+            }
+        )
+    return {
+        "row_count": len(binding_rows),
+        "fully_traceable_requirement_count": len(binding_rows),
+        "ready_for_binding_traceability_claim": len(binding_rows) == 3,
+        "ready_for_full_binding_conformance_claim": False,
+        "current_assessment": (
+            "All three binding rows now have explicit slice and route-parity proof records, but Java/C++ remain "
+            "artifact/runtime-capability bounded and FedPro remains a hosted runtime slice rather than full conformance."
+        ),
+        "rows": binding_rows,
+    }
+
+
+def _build_omt_requirement_proof_audit() -> dict[str, Any]:
+    omt_rows: list[dict[str, Any]] = []
+    for requirement_id in sorted(
+        {
+            requirement_id
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for requirement_id in evidence_slice.get("requirements", ())
+            if requirement_id.startswith(("HLA2025-OMT-", "HLA2025-OMT-COMP-", "HLA2025-OMT-CV-", "HLA2025-OMT-SU-"))
+        }
+    ):
+        supporting_slices = [
+            evidence_slice
+            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            if requirement_id in evidence_slice.get("requirements", ())
+        ]
+        statuses = {evidence_slice["status"] for evidence_slice in supporting_slices}
+        if statuses == {"unsupported-boundary"}:
+            proof_status = "unsupported-boundary-traceable"
+        else:
+            proof_status = "supported-subset-traceable"
+        if requirement_id.startswith("HLA2025-OMT-COMP-"):
+            category = "component"
+        elif requirement_id.startswith("HLA2025-OMT-CV-"):
+            category = "validator-negative"
+        elif requirement_id.startswith("HLA2025-OMT-SU-"):
+            category = "service-utilization"
+        else:
+            category = "core-omt"
+        omt_rows.append(
+            {
+                "requirement_id": requirement_id,
+                "category": category,
+                "proof_status": proof_status,
+                "supporting_slice_ids": [evidence_slice["id"] for evidence_slice in supporting_slices],
+                "evidence_tests": sorted(
+                    {
+                        evidence_path
+                        for evidence_slice in supporting_slices
+                        for evidence_path in evidence_slice["evidence"]
+                        if evidence_path.endswith(".py")
+                    }
+                ),
+            }
+        )
+
+    return {
+        "row_count": len(omt_rows),
+        "by_category": dict(sorted(Counter(row["category"] for row in omt_rows).items())),
+        "by_proof_status": dict(sorted(Counter(row["proof_status"] for row in omt_rows).items())),
+        "traceable_requirement_count": len(omt_rows),
+        "ready_for_omt_traceability_claim": len(omt_rows) == 454,
+        "ready_for_full_omt_conformance_claim": False,
+        "current_assessment": (
+            "All OMT-related rows are now explicit requirement records, with supported-subset proof separated from "
+            "unsupported-boundary proof. This closes the traceability gap without pretending the unsupported OMT "
+            "boundaries are delivered support."
+        ),
+        "rows": omt_rows,
+    }
+
+
+def _build_completion_claim_audit(
+    backlog: Mapping[str, Any],
+    disposition: Mapping[str, Any],
+    objective_audit: Mapping[str, Any],
+    fi_audit: Mapping[str, Any],
+    delta_audit: Mapping[str, Any],
+    binding_audit: Mapping[str, Any],
+    omt_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    by_disposition = disposition["by_disposition"]
+    covered_count = by_disposition.get("covered", 0)
+    unsupported_count = by_disposition.get("unsupported-boundary", 0)
+    legacy_only_count = by_disposition.get("retired/legacy-only", 0)
+    duplicate_count = by_disposition.get("duplicate/umbrella", 0)
+    fully_closed_backlog = backlog["high_priority_open_count"] == 0 and "planned" not in backlog["by_current_status"]
+    return {
+        "claim_shape": "bounded-working-surface-with-explicit-boundaries",
+        "ready_for_supported-boundary_statement": (
+            objective_audit["ready_for_bounded_working_surface_claim"]
+            and fi_audit["ready_for_per_service_runtime_traceability_claim"]
+            and delta_audit["ready_for_delta_traceability_claim"]
+            and binding_audit["ready_for_binding_traceability_claim"]
+            and omt_audit["ready_for_omt_traceability_claim"]
+            and fully_closed_backlog
+        ),
+        "ready_for_full_2025_conformance_claim": False,
+        "requirement_universe": {
+            "total_rows": disposition["row_count"],
+            "covered_rows": covered_count,
+            "unsupported_boundary_rows": unsupported_count,
+            "retired_or_legacy_only_rows": legacy_only_count,
+            "duplicate_or_umbrella_rows": duplicate_count,
+        },
+        "backlog_closure": {
+            "row_count": backlog["row_count"],
+            "implemented_slice_rows": backlog["by_current_status"].get("implemented-slice", 0),
+            "legacy_only_rows": backlog["by_current_status"].get("legacy-only", 0),
+            "high_priority_open_count": backlog["high_priority_open_count"],
+            "fully_closed": fully_closed_backlog,
+        },
+        "traceability_ledgers": {
+            "fi_service_rows": fi_audit["row_count"],
+            "delta_rows": delta_audit["row_count"],
+            "binding_rows": binding_audit["row_count"],
+            "omt_rows": omt_audit["row_count"],
+        },
+        "current_assessment": (
+            "The repo can now make a defensible supported-boundary statement: the claimed working surface is backed "
+            "by explicit requirement ledgers, the backlog is closed at the tracked 2025 delta level, and unsupported "
+            "or legacy-only areas are named rather than hidden. This is still short of a full 2025 conformance claim."
+        ),
+        "full_claim_blockers": [
+            "Covered rows are mixed with explicit unsupported-boundary and retired/legacy-only rows in the 2025 universe, so the delivered statement must stay bounded.",
+            "Java and C++ binding rows remain artifact/runtime-capability evidence rather than exhaustive behavior-conformance proof.",
+            "The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics/MOM action-request conformance pass.",
+            "Duplicate/umbrella rows remain normalization aids rather than direct one-row conformance assertions.",
+        ],
+    }
+
+
+def _build_supported_boundary_statement(
+    claim_audit: Mapping[str, Any],
+    objective_audit: Mapping[str, Any],
+    route_parity_matrix: Mapping[str, Any],
+) -> dict[str, Any]:
+    return {
+        "statement_status": "supported-boundary-statement",
+        "ready": claim_audit["ready_for_supported-boundary_statement"],
+        "statement": (
+            "The Python-centered 2025 RTI surface is validated as a bounded working surface across federation "
+            "management, object management, time management, support services, callbacks, OMT handling, and "
+            "binding routes, with explicit unsupported, legacy-only, and artifact-gated boundaries recorded in the repo."
+        ),
+        "supported_scope": [
+            "Python 2025 in-process runtime behavior is executable and parity-covered across the tracked scenario set.",
+            "Hosted FedPro 2025 transport behavior is executable as a bounded runtime slice with explicit route parity coverage.",
+            "FI service requirements are traced across all 196 catalog rows.",
+            "Common delta rows, binding rows, and OMT-related rows are all represented by explicit requirement ledgers.",
+        ],
+        "explicit_boundaries": [
+            "Unsupported OMT component rows remain unsupported-boundary entries rather than delivered support.",
+            "Retired or legacy-only rows remain excluded from the supported 2025 working surface.",
+            "Java and C++ bindings remain artifact/runtime-capability bounded rather than full behavior-conformance proof.",
+            "FedPro remains a hosted runtime slice rather than a full RTI semantics/MOM action-request conformance pass.",
+        ],
+        "evidence_summary": {
+            "bounded_ready_dimensions": objective_audit["bounded_ready_dimension_count"],
+            "dimension_count": objective_audit["dimension_count"],
+            "route_parity_missing_count": route_parity_matrix["by_status"].get("missing", 0),
+            "route_parity_partial_count": route_parity_matrix["by_status"].get("partial", 0),
+            "covered_rows": claim_audit["requirement_universe"]["covered_rows"],
+            "unsupported_boundary_rows": claim_audit["requirement_universe"]["unsupported_boundary_rows"],
+            "retired_or_legacy_only_rows": claim_audit["requirement_universe"]["retired_or_legacy_only_rows"],
+        },
+    }
+
+
+def _route_dimension_summary(
+    route_parity_rows: list[dict[str, Any]],
+    scenarios: tuple[str, ...],
+) -> dict[str, Any]:
+    if not scenarios:
+        return {
+            "scenario_count": 0,
+            "row_count": 0,
+            "by_status": {},
+            "by_route": {},
+            "scenarios": [],
+            "routes_with_full_parity": [],
+        }
+
+    selected_rows = [row for row in route_parity_rows if row["scenario"] in scenarios]
+    by_status = dict(sorted(Counter(row["status"] for row in selected_rows).items()))
+    by_route: dict[str, dict[str, int]] = {route: {} for route in ROUTE_IDS_2025}
+    for row in selected_rows:
+        route_counts = by_route.setdefault(row["route"], {})
+        route_counts[row["status"]] = route_counts.get(row["status"], 0) + 1
+    return {
+        "scenario_count": len({row["scenario"] for row in selected_rows}),
+        "row_count": len(selected_rows),
+        "by_status": by_status,
+        "by_route": by_route,
+        "scenarios": list(scenarios),
+        "routes_with_full_parity": [
+            route
+            for route, counts in by_route.items()
+            if counts.get("parity-covered", 0) == len(scenarios)
+            and counts.get("partial", 0) == 0
+            and counts.get("missing", 0) == 0
+        ],
+    }
+
+
+def _build_objective_dimension_audit(route_parity_matrix: Mapping[str, Any]) -> dict[str, Any]:
+    slice_index = _implemented_slice_index()
+    route_rows = list(route_parity_matrix["rows"])
+    dimensions: list[dict[str, Any]] = []
+    for dimension in OBJECTIVE_DIMENSIONS:
+        slice_ids = tuple(dimension["implemented_slice_ids"])
+        slice_rows = [slice_index[slice_id] for slice_id in slice_ids]
+        route_summary = _route_dimension_summary(route_rows, tuple(dimension["route_scenarios"]))
+        evidence_tests = sorted({path for row in slice_rows for path in row["evidence"]})
+        route_artifacts = sorted(
+            {
+                artifact
+                for row in route_rows
+                if row["scenario"] in dimension["route_scenarios"]
+                for artifact in row.get("evidence_artifacts", ())
+            }
+        )
+        bounded_ready = (
+            dimension["evidence_level"] in {"strong-slice", "bounded-slice"}
+            and route_summary["by_status"].get("partial", 0) == 0
+            and route_summary["by_status"].get("missing", 0) == 0
+        )
+        if not dimension["route_scenarios"]:
+            bounded_ready = True
+        dimensions.append(
+            {
+                "id": dimension["id"],
+                "name": dimension["name"],
+                "evidence_level": dimension["evidence_level"],
+                "bounded_working_surface_ready": bounded_ready,
+                "ready_for_full_claim": False,
+                "implemented_slice_ids": slice_ids,
+                "requirements_count": sum(len(row["requirements"]) for row in slice_rows),
+                "evidence_tests": evidence_tests,
+                "route_scenarios": tuple(dimension["route_scenarios"]),
+                "route_summary": route_summary,
+                "route_artifacts": route_artifacts,
+                "current_assessment": dimension["current_assessment"],
+                "residual_blockers": list(dimension["residual_blockers"]),
+            }
+        )
+
+    bounded_ready_dimensions = sum(1 for dimension in dimensions if dimension["bounded_working_surface_ready"])
+    return {
+        "goal_shape": (
+            "Convert the clean 2025 requirement closeout into deeper runtime proof across federation management, "
+            "object management, time management, support services, callbacks, OMT handling, and binding routes."
+        ),
+        "surface_claim": "bounded-working-surface",
+        "ready_for_bounded_working_surface_claim": bounded_ready_dimensions == len(dimensions),
+        "ready_for_full_2025_completion_claim": False,
+        "dimension_count": len(dimensions),
+        "bounded_ready_dimension_count": bounded_ready_dimensions,
+        "dimensions": dimensions,
+        "overall_assessment": (
+            "The repo now supports a bounded working-surface claim across the core runtime dimensions, but that is "
+            "still weaker than a final 2025 conformance claim because several areas remain slice-bounded or "
+            "artifact-gated rather than requirement-by-requirement proven."
+        ),
+    }
+
+
+def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) -> dict[str, Any]:
+    route_rows = list(route_parity_matrix["rows"])
+    route_index = {(row["route"], row["scenario"]): row for row in route_rows}
+    milestone_specs: tuple[dict[str, Any], ...] = (
+        {
+            "id": "best_attempt_working_surface",
+            "label": "Best-attempt Python RTI 2025 working surface",
+            "status": "bounded-working-slice",
+            "scenarios": (
+                "federation_lifecycle",
+                "object_exchange",
+                "ownership",
+                "ddm",
+                "time_management",
+                "save_restore",
+                "mom",
+                "support_services",
+            ),
+            "supporting_slice_ids": ("2025-fedpro-transport-contract", "2025-standard-route-runtime-capability"),
+            "requirement_ids": ("HLA2025-FI-001", "HLA2025-FI-004", "HLA2025-FI-005", "HLA2025-FI-009"),
+            "summary_by_route": {
+                "python-2025-inprocess": (
+                    "In-process Python 2025 is a best-attempt bounded working surface across the tracked runtime "
+                    "scenario set, not a full requirement-by-requirement conformance claim."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "Hosted FedPro Python 2025 is a best-attempt bounded working surface across the tracked runtime "
+                    "scenario set, not a full RTI semantics or MOM action-request conformance claim."
+                ),
+            },
+            "boundary_by_route": {
+                "python-2025-inprocess": (
+                    "This milestone does not certify a full-fledged RTI beyond the tracked scenario and requirement slices."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "This milestone remains explicitly bounded to the hosted FedPro runtime slice."
+                ),
+            },
+        },
+        {
+            "id": "example_fom_scenarios",
+            "label": "Tracked example and FOM-backed scenario execution",
+            "status": "covered-scenario-slice",
+            "scenarios": ("object_exchange", "save_restore", "mom"),
+            "supporting_slice_ids": ("2025-fom-showcase", "2025-basic-object-exchange", "2025-save-restore-lifecycle"),
+            "requirement_ids": ("HLA2025-FR-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-REQ-002"),
+            "summary_by_route": {
+                "python-2025-inprocess": (
+                    "The in-process route executes the tracked repo example/FOM-backed scenarios, including object "
+                    "exchange, FOM showcase, and save/restore rollback paths."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "The hosted FedPro route executes the tracked FOM-backed runtime scenarios used by the current "
+                    "object, MOM, and save/restore route tests."
+                ),
+            },
+            "boundary_by_route": {
+                "python-2025-inprocess": (
+                    "This does not yet prove every conceivable example FOM scenario outside the tracked suite."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "This is scenario-suite evidence, not a universal claim for every possible FOM composition."
+                ),
+            },
+        },
+        {
+            "id": "messaging_and_routing",
+            "label": "Message exchange and routing",
+            "status": "covered-routing-slice",
+            "scenarios": ("object_exchange", "ddm", "mom"),
+            "supporting_slice_ids": (
+                "2025-basic-object-exchange",
+                "2025-directed-interaction-boundary",
+                "2025-ddm-default-attribute-policy",
+                "2025-fedpro-transport-contract",
+            ),
+            "requirement_ids": (
+                "HLA2025-FI-SVC-057",
+                "HLA2025-FI-SVC-060",
+                "HLA2025-FI-SVC-063",
+                "HLA2025-FI-SVC-126",
+                "HLA2025-FI-SVC-134",
+            ),
+            "summary_by_route": {
+                "python-2025-inprocess": (
+                    "The in-process route sends, receives, discovers, reflects, directs, and DDM-filters the tracked "
+                    "message flows end to end."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "The hosted FedPro route sends, receives, discovers, reflects, directs, and DDM-filters the "
+                    "tracked message flows over the typed transport surface."
+                ),
+            },
+            "boundary_by_route": {
+                "python-2025-inprocess": (
+                    "Routing proof remains bounded to the executable scenario matrix rather than every FI service in isolation."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "Routing proof remains bounded to the hosted transport/runtime slice."
+                ),
+            },
+        },
+        {
+            "id": "time_sync_and_advances",
+            "label": "Time synchronization and advance flow",
+            "status": "covered-time-advance-slice",
+            "scenarios": ("time_management", "save_restore"),
+            "supporting_slice_ids": ("2025-logical-time", "2025-save-restore-lifecycle", "2025-fedpro-transport-contract"),
+            "requirement_ids": ("HLA2025-FI-SVC-101", "HLA2025-FI-SVC-112", "HLA2025-FI-SVC-121", "HLA2025-FI-SVC-123"),
+            "summary_by_route": {
+                "python-2025-inprocess": (
+                    "The in-process route exercises regulation/constrained enablement, time advance, flush queue, "
+                    "timestamped delivery, retraction, and restore rollback of logical time."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "The hosted FedPro route exercises regulation/constrained enablement, async delivery control, "
+                    "advance/grant flow, queued TSO delivery, retraction, and restore rollback of logical time."
+                ),
+            },
+            "boundary_by_route": {
+                "python-2025-inprocess": (
+                    "This is strong runtime evidence for time sync behavior, not a final per-service conformance proof."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "This is strong hosted runtime evidence for time sync behavior, not a full RTI time-semantics proof."
+                ),
+            },
+        },
+        {
+            "id": "galt_lits_queries",
+            "label": "GALT and LITS behavior",
+            "status": "bounded-query-evidence",
+            "scenarios": ("time_management",),
+            "supporting_slice_ids": ("2025-logical-time", "2025-fedpro-transport-contract", "2025-standard-route-runtime-capability"),
+            "requirement_ids": ("HLA2025-FI-SVC-122", "HLA2025-FI-SVC-123"),
+            "summary_by_route": {
+                "python-2025-inprocess": "The in-process route has executable GALT/LITS query evidence inside the logical-time slice.",
+                "python-2025-fedpro-grpc": (
+                    "The hosted FedPro route has executable GALT/LITS query evidence inside the hosted time-management slice."
+                ),
+            },
+            "boundary_by_route": {
+                "python-2025-inprocess": (
+                    "Current evidence is not strong enough to claim a fully proven or universally correct GALT/LITS algorithm."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "Current evidence is not strong enough to claim a fully proven or universally correct hosted GALT/LITS algorithm."
+                ),
+            },
+        },
+        {
+            "id": "lookahead_windows",
+            "label": "Lookahead handling and windows",
+            "status": "bounded-lookahead-evidence",
+            "scenarios": ("time_management",),
+            "supporting_slice_ids": ("2025-logical-time", "2025-fedpro-transport-contract", "2025-standard-route-runtime-capability"),
+            "requirement_ids": ("HLA2025-FI-SVC-107", "HLA2025-FI-SVC-108", "HLA2025-FI-SVC-121"),
+            "summary_by_route": {
+                "python-2025-inprocess": (
+                    "The in-process route exercises lookahead query/modify behavior together with queued timestamped delivery."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "The hosted FedPro route exercises lookahead queries together with advance/grant and queued timestamped delivery."
+                ),
+            },
+            "boundary_by_route": {
+                "python-2025-inprocess": (
+                    "This is bounded runtime evidence for lookahead-window handling, not a final proof for every edge case."
+                ),
+                "python-2025-fedpro-grpc": (
+                    "This is bounded hosted runtime evidence for lookahead-window handling, not a final proof for every edge case."
+                ),
+            },
+        },
+    )
+
+    rows: list[dict[str, Any]] = []
+    for route in ("python-2025-inprocess", "python-2025-fedpro-grpc"):
+        for spec in milestone_specs:
+            matched_rows = [route_index[(route, scenario)] for scenario in spec["scenarios"]]
+            rows.append(
+                {
+                    "route": route,
+                    "milestone_id": spec["id"],
+                    "milestone_label": spec["label"],
+                    "status": spec["status"],
+                    "scenario_count": len(spec["scenarios"]),
+                    "route_parity_statuses": dict(sorted(Counter(row["status"] for row in matched_rows).items())),
+                    "supporting_scenarios": list(spec["scenarios"]),
+                    "supporting_slice_ids": list(spec["supporting_slice_ids"]),
+                    "requirement_ids": list(spec["requirement_ids"]),
+                    "evidence_tests": sorted({test_path for row in matched_rows for test_path in row["evidence_tests"]}),
+                    "route_notes": [row["notes"] for row in matched_rows],
+                    "summary": spec["summary_by_route"][route],
+                    "boundary": spec["boundary_by_route"][route],
+                }
+            )
+
+    by_route: dict[str, dict[str, Any]] = {}
+    for route in ("python-2025-inprocess", "python-2025-fedpro-grpc"):
+        route_milestones = [row for row in rows if row["route"] == route]
+        by_route[route] = {
+            "milestone_count": len(route_milestones),
+            "status_counts": dict(sorted(Counter(row["status"] for row in route_milestones).items())),
+            "all_route_parity_covered": all(
+                row["route_parity_statuses"].get("parity-covered", 0) == row["scenario_count"] for row in route_milestones
+            ),
+            "current_assessment": "The route clears the tracked milestone gates as a bounded Python 2025 working surface.",
+        }
+
+    return {
+        "audit_status": "bounded-python-rti-milestones",
+        "milestone_count": len(milestone_specs),
+        "row_count": len(rows),
+        "routes": ["python-2025-inprocess", "python-2025-fedpro-grpc"],
+        "current_assessment": (
+            "Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed "
+            "scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. "
+            "The last two remain bounded-evidence milestones rather than blanket correctness claims."
+        ),
+        "rows": rows,
+        "by_route": by_route,
+    }
 
 BACKLOG_STATUS_BY_ROW = {
     "HLA2025-BLG-001": "implemented-slice",
@@ -1070,6 +1963,12 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-RET-003": "legacy-only",
     "HLA2025-VER-001": "implemented-slice",
     "HLA2025-VER-002": "implemented-slice",
+    "HLA2025-MIL-001": "implemented-slice",
+    "HLA2025-MIL-002": "implemented-slice",
+    "HLA2025-MIL-003": "implemented-slice",
+    "HLA2025-MIL-004": "implemented-slice",
+    "HLA2025-MIL-005": "implemented-slice",
+    "HLA2025-MIL-006": "implemented-slice",
 }
 
 
@@ -1112,6 +2011,104 @@ def _counter(rows: list[dict[str, str]], field: str) -> dict[str, int]:
 
 def _next_status(row_id: str) -> str:
     return BACKLOG_STATUS_BY_ROW.get(row_id, "planned")
+
+
+def _extract_requirement_markers_from_test(path: Path) -> list[tuple[str, str]]:
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    anchors: list[tuple[str, str]] = []
+    for node in tree.body:
+        if not isinstance(node, ast.FunctionDef) or not node.name.startswith("test_"):
+            continue
+        for decorator in node.decorator_list:
+            if not isinstance(decorator, ast.Call):
+                continue
+            func = decorator.func
+            if not (
+                isinstance(func, ast.Attribute)
+                and func.attr == "requirements"
+                and isinstance(func.value, ast.Attribute)
+                and func.value.attr == "mark"
+                and isinstance(func.value.value, ast.Name)
+                and func.value.value.id == "pytest"
+            ):
+                continue
+            for arg in decorator.args:
+                if isinstance(arg, ast.Constant) and isinstance(arg.value, str) and arg.value.startswith("HLA2025-"):
+                    anchors.append((arg.value, f"{path.as_posix()}::{node.name}"))
+    return anchors
+
+
+def _build_requirement_pytest_anchor_audit(project_root: Path) -> dict[str, Any]:
+    tests_root = project_root / "tests"
+    by_requirement: dict[str, list[str]] = {}
+    for path in sorted(tests_root.rglob("test_*.py")):
+        for requirement_id, nodeid in _extract_requirement_markers_from_test(path):
+            by_requirement.setdefault(requirement_id, []).append(nodeid)
+    rows = [
+        {
+            "requirement_id": requirement_id,
+            "pytest_anchor_count": len(sorted(set(nodeids))),
+            "pytest_anchors": sorted(set(nodeids)),
+        }
+        for requirement_id, nodeids in sorted(by_requirement.items())
+    ]
+    return {
+        "row_count": len(rows),
+        "anchored_requirement_count": len(rows),
+        "current_assessment": (
+            "Repo-native HLA2025 requirement markers now provide direct pytest-function anchors for the supported "
+            "working-surface claim, complementing the broader evidence-slice ledgers."
+        ),
+        "rows": rows,
+    }
+
+
+def _build_unanchored_requirement_audit(
+    pytest_anchor_audit: Mapping[str, Any],
+    fi_audit: Mapping[str, Any],
+    delta_audit: Mapping[str, Any],
+    binding_audit: Mapping[str, Any],
+    omt_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    anchored = {row["requirement_id"] for row in pytest_anchor_audit["rows"]}
+    ledger_rows = [
+        *fi_audit["rows"],
+        *delta_audit["rows"],
+        *binding_audit["rows"],
+        *omt_audit["rows"],
+    ]
+    unanchored_rows = sorted(
+        (
+            {
+                "requirement_id": row["requirement_id"],
+                "family": row["requirement_id"].split("-", 1)[0] if False else (
+                    "FI" if row["requirement_id"].startswith("HLA2025-FI-")
+                    else "OMT" if row["requirement_id"].startswith("HLA2025-OMT-")
+                    else "other"
+                ),
+            }
+            for row in ledger_rows
+            if row["requirement_id"] not in anchored
+        ),
+        key=lambda row: row["requirement_id"],
+    )
+    if unanchored_rows:
+        current_assessment = (
+            "Direct pytest anchors still lag behind the broader requirement ledgers. The remaining gap is now "
+            "concentrated in FI service rows and OMT rows rather than the higher-level delta and binding requirements."
+        )
+    else:
+        current_assessment = (
+            "All FI, delta, binding, and OMT proof-ledger rows now have direct pytest-function anchors, so the "
+            "broader evidence-slice ledgers and direct requirement markers are aligned."
+        )
+    return {
+        "row_count": len(unanchored_rows),
+        "by_family": dict(sorted(Counter(row["family"] for row in unanchored_rows).items())),
+        "current_assessment": current_assessment,
+        "sample_requirement_ids": [row["requirement_id"] for row in unanchored_rows[:40]],
+        "rows": unanchored_rows,
+    }
 
 
 def _priority_rank(row: dict[str, str]) -> tuple[int, str]:
@@ -1209,6 +2206,78 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     executable_status_counts = dict(sorted(Counter(row["expected_status"] for row in executable_rows).items()))
     executable_priority_counts = dict(sorted(Counter(row["priority"] for row in executable_rows).items()))
     verification_matrix = _build_verification_matrix(completion_with_status, executable_rows)
+    requirement_pytest_anchor_audit = _build_requirement_pytest_anchor_audit(project_root)
+    route_parity_matrix = summarize_spec2025_route_parity()
+    objective_dimension_audit = _build_objective_dimension_audit(route_parity_matrix)
+    fi_service_proof_audit = _build_fi_service_proof_audit()
+    delta_requirement_proof_audit = _build_delta_requirement_proof_audit()
+    binding_requirement_proof_audit = _build_binding_requirement_proof_audit(route_parity_matrix)
+    omt_requirement_proof_audit = _build_omt_requirement_proof_audit()
+    python_rti_milestone_audit = _build_python_rti_milestone_audit(route_parity_matrix)
+    unanchored_requirement_audit = _build_unanchored_requirement_audit(
+        requirement_pytest_anchor_audit,
+        fi_service_proof_audit,
+        delta_requirement_proof_audit,
+        binding_requirement_proof_audit,
+        omt_requirement_proof_audit,
+    )
+    route_partial_count = route_parity_matrix["by_status"].get("partial", 0)
+    route_missing_count = route_parity_matrix["by_status"].get("missing", 0)
+    closeout_ready = len(high_priority_open) == 0 and route_partial_count == 0 and route_missing_count == 0
+    conformance_blockers = [
+        "The finish-line inventory now includes requirement-level FI service traceability, but the repo still lacks a full requirement-by-requirement conformance audit across all 2025 rows.",
+        "Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually.",
+        "Java and C++ standard-route evidence remains artifact-gated/runtime-capability evidence, not a full cross-binding behavior-conformance pass.",
+        "The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full MOM action/request conformance.",
+        "OMT component and validator coverage still mixes supported-subset proof with explicit unsupported-boundary rows, so those areas are not yet represented as an unconditional requirement-by-requirement conformance pass.",
+        "Unsupported-boundary and legacy-only rows remain explicit exclusions rather than delivered support, so overall completion cannot be promoted to an unconditional 2025 conformance claim.",
+    ]
+
+    completion_backlog = {
+        "row_count": len(completion_with_status),
+        "by_bucket": _counter(completion_with_status, "bucket"),
+        "by_priority": _counter(completion_with_status, "priority"),
+        "by_current_status": _counter(completion_with_status, "current_status"),
+        "high_priority_open_count": len(high_priority_open),
+        "high_priority_open": [
+            {
+                "id": row["id"],
+                "bucket": row["bucket"],
+                "area": row["area"],
+                "priority": row["priority"],
+                "current_status": row["current_status"],
+                "acceptance_criteria": row["acceptance_criteria"],
+                "verification_work": row["verification_work"],
+            }
+            for row in high_priority_open
+        ],
+    }
+    requirement_coverage_disposition = {
+        "row_count": harmonization_rollup["total_rows"],
+        "row_count_from_csv": len(harmonization_rows),
+        "by_disposition": harmonization_rollup["by_disposition"],
+        "by_priority": harmonization_rollup["by_priority"],
+        "by_area_and_disposition": harmonization_rollup["by_area_and_disposition"],
+        "by_closure_wave": harmonization_rollup["by_closure_wave"],
+        "fi_binding_surface": harmonization_rollup["fi_binding_surface"],
+        "covered_row_count": harmonization_rollup["by_disposition"].get("covered", 0),
+        "source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
+        "status": imported_packets["hla-2025-requirement-coverage-disposition"]["status"],
+    }
+    completion_claim_audit = _build_completion_claim_audit(
+        completion_backlog,
+        requirement_coverage_disposition,
+        objective_dimension_audit,
+        fi_service_proof_audit,
+        delta_requirement_proof_audit,
+        binding_requirement_proof_audit,
+        omt_requirement_proof_audit,
+    )
+    supported_boundary_statement = _build_supported_boundary_statement(
+        completion_claim_audit,
+        objective_dimension_audit,
+        route_parity_matrix,
+    )
 
     return {
         "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
@@ -1216,25 +2285,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "initial_tranche_requirements": len(registry_requirements),
             "imported_packets": [packet["id"] for packet in registry.get("imported_packets", ())],
         },
-        "completion_backlog": {
-            "row_count": len(completion_with_status),
-            "by_bucket": _counter(completion_with_status, "bucket"),
-            "by_priority": _counter(completion_with_status, "priority"),
-            "by_current_status": _counter(completion_with_status, "current_status"),
-            "high_priority_open_count": len(high_priority_open),
-            "high_priority_open": [
-                {
-                    "id": row["id"],
-                    "bucket": row["bucket"],
-                    "area": row["area"],
-                    "priority": row["priority"],
-                    "current_status": row["current_status"],
-                    "acceptance_criteria": row["acceptance_criteria"],
-                    "verification_work": row["verification_work"],
-                }
-                for row in high_priority_open
-            ],
-        },
+        "completion_backlog": completion_backlog,
         "executable_test_backlog": {
             "row_count": executable_summary["executable_test_rows"],
             "source_rows": executable_summary["source_rows"],
@@ -1252,21 +2303,34 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "source": "requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
             "status": imported_packets["hla-2025-requirement-depth-expansion"]["status"],
         },
-        "requirement_coverage_disposition": {
-            "row_count": harmonization_rollup["total_rows"],
-            "row_count_from_csv": len(harmonization_rows),
-            "by_disposition": harmonization_rollup["by_disposition"],
-            "by_priority": harmonization_rollup["by_priority"],
-            "by_area_and_disposition": harmonization_rollup["by_area_and_disposition"],
-            "by_closure_wave": harmonization_rollup["by_closure_wave"],
-            "fi_binding_surface": harmonization_rollup["fi_binding_surface"],
-            "covered_row_count": harmonization_rollup["by_disposition"].get("covered", 0),
-            "source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
-            "status": imported_packets["hla-2025-requirement-coverage-disposition"]["status"],
-        },
+        "requirement_coverage_disposition": requirement_coverage_disposition,
         "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
         "verification_matrix": verification_matrix,
-        "route_parity_matrix": summarize_spec2025_route_parity(),
+        "requirement_pytest_anchor_audit": requirement_pytest_anchor_audit,
+        "unanchored_requirement_audit": unanchored_requirement_audit,
+        "route_parity_matrix": route_parity_matrix,
+        "objective_dimension_audit": objective_dimension_audit,
+        "fi_service_proof_audit": fi_service_proof_audit,
+        "delta_requirement_proof_audit": delta_requirement_proof_audit,
+        "binding_requirement_proof_audit": binding_requirement_proof_audit,
+        "omt_requirement_proof_audit": omt_requirement_proof_audit,
+        "python_rti_milestone_audit": python_rti_milestone_audit,
+        "completion_claim_audit": completion_claim_audit,
+        "supported_boundary_statement": supported_boundary_statement,
+        "closeout_readiness": {
+            "implemented_slice_count": len(IMPLEMENTED_EVIDENCE_SLICES),
+            "high_priority_open_count": len(high_priority_open),
+            "route_parity_partial_count": route_partial_count,
+            "route_parity_missing_count": route_missing_count,
+            "ready_for_slice_closeout": closeout_ready,
+            "ready_for_full_completion_claim": False,
+            "current_assessment": (
+                "Executable slice coverage, route parity, and FI per-service runtime traceability are in strong shape, "
+                "but the repo still lacks a full requirement-by-requirement final conformance audit that would justify "
+                "a complete 2025 claim."
+            ),
+            "conformance_blockers": conformance_blockers,
+        },
         "finish_rule": (
             "Each remaining row needs a positive test, a negative unsupported-boundary test, "
             "or an explicit supported-subset/unsupported-boundary row before it can be counted as closed."
@@ -1280,6 +2344,16 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     executable = snapshot["executable_test_backlog"]
     depth = snapshot["requirement_depth_expansion"]
     disposition = snapshot["requirement_coverage_disposition"]
+    pytest_anchor_audit = snapshot["requirement_pytest_anchor_audit"]
+    unanchored_audit = snapshot["unanchored_requirement_audit"]
+    objective_audit = snapshot["objective_dimension_audit"]
+    fi_service_audit = snapshot["fi_service_proof_audit"]
+    delta_audit = snapshot["delta_requirement_proof_audit"]
+    binding_audit = snapshot["binding_requirement_proof_audit"]
+    omt_audit = snapshot["omt_requirement_proof_audit"]
+    milestone_audit = snapshot["python_rti_milestone_audit"]
+    claim_audit = snapshot["completion_claim_audit"]
+    supported_boundary = snapshot["supported_boundary_statement"]
     lines = [
         "# IEEE 1516-2025 Requirements Finish Line",
         "",
@@ -1294,11 +2368,184 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
         f"- Completion-backlog rows: {backlog['row_count']}",
         f"- High-priority rows still open: {backlog['high_priority_open_count']}",
         "",
+        "## Closeout Readiness",
+        "",
+        f"- Implemented evidence slices: {snapshot['closeout_readiness']['implemented_slice_count']}",
+        f"- Route parity partial rows: {snapshot['closeout_readiness']['route_parity_partial_count']}",
+        f"- Route parity missing rows: {snapshot['closeout_readiness']['route_parity_missing_count']}",
+        f"- Ready for slice closeout: {snapshot['closeout_readiness']['ready_for_slice_closeout']}",
+        f"- Ready for full completion claim: {snapshot['closeout_readiness']['ready_for_full_completion_claim']}",
+        f"- Assessment: {snapshot['closeout_readiness']['current_assessment']}",
+        "",
+        "Conformance blockers:",
+        "",
+    ]
+    for blocker in snapshot["closeout_readiness"]["conformance_blockers"]:
+        lines.append(f"- {blocker}")
+    lines.extend(
+        [
+            "",
+            "## Pytest Anchor Audit",
+            "",
+            f"- Anchored requirements: {pytest_anchor_audit['anchored_requirement_count']}",
+            f"- Assessment: {pytest_anchor_audit['current_assessment']}",
+            "",
+            "## Unanchored Requirement Audit",
+            "",
+            f"- Unanchored ledger requirements: {unanchored_audit['row_count']}",
+            f"- Assessment: {unanchored_audit['current_assessment']}",
+            "",
+            "## FI Service Proof Audit",
+            "",
+            f"- Service rows: {fi_service_audit['row_count']}",
+            f"- Ready for per-service runtime traceability claim: {fi_service_audit['ready_for_per_service_runtime_traceability_claim']}",
+            f"- Ready for full FI service conformance claim: {fi_service_audit['ready_for_full_fi_service_conformance_claim']}",
+            f"- Assessment: {fi_service_audit['current_assessment']}",
+            "",
+            "FI service family counts:",
+            "",
+        ]
+    )
+    for family, count in fi_service_audit["by_family"].items():
+        lines.append(f"- {family}: {count}")
+    lines.extend(
+        [
+            "",
+            "## Delta Requirement Proof Audit",
+            "",
+            f"- Delta rows: {delta_audit['row_count']}",
+            f"- Ready for delta traceability claim: {delta_audit['ready_for_delta_traceability_claim']}",
+            f"- Ready for full delta conformance claim: {delta_audit['ready_for_full_delta_conformance_claim']}",
+            f"- Assessment: {delta_audit['current_assessment']}",
+            "",
+        ]
+    )
+    for category, count in delta_audit["by_category"].items():
+        lines.append(f"- {category}: {count}")
+    lines.extend(
+        [
+            "",
+            "## Binding Requirement Proof Audit",
+            "",
+            f"- Binding rows: {binding_audit['row_count']}",
+            f"- Ready for binding traceability claim: {binding_audit['ready_for_binding_traceability_claim']}",
+            f"- Ready for full binding conformance claim: {binding_audit['ready_for_full_binding_conformance_claim']}",
+            f"- Assessment: {binding_audit['current_assessment']}",
+            "",
+            "## OMT Requirement Proof Audit",
+            "",
+            f"- OMT rows: {omt_audit['row_count']}",
+            f"- Ready for OMT traceability claim: {omt_audit['ready_for_omt_traceability_claim']}",
+            f"- Ready for full OMT conformance claim: {omt_audit['ready_for_full_omt_conformance_claim']}",
+            f"- Assessment: {omt_audit['current_assessment']}",
+            "",
+            "## Python RTI Milestone Audit",
+            "",
+            f"- Audit status: {milestone_audit['audit_status']}",
+            f"- Routes: {', '.join(milestone_audit['routes'])}",
+            f"- Milestones per route: {milestone_audit['milestone_count']}",
+            f"- Assessment: {milestone_audit['current_assessment']}",
+            "",
+            "## Completion Claim Audit",
+            "",
+            f"- Claim shape: {claim_audit['claim_shape']}",
+            f"- Ready for supported-boundary statement: {claim_audit['ready_for_supported-boundary_statement']}",
+            f"- Ready for full 2025 conformance claim: {claim_audit['ready_for_full_2025_conformance_claim']}",
+            f"- Assessment: {claim_audit['current_assessment']}",
+            "",
+            "Requirement universe:",
+            "",
+            f"- Total rows: {claim_audit['requirement_universe']['total_rows']}",
+            f"- Covered rows: {claim_audit['requirement_universe']['covered_rows']}",
+            f"- Unsupported-boundary rows: {claim_audit['requirement_universe']['unsupported_boundary_rows']}",
+            f"- Retired/legacy-only rows: {claim_audit['requirement_universe']['retired_or_legacy_only_rows']}",
+            f"- Duplicate/umbrella rows: {claim_audit['requirement_universe']['duplicate_or_umbrella_rows']}",
+            "",
+            "Full-claim blockers:",
+            "",
+        ]
+    )
+    for route in milestone_audit["routes"]:
+        route_summary = milestone_audit["by_route"][route]
+        lines.extend(
+            [
+                f"### {route}",
+                "",
+                f"- Milestone count: {route_summary['milestone_count']}",
+                f"- All milestone parity-covered: {route_summary['all_route_parity_covered']}",
+                f"- Assessment: {route_summary['current_assessment']}",
+                "",
+            ]
+        )
+        for row in milestone_audit["rows"]:
+            if row["route"] != route:
+                continue
+            lines.append(f"- {row['milestone_label']}: {row['status']} ({row['summary']})")
+        lines.append("")
+    for blocker in claim_audit["full_claim_blockers"]:
+        lines.append(f"- {blocker}")
+    lines.extend(
+        [
+            "",
+            "## Supported Boundary Statement",
+            "",
+            f"- Status: {supported_boundary['statement_status']}",
+            f"- Ready: {supported_boundary['ready']}",
+            f"- Statement: {supported_boundary['statement']}",
+            "",
+            "Supported scope:",
+            "",
+        ]
+    )
+    for item in supported_boundary["supported_scope"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Explicit boundaries:",
+            "",
+        ]
+    )
+    for item in supported_boundary["explicit_boundaries"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "## Objective Audit",
+            "",
+            f"- Surface claim: {objective_audit['surface_claim']}",
+            f"- Ready for bounded working-surface claim: {objective_audit['ready_for_bounded_working_surface_claim']}",
+            f"- Ready for full 2025 completion claim: {objective_audit['ready_for_full_2025_completion_claim']}",
+            f"- Bounded-ready dimensions: {objective_audit['bounded_ready_dimension_count']} / {objective_audit['dimension_count']}",
+            f"- Assessment: {objective_audit['overall_assessment']}",
+            "",
+        ]
+    )
+    for dimension in objective_audit["dimensions"]:
+        lines.extend(
+            [
+                f"### {dimension['name']}",
+                "",
+                f"- Evidence level: {dimension['evidence_level']}",
+                f"- Bounded working-surface ready: {dimension['bounded_working_surface_ready']}",
+                f"- Ready for full claim: {dimension['ready_for_full_claim']}",
+                f"- Route scenarios: {', '.join(dimension['route_scenarios']) if dimension['route_scenarios'] else 'none'}",
+                f"- Assessment: {dimension['current_assessment']}",
+                "",
+            ]
+        )
+        for blocker in dimension["residual_blockers"]:
+            lines.append(f"- Residual blocker: {blocker}")
+        lines.append("")
+    lines.extend(
+        [
+            "",
         "## Implemented Evidence Slices",
         "",
         "| Slice | Status | Requirements | Evidence |",
         "|---|---|---|---|",
-    ]
+        ]
+    )
     for slice_ in snapshot["implemented_evidence_slices"]:
         lines.append(
             "| {id} | {status} | {requirements} | {evidence} |".format(

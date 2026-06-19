@@ -30,13 +30,16 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "CONFIRM_DIVESTITURE": "confirmDivestitureRequest",
     "CREATE_REGION": "createRegionRequest",
     "DELETE_OBJECT_INSTANCE": "deleteObjectInstanceRequest",
+    "DELETE_OBJECT_INSTANCE_TIMESTAMP": "deleteObjectInstanceWithTimeRequest",
     "DELETE_REGION": "deleteRegionRequest",
     "DESTROY": "destroyFederationExecutionRequest",
     "DISABLE_ASYNCHRONOUS_DELIVERY": "disableAsynchronousDeliveryRequest",
+    "DISABLE_CALLBACKS": "disableCallbacksRequest",
     "DISABLE_TIME_CONSTRAINED": "disableTimeConstrainedRequest",
     "DISABLE_TIME_REGULATION": "disableTimeRegulationRequest",
     "DISCONNECT": "disconnectRequest",
     "ENABLE_ASYNCHRONOUS_DELIVERY": "enableAsynchronousDeliveryRequest",
+    "ENABLE_CALLBACKS": "enableCallbacksRequest",
     "ENABLE_TIME_CONSTRAINED": "enableTimeConstrainedRequest",
     "ENABLE_TIME_REGULATION": "enableTimeRegulationRequest",
     "FEDERATE_RESTORE_COMPLETE": "federateRestoreCompleteRequest",
@@ -62,6 +65,7 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "GET_OBJECT_INSTANCE_HANDLE": "getObjectInstanceHandleRequest",
     "GET_OBJECT_INSTANCE_NAME": "getObjectInstanceNameRequest",
     "IS_ATTRIBUTE_OWNED_BY_FEDERATE": "isAttributeOwnedByFederateRequest",
+    "LOCAL_DELETE_OBJECT_INSTANCE": "localDeleteObjectInstanceRequest",
     "MODIFY_LOOKAHEAD": "modifyLookaheadRequest",
     "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE": "negotiatedAttributeOwnershipDivestitureRequest",
     "NEXT_MESSAGE_REQUEST": "nextMessageRequestRequest",
@@ -204,7 +208,7 @@ def _enum_number(enum_type: Any, value: Any) -> int:
 
 
 def _field_values(message: Message, fields: Sequence[Any]) -> list[Any]:
-    descriptors = [field for field in message.DESCRIPTOR.fields if not field.is_repeated]
+    descriptors = list(message.DESCRIPTOR.fields)
     return list(fields[: len(descriptors)])
 
 
@@ -287,6 +291,11 @@ def _copy_message_field(target: Message, field: FieldDescriptor, value: Any) -> 
 
 
 def _assign_field(message: Message, field: FieldDescriptor, value: Any) -> None:
+    if field.is_repeated and field.type == FieldDescriptor.TYPE_STRING:
+        repeated = getattr(message, field.name)
+        items = value if isinstance(value, (list, tuple, set)) else str(value).split(",")
+        repeated.extend(str(item) for item in items if str(item))
+        return
     if field.type == FieldDescriptor.TYPE_STRING:
         setattr(message, field.name, str(value))
     elif field.type == FieldDescriptor.TYPE_BOOL:
@@ -450,6 +459,24 @@ def _decode_conveyed_regions(value: Any) -> str:
     return ";".join(parts)
 
 
+def _decode_handle_set(value: Any, repeated_name: str) -> str:
+    return ",".join(_opaque_text(item.data) for item in getattr(value, repeated_name))
+
+
+def _decode_federation_execution_report(value: Any) -> str:
+    return ";".join(
+        f"{item.federationExecutionName}:{item.logicalTimeImplementationName}"
+        for item in value.federationExecutionInformation
+    )
+
+
+def _decode_federation_execution_members(value: Any) -> str:
+    return ";".join(
+        f"{item.federateName}:{item.federateType}"
+        for item in value.federationExecutionMemberInformation
+    )
+
+
 def _decode_logical_time(value: Any) -> tuple[str, str]:
     raw = value.data.decode("ascii") if value.data else "HLAfloat64Time:0.0"
     if ":" in raw:
@@ -566,10 +593,33 @@ def _callback_remove(value: Any) -> tuple[str, ...]:
     )
 
 
+def _callback_remove_tso(value: Any) -> tuple[str, ...]:
+    time_type, time_value = _decode_logical_time(value.time)
+    return (
+        "REMOVE_OBJECT_INSTANCE_TSO",
+        _opaque_text(value.objectInstance.data),
+        bytes(value.userSuppliedTag).hex(),
+        time_type,
+        time_value,
+        _enum_wire_number(value.sentOrderType),
+        _enum_wire_number(value.receivedOrderType),
+        _opaque_text(value.producingFederate.data),
+    )
+
+
 def _callback_time(kind: str):
     def decode(value: Any) -> tuple[str, ...]:
         time_type, time_value = _decode_logical_time(value.time)
         return (kind, time_type, time_value)
+
+    return decode
+
+
+def _callback_two_times(kind: str):
+    def decode(value: Any) -> tuple[str, ...]:
+        time_type, time_value = _decode_logical_time(value.time)
+        optimistic_type, optimistic_value = _decode_logical_time(value.optimisticTime)
+        return (kind, time_type, time_value, optimistic_type, optimistic_value)
 
     return decode
 
@@ -579,6 +629,15 @@ def _callback_handle(kind: str, field_name: str):
 
 
 _CALLBACK_RESPONSE_FIELDS = {
+    "connectionLost": lambda value: ("CONNECTION_LOST", value.faultDescription),
+    "reportFederationExecutions": lambda value: ("REPORT_FEDERATION_EXECUTIONS", _decode_federation_execution_report(value.report)),
+    "reportFederationExecutionMembers": lambda value: (
+        "REPORT_FEDERATION_EXECUTION_MEMBERS",
+        value.federationName,
+        _decode_federation_execution_members(value.report),
+    ),
+    "reportFederationExecutionDoesNotExist": lambda value: ("REPORT_FEDERATION_EXECUTION_DOES_NOT_EXIST", value.federationName),
+    "federateResigned": lambda value: ("FEDERATE_RESIGNED", value.reasonForResignDescription),
     "discoverObjectInstance": _callback_discover,
     "reflectAttributeValues": _callback_reflect,
     "reflectAttributeValuesWithTime": _callback_reflect_tso,
@@ -587,14 +646,26 @@ _CALLBACK_RESPONSE_FIELDS = {
     "receiveDirectedInteraction": _callback_directed_interaction,
     "receiveDirectedInteractionWithTime": _callback_directed_interaction_tso,
     "removeObjectInstance": _callback_remove,
+    "removeObjectInstanceWithTime": _callback_remove_tso,
     "timeRegulationEnabled": _callback_time("TIME_REGULATION_ENABLED"),
     "timeConstrainedEnabled": _callback_time("TIME_CONSTRAINED_ENABLED"),
+    "flushQueueGrant": _callback_two_times("FLUSH_QUEUE_GRANT"),
     "timeAdvanceGrant": _callback_time("TIME_ADVANCE_GRANT"),
     "requestRetraction": _callback_handle("REQUEST_RETRACTION", "retraction"),
     "startRegistrationForObjectClass": _callback_handle("START_REGISTRATION_FOR_OBJECT_CLASS", "objectClass"),
     "stopRegistrationForObjectClass": _callback_handle("STOP_REGISTRATION_FOR_OBJECT_CLASS", "objectClass"),
     "turnInteractionsOn": _callback_handle("TURN_INTERACTIONS_ON", "interactionClass"),
     "turnInteractionsOff": _callback_handle("TURN_INTERACTIONS_OFF", "interactionClass"),
+    "attributesInScope": lambda value: (
+        "ATTRIBUTES_IN_SCOPE",
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_set(value.attributes, "attributeHandle"),
+    ),
+    "attributesOutOfScope": lambda value: (
+        "ATTRIBUTES_OUT_OF_SCOPE",
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_set(value.attributes, "attributeHandle"),
+    ),
     "provideAttributeValueUpdate": lambda value: (
         "PROVIDE_ATTRIBUTE_VALUE_UPDATE",
         _opaque_text(value.objectInstance.data),
@@ -602,6 +673,11 @@ _CALLBACK_RESPONSE_FIELDS = {
         bytes(value.userSuppliedTag).hex(),
     ),
     "synchronizationPointRegistrationSucceeded": lambda value: ("SYNC_POINT_REGISTRATION_SUCCEEDED", value.synchronizationPointLabel),
+    "synchronizationPointRegistrationFailed": lambda value: (
+        "SYNC_POINT_REGISTRATION_FAILED",
+        value.synchronizationPointLabel,
+        datatypes_pb2.SynchronizationPointFailureReason.Name(value.reason),
+    ),
     "announceSynchronizationPoint": lambda value: ("ANNOUNCE_SYNC_POINT", value.synchronizationPointLabel, bytes(value.userSuppliedTag).hex()),
     "federationSynchronized": lambda value: (
         "FEDERATION_SYNCHRONIZED",
@@ -609,6 +685,7 @@ _CALLBACK_RESPONSE_FIELDS = {
         ",".join(_opaque_text(item.data) for item in value.failedToSyncSet.federateHandle),
     ),
     "initiateFederateSave": lambda value: ("INITIATE_FEDERATE_SAVE", value.label),
+    "initiateFederateSaveWithTime": lambda value: ("INITIATE_FEDERATE_SAVE", value.label, *_decode_logical_time(value.time)),
     "federationSaved": lambda value: ("FEDERATION_SAVED",),
     "federationNotSaved": lambda value: ("FEDERATION_NOT_SAVED", datatypes_pb2.SaveFailureReason.Name(value.reason)),
     "federationSaveStatusResponse": lambda value: (
@@ -658,6 +735,11 @@ _CALLBACK_RESPONSE_FIELDS = {
         _opaque_text(value.objectInstance.data),
         ",".join(_opaque_text(item.data) for item in value.attributes.attributeHandle),
     ),
+    "attributeIsOwnedByRTI": lambda value: (
+        "ATTRIBUTE_IS_OWNED_BY_RTI",
+        _opaque_text(value.objectInstance.data),
+        ",".join(_opaque_text(item.data) for item in value.attributes.attributeHandle),
+    ),
     "attributeOwnershipUnavailable": lambda value: (
         "ATTRIBUTE_OWNERSHIP_UNAVAILABLE",
         _opaque_text(value.objectInstance.data),
@@ -680,6 +762,55 @@ _CALLBACK_RESPONSE_FIELDS = {
         "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION",
         _opaque_text(value.objectInstance.data),
         ",".join(_opaque_text(item.data) for item in value.attributes.attributeHandle),
+    ),
+    "objectInstanceNameReservationSucceeded": lambda value: ("OBJECT_INSTANCE_NAME_RESERVATION_SUCCEEDED", value.objectInstanceName),
+    "objectInstanceNameReservationFailed": lambda value: ("OBJECT_INSTANCE_NAME_RESERVATION_FAILED", value.objectInstanceName),
+    "multipleObjectInstanceNameReservationSucceeded": lambda value: (
+        "MULTIPLE_OBJECT_INSTANCE_NAME_RESERVATION_SUCCEEDED",
+        ",".join(value.objectInstanceNames),
+    ),
+    "multipleObjectInstanceNameReservationFailed": lambda value: (
+        "MULTIPLE_OBJECT_INSTANCE_NAME_RESERVATION_FAILED",
+        ",".join(value.objectInstanceNames),
+    ),
+    "turnUpdatesOnForObjectInstance": lambda value: (
+        "TURN_UPDATES_ON_FOR_OBJECT_INSTANCE",
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_set(value.attributes, "attributeHandle"),
+    ),
+    "turnUpdatesOnForObjectInstanceWithRate": lambda value: (
+        "TURN_UPDATES_ON_FOR_OBJECT_INSTANCE",
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_set(value.attributes, "attributeHandle"),
+        value.updateRateDesignator,
+    ),
+    "turnUpdatesOffForObjectInstance": lambda value: (
+        "TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE",
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_set(value.attributes, "attributeHandle"),
+    ),
+    "confirmAttributeTransportationTypeChange": lambda value: (
+        "CONFIRM_ATTRIBUTE_TRANSPORTATION_TYPE_CHANGE",
+        _opaque_text(value.objectInstance.data),
+        _decode_handle_set(value.attributes, "attributeHandle"),
+        _opaque_text(value.transportationType.data),
+    ),
+    "reportAttributeTransportationType": lambda value: (
+        "REPORT_ATTRIBUTE_TRANSPORTATION_TYPE",
+        _opaque_text(value.objectInstance.data),
+        _opaque_text(value.attribute.data),
+        _opaque_text(value.transportationType.data),
+    ),
+    "confirmInteractionTransportationTypeChange": lambda value: (
+        "CONFIRM_INTERACTION_TRANSPORTATION_TYPE_CHANGE",
+        _opaque_text(value.interactionClass.data),
+        _opaque_text(value.transportationType.data),
+    ),
+    "reportInteractionTransportationType": lambda value: (
+        "REPORT_INTERACTION_TRANSPORTATION_TYPE",
+        _opaque_text(value.federate.data),
+        _opaque_text(value.interactionClass.data),
+        _opaque_text(value.transportationType.data),
     ),
 }
 

@@ -1771,6 +1771,14 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
     ]
 
 
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-037",
+    "HLA2025-OMT-COMP-038",
+    "HLA2025-OMT-COMP-040",
+    "HLA2025-OMT-COMP-041",
+    "HLA2025-OMT-COMP-042",
+    "HLA2025-OMT-COMP-043",
+)
 def test_dimension_metadata_round_trip_is_still_intentionally_lossy(tmp_path: Path):
     xml_text = """<?xml version="1.0" encoding="utf-8"?>
 <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">

@@ -37,6 +37,7 @@ def _drain(*rtis: object) -> None:
     "HLA2025-FR-003",
     "HLA2025-FR-004",
     "HLA2025-FI-001",
+    "HLA2025-FI-007",
     "HLA2025-FI-008",
 )
 @pytest.mark.parametrize(
