@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import struct
 import uuid
 import xml.etree.ElementTree as ET
 from importlib.resources import files
@@ -1014,6 +1015,236 @@ def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> Non
     leader.destroyFederationExecution(federationName=federation_name)
     leader.disconnect()
     wing.disconnect()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+)
+def test_2025_shim_runs_example_fom_save_restore_gauntlet() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-save-restore-gauntlet-{uuid.uuid4().hex[:8]}"
+    save_name = f"SAVE-GAUNTLET-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    mirror_federate = Recording2025FederateAmbassador()
+    sender_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    mirror = create_rti_ambassador(backend="shim")
+    sender = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    def advance_ledger(ledger: dict[str, object], *, phase: str) -> None:
+        next_state = (int(ledger["random_state"]) * 1_103_515_245 + 12_345) % (2**31)
+        ledger["random_state"] = next_state
+        ledger["sequence_counter"] = int(ledger["sequence_counter"]) + 1
+        ledger["phase"] = phase
+
+    try:
+        for rti, federate in (
+            (owner, owner_federate),
+            (mirror, mirror_federate),
+            (sender, sender_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        owner_handle = owner.joinFederationExecution("Owner", "SaveRestoreGauntlet", federation_name)
+        mirror_handle = mirror.joinFederationExecution("Mirror", "SaveRestoreGauntlet", federation_name)
+        sender_handle = sender.joinFederationExecution("Owner-Sender", "SaveRestoreGauntlet", federation_name)
+        observer_handle = observer.joinFederationExecution("Mirror-Observer", "SaveRestoreGauntlet", federation_name)
+
+        role_ledgers = {
+            "owner": {"role": "owner", "random_state": 101, "sequence_counter": 0, "phase": "bootstrap"},
+            "mirror": {"role": "mirror", "random_state": 202, "sequence_counter": 0, "phase": "bootstrap"},
+            "sender": {"role": "sender", "random_state": 303, "sequence_counter": 0, "phase": "bootstrap"},
+            "observer": {"role": "observer", "random_state": 404, "sequence_counter": 0, "phase": "bootstrap"},
+        }
+
+        target_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        mirror_target_class = mirror.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_position = owner.getAttributeHandle(target_class, "Position")
+        owner_velocity = owner.getAttributeHandle(target_class, "Velocity")
+        owner_rcs = owner.getAttributeHandle(target_class, "RCS")
+        mirror_position = mirror.getAttributeHandle(mirror_target_class, "Position")
+        mirror_velocity = mirror.getAttributeHandle(mirror_target_class, "Velocity")
+        mirror_rcs = mirror.getAttributeHandle(mirror_target_class, "RCS")
+        interaction_class = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        observer_interaction_class = observer.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        interaction_parameter = sender.getParameterHandle(interaction_class, "TrackId")
+        observer_parameter = observer.getParameterHandle(observer_interaction_class, "TrackId")
+
+        owner.publishObjectClassAttributes(target_class, {owner_position, owner_velocity, owner_rcs})
+        mirror.subscribeObjectClassAttributes(mirror_target_class, {mirror_position, mirror_velocity, mirror_rcs})
+        sender.publishInteractionClass(interaction_class)
+        observer.subscribeInteractionClass(observer_interaction_class)
+
+        owner.enableTimeRegulation(HLAinteger64Interval(1))
+        sender.enableTimeRegulation(HLAinteger64Interval(1))
+        mirror.enableTimeConstrained()
+        observer.enableTimeConstrained()
+        sender.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
+
+        object_instance = owner.registerObjectInstance(target_class, "Target-Checkpoint-1")
+        owner.changeAttributeOrderType(object_instance, {owner_position, owner_velocity, owner_rcs}, OrderType.TIMESTAMP)
+        mirror_object_instance = mirror.getObjectInstanceHandle("Target-Checkpoint-1")
+
+        saved_position = struct.pack(">ddd", 10_000.0, 1_000.0, 2_000.0)
+        saved_velocity = struct.pack(">ddd", 250.0, 30.0, 0.0)
+        saved_rcs = struct.pack(">d", 12.5)
+        dirty_position = struct.pack(">ddd", 99_999.0, 88_888.0, 77_777.0)
+        dirty_velocity = struct.pack(">ddd", 0.0, 0.0, 0.0)
+        dirty_rcs = struct.pack(">d", 0.5)
+        branch_position = struct.pack(">ddd", 10_250.0, 1_030.0, 2_000.0)
+
+        owner.updateAttributeValues(
+            object_instance,
+            {owner_position: saved_position, owner_velocity: saved_velocity, owner_rcs: saved_rcs},
+            b"baseline-attributes",
+            HLAinteger64Time(4),
+        )
+        sender.sendInteraction(
+            interaction_class,
+            {interaction_parameter: b"baseline-track"},
+            b"baseline-track",
+            HLAinteger64Time(5),
+        )
+        for rti in (owner, mirror, sender, observer):
+            rti.timeAdvanceRequestAvailable(HLAinteger64Time(5))
+
+        baseline_reflect = mirror_federate.last_callback("reflectAttributeValues")
+        baseline_interaction = observer_federate.last_callback("receiveInteraction")
+        assert baseline_reflect is not None
+        assert baseline_interaction is not None
+        assert baseline_reflect[0] == mirror_object_instance
+        assert baseline_reflect[1][mirror_position] == saved_position
+        assert baseline_reflect[1][mirror_velocity] == saved_velocity
+        assert baseline_reflect[1][mirror_rcs] == saved_rcs
+        assert baseline_interaction[0] == observer_interaction_class
+        assert baseline_interaction[1] == {observer_parameter: b"baseline-track"}
+
+        for ledger in role_ledgers.values():
+            advance_ledger(ledger, phase="saved")
+        saved_ledgers = {role: dict(ledger) for role, ledger in role_ledgers.items()}
+        saved_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in saved_ledgers.items()}
+
+        owner.requestFederationSave(save_name)
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("initiateFederateSave") == (save_name,)
+        for rti in (owner, mirror, sender, observer):
+            rti.federateSaveBegun()
+        for rti in (owner, mirror, sender, observer):
+            rti.federateSaveComplete()
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("federationSaved") == ()
+
+        for ledger in role_ledgers.values():
+            advance_ledger(ledger, phase="dirty")
+        dirty_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in role_ledgers.items()}
+        assert dirty_fingerprints != saved_fingerprints
+
+        owner.updateAttributeValues(
+            object_instance,
+            {owner_position: dirty_position, owner_velocity: dirty_velocity, owner_rcs: dirty_rcs},
+            b"dirty-attributes",
+            HLAinteger64Time(7),
+        )
+        sender.sendInteraction(
+            interaction_class,
+            {interaction_parameter: b"dirty-track"},
+            b"dirty-track",
+            HLAinteger64Time(8),
+        )
+        for rti in (owner, mirror, sender, observer):
+            rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        dirty_reflect = _callbacks_named_2025(mirror_federate, "reflectAttributeValues")[-1]
+        dirty_interaction = _callbacks_named_2025(observer_federate, "receiveInteraction")[-1]
+        assert dirty_reflect[1][mirror_position] == dirty_position
+        assert dirty_interaction[1] == {observer_parameter: b"dirty-track"}
+
+        owner.deleteObjectInstance(object_instance, b"dirty-delete")
+        dirty_remove = mirror_federate.last_callback("removeObjectInstance")
+        assert dirty_remove is not None
+        assert dirty_remove[0] == mirror_object_instance
+        assert dirty_remove[1] == b"dirty-delete"
+
+        owner.requestFederationRestore(save_name)
+        assert owner_federate.last_callback("requestFederationRestoreSucceeded") == (save_name,)
+        assert owner_federate.last_callback("initiateFederateRestore") == (save_name, "Owner", owner_handle)
+        assert mirror_federate.last_callback("initiateFederateRestore") == (save_name, "Mirror", mirror_handle)
+        assert sender_federate.last_callback("initiateFederateRestore") == (save_name, "Owner-Sender", sender_handle)
+        assert observer_federate.last_callback("initiateFederateRestore") == (save_name, "Mirror-Observer", observer_handle)
+
+        restored_ledgers = {role: dict(ledger) for role, ledger in saved_ledgers.items()}
+        for rti in (owner, mirror, sender, observer):
+            rti.federateRestoreComplete()
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("federationRestored") == ()
+
+        restored_times = {
+            "owner": owner.queryLogicalTime(),
+            "mirror": mirror.queryLogicalTime(),
+            "sender": sender.queryLogicalTime(),
+            "observer": observer.queryLogicalTime(),
+        }
+        assert all(time == HLAinteger64Time(5) for time in restored_times.values())
+        restored_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in restored_ledgers.items()}
+        assert restored_fingerprints == saved_fingerprints
+        assert owner.getObjectInstanceName(object_instance) == "Target-Checkpoint-1"
+
+        mirror_federate.callbacks.clear()
+        observer_federate.callbacks.clear()
+        owner.updateAttributeValues(
+            object_instance,
+            {owner_position: branch_position, owner_velocity: saved_velocity, owner_rcs: saved_rcs},
+            b"branch-attributes",
+            HLAinteger64Time(7),
+        )
+        sender.sendInteraction(
+            interaction_class,
+            {interaction_parameter: b"branch-track"},
+            b"branch-track",
+            HLAinteger64Time(7),
+        )
+        for rti in (owner, mirror, sender, observer):
+            rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+
+        branch_reflect = mirror_federate.last_callback("reflectAttributeValues")
+        branch_interaction = observer_federate.last_callback("receiveInteraction")
+        assert branch_reflect is not None
+        assert branch_interaction is not None
+        assert branch_reflect[0] == mirror_object_instance
+        assert branch_reflect[1][mirror_position] == branch_position
+        assert branch_interaction[1] == {observer_parameter: b"branch-track"}
+        branch_tags = {args[2] for name, args in mirror_federate.callbacks if name == "reflectAttributeValues"}
+        branch_tags.update(args[2] for name, args in observer_federate.callbacks if name == "receiveInteraction")
+        assert b"dirty-attributes" not in branch_tags
+        assert b"dirty-track" not in branch_tags
+        remove_tags = {args[1] for name, args in mirror_federate.callbacks if name == "removeObjectInstance"}
+        assert b"dirty-delete" not in remove_tags
+    finally:
+        for rti in (observer, sender, mirror, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, sender, mirror, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
 
 
 @pytest.mark.requirements(

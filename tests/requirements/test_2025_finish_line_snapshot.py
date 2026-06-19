@@ -380,7 +380,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 17
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 19
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema"
@@ -490,7 +490,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert any("test_2025_transport_server_round_trips_support_services_over_fedpro_schema" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert pytest_rows["HLA2025-NEW-007"]["pytest_anchor_count"] >= 10
-    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] == 88
+    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] == 89
     assert any(
         "test_2025_transport_server_orders_timestamped_interactions_across_two_federates_over_fedpro_schema" in anchor
         for anchor in pytest_rows["HLA2025-BND-003"]["pytest_anchors"]

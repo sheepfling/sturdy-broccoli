@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from concurrent import futures
+import json
+import struct
+import uuid
 
 import grpc
 import pytest
@@ -5014,6 +5017,355 @@ def test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedp
             wing.close()
         if leader is not None:
             leader.close()
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_example_fom_save_restore_gauntlet_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    owner = None
+    mirror = None
+    sender = None
+    observer = None
+    federation_name = f"fedpro-2025-save-restore-gauntlet-{uuid.uuid4().hex[:8]}"
+    save_name = f"SAVE-GAUNTLET-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        mirror = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        sender = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        observer = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert owner.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "TargetRadarFOMmodule.xml"))
+        ).fields == ()
+        owner_handle = owner.request(TransportRequest(command="JOIN", fields=("Owner", "SaveRestoreGauntlet", federation_name))).fields[0]
+        mirror_handle = mirror.request(TransportRequest(command="JOIN", fields=("Mirror", "SaveRestoreGauntlet", federation_name))).fields[0]
+        sender_handle = sender.request(
+            TransportRequest(command="JOIN", fields=("Owner-Sender", "SaveRestoreGauntlet", federation_name))
+        ).fields[0]
+        observer_handle = observer.request(
+            TransportRequest(command="JOIN", fields=("Mirror-Observer", "SaveRestoreGauntlet", federation_name))
+        ).fields[0]
+
+        role_ledgers = {
+            "owner": {"role": "owner", "random_state": 101, "sequence_counter": 0, "phase": "bootstrap"},
+            "mirror": {"role": "mirror", "random_state": 202, "sequence_counter": 0, "phase": "bootstrap"},
+            "sender": {"role": "sender", "random_state": 303, "sequence_counter": 0, "phase": "bootstrap"},
+            "observer": {"role": "observer", "random_state": 404, "sequence_counter": 0, "phase": "bootstrap"},
+        }
+
+        def advance_ledger(ledger: dict[str, object], *, phase: str) -> None:
+            next_state = (int(ledger["random_state"]) * 1_103_515_245 + 12_345) % (2**31)
+            ledger["random_state"] = next_state
+            ledger["sequence_counter"] = int(ledger["sequence_counter"]) + 1
+            ledger["phase"] = phase
+
+        def collect_until_grant(transport: GrpcTransport, logical_time: str, *, limit: int = 8) -> list[tuple[str, ...]]:
+            callbacks: list[tuple[str, ...]] = []
+            for _ in range(limit):
+                fields = transport.request(TransportRequest(command="EVOKE")).fields
+                callbacks.append(fields)
+                if fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", logical_time):
+                    break
+            return callbacks
+
+        target_class = owner.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        mirror_target_class = mirror.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        owner_position = owner.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(target_class, "Position"))).fields[0]
+        mirror_position = mirror.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(mirror_target_class, "Position"))).fields[0]
+        interaction_class = sender.request(
+            TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
+        ).fields[0]
+        observer_interaction_class = observer.request(
+            TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
+        ).fields[0]
+        interaction_parameter = sender.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        observer_parameter = observer.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(observer_interaction_class, "TrackId"))
+        ).fields[0]
+
+        assert owner.request(
+            TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(target_class, owner_position))
+        ).fields == ()
+        assert mirror.request(
+            TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(mirror_target_class, mirror_position))
+        ).fields == ()
+        assert sender.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert observer.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(observer_interaction_class,))).fields == ()
+
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert sender.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert mirror.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert mirror.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert observer.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert observer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert sender.request(TransportRequest(command="CHANGE_INTERACTION_ORDER_TYPE", fields=(interaction_class, "TIMESTAMP"))).fields == ()
+
+        object_instance = owner.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(target_class, "Target-Checkpoint-1"))
+        ).fields[0]
+        assert mirror.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "DISCOVER")
+        assert owner.request(TransportRequest(command="CHANGE_ATTRIBUTE_ORDER_TYPE", fields=(object_instance, owner_position, "TIMESTAMP"))).fields == ()
+        mirror_object_instance = mirror.request(
+            TransportRequest(command="GET_OBJECT_INSTANCE_HANDLE", fields=("Target-Checkpoint-1",))
+        ).fields[0]
+
+        saved_position = struct.pack(">ddd", 10_000.0, 1_000.0, 2_000.0).hex()
+        dirty_position = struct.pack(">ddd", 99_999.0, 88_888.0, 77_777.0).hex()
+        branch_position = struct.pack(">ddd", 10_250.0, 1_030.0, 2_000.0).hex()
+
+        update_result = owner.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(
+                    object_instance,
+                    f"{owner_position}:{saved_position}",
+                    "626173656c696e652d61747472696275746573",
+                    "HLAinteger64Time",
+                    "4",
+                ),
+            )
+        ).fields
+        assert len(update_result) == 1
+        send_result = sender.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(
+                    interaction_class,
+                    f"{interaction_parameter}:626173656c696e652d747261636b",
+                    "626173656c696e652d747261636b",
+                    "HLAinteger64Time",
+                    "5",
+                ),
+            )
+        ).fields
+        assert len(send_result) == 1
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "5"))).fields == ()
+        assert sender.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "5"))).fields == ()
+        assert mirror.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "5"))).fields == ()
+        assert observer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "5"))).fields == ()
+
+        mirror_callbacks = collect_until_grant(mirror, "5")
+        observer_callbacks = collect_until_grant(observer, "5")
+        baseline_reflect = [fields for fields in mirror_callbacks if fields[:2] == ("1", "REFLECT_TSO")]
+        baseline_interaction = [fields for fields in observer_callbacks if fields[:2] == ("1", "INTERACTION_TSO")]
+        assert len(baseline_reflect) == 1
+        assert len(baseline_interaction) == 1
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
+        assert baseline_reflect[0][:5] == (
+            "1",
+            "REFLECT_TSO",
+            mirror_object_instance,
+            f"{mirror_position}:{saved_position}",
+            "626173656c696e652d61747472696275746573",
+        )
+        assert baseline_interaction[0][:5] == (
+            "1",
+            "INTERACTION_TSO",
+            observer_interaction_class,
+            f"{observer_parameter}:626173656c696e652d747261636b",
+            "626173656c696e652d747261636b",
+        )
+
+        for ledger in role_ledgers.values():
+            advance_ledger(ledger, phase="saved")
+        saved_ledgers = {role: dict(ledger) for role, ledger in role_ledgers.items()}
+        saved_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in role_ledgers.items()}
+
+        assert owner.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=(save_name,))).fields == ()
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", save_name)
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="FEDERATE_SAVE_COMPLETE")).fields == ()
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+
+        for ledger in role_ledgers.values():
+            advance_ledger(ledger, phase="dirty")
+        dirty_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in role_ledgers.items()}
+        assert dirty_fingerprints != saved_fingerprints
+
+        dirty_update_result = owner.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(
+                    object_instance,
+                    f"{owner_position}:{dirty_position}",
+                    "64697274792d61747472696275746573",
+                    "HLAinteger64Time",
+                    "7",
+                ),
+            )
+        ).fields
+        assert len(dirty_update_result) == 1
+        dirty_send_result = sender.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(
+                    interaction_class,
+                    f"{interaction_parameter}:64697274792d747261636b",
+                    "64697274792d747261636b",
+                    "HLAinteger64Time",
+                    "8",
+                ),
+            )
+        ).fields
+        assert len(dirty_send_result) == 1
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        assert sender.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        assert mirror.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        assert observer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        mirror_dirty_callbacks = collect_until_grant(mirror, "8")
+        observer_dirty_callbacks = collect_until_grant(observer, "8")
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "8")
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "8")
+        dirty_reflect = [fields for fields in mirror_dirty_callbacks if fields[:2] == ("1", "REFLECT_TSO")][-1]
+        dirty_interaction = [fields for fields in observer_dirty_callbacks if fields[:2] == ("1", "INTERACTION_TSO")][-1]
+        assert dirty_reflect[3] == f"{mirror_position}:{dirty_position}"
+        assert dirty_interaction[:5] == (
+            "1",
+            "INTERACTION_TSO",
+            observer_interaction_class,
+            f"{observer_parameter}:64697274792d747261636b",
+            "64697274792d747261636b",
+        )
+        assert owner.request(TransportRequest(command="DELETE_OBJECT_INSTANCE", fields=(object_instance, "64697274792d64656c657465"))).fields == ()
+        dirty_remove = mirror.request(TransportRequest(command="EVOKE")).fields
+        assert dirty_remove[:4] == ("1", "REMOVE_OBJECT_INSTANCE", mirror_object_instance, "64697274792d64656c657465")
+
+        assert owner.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=(save_name,))).fields == ()
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", save_name)
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORE_BEGUN")
+        assert owner.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            save_name,
+            "Owner",
+            owner_handle,
+        )
+        assert mirror.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            save_name,
+            "Mirror",
+            mirror_handle,
+        )
+        assert sender.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            save_name,
+            "Owner-Sender",
+            sender_handle,
+        )
+        assert observer.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            save_name,
+            "Mirror-Observer",
+            observer_handle,
+        )
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
+        for transport in (owner, mirror, sender, observer):
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+
+        restored_times = {
+            "owner": owner.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields,
+            "mirror": mirror.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields,
+            "sender": sender.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields,
+            "observer": observer.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields,
+        }
+        assert all(fields == ("HLAinteger64Time", "5") for fields in restored_times.values())
+        restored_ledgers = {role: dict(ledger) for role, ledger in saved_ledgers.items()}
+        assert {role: json.dumps(ledger, sort_keys=True) for role, ledger in restored_ledgers.items()} == saved_fingerprints
+        assert owner.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,))).fields == (
+            "Target-Checkpoint-1",
+        )
+
+        branch_update_result = owner.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(
+                    object_instance,
+                    f"{owner_position}:{branch_position}",
+                    "6272616e63682d61747472696275746573",
+                    "HLAinteger64Time",
+                    "7",
+                ),
+            )
+        ).fields
+        assert len(branch_update_result) == 1
+        branch_send_result = sender.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(
+                    interaction_class,
+                    f"{interaction_parameter}:6272616e63682d747261636b",
+                    "6272616e63682d747261636b",
+                    "HLAinteger64Time",
+                    "7",
+                ),
+            )
+        ).fields
+        assert len(branch_send_result) == 1
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        assert sender.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        assert mirror.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        assert observer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "8"))).fields == ()
+        branch_mirror_callbacks = collect_until_grant(mirror, "8")
+        branch_observer_callbacks = collect_until_grant(observer, "8")
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "8")
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "8")
+        branch_reflect = [fields for fields in branch_mirror_callbacks if fields[:2] == ("1", "REFLECT_TSO")]
+        branch_interaction = [fields for fields in branch_observer_callbacks if fields[:2] == ("1", "INTERACTION_TSO")]
+        assert any(branch_position in fields[3] and fields[4] == "6272616e63682d61747472696275746573" for fields in branch_reflect)
+        assert any(
+            fields[:5]
+            == (
+                "1",
+                "INTERACTION_TSO",
+                observer_interaction_class,
+                f"{observer_parameter}:6272616e63682d747261636b",
+                "6272616e63682d747261636b",
+            )
+            for fields in branch_interaction
+        )
+        branch_tags = {fields[4] for fields in branch_reflect}
+        branch_tags.update(fields[4] for fields in branch_interaction)
+        assert "64697274792d61747472696275746573" not in branch_tags
+        assert "64697274792d747261636b" not in branch_tags
+        remove_callbacks = [fields for fields in branch_mirror_callbacks if fields[:2] == ("1", "REMOVE_OBJECT_INSTANCE")]
+        assert all(fields[3] != "64697274792d64656c657465" for fields in remove_callbacks)
+    finally:
+        for transport in (owner, mirror, sender, observer):
+            if transport is None:
+                continue
+            try:
+                transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",)))
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.request(TransportRequest(command="DESTROY", fields=(federation_name,)))
+            except Exception:
+                pass
+        for transport in (owner, mirror, sender, observer):
+            if transport is not None:
+                transport.close()
         server.close()
 
 
