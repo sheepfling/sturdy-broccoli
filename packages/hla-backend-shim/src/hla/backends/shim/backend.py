@@ -86,6 +86,7 @@ from hla.rti1516_2025.exceptions import (
     ObjectClassNotDefined,
     ObjectClassNotPublished,
     ObjectInstanceNameInUse,
+    ObjectInstanceNameNotReserved,
     ObjectInstanceNotKnown,
     RegionDoesNotContainSpecifiedDimension,
     RestoreInProgress,
@@ -237,6 +238,7 @@ class _FederationRecord:
     member_region_bounds: dict[int, dict[int, dict[str, RangeBounds]]] = field(default_factory=dict)
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
     object_instance_names: dict[str, int] = field(default_factory=dict)
+    reserved_object_instance_names: dict[str, int] = field(default_factory=dict)
     mom_object_instances_updated: dict[tuple[int, str], int] = field(default_factory=dict)
     mom_object_instances_reflected: dict[tuple[int, str], int] = field(default_factory=dict)
     mom_updates_sent: dict[tuple[int, str, str], int] = field(default_factory=dict)
@@ -250,6 +252,7 @@ class _FederationRecord:
     saved_labels: set[str] = field(default_factory=set)
     saved_object_instances: dict[str, dict[int, "_ObjectInstanceRecord"]] = field(default_factory=dict)
     saved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
+    saved_reserved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
     saved_next_object_instance_handles: dict[str, int] = field(default_factory=dict)
     saved_member_logical_times: dict[str, dict[int, Any]] = field(default_factory=dict)
     save_label: str | None = None
@@ -1403,6 +1406,61 @@ class Shim2025RTIAmbassador:
         self._require_joined("serviceReportRecordsSnapshot")
         return tuple(dict(record) for record in self._service_report_records)
 
+    def reserveObjectInstanceName(self, objectInstanceName: str) -> None:  # noqa: N802
+        self._record("reserveObjectInstanceName", objectInstanceName)
+        self._require_joined("reserveObjectInstanceName")
+        self._require_no_save_or_restore("reserveObjectInstanceName")
+        name = self._normalize_reserved_object_instance_name(objectInstanceName, method_name="reserveObjectInstanceName")
+        federation = self._federation_record()
+        if name in federation.object_instance_names or name in federation.reserved_object_instance_names:
+            self._deliver_callback("objectInstanceNameReservationFailed", name)
+            return
+        federation.reserved_object_instance_names[name] = self._current_federate_key()
+        self._deliver_callback("objectInstanceNameReservationSucceeded", name)
+
+    def releaseObjectInstanceName(self, objectInstanceName: str) -> None:  # noqa: N802
+        self._record("releaseObjectInstanceName", objectInstanceName)
+        self._require_joined("releaseObjectInstanceName")
+        self._require_no_save_or_restore("releaseObjectInstanceName")
+        name = self._normalize_reserved_object_instance_name(objectInstanceName, method_name="releaseObjectInstanceName")
+        federation = self._federation_record()
+        if federation.reserved_object_instance_names.get(name) != self._current_federate_key():
+            raise ObjectInstanceNameNotReserved(name)
+        federation.reserved_object_instance_names.pop(name, None)
+
+    def reserveMultipleObjectInstanceNames(self, objectInstanceNames: Any) -> None:  # noqa: N802
+        self._record("reserveMultipleObjectInstanceNames", objectInstanceNames)
+        self._require_joined("reserveMultipleObjectInstanceNames")
+        self._require_no_save_or_restore("reserveMultipleObjectInstanceNames")
+        names = self._normalize_reserved_object_instance_name_set(
+            objectInstanceNames,
+            method_name="reserveMultipleObjectInstanceNames",
+        )
+        federation = self._federation_record()
+        if any(name in federation.object_instance_names or name in federation.reserved_object_instance_names for name in names):
+            self._deliver_callback("multipleObjectInstanceNameReservationFailed", names)
+            return
+        federate_key = self._current_federate_key()
+        for name in names:
+            federation.reserved_object_instance_names[name] = federate_key
+        self._deliver_callback("multipleObjectInstanceNameReservationSucceeded", names)
+
+    def releaseMultipleObjectInstanceNames(self, objectInstanceNames: Any) -> None:  # noqa: N802
+        self._record("releaseMultipleObjectInstanceNames", objectInstanceNames)
+        self._require_joined("releaseMultipleObjectInstanceNames")
+        self._require_no_save_or_restore("releaseMultipleObjectInstanceNames")
+        names = self._normalize_reserved_object_instance_name_set(
+            objectInstanceNames,
+            method_name="releaseMultipleObjectInstanceNames",
+        )
+        federation = self._federation_record()
+        federate_key = self._current_federate_key()
+        for name in sorted(names):
+            if federation.reserved_object_instance_names.get(name) != federate_key:
+                raise ObjectInstanceNameNotReserved(name)
+        for name in names:
+            federation.reserved_object_instance_names.pop(name, None)
+
     def momReportPeriodSecondsSnapshot(self) -> float | None:  # noqa: N802
         self._record("momReportPeriodSecondsSnapshot")
         self._require_joined("momReportPeriodSecondsSnapshot")
@@ -1422,6 +1480,9 @@ class Shim2025RTIAmbassador:
                 raise RTIinternalError("objectInstanceName must be a non-empty string when provided")
             if objectInstanceName in federation.object_instance_names:
                 raise ObjectInstanceNameInUse(objectInstanceName)
+            reserved_by = federation.reserved_object_instance_names.get(objectInstanceName)
+            if reserved_by is not None and reserved_by != self._current_federate_key():
+                raise ObjectInstanceNameInUse(objectInstanceName)
         handle = ObjectInstanceHandle(federation.next_object_instance_handle)
         federation.next_object_instance_handle += 1
         attribute_owners = {attribute_name: self._federate_handle for attribute_name in self._attribute_handles(object_class_name)}
@@ -1432,6 +1493,7 @@ class Shim2025RTIAmbassador:
         )
         if objectInstanceName is not None:
             federation.object_instance_names[objectInstanceName] = handle.value
+            federation.reserved_object_instance_names.pop(objectInstanceName, None)
         object_class_handle = ObjectClassHandle(self._object_class_handles()[object_class_name])
         source_key = self._current_federate_key()
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
@@ -2499,6 +2561,7 @@ class Shim2025RTIAmbassador:
             federation.saved_labels.add(label)
             federation.saved_object_instances[label] = copy.deepcopy(federation.object_instances)
             federation.saved_object_instance_names[label] = dict(federation.object_instance_names)
+            federation.saved_reserved_object_instance_names[label] = dict(federation.reserved_object_instance_names)
             federation.saved_next_object_instance_handles[label] = federation.next_object_instance_handle
             federation.saved_member_logical_times[label] = {
                 federate_key: rti._logical_time
@@ -2533,6 +2596,9 @@ class Shim2025RTIAmbassador:
             assert label is not None
             federation.object_instances = copy.deepcopy(federation.saved_object_instances.get(label, {}))
             federation.object_instance_names = dict(federation.saved_object_instance_names.get(label, {}))
+            federation.reserved_object_instance_names = dict(
+                federation.saved_reserved_object_instance_names.get(label, {})
+            )
             federation.next_object_instance_handle = federation.saved_next_object_instance_handles.get(
                 label,
                 federation.next_object_instance_handle,
@@ -2554,6 +2620,33 @@ class Shim2025RTIAmbassador:
         self._require_connected(method_name)
         if not self._joined:
             raise FederateNotExecutionMember(f"Cannot call {method_name} before joinFederationExecution")
+
+    def _require_no_save_or_restore(self, method_name: str) -> None:
+        federation = self._federation_record()
+        if federation.save_label is not None:
+            raise SaveInProgress(f"A federation save is already in progress during {method_name}")
+        if federation.restore_label is not None:
+            raise RestoreInProgress(f"A federation restore is already in progress during {method_name}")
+
+    @staticmethod
+    def _normalize_reserved_object_instance_name(object_instance_name: Any, *, method_name: str) -> str:
+        if not isinstance(object_instance_name, str) or not object_instance_name:
+            raise RTIinternalError(f"{method_name} requires non-empty object instance names")
+        return object_instance_name
+
+    def _normalize_reserved_object_instance_name_set(self, object_instance_names: Any, *, method_name: str) -> set[str]:
+        if isinstance(object_instance_names, str):
+            raise RTIinternalError(f"{method_name} requires a non-empty set of object instance names")
+        try:
+            names = set(object_instance_names)
+        except TypeError as exc:
+            raise RTIinternalError(f"{method_name} requires a non-empty set of object instance names") from exc
+        if not names:
+            raise RTIinternalError(f"{method_name} requires a non-empty set of object instance names")
+        return {
+            self._normalize_reserved_object_instance_name(name, method_name=method_name)
+            for name in names
+        }
 
     def _extract_federation_name(self, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
         federation_name = kwargs.get("federationName")
@@ -2789,6 +2882,13 @@ class Shim2025RTIAmbassador:
                 federation.members.pop(self._federate_name, None)
                 federation.member_handles.pop(self._federate_name, None)
             if self._federate_handle is not None:
+                reserved_names = [
+                    name
+                    for name, owner in federation.reserved_object_instance_names.items()
+                    if owner == self._federate_handle.value
+                ]
+                for name in reserved_names:
+                    federation.reserved_object_instance_names.pop(name, None)
                 federation.member_ambassadors.pop(self._federate_handle.value, None)
                 federation.member_rtis.pop(self._federate_handle.value, None)
                 federation.published_object_attributes.pop(self._federate_handle.value, None)

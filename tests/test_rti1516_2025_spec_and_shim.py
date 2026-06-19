@@ -93,6 +93,18 @@ class Recording2025FederateAmbassador:
     def momServiceReport(self, report) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("momServiceReport", (report,)))
 
+    def objectInstanceNameReservationSucceeded(self, objectInstanceName) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("objectInstanceNameReservationSucceeded", (objectInstanceName,)))
+
+    def objectInstanceNameReservationFailed(self, objectInstanceName) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("objectInstanceNameReservationFailed", (objectInstanceName,)))
+
+    def multipleObjectInstanceNameReservationSucceeded(self, objectInstanceNames) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("multipleObjectInstanceNameReservationSucceeded", (objectInstanceNames,)))
+
+    def multipleObjectInstanceNameReservationFailed(self, objectInstanceNames) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("multipleObjectInstanceNameReservationFailed", (objectInstanceNames,)))
+
     def discoverObjectInstance(self, objectInstance, objectClass, objectInstanceName, producingFederate) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("discoverObjectInstance", (objectInstance, objectClass, objectInstanceName, producingFederate)))
 
@@ -932,6 +944,103 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_supports_multiple_object_instance_name_reservation_and_release() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import (
+        FederateNotExecutionMember,
+        NotConnected,
+        ObjectInstanceNameNotReserved,
+        RTIinternalError,
+        RestoreInProgress,
+        SaveInProgress,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    unjoined = create_rti_ambassador(backend="shim")
+    with pytest.raises(NotConnected):
+        unjoined.reserveMultipleObjectInstanceNames({"PreJoin-A"})
+    with pytest.raises(NotConnected):
+        unjoined.releaseMultipleObjectInstanceNames({"PreJoin-A"})
+
+    unjoined.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        unjoined.reserveMultipleObjectInstanceNames({"PreJoin-A"})
+    with pytest.raises(FederateNotExecutionMember):
+        unjoined.releaseMultipleObjectInstanceNames({"PreJoin-A"})
+    unjoined.disconnect()
+
+    federation_name = f"shim-multi-name-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    rival_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    rival = create_rti_ambassador(backend="shim")
+    owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+    rival.connect(rival_federate, CallbackModel.HLA_EVOKED)
+    owner.createFederationExecution(federationName=federation_name, fomModule="TargetRadarFOMmodule.xml")
+    owner.joinFederationExecution(
+        federateName="Owner",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+    rival.joinFederationExecution(
+        federateName="Rival",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    names = {"Reserve-A", "Reserve-B"}
+    owner.reserveMultipleObjectInstanceNames(names)
+    assert owner_federate.last_callback("multipleObjectInstanceNameReservationSucceeded") == (names,)
+
+    rival.reserveMultipleObjectInstanceNames(names)
+    assert rival_federate.last_callback("multipleObjectInstanceNameReservationFailed") == (names,)
+
+    with pytest.raises(RTIinternalError):
+        owner.reserveMultipleObjectInstanceNames(set())
+    with pytest.raises(RTIinternalError):
+        owner.releaseMultipleObjectInstanceNames(set())
+
+    owner.requestFederationSave("MULTI-NAME-SAVE")
+    with pytest.raises(SaveInProgress):
+        owner.reserveMultipleObjectInstanceNames({"Save-Blocked"})
+    with pytest.raises(SaveInProgress):
+        owner.releaseMultipleObjectInstanceNames(names)
+    owner.abortFederationSave()
+
+    owner.reserveMultipleObjectInstanceNames({"Restore-Blocked"})
+    owner.requestFederationSave("MULTI-NAME-RESTORE")
+    owner.federateSaveBegun()
+    rival.federateSaveBegun()
+    owner.federateSaveComplete()
+    rival.federateSaveComplete()
+    owner.requestFederationRestore("MULTI-NAME-RESTORE")
+    with pytest.raises(RestoreInProgress):
+        owner.reserveMultipleObjectInstanceNames({"Restore-Locked"})
+    with pytest.raises(RestoreInProgress):
+        owner.releaseMultipleObjectInstanceNames({"Restore-Blocked"})
+    owner.federateRestoreComplete()
+    rival.federateRestoreComplete()
+    rival.reserveMultipleObjectInstanceNames({"Restore-Blocked"})
+    assert rival_federate.last_callback("multipleObjectInstanceNameReservationFailed") == ({"Restore-Blocked"},)
+    owner.releaseMultipleObjectInstanceNames({"Restore-Blocked"})
+
+    owner.releaseMultipleObjectInstanceNames(names)
+    rival.reserveMultipleObjectInstanceNames(names)
+    assert rival_federate.last_callback("multipleObjectInstanceNameReservationSucceeded") == (names,)
+
+    with pytest.raises(ObjectInstanceNameNotReserved):
+        owner.releaseMultipleObjectInstanceNames(names)
+
+    rival.releaseMultipleObjectInstanceNames(names)
+
+    rival.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution(federationName=federation_name)
+    rival.disconnect()
+    owner.disconnect()
 
 
 @pytest.mark.requirements(

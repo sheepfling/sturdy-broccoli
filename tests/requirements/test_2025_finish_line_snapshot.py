@@ -190,6 +190,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "deleteObjectInstance/removeObjectInstance callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "requestAttributeValueUpdate callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "transportation type change/query callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
+    assert slices["2025-multi-name-reservation-services"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-054" in slices["2025-multi-name-reservation-services"]["requirements"]
+    assert "HLA2025-FI-SVC-056" in slices["2025-multi-name-reservation-services"]["requirements"]
+    assert "set-wide success/failure callbacks" in slices["2025-multi-name-reservation-services"]["supported_scope"]
+    assert "reservation preservation through save/restore snapshots" in slices["2025-multi-name-reservation-services"]["supported_scope"]
     assert slices["2025-connection-lifecycle-services"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-002" in slices["2025-connection-lifecycle-services"]["requirements"]
     assert "HLA2025-FI-SVC-003" in slices["2025-connection-lifecycle-services"]["requirements"]

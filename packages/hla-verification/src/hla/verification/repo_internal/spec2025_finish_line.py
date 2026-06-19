@@ -391,6 +391,21 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-multi-name-reservation-services",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports reserveMultipleObjectInstanceNames and releaseMultipleObjectInstanceNames "
+            "with set-wide success/failure callbacks, not-connected and not-joined preconditions, empty-set "
+            "validation, save/restore in-progress blocking, reservation handoff after release, reservation cleanup "
+            "on join teardown, and reservation preservation through save/restore snapshots."
+        ),
+    },
+    {
         "id": "2025-connection-lifecycle-services",
         "status": "implemented-slice",
         "requirements": (
