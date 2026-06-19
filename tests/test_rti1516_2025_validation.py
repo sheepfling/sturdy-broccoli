@@ -573,6 +573,370 @@ def test_2025_parser_round_trips_metadata_switches_transport_and_time_subset(tmp
     assert reparsed.lookahead_datatype == "HLAinteger64Time"
 
 
+def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "extended-omt-supported-subset.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Extended Supported Subset</name>
+    <type>FOM</type>
+    <version>2.5</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <releaseRestriction>Internal</releaseRestriction>
+    <purpose>Roundtrip coverage.</purpose>
+    <applicationDomain>Training</applicationDomain>
+    <description>Extended OMT supported-subset fixture.</description>
+    <useLimitation>Lab use only.</useLimitation>
+    <useHistory>Derived from regression corpus.</useHistory>
+    <other>Other metadata.</other>
+    <glyph>glyph-01</glyph>
+    <keyword>alpha</keyword>
+    <keyword>omega</keyword>
+    <poc>
+      <pocType>Sponsor</pocType>
+      <pocName>Test User</pocName>
+      <pocOrg>Example Org</pocOrg>
+      <pocTelephone>555-0100</pocTelephone>
+      <pocEmail>test@example.invalid</pocEmail>
+    </poc>
+    <reference>
+      <type>URL</type>
+      <identification>https://example.invalid/spec</identification>
+    </reference>
+  </modelIdentification>
+  <serviceUtilization>
+    <connect advisor="true" mode="strict" />
+    <registerObjectInstance optional="false" />
+  </serviceUtilization>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Entity</name>
+        <attribute>
+          <name>EntityId</name>
+          <dataType>HLAunicodeString</dataType>
+          <transportation>HLAreliable</transportation>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>Report</name>
+        <parameter>
+          <name>Payload</name>
+          <dataType>HLAunicodeString</dataType>
+        </parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension><name>RouteDim</name></dimension>
+  </dimensions>
+  <time>
+    <logicalTime><dataType>HLAinteger64Time</dataType></logicalTime>
+    <logicalTimeInterval><dataType>HLAinteger64Time</dataType></logicalTimeInterval>
+  </time>
+  <tags>
+    <updateReflectTag><dataType>HLAunicodeString</dataType><semantics>Update tag.</semantics></updateReflectTag>
+    <sendReceiveTag><dataType>HLAunicodeString</dataType><semantics>Interaction tag.</semantics></sendReceiveTag>
+    <deleteRemoveTag><dataType>NA</dataType><semantics>Delete tag.</semantics></deleteRemoveTag>
+    <divestitureRequestTag><dataType>NA</dataType><semantics>Divest request.</semantics></divestitureRequestTag>
+    <divestitureCompletionTag><dataType>NA</dataType><semantics>Divest completion.</semantics></divestitureCompletionTag>
+    <acquisitionRequestTag><dataType>NA</dataType><semantics>Acquire request.</semantics></acquisitionRequestTag>
+    <requestUpdateTag><dataType>NA</dataType><semantics>Request update.</semantics></requestUpdateTag>
+  </tags>
+  <synchronizations>
+    <synchronizationPoint>
+      <label>ReadyToRun</label>
+      <dataType>HLAunicodeString</dataType>
+      <capability>RegisterAchieve</capability>
+      <semantics>Startup barrier.</semantics>
+    </synchronizationPoint>
+  </synchronizations>
+  <transportations>
+    <transportation><name>HLAreliable</name></transportation>
+    <transportation><name>HLAbestEffort</name></transportation>
+  </transportations>
+  <updateRates>
+    <updateRate><name>Fast</name><rate>10.0</rate></updateRate>
+  </updateRates>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+      <basicData>
+        <name>HLAunicodeString</name>
+        <size>0</size>
+        <interpretation>String</interpretation>
+        <endian>Big</endian>
+        <encoding>Unicode</encoding>
+      </basicData>
+      <basicData>
+        <name>HLAoctet</name>
+        <size>8</size>
+        <interpretation>Octet</interpretation>
+        <endian>Big</endian>
+        <encoding>8-bit unsigned</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>RouteSimple</name>
+        <representation>HLAinteger32BE</representation>
+        <semantics>Route type.</semantics>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes>
+      <enumeratedData>
+        <name>ChoiceEnum</name>
+        <representation>HLAinteger32BE</representation>
+        <semantics>Choice enum.</semantics>
+        <enumerator><name>A</name><value>1</value></enumerator>
+      </enumeratedData>
+    </enumeratedDataTypes>
+    <arrayDataTypes>
+      <arrayData>
+        <name>ByteVector</name>
+        <dataType>HLAoctet</dataType>
+        <cardinality>Dynamic</cardinality>
+        <encoding>HLAvariableArray</encoding>
+        <semantics>Opaque bytes.</semantics>
+      </arrayData>
+    </arrayDataTypes>
+    <fixedRecordDataTypes>
+      <fixedRecordData>
+        <name>Vector3</name>
+        <encoding>HLAfixedRecord</encoding>
+        <semantics>Cartesian vector.</semantics>
+        <field><name>X</name><dataType>HLAinteger32BE</dataType><semantics>x</semantics></field>
+      </fixedRecordData>
+    </fixedRecordDataTypes>
+    <variantRecordDataTypes>
+      <variantRecordData>
+        <name>MeasurementValue</name>
+        <discriminant>ChoiceEnum</discriminant>
+        <dataType>ChoiceEnum</dataType>
+        <alternative><enumerator>A</enumerator><name>Text</name><dataType>HLAunicodeString</dataType><semantics>text</semantics></alternative>
+        <encoding>HLAvariantRecord</encoding>
+        <semantics>Tagged payload.</semantics>
+      </variantRecordData>
+    </variantRecordDataTypes>
+  </dataTypes>
+  <notes>
+    <note><label>N1</label><semantics>alpha</semantics></note>
+  </notes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    report = next(spec for spec in module.interaction_classes if spec.full_name == "HLAinteractionRoot.Report")
+
+    assert module.model_identification["type"] == "FOM"
+    assert module.model_identification["modificationDate"] == "2026-06-19"
+    assert module.model_identification["securityClassification"] == "Unclassified"
+    assert module.model_identification["releaseRestriction"] == "Internal"
+    assert module.model_identification["purpose"] == "Roundtrip coverage."
+    assert module.model_identification["applicationDomain"] == "Training"
+    assert module.model_identification["useLimitation"] == "Lab use only."
+    assert module.model_identification["useHistory"] == "Derived from regression corpus."
+    assert module.model_identification["other"] == "Other metadata."
+    assert module.model_identification["glyph"] == "glyph-01"
+    assert module.model_identification["keywords"] == ("alpha", "omega")
+    assert module.model_identification["pocs"] == (
+        {
+            "pocType": "Sponsor",
+            "pocName": "Test User",
+            "pocOrg": "Example Org",
+            "pocTelephone": "555-0100",
+            "pocEmail": "test@example.invalid",
+        },
+    )
+    assert module.model_identification["references"] == (
+        {"type": "URL", "identification": "https://example.invalid/spec"},
+    )
+    assert module.service_utilization == {
+        "connect": {"advisor": "true", "mode": "strict"},
+        "registerObjectInstance": {"optional": "false"},
+    }
+    assert entity.declared_attributes == ("EntityId",)
+    assert entity.attribute_datatypes["EntityId"] == "HLAunicodeString"
+    assert entity.attribute_transportations["EntityId"] == "HLAreliable"
+    assert report.declared_parameters == ("Payload",)
+    assert report.parameter_datatypes["Payload"] == "HLAunicodeString"
+    assert module.dimensions == ("RouteDim",)
+    assert module.time_stamp_datatype == "HLAinteger64Time"
+    assert module.lookahead_datatype == "HLAinteger64Time"
+    assert module.tag_representations["updateReflectTag"] == {
+        "datatype": "HLAunicodeString",
+        "semantics": "Update tag.",
+    }
+    assert module.tag_representations["sendReceiveTag"]["datatype"] == "HLAunicodeString"
+    assert module.synchronization_points["ReadyToRun"] == {
+        "tag_datatype": "HLAunicodeString",
+        "capability": "RegisterAchieve",
+        "semantics": "Startup barrier.",
+    }
+    assert module.transportation_names == ("HLAreliable", "HLAbestEffort")
+    assert module.update_rates == {"Fast": "10.0"}
+    assert module.basic_datatypes["HLAinteger32BE"].encoding == "32-bit signed"
+    assert module.simple_datatypes["RouteSimple"].representation == "HLAinteger32BE"
+    assert module.simple_datatypes["RouteSimple"].semantics == "Route type."
+    assert module.enumerated_datatypes["ChoiceEnum"].representation == "HLAinteger32BE"
+    assert [item.name for item in module.enumerated_datatypes["ChoiceEnum"].enumerators] == ["A"]
+    assert module.array_datatypes["ByteVector"].data_type == "HLAoctet"
+    assert module.array_datatypes["ByteVector"].cardinality == "Dynamic"
+    assert module.array_datatypes["ByteVector"].semantics == "Opaque bytes."
+    assert module.fixed_record_datatypes["Vector3"].encoding == "HLAfixedRecord"
+    assert [(field.name, field.data_type, field.semantics) for field in module.fixed_record_datatypes["Vector3"].fields] == [
+        ("X", "HLAinteger32BE", "x"),
+    ]
+    assert module.variant_record_datatypes["MeasurementValue"].discriminant == "ChoiceEnum"
+    assert module.variant_record_datatypes["MeasurementValue"].encoding == "HLAvariantRecord"
+    assert [
+        (alt.enumerator, alt.name, alt.data_type, alt.semantics)
+        for alt in module.variant_record_datatypes["MeasurementValue"].alternatives
+    ] == [("A", "Text", "HLAunicodeString", "text")]
+    assert module.notes == ("N1: alpha",)
+
+    roundtrip = tmp_path / "extended-omt-supported-subset-roundtrip.xml"
+    roundtrip.write_text(serialize_fom_module(module, edition="2025"), encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip)
+
+    assert reparsed.model_identification == module.model_identification
+    assert reparsed.service_utilization == module.service_utilization
+    assert reparsed.dimensions == module.dimensions
+    assert reparsed.time_stamp_datatype == module.time_stamp_datatype
+    assert reparsed.lookahead_datatype == module.lookahead_datatype
+    assert reparsed.tag_representations == module.tag_representations
+    assert reparsed.synchronization_points == module.synchronization_points
+    assert reparsed.transportation_names == module.transportation_names
+    assert reparsed.update_rates == module.update_rates
+    for key, value in module.basic_datatypes.items():
+        assert reparsed.basic_datatypes[key] == value
+    for key, value in module.simple_datatypes.items():
+        assert reparsed.simple_datatypes[key] == value
+    for key, value in module.enumerated_datatypes.items():
+        assert reparsed.enumerated_datatypes[key] == value
+    for key, value in module.array_datatypes.items():
+        assert reparsed.array_datatypes[key] == value
+    for key, value in module.fixed_record_datatypes.items():
+        assert reparsed.fixed_record_datatypes[key] == value
+    for key, value in module.variant_record_datatypes.items():
+        assert reparsed.variant_record_datatypes[key] == value
+    assert reparsed.notes == module.notes
+
+    reparsed_entity = next(spec for spec in reparsed.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    reparsed_report = next(spec for spec in reparsed.interaction_classes if spec.full_name == "HLAinteractionRoot.Report")
+    assert reparsed_entity.declared_attributes == ("EntityId",)
+    assert reparsed_entity.attribute_datatypes["EntityId"] == "HLAunicodeString"
+    assert reparsed_entity.attribute_transportations["EntityId"] == "HLAreliable"
+    assert reparsed_report.declared_parameters == ("Payload",)
+    assert reparsed_report.parameter_datatypes["Payload"] == "HLAunicodeString"
+
+
+def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "narrow-omt-fields.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Narrow OMT Fields</name>
+    <type>FOM</type>
+    <keyword taxonomy="domain">alpha</keyword>
+    <poc><pocName>Test</pocName></poc>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <sharing>PublishSubscribe</sharing>
+      <semantics>Root semantics</semantics>
+      <objectClass>
+        <name>Entity</name>
+        <attribute>
+          <name>Status</name>
+          <dataType>HLAunicodeString</dataType>
+          <updateType>Static</updateType>
+          <updateCondition>Conditional</updateCondition>
+          <ownership>NoTransfer</ownership>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Timestamp</order>
+          <semantics>Status semantics</semantics>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>PublishSubscribe</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Timestamp</order>
+      <semantics>Interaction semantics</semantics>
+      <parameter>
+        <name>Payload</name>
+        <dataType>HLAunicodeString</dataType>
+        <semantics>Payload semantics</semantics>
+      </parameter>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RouteDim</name>
+      <upperBound>100</upperBound>
+      <value>[0..1)</value>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable><semantics>Reliable semantics</semantics></transportation>
+  </transportations>
+  <updateRates>
+    <updateRate><name>Fast</name><rate>10.0</rate><semantics>Fast semantics</semantics></updateRate>
+  </updateRates>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    assert entity.attribute_datatypes["Status"] == "HLAunicodeString"
+    assert entity.attribute_transportations["Status"] == "HLAreliable"
+    assert module.dimension_specs["RouteDim"].upper_bound == "100"
+    assert module.model_identification["keywords"] == ("alpha",)
+
+    xml_text = serialize_fom_module(module, edition="2025")
+    assert 'taxonomy="domain"' not in xml_text
+    assert "<updateType>" not in xml_text
+    assert "<updateCondition>" not in xml_text
+    assert "<ownership>" not in xml_text
+    assert "<order>Timestamp</order>" not in xml_text
+    assert "Status semantics" not in xml_text
+    assert "Interaction semantics" not in xml_text
+    assert "Payload semantics" not in xml_text
+    assert "<upperBound>100</upperBound>" not in xml_text
+    assert "<value>[0..1)</value>" not in xml_text
+    assert "Reliable semantics" not in xml_text
+    assert "Fast semantics" not in xml_text
+
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:
     from hla.rti1516_2025.validation import validate_hla_name

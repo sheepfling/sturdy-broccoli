@@ -300,6 +300,34 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-omt-extended-supported-subset",
+        "status": "implemented-slice",
+        "requirements": tuple(
+            f"HLA2025-OMT-COMP-{index:03d}"
+            for index in (
+                1, 2, 3, 5, 7, 9, 10, 16, 20, 22, 23, 24, 25, 26, 28, 29, 31, 32, 33, 34, 36, 46,
+                50, 51, 52, 53, 54, 55, 58, 60, 61, 62, 63, 64, 65, 66, 69, 71, 72, 73, 86, 88,
+                89, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 103, 104, 105, 108, 116, 117, 118,
+                119, 120, 121, 122, 123, 124, 126, 127, 128, 131, 132, 135, 136, 137, 138, 139,
+                148, 149, 153, 155, 172, 173, 174, 175, 177, 179, 180, 182, 183, 184, 185, 186,
+                187, 188, 199, 203, 205, 206, 209, 211, 212, 213, 214, 216, 217, 218, 220, 221, 223,
+            )
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "tests/factories/test_fom_omt_parsing.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser and 2025 serializer round-trip the supported model-identification scalar and "
+            "reference/POC metadata subset, serviceUtilization, object and interaction names plus supported "
+            "attribute/parameter datatype links, dimension-name lists, logicalTime/logicalTimeInterval containers, "
+            "notes, tag tables, synchronization tables, transportation name tables, update-rate name/rate tables, "
+            "and the supported basic/simple/enumerated/array/fixed-record/variant-record datatype tables and "
+            "top-level objectModel container sections that hold those structures."
+        ),
+    },
+    {
         "id": "2025-omt-unsupported-component-boundaries",
         "status": "unsupported-boundary",
         "requirements": (
@@ -339,6 +367,31 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "serializer surface; xs:any extension points are not preserved; nonRegulatedGrant, allowRelaxedDDM, "
             "advisoriesUseKnownClass, and sendServiceReportsToFile are outside the supported switch set; and "
             "logicalTime/logicalTimeInterval optional semantics and xs:any children are not round-tripped."
+        ),
+    },
+    {
+        "id": "2025-omt-unmodeled-component-boundaries-expanded",
+        "status": "unsupported-boundary",
+        "requirements": tuple(
+            f"HLA2025-OMT-COMP-{index:03d}"
+            for index in (
+                6, 8, 11, 12, 14, 15, 17, 18, 19, 21, 27, 35, 41, 44, 45, 47, 56, 57, 59, 67, 68,
+                70, 75, 76, 77, 80, 81, 82, 83, 102, 106, 107, 109, 114, 115, 129, 130, 133, 134,
+                154, 156, 171, 176, 178, 181, 189, 198, 200, 201, 202, 204, 207, 208, 210, 219, 222, 224,
+            )
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "tests/factories/test_fom_omt_parsing.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "These component rows remain intentionally bounded because the shared parser/serializer surface does not "
+            "preserve xs:any extension points, attribute update-condition/ownership/sharing/order/semantics fields, "
+            "object and interaction semantics or region-dimension associations, keyword taxonomy attributes, "
+            "dimension upperBound/value metadata on round-trip, parameter semantics, transportation reliable/"
+            "semantics detail rows, update-rate semantics rows, and other table members that are currently parsed "
+            "only as a narrower subset or are not modeled at all in the repo-native OMT representation."
         ),
     },
     {

@@ -8,10 +8,10 @@ to `covered` where direct repo evidence and executable anchors are present.
 ## Result
 
 - Total rows dispositioned: 691
-- Disposition counts: covered=455, duplicate/umbrella=22, partial=166, planned=0, retired/legacy-only=24, unsupported-boundary=24
+- Disposition counts: covered=564, duplicate/umbrella=22, partial=0, planned=0, retired/legacy-only=24, unsupported-boundary=81
 - Priority counts: P0=89, P1=430, P2=172
-- Covered rows promoted in this pass: 455
-- Rows closed as unsupported-boundary in this pass: 24
+- Covered rows promoted in this pass: 564
+- Rows closed as unsupported-boundary in this pass: 81
 
 The covered subset is deliberate and limited. This pass does not claim blanket
 implementation proof. Each row still carries a closure wave, priority, source
@@ -39,7 +39,7 @@ FedPro request messages in the provided protocol packet.
 | Imported rows are only candidates | Every row now has `harmonization_disposition`, `priority`, `closure_wave`, `repo_evidence_status`, and `promotion_rule`, and a subset is promoted where repo evidence is reconciled. | Keep non-covered rows tied to direct anchors before promotion. |
 | FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and the full FI catalog now points at direct executable Python evidence. | Keep future FI behavior changes synchronized with finish-line slices and executable anchors. |
 | SOM/FOM service-utilization rows lacked reconciled closure | All 196 service-utilization rows now point at direct parser/roundtrip evidence plus renumbered-differential checks and the covered FI catalog they mirror. | Keep serviceUtilization parser semantics and FI cross-checks synchronized when object-model handling changes. |
-| OMT component depth is not proof | A supported OMT metadata/switch subset is now promoted directly, and unsupported component rows are closed with explicit repo boundaries instead of being left implicit. | Keep narrowing broad claims, add direct fixtures when support expands, and replace boundary rows only when parser/serializer/runtime evidence exists. |
+| OMT component depth is not proof | The remaining OMT component rows are now either promoted into the supported shared parser/serializer subset or closed as explicit unsupported boundaries instead of being left partial. | Keep narrowing broad claims, add direct fixtures when support expands, and replace boundary rows only when parser/serializer/runtime evidence exists. |
 | Delta hints are not authoritative | Delta rows remain `duplicate/umbrella`; none are promoted to coverage without child-row links. | Review 2010/2025 source traces and bind each delta to concrete service/schema rows. |
 | Retired mappings can pollute 2025 coverage | Legacy-only rows are isolated as `retired/legacy-only` with explicit exclusion rules. | Decide compatibility/migration support and add migration fixtures only where intentional. |
 

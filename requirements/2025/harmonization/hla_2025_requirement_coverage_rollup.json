@@ -1,11 +1,10 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 455,
+    "covered": 564,
     "duplicate/umbrella": 22,
-    "partial": 166,
     "retired/legacy-only": 24,
-    "unsupported-boundary": 24
+    "unsupported-boundary": 81
   },
   "by_priority": {
     "P0": 89,
@@ -46,9 +45,8 @@
       "duplicate/umbrella": 10
     },
     "OMT component-level conformance": {
-      "covered": 34,
-      "partial": 166,
-      "unsupported-boundary": 24
+      "covered": 143,
+      "unsupported-boundary": 81
     },
     "OMT validator-negative conformance": {
       "covered": 29
