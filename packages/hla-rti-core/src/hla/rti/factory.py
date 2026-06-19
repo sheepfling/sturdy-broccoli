@@ -679,7 +679,16 @@ def _iter_source_checkout_backend_plugins() -> list[RTIBackendPlugin]:
         try:
             module = importlib.import_module(module_name)
         except ModuleNotFoundError as exc:
-            if exc.name == module_name or module_name.startswith(f"{exc.name}."):
+            # Source-checkout plugin discovery is opportunistic. When the caller
+            # only exposes a subset of split-package roots on PYTHONPATH, missing
+            # transitive package roots for optional plugins should skip cleanly
+            # instead of breaking unrelated backend creation.
+            missing_name = exc.name
+            if missing_name is not None and (
+                missing_name == module_name
+                or module_name.startswith(f"{missing_name}.")
+                or missing_name.startswith("hla.")
+            ):
                 continue
             raise
         for plugin in getattr(module, "backend_plugins", lambda: ())():
