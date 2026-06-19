@@ -215,7 +215,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "unpublish, and receiveDirectedInteraction callback delivery from a publisher to object-class "
             "directed subscribers. It also queues timestamped directed interactions until subscriber time advance, "
             "delivers timestamp order plus retraction handles on callback receipt, honors pre-delivery retract, "
-            "and filters directed interaction delivery through target object update-region and "
+            "supports selective directed interaction set unsubscribe/unpublish without collapsing sibling directed classes, and filters directed interaction delivery through target object update-region and "
             "subscribeInteractionClassWithRegions overlap. Java/C++/FedPro route parity remain later behavior work."
         ),
     },
@@ -530,7 +530,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
             "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
             "callbacks, queued timestamped attribute reflection/interaction receipt, plus directed-interaction "
-            "receipt with retraction handles and pre-delivery retract, object discovery, attribute reflection, "
+            "receipt with selective directed set unsubscribe/unpublish, retraction handles, and pre-delivery retract, object discovery, attribute reflection, "
             "interaction receipt, directed interaction receipt, basic DDM region-overlap filtering for object attributes "
             "and directed interactions, "
             "service-reporting switch state, MOM service-invocation report callbacks over FedPro, "

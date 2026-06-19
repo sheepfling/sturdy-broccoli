@@ -372,6 +372,162 @@ def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fed
         server.close()
 
 
+def test_2025_transport_server_directed_with_set_unsubscribe_and_unpublish_are_selective():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-directed-set"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "DirectedSelective2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025DirectedSet", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        track_report = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        alert_report = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",),
+            )
+        ).fields[0]
+        track_parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(track_report, "TrackId"))).fields[0]
+        alert_federate = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(alert_report, "HLAfederate"))).fields[0]
+        alert_service = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(alert_report, "HLAservice"))).fields[0]
+        alert_serial = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(alert_report, "HLAserialNumber"))).fields[0]
+
+        assert transport.request(
+            TransportRequest(
+                command="PUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS",
+                fields=(object_class, f"{track_report},{alert_report}"),
+            )
+        ).fields == ()
+        assert transport.request(
+            TransportRequest(
+                command="SUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS",
+                fields=(object_class, f"{track_report},{alert_report}"),
+            )
+        ).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProDirectedSetTarget-1"))).fields[0]
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(track_report, object_instance, f"{track_parameter}:545241434b2d31", "747261636b2d6265666f7265"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION",
+            track_report,
+            object_instance,
+            f"{track_parameter}:545241434b2d31",
+            "747261636b2d6265666f7265",
+            "1",
+            "1",
+        )
+
+        assert transport.request(
+            TransportRequest(
+                command="UNSUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS_WITH_SET",
+                fields=(object_class, track_report),
+            )
+        ).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(track_report, object_instance, f"{track_parameter}:545241434b2d32", "747261636b2d6166746572"),
+                )
+            ).fields
+            == ()
+        )
+        assert server.servicer.callback_queue == []
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(
+                        alert_report,
+                        object_instance,
+                        f"{alert_federate}:31,{alert_service}:73657276696365,{alert_serial}:31",
+                        "616c6572742d7374696c6c",
+                    ),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION",
+            alert_report,
+            object_instance,
+            f"{alert_federate}:31,{alert_service}:73657276696365,{alert_serial}:31",
+            "616c6572742d7374696c6c",
+            "1",
+            "1",
+        )
+
+        assert transport.request(
+            TransportRequest(
+                command="UNPUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS_WITH_SET",
+                fields=(object_class, track_report),
+            )
+        ).fields == ()
+        with pytest.raises(TransportError) as error:
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(track_report, object_instance, f"{track_parameter}:545241434b2d33", "747261636b2d756e707562"),
+                )
+            )
+        assert error.value.code == "InteractionClassNotPublished"
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(
+                        alert_report,
+                        object_instance,
+                        f"{alert_federate}:31,{alert_service}:7374696c6c,{alert_serial}:32",
+                        "616c6572742d7075626c6973686564",
+                    ),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DIRECTED_INTERACTION",
+            alert_report,
+            object_instance,
+            f"{alert_federate}:31,{alert_service}:7374696c6c,{alert_serial}:32",
+            "616c6572742d7075626c6973686564",
+            "1",
+            "1",
+        )
+
+        assert {
+            "publishObjectClassDirectedInteractionsRequest",
+            "subscribeObjectClassDirectedInteractionsRequest",
+            "unsubscribeObjectClassDirectedInteractionsWithSetRequest",
+            "unpublishObjectClassDirectedInteractionsWithSetRequest",
+            "sendDirectedInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_queues_timestamped_directed_interactions_and_retracts_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

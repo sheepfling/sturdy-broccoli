@@ -1223,6 +1223,160 @@ def test_2025_shim_filters_directed_interactions_by_ddm_region_overlap(tmp_path:
     publisher.disconnect()
 
 
+@pytest.mark.requirements(
+    "HLA2025-NEW-001",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-039",
+    "HLA2025-FI-SVC-040",
+    "HLA2025-FI-SVC-045",
+    "HLA2025-FI-SVC-046",
+)
+def test_2025_shim_directed_interaction_set_unsubscribe_and_unpublish_are_selective(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import InteractionClassNotPublished
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "SelectiveDirectedInteraction2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Selective Directed Interaction 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Directed interaction selective set fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+      <interactionClass>
+        <name>AlertReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>AlertId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-set-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("DirectedPublisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("DirectedSubscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+    track_report = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    alert_report = publisher.getInteractionClassHandle("HLAinteractionRoot.AlertReport")
+    track_parameter = publisher.getParameterHandle(track_report, "TrackId")
+    alert_parameter = publisher.getParameterHandle(alert_report, "AlertId")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+    object_instance = publisher.registerObjectInstance(object_class, "Directed-Selective-Target-1")
+
+    publisher.publishObjectClassDirectedInteractions(object_class, {track_report, alert_report})
+    subscriber.subscribeObjectClassDirectedInteractions(object_class, {track_report, alert_report})
+
+    publisher.sendDirectedInteraction(track_report, object_instance, {track_parameter: b"T-1"}, b"track-before")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") == (
+        track_report,
+        object_instance,
+        {track_parameter: b"T-1"},
+        b"track-before",
+        reliable,
+        publisher_handle,
+        None,
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
+    )
+
+    subscriber_callbacks.callbacks.clear()
+    subscriber.unsubscribeObjectClassDirectedInteractions(object_class, {track_report})
+    publisher.sendDirectedInteraction(track_report, object_instance, {track_parameter: b"T-2"}, b"track-after-unsubscribe")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
+
+    publisher.sendDirectedInteraction(alert_report, object_instance, {alert_parameter: b"A-1"}, b"alert-still-subscribed")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") == (
+        alert_report,
+        object_instance,
+        {alert_parameter: b"A-1"},
+        b"alert-still-subscribed",
+        reliable,
+        publisher_handle,
+        None,
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
+    )
+
+    subscriber_callbacks.callbacks.clear()
+    publisher.unpublishObjectClassDirectedInteractions(object_class, {track_report})
+    with pytest.raises(InteractionClassNotPublished):
+        publisher.sendDirectedInteraction(track_report, object_instance, {track_parameter: b"T-3"}, b"track-after-unpublish")
+
+    publisher.sendDirectedInteraction(alert_report, object_instance, {alert_parameter: b"A-2"}, b"alert-still-published")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") == (
+        alert_report,
+        object_instance,
+        {alert_parameter: b"A-2"},
+        b"alert-still-published",
+        reliable,
+        publisher_handle,
+        None,
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
+    )
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_supports_single_object_instance_name_reservation_callback_and_release() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
