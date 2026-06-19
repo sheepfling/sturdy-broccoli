@@ -33,6 +33,7 @@ def test_repo_green_default_suite_includes_2010_and_2025_grpc_route_tests() -> N
         ROOT / "tests/transport/test_grpc_transport_2025.py",
         ROOT / "tests/backends/test_standard_shim_artifacts.py",
         ROOT / "tests/backends/test_standard_java_shim_routes.py",
+        ROOT / "tests/factories/test_fom_workbench_browser.py",
     ]
     for path in default_suite_files:
         assert path.exists(), path.relative_to(ROOT)

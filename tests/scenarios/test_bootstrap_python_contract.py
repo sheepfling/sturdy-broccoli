@@ -115,6 +115,7 @@ def test_bootstrap_python_plan_for_qa_matches_repo_green_workspace() -> None:
         "pyright",
         "matplotlib",
         "lxml",
+        "playwright",
         "jpype1",
         "py4j",
     ]
