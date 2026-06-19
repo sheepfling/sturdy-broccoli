@@ -2744,6 +2744,21 @@ def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_sche
             assert transport.request(TransportRequest(command=set_command, fields=("0",))).fields == ()
             assert transport.request(TransportRequest(command=get_command)).fields == ("0",)
 
+        for get_command, expected in (
+            ("GET_AUTO_PROVIDE_SWITCH", "0"),
+            ("GET_DELAY_SUBSCRIPTION_EVALUATION_SWITCH", "0"),
+            ("GET_ADVISORIES_USE_KNOWN_CLASS_SWITCH", "0"),
+            ("GET_ALLOW_RELAXED_DDM_SWITCH", "0"),
+            ("GET_NON_REGULATED_GRANT_SWITCH", "0"),
+        ):
+            assert transport.request(TransportRequest(command=get_command)).fields == (expected,)
+
+        assert transport.request(TransportRequest(command="GET_AUTOMATIC_RESIGN_DIRECTIVE")).fields == ("NO_ACTION",)
+        assert transport.request(TransportRequest(command="SET_AUTOMATIC_RESIGN_DIRECTIVE", fields=("DELETE_OBJECTS",))).fields == ()
+        assert transport.request(TransportRequest(command="GET_AUTOMATIC_RESIGN_DIRECTIVE")).fields == ("DELETE_OBJECTS",)
+        assert transport.request(TransportRequest(command="SET_AUTOMATIC_RESIGN_DIRECTIVE", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="GET_AUTOMATIC_RESIGN_DIRECTIVE")).fields == ("NO_ACTION",)
+
         assert {
             "getExceptionReportingSwitchRequest",
             "setExceptionReportingSwitchRequest",
@@ -2759,6 +2774,13 @@ def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_sche
             "setConveyRegionDesignatorSetsSwitchRequest",
             "getSendServiceReportsToFileSwitchRequest",
             "setSendServiceReportsToFileSwitchRequest",
+            "getAutoProvideSwitchRequest",
+            "getDelaySubscriptionEvaluationSwitchRequest",
+            "getAdvisoriesUseKnownClassSwitchRequest",
+            "getAllowRelaxedDDMSwitchRequest",
+            "getNonRegulatedGrantSwitchRequest",
+            "getAutomaticResignDirectiveRequest",
+            "setAutomaticResignDirectiveRequest",
         } <= set(server.servicer.calls)
     finally:
         if transport is not None:

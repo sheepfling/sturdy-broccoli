@@ -265,6 +265,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.default_attribute_transportation: dict[tuple[str, str], str] = {}
         self.default_attribute_order: dict[tuple[str, str], int] = {}
         self.service_reporting = False
+        self.automatic_resign_directive = datatypes_pb2.NO_ACTION
         self.switch_states: dict[str, bool] = {
             "advisoriesUseKnownClass": False,
             "allowRelaxedDDM": False,
@@ -667,6 +668,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.service_reporting = request.setServiceReportingSwitchRequest.value
             self.switch_states["serviceReporting"] = self.service_reporting
             return rti_pb2.CallResponse(setServiceReportingSwitchResponse=rti_pb2.SetServiceReportingSwitchResponse())
+        if request_kind == "getAutomaticResignDirectiveRequest":
+            return rti_pb2.CallResponse(
+                getAutomaticResignDirectiveResponse=rti_pb2.GetAutomaticResignDirectiveResponse(
+                    result=self.automatic_resign_directive
+                )
+            )
+        if request_kind == "setAutomaticResignDirectiveRequest":
+            self.automatic_resign_directive = request.setAutomaticResignDirectiveRequest.value
+            return rti_pb2.CallResponse(
+                setAutomaticResignDirectiveResponse=rti_pb2.SetAutomaticResignDirectiveResponse()
+            )
         if request_kind.startswith("get") and request_kind.endswith("SwitchRequest"):
             switch_name = request_kind.removeprefix("get").removesuffix("SwitchRequest")
             state_key = switch_name[0].lower() + switch_name[1:]

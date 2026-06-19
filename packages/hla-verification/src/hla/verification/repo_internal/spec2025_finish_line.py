@@ -536,7 +536,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "receipt with selective directed set unsubscribe/unpublish, retraction handles, and pre-delivery retract, object discovery, attribute reflection, "
             "interaction receipt, directed interaction receipt, basic DDM region-overlap filtering for object attributes "
             "and directed interactions, "
-            "service-reporting switch state, MOM service-invocation report callbacks over FedPro, "
+            "service-reporting switch state, automatic resign directive get/set, read-only 2025 switch inquiry state, "
+            "MOM service-invocation report callbacks over FedPro, "
             "synchronization point/status MOM reports over FedPro, resign, destroy, and disconnect. Full MOM "
             "action/request routing and full RTI semantics remain outside this slice."
         ),
