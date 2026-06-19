@@ -764,6 +764,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     harmonization_rollup = json.loads(paths.harmonization_rollup.read_text(encoding="utf-8"))
     harmonization_rows = _read_csv(paths.harmonization_rows)
     registry = json.loads(paths.registry.read_text(encoding="utf-8"))
+    imported_packets = {packet["id"]: packet for packet in registry.get("imported_packets", ())}
     registry_requirements = registry.get("requirements", ())
 
     completion_with_status: list[dict[str, str]] = []
@@ -819,7 +820,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "by_delta_type": depth_summary["by_delta_type"],
             "by_source_document": depth_summary["by_source_document"],
             "source": "requirements/2025/depth/hla_2025_requirement_depth_expansion.csv",
-            "status": "imported-harmonization-candidate",
+            "status": imported_packets["hla-2025-requirement-depth-expansion"]["status"],
         },
         "requirement_coverage_disposition": {
             "row_count": harmonization_rollup["total_rows"],
@@ -831,7 +832,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "fi_binding_surface": harmonization_rollup["fi_binding_surface"],
             "covered_row_count": harmonization_rollup["by_disposition"].get("covered", 0),
             "source": "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv",
-            "status": "imported-provisional-disposition",
+            "status": imported_packets["hla-2025-requirement-coverage-disposition"]["status"],
         },
         "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
         "verification_matrix": verification_matrix,

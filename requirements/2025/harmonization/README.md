@@ -1,9 +1,11 @@
 # HLA 1516-2025 requirement harmonization packet
 
-This directory carries a provisional disposition layer over the 691-row
+This directory carries the repo-reconciled disposition layer over the 691-row
 requirement-depth expansion in `../depth/`.
 
-The files are review inputs, not implementation-proof claims:
+The files remain reviewable harmonization artifacts rather than blanket
+conformance claims, but rows may now be promoted to `covered` where direct repo
+evidence and executable anchors have been reconciled:
 
 - `hla_2025_requirement_disposition_ledger.csv` and `.json`: row-level
   disposition, priority, closure wave, binding/source trace fields, evidence
@@ -20,5 +22,5 @@ The files are review inputs, not implementation-proof claims:
   promotion guardrails.
 - `source_manifest.json`: source file checksums for the imported packet.
 
-Rows should only move to `covered` after repo evidence anchors, executable tests
-or fixtures, and unsupported-boundary decisions are recorded.
+Rows move to `covered` only after repo evidence anchors, executable tests or
+fixtures, and unsupported-boundary decisions where applicable are recorded.

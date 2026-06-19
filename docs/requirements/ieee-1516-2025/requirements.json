@@ -51,7 +51,7 @@
       "rollup_path": "../../../requirements/2025/harmonization/hla_2025_requirement_coverage_rollup.json",
       "manifest_path": "../../../requirements/2025/harmonization/source_manifest.json",
       "row_count": 691,
-      "status": "imported-provisional-disposition"
+      "status": "repo-reconciled-disposition"
     }
   ],
   "requirements": [

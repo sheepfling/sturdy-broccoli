@@ -93,7 +93,7 @@ def test_imported_requirement_depth_packet_is_tracked_as_harmonization_candidate
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-002", "HLA2025-TRACE-001")
-def test_imported_requirement_disposition_packet_is_tracked_without_promoting_coverage() -> None:
+def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage_promotions() -> None:
     registry = json.loads((REQ_DIR / "requirements.json").read_text(encoding="utf-8"))
     packets = {packet["id"]: packet for packet in registry["imported_packets"]}
     packet = packets["hla-2025-requirement-coverage-disposition"]
@@ -115,18 +115,19 @@ def test_imported_requirement_disposition_packet_is_tracked_without_promoting_co
 
     assert csv_path == HARMONIZATION_DIR / "hla_2025_requirement_disposition_ledger.csv"
     assert json_path == HARMONIZATION_DIR / "hla_2025_requirement_disposition_ledger.json"
-    assert packet["status"] == "imported-provisional-disposition"
+    assert packet["status"] == "repo-reconciled-disposition"
     assert len(rows) == packet["row_count"] == rollup["total_rows"] == 691
     assert len(matrix_rows) == rollup["fi_binding_surface"]["fi_rows"] == 196
     assert len(review_rows) == 691
     assert worklist_rows
     assert rollup["by_disposition"] == {
         "duplicate/umbrella": 22,
-        "partial": 516,
-        "planned": 129,
+        "covered": 27,
+        "partial": 502,
+        "planned": 116,
         "retired/legacy-only": 24,
     }
-    assert "covered" not in rollup["by_disposition"]
+    assert rollup["by_disposition"]["covered"] == 27
     assert rollup["fi_binding_surface"]["java_present"] == 196
     assert rollup["fi_binding_surface"]["cpp_present"] == 196
     assert rollup["fi_binding_surface"]["fedpro_present"] == 191

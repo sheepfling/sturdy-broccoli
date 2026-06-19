@@ -1,9 +1,10 @@
 {
   "total_rows": 691,
   "by_disposition": {
+    "covered": 27,
     "duplicate/umbrella": 22,
-    "partial": 516,
-    "planned": 129,
+    "partial": 502,
+    "planned": 116,
     "retired/legacy-only": 24
   },
   "by_priority": {
@@ -16,8 +17,9 @@
       "duplicate/umbrella": 12
     },
     "Federate Interface service catalog": {
-      "partial": 96,
-      "planned": 100
+      "covered": 27,
+      "partial": 82,
+      "planned": 87
     },
     "Framework and Rules": {
       "duplicate/umbrella": 10
@@ -82,5 +84,5 @@
       "present-via-class-and-instance-split": 1
     }
   },
-  "important_guardrail": "No row is promoted to harmonization_disposition=covered in this packet because the local repo evidence matrix was not accessible in this workspace."
+  "important_guardrail": "Only rows with direct repo evidence anchors and executable or fixture anchors are promoted to harmonization_disposition=covered in this repo-reconciled packet."
 }

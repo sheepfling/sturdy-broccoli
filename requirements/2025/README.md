@@ -38,7 +38,7 @@ that all rows are implemented. Use it to split broad 2025 umbrella rows into
 reviewable service, schema, validator, and migration-mapping rows before
 promoting any claim in the completion backlog or finish-line report.
 
-The `harmonization/` packet is the next review layer. It assigns provisional
-dispositions and closure tasks to the depth rows, but intentionally promotes no
-row to `covered`; promotion still requires concrete repo evidence and executable
-test or fixture anchors.
+The `harmonization/` packet is the next review layer. It assigns row-level
+dispositions and closure tasks to the depth rows, and may promote rows to
+`covered` once concrete repo evidence and executable test or fixture anchors are
+reconciled into the packet.
