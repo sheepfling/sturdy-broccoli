@@ -448,6 +448,17 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-179",
             "HLA2025-FI-SVC-180",
             "HLA2025-FI-SVC-181",
+            "HLA2025-FI-SVC-182",
+            "HLA2025-FI-SVC-183",
+            "HLA2025-FI-SVC-184",
+            "HLA2025-FI-SVC-185",
+            "HLA2025-FI-SVC-186",
+            "HLA2025-FI-SVC-187",
+            "HLA2025-FI-SVC-188",
+            "HLA2025-FI-SVC-189",
+            "HLA2025-FI-SVC-190",
+            "HLA2025-FI-SVC-191",
+            "HLA2025-FI-SVC-192",
         ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
@@ -457,8 +468,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "Python 2025 shim normalizes object class, interaction class, and object instance handles with "
             "typed-handle validation and wrong-family rejection. It also implements explicit get/set support "
             "for object-class relevance, attribute relevance, attribute scope, interaction relevance, convey "
-            "region designator sets, and automatic resign directive controls, including bool validation for "
-            "switch services and ResignAction validation for automatic resign directive."
+            "region designator sets, automatic resign directive, service reporting, exception reporting, "
+            "send-service-reports-to-file, auto-provide, delay-subscription-evaluation, advisories-use-known-class, "
+            "allow-relaxed-DDM, and non-regulated-grant controls, including bool validation for switch services "
+            "and ResignAction validation for automatic resign directive."
         ),
     },
     {

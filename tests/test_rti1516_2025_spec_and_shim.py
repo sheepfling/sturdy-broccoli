@@ -3324,6 +3324,17 @@ def test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family() ->
     "HLA2025-FI-SVC-179",
     "HLA2025-FI-SVC-180",
     "HLA2025-FI-SVC-181",
+    "HLA2025-FI-SVC-182",
+    "HLA2025-FI-SVC-183",
+    "HLA2025-FI-SVC-184",
+    "HLA2025-FI-SVC-185",
+    "HLA2025-FI-SVC-186",
+    "HLA2025-FI-SVC-187",
+    "HLA2025-FI-SVC-188",
+    "HLA2025-FI-SVC-189",
+    "HLA2025-FI-SVC-190",
+    "HLA2025-FI-SVC-191",
+    "HLA2025-FI-SVC-192",
 )
 def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
