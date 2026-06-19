@@ -13,7 +13,9 @@ from hla.verification import (
     FederationLifecycleScenarioConfig,
     OwnershipScenarioConfig,
     SaveRestoreScenarioConfig,
+    TargetRadarConsumerOrderConfig,
     TargetRadarFutureExclusionConfig,
+    TargetRadarOutputDeliveryConfig,
     TargetRadarTimeWindowConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
@@ -21,8 +23,10 @@ from hla.verification import (
     run_example_fom_save_restore_gauntlet_scenario,
     run_federation_lifecycle_scenario,
     run_smoke_fom_save_restore_ownership_gauntlet_scenario,
+    run_target_radar_time_window_consumer_order_scenario,
     run_target_radar_time_window_future_exclusion_scenario,
     run_target_radar_time_window_core_scenario,
+    run_target_radar_time_window_output_delivery_scenario,
     run_two_federate_exchange_scenario,
 )
 from tests.scenarios.python_route_parity_support import python_route_params, python_rti_group, python_rti_pair, python_single_rti
@@ -365,4 +369,93 @@ def test_python_route_parity_target_radar_time_window_core(route) -> None:
                 (slow, ResignAction.NO_ACTION),
             ),
             disconnect_rtis=(slow, fast, consumer, radar, sensor, truth),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_output_delivery(route) -> None:
+    with python_rti_group(route, 3) as group:
+        truth, radar, consumer = group.members
+        config = TargetRadarOutputDeliveryConfig(
+            federation_name=f"python-radar-time-window-output-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_output_delivery_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["window_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
+        assert summary["certification_target"] == "time-window-output-delivery"
+        assert summary["oracle_report"]["certification_target"] == "time-window-output-delivery"
+        assert summary["oracle_report"]["state_model"] == "OPEN -> CLOSED -> OUTPUT_PUBLISHED -> CONSUMED"
+        assert summary["oracle_report"]["assertions"] == {
+            "window_closed_before_output": True,
+            "output_timestamp_not_before_window_end": True,
+            "consumer_received_single_track_output": True,
+            "consumer_received_output_at_expected_time": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (radar, ResignAction.NO_ACTION),
+                (consumer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(consumer, radar, truth),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_consumer_order(route) -> None:
+    with python_rti_group(route, 4) as group:
+        truth, radar, other, consumer = group.members
+        config = TargetRadarConsumerOrderConfig(
+            federation_name=f"python-radar-time-window-order-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_consumer_order_scenario(
+            truth,
+            radar,
+            other,
+            consumer,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            other_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+        )
+
+        delivered = [(record.args[2], record.args[5]) for record in summary["consumer_receives"]]
+        assert delivered == [
+            (b"other-track-output", HLAinteger64Time(config.competing_event_time)),
+            (b"radar-track-output", HLAinteger64Time(config.radar_output_time)),
+        ]
+        assert summary["certification_target"] == "time-window-consumer-order"
+        assert summary["oracle_report"]["certification_target"] == "time-window-consumer-order"
+        assert summary["oracle_report"]["assertions"] == {
+            "consumer_delivery_timestamps_sorted": True,
+            "competing_event_arrives_before_radar_output": True,
+            "radar_output_timestamp_not_before_window_end": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (radar, ResignAction.NO_ACTION),
+                (other, ResignAction.NO_ACTION),
+                (consumer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(consumer, other, radar, truth),
         )

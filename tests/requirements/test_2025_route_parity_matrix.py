@@ -46,7 +46,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "TAR/TARA/NMR/NMRA/FQR grants" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert "queued TSO delivery" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert "logical time/GALT/LITS/lookahead query evidence" in rows[("time_management", "python-2025-fedpro-grpc")].notes
-    assert "Target/Radar future-exclusion proof" in rows[("time_management", "python-2025-fedpro-grpc")].notes
+    assert "Target/Radar output-delivery, consumer-order, and future-exclusion proofs" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert rows[("time_management", "python-2025-inprocess")].evidence_tests == (
         "tests/test_rti1516_2025_spec_and_shim.py",
         "tests/scenarios/test_python_route_parity.py",

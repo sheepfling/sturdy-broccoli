@@ -1857,7 +1857,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route has executable GALT/LITS query evidence inside the hosted time-management "
-                    "slice and the two-federate Target/Radar future-exclusion proof."
+                    "slice and the Target/Radar future-exclusion proof."
                 ),
             },
             "boundary_by_route": {
@@ -1879,11 +1879,11 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             "summary_by_route": {
                 "python-2025-inprocess": (
                     "The in-process route exercises lookahead query/modify behavior, queued timestamped delivery, "
-                    "the Target/Radar time-window core scenario, and the future-exclusion proof."
+                    "and the Target/Radar time-window core, output-delivery, consumer-order, and future-exclusion proofs."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route exercises lookahead queries together with advance/grant, queued "
-                    "timestamped delivery, and the two-federate Target/Radar future-exclusion proof."
+                    "timestamped delivery, and the Target/Radar output-delivery, consumer-order, and future-exclusion proofs."
                 ),
             },
             "boundary_by_route": {
@@ -1893,7 +1893,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
                 "python-2025-fedpro-grpc": (
                     "This is bounded hosted runtime evidence for lookahead-window handling, including future-message "
-                    "exclusion, not a final proof for every edge case."
+                        "exclusion, not a final proof for every edge case."
                 ),
             },
         },
@@ -1941,8 +1941,8 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
         "current_assessment": (
             "Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed "
             "scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. "
-            "The time milestones now explicitly include Target/Radar future-exclusion and time-window proof, but the "
-            "last two remain bounded-evidence milestones rather than blanket correctness claims."
+            "The time milestones now explicitly include Target/Radar future-exclusion, output-delivery, consumer-order, "
+            "and time-window proof, but the last two remain bounded-evidence milestones rather than blanket correctness claims."
         ),
         "rows": rows,
         "by_route": by_route,
