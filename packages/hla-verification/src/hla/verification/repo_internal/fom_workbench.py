@@ -74,6 +74,10 @@ class FOMWorkbenchLoadSet:
     datatype_names: tuple[str, ...]
     object_nodes: tuple[FOMWorkbenchNode, ...]
     interaction_nodes: tuple[FOMWorkbenchNode, ...]
+    validation_command: str | None
+    validation_json_path: str | None
+    validation_md_path: str | None
+    validation_html_path: str | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -296,7 +300,7 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
     )
 
 
-def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...]) -> FOMWorkbenchLoadSet:
+def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, validation_output_dir: Path | None = None) -> FOMWorkbenchLoadSet:
     parse_status = "ok"
     parse_error: str | None = None
     module_names: tuple[str, ...] = ()
@@ -309,6 +313,10 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...]) -> FOM
     datatype_names: tuple[str, ...] = ()
     object_nodes: tuple[FOMWorkbenchNode, ...] = ()
     interaction_nodes: tuple[FOMWorkbenchNode, ...] = ()
+    validation_command = f"./tools/fom-validate {' '.join(record.path for record in records)} --html"
+    validation_json_path: str | None = None
+    validation_md_path: str | None = None
+    validation_html_path: str | None = None
     try:
         module_names, catalog = _resolve_catalog(records)
         object_class_count = len(catalog.object_classes)
@@ -320,6 +328,22 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...]) -> FOM
         datatype_names = tuple(sorted(catalog.datatype_names))
         object_nodes = _node_rows(tuple(catalog.object_classes.values()), kind="object")
         interaction_nodes = _node_rows(tuple(catalog.interaction_classes.values()), kind="interaction")
+        if validation_output_dir is not None:
+            load_set_dir = validation_output_dir / name
+            source_paths = tuple((_repo_root() / record.path) for record in records)
+            _, _, report = write_fom_validation(
+                source_paths,
+                output_dir=load_set_dir,
+                title=f"FOM Validation Report: {name}",
+            )
+            html_path = write_fom_validation_html(
+                source_paths,
+                output_dir=load_set_dir,
+                title=report.title,
+            )
+            validation_json_path = str((load_set_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
+            validation_md_path = str((load_set_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
+            validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
     except FOMResolutionError as exc:
         parse_status = "error"
         parse_error = str(exc)
@@ -339,6 +363,10 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...]) -> FOM
         datatype_names=datatype_names,
         object_nodes=object_nodes,
         interaction_nodes=interaction_nodes,
+        validation_command=validation_command,
+        validation_json_path=validation_json_path,
+        validation_md_path=validation_md_path,
+        validation_html_path=validation_html_path,
     )
 
 
@@ -619,6 +647,8 @@ def _diff_rows(
 
 def _parse_custom_load_set_specs(
     custom_load_sets: Mapping[str, tuple[str, ...]] | None,
+    *,
+    validation_output_dir: Path | None = None,
 ) -> tuple[FOMWorkbenchLoadSet, ...]:
     if not custom_load_sets:
         return ()
@@ -628,7 +658,7 @@ def _parse_custom_load_set_specs(
         records = tuple(records_by_id[member_id] for member_id in member_ids if member_id in records_by_id)
         if not records:
             continue
-        load_sets.append(_load_set_summary(name, records))
+        load_sets.append(_load_set_summary(name, records, validation_output_dir=validation_output_dir))
     return tuple(sorted(load_sets, key=lambda row: row.name))
 
 
@@ -650,7 +680,7 @@ def build_fom_workbench_snapshot(
             key=lambda row: row.scenario_family,
         )
     )
-    custom_load_set_rows = _parse_custom_load_set_specs(custom_load_sets)
+    custom_load_set_rows = _parse_custom_load_set_specs(custom_load_sets, validation_output_dir=validation_root)
     search_index = _search_rows(families, custom_load_set_rows)
     diffs = _diff_rows(families, custom_load_set_rows, diff_specs)
     return FOMWorkbenchSnapshot(
@@ -1190,6 +1220,10 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       right.onchange = renderDiff;
     }}
 
+    function loadSetByName(name) {{
+      return snapshot.custom_load_sets.find((row) => row.name === name) || null;
+    }}
+
     function renderDiff() {{
       const left = document.getElementById("left-family").value;
       const right = document.getElementById("right-family").value;
@@ -1209,6 +1243,8 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         host.textContent = "No diff row available.";
         return;
       }}
+      const leftLoadSet = loadSetByName(left);
+      const rightLoadSet = loadSetByName(right);
       if (!diff.comparable) {{
         host.textContent = `Not comparable: ${{diff.reason || "unknown"}}`;
         return;
@@ -1216,6 +1252,22 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       host.innerHTML = `
         <p><strong>${{diff.left_family}}</strong> vs <strong>${{diff.right_family}}</strong></p>
         <p class="muted">${{diff.left_kind}} vs ${{diff.right_kind}} | left members: ${{diff.left_member_ids.join(", ")}} | right members: ${{diff.right_member_ids.join(", ")}}</p>
+        ${{
+          leftLoadSet || rightLoadSet
+            ? `<div class="list">
+                 ${{
+                   leftLoadSet && leftLoadSet.validation_html_path
+                     ? `<a href="${{leftLoadSet.validation_html_path}}" target="_blank" rel="noopener">open ${{leftLoadSet.name}} validation packet</a><br>`
+                     : ""
+                 }}
+                 ${{
+                   rightLoadSet && rightLoadSet.validation_html_path
+                     ? `<a href="${{rightLoadSet.validation_html_path}}" target="_blank" rel="noopener">open ${{rightLoadSet.name}} validation packet</a>`
+                     : ""
+                 }}
+               </div>`
+            : ""
+        }}
         <div class="split">
           <div>
             <h3>Only Left Objects</h3>

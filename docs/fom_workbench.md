@@ -140,8 +140,13 @@ The generated workbench packet now also materializes:
 - `validation_packets/<family>/fom_validation_report.json`
 - `validation_packets/<family>/fom_validation_report.md`
 - `validation_packets/<family>/fom_validation_report.html`
+- `validation_packets/<custom-load-set>/fom_validation_report.json`
+- `validation_packets/<custom-load-set>/fom_validation_report.md`
+- `validation_packets/<custom-load-set>/fom_validation_report.html`
 
 Those packets are linked directly from the inspect pane.
+Custom load-set packets are linked from the overlay/diff pane when the selected
+comparison uses named custom load sets.
 
 ## Boundaries
 
@@ -156,10 +161,11 @@ The workbench now connects directly to the validator surface:
 
 - family inspect panel shows the exact `./tools/fom-validate --family ... --html` command
 - generated workbench artifacts include precomputed validation packets per family
-- validation HTML supports side-by-side member tree diffing for multi-module load sets
+- generated workbench artifacts include precomputed validation packets per named custom load set
+- validation HTML supports side-by-side hierarchy-aware member tree diffing for multi-module load sets
 
 ## Next Implementation Slices
 
-1. add direct browsing of custom load-set validation packets
-2. add richer side-by-side hierarchy diff views beyond flat added/removed sets
+1. add direct inspect-pane browsing for custom load sets, not only overlay links
+2. expand hierarchy-aware diffing into declared-vs-inherited attribute/parameter comparisons
 3. expand guarded repo-owned edit flows into selected safe structural edits

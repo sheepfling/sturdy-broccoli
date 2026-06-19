@@ -149,3 +149,5 @@ def test_write_fom_validation_html_renders_member_side_by_side_diff_for_multi_mo
     assert "loadset-left" in text
     assert "loadset-right" in text
     assert "Shared Objects" in text
+    assert "Only Left Object Tree" in text
+    assert "Only Right Interaction Tree" in text

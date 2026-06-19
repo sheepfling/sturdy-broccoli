@@ -203,11 +203,31 @@ def _module_counts(module: FOMModule | None) -> tuple[int, int, int, tuple[str, 
 
 
 def _member_summary(module: FOMModule) -> dict[str, Any]:
+    object_nodes = []
+    for spec in sorted(module.object_classes, key=lambda row: row.full_name):
+        object_nodes.append(
+            {
+                "full_name": spec.full_name,
+                "parent_name": spec.parent_name,
+                "lineage": tuple(spec.full_name.split(".")),
+            }
+        )
+    interaction_nodes = []
+    for spec in sorted(module.interaction_classes, key=lambda row: row.full_name):
+        interaction_nodes.append(
+            {
+                "full_name": spec.full_name,
+                "parent_name": spec.parent_name,
+                "lineage": tuple(spec.full_name.split(".")),
+            }
+        )
     return {
         "source": str(module.source),
         "name": module.name,
         "object_classes": tuple(sorted(spec.full_name for spec in module.object_classes)),
         "interaction_classes": tuple(sorted(spec.full_name for spec in module.interaction_classes)),
+        "object_nodes": tuple(object_nodes),
+        "interaction_nodes": tuple(interaction_nodes),
         "datatype_names": tuple(sorted(module.datatype_names)),
         "dimensions": tuple(module.dimensions),
     }
@@ -546,9 +566,21 @@ function diffLists(left, right) {{
     onlyRight: [...rightSet].filter((item) => !leftSet.has(item)).sort(),
   }};
 }}
+function diffTreeNodes(leftNodes, rightNodes) {{
+  const leftMap = new Map(leftNodes.map((row) => [row.full_name, row]));
+  const rightMap = new Map(rightNodes.map((row) => [row.full_name, row]));
+  const shared = [...leftMap.keys()].filter((name) => rightMap.has(name)).sort().map((name) => leftMap.get(name));
+  const onlyLeft = [...leftMap.keys()].filter((name) => !rightMap.has(name)).sort().map((name) => leftMap.get(name));
+  const onlyRight = [...rightMap.keys()].filter((name) => !leftMap.has(name)).sort().map((name) => rightMap.get(name));
+  return {{ shared, onlyLeft, onlyRight }};
+}}
 function listBlock(items) {{
   if (!items.length) return '<p class="muted">none</p>';
   return `<div class="list">${{items.map((item) => `<code>${{item}}</code>`).join("")}}</div>`;
+}}
+function treeBlock(rows) {{
+  if (!rows.length) return '<p class="muted">none</p>';
+  return `<div class="list">${{rows.slice(0, 160).map((row) => `<code>${{row.full_name}}</code><div class="muted">${{row.lineage.join(" > ")}}</div>`).join("")}}</div>`;
 }}
 function loadSetDiffWidget(row) {{
   if (!row.member_summaries || row.member_summaries.length < 2) return "";
@@ -585,6 +617,8 @@ function renderLoadSetDiff(row) {{
   const right = row.member_summaries[Number(rightSel.value)];
   const objectDiff = diffLists(left.object_classes, right.object_classes);
   const interactionDiff = diffLists(left.interaction_classes, right.interaction_classes);
+  const objectTreeDiff = diffTreeNodes(left.object_nodes || [], right.object_nodes || []);
+  const interactionTreeDiff = diffTreeNodes(left.interaction_nodes || [], right.interaction_nodes || []);
   host.innerHTML = `
     <p><strong>${{left.name || left.source}}</strong> vs <strong>${{right.name || right.source}}</strong></p>
     <div class="split">
@@ -615,6 +649,26 @@ function renderLoadSetDiff(row) {{
       <div>
         <h4>Shared Interactions</h4>
         ${{listBlock(interactionDiff.shared.slice(0, 120))}}
+      </div>
+    </div>
+    <div class="split">
+      <div>
+        <h4>Only Left Object Tree</h4>
+        ${{treeBlock(objectTreeDiff.onlyLeft)}}
+      </div>
+      <div>
+        <h4>Only Right Object Tree</h4>
+        ${{treeBlock(objectTreeDiff.onlyRight)}}
+      </div>
+    </div>
+    <div class="split">
+      <div>
+        <h4>Only Left Interaction Tree</h4>
+        ${{treeBlock(interactionTreeDiff.onlyLeft)}}
+      </div>
+      <div>
+        <h4>Only Right Interaction Tree</h4>
+        ${{treeBlock(interactionTreeDiff.onlyRight)}}
       </div>
     </div>
   `;
