@@ -1082,6 +1082,147 @@ def test_2025_shim_queues_timestamped_directed_interactions_until_time_advance(t
     publisher.disconnect()
 
 
+@pytest.mark.requirements(
+    "HLA2025-MOD-007",
+    "HLA2025-NEW-001",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-039",
+    "HLA2025-FI-SVC-040",
+    "HLA2025-FI-SVC-045",
+    "HLA2025-FI-SVC-046",
+)
+def test_2025_shim_filters_directed_interactions_by_ddm_region_overlap(tmp_path: Path) -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectedInteractionRegionDDM2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed Interaction Region DDM 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Directed interaction DDM overlap fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-ddm-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("DirectedPublisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("DirectedSubscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    attribute = publisher.getAttributeHandle(object_class, "Position")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    dimension = publisher.getDimensionHandle("RoutingSpace")
+    subscriber_dimension = subscriber.getDimensionHandle("RoutingSpace")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+
+    publisher.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+    subscriber.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+    publisher_region = publisher.createRegion({dimension})
+    subscriber_region = subscriber.createRegion({subscriber_dimension})
+    publisher.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(50, 60))
+    publisher.commitRegionModifications({publisher_region})
+    subscriber.commitRegionModifications({subscriber_region})
+
+    object_instance = publisher.registerObjectInstanceWithRegions(
+        object_class,
+        [({attribute}, {publisher_region})],
+        "Directed-Region-Target-1",
+    )
+    subscriber.subscribeInteractionClassWithRegions(interaction_class, {subscriber_region})
+
+    publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"outside"}, b"outside-region")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
+
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(5, 15))
+    subscriber.commitRegionModifications({subscriber_region})
+    publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"inside"}, b"inside-region")
+    received = subscriber_callbacks.last_callback("receiveDirectedInteraction")
+    assert received == (
+        interaction_class,
+        object_instance,
+        {parameter: b"inside"},
+        b"inside-region",
+        reliable,
+        publisher_handle,
+        None,
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
+    )
+
+    subscriber_callbacks.callbacks.clear()
+    subscriber.unsubscribeInteractionClassWithRegions(interaction_class, {subscriber_region})
+    publisher.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"after"}, b"after-unsubscribe")
+    assert subscriber_callbacks.last_callback("receiveDirectedInteraction") is None
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_supports_single_object_instance_name_reservation_callback_and_release() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

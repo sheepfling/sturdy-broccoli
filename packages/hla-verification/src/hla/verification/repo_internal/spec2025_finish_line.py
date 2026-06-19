@@ -192,6 +192,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "id": "2025-directed-interaction-boundary",
         "status": "implemented-slice",
         "requirements": (
+            "HLA2025-MOD-007",
             "HLA2025-NEW-001",
             "HLA2025-FR-003",
             "HLA2025-FR-004",
@@ -213,8 +214,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "Python 2025 shim supports FOM-backed directed interaction publish, subscribe, unsubscribe, "
             "unpublish, and receiveDirectedInteraction callback delivery from a publisher to object-class "
             "directed subscribers. It also queues timestamped directed interactions until subscriber time advance, "
-            "delivers timestamp order plus retraction handles on callback receipt, and honors pre-delivery retract. "
-            "Directed interaction DDM-region routing and Java/C++/FedPro route parity remain later behavior work."
+            "delivers timestamp order plus retraction handles on callback receipt, honors pre-delivery retract, "
+            "and filters directed interaction delivery through target object update-region and "
+            "subscribeInteractionClassWithRegions overlap. Java/C++/FedPro route parity remain later behavior work."
         ),
     },
     {

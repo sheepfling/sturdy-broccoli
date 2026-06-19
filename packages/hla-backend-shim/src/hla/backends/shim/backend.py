@@ -231,6 +231,7 @@ class _FederationRecord:
     published_interactions: dict[int, set[str]] = field(default_factory=dict)
     subscribed_interactions: dict[int, set[str]] = field(default_factory=dict)
     subscribed_interaction_regions: dict[int, dict[str, set[int]]] = field(default_factory=dict)
+    directed_interaction_region_gates: dict[int, set[str]] = field(default_factory=dict)
     published_directed_interactions: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     subscribed_directed_interactions: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     interaction_order: dict[tuple[int, str], OrderType] = field(default_factory=dict)
@@ -534,6 +535,7 @@ class Shim2025RTIAmbassador:
         federation.published_interactions.setdefault(self._federate_handle.value, set())
         federation.subscribed_interactions.setdefault(self._federate_handle.value, set())
         federation.subscribed_interaction_regions.setdefault(self._federate_handle.value, {})
+        federation.directed_interaction_region_gates.setdefault(self._federate_handle.value, set())
         federation.published_directed_interactions.setdefault(self._federate_handle.value, {})
         federation.subscribed_directed_interactions.setdefault(self._federate_handle.value, {})
         federation.member_regions.setdefault(self._federate_handle.value, {})
@@ -1028,6 +1030,9 @@ class Shim2025RTIAmbassador:
             self._interaction_class_name(interactionClass),
             None,
         )
+        self._federation_record().directed_interaction_region_gates.setdefault(self._current_federate_key(), set()).discard(
+            self._interaction_class_name(interactionClass)
+        )
 
     def subscribeInteractionClassWithRegions(self, interactionClass: Any, regions: Any) -> None:  # noqa: N802
         self._record("subscribeInteractionClassWithRegions", interactionClass, regions)
@@ -1036,6 +1041,7 @@ class Shim2025RTIAmbassador:
         region_values = self._region_values_from_handles(regions)
         federation = self._federation_record()
         federation.subscribed_interactions.setdefault(self._current_federate_key(), set()).add(interaction_class_name)
+        federation.directed_interaction_region_gates.setdefault(self._current_federate_key(), set()).add(interaction_class_name)
         federation.subscribed_interaction_regions.setdefault(self._current_federate_key(), {}).setdefault(
             interaction_class_name,
             set(),
@@ -1766,6 +1772,7 @@ class Shim2025RTIAmbassador:
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
         federation = self._federation_record()
+        source_regions = self._object_instance_region_values(record)
         retraction_handles: list[MessageRetractionHandle] = []
         self._increment_mom_count(
             federation.mom_interactions_sent,
@@ -1776,6 +1783,16 @@ class Shim2025RTIAmbassador:
                 continue
             if interaction_class_name not in subscriptions.get(object_class_name, set()):
                 continue
+            gated_interactions = federation.directed_interaction_region_gates.get(federate_key, set())
+            if interaction_class_name in gated_interactions:
+                target_regions = federation.subscribed_interaction_regions.get(federate_key, {}).get(interaction_class_name, set())
+                if not target_regions or not self._region_sets_overlap(
+                    self._current_federate_key(),
+                    source_regions,
+                    federate_key,
+                    target_regions,
+                ):
+                    continue
             self._increment_mom_count(
                 federation.mom_interactions_received,
                 (federate_key, interaction_class_name, self.getTransportationTypeName(transportation)),
@@ -2919,6 +2936,7 @@ class Shim2025RTIAmbassador:
                 federation.published_interactions.pop(self._federate_handle.value, None)
                 federation.subscribed_interactions.pop(self._federate_handle.value, None)
                 federation.subscribed_interaction_regions.pop(self._federate_handle.value, None)
+                federation.directed_interaction_region_gates.pop(self._federate_handle.value, None)
                 federation.published_directed_interactions.pop(self._federate_handle.value, None)
                 federation.subscribed_directed_interactions.pop(self._federate_handle.value, None)
                 federation.member_regions.pop(self._federate_handle.value, None)
@@ -4145,6 +4163,12 @@ class Shim2025RTIAmbassador:
             for source_region in source_regions
             for target_region in target_regions
         )
+
+    def _object_instance_region_values(self, record: _ObjectInstanceRecord) -> set[int]:
+        source_regions: set[int] = set()
+        for region_values in record.update_regions.values():
+            source_regions.update(region_values)
+        return source_regions
 
     def _reflectable_attribute_names_for_subscriber(
         self,
