@@ -17,6 +17,7 @@ from hla.verification import (
     TargetRadarFutureExclusionConfig,
     TargetRadarOutputDeliveryConfig,
     TargetRadarPipelineConfig,
+    TargetRadarReceiveOrderPoisonConfig,
     TargetRadarTimeWindowConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
@@ -29,6 +30,7 @@ from hla.verification import (
     run_target_radar_time_window_core_scenario,
     run_target_radar_time_window_output_delivery_scenario,
     run_target_radar_time_window_pipeline_scenario,
+    run_target_radar_time_window_receive_order_poison_scenario,
     run_two_federate_exchange_scenario,
 )
 from tests.scenarios.python_route_parity_support import python_route_params, python_rti_group, python_rti_pair, python_single_rti
@@ -496,6 +498,53 @@ def test_python_route_parity_target_radar_time_window_pipeline(route) -> None:
             "scan2_input_collected_while_scan1_output_pending": True,
             "scan1_output_precedes_scan2_output": True,
             "no_cross_window_contamination": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (radar, ResignAction.NO_ACTION),
+                (consumer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(consumer, radar, truth),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_receive_order_poison(route) -> None:
+    with python_rti_group(route, 3) as group:
+        truth, radar, consumer = group.members
+        config = TargetRadarReceiveOrderPoisonConfig(
+            federation_name=f"python-radar-time-window-receive-order-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_receive_order_poison_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["window_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["closed_window_tags_before"] == [b"truth-105", b"truth-106"]
+        assert summary["closed_window_tags_after"] == [b"truth-105", b"truth-106"]
+        assert summary["poison_reflection"].args[2] == b"receive-order-poison"
+        if len(summary["poison_reflection"].args) > 8:
+            assert summary["poison_reflection"].args[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+        assert summary["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
+        assert summary["certification_target"] == "time-window-receive-order-poison"
+        assert summary["oracle_report"]["certification_target"] == "time-window-receive-order-poison"
+        assert summary["oracle_report"]["assertions"] == {
+            "closed_window_tags_unchanged_after_receive_order_poison": True,
+            "poison_reflection_has_no_timestamp": True,
+            "poison_reflection_is_receive_order": True,
+            "consumer_output_still_delivered_at_expected_time": True,
         }
 
         cleanup_federation(

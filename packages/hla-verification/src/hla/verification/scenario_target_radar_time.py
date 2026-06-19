@@ -215,6 +215,24 @@ class TargetRadarPipelineConfig:
     consumer_resume_time: int = 130
 
 
+@dataclass(frozen=True)
+class TargetRadarReceiveOrderPoisonConfig:
+    federation_name: str
+    fom_modules: tuple[Any, ...]
+    logical_time_implementation_name: str = "HLAinteger64Time"
+    federate_type: str = "TimeWindowFederate"
+    truth_name: str = "TruthFederate"
+    radar_name: str = "RadarFederate"
+    consumer_name: str = "TrackConsumerFederate"
+    target_object_name: str = "ReceiveOrderPoisonTarget-1"
+    scan_window_start: int = 100
+    scan_window_end: int = 110
+    first_input_time: int = 105
+    second_input_time: int = 106
+    radar_output_time: int = 111
+    consumer_resume_time: int = 120
+
+
 def _verify_time_window_future_exclusion_oracle(
     *,
     config: "TargetRadarFutureExclusionConfig",
@@ -281,6 +299,46 @@ def _verify_time_window_future_exclusion_oracle(
             ),
             "future_input_exclusion_reaches_window_end": cleared_galt_time == config.scan_window_end,
             "radar_granted_to_window_end_only_after_future_input_excluded": final_grant_time == config.scan_window_end,
+        },
+    }
+
+
+def _verify_time_window_receive_order_poison_oracle(
+    *,
+    config: "TargetRadarReceiveOrderPoisonConfig",
+    closed_window_tags_before: list[bytes],
+    closed_window_tags_after: list[bytes],
+    poison_reflection: Any,
+    consumer_receive: Any,
+) -> dict[str, Any]:
+    if len(poison_reflection.args) > 8:
+        poison_time = poison_reflection.args[6]
+        poison_sent_order = poison_reflection.args[7]
+        poison_received_order = poison_reflection.args[8]
+    else:
+        poison_time = None
+        poison_sent_order = OrderType.RECEIVE
+        poison_received_order = OrderType.RECEIVE
+    consumer_receive_time = _timestamp_value(consumer_receive.args[5])
+
+    assert closed_window_tags_before == [b"truth-105", b"truth-106"]
+    assert closed_window_tags_after == closed_window_tags_before
+    assert poison_time is None
+    assert poison_sent_order is OrderType.RECEIVE
+    assert poison_received_order is OrderType.RECEIVE
+    assert consumer_receive_time == config.radar_output_time
+
+    return {
+        "certification_target": "time-window-receive-order-poison",
+        "state_model": "CLOSED_TIMESTAMPED_WINDOW -> RECEIVE_ORDER_POISON_IGNORED -> OUTPUT_PUBLISHED",
+        "window": [config.scan_window_start, config.scan_window_end],
+        "assertions": {
+            "closed_window_tags_unchanged_after_receive_order_poison": closed_window_tags_after == closed_window_tags_before,
+            "poison_reflection_has_no_timestamp": poison_time is None,
+            "poison_reflection_is_receive_order": (
+                poison_sent_order is OrderType.RECEIVE and poison_received_order is OrderType.RECEIVE
+            ),
+            "consumer_output_still_delivered_at_expected_time": consumer_receive_time == config.radar_output_time,
         },
     }
 
@@ -419,6 +477,133 @@ def _verify_time_window_consumer_order_oracle(
             "competing_event_arrives_before_radar_output": tags == [b"other-track-output", b"radar-track-output"],
             "radar_output_timestamp_not_before_window_end": config.radar_output_time >= config.scan_window_end,
         },
+    }
+
+
+def run_target_radar_time_window_receive_order_poison_scenario(
+    truth_rti: Any,
+    radar_rti: Any,
+    consumer_rti: Any,
+    *,
+    config: TargetRadarReceiveOrderPoisonConfig,
+    truth_federate: Any,
+    radar_federate: Any,
+    consumer_federate: Any,
+) -> dict[str, Any]:
+    members = (
+        (truth_rti, truth_federate, config.truth_name),
+        (radar_rti, radar_federate, config.radar_name),
+        (consumer_rti, consumer_federate, config.consumer_name),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    truth_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    for rti, _federate, name in members:
+        rti.join_federation_execution(name, config.federate_type, config.federation_name)
+
+    handles = _setup_target_radar_classes(truth_rti, radar_rti, consumer_rti)
+    truth_rti.publish_object_class_attributes(handles["truth_target_class"], {handles["truth_position"]})
+    radar_rti.subscribe_object_class_attributes(handles["radar_target_class"], {handles["radar_position"]})
+    radar_rti.publish_interaction_class(handles["radar_track_interaction"])
+    consumer_rti.subscribe_interaction_class(handles["consumer_track_interaction"])
+
+    truth_rti.enable_time_regulation(HLAinteger64Interval(1))
+    radar_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=32)
+
+    target_object = truth_rti.register_object_instance(handles["truth_target_class"], config.target_object_name)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    truth_rti.change_attribute_order_type(target_object, {handles["truth_position"]}, OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(10.0, 0.0, 0.0)},
+        b"truth-105",
+        HLAinteger64Time(config.first_input_time),
+    )
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(11.0, 0.0, 0.0)},
+        b"truth-106",
+        HLAinteger64Time(config.second_input_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    for _expected_time in (config.first_input_time, config.second_input_time, config.scan_window_end):
+        radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+        drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    window_close_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert window_close_grant.args[0] == HLAinteger64Time(config.scan_window_end)
+
+    timestamped_reflections = [
+        record
+        for record in radar_federate.callbacks_named("reflectAttributeValues")
+        if len(record.args) > 6 and record.args[6] is not None and _timestamp_value(record.args[6]) < config.scan_window_end
+    ]
+    closed_window_tags_before = [record.args[2] for record in timestamped_reflections]
+
+    truth_rti.change_attribute_order_type(target_object, {handles["truth_position"]}, OrderType.RECEIVE)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(999.0, 0.0, 0.0)},
+        b"receive-order-poison",
+    )
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    poison_reflection = radar_federate.callbacks_named("reflectAttributeValues")[-1]
+    assert poison_reflection.args[2] == b"receive-order-poison"
+
+    timestamped_reflections_after = [
+        record
+        for record in radar_federate.callbacks_named("reflectAttributeValues")
+        if len(record.args) > 6 and record.args[6] is not None and _timestamp_value(record.args[6]) < config.scan_window_end
+    ]
+    closed_window_tags_after = [record.args[2] for record in timestamped_reflections_after]
+
+    radar_rti.enable_time_regulation(HLAinteger64Interval(1))
+    consumer_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    assert wait_for_callback(radar_rti, radar_federate, "timeRegulationEnabled", loops=120) is not None
+    assert wait_for_callback(consumer_rti, consumer_federate, "timeConstrainedEnabled", loops=120) is not None
+
+    radar_rti.change_interaction_order_type(handles["radar_track_interaction"], OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    truth_rti.time_advance_request(HLAinteger64Time(config.consumer_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    consumer_rti.next_message_request(HLAinteger64Time(config.consumer_resume_time))
+    radar_rti.send_interaction(
+        handles["radar_track_interaction"],
+        {handles["truth_track_id"]: _encode_text("track-poison-safe")},
+        b"radar-track-output",
+        HLAinteger64Time(config.radar_output_time),
+    )
+    radar_rti.time_advance_request(HLAinteger64Time(config.consumer_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    consumer_receive = consumer_federate.callbacks_named("receiveInteraction")[-1]
+
+    oracle_report = _verify_time_window_receive_order_poison_oracle(
+        config=config,
+        closed_window_tags_before=closed_window_tags_before,
+        closed_window_tags_after=closed_window_tags_after,
+        poison_reflection=poison_reflection,
+        consumer_receive=consumer_receive,
+    )
+
+    return {
+        "certification_target": "time-window-receive-order-poison",
+        "target_object": target_object,
+        "window_close_grant": window_close_grant,
+        "closed_window_tags_before": closed_window_tags_before,
+        "closed_window_tags_after": closed_window_tags_after,
+        "poison_reflection": poison_reflection,
+        "consumer_receive": consumer_receive,
+        "oracle_report": oracle_report,
     }
 
 
@@ -1143,6 +1328,7 @@ __all__ = [
     "TargetRadarOutputDeliveryConfig",
     "TargetRadarConsumerOrderConfig",
     "TargetRadarPipelineConfig",
+    "TargetRadarReceiveOrderPoisonConfig",
     "TargetRadarTimeWindowConfig",
     "run_target_radar_time_window_consumer_order_scenario",
     "run_target_radar_time_window_future_exclusion_scenario",
@@ -1150,4 +1336,5 @@ __all__ = [
     "run_target_radar_time_window_gauntlet_scenario",
     "run_target_radar_time_window_output_delivery_scenario",
     "run_target_radar_time_window_pipeline_scenario",
+    "run_target_radar_time_window_receive_order_poison_scenario",
 ]
