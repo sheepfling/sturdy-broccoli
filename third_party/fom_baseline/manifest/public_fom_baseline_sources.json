@@ -1,0 +1,55 @@
+{
+  "retrieval_date": "2026-06-18",
+  "baseline_root": "third_party/fom_baseline/upstream",
+  "families": [
+    {
+      "id": "rpr-normative",
+      "name": "RPR FOM 2.0 normative annex modules",
+      "repository": "mcgredonps/HLAGenerator",
+      "license_note": "RPR XML modules embed SISO attribution text; preserve upstream contents unchanged.",
+      "load_mode": "ordered-family-parse",
+      "roundtrip_mode": "fedpro-json-original-xml",
+      "files": [
+        "rpr2.0/Annex_A_Files_Normative/RPR-Foundation_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Enumerations_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Switches_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Base_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Aggregate_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Communication_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-DER_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Logistics_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Minefield_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Physical_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-SE_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-SIMAN_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-UA_v2.0.xml",
+        "rpr2.0/Annex_A_Files_Normative/RPR-Warfare_v2.0.xml"
+      ]
+    },
+    {
+      "id": "netn-merged",
+      "name": "NETN merged HLA Evolved XML baseline",
+      "repository": "AMSP-04/NETN-FOM",
+      "license_note": "NETN-FOM upstream states CC BY-ND 4.0; preserve upstream XML unchanged.",
+      "load_mode": "ordered-family-parse",
+      "roundtrip_mode": "fedpro-json-original-xml",
+      "files": [
+        "FomFiles_Merged_HLA_Evolved/NETN-MIM.xml",
+        "FomFiles_Merged_HLA_Evolved/NETN-Merged-With-RPR.xml"
+      ]
+    },
+    {
+      "id": "portico-samples",
+      "name": "Portico IEEE 1516e MIM and sample FOM modules",
+      "repository": "openlvc/portico",
+      "license_note": "Portico public repo materials; preserve upstream XML unchanged.",
+      "load_mode": "ordered-family-parse",
+      "roundtrip_mode": "fedpro-json-original-xml",
+      "files": [
+        "codebase/resources/test-data/fom/ieee1516e/HLAstandardMIM.xml",
+        "codebase/resources/test-data/fom/ieee1516e/testfom.xml",
+        "codebase/resources/test-data/fom/ieee1516e/testfomModule.xml"
+      ]
+    }
+  ]
+}

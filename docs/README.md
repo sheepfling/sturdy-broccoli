@@ -28,6 +28,7 @@ If you only need the shortest on-ramp:
 - [codex_runner_authorization.md](codex_runner_authorization.md): draft loopback-socket authorization request for Codex verification sessions
 - [spec_reading_map.md](spec_reading_map.md): smallest practical reading path for the abstract/public spec surface
 - [fom_reading_map.md](fom_reading_map.md): smallest practical reading path for FOM parsing and merge behavior
+- [fom_validate.md](fom_validate.md): single-command XML validation path with human-readable reports
 - [python_rti_reading_map.md](python_rti_reading_map.md): smallest practical reading path for Python RTI edits
 - [python_rti_backend.md](python_rti_backend.md): broader Python RTI backend map
 - [rti_factory_reading_map.md](rti_factory_reading_map.md): installed RTI factory listing, selection, and introspection

@@ -35,6 +35,9 @@ def test_generate_fom_roundtrip_writes_explicit_2010_and_2025_artifacts(tmp_path
         and row.protobuf_compressed_roundtrip_ok
         for row in report_2010.module_reports
     )
+    target_radar_row = next(row for row in report_2010.module_reports if row.name == "Target Radar FOM Module")
+    assert target_radar_row.edition_class == "cross-edition"
+    assert target_radar_row.scenario_family == "target-radar"
 
     report_2025 = build_fom_roundtrip(2025, mim_source=mim_2025)
     assert report_2025.protobuf_schema == "rti1516_2025"
@@ -47,6 +50,8 @@ def test_generate_fom_roundtrip_writes_explicit_2010_and_2025_artifacts(tmp_path
         and row.protobuf_compressed_roundtrip_ok
         for row in report_2025.module_reports
     )
+    assert report_2025.module_reports[0].edition_class == "2025"
+    assert report_2025.module_reports[0].scenario_family == "standard-mim"
 
     repo_root = Path(__file__).resolve().parents[2]
     output_dir = tmp_path / "fom-roundtrip"
@@ -78,6 +83,8 @@ def test_generate_fom_roundtrip_writes_explicit_2010_and_2025_artifacts(tmp_path
     assert payload["module_reports"][0]["protobuf_file_roundtrip_ok"] is True
     assert payload["module_reports"][0]["protobuf_url_roundtrip_ok"] is True
     assert payload["module_reports"][0]["protobuf_compressed_roundtrip_ok"] is True
+    assert "edition_class" in payload["module_reports"][0]
+    assert "scenario_family" in payload["module_reports"][0]
 
     result_2025 = subprocess.run(
         [
@@ -98,3 +105,6 @@ def test_generate_fom_roundtrip_writes_explicit_2010_and_2025_artifacts(tmp_path
     direct_json, direct_md = write_fom_roundtrip(2025, output_dir=tmp_path / "direct-2025", mim_source=mim_2025)
     assert direct_json.exists()
     assert direct_md.exists()
+    direct_md_text = direct_md.read_text(encoding="utf-8")
+    assert "Edition" in direct_md_text
+    assert "Scenario Family" in direct_md_text

@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "repo-2010-standard-mim",
+      "path": "packages/hla-rti1516e/src/hla/rti1516e/resources/foms/HLAstandardMIM.xml",
+      "edition_class": "2010",
+      "load_mode": "standalone",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "standard-mim",
+      "notes": "Bundled 2010 standard MIM for default parser, merge, and round-trip coverage."
+    },
+    {
+      "id": "repo-2010-vendor-smoke",
+      "path": "packages/hla-rti1516e/src/hla/rti1516e/resources/foms/VendorSmokeFOM.xml",
+      "edition_class": "2010",
+      "load_mode": "standalone",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "vendor-smoke",
+      "notes": "Small 2010 smoke FOM for vendor/runtime verification."
+    },
+    {
+      "id": "repo-2010-demo",
+      "path": "packages/hla-rti1516e/src/hla/rti1516e/resources/foms/DemoFOMmodule.xml",
+      "edition_class": "2010",
+      "load_mode": "standalone",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "demo",
+      "notes": "Small 2010 demo FOM module used for bundled round-trip coverage."
+    },
+    {
+      "id": "repo-cross-target-radar",
+      "path": "packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml",
+      "edition_class": "cross-edition",
+      "load_mode": "standalone",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "target-radar",
+      "notes": "2010-shaped XML used by the 2010 parser and also exercised by 2025 route and round-trip flows as a cross-edition example baseline."
+    },
+    {
+      "id": "repo-2025-proto-base",
+      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_Base.xml",
+      "edition_class": "2025",
+      "load_mode": "base-plus-extension",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "proto2025-v0.1",
+      "notes": "Shared base module for all packaged Proto2025 extension scenarios."
+    },
+    {
+      "id": "repo-2025-proto-message-test",
+      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_MessageTest.xml",
+      "edition_class": "2025",
+      "load_mode": "base-plus-extension",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "proto2025-message-test",
+      "notes": "Requires Proto2025_Base.xml before merge; covers message-oriented prototype behavior."
+    },
+    {
+      "id": "repo-2025-proto-space-lite",
+      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_SpaceLite.xml",
+      "edition_class": "2025",
+      "load_mode": "base-plus-extension",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "proto2025-space-lite",
+      "notes": "Requires Proto2025_Base.xml before merge; covers spatial/reference-frame prototype behavior."
+    },
+    {
+      "id": "repo-2025-proto-time-mgmt-test",
+      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_TimeMgmtTest.xml",
+      "edition_class": "2025",
+      "load_mode": "base-plus-extension",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "proto2025-time-mgmt-test",
+      "notes": "Requires Proto2025_Base.xml before merge; covers time-management prototype behavior."
+    },
+    {
+      "id": "repo-2025-encoding-auth-smoke",
+      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/encoding_auth/EncodingSmokeTest-2025.xml",
+      "edition_class": "2025",
+      "load_mode": "standalone",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "encoding-auth-smoke",
+      "notes": "2025-only encoding/auth smoke fixture."
+    },
+    {
+      "id": "third-party-rpr-foundation",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Foundation_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-enumerations",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Enumerations_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-switches",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Switches_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-base",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Base_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-aggregate",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Aggregate_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-communication",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Communication_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-der",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-DER_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-logistics",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Logistics_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-minefield",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Minefield_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-physical",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Physical_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-se",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-SE_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-siman",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-SIMAN_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-ua",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-UA_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-rpr-warfare",
+      "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Warfare_v2.0.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "rpr-normative",
+      "notes": "Ordered family member of the public RPR baseline."
+    },
+    {
+      "id": "third-party-netn-mim",
+      "path": "third_party/fom_baseline/upstream/AMSP-04/NETN-FOM/FomFiles_Merged_HLA_Evolved/NETN-MIM.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "netn-merged",
+      "notes": "Ordered family member of the NETN merged public baseline."
+    },
+    {
+      "id": "third-party-netn-merged-with-rpr",
+      "path": "third_party/fom_baseline/upstream/AMSP-04/NETN-FOM/FomFiles_Merged_HLA_Evolved/NETN-Merged-With-RPR.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "netn-merged",
+      "notes": "Ordered family member of the NETN merged public baseline."
+    },
+    {
+      "id": "third-party-portico-standard-mim",
+      "path": "third_party/fom_baseline/upstream/openlvc/portico/codebase/resources/test-data/fom/ieee1516e/HLAstandardMIM.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "portico-samples",
+      "notes": "Ordered family member of the Portico public baseline."
+    },
+    {
+      "id": "third-party-portico-testfom",
+      "path": "third_party/fom_baseline/upstream/openlvc/portico/codebase/resources/test-data/fom/ieee1516e/testfom.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "portico-samples",
+      "notes": "Ordered family member of the Portico public baseline."
+    },
+    {
+      "id": "third-party-portico-testfom-module",
+      "path": "third_party/fom_baseline/upstream/openlvc/portico/codebase/resources/test-data/fom/ieee1516e/testfomModule.xml",
+      "edition_class": "2010",
+      "load_mode": "ordered-family",
+      "baseline_kind": "third-party",
+      "scenario_family": "portico-samples",
+      "notes": "Ordered family member of the Portico public baseline."
+    }
+  ]
+}

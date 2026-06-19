@@ -38,6 +38,8 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/shim-routes` canonical language-shim route matrix and mixed-language demo flow
 - `./tools/java` canonical Java toolchain inventory front door
 - `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
+- `./tools/fom-validate` canonical XML schema + semantic validation packet flow
+- `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow
 - `./tools/fom-roundtrip` canonical FOM round-trip packet flow
 - `./tools/package-deps` canonical split-package dependency tree flow
 - `./tools/section8-gate` canonical Section 8 backend-matrix gate

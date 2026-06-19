@@ -21,6 +21,8 @@ Core operator entrypoints:
 - `./tools/rti-options`
 - `./tools/compliance`
 - `./tools/fom-overview`
+- `./tools/fom-validate`
+- `./tools/fom-workbench`
 - `./tools/fom-roundtrip`
 - `./tools/package-deps`
 - `./tools/section8-gate`
@@ -46,6 +48,7 @@ Shortest common paths:
 - inspect the language-shim route matrix: `./tools/shim-routes matrix --editions 2010,2025 --routes all`
 - inspect the Java toolchain inventory: `./tools/shim-routes java doctor`
 - inspect the Java toolchain inventory via the short front door: `./tools/java`
+- validate one FOM XML or an inventory family: `./tools/fom-validate DemoFOMmodule.xml` or `./tools/fom-validate --family rpr-normative`
 
 Useful `./tools/human-editability` entrypoints:
 

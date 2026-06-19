@@ -71,6 +71,7 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/rti-options" in text
     assert "./tools/compliance" in text
     assert "./tools/fom-overview" in text
+    assert "./tools/fom-validate" in text
     assert "./tools/package-deps" in text
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text

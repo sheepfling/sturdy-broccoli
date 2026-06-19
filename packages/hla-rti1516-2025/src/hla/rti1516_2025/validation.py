@@ -359,7 +359,14 @@ def _validate_datatypes(module: Any) -> list[ValidationIssue]:
         ("variantRecordDataTypes", getattr(module, "variant_record_datatypes", {})),
     )
     for table, mapping in datatype_tables:
-        issues.extend(_validate_name_collection(mapping.keys(), table=table, allow_standard_names=getattr(module, "is_mim", False)))
+        for name in mapping.keys():
+            issues.extend(
+                validate_hla_name(
+                    name,
+                    table=table,
+                    allow_standard=getattr(module, "is_mim", False) or str(name).startswith("HLA"),
+                )
+            )
     for spec in getattr(module, "fixed_record_datatypes", {}).values():
         issues.extend(_validate_name_collection((field.name for field in spec.fields), table="fixedRecordFields"))
     for spec in getattr(module, "variant_record_datatypes", {}).values():

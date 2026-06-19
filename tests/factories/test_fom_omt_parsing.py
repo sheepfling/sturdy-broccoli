@@ -1,21 +1,31 @@
 from __future__ import annotations
 
+import io
+import zipfile
 from importlib import resources
 from pathlib import Path
 
 import pytest
+from google.protobuf import json_format
 
 import hla.rti1516e.fom as fom_module
 from hla.rti1516e.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
 from hla.rti1516e.exceptions import CouldNotDecode
 from hla.rti1516e.fom import (
     OMTConformanceAssessment,
+    ArrayDatatypeSpec,
     BasicDatatypeSpec,
+    EnumeratorSpec,
+    EnumeratedDatatypeSpec,
     FOMMergeError,
     FOMModule,
     FOMResolutionError,
+    FixedRecordDatatypeSpec,
+    FixedRecordFieldSpec,
     InteractionClassSpec,
     ObjectClassSpec,
+    VariantAlternativeSpec,
+    VariantRecordDatatypeSpec,
     SimpleDatatypeSpec,
     assess_omt_conformance,
     merge_fom_modules,
@@ -24,6 +34,7 @@ from hla.rti1516e.fom import (
     validate_encoded_datatype_value,
     validate_fom_xml_schema,
 )
+from hla.transports.grpc.fedpro2010 import datatypes_pb2 as fedpro2010_datatypes
 
 
 RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
@@ -1515,6 +1526,288 @@ def test_serialize_fom_module_round_trips_object_interaction_and_dimension_table
     assert reparsed.interaction_classes[2].parameter_datatypes["Extra"] == "ClockType"
     assert reparsed.interaction_classes[2].transportation == "HLAreliable"
     assert reparsed.dimensions == ("RouteDim",)
+
+
+def test_quirky_fom_metadata_round_trips_through_parser_serializer_and_protobuf_json(tmp_path: Path):
+    xml_text = """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>Quirky Metadata FOM</name>
+    <type>FOM</type>
+    <version>9.7</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Restricted</securityClassification>
+    <applicationDomain>Edge Cases</applicationDomain>
+    <description>Stress repeated metadata and odd-but-legal list structure.</description>
+    <keyword>alpha</keyword>
+    <keyword>alpha</keyword>
+    <keyword>omega</keyword>
+    <poc>
+      <pocType>Author</pocType>
+      <pocName>Casey Smith</pocName>
+      <pocOrg>Blue Team</pocOrg>
+      <pocEmail>casey-one@example.test</pocEmail>
+    </poc>
+    <poc>
+      <pocType>Author</pocType>
+      <pocName>Casey Smith</pocName>
+      <pocOrg>Red Team</pocOrg>
+      <pocEmail>casey-two@example.test</pocEmail>
+    </poc>
+    <reference>
+      <type>Doc</type>
+      <identification>R1</identification>
+      <title>Reference One</title>
+    </reference>
+    <reference>
+      <type>Doc</type>
+      <identification>R2</identification>
+      <title>Reference Two</title>
+    </reference>
+  </modelIdentification>
+  <serviceUtilization>
+    <connect advisor="true" mode="strict" />
+    <registerObjectInstance optional="false" />
+  </serviceUtilization>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <attribute>
+        <name>QuirkFlag</name>
+        <dataType>HLAunicodeString</dataType>
+      </attribute>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <parameter>
+        <name>Payload</name>
+        <dataType>HLAunicodeString</dataType>
+      </parameter>
+    </interactionClass>
+  </interactions>
+  <notes>
+    <note><label>N1</label><semantics>alpha</semantics></note>
+    <note><semantics>freeform</semantics></note>
+  </notes>
+</objectModel>
+"""
+    xml_path = tmp_path / "quirky-fom.xml"
+    xml_path.write_text(xml_text, encoding="utf-8")
+
+    parsed = parse_fom_xml(xml_path)
+    assert parsed.model_identification["version"] == "9.7"
+    assert parsed.model_identification["modificationDate"] == "2026-06-18"
+    assert parsed.model_identification["securityClassification"] == "Restricted"
+    assert parsed.model_identification["applicationDomain"] == "Edge Cases"
+    assert parsed.model_identification["keywords"] == ("alpha", "alpha", "omega")
+    assert parsed.model_identification["pocs"] == (
+        {
+            "pocType": "Author",
+            "pocName": "Casey Smith",
+            "pocOrg": "Blue Team",
+            "pocEmail": "casey-one@example.test",
+        },
+        {
+            "pocType": "Author",
+            "pocName": "Casey Smith",
+            "pocOrg": "Red Team",
+            "pocEmail": "casey-two@example.test",
+        },
+    )
+    assert parsed.model_identification["references"] == (
+        {"type": "Doc", "identification": "R1", "title": "Reference One"},
+        {"type": "Doc", "identification": "R2", "title": "Reference Two"},
+    )
+    assert parsed.service_utilization == {
+        "connect": {"advisor": "true", "mode": "strict"},
+        "registerObjectInstance": {"optional": "false"},
+    }
+    assert parsed.notes == ("N1: alpha", "freeform")
+
+    serialized = serialize_fom_module(parsed)
+    reparsed_path = tmp_path / "quirky-roundtrip.xml"
+    reparsed_path.write_text(serialized, encoding="utf-8")
+    reparsed = parse_fom_xml(reparsed_path)
+
+    assert reparsed.model_identification == parsed.model_identification
+    assert reparsed.service_utilization == parsed.service_utilization
+    assert reparsed.notes == parsed.notes
+
+    file_message = fedpro2010_datatypes.FomModule(
+        file=fedpro2010_datatypes.FileFomModule(name=xml_path.name, content=xml_text.encode("utf-8"))
+    )
+    file_json = json_format.MessageToJson(file_message, preserving_proto_field_name=True)
+    reparsed_file_message = fedpro2010_datatypes.FomModule()
+    json_format.Parse(file_json, reparsed_file_message)
+    assert reparsed_file_message.file.name == xml_path.name
+    assert reparsed_file_message.file.content == xml_text.encode("utf-8")
+
+    compressed_buffer = io.BytesIO()
+    with zipfile.ZipFile(compressed_buffer, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(xml_path.name, xml_text.encode("utf-8"))
+    compressed_message = fedpro2010_datatypes.FomModule(compressedModule=compressed_buffer.getvalue())
+    compressed_json = json_format.MessageToJson(compressed_message, preserving_proto_field_name=True)
+    reparsed_compressed_message = fedpro2010_datatypes.FomModule()
+    json_format.Parse(compressed_json, reparsed_compressed_message)
+    assert reparsed_compressed_message.compressedModule == compressed_buffer.getvalue()
+
+
+def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(tmp_path: Path):
+    module = FOMModule(
+        source="datatype-heavy",
+        uri="datatype-heavy",
+        name="Datatype Heavy FOM",
+        model_type="FOM",
+        basic_datatypes={
+            "HLAinteger32BE": BasicDatatypeSpec(
+                name="HLAinteger32BE",
+                size="32",
+                interpretation="Integer",
+                endian="Big",
+                encoding="32-bit signed",
+            ),
+            "HLAoctet": BasicDatatypeSpec(
+                name="HLAoctet",
+                size="8",
+                interpretation="Octet",
+                endian="Big",
+                encoding="8-bit unsigned",
+            ),
+        },
+        enumerated_datatypes={
+            "ExecutionState": EnumeratedDatatypeSpec(
+                name="ExecutionState",
+                representation="HLAinteger32BE",
+                semantics="Lifecycle states.",
+                enumerators=(
+                    EnumeratorSpec("ColdStart", ("0",)),
+                    EnumeratorSpec("WarmStandby", ("1",)),
+                    EnumeratorSpec("WarmStandbyAlias", ("10", "11")),
+                    EnumeratorSpec("Hot", ("2",)),
+                ),
+            )
+        },
+        array_datatypes={
+            "ByteVector": ArrayDatatypeSpec(
+                name="ByteVector",
+                data_type="HLAoctet",
+                cardinality="Dynamic",
+                encoding="HLAvariableArray",
+                semantics="Opaque payload bytes.",
+            )
+        },
+        fixed_record_datatypes={
+            "Vector3": FixedRecordDatatypeSpec(
+                name="Vector3",
+                encoding="HLAfixedRecord",
+                semantics="Cartesian vector.",
+                fields=(
+                    FixedRecordFieldSpec("X", "HLAinteger32BE", "x component"),
+                    FixedRecordFieldSpec("Y", "HLAinteger32BE", "y component"),
+                    FixedRecordFieldSpec("Z", "HLAinteger32BE", "z component"),
+                ),
+            )
+        },
+        variant_record_datatypes={
+            "MeasurementValue": VariantRecordDatatypeSpec(
+                name="MeasurementValue",
+                discriminant="ExecutionState",
+                data_type="ExecutionState",
+                encoding="HLAvariantRecord",
+                semantics="Tagged measurement payload.",
+                alternatives=(
+                    VariantAlternativeSpec("ColdStart", "StartupVector", "Vector3", "vector startup payload"),
+                    VariantAlternativeSpec("WarmStandby", "StandbyBytes", "ByteVector", "byte standby payload"),
+                    VariantAlternativeSpec("Hot", "HotVector", "Vector3", "vector hot payload"),
+                ),
+            )
+        },
+    )
+
+    xml_text = serialize_fom_module(module)
+    xml_path = tmp_path / "datatype-heavy.xml"
+    xml_path.write_text(xml_text, encoding="utf-8")
+    reparsed = parse_fom_xml(xml_path)
+
+    enum_spec = reparsed.enumerated_datatypes["ExecutionState"]
+    assert enum_spec.representation == "HLAinteger32BE"
+    assert enum_spec.semantics == "Lifecycle states."
+    assert [row.name for row in enum_spec.enumerators] == [
+        "ColdStart",
+        "WarmStandby",
+        "WarmStandbyAlias",
+        "Hot",
+    ]
+    assert [row.values for row in enum_spec.enumerators] == [("0",), ("1",), ("10", "11"), ("2",)]
+
+    array_spec = reparsed.array_datatypes["ByteVector"]
+    assert array_spec.data_type == "HLAoctet"
+    assert array_spec.cardinality == "Dynamic"
+    assert array_spec.encoding == "HLAvariableArray"
+    assert array_spec.semantics == "Opaque payload bytes."
+
+    fixed_spec = reparsed.fixed_record_datatypes["Vector3"]
+    assert fixed_spec.encoding == "HLAfixedRecord"
+    assert fixed_spec.semantics == "Cartesian vector."
+    assert [(field.name, field.data_type, field.semantics) for field in fixed_spec.fields] == [
+        ("X", "HLAinteger32BE", "x component"),
+        ("Y", "HLAinteger32BE", "y component"),
+        ("Z", "HLAinteger32BE", "z component"),
+    ]
+
+    variant_spec = reparsed.variant_record_datatypes["MeasurementValue"]
+    assert variant_spec.discriminant == "ExecutionState"
+    assert variant_spec.data_type == "ExecutionState"
+    assert variant_spec.encoding == "HLAvariantRecord"
+    assert variant_spec.semantics == "Tagged measurement payload."
+    assert [
+        (alt.enumerator, alt.name, alt.data_type, alt.semantics) for alt in variant_spec.alternatives
+    ] == [
+        ("ColdStart", "StartupVector", "Vector3", "vector startup payload"),
+        ("WarmStandby", "StandbyBytes", "ByteVector", "byte standby payload"),
+        ("Hot", "HotVector", "Vector3", "vector hot payload"),
+    ]
+
+
+def test_dimension_metadata_round_trip_is_still_intentionally_lossy(tmp_path: Path):
+    xml_text = """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>Dimension Metadata FOM</name>
+    <type>FOM</type>
+  </modelIdentification>
+  <dimensions>
+    <dimension>
+      <name>RegionX</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>1024</upperBound>
+      <normalization>normalize-01</normalization>
+      <semantics>Spatial bucket edge case.</semantics>
+    </dimension>
+  </dimensions>
+</objectModel>
+"""
+    xml_path = tmp_path / "dimension-lossy.xml"
+    xml_path.write_text(xml_text, encoding="utf-8")
+
+    parsed = parse_fom_xml(xml_path)
+    assert parsed.dimension_specs["RegionX"].data_type == "HLAinteger32BE"
+    assert parsed.dimension_specs["RegionX"].upper_bound == "1024"
+    assert parsed.dimension_specs["RegionX"].normalization == "normalize-01"
+    assert parsed.dimension_specs["RegionX"].semantics == "Spatial bucket edge case."
+
+    serialized = serialize_fom_module(parsed)
+    roundtrip_path = tmp_path / "dimension-lossy-roundtrip.xml"
+    roundtrip_path.write_text(serialized, encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip_path)
+
+    assert reparsed.dimensions == ("RegionX",)
+    assert reparsed.dimension_specs["RegionX"].data_type is None
+    assert reparsed.dimension_specs["RegionX"].upper_bound is None
+    assert reparsed.dimension_specs["RegionX"].normalization is None
+    assert reparsed.dimension_specs["RegionX"].semantics is None
 
 
 def test_parse_fom_xml_extracts_richer_datatype_semantics_and_merge_summary():
