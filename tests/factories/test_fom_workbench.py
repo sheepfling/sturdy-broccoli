@@ -107,6 +107,7 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert "open HTML validation packet" in html_text
     assert "validation_packets/target-radar/fom_validation_report.html" in html_text
     assert "validation_packets/custom-target-plus-demo/fom_validation_report.html" in html_text
+    assert '<option value="custom-load-set">custom load sets</option>' in html_text
 
 
 def test_tools_fom_workbench_writes_snapshot_artifact(tmp_path: Path) -> None:

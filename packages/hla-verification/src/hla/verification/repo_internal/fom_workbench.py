@@ -964,12 +964,16 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     <div class="grid">
       <section class="panel">
         <h2>Catalog</h2>
-        <input id="family-filter" type="search" placeholder="Filter families, editions, or load modes">
+        <select id="catalog-mode">
+          <option value="family">families</option>
+          <option value="custom-load-set">custom load sets</option>
+        </select>
+        <input id="family-filter" type="search" placeholder="Filter families, custom load sets, editions, or load modes">
         <div id="family-list" class="family-list"></div>
       </section>
       <section class="panel">
         <h2>Inspect</h2>
-        <div id="inspect-panel" class="muted">Select a family.</div>
+        <div id="inspect-panel" class="muted">Select a family or custom load set.</div>
         <div class="toolbar">
           <select id="tree-kind">
             <option value="object">object classes</option>
@@ -1011,8 +1015,10 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
   <script>
     const snapshot = {payload};
     const familyMap = new Map(snapshot.families.map((family) => [family.scenario_family, family]));
+    const customLoadSetMap = new Map(snapshot.custom_load_sets.map((loadSet) => [loadSet.name, loadSet]));
     const diffMap = new Map(snapshot.diffs.map((diff) => [`${{diff.left_family}}::${{diff.right_family}}`, diff]));
-    let selectedFamily = snapshot.families[0]?.scenario_family || null;
+    let selectedCatalogKind = snapshot.families[0] ? "family" : "custom-load-set";
+    let selectedCatalogName = snapshot.families[0]?.scenario_family || snapshot.custom_load_sets[0]?.name || null;
     let selectedNodeName = null;
 
     function setCapabilities() {{
@@ -1022,11 +1028,20 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         .join("");
     }}
 
-    function familySearchText(family) {{
+    function currentCatalogItems() {{
+      return selectedCatalogKind === "custom-load-set" ? snapshot.custom_load_sets : snapshot.families;
+    }}
+
+    function currentCatalogItem() {{
+      if (selectedCatalogKind === "custom-load-set") return customLoadSetMap.get(selectedCatalogName) || null;
+      return familyMap.get(selectedCatalogName) || null;
+    }}
+
+    function catalogSearchText(family) {{
       return [
-        family.scenario_family,
-        family.edition_classes.join(" "),
-        family.baseline_kinds.join(" "),
+        family.scenario_family || family.name,
+        (family.edition_classes || []).join(" "),
+        (family.baseline_kinds || []).join(" "),
         family.load_mode,
         family.member_ids.join(" "),
       ].join(" ").toLowerCase();
@@ -1036,17 +1051,19 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const filter = document.getElementById("family-filter").value.trim().toLowerCase();
       const host = document.getElementById("family-list");
       host.innerHTML = "";
-      for (const family of snapshot.families) {{
-        if (filter && !familySearchText(family).includes(filter)) continue;
+      for (const family of currentCatalogItems()) {{
+        const catalogName = family.scenario_family || family.name;
+        if (filter && !catalogSearchText(family).includes(filter)) continue;
         const card = document.createElement("div");
-        card.className = "family-card" + (family.scenario_family === selectedFamily ? " active" : "");
+        card.className = "family-card" + (catalogName === selectedCatalogName ? " active" : "");
         card.innerHTML = `
-          <strong>${{family.scenario_family}}</strong><br>
-          <span class="muted">${{family.edition_classes.join(", ")}} | ${{family.load_mode}}</span><br>
+          <strong>${{catalogName}}</strong><br>
+          <span class="muted">${{(family.edition_classes || ["custom"]).join(", ")}} | ${{family.load_mode}}</span><br>
           <span class="muted">${{family.object_class_count}} objects, ${{family.interaction_class_count}} interactions, ${{family.datatype_count}} datatypes</span>
         `;
         card.onclick = () => {{
-          selectedFamily = family.scenario_family;
+          selectedCatalogName = catalogName;
+          selectedNodeName = null;
           renderFamilyList();
           renderInspect();
           renderSearch();
@@ -1056,19 +1073,21 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     }}
 
     function renderInspect() {{
-      const family = familyMap.get(selectedFamily);
+      const family = currentCatalogItem();
       const host = document.getElementById("inspect-panel");
       if (!family) {{
-        host.textContent = "Select a family.";
+        host.textContent = "Select a family or custom load set.";
         return;
       }}
+      const title = family.scenario_family || family.name;
       host.innerHTML = `
         <dl class="kv">
-          <dt>Edition classes</dt><dd>${{family.edition_classes.join(", ")}}</dd>
-          <dt>Baseline kinds</dt><dd>${{family.baseline_kinds.join(", ")}}</dd>
+          <dt>Selection</dt><dd>${{title}}</dd>
+          <dt>Edition classes</dt><dd>${{(family.edition_classes || ["custom"]).join(", ")}}</dd>
+          <dt>Baseline kinds</dt><dd>${{(family.baseline_kinds || ["custom"]).join(", ")}}</dd>
           <dt>Load mode</dt><dd>${{family.load_mode}}</dd>
           <dt>Parse status</dt><dd>${{family.parse_status}}${{family.parse_error ? `: ${{family.parse_error}}` : ""}}</dd>
-          <dt>Default load set</dt><dd>${{family.default_load_set_ids.join(", ")}}</dd>
+          <dt>Default load set</dt><dd>${{(family.default_load_set_ids || family.member_ids).join(", ")}}</dd>
           <dt>Module names</dt><dd>${{family.module_names.join(", ")}}</dd>
           <dt>Dimensions</dt><dd>${{family.dimensions.join(", ") || "n/a"}}</dd>
         </dl>
@@ -1094,7 +1113,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const filter = document.getElementById("search-filter").value.trim().toLowerCase();
       const tbody = document.getElementById("search-results");
       const rows = snapshot.search_index.filter((row) => {{
-        if (selectedFamily && row.source_name !== selectedFamily) return false;
+        if (selectedCatalogName && row.source_name !== selectedCatalogName) return false;
         if (!filter) return true;
         return [row.kind, row.name, row.source_name, row.parent_name || "", row.lineage.join(" "), row.edition_classes.join(" ")].join(" ").toLowerCase().includes(filter);
       }}).slice(0, 250);
@@ -1108,14 +1127,14 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     }}
 
     function currentNodes() {{
-      const family = familyMap.get(selectedFamily);
+      const family = currentCatalogItem();
       if (!family) return [];
       const kind = document.getElementById("tree-kind").value;
       return kind === "interaction" ? family.interaction_nodes : family.object_nodes;
     }}
 
     function renderTree() {{
-      const family = familyMap.get(selectedFamily);
+      const family = currentCatalogItem();
       const panel = document.getElementById("tree-panel");
       if (!family) {{
         panel.innerHTML = "";
@@ -1168,11 +1187,11 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     }}
 
     function renderEditFlow() {{
-      const family = familyMap.get(selectedFamily);
+      const family = currentCatalogItem();
       const summary = document.getElementById("edit-summary");
       const command = document.getElementById("edit-command");
       if (!family) {{
-        summary.textContent = "Select a family.";
+        summary.textContent = "Select a family or custom load set.";
         command.innerHTML = "";
         return;
       }}
@@ -1292,6 +1311,16 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     }}
 
     document.getElementById("family-filter").addEventListener("input", renderFamilyList);
+    document.getElementById("catalog-mode").addEventListener("change", (event) => {{
+      selectedCatalogKind = event.target.value;
+      selectedCatalogName = selectedCatalogKind === "custom-load-set"
+        ? (snapshot.custom_load_sets[0]?.name || null)
+        : (snapshot.families[0]?.scenario_family || null);
+      selectedNodeName = null;
+      renderFamilyList();
+      renderInspect();
+      renderSearch();
+    }});
     document.getElementById("search-filter").addEventListener("input", renderSearch);
     document.getElementById("tree-filter").addEventListener("input", renderTree);
     document.getElementById("tree-kind").addEventListener("change", () => {{ selectedNodeName = null; renderTree(); }});

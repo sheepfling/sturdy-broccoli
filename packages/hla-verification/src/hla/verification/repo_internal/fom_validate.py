@@ -210,6 +210,8 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
                 "full_name": spec.full_name,
                 "parent_name": spec.parent_name,
                 "lineage": tuple(spec.full_name.split(".")),
+                "declared_names": tuple(getattr(spec, "declared_attributes", ())),
+                "total_names": tuple(getattr(spec, "attributes", ())),
             }
         )
     interaction_nodes = []
@@ -219,6 +221,8 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
                 "full_name": spec.full_name,
                 "parent_name": spec.parent_name,
                 "lineage": tuple(spec.full_name.split(".")),
+                "declared_names": tuple(getattr(spec, "declared_parameters", ())),
+                "total_names": tuple(getattr(spec, "parameters", ())),
             }
         )
     return {
@@ -574,6 +578,20 @@ function diffTreeNodes(leftNodes, rightNodes) {{
   const onlyRight = [...rightMap.keys()].filter((name) => !leftMap.has(name)).sort().map((name) => rightMap.get(name));
   return {{ shared, onlyLeft, onlyRight }};
 }}
+function sharedNodeMemberDiffs(leftNodes, rightNodes) {{
+  const leftMap = new Map(leftNodes.map((row) => [row.full_name, row]));
+  const rightMap = new Map(rightNodes.map((row) => [row.full_name, row]));
+  const shared = [...leftMap.keys()].filter((name) => rightMap.has(name)).sort();
+  return shared.map((name) => {{
+    const left = leftMap.get(name);
+    const right = rightMap.get(name);
+    const declared = diffLists(left.declared_names || [], right.declared_names || []);
+    const total = diffLists(left.total_names || [], right.total_names || []);
+    return {{ name, lineage: left.lineage || [name], declared, total }};
+  }}).filter((row) =>
+    row.declared.onlyLeft.length || row.declared.onlyRight.length || row.total.onlyLeft.length || row.total.onlyRight.length
+  );
+}}
 function listBlock(items) {{
   if (!items.length) return '<p class="muted">none</p>';
   return `<div class="list">${{items.map((item) => `<code>${{item}}</code>`).join("")}}</div>`;
@@ -581,6 +599,19 @@ function listBlock(items) {{
 function treeBlock(rows) {{
   if (!rows.length) return '<p class="muted">none</p>';
   return `<div class="list">${{rows.slice(0, 160).map((row) => `<code>${{row.full_name}}</code><div class="muted">${{row.lineage.join(" > ")}}</div>`).join("")}}</div>`;
+}}
+function sharedNodeDiffBlock(rows) {{
+  if (!rows.length) return '<p class="muted">none</p>';
+  return `<div class="list">${{rows.slice(0, 80).map((row) => `
+    <div>
+      <code>${{row.name}}</code>
+      <div class="muted">${{row.lineage.join(" > ")}}</div>
+      <div class="muted">declared left-only: ${{row.declared.onlyLeft.join(", ") || "none"}}</div>
+      <div class="muted">declared right-only: ${{row.declared.onlyRight.join(", ") || "none"}}</div>
+      <div class="muted">inherited/total left-only: ${{row.total.onlyLeft.join(", ") || "none"}}</div>
+      <div class="muted">inherited/total right-only: ${{row.total.onlyRight.join(", ") || "none"}}</div>
+    </div>
+  `).join("")}}</div>`;
 }}
 function loadSetDiffWidget(row) {{
   if (!row.member_summaries || row.member_summaries.length < 2) return "";
@@ -619,6 +650,8 @@ function renderLoadSetDiff(row) {{
   const interactionDiff = diffLists(left.interaction_classes, right.interaction_classes);
   const objectTreeDiff = diffTreeNodes(left.object_nodes || [], right.object_nodes || []);
   const interactionTreeDiff = diffTreeNodes(left.interaction_nodes || [], right.interaction_nodes || []);
+  const sharedObjectMemberDiffs = sharedNodeMemberDiffs(left.object_nodes || [], right.object_nodes || []);
+  const sharedInteractionMemberDiffs = sharedNodeMemberDiffs(left.interaction_nodes || [], right.interaction_nodes || []);
   host.innerHTML = `
     <p><strong>${{left.name || left.source}}</strong> vs <strong>${{right.name || right.source}}</strong></p>
     <div class="split">
@@ -669,6 +702,16 @@ function renderLoadSetDiff(row) {{
       <div>
         <h4>Only Right Interaction Tree</h4>
         ${{treeBlock(interactionTreeDiff.onlyRight)}}
+      </div>
+    </div>
+    <div class="split">
+      <div>
+        <h4>Shared Object Member Deltas</h4>
+        ${{sharedNodeDiffBlock(sharedObjectMemberDiffs)}}
+      </div>
+      <div>
+        <h4>Shared Interaction Member Deltas</h4>
+        ${{sharedNodeDiffBlock(sharedInteractionMemberDiffs)}}
       </div>
     </div>
   `;

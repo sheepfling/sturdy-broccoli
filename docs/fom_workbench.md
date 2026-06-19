@@ -128,8 +128,10 @@ The intended workbench should have five panes:
 The current HTML slice implements:
 
 - family catalog
+- direct inspect-pane browsing for named custom load sets
 - family inspect panel
 - per-family precomputed validation packet links
+- per-custom-load-set precomputed validation packet links
 - merged-name search over object, interaction, and datatype names
 - pairwise family overlay/diff over precomputed default load sets
 - hierarchy-aware object/interaction drill-down
@@ -162,10 +164,10 @@ The workbench now connects directly to the validator surface:
 - family inspect panel shows the exact `./tools/fom-validate --family ... --html` command
 - generated workbench artifacts include precomputed validation packets per family
 - generated workbench artifacts include precomputed validation packets per named custom load set
-- validation HTML supports side-by-side hierarchy-aware member tree diffing for multi-module load sets
+- validation HTML supports side-by-side hierarchy-aware member tree diffing for multi-module load sets, including declared-vs-total member deltas on shared nodes
 
 ## Next Implementation Slices
 
-1. add direct inspect-pane browsing for custom load sets, not only overlay links
-2. expand hierarchy-aware diffing into declared-vs-inherited attribute/parameter comparisons
+1. surface custom load-set builders and saved sets directly from the browser UI
+2. expand hierarchy-aware diffing into datatype-hint deltas and dimension usage deltas on shared nodes
 3. expand guarded repo-owned edit flows into selected safe structural edits
