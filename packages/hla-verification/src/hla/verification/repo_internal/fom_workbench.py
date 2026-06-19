@@ -12,6 +12,7 @@ from typing import Any
 
 from hla.rti1516e.fom import FOMCatalog, FOMResolutionError, FOMResolver, merge_fom_modules
 from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
+from hla.verification.repo_internal.fom_validate import write_fom_validation, write_fom_validation_html
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,6 +51,10 @@ class FOMWorkbenchFamily:
     datatype_names: tuple[str, ...]
     object_nodes: tuple[FOMWorkbenchNode, ...]
     interaction_nodes: tuple[FOMWorkbenchNode, ...]
+    validation_command: str | None
+    validation_json_path: str | None
+    validation_md_path: str | None
+    validation_html_path: str | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -214,7 +219,7 @@ def _resolve_catalog(records: tuple[FOMInventoryRecord, ...]) -> tuple[tuple[str
     return module_names, catalog
 
 
-def _family_summary(records: tuple[FOMInventoryRecord, ...]) -> FOMWorkbenchFamily:
+def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_output_dir: Path | None = None) -> FOMWorkbenchFamily:
     load_set = _default_load_set(records)
     parse_status = "ok"
     parse_error: str | None = None
@@ -228,6 +233,10 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...]) -> FOMWorkbenchFami
     datatype_names: tuple[str, ...] = ()
     object_nodes: tuple[FOMWorkbenchNode, ...] = ()
     interaction_nodes: tuple[FOMWorkbenchNode, ...] = ()
+    validation_json_path: str | None = None
+    validation_md_path: str | None = None
+    validation_html_path: str | None = None
+    validation_command = f"./tools/fom-validate --family {records[0].scenario_family} --html"
     try:
         module_names, catalog = _resolve_catalog(load_set)
         object_class_count = len(catalog.object_classes)
@@ -239,6 +248,22 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...]) -> FOMWorkbenchFami
         datatype_names = tuple(sorted(catalog.datatype_names))
         object_nodes = _node_rows(tuple(catalog.object_classes.values()), kind="object")
         interaction_nodes = _node_rows(tuple(catalog.interaction_classes.values()), kind="interaction")
+        if validation_output_dir is not None:
+            family_dir = validation_output_dir / records[0].scenario_family
+            _, _, report = write_fom_validation(
+                (),
+                output_dir=family_dir,
+                families=(records[0].scenario_family,),
+            )
+            html_path = write_fom_validation_html(
+                (),
+                output_dir=family_dir,
+                families=(records[0].scenario_family,),
+                title=report.title,
+            )
+            validation_json_path = str((family_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
+            validation_md_path = str((family_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
+            validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
     except FOMResolutionError as exc:
         parse_status = "error"
         parse_error = str(exc)
@@ -264,6 +289,10 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...]) -> FOMWorkbenchFami
         datatype_names=datatype_names,
         object_nodes=object_nodes,
         interaction_nodes=interaction_nodes,
+        validation_command=validation_command,
+        validation_json_path=validation_json_path,
+        validation_md_path=validation_md_path,
+        validation_html_path=validation_html_path,
     )
 
 
@@ -607,15 +636,17 @@ def build_fom_workbench_snapshot(
     *,
     custom_load_sets: Mapping[str, tuple[str, ...]] | None = None,
     diff_specs: tuple[tuple[str, str], ...] = (),
+    validation_output_dir: str | Path | None = None,
 ) -> FOMWorkbenchSnapshot:
     records = inventory_records()
     grouped: dict[str, list[FOMInventoryRecord]] = defaultdict(list)
     for record in records:
         grouped[record.scenario_family].append(record)
 
+    validation_root = Path(validation_output_dir) if validation_output_dir is not None else None
     families = tuple(
         sorted(
-            (_family_summary(tuple(group)) for _, group in grouped.items()),
+            (_family_summary(tuple(group), validation_output_dir=validation_root) for _, group in grouped.items()),
             key=lambda row: row.scenario_family,
         )
     )
@@ -649,7 +680,12 @@ def write_fom_workbench_snapshot(
 ) -> Path:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    snapshot = build_fom_workbench_snapshot(custom_load_sets=custom_load_sets, diff_specs=diff_specs)
+    validation_output_dir = output_path / "validation_packets"
+    snapshot = build_fom_workbench_snapshot(
+        custom_load_sets=custom_load_sets,
+        diff_specs=diff_specs,
+        validation_output_dir=validation_output_dir,
+    )
     json_path = output_path / "fom_workbench_snapshot.json"
     json_path.write_text(snapshot.to_json() + "\n", encoding="utf-8")
     return json_path
@@ -1006,6 +1042,17 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
           <dt>Module names</dt><dd>${{family.module_names.join(", ")}}</dd>
           <dt>Dimensions</dt><dd>${{family.dimensions.join(", ") || "n/a"}}</dd>
         </dl>
+        <h3>Validation Packet</h3>
+        <div class="list">
+          <code>${{family.validation_command || "n/a"}}</code>
+          ${{
+            family.validation_html_path
+              ? `<a href="${{family.validation_html_path}}" target="_blank" rel="noopener">open HTML validation packet</a><br>
+                 <a href="${{family.validation_md_path}}" target="_blank" rel="noopener">open Markdown validation packet</a><br>
+                 <a href="${{family.validation_json_path}}" target="_blank" rel="noopener">open JSON validation packet</a>`
+              : `<span class="muted">Validation packet not generated for this snapshot.</span>`
+          }}
+        </div>
         <h3>Member Paths</h3>
         <div class="list">${{family.member_paths.map((item) => `<code>${{item}}</code>`).join("")}}</div>
       `;
@@ -1220,7 +1267,12 @@ def write_fom_workbench_html(
 ) -> Path:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    snapshot = build_fom_workbench_snapshot(custom_load_sets=custom_load_sets, diff_specs=diff_specs)
+    validation_output_dir = output_path / "validation_packets"
+    snapshot = build_fom_workbench_snapshot(
+        custom_load_sets=custom_load_sets,
+        diff_specs=diff_specs,
+        validation_output_dir=validation_output_dir,
+    )
     html_path = output_path / "fom_workbench.html"
     html_path.write_text(_render_workbench_html(snapshot), encoding="utf-8")
     return html_path

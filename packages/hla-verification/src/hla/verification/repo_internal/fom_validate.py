@@ -96,6 +96,7 @@ class FOMValidationLoadSetReport:
     parsed: bool
     semantic_valid: bool
     module_names: tuple[str, ...]
+    member_summaries: tuple[dict[str, Any], ...]
     object_classes: int
     interaction_classes: int
     datatype_names: int
@@ -199,6 +200,17 @@ def _module_counts(module: FOMModule | None) -> tuple[int, int, int, tuple[str, 
         len(module.datatype_names),
         tuple(module.dimensions),
     )
+
+
+def _member_summary(module: FOMModule) -> dict[str, Any]:
+    return {
+        "source": str(module.source),
+        "name": module.name,
+        "object_classes": tuple(sorted(spec.full_name for spec in module.object_classes)),
+        "interaction_classes": tuple(sorted(spec.full_name for spec in module.interaction_classes)),
+        "datatype_names": tuple(sorted(module.datatype_names)),
+        "dimensions": tuple(module.dimensions),
+    }
 
 
 def _recommendation(verdict: str, issues: tuple[FOMValidationIssueRow, ...], unsupported: tuple[str, ...]) -> str:
@@ -451,7 +463,8 @@ def _html_report(report: FOMValidationReport) -> str:
     th, td {{ text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }}
     .toolbar {{ display: flex; gap: 8px; margin: 0 0 16px; }}
     input, select {{ width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }}
-    @media (max-width: 900px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+    .split {{ display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin: 12px 0; }}
+    @media (max-width: 900px) {{ .grid, .split {{ grid-template-columns: 1fr; }} }}
   </style>
 </head>
 <body>
@@ -524,6 +537,88 @@ function issueTable(issues) {{
   if (!issues.length) return '<p class="muted">No issues.</p>';
   return `<table><thead><tr><th>Layer</th><th>Requirement</th><th>Field</th><th>Message</th></tr></thead><tbody>${{issues.map((issue) => `<tr><td>${{issue.layer}}</td><td>${{issue.requirement || "n/a"}}</td><td>${{issue.field || "n/a"}}</td><td>${{issue.message}}</td></tr>`).join("")}}</tbody></table>`;
 }}
+function diffLists(left, right) {{
+  const leftSet = new Set(left);
+  const rightSet = new Set(right);
+  return {{
+    shared: [...leftSet].filter((item) => rightSet.has(item)).sort(),
+    onlyLeft: [...leftSet].filter((item) => !rightSet.has(item)).sort(),
+    onlyRight: [...rightSet].filter((item) => !leftSet.has(item)).sort(),
+  }};
+}}
+function listBlock(items) {{
+  if (!items.length) return '<p class="muted">none</p>';
+  return `<div class="list">${{items.map((item) => `<code>${{item}}</code>`).join("")}}</div>`;
+}}
+function loadSetDiffWidget(row) {{
+  if (!row.member_summaries || row.member_summaries.length < 2) return "";
+  return `
+    <h3>Side-by-Side Member Tree Diff</h3>
+    <div class="toolbar">
+      <select id="loadset-left"></select>
+      <select id="loadset-right"></select>
+    </div>
+    <div id="loadset-diff"></div>
+  `;
+}}
+function renderLoadSetDiff(row) {{
+  const leftSel = document.getElementById("loadset-left");
+  const rightSel = document.getElementById("loadset-right");
+  const host = document.getElementById("loadset-diff");
+  if (!leftSel || !rightSel || !host) return;
+  const options = row.member_summaries.map((member, index) => `<option value="${{index}}">${{member.name || member.source}}</option>`).join("");
+  if (!leftSel.dataset.ready) {{
+    leftSel.innerHTML = options;
+    rightSel.innerHTML = options;
+    leftSel.value = "0";
+    rightSel.value = String(Math.min(1, row.member_summaries.length - 1));
+    leftSel.dataset.ready = "1";
+    rightSel.dataset.ready = "1";
+    leftSel.onchange = () => renderLoadSetDiff(row);
+    rightSel.onchange = () => renderLoadSetDiff(row);
+  }}
+  if (leftSel.value === rightSel.value) {{
+    host.innerHTML = '<p class="muted">Select two distinct members.</p>';
+    return;
+  }}
+  const left = row.member_summaries[Number(leftSel.value)];
+  const right = row.member_summaries[Number(rightSel.value)];
+  const objectDiff = diffLists(left.object_classes, right.object_classes);
+  const interactionDiff = diffLists(left.interaction_classes, right.interaction_classes);
+  host.innerHTML = `
+    <p><strong>${{left.name || left.source}}</strong> vs <strong>${{right.name || right.source}}</strong></p>
+    <div class="split">
+      <div>
+        <h4>Only Left Objects</h4>
+        ${{listBlock(objectDiff.onlyLeft)}}
+      </div>
+      <div>
+        <h4>Only Right Objects</h4>
+        ${{listBlock(objectDiff.onlyRight)}}
+      </div>
+    </div>
+    <div class="split">
+      <div>
+        <h4>Only Left Interactions</h4>
+        ${{listBlock(interactionDiff.onlyLeft)}}
+      </div>
+      <div>
+        <h4>Only Right Interactions</h4>
+        ${{listBlock(interactionDiff.onlyRight)}}
+      </div>
+    </div>
+    <div class="split">
+      <div>
+        <h4>Shared Objects</h4>
+        ${{listBlock(objectDiff.shared.slice(0, 120))}}
+      </div>
+      <div>
+        <h4>Shared Interactions</h4>
+        ${{listBlock(interactionDiff.shared.slice(0, 120))}}
+      </div>
+    </div>
+  `;
+}}
 function renderDetail() {{
   const row = items()[activeIndex];
   if (!row) {{
@@ -540,9 +635,11 @@ function renderDetail() {{
       <ul>${{row.source_paths.map((path) => `<li><code>${{path}}</code></li>`).join("")}}</ul>
       <p><strong>Counts:</strong> objects=${{row.object_classes}}, interactions=${{row.interaction_classes}}, datatypes=${{row.datatype_names}}</p>
       <p><strong>Dimensions:</strong> ${{row.dimensions.length ? row.dimensions.join(", ") : "none"}}</p>
+      ${{loadSetDiffWidget(row)}}
       <h3>Issues</h3>
       ${{issueTable(row.issues)}}
     `;
+    renderLoadSetDiff(row);
     return;
   }}
   detailHost.innerHTML = `
@@ -763,6 +860,7 @@ def _load_set_report(
     verdict = "parse-failed"
     rationale = "The load set could not be merged into a repo-native catalog."
     module_names: tuple[str, ...] = ()
+    member_summaries: tuple[dict[str, Any], ...] = ()
     object_classes = 0
     interaction_classes = 0
     datatype_names = 0
@@ -770,6 +868,7 @@ def _load_set_report(
     try:
         resolved_modules = resolver.resolve_many(sources)
         module_names = tuple(module.name or str(module.source) for module in resolved_modules)
+        member_summaries = tuple(_member_summary(module) for module in resolved_modules)
         if effective_edition == "2010":
             with _working_directory(_repo_root()):
                 merge_fom_modules(resolved_modules)
@@ -834,6 +933,7 @@ def _load_set_report(
         parsed=parsed,
         semantic_valid=semantic_valid,
         module_names=module_names,
+        member_summaries=member_summaries,
         object_classes=object_classes,
         interaction_classes=interaction_classes,
         datatype_names=datatype_names,

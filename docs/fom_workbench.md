@@ -129,10 +129,19 @@ The current HTML slice implements:
 
 - family catalog
 - family inspect panel
+- per-family precomputed validation packet links
 - merged-name search over object, interaction, and datatype names
 - pairwise family overlay/diff over precomputed default load sets
 - hierarchy-aware object/interaction drill-down
 - guarded edit command generation for repo-owned XML only
+
+The generated workbench packet now also materializes:
+
+- `validation_packets/<family>/fom_validation_report.json`
+- `validation_packets/<family>/fom_validation_report.md`
+- `validation_packets/<family>/fom_validation_report.html`
+
+Those packets are linked directly from the inspect pane.
 
 ## Boundaries
 
@@ -141,8 +150,16 @@ The current HTML slice implements:
 - ordered-family and base-plus-extension sets must be treated as first-class
   load modes, not special cases hidden in code
 
+## Validation Handoff
+
+The workbench now connects directly to the validator surface:
+
+- family inspect panel shows the exact `./tools/fom-validate --family ... --html` command
+- generated workbench artifacts include precomputed validation packets per family
+- validation HTML supports side-by-side member tree diffing for multi-module load sets
+
 ## Next Implementation Slices
 
-1. add custom-load-set diffing beyond named families
-2. add tree-aware search and drill-down by parent hierarchy
-3. add guarded edit flows for repo-owned XML only
+1. add direct browsing of custom load-set validation packets
+2. add richer side-by-side hierarchy diff views beyond flat added/removed sets
+3. expand guarded repo-owned edit flows into selected safe structural edits

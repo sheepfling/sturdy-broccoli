@@ -49,6 +49,8 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert rpr.object_classes
     assert rpr.interaction_classes
     assert rpr.datatype_names
+    assert rpr.validation_command == "./tools/fom-validate --family rpr-normative --html"
+    assert rpr.validation_html_path is None
 
     assert any(row.source_name == "target-radar" and row.kind == "object" for row in snapshot.search_index)
     assert any(row.source_name == "proto2025-message-test" and row.kind == "interaction" for row in snapshot.search_index)
@@ -78,6 +80,10 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert any({row["left_family"], row["right_family"]} == {"target-radar", "proto2025-message-test"} for row in payload["diffs"])
     assert any(row["name"] == "custom-target-plus-demo" for row in payload["custom_load_sets"])
     assert any({row["left_family"], row["right_family"]} == {"custom-target-plus-demo", "custom-proto-message"} for row in payload["diffs"])
+    target_radar_payload = next(row for row in payload["families"] if row["scenario_family"] == "target-radar")
+    assert target_radar_payload["validation_command"] == "./tools/fom-validate --family target-radar --html"
+    assert target_radar_payload["validation_html_path"] == "validation_packets/target-radar/fom_validation_report.html"
+    assert (tmp_path / "workbench" / target_radar_payload["validation_html_path"]).exists()
 
     html_path = write_fom_workbench_html(
         output_dir=tmp_path / "workbench",
@@ -94,6 +100,8 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert "Node Drill-Down" in html_text
     assert "Guarded Edit Flow" in html_text
     assert "custom-target-plus-demo" in html_text
+    assert "open HTML validation packet" in html_text
+    assert "validation_packets/target-radar/fom_validation_report.html" in html_text
 
 
 def test_tools_fom_workbench_writes_snapshot_artifact(tmp_path: Path) -> None:
@@ -125,6 +133,7 @@ def test_tools_fom_workbench_writes_snapshot_artifact(tmp_path: Path) -> None:
     assert "Inspect" in html_text
     assert "Overlay / Diff" in html_text
     assert "Guarded Edit Flow" in html_text
+    assert (output_dir / "validation_packets" / "target-radar" / "fom_validation_report.html").exists()
 
 
 def test_repo_owned_fom_edit_flow_writes_copy_and_rejects_third_party(tmp_path: Path) -> None:

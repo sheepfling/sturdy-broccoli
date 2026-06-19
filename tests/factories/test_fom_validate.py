@@ -136,3 +136,16 @@ def test_write_fom_validation_html_writes_browser_report(tmp_path: Path) -> None
     assert "<title>Validator HTML | FOM Validate</title>" in text
     assert "load_set_reports" in text
     assert "Source reports" in text
+
+
+def test_write_fom_validation_html_renders_member_side_by_side_diff_for_multi_module_load_set(tmp_path: Path) -> None:
+    html_path = write_fom_validation_html(
+        ["DemoFOMmodule.xml", "TargetRadarFOMmodule.xml"],
+        output_dir=tmp_path / "html-diff",
+        title="Validator Multi",
+    )
+    text = html_path.read_text(encoding="utf-8")
+    assert "Side-by-Side Member Tree Diff" in text
+    assert "loadset-left" in text
+    assert "loadset-right" in text
+    assert "Shared Objects" in text
