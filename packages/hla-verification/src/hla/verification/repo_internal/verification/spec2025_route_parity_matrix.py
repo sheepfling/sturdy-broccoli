@@ -267,7 +267,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers object-region filtering, scope advisory callbacks, and 2025 default attribute policy calls.",
+        "Python 2025 shim covers object-region filtering, passive object and interaction region-subscribe aliases, "
+        "scope advisory callbacks, and 2025 default attribute policy calls.",
     ),
     _row(
         "ddm",
@@ -275,7 +276,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers object attribute, interaction class, and directed interaction "
+        "Hosted FedPro 2025 route covers object attribute subscribe-with-rate and passive subscribe-with-rate aliases, "
+        "object attribute, interaction class, and directed interaction "
         "region-overlap filtering with conveyed region evidence plus region subscribe/unsubscribe, "
         "associate/unassociate, and delete-region cleanup.",
     ),

@@ -331,6 +331,126 @@ def test_2025_transport_server_routes_passive_and_universal_subscription_aliases
         server.close()
 
 
+def test_2025_transport_server_routes_object_subscription_with_rate_aliases_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-rate-aliases"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "RateAlias2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025RateAliases", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+
+        active_with_rate = server.servicer.Call(
+            rti_pb2.CallRequest(
+                subscribeObjectClassAttributesWithRateRequest=rti_pb2.SubscribeObjectClassAttributesWithRateRequest(
+                    objectClass=datatypes_pb2.ObjectClassHandle(data=object_class.encode("ascii")),
+                    attributes=datatypes_pb2.AttributeHandleSet(
+                        attributeHandle=[datatypes_pb2.AttributeHandle(data=attribute.encode("ascii"))]
+                    ),
+                    updateRateDesignator="HLAdefaultUpdateRate",
+                )
+            ),
+            None,
+        )
+        assert active_with_rate.WhichOneof("callResponse") == "subscribeObjectClassAttributesWithRateResponse"
+
+        object_one = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProRateAliasTarget-1"))).fields[0]
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_one,
+            object_class,
+            "FedProRateAliasTarget-1",
+        )
+
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_one, f"{attribute}:726174652d6f6e65", "726174652d6f6e652d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REFLECT",
+            object_one,
+            f"{attribute}:726174652d6f6e65",
+            "726174652d6f6e652d746167",
+            "1",
+            "1",
+        )
+
+        passive_with_rate = server.servicer.Call(
+            rti_pb2.CallRequest(
+                subscribeObjectClassAttributesPassivelyWithRateRequest=(
+                    rti_pb2.SubscribeObjectClassAttributesPassivelyWithRateRequest(
+                        objectClass=datatypes_pb2.ObjectClassHandle(data=object_class.encode("ascii")),
+                        attributes=datatypes_pb2.AttributeHandleSet(
+                            attributeHandle=[datatypes_pb2.AttributeHandle(data=attribute.encode("ascii"))]
+                        ),
+                        updateRateDesignator="rate-alias-passive",
+                    )
+                )
+            ),
+            None,
+        )
+        assert passive_with_rate.WhichOneof("callResponse") == "subscribeObjectClassAttributesPassivelyWithRateResponse"
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_one,
+            object_class,
+            "FedProRateAliasTarget-1",
+        )
+
+        object_two = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProRateAliasTarget-2"))).fields[0]
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_two,
+            object_class,
+            "FedProRateAliasTarget-2",
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_two, f"{attribute}:726174652d74776f", "726174652d74776f2d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REFLECT",
+            object_two,
+            f"{attribute}:726174652d74776f",
+            "726174652d74776f2d746167",
+            "1",
+            "1",
+        )
+
+        assert {
+            "subscribeObjectClassAttributesWithRateRequest",
+            "subscribeObjectClassAttributesPassivelyWithRateRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
