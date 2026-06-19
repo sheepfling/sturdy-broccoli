@@ -2673,6 +2673,8 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
             "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         ),
         "REQ-SAVE-RESTORE-CALLBACK-POLICY-001": (
             "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_callback_policy_scenario",

@@ -83,6 +83,14 @@ def test_clause4_service_conformance_evidence_prefers_shared_harness_scenarios()
             "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         ),
+        ("RTIambassador", "requestFederationRestore"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        ),
+        ("FederateAmbassador", "federationRestored"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        ),
     }
 
     banned_refs = {

@@ -24835,6 +24835,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25061,6 +25062,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25149,6 +25151,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25239,6 +25242,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -28272,6 +28276,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -28285,6 +28290,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -28380,6 +28386,7 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -28613,6 +28620,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
@@ -28626,6 +28634,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
@@ -28672,6 +28681,7 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -37256,6 +37266,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -41299,7 +41310,8 @@
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_runtime_flags_and_lookahead_state",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
-        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+        "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",

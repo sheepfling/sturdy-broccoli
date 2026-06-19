@@ -249,6 +249,8 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches",
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
             ),
         ),
         VerificationAsset(

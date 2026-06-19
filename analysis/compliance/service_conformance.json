@@ -361,7 +361,9 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -377,6 +379,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -575,7 +578,9 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -591,6 +596,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -663,7 +669,9 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -679,6 +687,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -751,7 +760,9 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -767,6 +778,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -4073,8 +4085,10 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -4095,6 +4109,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -4103,6 +4118,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -4190,7 +4206,9 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -4210,6 +4228,7 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveComplete",
@@ -4466,8 +4485,10 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
@@ -4488,6 +4509,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
@@ -4496,6 +4518,7 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
@@ -4530,7 +4553,9 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -4550,6 +4575,7 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreComplete",

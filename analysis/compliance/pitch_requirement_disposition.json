@@ -26891,23 +26891,29 @@
       "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
       ],
       "kind": "verification-slice",
       "matrix_id": "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001",
-      "notes": "Shared restore federate-local-state scenario verifies Pitch restores saved local federate policy, time-management, and transport state through the backend-neutral harness.",
+      "notes": "Shared restore federate-local-state scenario verifies Pitch restores saved local federate policy, time-management, transport state, and bounded radar window-state through the backend-neutral harness.",
       "pitch_disposition": "verified",
       "pitch_jpype_disposition": "verified",
       "pitch_jpype_evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
       ],
       "pitch_py4j_disposition": "verified",
       "pitch_py4j_evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
       ],
       "pitch_runtime_status": "",
       "python_runtime_status": "",

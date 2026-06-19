@@ -351,6 +351,8 @@ _SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
     ),
     "save-restore-callback-policy": (
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_callback_policy_scenario",
@@ -1499,7 +1501,7 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001": (
         "verified",
         _SCENARIO_EVIDENCE_REGISTRY["save-restore-federate-local-state"],
-        "Shared restore federate-local-state scenario verifies Pitch restores saved local federate policy, time-management, and transport state through the backend-neutral harness.",
+        "Shared restore federate-local-state scenario verifies Pitch restores saved local federate policy, time-management, transport state, and bounded radar window-state through the backend-neutral harness.",
     ),
     "REQ-SAVE-RESTORE-CALLBACK-POLICY-001": (
         "not-applicable",

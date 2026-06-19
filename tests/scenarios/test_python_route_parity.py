@@ -19,6 +19,8 @@ from hla.verification import (
     TargetRadarPipelineConfig,
     TargetRadarReceiveOrderPoisonConfig,
     TargetRadarTimeWindowConfig,
+    TargetRadarWindowRestoreOutputConfig,
+    TargetRadarWindowRestoreConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_attribute_ownership_scenario,
@@ -31,6 +33,8 @@ from hla.verification import (
     run_target_radar_time_window_output_delivery_scenario,
     run_target_radar_time_window_pipeline_scenario,
     run_target_radar_time_window_receive_order_poison_scenario,
+    run_target_radar_time_window_restore_output_scenario,
+    run_target_radar_time_window_restore_state_scenario,
     run_two_federate_exchange_scenario,
 )
 from tests.scenarios.python_route_parity_support import python_route_params, python_rti_group, python_rti_pair, python_single_rti
@@ -545,6 +549,103 @@ def test_python_route_parity_target_radar_time_window_receive_order_poison(route
             "poison_reflection_has_no_timestamp": True,
             "poison_reflection_is_receive_order": True,
             "consumer_output_still_delivered_at_expected_time": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (radar, ResignAction.NO_ACTION),
+                (consumer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(consumer, radar, truth),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_restore_state(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = TargetRadarWindowRestoreConfig(
+            federation_name=f"python-radar-time-window-restore-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_restore_state_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["first_grant"].args[0] == HLAinteger64Time(config.first_input_time)
+        assert summary["dirty_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["open_restored_truth_time"] == HLAinteger64Time(config.first_input_time)
+        assert summary["open_restored_radar_time"] == HLAinteger64Time(config.first_input_time)
+        assert summary["reclosed_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["closed_restored_truth_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["closed_restored_radar_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["post_closed_restore_reflects"] == []
+        assert summary["saved_open_state"]["window_closed"] is False
+        assert summary["restored_open_state"]["window_closed"] is False
+        assert summary["saved_closed_state"]["window_closed"] is True
+        assert summary["restored_closed_state"]["window_closed"] is True
+        assert summary["dirty_post_close_reflect"].args[2] == b"dirty-post-close"
+        assert summary["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["oracle_report"]["assertions"] == {
+            "open_restore_reinstates_preclosure_time": True,
+            "open_restore_reinstates_open_window_state": True,
+            "restored_open_branch_recloses_at_window_end": True,
+            "closed_restore_reinstates_window_end_time": True,
+            "closed_restore_reinstates_closed_window_state": True,
+            "closed_restore_discards_dirty_post_close_callbacks": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_restore_output(route) -> None:
+    with python_rti_group(route, 3) as group:
+        truth, radar, consumer = group.members
+        config = TargetRadarWindowRestoreOutputConfig(
+            federation_name=f"python-radar-time-window-restore-output-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_restore_output_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["window_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["saved_consumer_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["dirty_consumer_receive"].args[2] == b"dirty-track-output"
+        assert summary["dirty_consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
+        assert summary["restored_truth_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["restored_radar_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["restored_consumer_time"] == HLAinteger64Time(config.scan_window_end)
+        assert [record.args[2] for record in summary["post_restore_receives"]] == [b"restored-track-output"]
+        assert summary["restored_consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
+        assert summary["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["assertions"] == {
+            "closed_window_saved_before_output": True,
+            "dirty_branch_output_published_before_restore": True,
+            "restored_timeline_republishes_legal_output": True,
+            "dirty_output_not_replayed_after_restore": True,
+            "single_post_restore_output_delivery": True,
         }
 
         cleanup_federation(

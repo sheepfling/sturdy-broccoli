@@ -233,6 +233,43 @@ class TargetRadarReceiveOrderPoisonConfig:
     consumer_resume_time: int = 120
 
 
+@dataclass(frozen=True)
+class TargetRadarWindowRestoreConfig:
+    federation_name: str
+    fom_modules: tuple[Any, ...]
+    logical_time_implementation_name: str = "HLAinteger64Time"
+    federate_type: str = "TimeWindowFederate"
+    truth_name: str = "TruthFederate"
+    radar_name: str = "RadarFederate"
+    target_object_name: str = "WindowRestoreTarget-1"
+    scan_window_start: int = 100
+    scan_window_end: int = 110
+    first_input_time: int = 105
+    second_input_time: int = 106
+    post_close_resume_time: int = 120
+    save_open_name: str = "SAVE-WINDOW-OPEN"
+    save_closed_name: str = "SAVE-WINDOW-CLOSED"
+
+
+@dataclass(frozen=True)
+class TargetRadarWindowRestoreOutputConfig:
+    federation_name: str
+    fom_modules: tuple[Any, ...]
+    logical_time_implementation_name: str = "HLAinteger64Time"
+    federate_type: str = "TimeWindowFederate"
+    truth_name: str = "TruthFederate"
+    radar_name: str = "RadarFederate"
+    consumer_name: str = "TrackConsumerFederate"
+    target_object_name: str = "WindowRestoreOutputTarget-1"
+    scan_window_start: int = 100
+    scan_window_end: int = 110
+    first_input_time: int = 105
+    second_input_time: int = 106
+    radar_output_time: int = 111
+    resume_time: int = 120
+    save_closed_name: str = "SAVE-WINDOW-CLOSED-BEFORE-OUTPUT"
+
+
 def _verify_time_window_future_exclusion_oracle(
     *,
     config: "TargetRadarFutureExclusionConfig",
@@ -299,6 +336,145 @@ def _verify_time_window_future_exclusion_oracle(
             ),
             "future_input_exclusion_reaches_window_end": cleared_galt_time == config.scan_window_end,
             "radar_granted_to_window_end_only_after_future_input_excluded": final_grant_time == config.scan_window_end,
+        },
+    }
+
+
+def _snapshot_window_state(state: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "phase": state["phase"],
+        "window_closed": state["window_closed"],
+        "closed_at": state["closed_at"],
+        "last_grant": state["last_grant"],
+        "received_tags": list(state["received_tags"]),
+        "restore_generation": state["restore_generation"],
+    }
+
+
+def _verify_time_window_restore_oracle(
+    *,
+    config: "TargetRadarWindowRestoreConfig",
+    saved_open_state: dict[str, Any],
+    restored_open_state: dict[str, Any],
+    saved_closed_state: dict[str, Any],
+    restored_closed_state: dict[str, Any],
+    open_restore_time: Any,
+    closed_restore_time: Any,
+    reclosed_grant: Any,
+    post_closed_restore_reflects: list[Any],
+) -> dict[str, Any]:
+    def _core_window_state(state: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "phase": state["phase"],
+            "window_closed": state["window_closed"],
+            "closed_at": state["closed_at"],
+            "last_grant": state["last_grant"],
+            "received_tags": list(state["received_tags"]),
+        }
+
+    open_restore_time_value = _timestamp_value(open_restore_time)
+    closed_restore_time_value = _timestamp_value(closed_restore_time)
+    reclosed_grant_time = _timestamp_value(reclosed_grant.args[0])
+    saved_open_core = _core_window_state(saved_open_state)
+    restored_open_core = _core_window_state(restored_open_state)
+    saved_closed_core = _core_window_state(saved_closed_state)
+    restored_closed_core = _core_window_state(restored_closed_state)
+
+    transitions = [
+        {
+            "state": "OPEN_SAVED",
+            "event": "federation_saved",
+            "logical_time": config.first_input_time,
+            "save_label": config.save_open_name,
+        },
+        {
+            "state": "DIRTY_CLOSED",
+            "event": "window_closed",
+            "logical_time": config.scan_window_end,
+        },
+        {
+            "state": "RESTORED_OPEN",
+            "event": "federation_restored",
+            "logical_time": open_restore_time_value,
+            "save_label": config.save_open_name,
+        },
+        {
+            "state": "CLOSED_SAVED",
+            "event": "federation_saved",
+            "logical_time": config.scan_window_end,
+            "save_label": config.save_closed_name,
+        },
+        {
+            "state": "DIRTY_POST_CLOSE",
+            "event": "post_close_future_processed",
+            "logical_time": config.post_close_resume_time,
+        },
+        {
+            "state": "RESTORED_CLOSED",
+            "event": "federation_restored",
+            "logical_time": closed_restore_time_value,
+            "save_label": config.save_closed_name,
+        },
+    ]
+
+    assert saved_open_state["window_closed"] is False
+    assert restored_open_state["window_closed"] is False
+    assert saved_closed_state["window_closed"] is True
+    assert restored_closed_state["window_closed"] is True
+    assert open_restore_time_value == config.first_input_time
+    assert closed_restore_time_value == config.scan_window_end
+    assert reclosed_grant_time == config.scan_window_end
+
+    return {
+        "certification_target": "time-window-save-restore-window-state",
+        "state_model": (
+            "OPEN_SAVED -> DIRTY_CLOSED -> RESTORED_OPEN -> CLOSED_SAVED -> "
+            "DIRTY_POST_CLOSE -> RESTORED_CLOSED"
+        ),
+        "window": [config.scan_window_start, config.scan_window_end],
+        "transitions": transitions,
+        "assertions": {
+            "open_restore_reinstates_preclosure_time": open_restore_time_value == config.first_input_time,
+            "open_restore_reinstates_open_window_state": restored_open_core == saved_open_core,
+            "restored_open_branch_recloses_at_window_end": reclosed_grant_time == config.scan_window_end,
+            "closed_restore_reinstates_window_end_time": closed_restore_time_value == config.scan_window_end,
+            "closed_restore_reinstates_closed_window_state": restored_closed_core == saved_closed_core,
+            "closed_restore_discards_dirty_post_close_callbacks": post_closed_restore_reflects == [],
+        },
+    }
+
+
+def _verify_time_window_restore_output_oracle(
+    *,
+    config: "TargetRadarWindowRestoreOutputConfig",
+    saved_closed_time: Any,
+    dirty_consumer_receive: Any,
+    restored_consumer_receive: Any,
+    post_restore_receives: list[Any],
+) -> dict[str, Any]:
+    saved_closed_time_value = _timestamp_value(saved_closed_time)
+    dirty_output_time = _timestamp_value(dirty_consumer_receive.args[5])
+    restored_output_time = _timestamp_value(restored_consumer_receive.args[5])
+    post_restore_tags = [record.args[2] for record in post_restore_receives]
+
+    assert saved_closed_time_value == config.scan_window_end
+    assert dirty_output_time == config.radar_output_time
+    assert restored_output_time == config.radar_output_time
+    assert post_restore_tags == [b"restored-track-output"]
+
+    return {
+        "certification_target": "time-window-save-restore-output-resume",
+        "state_model": "CLOSED_SAVED -> DIRTY_OUTPUT_PUBLISHED -> RESTORED_CLOSED -> OUTPUT_RESUMED",
+        "window": [config.scan_window_start, config.scan_window_end],
+        "assertions": {
+            "closed_window_saved_before_output": saved_closed_time_value == config.scan_window_end,
+            "dirty_branch_output_published_before_restore": dirty_consumer_receive.args[2] == b"dirty-track-output",
+            "restored_timeline_republishes_legal_output": (
+                restored_consumer_receive.args[2] == b"restored-track-output"
+                and restored_output_time == config.radar_output_time
+            ),
+            "dirty_output_not_replayed_after_restore": b"dirty-track-output" not in post_restore_tags,
+            "single_post_restore_output_delivery": len(post_restore_receives) == 1,
         },
     }
 
@@ -477,6 +653,471 @@ def _verify_time_window_consumer_order_oracle(
             "competing_event_arrives_before_radar_output": tags == [b"other-track-output", b"radar-track-output"],
             "radar_output_timestamp_not_before_window_end": config.radar_output_time >= config.scan_window_end,
         },
+    }
+
+
+def run_target_radar_time_window_restore_state_scenario(
+    truth_rti: Any,
+    radar_rti: Any,
+    *,
+    config: TargetRadarWindowRestoreConfig,
+    truth_federate: Any,
+    radar_federate: Any,
+) -> dict[str, Any]:
+    members = (
+        (truth_rti, truth_federate, config.truth_name),
+        (radar_rti, radar_federate, config.radar_name),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    truth_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    for rti, _federate, name in members:
+        rti.join_federation_execution(name, config.federate_type, config.federation_name)
+
+    handles = _setup_target_radar_classes(truth_rti, radar_rti)
+    truth_rti.publish_object_class_attributes(handles["truth_target_class"], {handles["truth_position"]})
+    radar_rti.subscribe_object_class_attributes(handles["radar_target_class"], {handles["radar_position"]})
+
+    truth_rti.enable_time_regulation(HLAinteger64Interval(1))
+    radar_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, loops=32)
+
+    target_object = truth_rti.register_object_instance(handles["truth_target_class"], config.target_object_name)
+    drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+    truth_rti.change_attribute_order_type(target_object, {handles["truth_position"]}, OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+
+    window_state = {
+        "phase": "bootstrap",
+        "window_closed": False,
+        "closed_at": None,
+        "last_grant": None,
+        "received_tags": [],
+        "restore_generation": 0,
+    }
+
+    def _complete_save(save_label: str) -> tuple[Any, Any]:
+        truth_federate.clear()
+        radar_federate.clear()
+        truth_rti.request_federation_save(save_label)
+        drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+        truth_initiate = wait_for_callback(truth_rti, truth_federate, "initiateFederateSave", loops=120)
+        radar_initiate = wait_for_callback(radar_rti, radar_federate, "initiateFederateSave", loops=120)
+        assert truth_initiate is not None
+        assert radar_initiate is not None
+        assert truth_initiate.args[0] == save_label
+        assert radar_initiate.args[0] == save_label
+        truth_rti.federate_save_begun()
+        radar_rti.federate_save_begun()
+        truth_rti.federate_save_complete()
+        radar_rti.federate_save_complete()
+        drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+        truth_saved = wait_for_callback(truth_rti, truth_federate, "federationSaved", loops=120)
+        radar_saved = wait_for_callback(radar_rti, radar_federate, "federationSaved", loops=120)
+        assert truth_saved is not None
+        assert radar_saved is not None
+        return truth_saved, radar_saved
+
+    def _complete_restore(save_label: str) -> tuple[Any, Any, Any]:
+        truth_federate.clear()
+        radar_federate.clear()
+        truth_rti.request_federation_restore(save_label)
+        drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+        restore_succeeded = wait_for_callback(
+            truth_rti,
+            truth_federate,
+            "requestFederationRestoreSucceeded",
+            loops=120,
+        )
+        restore_begun = wait_for_callback(
+            truth_rti,
+            truth_federate,
+            "federationRestoreBegun",
+            loops=120,
+        )
+        initiate_restore = wait_for_callback(
+            radar_rti,
+            radar_federate,
+            "initiateFederateRestore",
+            loops=120,
+        )
+        assert restore_succeeded is not None
+        assert restore_begun is not None
+        assert initiate_restore is not None
+        truth_rti.federate_restore_complete()
+        radar_rti.federate_restore_complete()
+        drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+        truth_restored = wait_for_callback(truth_rti, truth_federate, "federationRestored", loops=120)
+        radar_restored = wait_for_callback(radar_rti, radar_federate, "federationRestored", loops=120)
+        assert truth_restored is not None
+        assert radar_restored is not None
+        return restore_succeeded, truth_restored, radar_restored
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(105.0, 0.0, 0.0)},
+        b"truth-105",
+        HLAinteger64Time(config.first_input_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.first_input_time))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    first_reflect = radar_federate.callbacks_named("reflectAttributeValues")[-1]
+    first_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert first_reflect.args[2] == b"truth-105"
+    assert first_grant.args[0] == HLAinteger64Time(config.first_input_time)
+    window_state["phase"] = "open"
+    window_state["last_grant"] = config.first_input_time
+    window_state["received_tags"].append(first_reflect.args[2])
+
+    open_truth_saved, open_radar_saved = _complete_save(config.save_open_name)
+    saved_open_state = _snapshot_window_state(window_state)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(106.0, 0.0, 0.0)},
+        b"truth-106",
+        HLAinteger64Time(config.second_input_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    dirty_second_reflect = radar_federate.callbacks_named("reflectAttributeValues")[-1]
+    dirty_second_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert dirty_second_reflect.args[2] == b"truth-106"
+    assert dirty_second_grant.args[0] == HLAinteger64Time(config.second_input_time)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    dirty_close_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert dirty_close_grant.args[0] == HLAinteger64Time(config.scan_window_end)
+    window_state["phase"] = "dirty-closed"
+    window_state["window_closed"] = True
+    window_state["closed_at"] = config.scan_window_end
+    window_state["last_grant"] = config.scan_window_end
+    window_state["received_tags"].append(dirty_second_reflect.args[2])
+
+    radar_federate.clear()
+    truth_restore_open, truth_open_restored, radar_open_restored = _complete_restore(config.save_open_name)
+    window_state = _snapshot_window_state(saved_open_state)
+    window_state["restore_generation"] += 1
+    restored_open_state = _snapshot_window_state(window_state)
+    open_restored_truth_time = truth_rti.query_logical_time()
+    open_restored_radar_time = radar_rti.query_logical_time()
+    assert open_restored_truth_time == HLAinteger64Time(config.first_input_time)
+    assert open_restored_radar_time == HLAinteger64Time(config.first_input_time)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(206.0, 0.0, 0.0)},
+        b"truth-106-branch",
+        HLAinteger64Time(config.second_input_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    reclosed_reflect = radar_federate.callbacks_named("reflectAttributeValues")[-1]
+    reclosed_second_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert reclosed_reflect.args[2] == b"truth-106-branch"
+    assert reclosed_second_grant.args[0] == HLAinteger64Time(config.second_input_time)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    reclosed_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert reclosed_grant.args[0] == HLAinteger64Time(config.scan_window_end)
+    window_state["phase"] = "closed"
+    window_state["window_closed"] = True
+    window_state["closed_at"] = config.scan_window_end
+    window_state["last_grant"] = config.scan_window_end
+    window_state["received_tags"].append(reclosed_reflect.args[2])
+
+    closed_truth_saved, closed_radar_saved = _complete_save(config.save_closed_name)
+    saved_closed_state = _snapshot_window_state(window_state)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(120.0, 0.0, 0.0)},
+        b"dirty-post-close",
+        HLAinteger64Time(config.post_close_resume_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.post_close_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=24)
+    radar_rti.next_message_request(HLAinteger64Time(config.post_close_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    dirty_post_close_reflect = radar_federate.callbacks_named("reflectAttributeValues")[-1]
+    dirty_post_close_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert dirty_post_close_reflect.args[2] == b"dirty-post-close"
+    assert dirty_post_close_grant.args[0] == HLAinteger64Time(config.post_close_resume_time)
+    window_state["phase"] = "dirty-post-close"
+    window_state["last_grant"] = config.post_close_resume_time
+    window_state["received_tags"].append(dirty_post_close_reflect.args[2])
+
+    radar_federate.clear()
+    truth_restore_closed, truth_closed_restored, radar_closed_restored = _complete_restore(config.save_closed_name)
+    window_state = _snapshot_window_state(saved_closed_state)
+    window_state["restore_generation"] += 1
+    restored_closed_state = _snapshot_window_state(window_state)
+    closed_restored_truth_time = truth_rti.query_logical_time()
+    closed_restored_radar_time = radar_rti.query_logical_time()
+    assert closed_restored_truth_time == HLAinteger64Time(config.scan_window_end)
+    assert closed_restored_radar_time == HLAinteger64Time(config.scan_window_end)
+
+    truth_rti.time_advance_request(HLAinteger64Time(config.post_close_resume_time))
+    radar_rti.next_message_request(HLAinteger64Time(config.post_close_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, loops=64)
+    post_closed_restore_reflects = radar_federate.callbacks_named("reflectAttributeValues")
+
+    oracle_report = _verify_time_window_restore_oracle(
+        config=config,
+        saved_open_state=saved_open_state,
+        restored_open_state=restored_open_state,
+        saved_closed_state=saved_closed_state,
+        restored_closed_state=restored_closed_state,
+        open_restore_time=open_restored_radar_time,
+        closed_restore_time=closed_restored_radar_time,
+        reclosed_grant=reclosed_grant,
+        post_closed_restore_reflects=post_closed_restore_reflects,
+    )
+
+    return {
+        "certification_target": "time-window-save-restore-window-state",
+        "target_object": target_object,
+        "first_reflect": first_reflect,
+        "first_grant": first_grant,
+        "open_truth_saved": open_truth_saved,
+        "open_radar_saved": open_radar_saved,
+        "saved_open_state": saved_open_state,
+        "dirty_second_reflect": dirty_second_reflect,
+        "dirty_second_grant": dirty_second_grant,
+        "dirty_close_grant": dirty_close_grant,
+        "truth_restore_open": truth_restore_open,
+        "truth_open_restored": truth_open_restored,
+        "radar_open_restored": radar_open_restored,
+        "open_restored_truth_time": open_restored_truth_time,
+        "open_restored_radar_time": open_restored_radar_time,
+        "restored_open_state": restored_open_state,
+        "reclosed_reflect": reclosed_reflect,
+        "reclosed_second_grant": reclosed_second_grant,
+        "reclosed_grant": reclosed_grant,
+        "closed_truth_saved": closed_truth_saved,
+        "closed_radar_saved": closed_radar_saved,
+        "saved_closed_state": saved_closed_state,
+        "dirty_post_close_reflect": dirty_post_close_reflect,
+        "dirty_post_close_grant": dirty_post_close_grant,
+        "truth_restore_closed": truth_restore_closed,
+        "truth_closed_restored": truth_closed_restored,
+        "radar_closed_restored": radar_closed_restored,
+        "closed_restored_truth_time": closed_restored_truth_time,
+        "closed_restored_radar_time": closed_restored_radar_time,
+        "restored_closed_state": restored_closed_state,
+        "post_closed_restore_reflects": post_closed_restore_reflects,
+        "oracle_report": oracle_report,
+    }
+
+
+def run_target_radar_time_window_restore_output_scenario(
+    truth_rti: Any,
+    radar_rti: Any,
+    consumer_rti: Any,
+    *,
+    config: TargetRadarWindowRestoreOutputConfig,
+    truth_federate: Any,
+    radar_federate: Any,
+    consumer_federate: Any,
+) -> dict[str, Any]:
+    members = (
+        (truth_rti, truth_federate, config.truth_name),
+        (radar_rti, radar_federate, config.radar_name),
+        (consumer_rti, consumer_federate, config.consumer_name),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    truth_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    for rti, _federate, name in members:
+        rti.join_federation_execution(name, config.federate_type, config.federation_name)
+
+    handles = _setup_target_radar_classes(truth_rti, radar_rti, consumer_rti)
+    truth_rti.publish_object_class_attributes(handles["truth_target_class"], {handles["truth_position"]})
+    radar_rti.subscribe_object_class_attributes(handles["radar_target_class"], {handles["radar_position"]})
+    radar_rti.publish_interaction_class(handles["radar_track_interaction"])
+    consumer_rti.subscribe_interaction_class(handles["consumer_track_interaction"])
+
+    truth_rti.enable_time_regulation(HLAinteger64Interval(1))
+    radar_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=32)
+
+    target_object = truth_rti.register_object_instance(handles["truth_target_class"], config.target_object_name)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    truth_rti.change_attribute_order_type(target_object, {handles["truth_position"]}, OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(105.0, 0.0, 0.0)},
+        b"truth-105",
+        HLAinteger64Time(config.first_input_time),
+    )
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(106.0, 0.0, 0.0)},
+        b"truth-106",
+        HLAinteger64Time(config.second_input_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    for _expected_time in (config.first_input_time, config.second_input_time, config.scan_window_end):
+        radar_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+        drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    window_close_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert window_close_grant.args[0] == HLAinteger64Time(config.scan_window_end)
+
+    radar_rti.enable_time_regulation(HLAinteger64Interval(1))
+    consumer_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    assert wait_for_callback(radar_rti, radar_federate, "timeRegulationEnabled", loops=120) is not None
+    assert wait_for_callback(consumer_rti, consumer_federate, "timeConstrainedEnabled", loops=120) is not None
+    radar_rti.change_interaction_order_type(handles["radar_track_interaction"], OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    consumer_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    saved_consumer_time = consumer_rti.query_logical_time()
+    assert saved_consumer_time == HLAinteger64Time(config.scan_window_end)
+
+    def _complete_save() -> tuple[Any, Any, Any]:
+        truth_federate.clear()
+        radar_federate.clear()
+        consumer_federate.clear()
+        truth_rti.request_federation_save(config.save_closed_name)
+        drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+        truth_initiate = wait_for_callback(truth_rti, truth_federate, "initiateFederateSave", loops=120)
+        radar_initiate = wait_for_callback(radar_rti, radar_federate, "initiateFederateSave", loops=120)
+        consumer_initiate = wait_for_callback(consumer_rti, consumer_federate, "initiateFederateSave", loops=120)
+        assert truth_initiate is not None
+        assert radar_initiate is not None
+        assert consumer_initiate is not None
+        truth_rti.federate_save_begun()
+        radar_rti.federate_save_begun()
+        consumer_rti.federate_save_begun()
+        truth_rti.federate_save_complete()
+        radar_rti.federate_save_complete()
+        consumer_rti.federate_save_complete()
+        drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+        truth_saved = wait_for_callback(truth_rti, truth_federate, "federationSaved", loops=120)
+        radar_saved = wait_for_callback(radar_rti, radar_federate, "federationSaved", loops=120)
+        consumer_saved = wait_for_callback(consumer_rti, consumer_federate, "federationSaved", loops=120)
+        assert truth_saved is not None
+        assert radar_saved is not None
+        assert consumer_saved is not None
+        return truth_saved, radar_saved, consumer_saved
+
+    def _complete_restore() -> tuple[Any, Any, Any, Any]:
+        truth_federate.clear()
+        radar_federate.clear()
+        consumer_federate.clear()
+        truth_rti.request_federation_restore(config.save_closed_name)
+        drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+        restore_succeeded = wait_for_callback(
+            truth_rti,
+            truth_federate,
+            "requestFederationRestoreSucceeded",
+            loops=120,
+        )
+        radar_restore = wait_for_callback(radar_rti, radar_federate, "initiateFederateRestore", loops=120)
+        consumer_restore = wait_for_callback(consumer_rti, consumer_federate, "initiateFederateRestore", loops=120)
+        assert restore_succeeded is not None
+        assert radar_restore is not None
+        assert consumer_restore is not None
+        truth_rti.federate_restore_complete()
+        radar_rti.federate_restore_complete()
+        consumer_rti.federate_restore_complete()
+        drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+        truth_restored = wait_for_callback(truth_rti, truth_federate, "federationRestored", loops=120)
+        radar_restored = wait_for_callback(radar_rti, radar_federate, "federationRestored", loops=120)
+        consumer_restored = wait_for_callback(consumer_rti, consumer_federate, "federationRestored", loops=120)
+        assert truth_restored is not None
+        assert radar_restored is not None
+        assert consumer_restored is not None
+        return restore_succeeded, truth_restored, radar_restored, consumer_restored
+
+    truth_saved, radar_saved, consumer_saved = _complete_save()
+
+    consumer_federate.clear()
+    consumer_rti.next_message_request(HLAinteger64Time(config.resume_time))
+    truth_rti.time_advance_request(HLAinteger64Time(config.resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    radar_rti.send_interaction(
+        handles["radar_track_interaction"],
+        {handles["truth_track_id"]: _encode_text("dirty-track-100-110")},
+        b"dirty-track-output",
+        HLAinteger64Time(config.radar_output_time),
+    )
+    radar_rti.time_advance_request(HLAinteger64Time(config.resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    dirty_consumer_receive = consumer_federate.callbacks_named("receiveInteraction")[-1]
+    assert dirty_consumer_receive.args[2] == b"dirty-track-output"
+
+    restore_succeeded, truth_restored, radar_restored, consumer_restored = _complete_restore()
+    restored_truth_time = truth_rti.query_logical_time()
+    restored_radar_time = radar_rti.query_logical_time()
+    restored_consumer_time = consumer_rti.query_logical_time()
+    assert restored_truth_time == HLAinteger64Time(config.scan_window_end)
+    assert restored_radar_time == HLAinteger64Time(config.scan_window_end)
+    assert restored_consumer_time == HLAinteger64Time(config.scan_window_end)
+
+    consumer_federate.clear()
+    consumer_rti.next_message_request(HLAinteger64Time(config.resume_time))
+    truth_rti.time_advance_request(HLAinteger64Time(config.resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    radar_rti.send_interaction(
+        handles["radar_track_interaction"],
+        {handles["truth_track_id"]: _encode_text("restored-track-100-110")},
+        b"restored-track-output",
+        HLAinteger64Time(config.radar_output_time),
+    )
+    radar_rti.time_advance_request(HLAinteger64Time(config.resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    post_restore_receives = consumer_federate.callbacks_named("receiveInteraction")
+    restored_consumer_receive = post_restore_receives[-1]
+    assert restored_consumer_receive.args[2] == b"restored-track-output"
+
+    oracle_report = _verify_time_window_restore_output_oracle(
+        config=config,
+        saved_closed_time=restored_radar_time,
+        dirty_consumer_receive=dirty_consumer_receive,
+        restored_consumer_receive=restored_consumer_receive,
+        post_restore_receives=post_restore_receives,
+    )
+
+    return {
+        "certification_target": "time-window-save-restore-output-resume",
+        "target_object": target_object,
+        "window_close_grant": window_close_grant,
+        "saved_consumer_time": saved_consumer_time,
+        "truth_saved": truth_saved,
+        "radar_saved": radar_saved,
+        "consumer_saved": consumer_saved,
+        "dirty_consumer_receive": dirty_consumer_receive,
+        "restore_succeeded": restore_succeeded,
+        "truth_restored": truth_restored,
+        "radar_restored": radar_restored,
+        "consumer_restored": consumer_restored,
+        "restored_truth_time": restored_truth_time,
+        "restored_radar_time": restored_radar_time,
+        "restored_consumer_time": restored_consumer_time,
+        "restored_consumer_receive": restored_consumer_receive,
+        "post_restore_receives": post_restore_receives,
+        "oracle_report": oracle_report,
     }
 
 
@@ -1330,6 +1971,8 @@ __all__ = [
     "TargetRadarPipelineConfig",
     "TargetRadarReceiveOrderPoisonConfig",
     "TargetRadarTimeWindowConfig",
+    "TargetRadarWindowRestoreOutputConfig",
+    "TargetRadarWindowRestoreConfig",
     "run_target_radar_time_window_consumer_order_scenario",
     "run_target_radar_time_window_future_exclusion_scenario",
     "run_target_radar_time_window_core_scenario",
@@ -1337,4 +1980,6 @@ __all__ = [
     "run_target_radar_time_window_output_delivery_scenario",
     "run_target_radar_time_window_pipeline_scenario",
     "run_target_radar_time_window_receive_order_poison_scenario",
+    "run_target_radar_time_window_restore_output_scenario",
+    "run_target_radar_time_window_restore_state_scenario",
 ]

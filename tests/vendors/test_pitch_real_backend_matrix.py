@@ -57,6 +57,8 @@ from hla.verification import (
     SupportServicesScenarioConfig,
     SynchronizationScenarioConfig,
     TargetRadarFutureExclusionConfig,
+    TargetRadarWindowRestoreOutputConfig,
+    TargetRadarWindowRestoreConfig,
     TimedDeleteScenarioConfig,
     TransportationTypeScenarioConfig,
     TwoFederateExchangeConfig,
@@ -139,6 +141,8 @@ from hla.verification import (
     run_synchronization_registration_failure_scenario,
     run_synchronization_scenario,
     run_target_radar_time_window_future_exclusion_scenario,
+    run_target_radar_time_window_restore_output_scenario,
+    run_target_radar_time_window_restore_state_scenario,
     run_timed_delete_scenario,
     run_transportation_type_rejection_scenario,
     run_transportation_type_restore_persistence_scenario,
@@ -1732,6 +1736,96 @@ def test_pitch_time_window_future_exclusion_matrix(kind: str):
             destroyer_resign_action=ResignAction.NO_ACTION,
             remaining_resignations=((radar, ResignAction.NO_ACTION),),
             disconnect_rtis=(radar, slow),
+        )
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.xfail(reason="Pitch managed runtime currently reports no available pRTI federate seats for this two-federate time-window restore proof")
+def test_pitch_time_window_restore_state_matrix(kind: str):
+    with _pitch_runtime_case(kind, 2) as (truth, radar):
+        config = TargetRadarWindowRestoreConfig(
+            federation_name=f"{kind}-time-window-restore-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_restore_state_scenario(
+            truth,
+            radar,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["first_grant"].args[0] == HLAinteger64Time(config.first_input_time)
+        assert summary["dirty_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["open_restored_truth_time"] == HLAinteger64Time(config.first_input_time)
+        assert summary["open_restored_radar_time"] == HLAinteger64Time(config.first_input_time)
+        assert summary["reclosed_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["closed_restored_truth_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["closed_restored_radar_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["post_closed_restore_reflects"] == []
+        assert summary["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["oracle_report"]["assertions"] == {
+            "open_restore_reinstates_preclosure_time": True,
+            "open_restore_reinstates_open_window_state": True,
+            "restored_open_branch_recloses_at_window_end": True,
+            "closed_restore_reinstates_window_end_time": True,
+            "closed_restore_reinstates_closed_window_state": True,
+            "closed_restore_discards_dirty_post_close_callbacks": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((radar, ResignAction.NO_ACTION),),
+            disconnect_rtis=(radar, truth),
+        )
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.xfail(reason="Pitch managed runtime currently reports no available pRTI federate seats for this three-federate time-window restore-output proof")
+def test_pitch_time_window_restore_output_matrix(kind: str):
+    with _pitch_runtime_case(kind, 3) as (truth, radar, consumer):
+        config = TargetRadarWindowRestoreOutputConfig(
+            federation_name=f"{kind}-time-window-restore-output-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_restore_output_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["window_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["dirty_consumer_receive"].args[2] == b"dirty-track-output"
+        assert summary["restored_truth_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["restored_radar_time"] == HLAinteger64Time(config.scan_window_end)
+        assert summary["restored_consumer_time"] == HLAinteger64Time(config.scan_window_end)
+        assert [record.args[2] for record in summary["post_restore_receives"]] == [b"restored-track-output"]
+        assert summary["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["assertions"] == {
+            "closed_window_saved_before_output": True,
+            "dirty_branch_output_published_before_restore": True,
+            "restored_timeline_republishes_legal_output": True,
+            "dirty_output_not_replayed_after_restore": True,
+            "single_post_restore_output_delivery": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (radar, ResignAction.NO_ACTION),
+                (consumer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(consumer, radar, truth),
         )
 
 

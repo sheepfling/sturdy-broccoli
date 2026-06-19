@@ -329,7 +329,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "Python 2025 shim covers logical-time factories, regulation/constrained mode, lookahead query/modify, "
         "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the "
         "Target/Radar time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, "
-        "and future-exclusion proofs.",
+        "future-exclusion, save-restore-window-state, and save-restore-output-resume proofs.",
     ),
     _row(
         "time_management",
@@ -340,7 +340,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
         "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, bounded logical time/GALT/LITS/lookahead query "
         "evidence, the Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, "
-        "and future-exclusion proofs, and pre-delivery retract.",
+        "future-exclusion, save-restore-window-state, and save-restore-output-resume proofs, and pre-delivery retract.",
     ),
     _row(
         "time_management",
@@ -393,7 +393,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, "
-        "status callbacks, success/failure callbacks, abort callbacks, object registry rollback, and logical-time rollback.",
+        "status callbacks, success/failure callbacks, abort callbacks, object registry rollback, logical-time rollback, "
+        "and bounded radar-window state rollback.",
     ),
     _row(
         "save_restore",
