@@ -1880,14 +1880,14 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 "python-2025-inprocess": (
                     "The in-process route exercises lookahead query/modify behavior, queued timestamped delivery, "
                     "and the Target/Radar time-window core, output-delivery, consumer-order, pipeline-two-scans, "
-                    "receive-order-poison, future-exclusion, save-restore-window-state, and "
-                    "save-restore-output-resume proofs."
+                    "receive-order-poison, future-exclusion, save-restore-window-state, "
+                    "save-restore-output-resume, and save-restore-pipeline-resume proofs."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route exercises lookahead queries together with advance/grant, queued "
                     "timestamped delivery, and the Target/Radar output-delivery, consumer-order, pipeline-two-scans, "
-                    "receive-order-poison, future-exclusion, save-restore-window-state, and "
-                    "save-restore-output-resume proofs."
+                    "receive-order-poison, future-exclusion, save-restore-window-state, "
+                    "save-restore-output-resume, and save-restore-pipeline-resume proofs."
                 ),
             },
             "boundary_by_route": {
@@ -1946,7 +1946,8 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             "Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed "
             "scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. "
             "The time milestones now explicitly include Target/Radar future-exclusion, output-delivery, consumer-order, "
-            "pipeline, receive-order poison, save/restore window-state, save/restore output resume, and time-window proof, "
+            "pipeline, receive-order poison, save/restore window-state, save/restore output resume, save/restore pipeline "
+            "resume, and time-window proof, "
             "but the last four remain bounded-evidence milestones rather than blanket correctness claims."
         ),
         "rows": rows,

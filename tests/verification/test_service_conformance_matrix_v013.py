@@ -206,6 +206,60 @@ def test_clause7_service_conformance_evidence_prefers_shared_harness_scenarios()
         assert not any(ref in banned_refs for ref in row["positive_test_refs"])
 
 
+def test_clause8_service_conformance_evidence_uses_future_exclusion_harness_for_time_bounds() -> None:
+    matrix = build_service_conformance_matrix(version="0.13.0")
+    by_method = {(row["interface"], row["method"]): row for row in matrix["rows"]}
+
+    expected_harness_evidence = {
+        ("RTIambassador", "timeAdvanceRequestAvailable"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        ),
+        ("RTIambassador", "queryGALT"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        ),
+        ("RTIambassador", "queryLITS"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        ),
+        ("FederateAmbassador", "timeAdvanceGrant"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        ),
+    }
+
+    for key, expected_refs in expected_harness_evidence.items():
+        row = by_method[key]
+        for ref in expected_refs:
+            assert ref in row["evidence"]
+
+
+def test_clause6_service_conformance_includes_time_window_interaction_routes() -> None:
+    matrix = build_service_conformance_matrix(version="0.13.0")
+    by_method = {(row["interface"], row["method"]): row for row in matrix["rows"]}
+
+    expected_harness_evidence = {
+        ("RTIambassador", "sendInteraction"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        ),
+        ("FederateAmbassador", "receiveInteraction"): (
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        ),
+    }
+
+    for key, expected_refs in expected_harness_evidence.items():
+        row = by_method[key]
+        for ref in expected_refs:
+            assert ref in row["evidence"]
+
+
 def test_clause9_service_conformance_evidence_prefers_shared_harness_scenarios() -> None:
     matrix = build_service_conformance_matrix(version="0.13.0")
     by_method = {(row["interface"], row["method"]): row for row in matrix["rows"]}

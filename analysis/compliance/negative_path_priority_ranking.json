@@ -482,7 +482,10 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
@@ -501,7 +504,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1676,7 +1681,10 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryGALT",
@@ -1695,7 +1703,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",

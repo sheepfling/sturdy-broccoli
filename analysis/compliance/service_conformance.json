@@ -985,7 +985,11 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "implementation_refs": [
@@ -1001,6 +1005,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -2221,7 +2227,11 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -2235,7 +2245,9 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "time_advance_grant",
@@ -5201,7 +5213,11 @@
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "implementation_refs": [
@@ -5219,11 +5235,15 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
@@ -10498,7 +10518,10 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryGALT",
@@ -10516,7 +10539,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryGALT",
       "python_name": "query_galt",
@@ -10600,7 +10625,10 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryLITS",
@@ -10620,7 +10648,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryLITS",
       "python_name": "query_lits",
@@ -11221,7 +11251,10 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
@@ -11239,7 +11272,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
       "python_name": "time_advance_request_available",

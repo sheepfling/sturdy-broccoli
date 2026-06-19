@@ -1721,6 +1721,9 @@ def test_pitch_time_window_future_exclusion_matrix(kind: str):
         assert summary["cleared_galt"].time == HLAinteger64Time(config.scan_window_end)
         assert summary["cleared_lits"].time == HLAinteger64Time(config.scan_window_end)
         assert summary["final_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["late_send_rejected"] is True
+        assert summary["boundary_receive"].args[2] == b"boundary-track-110"
+        assert summary["boundary_receive"].args[5] == HLAinteger64Time(config.legal_boundary_time)
         assert summary["certification_target"] == "time-window-future-exclusion"
         assert summary["oracle_report"]["certification_target"] == "time-window-future-exclusion"
         assert summary["oracle_report"]["assertions"] == {
@@ -1728,6 +1731,8 @@ def test_pitch_time_window_future_exclusion_matrix(kind: str):
             "blocked_grant_matches_current_galt_or_none": True,
             "future_input_exclusion_reaches_window_end": True,
             "radar_granted_to_window_end_only_after_future_input_excluded": True,
+            "late_timestamp_into_closed_window_rejected": True,
+            "boundary_timestamp_delivered_after_window_closure": True,
         }
 
         cleanup_federation(

@@ -213,8 +213,15 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             (
                 "hla2010/time_management.py",
                 "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
             ),
             gaps=("The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm.",),
+            notes="The bounded radar time harness now proves future-exclusion blocking, closed-window output delivery, and downstream consumer ordering/replay behavior under timestamp order.",
         ),
         VerificationAsset(
             "REQ-SAVE-RESTORE-001",
@@ -250,7 +257,9 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
                 "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
                 "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
             ),
         ),
         VerificationAsset(

@@ -2675,6 +2675,8 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
             "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+            "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
         ),
         "REQ-SAVE-RESTORE-CALLBACK-POLICY-001": (
             "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_callback_policy_scenario",
@@ -4303,3 +4305,20 @@ def test_python_tranche_clause_summaries_and_reclassified_rows_are_generated() -
         assert row["runtime_disposition"] == "verified"
         assert harness_ref in row["evidence_refs"]
         assert backend_ref in row["evidence_refs"]
+
+
+def test_verification_asset_bundle_includes_future_exclusion_time_order_slice() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    payload = json.loads((project_root / "analysis" / "compliance" / "verification_assets.json").read_text(encoding="utf-8"))
+    rows = {row["asset_id"]: row for row in payload["assets"]}
+
+    row = rows["REQ-TIME-ORDER-001"]
+    assert row["status"] == "implemented-slice"
+    assert "hla2010/time_management.py" in row["evidence"]
+    assert "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery" in row["evidence"]
+    assert "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario" in row["evidence"]
+    assert "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario" in row["evidence"]
+    assert "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario" in row["evidence"]
+    assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion" in row["evidence"]
+    assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery" in row["evidence"]
+    assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order" in row["evidence"]

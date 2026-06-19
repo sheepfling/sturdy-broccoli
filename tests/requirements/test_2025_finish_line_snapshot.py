@@ -709,9 +709,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     route_rows = {(row["scenario"], row["route"]): row for row in route_matrix["rows"]}
     assert "lookahead query/modify" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
     assert "GALT/LITS/logical-time queries" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, and save-restore-output-resume proofs" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
+    assert "time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
     assert "bounded logical time/GALT/LITS/lookahead query evidence" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
-    assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, and save-restore-output-resume proofs" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
+    assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
     fi_service_audit = snapshot["fi_service_proof_audit"]
     assert fi_service_audit["row_count"] == 196
     assert fi_service_audit["fully_traceable_service_count"] == 196
@@ -867,7 +867,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "future-exclusion proof" in milestone_rows[("python-2025-fedpro-grpc", "galt_lits_queries")]["summary"]
     assert milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["status"] == "bounded-lookahead-evidence"
     assert "future-message exclusion" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["boundary"]
-    assert "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, and save-restore-output-resume proofs" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
+    assert "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
     assert "tests/test_rti1516_2025_spec_and_shim.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
@@ -1266,7 +1266,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Best-attempt Python RTI 2025 working surface: bounded-working-slice" in markdown
     assert "GALT and LITS behavior: bounded-query-evidence" in markdown
     assert "Lookahead handling and windows: bounded-lookahead-evidence" in markdown
-    assert "future-exclusion, output-delivery, consumer-order, pipeline, receive-order poison, save/restore window-state, save/restore output resume, and time-window proof" in markdown
+    assert "future-exclusion, output-delivery, consumer-order, pipeline, receive-order poison, save/restore window-state, save/restore output resume, save/restore pipeline resume, and time-window proof" in markdown
     assert "Completion Claim Audit" in markdown
     assert "Ready for supported-boundary statement: True" in markdown
     assert "Ready for full 2025 conformance claim: False" in markdown

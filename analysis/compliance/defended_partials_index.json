@@ -60,6 +60,7 @@
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
@@ -121,6 +122,8 @@
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"

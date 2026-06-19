@@ -26893,7 +26893,9 @@
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore"
       ],
       "kind": "verification-slice",
       "matrix_id": "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001",
@@ -26905,7 +26907,9 @@
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore"
       ],
       "pitch_py4j_disposition": "verified",
       "pitch_py4j_evidence_refs": [
@@ -26913,7 +26917,9 @@
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore"
       ],
       "pitch_runtime_status": "",
       "python_runtime_status": "",

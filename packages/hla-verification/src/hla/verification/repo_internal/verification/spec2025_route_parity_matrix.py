@@ -329,7 +329,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "Python 2025 shim covers logical-time factories, regulation/constrained mode, lookahead query/modify, "
         "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the "
         "Target/Radar time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, "
-        "future-exclusion, save-restore-window-state, and save-restore-output-resume proofs.",
+        "future-exclusion, save-restore-window-state, save-restore-output-resume, and "
+        "save-restore-pipeline-resume proofs.",
     ),
     _row(
         "time_management",
@@ -340,7 +341,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
         "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, bounded logical time/GALT/LITS/lookahead query "
         "evidence, the Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, "
-        "future-exclusion, save-restore-window-state, and save-restore-output-resume proofs, and pre-delivery retract.",
+        "future-exclusion, save-restore-window-state, save-restore-output-resume, and "
+        "save-restore-pipeline-resume proofs, and pre-delivery retract.",
     ),
     _row(
         "time_management",

@@ -353,6 +353,8 @@ _SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
     ),
     "save-restore-callback-policy": (
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_callback_policy_scenario",

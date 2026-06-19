@@ -25458,6 +25458,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26748,7 +26750,9 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -29198,6 +29202,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "pitch_jpype_runtime_disposition": "verified",
@@ -29208,6 +29214,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -33658,7 +33666,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -33757,7 +33767,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -34295,7 +34307,9 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -34411,6 +34425,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
@@ -34427,6 +34443,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
@@ -34504,6 +34522,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
@@ -34576,6 +34596,9 @@
         "tests/backends/test_python_backend_time_ddm_extended.py::test_strict_publication_gates_registration_update_and_interaction_sends",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
@@ -35506,6 +35529,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
@@ -35522,6 +35547,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
@@ -35616,6 +35643,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "notes": "",
@@ -35630,6 +35659,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
@@ -36030,6 +36061,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
@@ -36389,6 +36422,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "notes": "",
@@ -36402,6 +36437,8 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
@@ -37087,6 +37124,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "notes": "",
@@ -37101,6 +37140,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
@@ -37164,6 +37205,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -37188,6 +37231,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
@@ -37266,6 +37311,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
@@ -37329,6 +37375,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -37400,6 +37448,8 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
@@ -38392,6 +38442,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
@@ -38622,6 +38675,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "notes": "",
@@ -38634,6 +38689,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -38686,6 +38743,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
@@ -38700,6 +38759,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
@@ -38753,6 +38814,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "notes": "",
@@ -38766,6 +38829,8 @@
         "tests/factories/test_fom_time_factories.py::test_python_rti_resolves_fom_path_and_uses_requested_time_factory",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
@@ -38823,6 +38888,8 @@
       "negative_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
       ],
       "notes": "",
@@ -38835,6 +38902,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
       ],
@@ -38962,6 +39032,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix"
@@ -39094,6 +39166,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_timed_delete_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix",
@@ -41208,7 +41283,10 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
-        "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
+        "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
@@ -41311,7 +41389,8 @@
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state"
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",

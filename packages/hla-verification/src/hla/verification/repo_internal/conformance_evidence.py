@@ -345,19 +345,43 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
     "disableTimeRegulation": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
     "disableTimeConstrained": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
     "timeAdvanceRequest": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
-    "timeAdvanceRequestAvailable": ("tests/time/test_mom_mim_time_v10.py",),
+    "timeAdvanceRequestAvailable": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+    ),
     "nextMessageRequest": ("tests/time/test_mom_mim_time_v10.py",),
     "nextMessageRequestAvailable": (
         "tests/time/test_mom_mim_time_v10.py",
         "tests/verification/test_compliance_slice_v011.py",
     ),
     "flushQueueRequest": ("tests/time/test_mom_mim_time_v10.py",),
-    "queryGALT": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "queryGALT": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+    ),
     "queryLogicalTime": (
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
         "tests/verification/test_compliance_slice_v011.py",
     ),
-    "queryLITS": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "queryLITS": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+    ),
+    "timeAdvanceGrant": (
+        "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+    ),
     "modifyLookahead": (
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -396,7 +420,11 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
     ),
     "sendInteraction": (
         "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
     ),
     "updateAttributeValues": (
@@ -430,7 +458,11 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
     ),
     "receiveInteraction": (
         "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
     ),
     "removeObjectInstance": (
