@@ -341,6 +341,26 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-callback-control-services",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-FI-SVC-193",
+            "HLA2025-FI-SVC-194",
+            "HLA2025-FI-SVC-195",
+            "HLA2025-FI-SVC-196",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports callback control services for connected federates: disableCallbacks "
+            "queues local and target federate callbacks, enableCallbacks permits delivery again, evokeCallback "
+            "delivers one queued callback, and evokeMultipleCallbacks drains the pending callback queue. The "
+            "timing parameters are accepted but not used for wall-clock blocking in this in-process shim slice."
+        ),
+    },
+    {
         "id": "2025-ownership-basic-tag-callbacks",
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005"),

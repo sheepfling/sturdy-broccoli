@@ -181,6 +181,13 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "deleteObjectInstance/removeObjectInstance callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "requestAttributeValueUpdate callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "transportation type change/query callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
+    assert slices["2025-callback-control-services"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-193" in slices["2025-callback-control-services"]["requirements"]
+    assert "HLA2025-FI-SVC-194" in slices["2025-callback-control-services"]["requirements"]
+    assert "HLA2025-FI-SVC-195" in slices["2025-callback-control-services"]["requirements"]
+    assert "HLA2025-FI-SVC-196" in slices["2025-callback-control-services"]["requirements"]
+    assert "disableCallbacks queues local and target federate callbacks" in slices["2025-callback-control-services"]["supported_scope"]
+    assert "evokeMultipleCallbacks drains the pending callback queue" in slices["2025-callback-control-services"]["supported_scope"]
     assert slices["2025-ownership-basic-tag-callbacks"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-005" in slices["2025-ownership-basic-tag-callbacks"]["requirements"]
     assert "negotiated ownership offers" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]

@@ -293,6 +293,13 @@ class _QueuedTsoCallback:
     args: tuple[Any, ...]
 
 
+@dataclass(slots=True)
+class _QueuedCallback:
+    target_federate: FederateHandle | None
+    method_name: str
+    args: tuple[Any, ...]
+
+
 _FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
 
 
@@ -317,6 +324,8 @@ class Shim2025RTIAmbassador:
         self._federate_handle: FederateHandle | None = None
         self._federate_ambassador: FederateAmbassador | None = None
         self._callback_model: CallbackModel | None = None
+        self._callbacks_enabled = True
+        self._evoked_callback_queue: list[_QueuedCallback] = []
         self._logical_time_implementation_name = _DEFAULT_LOGICAL_TIME_IMPLEMENTATION
         self._logical_time_factory = self._get_time_factory(_DEFAULT_LOGICAL_TIME_IMPLEMENTATION)
         self._logical_time = self._logical_time_factory.makeInitial()
@@ -355,6 +364,8 @@ class Shim2025RTIAmbassador:
         self._connected = True
         self._federate_ambassador = federateAmbassador
         self._callback_model = callbackModel
+        self._callbacks_enabled = True
+        self._evoked_callback_queue.clear()
         return ConfigurationResult(
             configurationUsed=configuration is not None,
             addressUsed=False,
@@ -374,6 +385,8 @@ class Shim2025RTIAmbassador:
         self._federate_handle = None
         self._federate_ambassador = None
         self._callback_model = None
+        self._callbacks_enabled = True
+        self._evoked_callback_queue.clear()
         self._logical_time_implementation_name = _DEFAULT_LOGICAL_TIME_IMPLEMENTATION
         self._logical_time_factory = self._get_time_factory(_DEFAULT_LOGICAL_TIME_IMPLEMENTATION)
         self._logical_time = self._logical_time_factory.makeInitial()
@@ -584,7 +597,10 @@ class Shim2025RTIAmbassador:
     def evokeCallback(self, approximateMinimumTimeInSeconds: float) -> bool:  # noqa: N802
         self._record("evokeCallback", approximateMinimumTimeInSeconds)
         self._require_connected("evokeCallback")
-        return False
+        if not self._callbacks_enabled or not self._evoked_callback_queue:
+            return False
+        self._deliver_queued_callback(self._evoked_callback_queue.pop(0))
+        return True
 
     def evokeMultipleCallbacks(  # noqa: N802
         self,
@@ -593,15 +609,21 @@ class Shim2025RTIAmbassador:
     ) -> bool:
         self._record("evokeMultipleCallbacks", approximateMinimumTimeInSeconds, approximateMaximumTimeInSeconds)
         self._require_connected("evokeMultipleCallbacks")
-        return False
+        if not self._callbacks_enabled or not self._evoked_callback_queue:
+            return False
+        while self._evoked_callback_queue:
+            self._deliver_queued_callback(self._evoked_callback_queue.pop(0))
+        return True
 
     def enableCallbacks(self) -> None:  # noqa: N802
         self._record("enableCallbacks")
         self._require_connected("enableCallbacks")
+        self._callbacks_enabled = True
 
     def disableCallbacks(self) -> None:  # noqa: N802
         self._record("disableCallbacks")
         self._require_connected("disableCallbacks")
+        self._callbacks_enabled = False
 
     def requestFederationSave(self, label: str, time: Any | None = None) -> None:  # noqa: N802
         self._record("requestFederationSave", label, time)
@@ -2300,6 +2322,12 @@ class Shim2025RTIAmbassador:
         self.calls.append((method_name, args, dict(kwargs)))
 
     def _deliver_callback(self, method_name: str, *args: Any) -> None:
+        if not self._callbacks_enabled:
+            self._evoked_callback_queue.append(_QueuedCallback(None, method_name, args))
+            return
+        self._deliver_callback_now(method_name, *args)
+
+    def _deliver_callback_now(self, method_name: str, *args: Any) -> None:
         if self._federate_ambassador is None:
             raise RTIinternalError(f"Cannot deliver {method_name} without a connected federate ambassador")
         callback = getattr(self._federate_ambassador, method_name, None)
@@ -2309,6 +2337,14 @@ class Shim2025RTIAmbassador:
 
     def _deliver_to_federate_handle(self, federate_handle: FederateHandle, method_name: str, *args: Any) -> None:
         federation = self._federation_record()
+        target_rti = federation.member_rtis.get(federate_handle.value)
+        if target_rti is not None and not target_rti._callbacks_enabled:
+            target_rti._evoked_callback_queue.append(_QueuedCallback(None, method_name, args))
+            return
+        self._deliver_to_federate_handle_now(federate_handle, method_name, *args)
+
+    def _deliver_to_federate_handle_now(self, federate_handle: FederateHandle, method_name: str, *args: Any) -> None:
+        federation = self._federation_record()
         ambassador = federation.member_ambassadors.get(federate_handle.value)
         if ambassador is None:
             raise InvalidFederateHandle(f"Unknown federate handle {federate_handle!r}")
@@ -2317,14 +2353,19 @@ class Shim2025RTIAmbassador:
             raise RTIinternalError(f"Federate ambassador {federate_handle!r} does not implement {method_name}")
         callback(*args)
 
+    def _deliver_queued_callback(self, queued: _QueuedCallback) -> None:
+        if queued.target_federate is None:
+            self._deliver_callback_now(queued.method_name, *queued.args)
+        else:
+            self._deliver_to_federate_handle_now(queued.target_federate, queued.method_name, *queued.args)
+
     def _deliver_mom_service_report(self, report: Mapping[str, Any]) -> None:
         federation = self._federation_record()
         for federate_key, ambassador in federation.member_ambassadors.items():
             rti = federation.member_rtis.get(federate_key)
-            callback = getattr(ambassador, "momServiceReport", None)
-            if rti is None or callback is None or not rti._switches["service_reporting"]:
+            if rti is None or getattr(ambassador, "momServiceReport", None) is None or not rti._switches["service_reporting"]:
                 continue
-            callback(dict(report))
+            rti._deliver_callback("momServiceReport", dict(report))
 
     def _queue_tso_callback(self, target_federate: FederateHandle, callback_time: Any, method_name: str, *args: Any) -> MessageRetractionHandle:
         federation = self._federation_record()

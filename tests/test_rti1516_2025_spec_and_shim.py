@@ -554,6 +554,102 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
     assert rti.connected is False
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-193",
+    "HLA2025-FI-SVC-194",
+    "HLA2025-FI-SVC-195",
+    "HLA2025-FI-SVC-196",
+)
+def test_2025_shim_enable_disable_callbacks_controls_evoked_delivery(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "CallbackControl2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Callback Control 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused callback control fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>CallbackPing</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>Value</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-callback-control-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.CallbackPing")
+    parameter = publisher.getParameterHandle(interaction_class, "Value")
+    publisher.publishInteractionClass(interaction_class)
+    subscriber.subscribeInteractionClass(interaction_class)
+
+    subscriber.disableCallbacks()
+    publisher.sendInteraction(interaction_class, {parameter: b"one"}, b"queued-one")
+    assert subscriber_callbacks.last_callback("receiveInteraction") is None
+    assert subscriber.evokeCallback(0.0) is False
+
+    subscriber.enableCallbacks()
+    assert subscriber.evokeCallback(0.0) is True
+    first = subscriber_callbacks.last_callback("receiveInteraction")
+    assert first is not None
+    assert first[:3] == (interaction_class, {parameter: b"one"}, b"queued-one")
+    assert first[4] == publisher_handle
+
+    subscriber_callbacks.callbacks.clear()
+    subscriber.disableCallbacks()
+    publisher.sendInteraction(interaction_class, {parameter: b"two"}, b"queued-two")
+    publisher.sendInteraction(interaction_class, {parameter: b"three"}, b"queued-three")
+    assert subscriber_callbacks.last_callback("receiveInteraction") is None
+
+    subscriber.enableCallbacks()
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
+    received_tags = [
+        args[2]
+        for callback_name, args in subscriber_callbacks.callbacks
+        if callback_name == "receiveInteraction"
+    ]
+    assert received_tags == [b"queued-two", b"queued-three"]
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is False
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002")
 def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
