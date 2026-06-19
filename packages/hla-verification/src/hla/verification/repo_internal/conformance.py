@@ -409,6 +409,9 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
             method,
             ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
         )
+        callback_verification_status = "callback-helper-covered"
+        if method in focused_evidence_by_method():
+            callback_verification_status = "focused-executable-tests"
         evidence = (
             "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
             *callback_evidence,
@@ -429,7 +432,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
             declared_exceptions=_declared_exceptions(overloads),
             python_entry_point="RecordingFederateAmbassador callback + snake_case alias" if has_helper else "callback helper missing",
             implementation_status="callback-helper" if has_helper else "callback-helper-gap",
-            verification_status="callback-helper-covered" if has_helper else "matrix-only-planned",
+            verification_status=callback_verification_status if has_helper else "matrix-only-planned",
             evidence=evidence if has_helper else (),
             negative_expectation_count=0,
             negative_executed_count=0,

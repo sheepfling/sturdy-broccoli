@@ -69,7 +69,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -83,7 +83,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -97,7 +97,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -111,7 +111,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -125,7 +125,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -167,7 +167,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -181,7 +181,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -195,7 +195,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -209,7 +209,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -223,7 +223,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -237,7 +237,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -251,7 +251,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -265,7 +265,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -293,7 +293,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.8",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -307,7 +307,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -321,7 +321,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -335,7 +335,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -349,7 +349,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -363,7 +363,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -377,7 +377,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.20",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -391,7 +391,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -405,7 +405,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.22",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -433,7 +433,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -489,7 +489,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -531,7 +531,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -593,7 +593,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -635,7 +635,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -649,7 +649,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -663,7 +663,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -677,7 +677,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -719,7 +719,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -733,7 +733,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.22",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -747,7 +747,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.3",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 0,
@@ -761,7 +761,7 @@
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.6",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "actionable_exception_count": 9,

@@ -871,7 +871,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "verification_status_counts": {
-        "callback-helper-covered": 2
+        "focused-executable-tests": 2
       }
     },
     {
@@ -889,7 +889,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -925,7 +925,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -961,7 +961,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1089,7 +1089,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1126,7 +1126,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "verification_status_counts": {
-        "callback-helper-covered": 2
+        "focused-executable-tests": 2
       }
     },
     {
@@ -1144,7 +1144,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1162,7 +1162,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1200,7 +1200,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "verification_status_counts": {
-        "callback-helper-covered": 2
+        "focused-executable-tests": 2
       }
     },
     {
@@ -1272,7 +1272,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1363,7 +1363,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.8",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1637,7 +1637,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1673,7 +1673,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1709,7 +1709,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1745,7 +1745,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1763,7 +1763,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1817,7 +1817,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.20",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1835,7 +1835,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1853,7 +1853,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.22",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -1925,7 +1925,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2016,7 +2016,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2129,7 +2129,8 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status_counts": {
-        "callback-helper-covered": 5
+        "callback-helper-covered": 4,
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2147,7 +2148,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2293,7 +2294,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "verification_status_counts": {
-        "callback-helper-covered": 3
+        "focused-executable-tests": 3
       }
     },
     {
@@ -2365,7 +2366,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2527,7 +2528,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2707,7 +2708,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.22",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2761,7 +2762,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.3",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {
@@ -2815,7 +2816,7 @@
       "no_requirement_evidence_rows": 0,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.6",
       "verification_status_counts": {
-        "callback-helper-covered": 1
+        "focused-executable-tests": 1
       }
     },
     {

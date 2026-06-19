@@ -151,7 +151,7 @@
       "service_group": "Federation Management",
       "title": "Confirm Synchronization Point Registration service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -189,7 +189,7 @@
       "service_group": "Federation Management",
       "title": "Confirm Synchronization Point Registration service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -222,7 +222,7 @@
       "service_group": "Federation Management",
       "title": "Announce Synchronization Point service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -260,7 +260,7 @@
       "service_group": "Federation Management",
       "title": "Federation Synchronized service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -296,7 +296,7 @@
       "service_group": "Federation Management",
       "title": "Initiate Federate Save service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -389,7 +389,7 @@
       "service_group": "Federation Management",
       "title": "Federation Save Status Response service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -422,7 +422,7 @@
       "service_group": "Federation Management",
       "title": "Confirm Federation Restoration Request service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -458,7 +458,7 @@
       "service_group": "Federation Management",
       "title": "Confirm Federation Restoration Request service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -491,7 +491,7 @@
       "service_group": "Federation Management",
       "title": "Federation Restore Begun service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -527,7 +527,7 @@
       "service_group": "Federation Management",
       "title": "Initiate Federate Restore service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -560,7 +560,7 @@
       "service_group": "Federation Management",
       "title": "Federation Restored service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -596,7 +596,7 @@
       "service_group": "Federation Management",
       "title": "Federation Restored service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -629,7 +629,7 @@
       "service_group": "Federation Management",
       "title": "Federation Restore Status Response service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -692,7 +692,7 @@
       "service_group": "Federation Management",
       "title": "Report Federation Executions service",
       "verification_asset_id": "ASSET-FEDERATION-MGMT-STARTUP-SYNC",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -730,7 +730,7 @@
       "service_group": "Object Management",
       "title": "Reflect Attribute Values service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -769,7 +769,7 @@
       "service_group": "Object Management",
       "title": "Receive Interaction service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -812,7 +812,7 @@
       "service_group": "Object Management",
       "title": "Remove Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -845,7 +845,7 @@
       "service_group": "Object Management",
       "title": "Attributes In Scope service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -878,7 +878,7 @@
       "service_group": "Object Management",
       "title": "Attributes Out Of Scope service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -911,7 +911,7 @@
       "service_group": "Object Management",
       "title": "Provide Attribute Value Update service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -944,7 +944,7 @@
       "service_group": "Object Management",
       "title": "Turn Updates On For Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -977,7 +977,7 @@
       "service_group": "Object Management",
       "title": "Turn Updates Off For Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1040,7 +1040,7 @@
       "service_group": "Object Management",
       "title": "Report Attribute Transportation Type service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1163,7 +1163,7 @@
       "service_group": "Object Management",
       "title": "Report Interaction Transportation Type service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1261,7 +1261,7 @@
       "service_group": "Object Management",
       "title": "Discover Object Instance service",
       "verification_asset_id": "ASSET-OBJECT-MGMT-TARGET-RADAR",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1414,7 +1414,7 @@
       "service_group": "Ownership Management",
       "title": "Attribute Ownership Unavailable service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1507,7 +1507,7 @@
       "service_group": "Ownership Management",
       "title": "Inform Attribute Ownership service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1540,7 +1540,7 @@
       "service_group": "Ownership Management",
       "title": "Inform Attribute Ownership service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1573,7 +1573,7 @@
       "service_group": "Ownership Management",
       "title": "Inform Attribute Ownership service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1606,7 +1606,7 @@
       "service_group": "Ownership Management",
       "title": "Request Attribute Ownership Assumption service",
       "verification_asset_id": "ASSET-OWNERSHIP-MGMT-REFERENCE-SUBSET",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1674,6 +1674,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
@@ -1691,6 +1693,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
@@ -1702,7 +1705,7 @@
       "service_group": "Time Management",
       "title": "Time Advance Grant service",
       "verification_asset_id": "ASSET-TIME-MGMT-ORDERING",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1710,7 +1713,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1723,7 +1727,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback"
       ],
       "python_name": "request_retraction",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1732,7 +1736,7 @@
       "service_group": "Time Management",
       "title": "Request Retraction service",
       "verification_asset_id": "ASSET-TIME-MGMT-ORDERING",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1740,7 +1744,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1753,7 +1758,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
       ],
       "python_name": "time_regulation_enabled",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1762,7 +1767,7 @@
       "service_group": "Time Management",
       "title": "Time Regulation Enabled service",
       "verification_asset_id": "ASSET-TIME-MGMT-ORDERING",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [
@@ -1770,7 +1775,8 @@
       ],
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1783,7 +1789,7 @@
       "negative_test_refs": [],
       "outcome": "pass",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
       ],
       "python_name": "time_constrained_enabled",
       "rationale": "Executable evidence exists at the requirement level with no recorded functional gap for this row.",
@@ -1792,7 +1798,7 @@
       "service_group": "Time Management",
       "title": "Time Constrained Enabled service",
       "verification_asset_id": "ASSET-TIME-MGMT-ORDERING",
-      "verification_status": "callback-helper-covered"
+      "verification_status": "focused-executable-tests"
     },
     {
       "artifact_refs": [

@@ -376,11 +376,21 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
     ),
     "timeAdvanceGrant": (
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+    ),
+    "timeRegulationEnabled": (
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+    ),
+    "timeConstrainedEnabled": (
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
     ),
     "modifyLookahead": (
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -393,6 +403,10 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
     "retract": (
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
+    ),
+    "requestRetraction": (
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
     ),
     "enableAsynchronousDelivery": (
         "tests/backends/test_python_backend_support_services.py",

@@ -26750,6 +26750,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
@@ -26801,7 +26802,7 @@
       "pitch_runtime_status": "blocked",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26845,7 +26846,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26889,7 +26890,7 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
