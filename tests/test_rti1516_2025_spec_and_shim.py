@@ -817,7 +817,13 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
     publisher.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-FI-005")
+@pytest.mark.requirements(
+    "HLA2025-MOD-007",
+    "HLA2025-NEW-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-157",
+)
 def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import (

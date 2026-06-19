@@ -302,7 +302,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-ddm-default-attribute-policy",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "requirements": (
+            "HLA2025-MOD-007",
+            "HLA2025-NEW-004",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+            "HLA2025-FI-SVC-157",
+        ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",

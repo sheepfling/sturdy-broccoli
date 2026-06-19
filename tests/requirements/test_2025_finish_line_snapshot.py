@@ -172,6 +172,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "full RTI semantics remain outside this slice" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
+    assert "HLA2025-FI-SVC-157" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "subscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "Attribute scope advisory callbacks" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
