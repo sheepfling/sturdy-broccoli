@@ -709,7 +709,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     route_rows = {(row["scenario"], row["route"]): row for row in route_matrix["rows"]}
     assert "lookahead query/modify" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
     assert "GALT/LITS/logical-time queries" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
+    assert "time-window core plus future-exclusion proofs" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
     assert "bounded logical time/GALT/LITS/lookahead query evidence" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
+    assert "Target/Radar future-exclusion proof" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
     fi_service_audit = snapshot["fi_service_proof_audit"]
     assert fi_service_audit["row_count"] == 196
     assert fi_service_audit["fully_traceable_service_count"] == 196
@@ -862,11 +864,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "restore rollback of logical time" in milestone_rows[("python-2025-inprocess", "time_sync_and_advances")]["summary"]
     assert milestone_rows[("python-2025-inprocess", "galt_lits_queries")]["status"] == "bounded-query-evidence"
     assert "not strong enough to claim a fully proven or universally correct GALT/LITS algorithm" in milestone_rows[("python-2025-inprocess", "galt_lits_queries")]["boundary"]
-    assert "GALT/LITS query evidence" in milestone_rows[("python-2025-fedpro-grpc", "galt_lits_queries")]["summary"]
+    assert "future-exclusion proof" in milestone_rows[("python-2025-fedpro-grpc", "galt_lits_queries")]["summary"]
     assert milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["status"] == "bounded-lookahead-evidence"
-    assert "lookahead-window handling" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["boundary"]
+    assert "future-message exclusion" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["boundary"]
     assert "tests/test_rti1516_2025_spec_and_shim.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
+    assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
+    assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
     assert pytest_rows["HLA2025-OMT-001"]["pytest_anchor_count"] == 3
     assert pytest_rows["HLA2025-OMT-002"]["pytest_anchor_count"] >= 6
     assert pytest_rows["HLA2025-OMT-005"]["pytest_anchor_count"] == 4
@@ -1261,6 +1265,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Best-attempt Python RTI 2025 working surface: bounded-working-slice" in markdown
     assert "GALT and LITS behavior: bounded-query-evidence" in markdown
     assert "Lookahead handling and windows: bounded-lookahead-evidence" in markdown
+    assert "future-exclusion and time-window proof" in markdown
     assert "Completion Claim Audit" in markdown
     assert "Ready for supported-boundary statement: True" in markdown
     assert "Ready for full 2025 conformance claim: False" in markdown

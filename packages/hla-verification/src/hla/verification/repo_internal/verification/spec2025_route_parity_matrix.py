@@ -42,6 +42,7 @@ _ROUTE_EVIDENCE_TESTS = (
     "tests/requirements/test_2025_tail_backlog_evidence.py",
 )
 _FINISH_LINE_TESTS = ("tests/requirements/test_2025_finish_line_snapshot.py",)
+_PYTHON_ROUTE_PARITY_TESTS = ("tests/scenarios/test_python_route_parity.py",)
 
 
 def _evidence_scope(scenario: str, route: str, status: str) -> str:
@@ -324,19 +325,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "python-2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
-        _PYTHON_CORE_TESTS,
+        _PYTHON_CORE_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
         "Python 2025 shim covers logical-time factories, regulation/constrained mode, lookahead query/modify, "
-        "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, and retraction.",
+        "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the "
+        "Target/Radar time-window core plus future-exclusion proofs.",
     ),
     _row(
         "time_management",
         "python-2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-003"),
-        _FEDPRO_TESTS,
+        _FEDPRO_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
         "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
         "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, bounded logical time/GALT/LITS/lookahead query "
-        "evidence, and pre-delivery retract.",
+        "evidence, the two-federate Target/Radar future-exclusion proof, and pre-delivery retract.",
     ),
     _row(
         "time_management",

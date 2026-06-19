@@ -45,14 +45,23 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert rows[("time_management", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "TAR/TARA/NMR/NMRA/FQR grants" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert "queued TSO delivery" in rows[("time_management", "python-2025-fedpro-grpc")].notes
-    assert "logical time/GALT/LITS/lookahead queries" in rows[("time_management", "python-2025-fedpro-grpc")].notes
+    assert "logical time/GALT/LITS/lookahead query evidence" in rows[("time_management", "python-2025-fedpro-grpc")].notes
+    assert "Target/Radar future-exclusion proof" in rows[("time_management", "python-2025-fedpro-grpc")].notes
+    assert rows[("time_management", "python-2025-inprocess")].evidence_tests == (
+        "tests/test_rti1516_2025_spec_and_shim.py",
+        "tests/scenarios/test_python_route_parity.py",
+    )
+    assert rows[("time_management", "python-2025-fedpro-grpc")].evidence_tests == (
+        "tests/transport/test_grpc_transport_2025.py",
+        "tests/scenarios/test_python_route_parity.py",
+    )
     assert rows[("ownership", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("ownership", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "negotiated divestiture" in rows[("ownership", "python-2025-fedpro-grpc")].notes
     assert "resign-time divest/delete/cancel ownership policies" in rows[("ownership", "python-2025-fedpro-grpc")].notes
     assert rows[("ddm", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("ddm", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
-    assert "interaction class region-overlap filtering" in rows[("ddm", "python-2025-fedpro-grpc")].notes
+    assert "interaction class, and directed interaction region-overlap filtering" in rows[("ddm", "python-2025-fedpro-grpc")].notes
     assert "conveyed region evidence" in rows[("ddm", "python-2025-fedpro-grpc")].notes
     assert "delete-region cleanup" in rows[("ddm", "python-2025-fedpro-grpc")].notes
     assert rows[("mom", "python-2025-inprocess")].status == PARITY_COVERED
@@ -92,7 +101,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "reports synchronization points/status" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert rows[("support_services", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("support_services", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
-    assert "2025 switch get/set services" in rows[("support_services", "python-2025-fedpro-grpc")].notes
+    assert "2025 switch get/set plus read-only switch inquiry services" in rows[("support_services", "python-2025-fedpro-grpc")].notes
     assert "logical-time query" in rows[("support_services", "python-2025-fedpro-grpc")].notes
     assert rows[("save_restore", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("save_restore", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
