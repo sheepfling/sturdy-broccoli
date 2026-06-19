@@ -1,13 +1,13 @@
 [
   {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_disposition_ledger.csv",
-    "sha256": "89721c0a4449dce0688900d6754a8c62ea5112aaeda45e2a63c03c423fd2637d",
-    "bytes": 1368041
+    "sha256": "0de2e89d5bf21fde85345aae3887aa6aca0d6eca0cece09c71a4677d15b2cfa8",
+    "bytes": 1366730
   },
   {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_disposition_ledger.json",
-    "sha256": "2f2e9a564257e1d465dd6375b3f745e9f3d5064fec590684df5bf9095b00ba59",
-    "bytes": 1983741
+    "sha256": "61e2fc1a51bc17a74d2d0fd4951023cfa89d06c7262075866698258e104e1126",
+    "bytes": 1982542
   },
   {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_fi_binding_surface_matrix.csv",
@@ -21,17 +21,17 @@
   },
   {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_review_queue.csv",
-    "sha256": "ed5a0081cd01c45c1d4db24e92a8610e3ee6f20b566db16a07f25f93171b7948",
-    "bytes": 435658
+    "sha256": "4489cdc5708feb6b7422551165721c6aabee1b66ba913fe819bdd110ec1f9e7e",
+    "bytes": 433843
   },
   {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_coverage_rollup.json",
-    "sha256": "bef8792b71cfe1af478f96d50062eefcec0cd5e27981f250cf81193fcaa04c7d",
-    "bytes": 2217
+    "sha256": "612916aa116b6d83e59e3b678b74118e0c963c38d1b9544ff160f4b28de0b61c",
+    "bytes": 2218
   },
   {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_requirement_coverage_closure_report.md",
-    "sha256": "524615c235a2599233d7017599255d23f1a83c50e76af620228fc564fdd12d1c",
-    "bytes": 4456
+    "sha256": "628b56a71013497735896073d19fb27853444a7d7df93a6fbd5455b12126bd3e",
+    "bytes": 5221
   }
 ]

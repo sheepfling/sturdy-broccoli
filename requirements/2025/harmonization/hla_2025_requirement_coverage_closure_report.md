@@ -8,9 +8,9 @@ to `covered` where direct repo evidence and executable anchors are present.
 ## Result
 
 - Total rows dispositioned: 691
-- Disposition counts: covered=121, duplicate/umbrella=22, partial=476, planned=48, retired/legacy-only=24
+- Disposition counts: covered=149, duplicate/umbrella=22, partial=476, planned=20, retired/legacy-only=24
 - Priority counts: P0=89, P1=430, P2=172
-- Covered rows promoted in this pass: 121
+- Covered rows promoted in this pass: 149
 
 The covered subset is deliberate and limited. This pass does not claim blanket
 implementation proof. Each row still carries a closure wave, priority, source
@@ -39,9 +39,11 @@ FedPro request messages in the provided protocol packet.
 | FI service depth needs service-level accounting | All 196 FI rows now carry Java/C++/FedPro surface status and service-level closure tasks, and a covered subset now points at direct shim evidence. | Map each remaining service to Python shim route, vendor route, callback path, and executable tests. |
 | Federation lifecycle rows lacked harmonized promotion | Federation execution listing, synchronization-point lifecycle, save/restore request-status flows, abort paths, and restore/save completion callbacks now point at explicit finish-line slices with direct shim tests. | Keep slice scope synchronized with future save/restore or synchronization behavior changes. |
 | Declaration baseline rows lacked harmonized promotion | Basic publish/unpublish and subscribe/unsubscribe rows now point at a dedicated declaration slice with delivery-gating evidence for updates and interactions. | Add equally direct evidence before promoting registration-availability and turn-interactions callbacks. |
+| Object-management runtime rows lacked harmonized promotion | Basic object exchange, delete/remove/local-delete, request/provide update callbacks, and DDM in-scope/out-of-scope transitions now point at explicit shim evidence slices. | Add equally direct evidence before promoting update-rate advisories and the remaining DDM region-object rows. |
+| Ownership transfer rows lacked harmonized promotion | Acquire-if-available, negotiated acquisition/divestiture, query/is-owned, acquisition cancellation, and resign-time ownership policy rows now point at direct shim evidence and callback assertions. | Add equally direct evidence before promoting confirmDivestiture and attributeOwnershipReleaseDenied. |
 | OMT component depth is not proof | OMT component rows are separated from validator-negative rows and assigned fixture-level closure tasks. | Add positive/negative XML fixtures and parser/import-export assertions per row/group. |
 | OMT validator-negative constraints lacked reconciled promotion | All 29 `HLA2025-OMT-CV-*` rows now point at `2025-omt-schema-constraint-validation`, the validator implementation, and executable positive/negative assertions. | Keep the finish-line slice, schema validator, and validation tests aligned when constraints or fixtures change. |
-| DDM region services lacked harmonized promotion | A first P1 DDM tranche now points at `2025-ddm-default-attribute-policy` for create/commit/associate plus regional object and interaction subscription/send behavior. | Add equally direct runtime evidence before promoting delete, register-with-regions, unassociate, object-region unsubscribe, and request-update-with-regions rows. |
+| DDM region services lacked harmonized promotion | A first P1 DDM tranche now points at `2025-ddm-default-attribute-policy` for create/commit/associate plus regional object and interaction subscription/send behavior. | Add equally direct runtime evidence before promoting deleteRegion, registerObjectInstanceWithRegions, unassociateRegionsForUpdates, unsubscribeObjectClassAttributesWithRegions, and requestAttributeValueUpdateWithRegions. |
 | Delta hints are not authoritative | Delta rows remain `duplicate/umbrella` or `planned`; none are promoted to coverage without child-row links. | Review 2010/2025 source traces and bind each delta to concrete service/schema rows. |
 | Retired mappings can pollute 2025 coverage | Legacy-only rows are isolated as `retired/legacy-only` with explicit exclusion rules. | Decide compatibility/migration support and add migration fixtures only where intentional. |
 

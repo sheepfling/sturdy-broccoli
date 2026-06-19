@@ -406,9 +406,44 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-basic-object-exchange",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-FI-SVC-057",
+            "HLA2025-FI-SVC-058",
+            "HLA2025-FI-SVC-059",
+            "HLA2025-FI-SVC-060",
+            "HLA2025-FI-SVC-061",
+            "HLA2025-FI-SVC-062",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports FOM-backed object instance registration, discoverObjectInstance delivery, "
+            "attribute update publication gating, reflectAttributeValues delivery, interaction publication gating, "
+            "sendInteraction, and receiveInteraction delivery for subscribed federates."
+        ),
+    },
+    {
         "id": "2025-object-management-support-callbacks",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "requirements": (
+            "HLA2025-FI-SVC-065",
+            "HLA2025-FI-SVC-066",
+            "HLA2025-FI-SVC-067",
+            "HLA2025-FI-SVC-068",
+            "HLA2025-FI-SVC-069",
+            "HLA2025-FI-SVC-070",
+            "HLA2025-FI-SVC-071",
+            "HLA2025-FR-003",
+            "HLA2025-FR-004",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+        ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
@@ -416,8 +451,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 shim supports FOM-backed deleteObjectInstance/removeObjectInstance callbacks, "
             "localDeleteObjectInstance validation, requestAttributeValueUpdate callbacks by object instance "
-            "and object class, attribute transportation type change/query callbacks, and interaction "
-            "transportation type change/query callbacks."
+            "and object class, attribute transportation type change/query callbacks, interaction "
+            "transportation type change/query callbacks, and DDM-driven attributesInScope and "
+            "attributesOutOfScope transitions."
         ),
     },
     {
@@ -594,7 +630,26 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
         "id": "2025-ownership-basic-tag-callbacks",
         "status": "implemented-slice",
-        "requirements": ("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "requirements": (
+            "HLA2025-FI-SVC-084",
+            "HLA2025-FI-SVC-085",
+            "HLA2025-FI-SVC-086",
+            "HLA2025-FI-SVC-088",
+            "HLA2025-FI-SVC-089",
+            "HLA2025-FI-SVC-090",
+            "HLA2025-FI-SVC-091",
+            "HLA2025-FI-SVC-092",
+            "HLA2025-FI-SVC-094",
+            "HLA2025-FI-SVC-095",
+            "HLA2025-FI-SVC-096",
+            "HLA2025-FI-SVC-097",
+            "HLA2025-FI-SVC-098",
+            "HLA2025-FI-SVC-099",
+            "HLA2025-FI-SVC-100",
+            "HLA2025-MOD-005",
+            "HLA2025-FI-001",
+            "HLA2025-FI-005",
+        ),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
@@ -604,7 +659,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "the registering federate, unconditional divestiture with ownership validation, acquire-if-available "
             "with 2025 user-supplied tags, negotiated ownership offers, pending acquisition cancellation, "
             "divestiture-if-wanted transfer, ownership unavailable/acquisition callbacks, ownership query "
-            "callbacks, isAttributeOwnedByFederate, and resign-time ownership policies for cancel pending "
+            "callbacks, isAttributeOwnedByFederate, requestAttributeOwnershipAssumption, "
+            "requestDivestitureConfirmation, requestAttributeOwnershipRelease, "
+            "confirmAttributeOwnershipAcquisitionCancellation, and resign-time ownership policies for cancel pending "
             "acquisitions, delete owned objects, and divest/transfer owned attributes."
         ),
     },
