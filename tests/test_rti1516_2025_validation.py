@@ -302,6 +302,277 @@ def test_2025_validation_rejects_invalid_value_required_metadata(tmp_path: Path)
     assert issues[0].value == "maybe"
 
 
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-004",
+    "HLA2025-OMT-COMP-013",
+    "HLA2025-OMT-COMP-030",
+    "HLA2025-OMT-COMP-140",
+    "HLA2025-OMT-COMP-141",
+    "HLA2025-OMT-COMP-142",
+    "HLA2025-OMT-COMP-143",
+    "HLA2025-OMT-COMP-144",
+    "HLA2025-OMT-COMP-146",
+    "HLA2025-OMT-COMP-150",
+    "HLA2025-OMT-COMP-151",
+    "HLA2025-OMT-COMP-152",
+    "HLA2025-OMT-COMP-215",
+)
+def test_2025_parser_round_trips_typed_omt_metadata_subset(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "typed-omt-metadata.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Typed OMT Metadata</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Typed OMT metadata roundtrip fixture.</description>
+    <poc><pocName>Test</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Entity</name>
+        <attribute>
+          <name>EntityId</name>
+          <dataType>HLAunicodeString</dataType>
+          <valueRequired>true</valueRequired>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+      <basicData>
+        <name>HLAunicodeString</name>
+        <size>0</size>
+        <interpretation>String</interpretation>
+        <endian>Big</endian>
+        <encoding>Unicode</encoding>
+      </basicData>
+      <basicData>
+        <name>HLAoctet</name>
+        <size>8</size>
+        <interpretation>Octet</interpretation>
+        <endian>Big</endian>
+        <encoding>8-bit unsigned</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>RouteSimple</name>
+        <representation>HLAinteger32BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>Perfect</accuracy>
+      </simpleData>
+    </simpleDataTypes>
+    <referenceDataTypes>
+      <referenceDataType>
+        <name>EntityIdReference</name>
+        <representation>HLAunicodeString</representation>
+        <referenceClass>HLAobjectRoot.Entity</referenceClass>
+        <referencedAttribute>EntityId</referencedAttribute>
+        <semantics>Reference to an Entity object by EntityId.</semantics>
+      </referenceDataType>
+    </referenceDataTypes>
+    <enumeratedDataTypes>
+      <enumeratedData>
+        <name>ChoiceEnum</name>
+        <representation>HLAinteger32BE</representation>
+        <enumerator><name>A</name><value>1</value></enumerator>
+      </enumeratedData>
+    </enumeratedDataTypes>
+    <arrayDataTypes>
+      <arrayData>
+        <name>ByteVector</name>
+        <dataType>HLAoctet</dataType>
+        <cardinality>Dynamic</cardinality>
+        <encoding>HLAvariableArray</encoding>
+      </arrayData>
+    </arrayDataTypes>
+    <variantRecordDataTypes>
+      <variantRecordData>
+        <name>ChoiceRecord</name>
+        <discriminant>choice</discriminant>
+        <dataType>ChoiceEnum</dataType>
+        <alternative><enumerator>A</enumerator><name>alpha</name><dataType>ByteVector</dataType></alternative>
+        <encoding>HLAvariantRecord</encoding>
+      </variantRecordData>
+    </variantRecordDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    assert entity.attribute_value_required == {"EntityId": "true"}
+    assert module.reference_datatypes["EntityIdReference"].representation == "HLAunicodeString"
+    assert module.reference_datatypes["EntityIdReference"].reference_class == "HLAobjectRoot.Entity"
+    assert module.reference_datatypes["EntityIdReference"].referenced_attribute == "EntityId"
+    assert module.reference_datatypes["EntityIdReference"].semantics == "Reference to an Entity object by EntityId."
+    assert module.simple_datatypes["RouteSimple"].units == "NA"
+    assert module.simple_datatypes["RouteSimple"].resolution == "1"
+    assert module.simple_datatypes["RouteSimple"].accuracy == "Perfect"
+    assert module.array_datatypes["ByteVector"].encoding == "HLAvariableArray"
+    assert [alt.enumerator for alt in module.variant_record_datatypes["ChoiceRecord"].alternatives] == ["A"]
+
+    xml_text = serialize_fom_module(module, edition="2025")
+    roundtrip = tmp_path / "typed-omt-metadata-roundtrip.xml"
+    roundtrip.write_text(xml_text, encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip)
+
+    reparsed_entity = next(spec for spec in reparsed.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    assert reparsed_entity.attribute_value_required == {"EntityId": "true"}
+    assert reparsed.reference_datatypes["EntityIdReference"].representation == "HLAunicodeString"
+    assert reparsed.reference_datatypes["EntityIdReference"].reference_class == "HLAobjectRoot.Entity"
+    assert reparsed.reference_datatypes["EntityIdReference"].referenced_attribute == "EntityId"
+    assert reparsed.reference_datatypes["EntityIdReference"].semantics == "Reference to an Entity object by EntityId."
+    assert reparsed.simple_datatypes["RouteSimple"].units == "NA"
+    assert reparsed.simple_datatypes["RouteSimple"].resolution == "1"
+    assert reparsed.simple_datatypes["RouteSimple"].accuracy == "Perfect"
+    assert reparsed.array_datatypes["ByteVector"].encoding == "HLAvariableArray"
+    assert [alt.enumerator for alt in reparsed.variant_record_datatypes["ChoiceRecord"].alternatives] == ["A"]
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-078",
+    "HLA2025-OMT-COMP-084",
+    "HLA2025-OMT-COMP-085",
+    "HLA2025-OMT-COMP-087",
+    "HLA2025-OMT-COMP-090",
+    "HLA2025-OMT-COMP-094",
+    "HLA2025-OMT-COMP-125",
+    "HLA2025-OMT-COMP-157",
+    "HLA2025-OMT-COMP-158",
+    "HLA2025-OMT-COMP-159",
+    "HLA2025-OMT-COMP-160",
+    "HLA2025-OMT-COMP-161",
+    "HLA2025-OMT-COMP-162",
+    "HLA2025-OMT-COMP-163",
+    "HLA2025-OMT-COMP-164",
+    "HLA2025-OMT-COMP-165",
+    "HLA2025-OMT-COMP-167",
+    "HLA2025-OMT-COMP-190",
+    "HLA2025-OMT-COMP-191",
+    "HLA2025-OMT-COMP-194",
+    "HLA2025-OMT-COMP-195",
+)
+def test_2025_parser_round_trips_metadata_switches_transport_and_time_subset(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "metadata-switches-time.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Metadata Switches Time</name>
+    <type>FOM</type>
+    <version>7.5</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <copyright>Example Copyright</copyright>
+    <description>Metadata and switch roundtrip fixture.</description>
+    <keyword>alpha</keyword>
+    <keyword>omega</keyword>
+    <poc><pocName>Test</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing></objectClass></objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+    </interactionClass>
+  </interactions>
+  <time>
+    <logicalTime><dataType>HLAinteger64Time</dataType></logicalTime>
+    <logicalTimeInterval><dataType>HLAinteger64Time</dataType></logicalTimeInterval>
+  </time>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="CancelThenDeleteThenDivest"/>
+  </switches>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    assert module.model_identification["name"] == "Metadata Switches Time"
+    assert module.model_identification["version"] == "7.5"
+    assert module.model_identification["copyright"] == "Example Copyright"
+    assert module.model_identification["description"] == "Metadata and switch roundtrip fixture."
+    assert module.model_identification["keywords"] == ("alpha", "omega")
+    assert module.interaction_classes[0].transportation == "HLAreliable"
+    assert module.switch_settings == {
+        "autoProvide": "false",
+        "conveyRegionDesignatorSets": "false",
+        "attributeScopeAdvisory": "false",
+        "attributeRelevanceAdvisory": "false",
+        "objectClassRelevanceAdvisory": "false",
+        "interactionRelevanceAdvisory": "false",
+        "serviceReporting": "false",
+        "exceptionReporting": "false",
+        "delaySubscriptionEvaluation": "false",
+        "automaticResignAction": "CancelThenDeleteThenDivest",
+    }
+    assert module.time_stamp_datatype == "HLAinteger64Time"
+    assert module.lookahead_datatype == "HLAinteger64Time"
+
+    xml_text = serialize_fom_module(module, edition="2025")
+    roundtrip = tmp_path / "metadata-switches-time-roundtrip.xml"
+    roundtrip.write_text(xml_text, encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip)
+
+    assert reparsed.model_identification["name"] == "Metadata Switches Time"
+    assert reparsed.model_identification["version"] == "7.5"
+    assert reparsed.model_identification["copyright"] == "Example Copyright"
+    assert reparsed.model_identification["description"] == "Metadata and switch roundtrip fixture."
+    assert reparsed.model_identification["keywords"] == ("alpha", "omega")
+    assert reparsed.interaction_classes[0].transportation == "HLAreliable"
+    assert reparsed.switch_settings == {
+        "autoProvide": "false",
+        "conveyRegionDesignatorSets": "false",
+        "conveyProducingFederate": "false",
+        "attributeScopeAdvisory": "false",
+        "attributeRelevanceAdvisory": "false",
+        "objectClassRelevanceAdvisory": "false",
+        "interactionRelevanceAdvisory": "false",
+        "serviceReporting": "false",
+        "exceptionReporting": "false",
+        "delaySubscriptionEvaluation": "false",
+        "automaticResignAction": "CancelThenDeleteThenDivest",
+    }
+    assert reparsed.time_stamp_datatype == "HLAinteger64Time"
+    assert reparsed.lookahead_datatype == "HLAinteger64Time"
+
+
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:
     from hla.rti1516_2025.validation import validate_hla_name

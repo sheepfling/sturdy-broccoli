@@ -231,6 +231,117 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-omt-component-metadata-roundtrip",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-COMP-004",
+            "HLA2025-OMT-COMP-013",
+            "HLA2025-OMT-COMP-030",
+            "HLA2025-OMT-COMP-084",
+            "HLA2025-OMT-COMP-085",
+            "HLA2025-OMT-COMP-087",
+            "HLA2025-OMT-COMP-090",
+            "HLA2025-OMT-COMP-094",
+            "HLA2025-OMT-COMP-140",
+            "HLA2025-OMT-COMP-141",
+            "HLA2025-OMT-COMP-142",
+            "HLA2025-OMT-COMP-143",
+            "HLA2025-OMT-COMP-144",
+            "HLA2025-OMT-COMP-146",
+            "HLA2025-OMT-COMP-150",
+            "HLA2025-OMT-COMP-151",
+            "HLA2025-OMT-COMP-152",
+            "HLA2025-OMT-COMP-190",
+            "HLA2025-OMT-COMP-191",
+            "HLA2025-OMT-COMP-194",
+            "HLA2025-OMT-COMP-195",
+            "HLA2025-OMT-COMP-215",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "tests/factories/test_fom_omt_parsing.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser and 2025 serializer round-trip array encodings, attribute valueRequired metadata, "
+            "referenceDataTypes containers and child fields, model-identification keywords/name/version/copyright/"
+            "description metadata, simpleData units/resolution/accuracy, 2025 logicalTime/logicalTimeInterval names "
+            "and dataType bindings, and variant-record alternative enumerators."
+        ),
+    },
+    {
+        "id": "2025-omt-switch-and-transport-subset",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-COMP-078",
+            "HLA2025-OMT-COMP-125",
+            "HLA2025-OMT-COMP-157",
+            "HLA2025-OMT-COMP-158",
+            "HLA2025-OMT-COMP-159",
+            "HLA2025-OMT-COMP-160",
+            "HLA2025-OMT-COMP-161",
+            "HLA2025-OMT-COMP-162",
+            "HLA2025-OMT-COMP-163",
+            "HLA2025-OMT-COMP-164",
+            "HLA2025-OMT-COMP-165",
+            "HLA2025-OMT-COMP-167",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "tests/factories/test_fom_omt_parsing.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser preserves the supported 2025 switch container subset "
+            "(autoProvide, conveyRegionDesignatorSets, attribute/object/interaction advisories, serviceReporting, "
+            "exceptionReporting, delaySubscriptionEvaluation, automaticResignAction), preserves interaction "
+            "transportation, and the 2025 serializer round-trips those supported fields while filling the "
+            "standard conveyProducingFederate default."
+        ),
+    },
+    {
+        "id": "2025-omt-unsupported-component-boundaries",
+        "status": "unsupported-boundary",
+        "requirements": (
+            "HLA2025-OMT-COMP-037",
+            "HLA2025-OMT-COMP-038",
+            "HLA2025-OMT-COMP-039",
+            "HLA2025-OMT-COMP-040",
+            "HLA2025-OMT-COMP-042",
+            "HLA2025-OMT-COMP-043",
+            "HLA2025-OMT-COMP-048",
+            "HLA2025-OMT-COMP-049",
+            "HLA2025-OMT-COMP-074",
+            "HLA2025-OMT-COMP-079",
+            "HLA2025-OMT-COMP-110",
+            "HLA2025-OMT-COMP-111",
+            "HLA2025-OMT-COMP-112",
+            "HLA2025-OMT-COMP-113",
+            "HLA2025-OMT-COMP-145",
+            "HLA2025-OMT-COMP-147",
+            "HLA2025-OMT-COMP-166",
+            "HLA2025-OMT-COMP-168",
+            "HLA2025-OMT-COMP-169",
+            "HLA2025-OMT-COMP-170",
+            "HLA2025-OMT-COMP-192",
+            "HLA2025-OMT-COMP-193",
+            "HLA2025-OMT-COMP-196",
+            "HLA2025-OMT-COMP-197",
+        ),
+        "evidence": (
+            "tests/factories/test_fom_omt_parsing.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "These OMT component rows remain intentionally bounded: dimension input-data and normalization metadata "
+            "are parsed only as the narrower repo subset and normalization semantics are not executed; "
+            "directedInteraction and object-class dimension associations are not modeled in the shared parser/"
+            "serializer surface; xs:any extension points are not preserved; nonRegulatedGrant, allowRelaxedDDM, "
+            "advisoriesUseKnownClass, and sendServiceReportsToFile are outside the supported switch set; and "
+            "logicalTime/logicalTimeInterval optional semantics and xs:any children are not round-tripped."
+        ),
+    },
+    {
         "id": "2025-carry-forward-cleanup",
         "status": "implemented-slice",
         "requirements": ("HLA2025-BLG-001", "HLA2025-BLG-002", "HLA2025-REQ-001"),

@@ -1,11 +1,11 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 421,
+    "covered": 455,
     "duplicate/umbrella": 22,
-    "partial": 224,
-    "planned": 0,
-    "retired/legacy-only": 24
+    "partial": 166,
+    "retired/legacy-only": 24,
+    "unsupported-boundary": 24
   },
   "by_priority": {
     "P0": 89,
@@ -36,34 +36,36 @@
     }
   },
   "by_area_and_disposition": {
+    "Callback/configuration/binding deltas": {
+      "duplicate/umbrella": 12
+    },
     "Federate Interface service catalog": {
       "covered": 196
-    },
-    "SOM/FOM service-usage requirements": {
-      "covered": 196
-    },
-    "OMT component-level conformance": {
-      "partial": 224
-    },
-    "OMT validator-negative conformance": {
-      "covered": 29
     },
     "Framework and Rules": {
       "duplicate/umbrella": 10
     },
-    "Callback/configuration/binding deltas": {
-      "duplicate/umbrella": 12
+    "OMT component-level conformance": {
+      "covered": 34,
+      "partial": 166,
+      "unsupported-boundary": 24
+    },
+    "OMT validator-negative conformance": {
+      "covered": 29
     },
     "Retired / replacement mapping candidates": {
       "retired/legacy-only": 24
+    },
+    "SOM/FOM service-usage requirements": {
+      "covered": 196
     }
   },
   "by_closure_wave": {
+    "0-retired-filter-and-replacement-map": 24,
     "1-fi-service-and-binding-disposition": 208,
-    "3-som-fom-service-usage-crosscheck": 196,
     "2-omt-field-and-validator-fixtures": 253,
-    "4-framework-som-rule-decomposition": 10,
-    "0-retired-filter-and-replacement-map": 24
+    "3-som-fom-service-usage-crosscheck": 196,
+    "4-framework-som-rule-decomposition": 10
   },
   "fi_binding_surface": {
     "fi_rows": 196,
