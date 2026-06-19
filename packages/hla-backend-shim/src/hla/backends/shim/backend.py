@@ -34,6 +34,7 @@ from hla.rti1516_2025.enums import (
     SaveFailureReason,
     SaveStatus,
     ServiceGroup,
+    SynchronizationPointFailureReason,
 )
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
@@ -549,6 +550,16 @@ class Shim2025RTIAmbassador:
         self._federation_name = federation_name
         self._federate_name = federate_name
         self._joined = True
+        for label, point in federation.synchronization_points.items():
+            if point.synchronized:
+                continue
+            point.required_federates.add(self._federate_handle.value)
+            self._deliver_to_federate_handle(
+                self._federate_handle,
+                "announceSynchronizationPoint",
+                label,
+                point.user_supplied_tag,
+            )
         return self._federate_handle
 
     def resignFederationExecution(self, resignAction: ResignAction) -> None:  # noqa: N802
@@ -574,6 +585,13 @@ class Shim2025RTIAmbassador:
         if not isinstance(synchronizationPointLabel, str) or not synchronizationPointLabel:
             raise RTIinternalError("Synchronization point label must be a non-empty string")
         federation = self._federation_record()
+        if synchronizationPointLabel in federation.synchronization_points:
+            self._deliver_callback(
+                "synchronizationPointRegistrationFailed",
+                synchronizationPointLabel,
+                SynchronizationPointFailureReason.SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE,
+            )
+            return
         required = self._synchronization_required_federates(synchronizationSet)
         federation.synchronization_points[synchronizationPointLabel] = _SynchronizationPointRecord(
             user_supplied_tag=bytes(userSuppliedTag),

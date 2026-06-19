@@ -309,6 +309,10 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e.enums import OrderType
 
         return OrderType[value.name]
+    if module_name == "hla.rti1516_2025.enums" and type_name == "SynchronizationPointFailureReason":
+        from hla.rti1516e.enums import SynchronizationPointFailureReason
+
+        return SynchronizationPointFailureReason[value.name]
     if isinstance(value, tuple):
         return tuple(_normalize_2025_callback_value(item) for item in value)
     if isinstance(value, list):
@@ -326,12 +330,28 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
 class _TargetRadar2025RTIAdapter:
     """Minimal version bridge for the backend-neutral target/radar scenario."""
 
+    _SPECIAL_METHOD_NAMES = {
+        "create_federation_execution_with_mim": "createFederationExecutionWithMIM",
+    }
+
     def __init__(self, delegate) -> None:  # noqa: ANN001
         self._delegate = delegate
         self.backend_info = getattr(delegate, "backend_info", None)
 
     def __getattr__(self, name: str):  # noqa: ANN201
-        return getattr(self._delegate, name)
+        camel_name = self._SPECIAL_METHOD_NAMES.get(name)
+        if camel_name is None and "_" in name:
+            parts = name.split("_")
+            camel_name = parts[0] + "".join(part[:1].upper() + part[1:] for part in parts[1:])
+        if camel_name is not None:
+            try:
+                return getattr(self._delegate, camel_name)
+            except AttributeError:
+                pass
+        try:
+            return getattr(self._delegate, name)
+        except AttributeError as exc:
+            raise exc
 
     @staticmethod
     def _coerce_named_enum(enum_type, value):  # noqa: ANN001, ANN205
@@ -388,12 +408,45 @@ class _TargetRadar2025RTIAdapter:
             kwargs["logicalTimeImplementationName"] = logical_time_implementation_name
         self._delegate.createFederationExecution(**kwargs)
 
+    def create_federation_execution_with_mim(
+        self,
+        federation_name: str,
+        fom_modules,
+        logical_time_implementation_name: str | None = None,
+    ) -> None:  # noqa: ANN001
+        self._delegate.createFederationExecutionWithMIM(
+            federationName=federation_name,
+            fomModules=list(fom_modules),
+            mimModule="resource:MIM.xml",
+            logicalTimeImplementationName=logical_time_implementation_name,
+        )
+
     def join_federation_execution(self, federate_name: str, federate_type: str, federation_name: str):  # noqa: ANN201
         return self._delegate.joinFederationExecution(
             federateName=federate_name,
             federateType=federate_type,
             federationName=federation_name,
         )
+
+    def disconnect(self) -> None:
+        self._delegate.disconnect()
+
+    def get_federate_handle(self, federate_name: str):  # noqa: ANN201
+        return self._delegate.getFederateHandle(federate_name)
+
+    def get_federate_name(self, federate_handle):  # noqa: ANN001, ANN201
+        federate_type = type(federate_handle)
+        if (
+            getattr(federate_type, "__module__", "") == "hla.rti1516e.handles"
+            and getattr(federate_type, "__name__", "") == "FederateHandle"
+        ):
+            from hla.rti1516_2025.handles import FederateHandle
+
+            federate_handle = FederateHandle(int(federate_handle.value))
+        return self._delegate.getFederateName(federate_handle)
+
+    def reserve_object_instance_name(self, object_instance_name: str) -> None:
+        self._delegate.reserveObjectInstanceName(object_instance_name)
 
     def time_advance_request(self, time) -> None:  # noqa: ANN001
         self._delegate.timeAdvanceRequest(self._coerce_time_value(time))
@@ -435,6 +488,36 @@ class _TargetRadar2025RTIAdapter:
 
     def request_attribute_value_update(self, object_instance, attributes, user_supplied_tag: bytes) -> None:  # noqa: ANN001
         self._delegate.requestAttributeValueUpdate(object_instance, attributes, user_supplied_tag)
+
+    def unconditional_attribute_ownership_divestiture(
+        self,
+        object_instance,
+        attributes,
+        user_supplied_tag: bytes = b"",
+    ) -> None:  # noqa: ANN001
+        self._delegate.unconditionalAttributeOwnershipDivestiture(
+            object_instance,
+            attributes,
+            user_supplied_tag,
+        )
+
+    def attribute_ownership_acquisition_if_available(
+        self,
+        object_instance,
+        desired_attributes,
+        user_supplied_tag: bytes = b"",
+    ) -> None:  # noqa: ANN001
+        self._delegate.attributeOwnershipAcquisitionIfAvailable(
+            object_instance,
+            desired_attributes,
+            user_supplied_tag,
+        )
+
+    def query_attribute_ownership(self, object_instance, attributes) -> None:  # noqa: ANN001
+        normalized_attributes = attributes
+        if not isinstance(attributes, (set, frozenset, list, tuple)):
+            normalized_attributes = {attributes}
+        self._delegate.queryAttributeOwnership(object_instance, normalized_attributes)
 
     def change_attribute_order_type(self, object_instance, attributes, order_type) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import OrderType
@@ -525,6 +608,12 @@ class _TargetRadar2025RTIAdapter:
     def destroy_federation_execution(self, federation_name: str) -> None:
         self._delegate.destroyFederationExecution(federationName=federation_name)
 
+    def enable_callbacks(self) -> None:
+        self._delegate.enableCallbacks()
+
+    def disable_callbacks(self) -> None:
+        self._delegate.disableCallbacks()
+
     def evoke_callback(self, minimum_seconds: float) -> bool:
         return self._delegate.evokeMultipleCallbacks(minimum_seconds, minimum_seconds)
 
@@ -568,6 +657,25 @@ class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
             for key, value in kwargs.items()
         }
         return super().record_callback(method_name, *normalized_args, **normalized_kwargs)
+
+
+class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
+    """Narrow ownership callback bridge for shared scenario oracles."""
+
+    def record_callback(self, method_name: str, *args, **kwargs):  # noqa: ANN001, ANN201
+        if method_name == "informAttributeOwnership" and len(args) == 3:
+            attributes = args[1]
+            owner = args[2]
+            if isinstance(attributes, set) and len(attributes) == 1:
+                args = (args[0], next(iter(attributes)), owner)
+            owner_type = type(owner)
+            if getattr(owner_type, "__module__", "") == "hla.rti1516_2025.handles" and getattr(owner_type, "__name__", "") == "FederateHandle":
+                from hla.rti1516e.handles import FederateHandle
+
+                args = (args[0], args[1], FederateHandle(int(owner.value)))
+        if method_name == "attributeIsNotOwned" and len(args) == 2 and isinstance(args[1], set) and len(args[1]) == 1:
+            args = (args[0], next(iter(args[1])))
+        return super().record_callback(method_name, *args, **kwargs)
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003", "HLA2025-FI-004")
@@ -881,6 +989,379 @@ def test_2025_shim_runs_example_target_radar_scenario_end_to_end() -> None:
     assert [event_name for event_name, _payload in result.radar_events].count("query_rcs") == 3
     assert [event_name for event_name, _payload in result.radar_events].count("track") == 3
     assert result.track_reports[-1].position == result.final_target_position
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002")
+def test_2025_shim_runs_federation_lifecycle_scenario_end_to_end() -> None:
+    from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_scenario
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-lifecycle-{uuid.uuid4().hex[:8]}"
+    rti = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = FederationLifecycleScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+    )
+
+    summary = run_federation_lifecycle_scenario(
+        rti,
+        config=config,
+        federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["federation_name"] == config.federation_name
+    assert summary["federate_handle"] is not None
+    assert summary["resign_action"] == config.resign_action
+    assert summary["use_mim_create"] is False
+
+
+@pytest.mark.requirements(
+    "HLA2025-SS-001",
+    "HLA2025-SS-002",
+    "HLA2025-SS-003",
+    "HLA2025-SS-006",
+    "HLA2025-FI-001",
+)
+def test_2025_shim_runs_support_lookup_and_normalization_route_end_to_end() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    federation_name = f"shim-2025-support-route-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+    callbacks = Recording2025FederateAmbassador()
+
+    rti.connect(callbacks, CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModules=scenario_fom_paths("message-test"),
+        logicalTimeImplementationName="HLAinteger64Time",
+    )
+    federate_handle = rti.joinFederationExecution(
+        federateName="Support",
+        federateType="SupportFederate",
+        federationName=federation_name,
+    )
+
+    object_class = rti.getObjectClassHandle("HLAobjectRoot.Proto2025.MessageTest.TestSuite")
+    attribute = rti.getAttributeHandle(object_class, "SuiteId")
+    interaction_class = rti.getInteractionClassHandle("HLAinteractionRoot.Proto2025.MessageTest.SendStimulus")
+    parameter = rti.getParameterHandle(interaction_class, "TestCaseId")
+    rti.publishObjectClassAttributes(object_class, {attribute})
+    rti.reserveObjectInstanceName("support-suite")
+    assert callbacks.last_callback("objectInstanceNameReservationSucceeded") == ("support-suite",)
+    object_instance = rti.registerObjectInstance(object_class, "support-suite")
+
+    assert rti.getFederateName(federate_handle) == "Support"
+    assert rti.normalizeFederateHandle(federate_handle) == federate_handle.value
+    assert rti.getObjectClassName(object_class) == "HLAobjectRoot.Proto2025.MessageTest.TestSuite"
+    assert rti.getAttributeName(object_class, attribute) == "SuiteId"
+    assert rti.getInteractionClassName(interaction_class) == "HLAinteractionRoot.Proto2025.MessageTest.SendStimulus"
+    assert rti.getParameterName(interaction_class, parameter) == "TestCaseId"
+    assert rti.getObjectInstanceName(object_instance) == "support-suite"
+    assert rti.getObjectInstanceHandle("support-suite") == object_instance
+    assert rti.getKnownObjectClassHandle(object_instance) == object_class
+    assert rti.getOrderName(OrderType.RECEIVE) == "HLAreceive"
+    assert rti.getOrderType("HLAtimestamp") is OrderType.TIMESTAMP
+    assert rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAreliable")) == "HLAreliable"
+    assert rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAbestEffort")) == "HLAbestEffort"
+    assert rti.getHLAversion() == "IEEE 1516.1-2025"
+
+    rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
+
+
+@pytest.mark.requirements(
+    "HLA2025-SS-043",
+    "HLA2025-SS-044",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+)
+def test_2025_shim_runs_callback_control_route_with_object_reflection_end_to_end() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    federation_name = f"shim-2025-callback-object-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(
+        federationName=federation_name,
+        fomModules=scenario_fom_paths("message-test"),
+        logicalTimeImplementationName="HLAinteger64Time",
+    )
+    publisher_handle = publisher.joinFederationExecution(
+        federateName="Publisher",
+        federateType="CallbackFederate",
+        federationName=federation_name,
+    )
+    subscriber.joinFederationExecution(
+        federateName="Subscriber",
+        federateType="CallbackFederate",
+        federationName=federation_name,
+    )
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Proto2025.MessageTest.TestSuite")
+    attribute = publisher.getAttributeHandle(object_class, "SuiteId")
+    subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.Proto2025.MessageTest.TestSuite")
+    subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "SuiteId")
+    publisher.publishObjectClassAttributes(object_class, {attribute})
+    subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+
+    publisher.reserveObjectInstanceName("callback-suite")
+    assert publisher_callbacks.last_callback("objectInstanceNameReservationSucceeded") == ("callback-suite",)
+    object_instance = publisher.registerObjectInstance(object_class, "callback-suite")
+    first_discovery = subscriber_callbacks.last_callback("discoverObjectInstance")
+    assert first_discovery is not None
+    assert first_discovery[0] == object_instance
+    assert first_discovery[1] == subscriber_object_class
+    assert first_discovery[2] == "callback-suite"
+    subscriber_callbacks.callbacks.clear()
+
+    subscriber.disableCallbacks()
+    publisher.updateAttributeValues(object_instance, {attribute: b"one"}, b"queued-one")
+    assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
+
+    assert subscriber.evokeCallback(0.0) is False
+
+    subscriber.enableCallbacks()
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
+    first_reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+    assert first_reflection is not None
+    assert first_reflection[0] == object_instance
+    assert first_reflection[1] == {subscriber_attribute: b"one"}
+    assert first_reflection[2] == b"queued-one"
+    assert first_reflection[4] == publisher_handle
+    assert subscriber.getFederateName(first_reflection[4]) == "Publisher"
+
+    subscriber_callbacks.callbacks.clear()
+    subscriber.disableCallbacks()
+    publisher.updateAttributeValues(object_instance, {attribute: b"two"}, b"queued-two")
+    publisher.updateAttributeValues(object_instance, {attribute: b"three"}, b"queued-three")
+    assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is False
+
+    subscriber.enableCallbacks()
+    drained = 0
+    while drained < 8 and subscriber.evokeMultipleCallbacks(0.0, 0.0):
+        drained += 1
+    reflections = _callbacks_named_2025(subscriber_callbacks, "reflectAttributeValues")
+    assert [record[2] for record in reflections] == [b"queued-two", b"queued-three"]
+    assert [record[1] for record in reflections] == [
+        {subscriber_attribute: b"two"},
+        {subscriber_attribute: b"three"},
+    ]
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is False
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-FI-SVC-121", "HLA2025-FI-SVC-122")
+def test_2025_shim_runs_attribute_ownership_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import OwnershipScenarioConfig, run_attribute_ownership_scenario
+
+    federation_name = f"shim-2025-ownership-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    acquirer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = OwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.Proto2025.MessageTest.TestSuite",
+        attribute_name="SuiteId",
+        object_instance_name=f"ownership-suite-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_attribute_ownership_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["not_owned"].args == (summary["object_instance"], summary["owner_attribute"])
+    assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+    assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+    assert summary["informed"].args[0] == summary["object_instance"]
+    assert summary["informed"].args[1] == summary["owner_attribute"]
+    assert summary["informed_federate_name"] == config.acquirer_name
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")
+def test_2025_shim_runs_synchronization_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import SynchronizationScenarioConfig, run_synchronization_scenario
+
+    federation_name = f"shim-2025-sync-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SynchronizationScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SyncFederate",
+        label="ReadyToRun",
+        tag=b"sync-tag",
+    )
+
+    summary = run_synchronization_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_handle"] is not None
+    assert summary["wing_handle"] is not None
+    assert summary["leader_registration"].args == (config.label,)
+    assert summary["leader_announce"].args[:2] == (config.label, config.tag)
+    assert summary["wing_announce"].args[:2] == (config.label, config.tag)
+    assert summary["leader_sync"].args == (config.label, set())
+    assert summary["wing_sync"].args == (config.label, set())
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-010")
+def test_2025_shim_runs_synchronization_registration_failure_scenario_end_to_end() -> None:
+    from hla.rti1516e.enums import SynchronizationPointFailureReason
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import SynchronizationScenarioConfig, run_synchronization_registration_failure_scenario
+
+    federation_name = f"shim-2025-sync-failure-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SynchronizationScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SyncFederate",
+        label="ReadyToRun",
+        tag=b"sync-tag",
+    )
+
+    summary = run_synchronization_registration_failure_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_handle"] is not None
+    assert summary["wing_handle"] is not None
+    assert summary["registration_success"].args == (config.label,)
+    assert summary["registration_failure"].args == (
+        config.label,
+        SynchronizationPointFailureReason.SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE,
+    )
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-011")
+def test_2025_shim_runs_failed_federate_synchronization_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import SynchronizationScenarioConfig, run_failed_federate_synchronization_scenario
+
+    federation_name = f"shim-2025-sync-failed-set-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SynchronizationScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SyncFederate",
+        label="ReadyToRun",
+        tag=b"sync-tag",
+    )
+
+    summary = run_failed_federate_synchronization_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+        leader_success=True,
+        wing_success=False,
+    )
+
+    assert summary["leader_handle"] is not None
+    assert summary["wing_handle"] is not None
+    assert summary["leader_registration"].args == (config.label,)
+    assert summary["leader_announce"].args[:2] == (config.label, config.tag)
+    assert summary["wing_announce"].args[:2] == (config.label, config.tag)
+    assert summary["leader_sync"].args[0] == config.label
+    assert summary["wing_sync"].args[0] == config.label
+    assert summary["leader_sync"].args[1] == {summary["wing_handle"]}
+    assert summary["wing_sync"].args[1] == {summary["wing_handle"]}
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-012")
+def test_2025_shim_runs_late_join_synchronization_scenario_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import SynchronizationScenarioConfig, run_late_join_synchronization_scenario
+
+    federation_name = f"shim-2025-sync-late-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    late = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SynchronizationScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        late_name="Late",
+        federate_type="SyncFederate",
+        label="ReadyToRun",
+        tag=b"sync-tag",
+    )
+
+    summary = run_late_join_synchronization_scenario(
+        leader,
+        wing,
+        late,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+        late_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_handle"] is not None
+    assert summary["wing_handle"] is not None
+    assert summary["late_handle"] is not None
+    assert summary["leader_announce"].args[:2] == (config.label, config.tag)
+    assert summary["wing_announce"].args[:2] == (config.label, config.tag)
+    assert summary["late_announce"].args[:2] == (config.label, config.tag)
+    assert summary["leader_sync"].args == (config.label, set())
+    assert summary["wing_sync"].args == (config.label, set())
+    assert summary["late_sync"].args == (config.label, set())
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
