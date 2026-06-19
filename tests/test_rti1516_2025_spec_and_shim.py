@@ -946,6 +946,88 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
     publisher.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_supports_single_object_instance_name_reservation_callback_and_release() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import (
+        FederateNotExecutionMember,
+        NotConnected,
+        ObjectInstanceNameNotReserved,
+        RestoreInProgress,
+        SaveInProgress,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    unjoined = create_rti_ambassador(backend="shim")
+    with pytest.raises(NotConnected):
+        unjoined.releaseObjectInstanceName("PreJoin-A")
+
+    unjoined.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        unjoined.releaseObjectInstanceName("PreJoin-A")
+    unjoined.disconnect()
+
+    federation_name = f"shim-single-name-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    rival_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    rival = create_rti_ambassador(backend="shim")
+    owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+    rival.connect(rival_federate, CallbackModel.HLA_EVOKED)
+    owner.createFederationExecution(federationName=federation_name, fomModule="TargetRadarFOMmodule.xml")
+    owner.joinFederationExecution(
+        federateName="Owner",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+    rival.joinFederationExecution(
+        federateName="Rival",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    reserved_name = "Reserved-Solo"
+    owner.reserveObjectInstanceName(reserved_name)
+    assert owner_federate.last_callback("objectInstanceNameReservationSucceeded") == (reserved_name,)
+
+    rival.reserveObjectInstanceName(reserved_name)
+    assert rival_federate.last_callback("objectInstanceNameReservationFailed") == (reserved_name,)
+
+    owner.requestFederationSave("SINGLE-NAME-SAVE")
+    with pytest.raises(SaveInProgress):
+        owner.releaseObjectInstanceName(reserved_name)
+    owner.abortFederationSave()
+
+    owner.requestFederationSave("SINGLE-NAME-RESTORE")
+    owner.federateSaveBegun()
+    rival.federateSaveBegun()
+    owner.federateSaveComplete()
+    rival.federateSaveComplete()
+    owner.requestFederationRestore("SINGLE-NAME-RESTORE")
+    with pytest.raises(RestoreInProgress):
+        owner.releaseObjectInstanceName(reserved_name)
+    owner.federateRestoreComplete()
+    rival.federateRestoreComplete()
+
+    rival.reserveObjectInstanceName(reserved_name)
+    assert rival_federate.last_callback("objectInstanceNameReservationFailed") == (reserved_name,)
+
+    owner.releaseObjectInstanceName(reserved_name)
+    rival.reserveObjectInstanceName(reserved_name)
+    assert rival_federate.last_callback("objectInstanceNameReservationSucceeded") == (reserved_name,)
+
+    with pytest.raises(ObjectInstanceNameNotReserved):
+        owner.releaseObjectInstanceName(reserved_name)
+
+    rival.releaseObjectInstanceName(reserved_name)
+
+    rival.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution(federationName=federation_name)
+    rival.disconnect()
+    owner.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_supports_multiple_object_instance_name_reservation_and_release() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

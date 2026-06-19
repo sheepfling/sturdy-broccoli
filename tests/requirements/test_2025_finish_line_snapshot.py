@@ -190,6 +190,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "deleteObjectInstance/removeObjectInstance callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "requestAttributeValueUpdate callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "transportation type change/query callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
+    assert slices["2025-single-name-reservation-services"]["status"] == "implemented-slice"
+    assert "HLA2025-FI-SVC-052" in slices["2025-single-name-reservation-services"]["requirements"]
+    assert "HLA2025-FI-SVC-053" in slices["2025-single-name-reservation-services"]["requirements"]
+    assert "single-name reservation success and failure callbacks" in slices["2025-single-name-reservation-services"]["supported_scope"]
+    assert "ObjectInstanceNameNotReserved on invalid single-name release" in slices["2025-single-name-reservation-services"]["supported_scope"]
     assert slices["2025-multi-name-reservation-services"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-054" in slices["2025-multi-name-reservation-services"]["requirements"]
     assert "HLA2025-FI-SVC-056" in slices["2025-multi-name-reservation-services"]["requirements"]

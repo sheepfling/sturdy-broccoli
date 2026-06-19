@@ -391,6 +391,21 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-single-name-reservation-services",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports single-name reservation success and failure callbacks, releaseObjectInstanceName, "
+            "not-connected and not-joined preconditions for release, save/restore in-progress blocking, reservation "
+            "preservation through save/restore completion, release-driven handoff to a rival federate, and "
+            "ObjectInstanceNameNotReserved on invalid single-name release."
+        ),
+    },
+    {
         "id": "2025-multi-name-reservation-services",
         "status": "implemented-slice",
         "requirements": ("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005"),
