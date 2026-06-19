@@ -3291,8 +3291,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         grant_time: datatypes_pb2.LogicalTime | None = None
         deliver_through: datatypes_pb2.LogicalTime | None = None
         optimistic_time: datatypes_pb2.LogicalTime | None = None
-        gilt = self._query_galt(handle)
-        galt_value = _logical_time_value(gilt.logicalTime) if gilt.logicalTimeIsValid else None
+        peer_galt_candidates = self._peer_regulating_lower_bounds(handle)
+        galt_value = min(peer_galt_candidates) if peer_galt_candidates else None
         constrained = self.handle_time_constrained.get(handle, False)
 
         if mode == "flushQueueRequest":
@@ -3667,6 +3667,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def _handle_pending_request(self, handle: str) -> tuple[str, datatypes_pb2.LogicalTime] | None:
         return self.handle_pending_time_advance.get(handle)
 
+    def _peer_regulating_lower_bounds(self, handle: str) -> list[float]:
+        return [
+            lower_bound
+            for other_handle in self._joined_handle_values()
+            if other_handle != handle
+            for lower_bound in [self._regulating_lower_bound(other_handle)]
+            if lower_bound is not None
+        ]
+
     def _regulating_lower_bound(self, handle: str) -> float | None:
         if not self.handle_time_regulating.get(handle, False):
             return None
@@ -3675,13 +3684,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         return _logical_time_value(base) + _logical_interval_value(self._handle_lookahead(handle))
 
     def _query_galt(self, handle: str) -> datatypes_pb2.TimeQueryReturn:
-        candidates = [
-            lower_bound
-            for other_handle in self._joined_handle_values()
-            if other_handle != handle
-            for lower_bound in [self._regulating_lower_bound(other_handle)]
-            if lower_bound is not None
-        ]
+        candidates = self._peer_regulating_lower_bounds(handle)
         if not candidates:
             return datatypes_pb2.TimeQueryReturn(
                 logicalTimeIsValid=True,

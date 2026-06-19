@@ -139,6 +139,14 @@ def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_
         assert transport.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
         assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
         assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProTarget-1"))).fields[0]
         assert transport.request(TransportRequest(command="EVOKE")).fields == (
@@ -449,6 +457,8 @@ def test_2025_transport_server_delivers_timestamped_updates_and_interactions_to_
         assert subscriber_b.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         assert owner.request(
             TransportRequest(
@@ -463,6 +473,8 @@ def test_2025_transport_server_delivers_timestamped_updates_and_interactions_to_
             )
         ).fields == ("2",)
         assert server.servicer.queued_tso_callbacks.keys() == {"1", "2"}
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
 
         assert subscriber_a.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
         first_a = subscriber_a.request(TransportRequest(command="EVOKE")).fields
@@ -566,6 +578,8 @@ def test_2025_transport_server_holds_tso_for_lagging_subscribers_over_fedpro_sch
         assert subscriber_b.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         assert owner.request(
             TransportRequest(
@@ -579,6 +593,8 @@ def test_2025_transport_server_holds_tso_for_lagging_subscribers_over_fedpro_sch
                 fields=(interaction_class, f"{parameter}:53504c4954", "73706c69742d696e746572616374696f6e", "HLAinteger64Time", "5"),
             )
         ).fields == ("2",)
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
 
         assert subscriber_a.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "REFLECT_TSO")
@@ -646,6 +662,8 @@ def test_2025_transport_server_retracts_partially_delivered_tso_without_releasin
         assert subscriber_b.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         handle = owner.request(
             TransportRequest(
@@ -653,6 +671,8 @@ def test_2025_transport_server_retracts_partially_delivered_tso_without_releasin
                 fields=(interaction_class, f"{parameter}:5041525449414c", "7061727469616c2d74736f", "HLAinteger64Time", "5"),
             )
         ).fields[0]
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
 
         assert subscriber_a.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "INTERACTION_TSO")
@@ -725,6 +745,8 @@ def test_2025_transport_server_drops_retraction_callbacks_for_disconnected_deliv
         assert subscriber_b.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         handle = owner.request(
             TransportRequest(
@@ -732,6 +754,8 @@ def test_2025_transport_server_drops_retraction_callbacks_for_disconnected_deliv
                 fields=(interaction_class, f"{parameter}:444953434f4e4e454354", "646973636f6e6e6563742d72657472616374", "HLAinteger64Time", "5"),
             )
         ).fields[0]
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
 
         assert subscriber_a.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "INTERACTION_TSO")
@@ -826,6 +850,8 @@ def test_2025_transport_server_drops_queued_plain_tso_for_disconnected_target_ov
             object_class,
             "FedProPlainTSODisconnectTarget-1",
         )
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         assert owner.request(
             TransportRequest(
@@ -941,6 +967,8 @@ def test_2025_transport_server_drops_queued_ddm_tso_reflect_for_disconnected_tar
             object_instance,
             attribute,
         )
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         assert owner.request(
             TransportRequest(
@@ -1027,6 +1055,8 @@ def test_2025_transport_server_fans_out_post_delivery_retraction_to_all_subscrib
         assert subscriber_b.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         handle = owner.request(
             TransportRequest(
@@ -1035,6 +1065,8 @@ def test_2025_transport_server_fans_out_post_delivery_retraction_to_all_subscrib
             )
         ).fields[0]
         assert handle == "1"
+        assert owner.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
 
         assert subscriber_a.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "INTERACTION_TSO")
@@ -1289,7 +1321,7 @@ def test_2025_transport_server_drains_multiple_callbacks_in_order_over_fedpro_sc
             "1",
         )
         trailing = transport.request(TransportRequest(command="EVOKE")).fields
-        assert trailing == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert trailing == ("0",)
 
         assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -1336,12 +1368,7 @@ def test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert transport.request(TransportRequest(command="ENABLE_CALLBACKS")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == (
@@ -1367,12 +1394,7 @@ def test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert transport.request(TransportRequest(command="ENABLE_CALLBACKS")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == (
@@ -1393,12 +1415,7 @@ def test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery
             "1",
             "1",
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -1661,6 +1678,8 @@ def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fed
         assert transport.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
         assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
         assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProTsoTarget-1"))).fields[0]
         assert transport.request(TransportRequest(command="EVOKE")).fields == (
@@ -6370,6 +6389,8 @@ def test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_p
         assert subscriber.request(
             TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS", fields=(object_class, interaction_class))
         ).fields == ()
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
         object_instance = owner.request(
             TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProDirectedTSORestoreTarget-1"))
         ).fields[0]
@@ -6447,9 +6468,9 @@ def test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_p
         assert stale_handle not in server.servicer.delivered_retractions
 
         assert subscriber.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
-        assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
+        assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("0",)
         assert observer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
-        assert observer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
+        assert observer.request(TransportRequest(command="EVOKE")).fields == ("0",)
         with pytest.raises(TransportError) as stale_error:
             owner.request(TransportRequest(command="RETRACT", fields=(stale_handle,)))
         assert stale_error.value.code == "InvalidMessageRetractionHandle"
@@ -6485,7 +6506,7 @@ def test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_p
         )
         assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
         assert observer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "7"))).fields == ()
-        assert observer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert observer.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert owner.request(TransportRequest(command="RETRACT", fields=(fresh_handle,))).fields == ()
         assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_RETRACTION", fresh_handle)
@@ -6584,6 +6605,8 @@ def test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_p
         assert subscriber_b.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert subscriber_a.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert owner.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
 
         assert owner.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-TIMED-REMOVE",))).fields == ()
         assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-TIMED-REMOVE")
@@ -6666,7 +6689,7 @@ def test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_p
         second_b = subscriber_b.request(TransportRequest(command="EVOKE")).fields
         assert first_b[:2] != ("1", "REMOVE_OBJECT_INSTANCE_TSO")
         assert second_b[:2] != ("1", "REMOVE_OBJECT_INSTANCE_TSO")
-        assert ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5") in {first_b, second_b}
+        assert {first_b, second_b} == {("0",)}
 
         with pytest.raises(TransportError) as stale_error:
             owner.request(TransportRequest(command="RETRACT", fields=(stale_handle,)))
@@ -7466,7 +7489,7 @@ def test_2025_transport_server_restore_recovers_per_federate_time_state_and_flus
         assert right.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "9")
         assert left.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "2")
         assert right.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "5")
-        assert left.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "4")
+        assert left.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "14")
         assert right.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "6")
 
         assert server.servicer.handle_current_times["1"].data == b"HLAinteger64Time:4"
@@ -7486,7 +7509,7 @@ def test_2025_transport_server_restore_recovers_per_federate_time_state_and_flus
         )
         assert left.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "4")
         assert right.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "12")
-        assert left.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "4")
+        assert left.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "17")
         assert right.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "6")
 
         assert left.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
@@ -7737,12 +7760,7 @@ def test_2025_transport_server_restore_recovers_callback_delivery_policy_over_fe
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert transport.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-CALLBACKS",))).fields == ()
         assert transport.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
@@ -7777,12 +7795,7 @@ def test_2025_transport_server_restore_recovers_callback_delivery_policy_over_fe
             "1",
         )
         assert transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
         server.servicer.callback_queue.clear()
 
         assert (
@@ -7791,12 +7804,7 @@ def test_2025_transport_server_restore_recovers_callback_delivery_policy_over_fe
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
         assert transport.request(TransportRequest(command="ENABLE_CALLBACKS")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == (
             "1",
@@ -7943,7 +7951,7 @@ def test_2025_transport_server_isolates_requester_and_disabled_callbacks_per_fed
         server.servicer.callback_queue.clear()
         assert leader.request(TransportRequest(command="DISABLE_CALLBACKS")).fields == ()
         assert wing.request(TransportRequest(command="LIST_FEDERATION_EXECUTIONS")).fields == ()
-        assert leader.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert leader.request(TransportRequest(command="EVOKE")).fields == ("0",)
         assert wing.request(TransportRequest(command="EVOKE")).fields == (
             "1",
             "REPORT_FEDERATION_EXECUTIONS",
@@ -7963,7 +7971,7 @@ def test_2025_transport_server_isolates_requester_and_disabled_callbacks_per_fed
                 fields=(interaction_class, f"{parameter}:69736f6c61746564", "63616c6c6261636b2d746167"),
             )
         ).fields == ()
-        assert leader.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert leader.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert leader.request(TransportRequest(command="ENABLE_CALLBACKS")).fields == ()
         assert leader.request(TransportRequest(command="EVOKE")).fields == (
@@ -8084,8 +8092,8 @@ def test_2025_transport_server_routes_transportation_query_callbacks_only_to_req
             TransportRequest(command="JOIN", fields=("Wing", "Observer", federation_name))
         ).fields == ("2", "HLAinteger64Time")
 
-        assert leader.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
-        assert wing.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert leader.request(TransportRequest(command="EVOKE")).fields == ("0",)
+        assert wing.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         object_class = leader.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
         attribute = leader.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
@@ -9336,12 +9344,7 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "5:15"))).fields == ()
         assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(subscriber_region,))).fields == ()
@@ -9446,12 +9449,7 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             object_instance,
             attribute,
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert (
             transport.request(
@@ -9476,12 +9474,7 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             object_instance,
             attribute,
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
         assert (
             transport.request(
                 TransportRequest(
@@ -9512,12 +9505,7 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert (
             transport.request(
@@ -9562,12 +9550,7 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             ).fields
             == ()
         )
-        assert transport.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -9689,12 +9672,7 @@ def test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlap
                 fields=(object_class, f"{attribute}|{subscriber_b_region}", "1"),
             )
         ).fields == ()
-        assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == (
-            "1",
-            "TIME_ADVANCE_GRANT",
-            "HLAinteger64Time",
-            "7",
-        )
+        assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert subscriber_a.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_a_region, dimension, "50:60"))).fields == ()
         assert subscriber_b.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_b_region, dimension, "5:15"))).fields == ()
@@ -10708,12 +10686,7 @@ def test_2025_transport_server_fans_out_mom_sync_status_reports_only_to_subscrib
             TransportRequest(command="JOIN", fields=("FedPro2025MOMSyncObserver", "TestFederate", federation_name))
         ).fields[0]
         for transport in (leader, member, observer):
-            assert transport.request(TransportRequest(command="EVOKE")).fields == (
-                "1",
-                "TIME_ADVANCE_GRANT",
-                "HLAinteger64Time",
-                "7",
-            )
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert leader.request(
             TransportRequest(
@@ -10858,12 +10831,7 @@ def test_2025_transport_server_preserves_plain_mom_report_delivery_with_mixed_re
             TransportRequest(command="JOIN", fields=("FedPro2025MOMMixedRegional", "TestFederate", federation_name))
         ).fields == ("3", "HLAinteger64Time")
         for transport in (leader, plain, regional):
-            assert transport.request(TransportRequest(command="EVOKE")).fields == (
-                "1",
-                "TIME_ADVANCE_GRANT",
-                "HLAinteger64Time",
-                "7",
-            )
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert leader.request(
             TransportRequest(command="REGISTER_FEDERATION_SYNCHRONIZATION_POINT", fields=("ReadyToRun", "73796e63", "1,2,3"))
@@ -10988,8 +10956,8 @@ def test_2025_transport_server_removes_mom_resigned_federate_from_delivery_state
         observer_handle = observer.request(
             TransportRequest(command="JOIN", fields=("FedPro2025MomResignObserver", "Observer", federation_name))
         ).fields[0]
-        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
-        assert observer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("0",)
+        assert observer.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         interaction_class = owner.request(
             TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
@@ -11073,7 +11041,7 @@ def test_2025_transport_server_applies_mom_resign_policy_over_fedpro_schema():
         federate_handle = transport.request(
             TransportRequest(command="JOIN", fields=("FedPro2025MomResignPolicy", "TestFederate", federation_name))
         ).fields[0]
-        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
         attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
@@ -11210,12 +11178,7 @@ def test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to
             TransportRequest(command="JOIN", fields=("FedPro2025SyncObserver", "TestFederate", federation_name))
         ).fields[0]
         for transport in (leader, member, observer):
-            assert transport.request(TransportRequest(command="EVOKE")).fields == (
-                "1",
-                "TIME_ADVANCE_GRANT",
-                "HLAinteger64Time",
-                "7",
-            )
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert leader.request(
             TransportRequest(
@@ -13040,7 +13003,11 @@ def test_2025_transport_server_routes_mom_manager_service_actions_over_fedpro_sc
         assert server.servicer.default_attribute_transportation[(object_instance, attribute)] == "HLAbestEffort"
         assert server.servicer.default_attribute_order[(object_instance, attribute)] == datatypes_pb2.TIMESTAMP
 
-        callback_kinds = [transport.request(TransportRequest(command="EVOKE")).fields[1] for _ in range(8)]
+        callback_kinds = []
+        for _ in range(8):
+            fields = transport.request(TransportRequest(command="EVOKE")).fields
+            if len(fields) > 1:
+                callback_kinds.append(fields[1])
         assert "TIME_REGULATION_ENABLED" in callback_kinds
         assert "TIME_CONSTRAINED_ENABLED" in callback_kinds
         assert "TIME_ADVANCE_GRANT" in callback_kinds
@@ -13135,8 +13102,8 @@ def test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_fe
         wing_handle = wing.request(
             TransportRequest(command="JOIN", fields=("FedPro2025MomWing", "Observer", federation_name))
         ).fields[0]
-        assert leader.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
-        assert wing.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert leader.request(TransportRequest(command="EVOKE")).fields == ("0",)
+        assert wing.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         enable_reg = mom_class(leader, "HLAfederate", "HLAservice", "HLAenableTimeRegulation")
         send_mom(leader, enable_reg, {"HLAfederate": leader_handle, "HLAlookahead": "2"})
@@ -13225,8 +13192,8 @@ def test_2025_transport_server_routes_mom_save_restore_completion_callbacks_only
         wing_handle = wing.request(
             TransportRequest(command="JOIN", fields=("FedPro2025MomSaveWing", "Observer", federation_name))
         ).fields[0]
-        assert leader.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
-        assert wing.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert leader.request(TransportRequest(command="EVOKE")).fields == ("0",)
+        assert wing.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         assert leader.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("MOM-SAVE",))).fields == ()
         assert leader.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "MOM-SAVE")
@@ -13340,7 +13307,7 @@ def test_2025_transport_server_routes_mom_delete_remove_only_to_discovered_obser
             TransportRequest(command="JOIN", fields=("FedPro2025MomDeleteBystander", "Observer", federation_name))
         ).fields == ("3", "HLAinteger64Time")
         for transport in (owner, observer, bystander):
-            assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+            assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
         object_class = owner.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
         attribute = owner.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
@@ -13781,7 +13748,7 @@ def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
         ).fields == ("1", "HLAinteger64Time")
 
         callback = transport.request(TransportRequest(command="EVOKE"))
-        assert callback.fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+        assert callback.fields == ("0",)
 
         assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -13885,7 +13852,7 @@ def test_2025_transport_server_runs_runtime_capability_session_over_fedpro_schem
             "72756e74696d652d636c61696d",
         )
 
-        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Time", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
         assert transport.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
