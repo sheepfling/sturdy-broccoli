@@ -155,12 +155,14 @@ from .scenario_target_radar_time import (
     TargetRadarConsumerOrderConfig,
     TargetRadarFutureExclusionConfig,
     TargetRadarOutputDeliveryConfig,
+    TargetRadarPipelineConfig,
     TargetRadarTimeWindowConfig,
     run_target_radar_time_window_consumer_order_scenario,
     run_target_radar_time_window_future_exclusion_scenario,
     run_target_radar_time_window_core_scenario,
     run_target_radar_time_window_gauntlet_scenario,
     run_target_radar_time_window_output_delivery_scenario,
+    run_target_radar_time_window_pipeline_scenario,
 )
 from .scenario_update_rate import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
 from .scenario_update_advisory import run_update_advisory_callback_scenario
@@ -225,6 +227,7 @@ __all__ = [
     "TargetRadarFutureExclusionConfig",
     "TargetRadarConsumerOrderConfig",
     "TargetRadarOutputDeliveryConfig",
+    "TargetRadarPipelineConfig",
     "TargetRadarTimeWindowConfig",
     "UpdateRateScenarioConfig",
     "TransportationTypeScenarioConfig",
@@ -334,6 +337,7 @@ __all__ = [
     "run_target_radar_time_window_core_scenario",
     "run_target_radar_time_window_gauntlet_scenario",
     "run_target_radar_time_window_output_delivery_scenario",
+    "run_target_radar_time_window_pipeline_scenario",
     "run_transportation_type_rejection_scenario",
     "run_transportation_type_restore_persistence_scenario",
     "run_transportation_type_scenario",

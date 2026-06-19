@@ -16,6 +16,7 @@ from hla.verification import (
     TargetRadarConsumerOrderConfig,
     TargetRadarFutureExclusionConfig,
     TargetRadarOutputDeliveryConfig,
+    TargetRadarPipelineConfig,
     TargetRadarTimeWindowConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
@@ -27,6 +28,7 @@ from hla.verification import (
     run_target_radar_time_window_future_exclusion_scenario,
     run_target_radar_time_window_core_scenario,
     run_target_radar_time_window_output_delivery_scenario,
+    run_target_radar_time_window_pipeline_scenario,
     run_two_federate_exchange_scenario,
 )
 from tests.scenarios.python_route_parity_support import python_route_params, python_rti_group, python_rti_pair, python_single_rti
@@ -458,4 +460,51 @@ def test_python_route_parity_target_radar_time_window_consumer_order(route) -> N
                 (consumer, ResignAction.NO_ACTION),
             ),
             disconnect_rtis=(consumer, other, radar, truth),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_pipeline(route) -> None:
+    with python_rti_group(route, 3) as group:
+        truth, radar, consumer = group.members
+        config = TargetRadarPipelineConfig(
+            federation_name=f"python-radar-time-window-pipeline-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_pipeline_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+        )
+
+        delivered = [(record.args[2], record.args[5]) for record in summary["consumer_receives"]]
+        assert delivered == [
+            (b"scan1-track-output", HLAinteger64Time(config.scan1_output_time)),
+            (b"scan2-track-output", HLAinteger64Time(config.scan2_output_time)),
+        ]
+        assert summary["scan1_close_grant"].args[0] == HLAinteger64Time(config.scan1_end)
+        assert summary["scan2_close_grant"].args[0] == HLAinteger64Time(config.scan2_end)
+        assert summary["scan2_reflect"].args[2] == b"scan2-input"
+        assert summary["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["oracle_report"]["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["oracle_report"]["assertions"] == {
+            "scan1_closes_before_scan2_input": True,
+            "scan2_input_collected_while_scan1_output_pending": True,
+            "scan1_output_precedes_scan2_output": True,
+            "no_cross_window_contamination": True,
+        }
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=truth,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=(
+                (radar, ResignAction.NO_ACTION),
+                (consumer, ResignAction.NO_ACTION),
+            ),
+            disconnect_rtis=(consumer, radar, truth),
         )

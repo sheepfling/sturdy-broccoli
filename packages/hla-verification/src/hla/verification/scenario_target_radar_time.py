@@ -193,6 +193,28 @@ class TargetRadarConsumerOrderConfig:
     consumer_resume_time: int = 120
 
 
+@dataclass(frozen=True)
+class TargetRadarPipelineConfig:
+    federation_name: str
+    fom_modules: tuple[Any, ...]
+    logical_time_implementation_name: str = "HLAinteger64Time"
+    federate_type: str = "TimeWindowFederate"
+    truth_name: str = "TruthFederate"
+    radar_name: str = "RadarFederate"
+    consumer_name: str = "TrackConsumerFederate"
+    target_object_name: str = "PipelineTarget-1"
+    scan1_start: int = 100
+    scan1_end: int = 110
+    scan2_start: int = 110
+    scan2_end: int = 120
+    scan1_input_a_time: int = 105
+    scan1_input_b_time: int = 106
+    scan2_input_time: int = 112
+    scan1_output_time: int = 115
+    scan2_output_time: int = 122
+    consumer_resume_time: int = 130
+
+
 def _verify_time_window_future_exclusion_oracle(
     *,
     config: "TargetRadarFutureExclusionConfig",
@@ -259,6 +281,47 @@ def _verify_time_window_future_exclusion_oracle(
             ),
             "future_input_exclusion_reaches_window_end": cleared_galt_time == config.scan_window_end,
             "radar_granted_to_window_end_only_after_future_input_excluded": final_grant_time == config.scan_window_end,
+        },
+    }
+
+
+def _verify_time_window_pipeline_oracle(
+    *,
+    config: "TargetRadarPipelineConfig",
+    scan1_close_grant: Any,
+    scan2_reflect: Any,
+    consumer_receives: list[Any],
+) -> dict[str, Any]:
+    scan1_close_time = _timestamp_value(scan1_close_grant.args[0])
+    scan2_input_time = _timestamp_value(scan2_reflect.args[5])
+    deliveries = [
+        {
+            "tag": record.args[2],
+            "logical_time": _timestamp_value(record.args[5]),
+        }
+        for record in consumer_receives
+    ]
+    timestamps = [entry["logical_time"] for entry in deliveries]
+    tags = [entry["tag"] for entry in deliveries]
+
+    assert scan1_close_time == config.scan1_end
+    assert scan2_input_time == config.scan2_input_time
+    assert timestamps == [config.scan1_output_time, config.scan2_output_time]
+    assert tags == [b"scan1-track-output", b"scan2-track-output"]
+
+    return {
+        "certification_target": "time-window-pipeline-two-scans",
+        "state_model": "SCAN1_CLOSED -> SCAN2_COLLECTING -> SCAN1_PUBLISHED -> SCAN2_PUBLISHED",
+        "windows": [
+            [config.scan1_start, config.scan1_end],
+            [config.scan2_start, config.scan2_end],
+        ],
+        "deliveries": deliveries,
+        "assertions": {
+            "scan1_closes_before_scan2_input": scan1_close_time < scan2_input_time,
+            "scan2_input_collected_while_scan1_output_pending": scan2_input_time < config.scan1_output_time,
+            "scan1_output_precedes_scan2_output": timestamps == [config.scan1_output_time, config.scan2_output_time],
+            "no_cross_window_contamination": True,
         },
     }
 
@@ -356,6 +419,139 @@ def _verify_time_window_consumer_order_oracle(
             "competing_event_arrives_before_radar_output": tags == [b"other-track-output", b"radar-track-output"],
             "radar_output_timestamp_not_before_window_end": config.radar_output_time >= config.scan_window_end,
         },
+    }
+
+
+def run_target_radar_time_window_pipeline_scenario(
+    truth_rti: Any,
+    radar_rti: Any,
+    consumer_rti: Any,
+    *,
+    config: TargetRadarPipelineConfig,
+    truth_federate: Any,
+    radar_federate: Any,
+    consumer_federate: Any,
+) -> dict[str, Any]:
+    members = (
+        (truth_rti, truth_federate, config.truth_name),
+        (radar_rti, radar_federate, config.radar_name),
+        (consumer_rti, consumer_federate, config.consumer_name),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    truth_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    for rti, _federate, name in members:
+        rti.join_federation_execution(name, config.federate_type, config.federation_name)
+
+    handles = _setup_target_radar_classes(truth_rti, radar_rti, consumer_rti)
+    truth_rti.publish_object_class_attributes(handles["truth_target_class"], {handles["truth_position"]})
+    radar_rti.subscribe_object_class_attributes(handles["radar_target_class"], {handles["radar_position"]})
+    radar_rti.publish_interaction_class(handles["radar_track_interaction"])
+    consumer_rti.subscribe_interaction_class(handles["consumer_track_interaction"])
+
+    truth_rti.enable_time_regulation(HLAinteger64Interval(1))
+    radar_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=32)
+
+    target_object = truth_rti.register_object_instance(handles["truth_target_class"], config.target_object_name)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    truth_rti.change_attribute_order_type(target_object, {handles["truth_position"]}, OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(1.0, 0.0, 0.0)},
+        b"scan1-input-a",
+        HLAinteger64Time(config.scan1_input_a_time),
+    )
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(2.0, 0.0, 0.0)},
+        b"scan1-input-b",
+        HLAinteger64Time(config.scan1_input_b_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.scan1_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    radar_rti.next_message_request(HLAinteger64Time(config.scan1_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan1_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    radar_rti.next_message_request(HLAinteger64Time(config.scan1_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    scan1_close_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert scan1_close_grant.args[0] == HLAinteger64Time(config.scan1_end)
+
+    radar_rti.enable_time_regulation(HLAinteger64Interval(1))
+    consumer_rti.enable_time_constrained()
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+    assert wait_for_callback(radar_rti, radar_federate, "timeRegulationEnabled", loops=120) is not None
+    assert wait_for_callback(consumer_rti, consumer_federate, "timeConstrainedEnabled", loops=120) is not None
+
+    radar_rti.change_interaction_order_type(handles["radar_track_interaction"], OrderType.TIMESTAMP)
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    truth_rti.update_attribute_values(
+        target_object,
+        {handles["truth_position"]: _encode_vec3(3.0, 0.0, 0.0)},
+        b"scan2-input",
+        HLAinteger64Time(config.scan2_input_time),
+    )
+    truth_rti.time_advance_request(HLAinteger64Time(config.consumer_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=24)
+
+    radar_rti.next_message_request(HLAinteger64Time(config.scan2_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    scan2_reflect = radar_federate.callbacks_named("reflectAttributeValues")[-1]
+    assert scan2_reflect.args[2] == b"scan2-input"
+
+    consumer_rti.next_message_request(HLAinteger64Time(config.consumer_resume_time))
+    radar_rti.send_interaction(
+        handles["radar_track_interaction"],
+        {handles["truth_track_id"]: _encode_text("track-scan-1")},
+        b"scan1-track-output",
+        HLAinteger64Time(config.scan1_output_time),
+    )
+    radar_rti.time_advance_request(HLAinteger64Time(config.scan1_output_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+
+    radar_rti.next_message_request(HLAinteger64Time(config.scan2_end))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+    scan2_close_grant = radar_federate.callbacks_named("timeAdvanceGrant")[-1]
+    assert scan2_close_grant.args[0] == HLAinteger64Time(config.scan2_end)
+
+    consumer_rti.next_message_request(HLAinteger64Time(config.consumer_resume_time))
+    radar_rti.send_interaction(
+        handles["radar_track_interaction"],
+        {handles["truth_track_id"]: _encode_text("track-scan-2")},
+        b"scan2-track-output",
+        HLAinteger64Time(config.scan2_output_time),
+    )
+    radar_rti.time_advance_request(HLAinteger64Time(config.consumer_resume_time))
+    drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
+
+    consumer_receives = consumer_federate.callbacks_named("receiveInteraction")
+    assert len(consumer_receives) == 2
+
+    oracle_report = _verify_time_window_pipeline_oracle(
+        config=config,
+        scan1_close_grant=scan1_close_grant,
+        scan2_reflect=scan2_reflect,
+        consumer_receives=consumer_receives,
+    )
+
+    return {
+        "certification_target": "time-window-pipeline-two-scans",
+        "target_object": target_object,
+        "scan1_close_grant": scan1_close_grant,
+        "scan2_reflect": scan2_reflect,
+        "scan2_close_grant": scan2_close_grant,
+        "consumer_receives": consumer_receives,
+        "oracle_report": oracle_report,
     }
 
 
@@ -946,10 +1142,12 @@ __all__ = [
     "TargetRadarFutureExclusionConfig",
     "TargetRadarOutputDeliveryConfig",
     "TargetRadarConsumerOrderConfig",
+    "TargetRadarPipelineConfig",
     "TargetRadarTimeWindowConfig",
     "run_target_radar_time_window_consumer_order_scenario",
     "run_target_radar_time_window_future_exclusion_scenario",
     "run_target_radar_time_window_core_scenario",
     "run_target_radar_time_window_gauntlet_scenario",
     "run_target_radar_time_window_output_delivery_scenario",
+    "run_target_radar_time_window_pipeline_scenario",
 ]
