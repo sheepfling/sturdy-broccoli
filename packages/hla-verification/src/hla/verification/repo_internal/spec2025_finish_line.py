@@ -998,7 +998,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "publication/subscription state for HLArequestPublications and "
             "HLArequestSubscriptions, object instance information for HLArequestObjectInstanceInformation, "
             "object-instance counts for deletable/updated/reflected objects, plus activity counts for updates, "
-            "reflections, interactions sent, and interactions received, plus synchronization point/status reports. "
+            "reflections, interactions sent, and interactions received, plus synchronization point/status reports, "
+            "and standard HLAreportMOMexception interactions for failed routed MOM actions. "
             "This is not full MOM manager interaction routing or a conformance claim."
         ),
     },

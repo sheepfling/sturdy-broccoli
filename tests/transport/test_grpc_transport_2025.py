@@ -2226,6 +2226,82 @@ def test_2025_transport_server_routes_mom_manager_service_actions_over_fedpro_sc
         server.close()
 
 
+def test_2025_transport_server_reports_failed_mom_service_actions_as_mom_exception_interactions():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-exception"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomException2025.xml"))
+        ).fields == ()
+        federate_handle = transport.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025MOMException", "TestFederate", federation_name))
+        ).fields[0]
+
+        service_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance",),
+            )
+        ).fields[0]
+        service_federate_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(service_class, "HLAfederate"))
+        ).fields[0]
+
+        report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception",),
+            )
+        ).fields[0]
+        report_service_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAservice"))
+        ).fields[0]
+        report_exception_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAexception"))
+        ).fields[0]
+        report_parameter_error_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAparameterError"))
+        ).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(report_class,))).fields == ()
+
+        with pytest.raises(TransportError) as error:
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION",
+                    fields=(service_class, f"{service_federate_param}:{federate_handle.encode('ascii').hex()}", "6d6f6d2d6661696c"),
+                )
+            )
+        assert error.value.code == "RTIinternalError"
+        assert "Missing MOM parameter HLAobjectInstance" in error.value.message
+
+        report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert report[:3] == ("1", "INTERACTION", report_class)
+        payloads = dict(item.split(":", 1) for item in report[3].split(","))
+        assert bytes.fromhex(payloads[report_service_param]).decode("ascii") == (
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance"
+        )
+        assert "Missing MOM parameter HLAobjectInstance" in bytes.fromhex(payloads[report_exception_param]).decode("utf-8")
+        assert bytes.fromhex(payloads[report_parameter_error_param]).decode("ascii") == "HLAfalse"
+        assert report[4:] == ("4d4f4d", "1", "1")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "subscribeInteractionClassRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

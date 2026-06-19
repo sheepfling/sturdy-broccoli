@@ -155,20 +155,21 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent": "413",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived": "414",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived": "415",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation": "416",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation": "417",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted": "418",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted": "419",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated": "420",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated": "421",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected": "422",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected": "423",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData": "424",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData": "425",
-            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints": "426",
-            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints": "427",
-            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus": "428",
-            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus": "429",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception": "416",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation": "417",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation": "418",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted": "419",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted": "420",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated": "421",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated": "422",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected": "423",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected": "424",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData": "425",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData": "426",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints": "427",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints": "428",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus": "429",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus": "430",
         }
         next_interaction_handle = 600
         for leaf in _MOM_FEDERATE_ADJUST_LEAVES:
@@ -211,32 +212,33 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("414", "HLAfederate"): "526",
             ("415", "HLAfederate"): "527",
             ("415", "HLAreflectionsReceived"): "528",
-            ("416", "HLAfederate"): "529",
-            ("416", "HLAobjectInstance"): "530",
-            ("417", "HLAfederate"): "531",
-            ("417", "HLAobjectInstance"): "532",
-            ("417", "HLAobjectClass"): "533",
-            ("417", "HLAobjectInstanceName"): "534",
-            ("417", "HLAattributeList"): "535",
-            ("418", "HLAfederate"): "536",
+            ("416", "HLAservice"): "529",
+            ("416", "HLAexception"): "530",
+            ("416", "HLAparameterError"): "531",
+            ("418", "HLAfederate"): "532",
+            ("418", "HLAobjectInstance"): "533",
+            ("418", "HLAobjectClass"): "534",
+            ("418", "HLAobjectInstanceName"): "535",
+            ("418", "HLAattributeList"): "536",
             ("419", "HLAfederate"): "537",
-            ("419", "HLAobjectInstanceCounts"): "538",
-            ("420", "HLAfederate"): "539",
+            ("420", "HLAfederate"): "538",
+            ("420", "HLAobjectInstanceCounts"): "539",
             ("421", "HLAfederate"): "540",
-            ("421", "HLAobjectInstanceCounts"): "541",
-            ("422", "HLAfederate"): "542",
+            ("422", "HLAfederate"): "541",
+            ("422", "HLAobjectInstanceCounts"): "542",
             ("423", "HLAfederate"): "543",
-            ("423", "HLAobjectInstanceCounts"): "544",
-            ("424", "HLAfederate"): "545",
-            ("424", "HLAFOMmoduleIndicator"): "546",
-            ("425", "HLAfederate"): "547",
-            ("425", "HLAFOMmoduleIndicator"): "548",
-            ("425", "HLAFOMmoduleData"): "549",
-            ("427", "HLAsynchronizationPoints"): "550",
-            ("428", "HLAlabel"): "551",
+            ("424", "HLAfederate"): "544",
+            ("424", "HLAobjectInstanceCounts"): "545",
+            ("425", "HLAfederate"): "546",
+            ("425", "HLAFOMmoduleIndicator"): "547",
+            ("426", "HLAfederate"): "548",
+            ("426", "HLAFOMmoduleIndicator"): "549",
+            ("426", "HLAFOMmoduleData"): "550",
+            ("428", "HLAsynchronizationPoints"): "551",
             ("429", "HLAlabel"): "552",
-            ("429", "HLAfederateList"): "553",
-            ("429", "HLAfederateSynchronizationStatusList"): "554",
+            ("430", "HLAlabel"): "553",
+            ("430", "HLAfederateList"): "554",
+            ("430", "HLAfederateSynchronizationStatusList"): "555",
         }
         self.next_parameter_handle = 800
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
@@ -1057,7 +1059,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if ".HLAmanager." in interaction_name and (
                 ".HLAservice." in interaction_name or ".HLAadjust." in interaction_name
             ):
-                self._route_mom_manager_action(interaction_name, payload.parameterValues)
+                try:
+                    self._route_mom_manager_action(interaction_name, payload.parameterValues)
+                except Exception as exc:
+                    self._queue_mom_exception_report(interaction_name, exc, parameter_error=False)
+                    return self._error("RTIinternalError", str(exc))
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"]:
                 self._queue_mim_report()
@@ -1673,7 +1679,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.subscribed_interactions.discard(self._mom_int(params, "HLAinteractionClass"))
             return
         if leaf == "HLAdeleteObjectInstance":
-            object_instance = self._mom_int(params, "HLAobjectInstance")
+            object_instance = self._mom_required_text(params, "HLAobjectInstance")
             record = self.object_instances.pop(object_instance, None)
             if record is not None:
                 self.callback_queue.append(
@@ -1755,6 +1761,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def _mom_order(cls, params: dict[str, bytes]) -> int:
         return datatypes_pb2.TIMESTAMP if cls._mom_text(params, "HLAsendOrder", "0") in {"1", "TIMESTAMP", "TimeStamp"} else datatypes_pb2.RECEIVE
 
+    @classmethod
+    def _mom_required_text(cls, params: dict[str, bytes], name: str) -> str:
+        value = params.get(name)
+        if value is None or not value:
+            raise ValueError(f"Missing MOM parameter {name}")
+        return value.decode("ascii")
+
     @staticmethod
     def _error(name: str, details: str) -> rti_pb2.CallResponse:
         return rti_pb2.CallResponse(
@@ -1800,6 +1813,20 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
                 )
             )
+        )
+
+    def _queue_mom_exception_report(self, interaction_name: str, exception: Exception, *, parameter_error: bool) -> None:
+        report_name = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
+        report_class = self.interactions.get(report_name)
+        if report_class is None or not self._interaction_subscriber_matches(report_class, ()):
+            return
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAservice": interaction_name.encode("utf-8"),
+                "HLAexception": f"{type(exception).__name__}: {exception}".encode("utf-8"),
+                "HLAparameterError": b"HLAtrue" if parameter_error else b"HLAfalse",
+            },
         )
 
     def _queue_object_publication_report(self) -> None:
