@@ -5663,6 +5663,591 @@ def test_2025_shim_keeps_two_scan_pipeline_outputs_separated() -> None:
                 rti.disconnect()
             except Exception:
                 pass
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_restores_open_and_closed_time_window_state() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import TargetRadarWindowRestoreConfig
+
+    federation_name = f"shim-2025-window-restore-{uuid.uuid4().hex[:8]}"
+    config = TargetRadarWindowRestoreConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+
+    def snapshot_window_state(
+        *,
+        phase: str,
+        window_closed: bool,
+        closed_at: int | None,
+        last_grant: int,
+        received_tags: list[bytes],
+    ) -> dict[str, object]:
+        return {
+            "phase": phase,
+            "window_closed": window_closed,
+            "closed_at": closed_at,
+            "last_grant": last_grant,
+            "received_tags": list(received_tags),
+        }
+
+    def complete_save(save_label: str) -> None:
+        truth_federate.callbacks.clear()
+        radar_federate.callbacks.clear()
+        truth.requestFederationSave(save_label)
+        assert truth_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert radar_federate.last_callback("initiateFederateSave") == (save_label,)
+        truth.federateSaveBegun()
+        radar.federateSaveBegun()
+        truth.federateSaveComplete()
+        radar.federateSaveComplete()
+        assert truth_federate.last_callback("federationSaved") == ()
+        assert radar_federate.last_callback("federationSaved") == ()
+
+    def complete_restore(save_label: str) -> None:
+        truth_federate.callbacks.clear()
+        radar_federate.callbacks.clear()
+        truth.requestFederationRestore(save_label)
+        assert truth_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert truth_federate.last_callback("federationRestoreBegun") == ()
+        assert radar_federate.last_callback("initiateFederateRestore") == (save_label, config.radar_name, radar_handle)
+        truth.federateRestoreComplete()
+        radar.federateRestoreComplete()
+        assert truth_federate.last_callback("federationRestored") == ()
+        assert radar_federate.last_callback("federationRestored") == ()
+
+    try:
+        truth.connect(truth_federate, CallbackModel.HLA_EVOKED)
+        radar.connect(radar_federate, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        truth.joinFederationExecution(
+            federateName=config.truth_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+        radar_handle = radar.joinFederationExecution(
+            federateName=config.radar_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        radar_target_class = radar.getObjectClassHandle("HLAobjectRoot.Target")
+        radar_position = radar.getAttributeHandle(radar_target_class, "Position")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(radar_target_class, {radar_position})
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        target_object = truth.registerObjectInstance(target_class, config.target_object_name)
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+
+        truth.updateAttributeValues(
+            target_object,
+            {position: b"truth-105"},
+            b"truth-105",
+            HLAinteger64Time(config.first_input_time),
+        )
+        truth.timeAdvanceRequest(HLAinteger64Time(config.first_input_time))
+        radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        first_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        first_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert first_reflect[2] == b"truth-105"
+        assert first_grant == (HLAinteger64Time(config.first_input_time),)
+        saved_open_state = snapshot_window_state(
+            phase="open",
+            window_closed=False,
+            closed_at=None,
+            last_grant=config.first_input_time,
+            received_tags=[b"truth-105"],
+        )
+
+        complete_save(config.save_open_name)
+
+        truth.updateAttributeValues(
+            target_object,
+            {position: b"truth-106"},
+            b"truth-106",
+            HLAinteger64Time(config.second_input_time),
+        )
+        truth.timeAdvanceRequest(HLAinteger64Time(config.scan_window_end))
+        radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        dirty_second_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        dirty_second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert dirty_second_reflect[2] == b"truth-106"
+        assert dirty_second_grant == (HLAinteger64Time(config.second_input_time),)
+        radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        dirty_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert dirty_close_grant == (HLAinteger64Time(config.scan_window_end),)
+
+        complete_restore(config.save_open_name)
+        assert truth.queryLogicalTime() == HLAinteger64Time(config.first_input_time)
+        assert radar.queryLogicalTime() == HLAinteger64Time(config.first_input_time)
+        restored_open_state = snapshot_window_state(
+            phase="open",
+            window_closed=False,
+            closed_at=None,
+            last_grant=config.first_input_time,
+            received_tags=[b"truth-105"],
+        )
+        assert restored_open_state == saved_open_state
+
+        truth.updateAttributeValues(
+            target_object,
+            {position: b"truth-106-branch"},
+            b"truth-106-branch",
+            HLAinteger64Time(config.second_input_time),
+        )
+        truth.timeAdvanceRequest(HLAinteger64Time(config.scan_window_end))
+        radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        reclosed_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        reclosed_second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert reclosed_reflect[2] == b"truth-106-branch"
+        assert reclosed_second_grant == (HLAinteger64Time(config.second_input_time),)
+        radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        reclosed_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert reclosed_grant == (HLAinteger64Time(config.scan_window_end),)
+        saved_closed_state = snapshot_window_state(
+            phase="closed",
+            window_closed=True,
+            closed_at=config.scan_window_end,
+            last_grant=config.scan_window_end,
+            received_tags=[b"truth-105", b"truth-106-branch"],
+        )
+
+        complete_save(config.save_closed_name)
+
+        truth.updateAttributeValues(
+            target_object,
+            {position: b"dirty-post-close"},
+            b"dirty-post-close",
+            HLAinteger64Time(config.post_close_resume_time),
+        )
+        truth.timeAdvanceRequest(HLAinteger64Time(config.post_close_resume_time))
+        radar.nextMessageRequest(HLAinteger64Time(config.post_close_resume_time))
+        dirty_post_close_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        dirty_post_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert dirty_post_close_reflect[2] == b"dirty-post-close"
+        assert dirty_post_close_grant == (HLAinteger64Time(config.post_close_resume_time),)
+
+        complete_restore(config.save_closed_name)
+        assert truth.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
+        assert radar.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
+        restored_closed_state = snapshot_window_state(
+            phase="closed",
+            window_closed=True,
+            closed_at=config.scan_window_end,
+            last_grant=config.scan_window_end,
+            received_tags=[b"truth-105", b"truth-106-branch"],
+        )
+        assert restored_closed_state == saved_closed_state
+
+        radar_federate.callbacks.clear()
+        truth.timeAdvanceRequest(HLAinteger64Time(config.post_close_resume_time))
+        radar.nextMessageRequest(HLAinteger64Time(config.post_close_resume_time))
+        assert _callbacks_named_2025(radar_federate, "reflectAttributeValues") == []
+    finally:
+        for rti in (radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_restores_closed_window_output_resume_without_dirty_replay() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import TargetRadarWindowRestoreOutputConfig
+
+    federation_name = f"shim-2025-window-restore-output-{uuid.uuid4().hex[:8]}"
+    config = TargetRadarWindowRestoreOutputConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+
+    def complete_save(save_label: str) -> None:
+        truth_federate.callbacks.clear()
+        radar_federate.callbacks.clear()
+        consumer_federate.callbacks.clear()
+        truth.requestFederationSave(save_label)
+        assert truth_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert radar_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert consumer_federate.last_callback("initiateFederateSave") == (save_label,)
+        truth.federateSaveBegun()
+        radar.federateSaveBegun()
+        consumer.federateSaveBegun()
+        truth.federateSaveComplete()
+        radar.federateSaveComplete()
+        consumer.federateSaveComplete()
+        assert truth_federate.last_callback("federationSaved") == ()
+        assert radar_federate.last_callback("federationSaved") == ()
+        assert consumer_federate.last_callback("federationSaved") == ()
+
+    def complete_restore(save_label: str) -> None:
+        truth_federate.callbacks.clear()
+        radar_federate.callbacks.clear()
+        consumer_federate.callbacks.clear()
+        truth.requestFederationRestore(save_label)
+        assert truth_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert radar_federate.last_callback("initiateFederateRestore") == (save_label, config.radar_name, radar_handle)
+        assert consumer_federate.last_callback("initiateFederateRestore") == (save_label, config.consumer_name, consumer_handle)
+        truth.federateRestoreComplete()
+        radar.federateRestoreComplete()
+        consumer.federateRestoreComplete()
+        assert truth_federate.last_callback("federationRestored") == ()
+        assert radar_federate.last_callback("federationRestored") == ()
+        assert consumer_federate.last_callback("federationRestored") == ()
+
+    try:
+        for rti, fed in (
+            (truth, truth_federate),
+            (radar, radar_federate),
+            (consumer, consumer_federate),
+        ):
+            rti.connect(fed, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        truth.joinFederationExecution(
+            federateName=config.truth_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+        radar_handle = radar.joinFederationExecution(
+            federateName=config.radar_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+        consumer_handle = consumer.joinFederationExecution(
+            federateName=config.consumer_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        radar_target_class = radar.getObjectClassHandle("HLAobjectRoot.Target")
+        radar_position = radar.getAttributeHandle(radar_target_class, "Position")
+        radar_track_interaction = radar.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        radar_track_parameter = radar.getParameterHandle(radar_track_interaction, "TrackId")
+        consumer_track_interaction = consumer.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        consumer_track_parameter = consumer.getParameterHandle(consumer_track_interaction, "TrackId")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(radar_target_class, {radar_position})
+        radar.publishInteractionClass(radar_track_interaction)
+        consumer.subscribeInteractionClass(consumer_track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        target_object = truth.registerObjectInstance(target_class, config.target_object_name)
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+        truth.updateAttributeValues(target_object, {position: b"truth-105"}, b"truth-105", HLAinteger64Time(config.first_input_time))
+        truth.updateAttributeValues(target_object, {position: b"truth-106"}, b"truth-106", HLAinteger64Time(config.second_input_time))
+        truth.timeAdvanceRequest(HLAinteger64Time(config.scan_window_end))
+
+        for _ in range(3):
+            radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        window_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert window_close_grant == (HLAinteger64Time(config.scan_window_end),)
+
+        radar.enableTimeRegulation(HLAinteger64Interval(1))
+        consumer.enableTimeConstrained()
+        radar.changeInteractionOrderType(radar_track_interaction, OrderType.TIMESTAMP)
+        consumer.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        assert consumer.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
+
+        complete_save(config.save_closed_name)
+
+        consumer_federate.callbacks.clear()
+        consumer.nextMessageRequest(HLAinteger64Time(config.resume_time))
+        truth.timeAdvanceRequest(HLAinteger64Time(config.resume_time))
+        radar.sendInteraction(
+            radar_track_interaction,
+            {radar_track_parameter: b"dirty-track-100-110"},
+            b"dirty-track-output",
+            HLAinteger64Time(config.radar_output_time),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(config.resume_time))
+        dirty_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert len(dirty_receives) == 1
+        assert dirty_receives[-1][2] == b"dirty-track-output"
+        assert dirty_receives[-1][6] == HLAinteger64Time(config.radar_output_time)
+        assert dirty_receives[-1][1] == {consumer_track_parameter: b"dirty-track-100-110"}
+
+        complete_restore(config.save_closed_name)
+        assert truth.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
+        assert radar.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
+        assert consumer.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
+
+        consumer_federate.callbacks.clear()
+        consumer.nextMessageRequest(HLAinteger64Time(config.resume_time))
+        truth.timeAdvanceRequest(HLAinteger64Time(config.resume_time))
+        radar.sendInteraction(
+            radar_track_interaction,
+            {radar_track_parameter: b"restored-track-100-110"},
+            b"restored-track-output",
+            HLAinteger64Time(config.radar_output_time),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(config.resume_time))
+        post_restore_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert len(post_restore_receives) == 1
+        assert post_restore_receives[-1][2] == b"restored-track-output"
+        assert post_restore_receives[-1][6] == HLAinteger64Time(config.radar_output_time)
+        assert post_restore_receives[-1][1] == {consumer_track_parameter: b"restored-track-100-110"}
+    finally:
+        for rti in (consumer, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (consumer, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_restores_pipeline_resume_without_cross_window_replay() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import TargetRadarPipelineRestoreConfig
+
+    federation_name = f"shim-2025-pipeline-restore-{uuid.uuid4().hex[:8]}"
+    config = TargetRadarPipelineRestoreConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+
+    def complete_save(save_label: str) -> None:
+        truth_federate.callbacks.clear()
+        radar_federate.callbacks.clear()
+        consumer_federate.callbacks.clear()
+        truth.requestFederationSave(save_label)
+        assert truth_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert radar_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert consumer_federate.last_callback("initiateFederateSave") == (save_label,)
+        truth.federateSaveBegun()
+        radar.federateSaveBegun()
+        consumer.federateSaveBegun()
+        truth.federateSaveComplete()
+        radar.federateSaveComplete()
+        consumer.federateSaveComplete()
+        assert truth_federate.last_callback("federationSaved") == ()
+        assert radar_federate.last_callback("federationSaved") == ()
+        assert consumer_federate.last_callback("federationSaved") == ()
+
+    def complete_restore(save_label: str) -> None:
+        truth_federate.callbacks.clear()
+        radar_federate.callbacks.clear()
+        consumer_federate.callbacks.clear()
+        truth.requestFederationRestore(save_label)
+        assert truth_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert radar_federate.last_callback("initiateFederateRestore") == (save_label, config.radar_name, radar_handle)
+        assert consumer_federate.last_callback("initiateFederateRestore") == (save_label, config.consumer_name, consumer_handle)
+        truth.federateRestoreComplete()
+        radar.federateRestoreComplete()
+        consumer.federateRestoreComplete()
+        assert truth_federate.last_callback("federationRestored") == ()
+        assert radar_federate.last_callback("federationRestored") == ()
+        assert consumer_federate.last_callback("federationRestored") == ()
+
+    try:
+        for rti, fed in (
+            (truth, truth_federate),
+            (radar, radar_federate),
+            (consumer, consumer_federate),
+        ):
+            rti.connect(fed, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        truth.joinFederationExecution(
+            federateName=config.truth_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+        radar_handle = radar.joinFederationExecution(
+            federateName=config.radar_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+        consumer_handle = consumer.joinFederationExecution(
+            federateName=config.consumer_name,
+            federateType=config.federate_type,
+            federationName=federation_name,
+        )
+
+        target_class = truth.getObjectClassHandle("HLAobjectRoot.Target")
+        position = truth.getAttributeHandle(target_class, "Position")
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        radar_target_class = radar.getObjectClassHandle("HLAobjectRoot.Target")
+        radar_position = radar.getAttributeHandle(radar_target_class, "Position")
+        radar_track_interaction = radar.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        radar_track_parameter = radar.getParameterHandle(radar_track_interaction, "TrackId")
+        consumer_track_interaction = consumer.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        consumer_track_parameter = consumer.getParameterHandle(consumer_track_interaction, "TrackId")
+        truth.publishObjectClassAttributes(target_class, {position})
+        radar.subscribeObjectClassAttributes(radar_target_class, {radar_position})
+        radar.publishInteractionClass(radar_track_interaction)
+        consumer.subscribeInteractionClass(consumer_track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        target_object = truth.registerObjectInstance(target_class, config.target_object_name)
+        truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
+        truth.updateAttributeValues(target_object, {position: b"scan1-input-a"}, b"scan1-input-a", HLAinteger64Time(config.scan1_input_a_time))
+        truth.updateAttributeValues(target_object, {position: b"scan1-input-b"}, b"scan1-input-b", HLAinteger64Time(config.scan1_input_b_time))
+        truth.timeAdvanceRequest(HLAinteger64Time(config.scan1_end))
+        for _ in range(3):
+            radar.nextMessageRequest(HLAinteger64Time(config.scan1_end))
+        scan1_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert scan1_close_grant == (HLAinteger64Time(config.scan1_end),)
+
+        radar.enableTimeRegulation(HLAinteger64Interval(1))
+        consumer.enableTimeConstrained()
+        radar.changeInteractionOrderType(radar_track_interaction, OrderType.TIMESTAMP)
+        consumer.nextMessageRequest(HLAinteger64Time(config.scan1_end))
+        assert consumer.queryLogicalTime() == HLAinteger64Time(config.scan1_end)
+
+        truth.updateAttributeValues(target_object, {position: b"scan2-input"}, b"scan2-input", HLAinteger64Time(config.scan2_input_time))
+        truth.timeAdvanceRequest(HLAinteger64Time(config.consumer_resume_time))
+        radar.nextMessageRequest(HLAinteger64Time(config.scan2_end))
+        scan2_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
+        scan2_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert scan2_reflect[2] == b"scan2-input"
+        assert scan2_grant == (HLAinteger64Time(config.scan2_input_time),)
+        assert radar.queryLogicalTime() == HLAinteger64Time(config.scan2_input_time)
+
+        complete_save(config.save_name)
+
+        consumer_federate.callbacks.clear()
+        consumer.nextMessageRequest(HLAinteger64Time(config.consumer_resume_time))
+        radar.sendInteraction(
+            radar_track_interaction,
+            {radar_track_parameter: config.dirty_scan1_track_id.encode("utf-8")},
+            b"dirty-scan1-track-output",
+            HLAinteger64Time(config.scan1_output_time),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(config.scan1_output_time))
+        radar.nextMessageRequest(HLAinteger64Time(config.scan2_end))
+        dirty_scan2_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert dirty_scan2_close_grant == (HLAinteger64Time(config.scan2_end),)
+        consumer.nextMessageRequest(HLAinteger64Time(config.consumer_resume_time))
+        radar.sendInteraction(
+            radar_track_interaction,
+            {radar_track_parameter: config.dirty_scan2_track_id.encode("utf-8")},
+            b"dirty-scan2-track-output",
+            HLAinteger64Time(config.scan2_output_time),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(config.consumer_resume_time))
+        dirty_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert [record[2] for record in dirty_receives] == [
+            b"dirty-scan1-track-output",
+            b"dirty-scan2-track-output",
+        ]
+
+        complete_restore(config.save_name)
+        assert radar.queryLogicalTime() == HLAinteger64Time(config.scan2_input_time)
+        assert consumer.queryLogicalTime() == HLAinteger64Time(config.scan1_end)
+
+        consumer_federate.callbacks.clear()
+        consumer.nextMessageRequest(HLAinteger64Time(config.consumer_resume_time))
+        radar.sendInteraction(
+            radar_track_interaction,
+            {radar_track_parameter: config.restored_scan1_track_id.encode("utf-8")},
+            b"restored-scan1-track-output",
+            HLAinteger64Time(config.scan1_output_time),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(config.scan1_output_time))
+
+        radar_federate.callbacks.clear()
+        radar.nextMessageRequest(HLAinteger64Time(config.scan2_end))
+        post_restore_scan2_reflects = _callbacks_named_2025(radar_federate, "reflectAttributeValues")
+        restored_scan2_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
+        assert post_restore_scan2_reflects == []
+        assert restored_scan2_close_grant == (HLAinteger64Time(config.scan2_end),)
+
+        consumer.nextMessageRequest(HLAinteger64Time(config.consumer_resume_time))
+        radar.sendInteraction(
+            radar_track_interaction,
+            {radar_track_parameter: config.restored_scan2_track_id.encode("utf-8")},
+            b"restored-scan2-track-output",
+            HLAinteger64Time(config.scan2_output_time),
+        )
+        radar.timeAdvanceRequest(HLAinteger64Time(config.consumer_resume_time))
+        restored_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
+        assert [record[2] for record in restored_receives] == [
+            b"restored-scan1-track-output",
+            b"restored-scan2-track-output",
+        ]
+        assert restored_receives[0][1] == {consumer_track_parameter: config.restored_scan1_track_id.encode("utf-8")}
+        assert restored_receives[1][1] == {consumer_track_parameter: config.restored_scan2_track_id.encode("utf-8")}
+
+        consumer.nextMessageRequest(HLAinteger64Time(config.duplicate_check_resume_time))
+        truth.timeAdvanceRequest(HLAinteger64Time(config.duplicate_check_resume_time))
+        radar.timeAdvanceRequest(HLAinteger64Time(config.duplicate_check_resume_time))
+        assert len(_callbacks_named_2025(consumer_federate, "receiveInteraction")) == 2
+    finally:
+        for rti in (consumer, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (consumer, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")
