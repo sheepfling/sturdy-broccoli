@@ -3040,6 +3040,159 @@ def test_2025_transport_server_blocks_window_closure_until_future_inputs_are_exc
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_proves_time_window_core_progression_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    fast = None
+    slow = None
+    federation_name = "fedpro-2025-time-window-core"
+    try:
+        truth = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        radar = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        consumer = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        fast = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        slow = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        for transport in (truth, radar, consumer, fast, slow):
+            assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert truth.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "TargetRadarFOMmodule.xml"))
+        ).fields == ()
+        assert truth.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025CoreTruth", "TimeWindowFederate", federation_name))
+        ).fields == ("1", "HLAinteger64Time")
+        assert radar.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025CoreRadar", "TimeWindowFederate", federation_name))
+        ).fields == ("2", "HLAinteger64Time")
+        assert consumer.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025CoreConsumer", "TimeWindowFederate", federation_name))
+        ).fields == ("3", "HLAinteger64Time")
+        assert fast.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025CoreFast", "TimeWindowFederate", federation_name))
+        ).fields == ("4", "HLAinteger64Time")
+        assert slow.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025CoreSlow", "TimeWindowFederate", federation_name))
+        ).fields == ("5", "HLAinteger64Time")
+
+        track_interaction = truth.request(
+            TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
+        ).fields[0]
+        track_parameter = truth.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(track_interaction, "TrackId"))).fields[0]
+        assert truth.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(track_interaction,))).fields == ()
+        assert radar.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(track_interaction,))).fields == ()
+        assert radar.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(track_interaction,))).fields == ()
+        assert consumer.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(track_interaction,))).fields == ()
+
+        assert truth.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert truth.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert radar.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert radar.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+
+        assert truth.request(TransportRequest(command="CHANGE_INTERACTION_ORDER_TYPE", fields=(track_interaction, "TIMESTAMP"))).fields == ()
+        assert truth.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(track_interaction, f"{track_parameter}:74727574682d313035", "74727574682d313035", "HLAinteger64Time", "105"),
+            )
+        ).fields == ("1",)
+        assert truth.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(track_interaction, f"{track_parameter}:73656e736f722d313036", "73656e736f722d313036", "HLAinteger64Time", "106"),
+            )
+        ).fields == ("2",)
+        assert truth.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "109"))).fields == ()
+        assert truth.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "109")
+
+        assert radar.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "110")
+        assert radar.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "105")
+
+        def collect_until_grant(transport: GrpcTransport, logical_time: str, *, limit: int = 8) -> list[tuple[str, ...]]:
+            callbacks: list[tuple[str, ...]] = []
+            for _ in range(limit):
+                fields = transport.request(TransportRequest(command="EVOKE")).fields
+                callbacks.append(fields)
+                if fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", logical_time):
+                    break
+            return callbacks
+
+        assert radar.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "110"))).fields == ()
+        radar_callbacks: list[tuple[str, ...]] = []
+        for _ in range(6):
+            fields = radar.request(TransportRequest(command="EVOKE")).fields
+            radar_callbacks.append(fields)
+            if fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "110"):
+                break
+        delivered = [fields for fields in radar_callbacks if fields[:2] == ("1", "INTERACTION_TSO")]
+        grants = [fields for fields in radar_callbacks if fields[:2] == ("1", "TIME_ADVANCE_GRANT")]
+        assert len(delivered) == 2
+        assert delivered[0][:5] == ("1", "INTERACTION_TSO", track_interaction, f"{track_parameter}:74727574682d313035", "74727574682d313035")
+        assert delivered[0][7:9] == ("HLAinteger64Time", "105")
+        assert delivered[1][:5] == ("1", "INTERACTION_TSO", track_interaction, f"{track_parameter}:73656e736f722d313036", "73656e736f722d313036")
+        assert delivered[1][7:9] == ("HLAinteger64Time", "106")
+        assert grants[-1] == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "110")
+
+        assert radar.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "110")
+        assert radar.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "110")
+        assert truth.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "110"))).fields == ()
+        assert truth.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "110")
+
+        assert radar.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "10"))).fields == ()
+        assert radar.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "110")
+        assert consumer.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert consumer.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert fast.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert fast.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert slow.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "2"))).fields == ()
+        assert slow.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+
+        for illegal_time in ("100", "105", "109"):
+            with pytest.raises(TransportError):
+                truth.request(
+                    TransportRequest(
+                        command="SEND_INTERACTION_TIMESTAMP",
+                        fields=(
+                            track_interaction,
+                            f"{track_parameter}:{('late-' + illegal_time).encode('ascii').hex()}",
+                            ('late-' + illegal_time).encode('ascii').hex(),
+                            "HLAinteger64Time",
+                            illegal_time,
+                        ),
+                    )
+                )
+
+        assert truth.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "119"))).fields == ()
+        assert consumer.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "140"))).fields == ()
+        assert fast.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "160"))).fields == ()
+        assert slow.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "118"))).fields == ()
+        assert ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "119") in collect_until_grant(truth, "119")
+        assert ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "160") in collect_until_grant(fast, "160")
+        assert ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "118") in collect_until_grant(slow, "118")
+        assert truth.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "119")
+        assert fast.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "160")
+        assert slow.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "118")
+    finally:
+        for transport in (truth, radar, consumer, fast, slow):
+            if transport is None:
+                continue
+            try:
+                transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",)))
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.request(TransportRequest(command="DESTROY", fields=(federation_name,)))
+            except Exception:
+                pass
+        for transport in (truth, radar, consumer, fast, slow):
+            if transport is not None:
+                transport.close()
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
 def test_2025_transport_server_ignores_receive_order_poison_after_window_close_over_fedpro_schema():
     server = start_2025_grpc_server()
     truth = None

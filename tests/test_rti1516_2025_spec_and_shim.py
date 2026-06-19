@@ -5317,6 +5317,174 @@ def test_2025_shim_blocks_window_closure_until_future_inputs_are_excluded() -> N
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_proves_time_window_core_progression() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import InvalidLogicalTime
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-time-window-core-{uuid.uuid4().hex[:8]}"
+    truth_federate = Recording2025FederateAmbassador()
+    radar_federate = Recording2025FederateAmbassador()
+    consumer_federate = Recording2025FederateAmbassador()
+    fast_federate = Recording2025FederateAmbassador()
+    slow_federate = Recording2025FederateAmbassador()
+    truth = create_rti_ambassador(backend="shim")
+    radar = create_rti_ambassador(backend="shim")
+    consumer = create_rti_ambassador(backend="shim")
+    fast = create_rti_ambassador(backend="shim")
+    slow = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, fed in (
+            (truth, truth_federate),
+            (radar, radar_federate),
+            (consumer, consumer_federate),
+            (fast, fast_federate),
+            (slow, slow_federate),
+        ):
+            rti.connect(fed, CallbackModel.HLA_EVOKED)
+        truth.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        for rti, name in (
+            (truth, "Truth"),
+            (radar, "Radar"),
+            (consumer, "Consumer"),
+            (fast, "FastMover"),
+            (slow, "SlowMover"),
+        ):
+            rti.joinFederationExecution(
+                federateName=name,
+                federateType="TimeWindowFederate",
+                federationName=federation_name,
+            )
+
+        track_interaction = truth.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_parameter = truth.getParameterHandle(track_interaction, "TrackId")
+        truth.publishInteractionClass(track_interaction)
+        radar.subscribeInteractionClass(track_interaction)
+        radar.publishInteractionClass(track_interaction)
+        consumer.subscribeInteractionClass(track_interaction)
+
+        truth.enableTimeRegulation(HLAinteger64Interval(1))
+        radar.enableTimeConstrained()
+        assert truth_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert radar_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+
+        truth.changeInteractionOrderType(track_interaction, OrderType.TIMESTAMP)
+        truth.sendInteraction(
+            track_interaction,
+            {track_parameter: b"truth-105"},
+            b"truth-105",
+            HLAinteger64Time(105),
+        )
+        truth.sendInteraction(
+            track_interaction,
+            {track_parameter: b"sensor-106"},
+            b"sensor-106",
+            HLAinteger64Time(106),
+        )
+        truth.timeAdvanceRequest(HLAinteger64Time(109))
+        assert truth_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(109),)
+
+        initial_galt = radar.queryGALT()
+        initial_lits = radar.queryLITS()
+        assert initial_galt.timeIsValid is True
+        assert initial_lits.timeIsValid is True
+        assert initial_galt.time == HLAinteger64Time(110)
+        assert initial_lits.time == HLAinteger64Time(105)
+
+        radar_receive_baseline = len(_callbacks_named_2025(radar_federate, "receiveInteraction"))
+        radar_grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
+        radar.nextMessageRequest(HLAinteger64Time(110))
+        first_receive = _callbacks_named_2025(radar_federate, "receiveInteraction")[radar_receive_baseline:]
+        first_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[radar_grant_baseline:]
+        assert len(first_receive) == 1
+        assert len(first_grant) == 1
+        assert first_receive[0][2] == b"truth-105"
+        assert first_receive[0][6] == HLAinteger64Time(105)
+        assert first_grant[0] == (HLAinteger64Time(105),)
+
+        radar_receive_baseline = len(_callbacks_named_2025(radar_federate, "receiveInteraction"))
+        radar_grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
+        radar.nextMessageRequest(HLAinteger64Time(110))
+        second_receive = _callbacks_named_2025(radar_federate, "receiveInteraction")[radar_receive_baseline:]
+        second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[radar_grant_baseline:]
+        assert len(second_receive) == 1
+        assert len(second_grant) == 1
+        assert second_receive[0][2] == b"sensor-106"
+        assert second_receive[0][6] == HLAinteger64Time(106)
+        assert second_grant[0] == (HLAinteger64Time(106),)
+
+        blocked_galt = radar.queryGALT()
+        blocked_lits = radar.queryLITS()
+        assert blocked_galt.timeIsValid is True
+        assert blocked_lits.timeIsValid is True
+        assert blocked_galt.time == HLAinteger64Time(110)
+        assert blocked_lits.time == HLAinteger64Time(110)
+
+        radar_grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
+        radar.nextMessageRequest(HLAinteger64Time(110))
+        truth.timeAdvanceRequest(HLAinteger64Time(110))
+        close_grants = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[radar_grant_baseline:]
+        assert close_grants == [(HLAinteger64Time(110),)]
+        assert truth_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(110),)
+
+        radar.enableTimeRegulation(HLAinteger64Interval(10))
+        consumer.enableTimeConstrained()
+        fast.enableTimeRegulation(HLAinteger64Interval(1))
+        slow.enableTimeRegulation(HLAinteger64Interval(2))
+        assert radar_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(110),)
+        assert consumer_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+        assert fast_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert slow_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+
+        for illegal_time in (100, 105, 109):
+            with pytest.raises(InvalidLogicalTime):
+                truth.sendInteraction(
+                    track_interaction,
+                    {track_parameter: f"late-{illegal_time}".encode("ascii")},
+                    f"late-{illegal_time}".encode("ascii"),
+                    HLAinteger64Time(illegal_time),
+                )
+
+        radar_federate.callbacks.clear()
+        consumer_federate.callbacks.clear()
+        truth.timeAdvanceRequest(HLAinteger64Time(119))
+        consumer.nextMessageRequest(HLAinteger64Time(140))
+        fast.timeAdvanceRequest(HLAinteger64Time(160))
+        slow.timeAdvanceRequest(HLAinteger64Time(118))
+        assert truth.queryLogicalTime() == HLAinteger64Time(119)
+        assert fast.queryLogicalTime() == HLAinteger64Time(160)
+        assert slow.queryLogicalTime() == HLAinteger64Time(118)
+
+        post_close_inputs = [
+            int(callback[6].value)
+            for callback in _callbacks_named_2025(radar_federate, "receiveInteraction")
+            if callback[6] is not None
+        ]
+        assert all(timestamp >= 110 for timestamp in post_close_inputs)
+    finally:
+        for rti in (slow, fast, consumer, radar, truth):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            truth.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (slow, fast, consumer, radar, truth):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_ignores_receive_order_poison_after_window_close() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
