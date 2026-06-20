@@ -1854,12 +1854,15 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 "python-2025-inprocess": (
                     "The in-process route has executable GALT/LITS query evidence inside the logical-time slice and "
                     "the Target/Radar future-exclusion proof, with the integrated lookahead-processing-window gauntlet "
-                    "proving the combined closure/output/consumer-order/pipeline ladder on the actual 2025 shim."
+                    "proving the combined closure/output/consumer-order/pipeline ladder on the actual 2025 shim, plus "
+                    "save/restore evidence that dirty lookahead changes are rolled back while a pre-save queued TSO is "
+                    "still redelivered after restore."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route has executable GALT/LITS query evidence inside the hosted time-management "
                     "slice, including queued-TSO GALT/LITS divergence after a live lookahead change, the hosted "
-                    "Target/Radar proof-ladder replay, and the Target/Radar future-exclusion proof."
+                    "Target/Radar proof-ladder replay, restore rollback of dirty lookahead with pre-save queued TSO "
+                    "cleared after restore, and the Target/Radar future-exclusion proof."
                 ),
             },
             "boundary_by_route": {
@@ -1883,13 +1886,14 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                     "The in-process route exercises lookahead query/modify behavior, queued timestamped delivery, "
                     "the integrated Target/Radar lookahead-processing-window gauntlet, and the time-window core, "
                     "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
-                    "save-restore-window-state, "
+                    "save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, "
                     "save-restore-output-resume, and save-restore-pipeline-resume proofs."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route exercises lookahead queries together with advance/grant, queued "
                     "timestamped delivery, the hosted Target/Radar proof-ladder replay, and the Target/Radar "
                     "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, "
+                    "save-restore lookahead rollback with queued-TSO clearing, "
                     "save-restore-output-resume, and save-restore-pipeline-resume proofs."
                 ),
             },

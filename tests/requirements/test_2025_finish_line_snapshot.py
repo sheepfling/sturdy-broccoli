@@ -222,7 +222,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-121"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-123"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-123"]["pytest_anchor_count"] == 6
     assert any("test_2025_shim_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-123"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_reports_lits_from_queued_tso_for_target_federate_over_fedpro_schema"
@@ -390,7 +390,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 23
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 24
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"
@@ -510,7 +510,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert any("test_2025_transport_server_round_trips_support_services_over_fedpro_schema" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert pytest_rows["HLA2025-NEW-007"]["pytest_anchor_count"] >= 10
-    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] == 93
+    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] == 94
     assert any(
         "test_2025_transport_server_orders_timestamped_interactions_across_two_federates_over_fedpro_schema" in anchor
         for anchor in pytest_rows["HLA2025-BND-003"]["pytest_anchors"]
@@ -744,9 +744,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     route_rows = {(row["scenario"], row["route"]): row for row in route_matrix["rows"]}
     assert "lookahead query/modify" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
     assert "GALT/LITS/logical-time queries" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
+    assert "time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
+    assert "save-restore lookahead rollback with queued-TSO redelivery" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
     assert "bounded logical time/GALT/LITS/lookahead query evidence" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
-    assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
+    assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
+    assert "save-restore lookahead rollback with queued-TSO clearing" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
     fi_service_audit = snapshot["fi_service_proof_audit"]
     assert fi_service_audit["row_count"] == 196
     assert fi_service_audit["fully_traceable_service_count"] == 196
@@ -902,7 +904,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "future-exclusion proof" in milestone_rows[("python-2025-fedpro-grpc", "galt_lits_queries")]["summary"]
     assert milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["status"] == "bounded-lookahead-evidence"
     assert "future-message exclusion" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["boundary"]
-    assert "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
+    assert "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
+    assert "save-restore lookahead rollback with queued-TSO clearing" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
     assert "tests/test_rti1516_2025_spec_and_shim.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]

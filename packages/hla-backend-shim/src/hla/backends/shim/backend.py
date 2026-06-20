@@ -264,6 +264,7 @@ class _FederationRecord:
     saved_reserved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
     saved_next_object_instance_handles: dict[str, int] = field(default_factory=dict)
     saved_member_logical_times: dict[str, dict[int, Any]] = field(default_factory=dict)
+    saved_member_time_states: dict[str, dict[int, dict[str, Any]]] = field(default_factory=dict)
     save_label: str | None = None
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
@@ -3000,6 +3001,14 @@ class Shim2025RTIAmbassador:
                 federate_key: rti._logical_time
                 for federate_key, rti in federation.member_rtis.items()
             }
+            federation.saved_member_time_states[label] = {
+                federate_key: {
+                    "lookahead": rti._lookahead,
+                    "time_regulation_enabled": rti._time_regulation_enabled,
+                    "time_constrained_enabled": rti._time_constrained_enabled,
+                }
+                for federate_key, rti in federation.member_rtis.items()
+            }
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationSaved")
             federation.save_label = None
@@ -3040,6 +3049,17 @@ class Shim2025RTIAmbassador:
                 rti = federation.member_rtis.get(federate_key)
                 if rti is not None:
                     rti._logical_time = logical_time
+            for federate_key, values in federation.saved_member_time_states.get(label, {}).items():
+                rti = federation.member_rtis.get(federate_key)
+                if rti is None:
+                    continue
+                rti._lookahead = values.get("lookahead", rti._lookahead)
+                rti._time_regulation_enabled = bool(
+                    values.get("time_regulation_enabled", rti._time_regulation_enabled)
+                )
+                rti._time_constrained_enabled = bool(
+                    values.get("time_constrained_enabled", rti._time_constrained_enabled)
+                )
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationRestored")
             federation.restore_label = None

@@ -8035,6 +8035,203 @@ def test_2025_shim_blocks_window_closure_until_future_inputs_are_excluded() -> N
             pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-122",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-BND-003",
+)
+def test_2025_shim_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    fom = tmp_path / "Exchange2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Exchange 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused exchange fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-time-restore-divergence-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-DIVERGENCE"
+    sender_federate = Recording2025FederateAmbassador()
+    receiver_federate = Recording2025FederateAmbassador()
+    sender = create_rti_ambassador(backend="shim")
+    receiver = create_rti_ambassador(backend="shim")
+
+    try:
+        sender.connect(sender_federate, CallbackModel.HLA_EVOKED)
+        receiver.connect(receiver_federate, CallbackModel.HLA_EVOKED)
+        sender.createFederationExecution(
+            federationName=federation_name,
+            fomModule=str(fom),
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        sender_handle = sender.joinFederationExecution(
+            federateName="RestoreDivergenceSender",
+            federateType="TestFederate",
+            federationName=federation_name,
+        )
+        receiver_handle = receiver.joinFederationExecution(
+            federateName="RestoreDivergenceReceiver",
+            federateType="TestFederate",
+            federationName=federation_name,
+        )
+
+        interaction_class = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = sender.getParameterHandle(interaction_class, "TrackId")
+        sender.publishInteractionClass(interaction_class)
+        receiver.subscribeInteractionClass(interaction_class)
+
+        sender.enableTimeRegulation(HLAinteger64Interval(2))
+        receiver.enableTimeRegulation(HLAinteger64Interval(1))
+        assert sender_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert receiver_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+
+        sender.timeAdvanceRequest(HLAinteger64Time(5))
+        receiver.timeAdvanceRequest(HLAinteger64Time(9))
+        assert sender_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(5),)
+        assert receiver_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(9),)
+
+        sender.sendInteraction(
+            interaction_class,
+            {parameter: b"pre-save-queue"},
+            b"pre-save-queue",
+            HLAinteger64Time(7),
+        )
+
+        assert sender.queryLookahead() == HLAinteger64Interval(2)
+        assert receiver.queryLookahead() == HLAinteger64Interval(1)
+        assert sender.queryLogicalTime() == HLAinteger64Time(5)
+        assert receiver.queryLogicalTime() == HLAinteger64Time(9)
+        assert receiver.queryGALT().time == HLAinteger64Time(7)
+        assert receiver.queryLITS().time == HLAinteger64Time(7)
+
+        sender_federate.callbacks.clear()
+        receiver_federate.callbacks.clear()
+        sender.requestFederationSave(save_label)
+        assert sender_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert receiver_federate.last_callback("initiateFederateSave") == (save_label,)
+        sender.federateSaveBegun()
+        receiver.federateSaveBegun()
+        sender.federateSaveComplete()
+        receiver.federateSaveComplete()
+        assert sender_federate.last_callback("federationSaved") == ()
+        assert receiver_federate.last_callback("federationSaved") == ()
+
+        sender.modifyLookahead(HLAinteger64Interval(12))
+        assert sender.queryLookahead() == HLAinteger64Interval(12)
+        assert receiver.queryGALT().time == HLAinteger64Time(17)
+        assert receiver.queryLITS().time == HLAinteger64Time(7)
+
+        sender_federate.callbacks.clear()
+        receiver_federate.callbacks.clear()
+        sender.requestFederationRestore(save_label)
+        assert sender_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert sender_federate.last_callback("federationRestoreBegun") == ()
+        assert receiver_federate.last_callback("federationRestoreBegun") == ()
+        assert sender_federate.last_callback("initiateFederateRestore") == (
+            save_label,
+            "RestoreDivergenceSender",
+            sender_handle,
+        )
+        assert receiver_federate.last_callback("initiateFederateRestore") == (
+            save_label,
+            "RestoreDivergenceReceiver",
+            receiver_handle,
+        )
+        sender.federateRestoreComplete()
+        receiver.federateRestoreComplete()
+        assert sender_federate.last_callback("federationRestored") == ()
+        assert receiver_federate.last_callback("federationRestored") == ()
+
+        assert sender.queryLookahead() == HLAinteger64Interval(2)
+        assert receiver.queryLookahead() == HLAinteger64Interval(1)
+        assert sender.queryLogicalTime() == HLAinteger64Time(5)
+        assert receiver.queryLogicalTime() == HLAinteger64Time(9)
+        assert receiver.queryGALT().time == HLAinteger64Time(7)
+        assert receiver.queryLITS().time == HLAinteger64Time(7)
+
+        receive_baseline = len(_callbacks_named_2025(receiver_federate, "receiveInteraction"))
+        grant_baseline = len(_callbacks_named_2025(receiver_federate, "timeAdvanceGrant"))
+        receiver.nextMessageRequestAvailable(HLAinteger64Time(20))
+        post_restore_receives = _callbacks_named_2025(receiver_federate, "receiveInteraction")[receive_baseline:]
+        assert len(post_restore_receives) == 1
+        assert post_restore_receives[0][1] == {parameter: b"pre-save-queue"}
+        assert post_restore_receives[0][2] == b"pre-save-queue"
+        assert post_restore_receives[0][6] == HLAinteger64Time(7)
+        assert _callbacks_named_2025(receiver_federate, "timeAdvanceGrant")[grant_baseline:] == [(HLAinteger64Time(7),)]
+        assert receiver.queryGALT().time == HLAinteger64Time(7)
+        assert receiver.queryLITS().time == HLAinteger64Time(7)
+    finally:
+        try:
+            receiver.resignFederationExecution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            sender.resignFederationExecution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            sender.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        try:
+            receiver.disconnect()
+        except Exception:
+            pass
+        try:
+            sender.disconnect()
+        except Exception:
+            pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction

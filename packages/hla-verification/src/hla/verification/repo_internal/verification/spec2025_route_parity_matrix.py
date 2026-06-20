@@ -330,7 +330,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the "
         "Target/Radar integrated lookahead-processing-window gauntlet plus the time-window core, "
         "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
-        "save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs.",
+        "save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, "
+        "save-restore-output-resume, and save-restore-pipeline-resume proofs.",
     ),
     _row(
         "time_management",
@@ -343,7 +344,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "evidence, queued-TSO GALT/LITS divergence after a live lookahead change, a hosted Target/Radar "
         "proof-ladder replay over the real 2025 FedPro route, the Target/Radar "
         "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
-        "save-restore-window-state, save-restore-output-resume, and save-restore-pipeline-resume proofs, and "
+        "save-restore-window-state, save-restore lookahead rollback with queued-TSO clearing, "
+        "save-restore-output-resume, and save-restore-pipeline-resume proofs, and "
         "pre-delivery retract.",
     ),
     _row(
