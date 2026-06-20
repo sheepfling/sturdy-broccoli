@@ -283,6 +283,8 @@ class _FederationRecord:
     saved_delivered_retraction_handles: dict[str, set[int]] = field(default_factory=dict)
     saved_delivered_retraction_targets: dict[str, dict[int, FederateHandle]] = field(default_factory=dict)
     save_label: str | None = None
+    next_save_name: str | None = None
+    next_save_time: Any | None = None
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
     restore_status: dict[int, RestoreStatus] = field(default_factory=dict)
@@ -793,7 +795,7 @@ class Shim2025RTIAmbassador:
         self._record("requestFederationSave", label, time)
         self._require_joined("requestFederationSave")
         federation = self._federation_record()
-        if federation.save_label is not None:
+        if federation.save_label is not None or federation.next_save_name is not None:
             raise SaveInProgress("A federation save is already in progress")
         if federation.restore_label is not None:
             raise RestoreInProgress("A federation restore is already in progress")
@@ -801,9 +803,21 @@ class Shim2025RTIAmbassador:
             save_time = self._coerce_time(time)
             if save_time < self._logical_time:
                 raise LogicalTimeAlreadyPassed(str(time))
-        else:
-            save_time = None
+            federation.next_save_name = str(label)
+            federation.next_save_time = save_time
+            self._process_scheduled_save(federation)
+            return
+        self._start_federation_save(federation, str(label), None)
+
+    def _start_federation_save(
+        self,
+        federation: _FederationRecord,
+        label: str,
+        save_time: Any | None,
+    ) -> None:
         federation.save_label = str(label)
+        federation.next_save_name = None
+        federation.next_save_time = None
         federation.save_status = {
             handle.value: SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE
             for handle in federation.member_handles.values()
@@ -813,6 +827,39 @@ class Shim2025RTIAmbassador:
                 self._deliver_to_federate_handle(federate_handle, "initiateFederateSave", str(label))
             else:
                 self._deliver_to_federate_handle(federate_handle, "initiateFederateSave", str(label), save_time)
+
+    def _process_scheduled_save(self, federation: _FederationRecord) -> None:
+        if (
+            federation.next_save_name is None
+            or federation.next_save_time is None
+            or federation.save_label is not None
+        ):
+            return
+        save_time = federation.next_save_time
+        federation_state = self._time_management_federation(federation)
+        for member in list(federation.member_rtis.values()):
+            state = member._time_management_state()
+            if not state.time_constrained_enabled:
+                continue
+            if any(
+                queued.target_federate == member._current_federate_handle() and queued.callback_time <= save_time
+                for queued in federation.queued_tso_callbacks.values()
+            ):
+                return
+            request = member._pending_time_advance
+            next_grant = None
+            if request is not None:
+                decision = tm.compute_grant_decision(
+                    federation_state,
+                    state,
+                    request,
+                    enforce_galt=True,
+                    factory=member._logical_time_factory,
+                )
+                next_grant = decision.grant_time if decision.can_grant else getattr(request, "requested_time", None)
+            if not tm.scheduled_save_time_reached(state, save_time, next_grant_time=next_grant):
+                return
+        self._start_federation_save(federation, federation.next_save_name, save_time)
 
     def federateSaveBegun(self) -> None:  # noqa: N802
         self._record("federateSaveBegun")
@@ -834,11 +881,13 @@ class Shim2025RTIAmbassador:
         self._record("abortFederationSave")
         self._require_joined("abortFederationSave")
         federation = self._federation_record()
-        if federation.save_label is None:
+        if federation.save_label is None and federation.next_save_name is None:
             raise SaveNotInProgress("No federation save is in progress")
         for federate_handle in federation.member_handles.values():
             self._deliver_to_federate_handle(federate_handle, "federationNotSaved", SaveFailureReason.SAVE_ABORTED)
         federation.save_label = None
+        federation.next_save_name = None
+        federation.next_save_time = None
         federation.save_status.clear()
 
     def queryFederationSaveStatus(self) -> None:  # noqa: N802
@@ -1041,6 +1090,7 @@ class Shim2025RTIAmbassador:
                     continue
                 if member._try_grant_pending_time_advance():
                     progressed = True
+        self._process_scheduled_save(federation)
 
     def _try_grant_pending_time_advance(self) -> bool:
         request = self._pending_time_advance
