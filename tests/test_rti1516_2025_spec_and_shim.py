@@ -3204,6 +3204,75 @@ def test_2025_shim_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path) ->
     assert type(summary["object_instance_not_known"]).__name__ == "ObjectInstanceNotKnown"
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-003", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_runs_external_lost_federate_observer_scenario_end_to_end() -> None:
+    from hla.rti1516e.enums import CallbackModel
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import (
+        ExternalLostFederateVictimSession,
+        LostFederateScenarioConfig,
+        run_external_lost_federate_observer_scenario,
+    )
+
+    federation_name = f"shim-2025-external-lost-{uuid.uuid4().hex[:8]}"
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = LostFederateScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        observer_name="Observer",
+        victim_name="Victim",
+        federate_type="LostFederateProbe",
+        object_instance_name=f"shim-external-lost-{uuid.uuid4().hex[:8]}",
+        fault_description="shim induced external loss",
+    )
+
+    def launch_victim(session_config: LostFederateScenarioConfig) -> ExternalLostFederateVictimSession:
+        victim = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+        victim_federate = _CompatRecordingFederateAmbassador()
+        victim.connect(victim_federate, CallbackModel.HLA_EVOKED)
+        victim.join_federation_execution(
+            session_config.victim_name,
+            session_config.federate_type,
+            session_config.federation_name,
+        )
+        victim.set_automatic_resign_directive(session_config.automatic_resign_directive)
+        victim_object_class = victim.get_object_class_handle(session_config.object_class_name)
+        victim_attribute = victim.get_attribute_handle(victim_object_class, session_config.attribute_name)
+        victim.publish_object_class_attributes(victim_object_class, {victim_attribute})
+        victim.register_object_instance(victim_object_class, session_config.object_instance_name)
+        victim_handle = victim.get_federate_handle(session_config.victim_name)
+        victim_time = victim.query_logical_time()
+
+        def induce_loss() -> None:
+            observer.force_federate_loss(victim_handle, session_config.fault_description)
+
+        def cleanup() -> None:
+            try:
+                victim.disconnect()
+            except Exception:
+                pass
+
+        return ExternalLostFederateVictimSession(
+            victim_handle_bytes=victim_handle.encode(),
+            victim_name=session_config.victim_name,
+            victim_time_bytes=victim_time.encode(),
+            induce_loss=induce_loss,
+            cleanup=cleanup,
+        )
+
+    summary = run_external_lost_federate_observer_scenario(
+        observer,
+        config=config,
+        observer_federate=_CompatRecordingFederateAmbassador(),
+        launch_victim=launch_victim,
+    )
+
+    assert summary["loss_record"].args[1]
+    assert summary["removal"].args[0] == summary["object_instance"]
+    assert type(summary["object_instance_not_known"]).__name__ == "ObjectInstanceNotKnown"
+
+
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-017")
 def test_2025_shim_runs_request_attribute_value_update_scenario_end_to_end(tmp_path: Path) -> None:
     from hla.verification import RequestAttributeValueUpdateScenarioConfig, run_request_attribute_value_update_scenario
