@@ -274,6 +274,8 @@ class _FederationRecord:
     saved_directed_interaction_region_gates: dict[str, dict[int, set[str]]] = field(default_factory=dict)
     saved_published_directed_interactions: dict[str, dict[int, dict[str, set[str]]]] = field(default_factory=dict)
     saved_subscribed_directed_interactions: dict[str, dict[int, dict[str, set[str]]]] = field(default_factory=dict)
+    saved_member_regions: dict[str, dict[int, dict[int, set[str]]]] = field(default_factory=dict)
+    saved_member_region_bounds: dict[str, dict[int, dict[int, dict[str, RangeBounds]]]] = field(default_factory=dict)
     saved_interaction_order: dict[str, dict[tuple[int, str], OrderType]] = field(default_factory=dict)
     saved_interaction_transportation: dict[str, dict[tuple[int, str], str]] = field(default_factory=dict)
     save_label: str | None = None
@@ -3020,6 +3022,8 @@ class Shim2025RTIAmbassador:
             federation.saved_directed_interaction_region_gates[label] = copy.deepcopy(federation.directed_interaction_region_gates)
             federation.saved_published_directed_interactions[label] = copy.deepcopy(federation.published_directed_interactions)
             federation.saved_subscribed_directed_interactions[label] = copy.deepcopy(federation.subscribed_directed_interactions)
+            federation.saved_member_regions[label] = copy.deepcopy(federation.member_regions)
+            federation.saved_member_region_bounds[label] = copy.deepcopy(federation.member_region_bounds)
             federation.saved_member_time_states[label] = {
                 federate_key: {
                     "lookahead": rti._lookahead,
@@ -3094,6 +3098,12 @@ class Shim2025RTIAmbassador:
             )
             federation.subscribed_directed_interactions = copy.deepcopy(
                 federation.saved_subscribed_directed_interactions.get(label, federation.subscribed_directed_interactions)
+            )
+            federation.member_regions = copy.deepcopy(
+                federation.saved_member_regions.get(label, federation.member_regions)
+            )
+            federation.member_region_bounds = copy.deepcopy(
+                federation.saved_member_region_bounds.get(label, federation.member_region_bounds)
             )
             federation.interaction_order = copy.deepcopy(
                 federation.saved_interaction_order.get(label, federation.interaction_order)

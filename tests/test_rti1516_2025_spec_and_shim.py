@@ -9224,6 +9224,198 @@ def test_2025_shim_restores_cross_federate_attribute_owner_visibility(tmp_path: 
                 pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+    "HLA2025-FI-SVC-129",
+)
+def test_2025_shim_restore_recovers_directed_ddm_subscriber_routing(tmp_path: Path) -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectedDDMRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed DDM Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused directed DDM restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+          <dimension>RoutingSpace</dimension>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <dimension>RoutingSpace</dimension>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-directed-ddm-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-DIRECTED-DDM"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_a_federate = Recording2025FederateAmbassador()
+    subscriber_b_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber_a = create_rti_ambassador(backend="shim")
+    subscriber_b = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, federate in (
+            (owner, owner_federate),
+            (subscriber_a, subscriber_a_federate),
+            (subscriber_b, subscriber_b_federate),
+        ):
+            rti.connect(federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner.joinFederationExecution("DirectedOwner", "Controller", federation_name)
+        subscriber_a.joinFederationExecution("DirectedA", "Observer", federation_name)
+        subscriber_b.joinFederationExecution("DirectedB", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(object_class, "Position")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        dimension = owner.getDimensionHandle("RoutingSpace")
+        subscriber_a_dimension = subscriber_a.getDimensionHandle("RoutingSpace")
+        subscriber_b_dimension = subscriber_b.getDimensionHandle("RoutingSpace")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        subscriber_a.subscribeObjectClassDirectedInteractions(object_class, {subscriber_a_interaction})
+        subscriber_b.subscribeObjectClassDirectedInteractions(object_class, {subscriber_b_interaction})
+
+        publisher_region = owner.createRegion({dimension})
+        subscriber_a_region = subscriber_a.createRegion({subscriber_a_dimension})
+        subscriber_b_region = subscriber_b.createRegion({subscriber_b_dimension})
+        owner.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+        subscriber_a.setRangeBounds(subscriber_a_region, subscriber_a_dimension, RangeBounds(5, 15))
+        subscriber_b.setRangeBounds(subscriber_b_region, subscriber_b_dimension, RangeBounds(50, 60))
+        owner.commitRegionModifications({publisher_region})
+        subscriber_a.commitRegionModifications({subscriber_a_region})
+        subscriber_b.commitRegionModifications({subscriber_b_region})
+
+        object_instance = owner.registerObjectInstance(object_class, "ShimDirectedRestoreTarget-1")
+        owner.associateRegionsForUpdates(object_instance, [({owner_attribute}, {publisher_region})])
+        subscriber_a.subscribeInteractionClassWithRegions(subscriber_a_interaction, {subscriber_a_region})
+        subscriber_b.subscribeInteractionClassWithRegions(subscriber_b_interaction, {subscriber_b_region})
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"SAVED"}, b"save-state")
+        assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
+        saved_receive = subscriber_a_federate.last_callback("receiveDirectedInteraction")
+        assert saved_receive is not None
+        assert saved_receive[:4] == (
+            subscriber_a_interaction,
+            object_instance,
+            {subscriber_a_parameter: b"SAVED"},
+            b"save-state",
+        )
+
+        owner.requestFederationSave(save_label)
+        for rti in (owner, subscriber_a, subscriber_b):
+            rti.federateSaveBegun()
+        for rti in (owner, subscriber_a, subscriber_b):
+            rti.federateSaveComplete()
+
+        subscriber_a.unsubscribeObjectClassDirectedInteractions(object_class, {subscriber_a_interaction})
+        subscriber_a.unsubscribeInteractionClassWithRegions(subscriber_a_interaction, {subscriber_a_region})
+        subscriber_b.setRangeBounds(subscriber_b_region, subscriber_b_dimension, RangeBounds(8, 12))
+        subscriber_b.commitRegionModifications({subscriber_b_region})
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"MUTATED"}, b"mutated-state")
+        assert subscriber_a_federate.last_callback("receiveDirectedInteraction") is None
+        mutated_receive = subscriber_b_federate.last_callback("receiveDirectedInteraction")
+        assert mutated_receive is not None
+        assert mutated_receive[:4] == (
+            subscriber_b_interaction,
+            object_instance,
+            {subscriber_a_parameter: b"MUTATED"},
+            b"mutated-state",
+        )
+
+        owner.requestFederationRestore(save_label)
+        for rti in (owner, subscriber_a, subscriber_b):
+            rti.federateRestoreComplete()
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"RESTORED"}, b"restored-state")
+        assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
+        restored_receive = subscriber_a_federate.last_callback("receiveDirectedInteraction")
+        assert restored_receive is not None
+        assert restored_receive[:4] == (
+            subscriber_a_interaction,
+            object_instance,
+            {subscriber_a_parameter: b"RESTORED"},
+            b"restored-state",
+        )
+    finally:
+        for rti in (subscriber_b, subscriber_a, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber_b, subscriber_a, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction

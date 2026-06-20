@@ -391,9 +391,9 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
         "Python 2025 shim covers federation save/restore lifecycle, rollback callback slices, callback-delivery policy rollback, "
-        "plain object/interaction subscriber-routing rollback, in-flight ownership and owner-visibility rollback, "
-        "time/switch-control rollback, saved lookahead recovery, transport/order policy rollback, and pre-save queued-TSO "
-        "redelivery after restore.",
+        "plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, in-flight ownership "
+        "and owner-visibility rollback, time/switch-control rollback, saved lookahead recovery, transport/order policy "
+        "rollback, and pre-save queued-TSO redelivery after restore.",
     ),
     _row(
         "save_restore",
