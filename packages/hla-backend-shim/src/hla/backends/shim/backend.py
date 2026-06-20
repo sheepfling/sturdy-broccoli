@@ -265,6 +265,15 @@ class _FederationRecord:
     saved_next_object_instance_handles: dict[str, int] = field(default_factory=dict)
     saved_member_logical_times: dict[str, dict[int, Any]] = field(default_factory=dict)
     saved_member_time_states: dict[str, dict[int, dict[str, Any]]] = field(default_factory=dict)
+    saved_published_object_attributes: dict[str, dict[int, dict[str, set[str]]]] = field(default_factory=dict)
+    saved_subscribed_object_attributes: dict[str, dict[int, dict[str, set[str]]]] = field(default_factory=dict)
+    saved_subscribed_object_regions: dict[str, dict[int, dict[str, dict[str, set[int]]]]] = field(default_factory=dict)
+    saved_published_interactions: dict[str, dict[int, set[str]]] = field(default_factory=dict)
+    saved_subscribed_interactions: dict[str, dict[int, set[str]]] = field(default_factory=dict)
+    saved_subscribed_interaction_regions: dict[str, dict[int, dict[str, set[int]]]] = field(default_factory=dict)
+    saved_directed_interaction_region_gates: dict[str, dict[int, set[str]]] = field(default_factory=dict)
+    saved_published_directed_interactions: dict[str, dict[int, dict[str, set[str]]]] = field(default_factory=dict)
+    saved_subscribed_directed_interactions: dict[str, dict[int, dict[str, set[str]]]] = field(default_factory=dict)
     saved_interaction_order: dict[str, dict[tuple[int, str], OrderType]] = field(default_factory=dict)
     saved_interaction_transportation: dict[str, dict[tuple[int, str], str]] = field(default_factory=dict)
     save_label: str | None = None
@@ -3003,6 +3012,15 @@ class Shim2025RTIAmbassador:
                 federate_key: rti._logical_time
                 for federate_key, rti in federation.member_rtis.items()
             }
+            federation.saved_published_object_attributes[label] = copy.deepcopy(federation.published_object_attributes)
+            federation.saved_subscribed_object_attributes[label] = copy.deepcopy(federation.subscribed_object_attributes)
+            federation.saved_subscribed_object_regions[label] = copy.deepcopy(federation.subscribed_object_regions)
+            federation.saved_published_interactions[label] = copy.deepcopy(federation.published_interactions)
+            federation.saved_subscribed_interactions[label] = copy.deepcopy(federation.subscribed_interactions)
+            federation.saved_subscribed_interaction_regions[label] = copy.deepcopy(federation.subscribed_interaction_regions)
+            federation.saved_directed_interaction_region_gates[label] = copy.deepcopy(federation.directed_interaction_region_gates)
+            federation.saved_published_directed_interactions[label] = copy.deepcopy(federation.published_directed_interactions)
+            federation.saved_subscribed_directed_interactions[label] = copy.deepcopy(federation.subscribed_directed_interactions)
             federation.saved_member_time_states[label] = {
                 federate_key: {
                     "lookahead": rti._lookahead,
@@ -3050,6 +3068,33 @@ class Shim2025RTIAmbassador:
             federation.object_instance_names = dict(federation.saved_object_instance_names.get(label, {}))
             federation.reserved_object_instance_names = dict(
                 federation.saved_reserved_object_instance_names.get(label, {})
+            )
+            federation.published_object_attributes = copy.deepcopy(
+                federation.saved_published_object_attributes.get(label, federation.published_object_attributes)
+            )
+            federation.subscribed_object_attributes = copy.deepcopy(
+                federation.saved_subscribed_object_attributes.get(label, federation.subscribed_object_attributes)
+            )
+            federation.subscribed_object_regions = copy.deepcopy(
+                federation.saved_subscribed_object_regions.get(label, federation.subscribed_object_regions)
+            )
+            federation.published_interactions = copy.deepcopy(
+                federation.saved_published_interactions.get(label, federation.published_interactions)
+            )
+            federation.subscribed_interactions = copy.deepcopy(
+                federation.saved_subscribed_interactions.get(label, federation.subscribed_interactions)
+            )
+            federation.subscribed_interaction_regions = copy.deepcopy(
+                federation.saved_subscribed_interaction_regions.get(label, federation.subscribed_interaction_regions)
+            )
+            federation.directed_interaction_region_gates = copy.deepcopy(
+                federation.saved_directed_interaction_region_gates.get(label, federation.directed_interaction_region_gates)
+            )
+            federation.published_directed_interactions = copy.deepcopy(
+                federation.saved_published_directed_interactions.get(label, federation.published_directed_interactions)
+            )
+            federation.subscribed_directed_interactions = copy.deepcopy(
+                federation.saved_subscribed_directed_interactions.get(label, federation.subscribed_directed_interactions)
             )
             federation.interaction_order = copy.deepcopy(
                 federation.saved_interaction_order.get(label, federation.interaction_order)

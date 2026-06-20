@@ -8660,6 +8660,307 @@ def test_2025_shim_restore_recovers_callback_delivery_policy(tmp_path: Path) -> 
                 pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+)
+def test_2025_shim_restore_recovers_plain_object_subscriber_routing(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "ObjectRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Object Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused object subscriber restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-object-routing-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-OBJECT-ROUTING"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_a_federate = Recording2025FederateAmbassador()
+    subscriber_b_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber_a = create_rti_ambassador(backend="shim")
+    subscriber_b = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, federate in (
+            (owner, owner_federate),
+            (subscriber_a, subscriber_a_federate),
+            (subscriber_b, subscriber_b_federate),
+        ):
+            rti.connect(federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner_handle = owner.joinFederationExecution("ObjectOwner", "Controller", federation_name)
+        subscriber_a.joinFederationExecution("ObjectA", "Observer", federation_name)
+        subscriber_b.joinFederationExecution("ObjectB", "Observer", federation_name)
+
+        owner_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_a_class = subscriber_a.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_b_class = subscriber_b.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(owner_class, "Position")
+        subscriber_a_attribute = subscriber_a.getAttributeHandle(subscriber_a_class, "Position")
+        subscriber_b_attribute = subscriber_b.getAttributeHandle(subscriber_b_class, "Position")
+
+        owner.publishObjectClassAttributes(owner_class, {owner_attribute})
+        subscriber_a.subscribeObjectClassAttributes(subscriber_a_class, {subscriber_a_attribute})
+
+        object_instance = owner.registerObjectInstance(owner_class, "ShimObjectRestoreTarget-1")
+        assert subscriber_a_federate.last_callback("discoverObjectInstance") == (
+            object_instance,
+            subscriber_a_class,
+            "ShimObjectRestoreTarget-1",
+            owner_handle,
+        )
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"SAVED"}, b"saved-route")
+        assert subscriber_b_federate.last_callback("reflectAttributeValues") is None
+        saved_reflect = subscriber_a_federate.last_callback("reflectAttributeValues")
+        assert saved_reflect is not None
+        assert saved_reflect[:3] == (
+            object_instance,
+            {subscriber_a_attribute: b"SAVED"},
+            b"saved-route",
+        )
+
+        owner.requestFederationSave(save_label)
+        for rti in (owner, subscriber_a, subscriber_b):
+            rti.federateSaveBegun()
+        for rti in (owner, subscriber_a, subscriber_b):
+            rti.federateSaveComplete()
+
+        subscriber_a.unsubscribeObjectClassAttributes(subscriber_a_class, {subscriber_a_attribute})
+        subscriber_b.subscribeObjectClassAttributes(subscriber_b_class, {subscriber_b_attribute})
+        assert subscriber_b_federate.last_callback("discoverObjectInstance") == (
+            object_instance,
+            subscriber_b_class,
+            "ShimObjectRestoreTarget-1",
+            owner_handle,
+        )
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"MUTATED"}, b"mutated-route")
+        assert subscriber_a_federate.last_callback("reflectAttributeValues") is None
+        mutated_reflect = subscriber_b_federate.last_callback("reflectAttributeValues")
+        assert mutated_reflect is not None
+        assert mutated_reflect[:3] == (
+            object_instance,
+            {subscriber_b_attribute: b"MUTATED"},
+            b"mutated-route",
+        )
+
+        owner.requestFederationRestore(save_label)
+        for rti in (owner, subscriber_a, subscriber_b):
+            rti.federateRestoreComplete()
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"RESTORED"}, b"restored-route")
+        assert subscriber_b_federate.last_callback("reflectAttributeValues") is None
+        restored_reflect = subscriber_a_federate.last_callback("reflectAttributeValues")
+        assert restored_reflect is not None
+        assert restored_reflect[:3] == (
+            object_instance,
+            {subscriber_a_attribute: b"RESTORED"},
+            b"restored-route",
+        )
+    finally:
+        for rti in (subscriber_b, subscriber_a, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber_b, subscriber_a, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-060",
+    "HLA2025-FI-SVC-134",
+)
+def test_2025_shim_restore_recovers_plain_interaction_subscriber_routing(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "InteractionRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Interaction Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused interaction subscriber restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-interaction-routing-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-INTERACTION-ROUTING"
+    publisher_federate = Recording2025FederateAmbassador()
+    subscriber_a_federate = Recording2025FederateAmbassador()
+    subscriber_b_federate = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber_a = create_rti_ambassador(backend="shim")
+    subscriber_b = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, federate in (
+            (publisher, publisher_federate),
+            (subscriber_a, subscriber_a_federate),
+            (subscriber_b, subscriber_b_federate),
+        ):
+            rti.connect(federate, CallbackModel.HLA_EVOKED)
+        publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        publisher_handle = publisher.joinFederationExecution("InteractionOwner", "Controller", federation_name)
+        subscriber_a.joinFederationExecution("InteractionA", "Observer", federation_name)
+        subscriber_b.joinFederationExecution("InteractionB", "Observer", federation_name)
+
+        interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        subscriber_b_parameter = subscriber_b.getParameterHandle(subscriber_b_interaction, "TrackId")
+
+        publisher.publishInteractionClass(interaction_class)
+        subscriber_a.subscribeInteractionClass(subscriber_a_interaction)
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        publisher.sendInteraction(interaction_class, {parameter: b"SAVED"}, b"saved-interaction")
+        assert subscriber_b_federate.last_callback("receiveInteraction") is None
+        saved_receive = subscriber_a_federate.last_callback("receiveInteraction")
+        assert saved_receive is not None
+        assert saved_receive[:3] == (
+            subscriber_a_interaction,
+            {subscriber_a_parameter: b"SAVED"},
+            b"saved-interaction",
+        )
+        assert saved_receive[4] == publisher_handle
+
+        publisher.requestFederationSave(save_label)
+        for rti in (publisher, subscriber_a, subscriber_b):
+            rti.federateSaveBegun()
+        for rti in (publisher, subscriber_a, subscriber_b):
+            rti.federateSaveComplete()
+
+        subscriber_a.unsubscribeInteractionClass(subscriber_a_interaction)
+        subscriber_b.subscribeInteractionClass(subscriber_b_interaction)
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        publisher.sendInteraction(interaction_class, {parameter: b"MUTATED"}, b"mutated-interaction")
+        assert subscriber_a_federate.last_callback("receiveInteraction") is None
+        mutated_receive = subscriber_b_federate.last_callback("receiveInteraction")
+        assert mutated_receive is not None
+        assert mutated_receive[:3] == (
+            subscriber_b_interaction,
+            {subscriber_b_parameter: b"MUTATED"},
+            b"mutated-interaction",
+        )
+        assert mutated_receive[4] == publisher_handle
+
+        publisher.requestFederationRestore(save_label)
+        for rti in (publisher, subscriber_a, subscriber_b):
+            rti.federateRestoreComplete()
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        publisher.sendInteraction(interaction_class, {parameter: b"RESTORED"}, b"restored-interaction")
+        assert subscriber_b_federate.last_callback("receiveInteraction") is None
+        restored_receive = subscriber_a_federate.last_callback("receiveInteraction")
+        assert restored_receive is not None
+        assert restored_receive[:3] == (
+            subscriber_a_interaction,
+            {subscriber_a_parameter: b"RESTORED"},
+            b"restored-interaction",
+        )
+        assert restored_receive[4] == publisher_handle
+    finally:
+        for rti in (subscriber_b, subscriber_a, publisher):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            publisher.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber_b, subscriber_a, publisher):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction

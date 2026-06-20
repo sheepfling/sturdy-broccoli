@@ -255,8 +255,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_shim_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-058"]["pytest_anchors"])
     assert pytest_rows["HLA2025-FI-SVC-059"]["pytest_anchor_count"] == 2
     assert any("test_2025_shim_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-059"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-060"]["pytest_anchor_count"] == 11
+    assert pytest_rows["HLA2025-FI-SVC-060"]["pytest_anchor_count"] == 12
     assert any("test_2025_shim_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-060"]["pytest_anchors"])
+    assert any(
+        "test_2025_shim_restore_recovers_plain_interaction_subscriber_routing"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-060"]["pytest_anchors"]
+    )
     assert any(
         "test_2025_transport_server_routes_reflect_and_interaction_only_to_subscriber_over_fedpro_schema"
         in anchor
@@ -331,9 +336,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     )
     assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 2
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 6
     assert any("test_2025_shim_filters_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
     assert any("test_2025_shim_filters_directed_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
+    assert any(
+        "test_2025_shim_restore_recovers_plain_interaction_subscriber_routing"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"]
+    )
     assert any(
         "test_2025_transport_server_restore_recovers_plain_interaction_subscriber_routing_over_fedpro_schema"
         in anchor
@@ -390,7 +400,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 27
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 29
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"
@@ -464,6 +474,16 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     )
     assert any(
         "test_2025_shim_restore_recovers_callback_delivery_policy"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
+    )
+    assert any(
+        "test_2025_shim_restore_recovers_plain_object_subscriber_routing"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
+    )
+    assert any(
+        "test_2025_shim_restore_recovers_plain_interaction_subscriber_routing"
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
     )
