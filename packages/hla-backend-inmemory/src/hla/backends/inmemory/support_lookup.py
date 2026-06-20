@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING, Any, Protocol
 from hla.rti1516e import handles as hla_handles
 from hla.rti1516e.exceptions import (
     FederateHandleNotKnown,
+    InvalidAttributeHandle,
     InvalidFederateHandle,
+    InvalidParameterHandle,
     InvalidRegion,
     InvalidTransportationName,
     InvalidTransportationType,
@@ -126,6 +128,8 @@ class PythonRTISupportLookupMixin(_SupportLookupMixinBase):
 
     def _svc_getAttributeName(self, whichClass: ObjectClassHandle, theHandle: AttributeHandle) -> str:
         self._require_joined()
+        if not isinstance(theHandle, AttributeHandle):
+            raise InvalidAttributeHandle(repr(theHandle))
         return self.engine.attribute_name(whichClass, theHandle)
 
     def _svc_getInteractionClassHandle(self, theName: str) -> InteractionClassHandle:
@@ -154,6 +158,8 @@ class PythonRTISupportLookupMixin(_SupportLookupMixinBase):
 
     def _svc_getParameterName(self, whichClass: InteractionClassHandle, theHandle: ParameterHandle) -> str:
         self._require_joined()
+        if not isinstance(theHandle, ParameterHandle):
+            raise InvalidParameterHandle(repr(theHandle))
         return self.engine.parameter_name(whichClass, theHandle)
 
     def _svc_getObjectInstanceHandle(self, theName: str) -> ObjectInstanceHandle:

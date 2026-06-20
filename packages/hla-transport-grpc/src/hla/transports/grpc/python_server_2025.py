@@ -5,6 +5,7 @@ from __future__ import annotations
 from concurrent import futures
 from copy import deepcopy
 from dataclasses import dataclass, field
+from importlib import import_module
 from types import SimpleNamespace
 
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
@@ -58,6 +59,7 @@ class _FederationSnapshot:
     switch_states: dict[str, bool] = field(default_factory=dict)
     service_reporting: bool = False
     handle_service_reporting: dict[str, bool] = field(default_factory=dict)
+    handle_exception_reporting: dict[str, bool] = field(default_factory=dict)
     automatic_resign_directive: int = datatypes_pb2.NO_ACTION
     time_regulating: bool = False
     time_constrained: bool = False
@@ -68,12 +70,19 @@ class _FederationSnapshot:
     handle_pending_time_advance: dict[str, tuple[str, datatypes_pb2.LogicalTime]] = field(default_factory=dict)
     callback_delivery_enabled: bool = True
     peer_callback_delivery_enabled: dict[str, bool] = field(default_factory=dict)
+    handle_locally_deleted_objects: dict[str, set[str]] = field(default_factory=dict)
     directed_interaction_region_gates: set[str] = field(default_factory=set)
     published_directed_interactions: dict[str, set[str]] = field(default_factory=dict)
     handle_published_directed_interactions: dict[str, dict[str, set[str]]] = field(default_factory=dict)
     handle_subscribed_directed_interactions: dict[str, dict[str, set[str]]] = field(default_factory=dict)
     handle_subscribed_interactions: dict[str, set[str]] = field(default_factory=dict)
     handle_subscribed_interaction_regions: dict[str, dict[str, set[str]]] = field(default_factory=dict)
+    queued_tso_callbacks: dict[str, tuple[float, list[callback_pb2.CallbackRequest]]] = field(default_factory=dict)
+    queued_tso_target_handles: dict[str, list[frozenset[str] | None]] = field(default_factory=dict)
+    delivered_retractions: set[str] = field(default_factory=set)
+    delivered_retraction_targets: dict[str, frozenset[str]] = field(default_factory=dict)
+    requested_retractions: set[str] = field(default_factory=set)
+    next_retraction_handle: int = 1
 
 
 def _callback_request() -> callback_pb2.CallbackRequest:
@@ -118,6 +127,45 @@ def _fom_module_designators(fom_modules) -> list[str]:
         if designator:
             modules.append(designator)
     return modules
+
+
+def _resolve_2025_fom_modules(sources: tuple[str, ...], *, mim: bool) -> tuple[object, ...]:
+    fom = import_module("hla.rti1516e.fom")
+    try:
+        modules = fom.FOMResolver(require_local_parse=True).resolve_many(sources)
+        if not mim:
+            validation = import_module("hla.rti1516_2025.validation")
+            issues = validation.validate_fom_modules(modules)
+            if issues:
+                raise ValueError(issues[0].message)
+        return tuple(modules)
+    except fom.FOMResolutionError as exc:
+        kind = getattr(exc, "kind", "open")
+        if mim:
+            return _raise_resolution_error(kind, str(exc), open_name="CouldNotOpenMIM", read_name="ErrorReadingMIM")
+        return _raise_resolution_error(kind, str(exc), open_name="CouldNotOpenFOM", read_name="ErrorReadingFOM")
+    except ValueError as exc:
+        if mim:
+            raise RuntimeError(("InvalidMIM", str(exc))) from exc
+        raise RuntimeError(("InvalidFOM", str(exc))) from exc
+    except Exception as exc:
+        if mim:
+            raise RuntimeError(("InvalidMIM", str(exc))) from exc
+        raise RuntimeError(("InvalidFOM", str(exc))) from exc
+
+
+def _raise_resolution_error(kind: str, details: str, *, open_name: str, read_name: str):
+    if kind == "read":
+        raise RuntimeError((read_name, details))
+    raise RuntimeError((open_name, details))
+
+
+def _merge_2025_fom_modules(modules: tuple[object, ...], *, mim_module: object) -> None:
+    fom = import_module("hla.rti1516e.fom")
+    try:
+        fom.merge_fom_modules(modules, mim_module=mim_module)
+    except fom.FOMMergeError as exc:
+        raise RuntimeError(("InconsistentFOM", str(exc))) from exc
 
 
 def _dimension_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.DimensionHandleSet:
@@ -189,12 +237,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAobjectRoot.RouteTarget": "100",
             "HLAobjectRoot.Target": "101",
             "HLAobjectRoot.HLAmanager.HLAfederation": "102",
+            "HLAobjectRoot.RateObject": "103",
         }
         self.object_class_names = {value: key for key, value in self.object_classes.items()}
         self.attributes = {
             ("100", "Position"): "200",
             ("101", "Position"): "201",
-            ("102", "HLAfederationName"): "202",
+            ("101", "RCS"): "202",
+            ("102", "HLAfederationName"): "203",
+            ("103", "Payload"): "204",
         }
         self.attribute_names = {(object_class, value): name for (object_class, name), value in self.attributes.items()}
         self.interactions = {
@@ -315,6 +366,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.subscribed_object_attributes: dict[str, set[str]] = {}
         self.subscribed_object_regions: dict[str, dict[str, set[str]]] = {}
         self.handle_subscribed_object_attributes: dict[str, dict[str, set[str]]] = {}
+        self.handle_subscribed_object_update_rates: dict[str, dict[tuple[str, str], str]] = {}
+        self.handle_last_update_rate_delivery_time: dict[str, dict[tuple[str, str], float]] = {}
         self.handle_subscribed_object_regions: dict[str, dict[str, dict[str, set[str]]]] = {}
         self.object_update_regions: dict[str, dict[str, set[str]]] = {}
         self.regions: dict[str, set[str]] = {}
@@ -339,6 +392,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.interaction_transportation: tuple[str, str] | None = None
         self.service_reporting = False
         self.handle_service_reporting: dict[str, bool] = {}
+        self.handle_exception_reporting: dict[str, bool] = {}
         self.automatic_resign_directive = datatypes_pb2.NO_ACTION
         self.switch_states: dict[str, bool] = {
             "advisoriesUseKnownClass": False,
@@ -348,7 +402,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "autoProvide": False,
             "conveyRegionDesignatorSets": False,
             "delaySubscriptionEvaluation": False,
-            "exceptionReporting": False,
+            "exceptionReporting": True,
             "interactionRelevanceAdvisory": False,
             "nonRegulatedGrant": False,
             "objectClassRelevanceAdvisory": False,
@@ -370,6 +424,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.handle_pending_time_advance: dict[str, tuple[str, datatypes_pb2.LogicalTime]] = {}
         self.callback_delivery_enabled = True
         self.peer_callback_delivery_enabled: dict[str, bool] = {}
+        self.handle_locally_deleted_objects: dict[str, set[str]] = {}
         self.peer_federate_handles: dict[str, str] = {}
         self.updates_sent = 0
         self.reflections_received = 0
@@ -389,6 +444,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.requested_retractions: set[str] = set()
         self.saved_labels: set[str] = set()
         self.saved_snapshots: dict[str, _FederationSnapshot] = {}
+        self.next_save_name: str | None = None
+        self.next_save_time: datatypes_pb2.LogicalTime | None = None
         self.save_label: str | None = None
         self.save_status: dict[str, int] = {}
         self.restore_label: str | None = None
@@ -409,27 +466,75 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "connectWithConfigurationRequest",
             "connectWithConfigurationAndCredentialsRequest",
         }:
+            if peer in self.peer_callback_delivery_enabled:
+                return self._error("AlreadyConnected", peer)
             self.peer_callback_delivery_enabled[peer] = True
             return rti_pb2.CallResponse(connectResponse=rti_pb2.ConnectResponse())
         if request_kind == "disconnectRequest":
+            if peer in self.peer_federate_handles:
+                return self._error("FederateIsExecutionMember", peer)
             self.peer_callback_delivery_enabled.pop(peer, None)
             self._remove_peer_federate(peer)
             return rti_pb2.CallResponse(disconnectResponse=rti_pb2.DisconnectResponse())
         if request_kind in {
+            "createFederationExecutionRequest",
+            "createFederationExecutionWithTimeRequest",
             "createFederationExecutionWithModulesRequest",
             "createFederationExecutionWithModulesAndTimeRequest",
+            "createFederationExecutionWithMIMRequest",
+            "createFederationExecutionWithMIMAndTimeRequest",
         }:
             payload = getattr(request, request_kind)
+            if payload.federationName in self.federations:
+                return self._error("FederationExecutionAlreadyExists", payload.federationName)
+            try:
+                if request_kind in {
+                    "createFederationExecutionRequest",
+                    "createFederationExecutionWithTimeRequest",
+                }:
+                    fom_designator = payload.fomModule.url or payload.fomModule.file.name
+                    fom_designators = (fom_designator,) if fom_designator else ()
+                else:
+                    fom_designators = tuple(_fom_module_designators(payload.fomModules))
+                if not fom_designators:
+                    return self._error("InvalidFOM", "At least one FOM module designator is required")
+                mim_designator = ""
+                if request_kind in {
+                    "createFederationExecutionWithMIMRequest",
+                    "createFederationExecutionWithMIMAndTimeRequest",
+                }:
+                    mim_designator = payload.mimModule.url or payload.mimModule.file.name
+                    if mim_designator in {"HLAstandardMIM", "HLAstandardMIM.xml"}:
+                        return self._error("DesignatorIsHLAstandardMIM", "Explicit MIM designator shall not be HLAstandardMIM")
+                    if not mim_designator:
+                        return self._error("InvalidMIM", "Explicit createFederationExecutionWithMIM requires a MIM module designator")
+                    resolved_mim = _resolve_2025_fom_modules((mim_designator,), mim=True)[0]
+                else:
+                    fom = import_module("hla.rti1516e.fom")
+                    resolved_mim = fom.standard_mim_module()
+                resolved_foms = _resolve_2025_fom_modules(fom_designators, mim=False)
+                _merge_2025_fom_modules(resolved_foms, mim_module=resolved_mim)
+            except RuntimeError as exc:
+                name, details = exc.args[0]
+                return self._error(name, details)
             self.federations.add(payload.federationName)
             self.federation_logical_time_implementations[payload.federationName] = getattr(
                 payload,
                 "logicalTimeImplementationName",
                 "",
             ) or "HLAinteger64Time"
-            self.fom_modules = _fom_module_designators(payload.fomModules)
+            self.fom_modules = list(fom_designators)
             self._ensure_mom_federation_object(payload.federationName)
+            if request_kind == "createFederationExecutionWithTimeRequest":
+                return rti_pb2.CallResponse(createFederationExecutionWithTimeResponse=rti_pb2.CreateFederationExecutionWithTimeResponse())
+            if request_kind == "createFederationExecutionRequest":
+                return rti_pb2.CallResponse(createFederationExecutionResponse=rti_pb2.CreateFederationExecutionResponse())
             if request_kind == "createFederationExecutionWithModulesAndTimeRequest":
                 return rti_pb2.CallResponse(createFederationExecutionWithModulesAndTimeResponse=rti_pb2.CreateFederationExecutionWithModulesAndTimeResponse())
+            if request_kind == "createFederationExecutionWithMIMAndTimeRequest":
+                return rti_pb2.CallResponse(createFederationExecutionWithMIMAndTimeResponse=rti_pb2.CreateFederationExecutionWithMIMAndTimeResponse())
+            if request_kind == "createFederationExecutionWithMIMRequest":
+                return rti_pb2.CallResponse(createFederationExecutionWithMIMResponse=rti_pb2.CreateFederationExecutionWithMIMResponse())
             return rti_pb2.CallResponse(createFederationExecutionWithModulesResponse=rti_pb2.CreateFederationExecutionWithModulesResponse())
         if request_kind == "listFederationExecutionsRequest":
             report = datatypes_pb2.FederationExecutionInformationSet(
@@ -503,6 +608,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.joined_federate_types[str(handle)] = payload.federateType
             self.peer_federate_handles[peer] = str(handle)
             self.handle_service_reporting.setdefault(str(handle), False)
+            self.handle_exception_reporting.setdefault(str(handle), True)
             self.handle_updates_sent.setdefault(str(handle), 0)
             self.handle_reflections_received.setdefault(str(handle), 0)
             self.handle_interactions_sent.setdefault(str(handle), 0)
@@ -540,6 +646,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(resignFederationExecutionResponse=rti_pb2.ResignFederationExecutionResponse())
         if request_kind == "destroyFederationExecutionRequest":
             payload = request.destroyFederationExecutionRequest
+            if payload.federationName not in self.federations:
+                return self._error("FederationExecutionDoesNotExist", payload.federationName)
             if self.joined_federates:
                 return self._error("FederatesCurrentlyJoined", payload.federationName)
             self.federations.discard(payload.federationName)
@@ -591,6 +699,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
         if request_kind == "getObjectInstanceHandleRequest":
             name = request.getObjectInstanceHandleRequest.objectInstanceName
+            current_handle = self._current_federate_handle(peer)
             if name == self.mom_federation_name and self.mom_federation_object_handle is not None:
                 return rti_pb2.CallResponse(
                     getObjectInstanceHandleResponse=rti_pb2.GetObjectInstanceHandleResponse(
@@ -599,6 +708,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             for handle, record in self.object_instances.items():
                 if record["name"] == name:
+                    if handle in self.handle_locally_deleted_objects.get(current_handle, set()):
+                        return self._error("ObjectInstanceNotKnown", name)
                     return rti_pb2.CallResponse(
                         getObjectInstanceHandleResponse=rti_pb2.GetObjectInstanceHandleResponse(
                             result=_handle(datatypes_pb2.ObjectInstanceHandle, handle)
@@ -607,10 +718,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return self._error("ObjectInstanceNotKnown", name)
         if request_kind == "getObjectInstanceNameRequest":
             handle = request.getObjectInstanceNameRequest.objectInstance.data.decode("ascii")
+            current_handle = self._current_federate_handle(peer)
             if handle == self.mom_federation_object_handle and self.mom_federation_name is not None:
                 return rti_pb2.CallResponse(getObjectInstanceNameResponse=rti_pb2.GetObjectInstanceNameResponse(result=self.mom_federation_name))
             record = self.object_instances.get(handle)
             if record is None:
+                return self._error("ObjectInstanceNotKnown", handle)
+            if handle in self.handle_locally_deleted_objects.get(current_handle, set()):
                 return self._error("ObjectInstanceNotKnown", handle)
             return rti_pb2.CallResponse(getObjectInstanceNameResponse=rti_pb2.GetObjectInstanceNameResponse(result=record["name"]))
         if request_kind == "getAttributeHandleRequest":
@@ -723,6 +837,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(synchronizationPointAchievedResponse=rti_pb2.SynchronizationPointAchievedResponse())
         if request_kind == "getDimensionHandleRequest":
             name = request.getDimensionHandleRequest.dimensionName
+            if name == "HLAdefaultRoutingSpace":
+                name = "RoutingSpace"
             try:
                 handle = self.dimensions[name]
             except KeyError:
@@ -801,7 +917,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             try:
                 handle = self.transportations[name]
             except KeyError:
-                return self._error("NameNotFound", name)
+                return self._error("InvalidTransportationName", name)
             return rti_pb2.CallResponse(
                 getTransportationTypeHandleResponse=rti_pb2.GetTransportationTypeHandleResponse(
                     result=_handle(datatypes_pb2.TransportationTypeHandle, handle)
@@ -816,27 +932,38 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
                 )
             except KeyError:
-                return self._error("InvalidTransportationType", handle)
+                return self._error("InvalidTransportationTypeHandle", handle)
         if request_kind == "getOrderTypeRequest":
             name = request.getOrderTypeRequest.orderTypeName
-            if name == "HLAreceive":
+            normalized = str(name).strip().lower()
+            if normalized in {"hlareceive", "receive", "ro"}:
                 return rti_pb2.CallResponse(getOrderTypeResponse=rti_pb2.GetOrderTypeResponse(result=datatypes_pb2.RECEIVE))
-            if name == "HLAtimestamp":
+            if normalized in {"hlatimestamp", "timestamp", "tso"}:
                 return rti_pb2.CallResponse(getOrderTypeResponse=rti_pb2.GetOrderTypeResponse(result=datatypes_pb2.TIMESTAMP))
-            return self._error("InvalidOrderName", name)
+            return self._error("InvalidOrderType", name)
         if request_kind == "getOrderNameRequest":
             order = request.getOrderNameRequest.orderType
-            name = "HLAtimestamp" if order == datatypes_pb2.TIMESTAMP else "HLAreceive"
-            return rti_pb2.CallResponse(getOrderNameResponse=rti_pb2.GetOrderNameResponse(result=name))
+            if order == datatypes_pb2.RECEIVE:
+                return rti_pb2.CallResponse(getOrderNameResponse=rti_pb2.GetOrderNameResponse(result="HLAreceive"))
+            if order == datatypes_pb2.TIMESTAMP:
+                return rti_pb2.CallResponse(getOrderNameResponse=rti_pb2.GetOrderNameResponse(result="HLAtimestamp"))
+            return self._error("InvalidOrderType", str(order))
         if request_kind == "getUpdateRateValueRequest":
-            value = 1.0 if request.getUpdateRateValueRequest.updateRateDesignator == "HLAdefaultUpdateRate" else 0.0
+            designator = request.getUpdateRateValueRequest.updateRateDesignator
+            normalized = designator.strip().lower()
+            if normalized not in {"hladefaultupdaterate", "hladefault", "default", "fast"}:
+                return self._error("InvalidUpdateRateDesignator", designator)
+            value = self._update_rate_hz(designator)
             return rti_pb2.CallResponse(getUpdateRateValueResponse=rti_pb2.GetUpdateRateValueResponse(result=value))
         if request_kind == "getUpdateRateValueForAttributeRequest":
-            return rti_pb2.CallResponse(getUpdateRateValueForAttributeResponse=rti_pb2.GetUpdateRateValueForAttributeResponse(result=1.0))
+            return rti_pb2.CallResponse(getUpdateRateValueForAttributeResponse=rti_pb2.GetUpdateRateValueForAttributeResponse(result=0.0))
         if request_kind == "getKnownObjectClassHandleRequest":
             object_instance = request.getKnownObjectClassHandleRequest.objectInstance.data.decode("ascii")
+            current_handle = self._current_federate_handle(peer)
             record = self.object_instances.get(object_instance)
             if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            if object_instance in self.handle_locally_deleted_objects.get(current_handle, set()):
                 return self._error("ObjectInstanceNotKnown", object_instance)
             return rti_pb2.CallResponse(
                 getKnownObjectClassHandleResponse=rti_pb2.GetKnownObjectClassHandleResponse(
@@ -866,12 +993,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 normalizeObjectInstanceHandleResponse=rti_pb2.NormalizeObjectInstanceHandleResponse(result=int(request.normalizeObjectInstanceHandleRequest.objectInstance.data.decode("ascii")))
             )
         if request_kind == "modifyLookaheadRequest":
-            self._set_handle_lookahead(self._current_federate_handle(peer), request.modifyLookaheadRequest.lookahead)
+            handle = self._current_federate_handle(peer)
+            if not self.handle_time_regulating.get(handle, False):
+                return self._error("TimeRegulationIsNotEnabled", "Time regulation is not enabled")
+            self._set_handle_lookahead(handle, request.modifyLookaheadRequest.lookahead)
             return rti_pb2.CallResponse(modifyLookaheadResponse=rti_pb2.ModifyLookaheadResponse())
         if request_kind == "queryLookaheadRequest":
+            handle = self._current_federate_handle(peer)
+            if not self.handle_time_regulating.get(handle, False):
+                return self._error("TimeRegulationIsNotEnabled", "Time regulation is not enabled")
             return rti_pb2.CallResponse(
                 queryLookaheadResponse=rti_pb2.QueryLookaheadResponse(
-                    result=self._handle_lookahead(self._current_federate_handle(peer))
+                    result=self._handle_lookahead(handle)
                 )
             )
         if request_kind == "queryGALTRequest":
@@ -894,6 +1027,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self._recompute_service_reporting()
             self.switch_states["serviceReporting"] = self.service_reporting
             return rti_pb2.CallResponse(setServiceReportingSwitchResponse=rti_pb2.SetServiceReportingSwitchResponse())
+        if request_kind == "getExceptionReportingSwitchRequest":
+            handle = self._current_federate_handle(peer)
+            return rti_pb2.CallResponse(
+                getExceptionReportingSwitchResponse=rti_pb2.GetExceptionReportingSwitchResponse(
+                    result=self.handle_exception_reporting.get(handle, self.switch_states.get("exceptionReporting", False))
+                )
+            )
+        if request_kind == "setExceptionReportingSwitchRequest":
+            handle = self._current_federate_handle(peer)
+            self.handle_exception_reporting[handle] = request.setExceptionReportingSwitchRequest.value
+            self._recompute_exception_reporting()
+            return rti_pb2.CallResponse(setExceptionReportingSwitchResponse=rti_pb2.SetExceptionReportingSwitchResponse())
         if request_kind == "getAutomaticResignDirectiveRequest":
             return rti_pb2.CallResponse(
                 getAutomaticResignDirectiveResponse=rti_pb2.GetAutomaticResignDirectiveResponse(
@@ -921,28 +1066,24 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
             return rti_pb2.CallResponse(**{response_kind: response_type()})
         if request_kind == "requestFederationSaveWithTimeRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             payload = request.requestFederationSaveWithTimeRequest
-            if self.save_label is not None:
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", payload.label)
+            if self.save_label is not None or self.next_save_name is not None:
                 return self._error("SaveInProgress", payload.label)
-            self.save_label = payload.label
-            self.save_status = {handle: datatypes_pb2.FEDERATE_INSTRUCTED_TO_SAVE for handle in self._joined_handle_values()}
             if payload.time.data:
-                for handle in self._joined_handle_values():
-                    self._enqueue_callback(
-                        callback_pb2.CallbackRequest(
-                            initiateFederateSaveWithTime=callback_pb2.InitiateFederateSaveWithTime(
-                                label=payload.label,
-                                time=payload.time,
-                            )
-                        ),
-                        target_handles={handle},
-                    )
+                current_time = self._handle_current_time(self._current_federate_handle(peer))
+                if _logical_time_value(payload.time) < _logical_time_value(current_time):
+                    return self._error("InvalidLogicalTime", payload.time.data.decode("ascii"))
+                self.next_save_name = payload.label
+                self.next_save_time = datatypes_pb2.LogicalTime(data=payload.time.data)
+                self._process_scheduled_save()
             else:
-                for handle in self._joined_handle_values():
-                    self._enqueue_callback(
-                        callback_pb2.CallbackRequest(initiateFederateSave=callback_pb2.InitiateFederateSave(label=payload.label)),
-                        target_handles={handle},
-                    )
+                self._start_federation_save(payload.label, None)
             return rti_pb2.CallResponse(requestFederationSaveWithTimeResponse=rti_pb2.RequestFederationSaveWithTimeResponse())
         if request_kind == "federateSaveBegunRequest":
             if self.save_label is None:
@@ -973,6 +1114,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
             return rti_pb2.CallResponse(federateSaveCompleteResponse=rti_pb2.FederateSaveCompleteResponse())
         if request_kind == "federateSaveNotCompleteRequest":
+            self.next_save_name = None
+            self.next_save_time = None
             self.save_label = None
             self.save_status = {}
             for handle in self._joined_handle_values():
@@ -984,6 +1127,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             return rti_pb2.CallResponse(federateSaveNotCompleteResponse=rti_pb2.FederateSaveNotCompleteResponse())
         if request_kind == "abortFederationSaveRequest":
+            self.next_save_name = None
+            self.next_save_time = None
             self.save_label = None
             self.save_status = {}
             for handle in self._joined_handle_values():
@@ -993,7 +1138,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             return rti_pb2.CallResponse(abortFederationSaveResponse=rti_pb2.AbortFederationSaveResponse())
         if request_kind == "requestFederationRestoreRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             label = request.requestFederationRestoreRequest.label
+            if self.save_label is not None or self.next_save_name is not None:
+                return self._error("SaveInProgress", label)
             if label not in self.saved_labels:
                 self._enqueue_callback(
                     callback_pb2.CallbackRequest(
@@ -1180,20 +1331,33 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.publishObjectClassAttributesRequest
             object_class = payload.objectClass.data.decode("ascii")
             handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
             self.handle_published_object_attributes.setdefault(handle, {}).setdefault(object_class, set()).update(
                 attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle
             )
             self._rebuild_published_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
             return rti_pb2.CallResponse(publishObjectClassAttributesResponse=rti_pb2.PublishObjectClassAttributesResponse())
+        if request_kind == "unpublishObjectClassRequest":
+            payload = request.unpublishObjectClassRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
+            self.handle_published_object_attributes.get(handle, {}).pop(object_class, None)
+            self._rebuild_published_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
+            return rti_pb2.CallResponse(unpublishObjectClassResponse=rti_pb2.UnpublishObjectClassResponse())
         if request_kind == "unpublishObjectClassAttributesRequest":
             payload = request.unpublishObjectClassAttributesRequest
             object_class = payload.objectClass.data.decode("ascii")
             handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
             published = self.handle_published_object_attributes.setdefault(handle, {}).setdefault(object_class, set())
             published.difference_update(attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle)
             if not published:
                 self.handle_published_object_attributes.get(handle, {}).pop(object_class, None)
             self._rebuild_published_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
             return rti_pb2.CallResponse(
                 unpublishObjectClassAttributesResponse=rti_pb2.UnpublishObjectClassAttributesResponse()
             )
@@ -1206,24 +1370,34 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
             attributes = {attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle}
-            self.handle_subscribed_object_attributes.setdefault(self._current_federate_handle(peer), {}).setdefault(
+            update_rate_designator = getattr(payload, "updateRateDesignator", "")
+            handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
+            self.handle_subscribed_object_attributes.setdefault(handle, {}).setdefault(
                 object_class,
                 set(),
             ).update(attributes)
+            update_rates = self.handle_subscribed_object_update_rates.setdefault(handle, {})
+            for attribute in attributes:
+                if update_rate_designator:
+                    update_rates[(object_class, attribute)] = update_rate_designator
+                else:
+                    update_rates.pop((object_class, attribute), None)
             self._rebuild_subscribed_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
             for object_instance, record in self.object_instances.items():
                 if record["objectClass"] == object_class:
                     self._queue_discovery(
                         object_instance,
                         object_class,
                         record["name"],
-                        target_handles={self._current_federate_handle(peer)},
+                        target_handles={handle},
                     )
             self._queue_turn_updates_on(
                 object_class,
                 attributes,
-                getattr(payload, "updateRateDesignator", ""),
-                target_handles={self._current_federate_handle(peer)},
+                update_rate_designator,
+                target_handles={handle},
             )
             response_kind = request_kind.replace("Request", "Response")
             response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
@@ -1232,12 +1406,14 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.subscribeObjectClassAttributesWithRegionsRequest
             object_class = payload.objectClass.data.decode("ascii")
             handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
             prior_scope_state = dict(self.attribute_scope_state)
             region_map = self.handle_subscribed_object_regions.setdefault(handle, {}).setdefault(object_class, {})
             for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
                 self.handle_subscribed_object_attributes.setdefault(handle, {}).setdefault(object_class, set()).add(attribute)
                 region_map.setdefault(attribute, set()).update(regions)
             self._rebuild_subscribed_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
             self._queue_attribute_scope_advisories()
             for object_instance, record in self.object_instances.items():
                 if record["objectClass"] != object_class:
@@ -1268,6 +1444,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.unsubscribeObjectClassAttributesWithRegionsRequest
             object_class = payload.objectClass.data.decode("ascii")
             handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
             region_map = self.handle_subscribed_object_regions.setdefault(handle, {}).setdefault(object_class, {})
             removed_attributes: set[str] = set()
             for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
@@ -1278,34 +1455,66 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     self.handle_subscribed_object_attributes.setdefault(handle, {}).get(object_class, set()).discard(attribute)
                     removed_attributes.add(attribute)
             self._rebuild_subscribed_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
             self._queue_turn_updates_off(object_class, removed_attributes, target_handles={handle})
             self._queue_attribute_scope_advisories()
             return rti_pb2.CallResponse(
                 unsubscribeObjectClassAttributesWithRegionsResponse=rti_pb2.UnsubscribeObjectClassAttributesWithRegionsResponse()
             )
+        if request_kind == "unsubscribeObjectClassRequest":
+            payload = request.unsubscribeObjectClassRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
+            removed_attributes = set(self.handle_subscribed_object_attributes.get(handle, {}).get(object_class, set()))
+            self.handle_subscribed_object_attributes.get(handle, {}).pop(object_class, None)
+            self.handle_subscribed_object_regions.get(handle, {}).pop(object_class, None)
+            self._rebuild_subscribed_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
+            self._queue_turn_updates_off(object_class, removed_attributes, target_handles={handle})
+            self._queue_attribute_scope_advisories()
+            return rti_pb2.CallResponse(unsubscribeObjectClassResponse=rti_pb2.UnsubscribeObjectClassResponse())
         if request_kind == "unsubscribeObjectClassAttributesRequest":
             payload = request.unsubscribeObjectClassAttributesRequest
             object_class = payload.objectClass.data.decode("ascii")
             removed_attributes = {attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle}
-            current = self.handle_subscribed_object_attributes.setdefault(self._current_federate_handle(peer), {}).setdefault(
+            handle = self._current_federate_handle(peer)
+            previous_interest = self._registration_interest_snapshot()
+            current = self.handle_subscribed_object_attributes.setdefault(handle, {}).setdefault(
                 object_class,
                 set(),
             )
             current.difference_update(removed_attributes)
+            update_rates = self.handle_subscribed_object_update_rates.setdefault(handle, {})
+            last_delivery = self.handle_last_update_rate_delivery_time.setdefault(handle, {})
+            for attribute in removed_attributes:
+                update_rates.pop((object_class, attribute), None)
+                last_delivery.pop((object_class, attribute), None)
             self._rebuild_subscribed_object_aggregates()
+            self._emit_registration_interest_transitions(previous_interest)
             self._queue_turn_updates_off(
                 object_class,
                 removed_attributes,
-                target_handles={self._current_federate_handle(peer)},
+                target_handles={handle},
             )
             return rti_pb2.CallResponse(
                 unsubscribeObjectClassAttributesResponse=rti_pb2.UnsubscribeObjectClassAttributesResponse()
             )
         if request_kind == "publishInteractionClassRequest":
             interaction_class = request.publishInteractionClassRequest.interactionClass.data.decode("ascii")
+            previous_interest = self._interaction_interest_snapshot()
             self.handle_published_interactions.setdefault(self._current_federate_handle(peer), set()).add(interaction_class)
             self._rebuild_published_interaction_aggregates()
+            self._emit_interaction_interest_transitions(previous_interest)
             return rti_pb2.CallResponse(publishInteractionClassResponse=rti_pb2.PublishInteractionClassResponse())
+        if request_kind == "unpublishInteractionClassRequest":
+            interaction_class = request.unpublishInteractionClassRequest.interactionClass.data.decode("ascii")
+            handle = self._current_federate_handle(peer)
+            previous_interest = self._interaction_interest_snapshot()
+            self.handle_published_interactions.setdefault(handle, set()).discard(interaction_class)
+            self._rebuild_published_interaction_aggregates()
+            self._emit_interaction_interest_transitions(previous_interest)
+            return rti_pb2.CallResponse(unpublishInteractionClassResponse=rti_pb2.UnpublishInteractionClassResponse())
         if request_kind == "publishObjectClassDirectedInteractionsRequest":
             payload = request.publishObjectClassDirectedInteractionsRequest
             object_class = payload.objectClass.data.decode("ascii")
@@ -1343,8 +1552,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         }:
             payload = getattr(request, request_kind)
             interaction_class = payload.interactionClass.data.decode("ascii")
+            previous_interest = self._interaction_interest_snapshot()
             self.handle_subscribed_interactions.setdefault(self._current_federate_handle(peer), set()).add(interaction_class)
             self._rebuild_subscribed_interaction_aggregates()
+            self._emit_interaction_interest_transitions(previous_interest)
             response_kind = request_kind.replace("Request", "Response")
             response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
             return rti_pb2.CallResponse(**{response_kind: response_type()})
@@ -1352,24 +1563,38 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.subscribeInteractionClassWithRegionsRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
             handle = self._current_federate_handle(peer)
+            previous_interest = self._interaction_interest_snapshot()
             self.handle_subscribed_interactions.setdefault(handle, set()).add(interaction_class)
             self.directed_interaction_region_gates.add(interaction_class)
             self.handle_subscribed_interaction_regions.setdefault(handle, {}).setdefault(interaction_class, set()).update(
                 region.data.decode("ascii") for region in payload.regions.regionHandle
             )
             self._rebuild_subscribed_interaction_aggregates()
+            self._emit_interaction_interest_transitions(previous_interest)
             return rti_pb2.CallResponse(subscribeInteractionClassWithRegionsResponse=rti_pb2.SubscribeInteractionClassWithRegionsResponse())
         if request_kind == "unsubscribeInteractionClassWithRegionsRequest":
             payload = request.unsubscribeInteractionClassWithRegionsRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
             handle = self._current_federate_handle(peer)
+            previous_interest = self._interaction_interest_snapshot()
             regions = self.handle_subscribed_interaction_regions.setdefault(handle, {}).setdefault(interaction_class, set())
             regions.difference_update(region.data.decode("ascii") for region in payload.regions.regionHandle)
             if not regions:
                 self.handle_subscribed_interaction_regions.get(handle, {}).pop(interaction_class, None)
                 self.handle_subscribed_interactions.setdefault(handle, set()).discard(interaction_class)
             self._rebuild_subscribed_interaction_aggregates()
+            self._emit_interaction_interest_transitions(previous_interest)
             return rti_pb2.CallResponse(unsubscribeInteractionClassWithRegionsResponse=rti_pb2.UnsubscribeInteractionClassWithRegionsResponse())
+        if request_kind == "unsubscribeInteractionClassRequest":
+            payload = request.unsubscribeInteractionClassRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            handle = self._current_federate_handle(peer)
+            previous_interest = self._interaction_interest_snapshot()
+            self.handle_subscribed_interactions.setdefault(handle, set()).discard(interaction_class)
+            self.handle_subscribed_interaction_regions.get(handle, {}).pop(interaction_class, None)
+            self._rebuild_subscribed_interaction_aggregates()
+            self._emit_interaction_interest_transitions(previous_interest)
+            return rti_pb2.CallResponse(unsubscribeInteractionClassResponse=rti_pb2.UnsubscribeInteractionClassResponse())
         if request_kind in {
             "subscribeObjectClassDirectedInteractionsRequest",
             "subscribeObjectClassDirectedInteractionsUniversallyRequest",
@@ -1418,15 +1643,20 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(
                 unsubscribeObjectClassDirectedInteractionsWithSetResponse=rti_pb2.UnsubscribeObjectClassDirectedInteractionsWithSetResponse()
             )
-        if request_kind in {"registerObjectInstanceRequest", "registerObjectInstanceWithNameRequest"}:
+        if request_kind in {
+            "registerObjectInstanceRequest",
+            "registerObjectInstanceWithNameRequest",
+            "registerObjectInstanceWithRegionsRequest",
+            "registerObjectInstanceWithNameAndRegionsRequest",
+        }:
             payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
             object_name = getattr(payload, "objectInstanceName", "") or f"fedpro-object-{self.next_object_instance_handle}"
-            if request_kind == "registerObjectInstanceWithNameRequest":
+            if request_kind in {"registerObjectInstanceWithNameRequest", "registerObjectInstanceWithNameAndRegionsRequest"}:
                 if any(record["name"] == object_name for record in self.object_instances.values()):
                     return self._error("ObjectInstanceNameInUse", object_name)
                 reserved_by = self.reserved_object_instance_names.get(object_name)
-                if reserved_by is not None and reserved_by != self._current_federate_handle():
+                if reserved_by is not None and reserved_by != self._current_federate_handle(peer):
                     return self._error("ObjectInstanceNameInUse", object_name)
             handle = str(self.next_object_instance_handle)
             self.next_object_instance_handle += 1
@@ -1435,15 +1665,20 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for (declared_object_class, _name), attribute_handle in self.attributes.items():
                 if declared_object_class == object_class:
                     self.attribute_owners[(handle, attribute_handle)] = owner_handle
+            if request_kind in {"registerObjectInstanceWithRegionsRequest", "registerObjectInstanceWithNameAndRegionsRequest"}:
+                update_regions = self.object_update_regions.setdefault(handle, {})
+                for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
+                    update_regions.setdefault(attribute, set()).update(regions)
             self.reserved_object_instance_names.pop(object_name, None)
             discovery_targets = self._discovery_target_handles(object_class, exclude_handle=owner_handle)
             if discovery_targets:
                 self._queue_discovery(handle, object_class, object_name, target_handles=discovery_targets)
-            response_kind = (
-                "registerObjectInstanceWithNameResponse"
-                if request_kind == "registerObjectInstanceWithNameRequest"
-                else "registerObjectInstanceResponse"
-            )
+            response_kind = {
+                "registerObjectInstanceRequest": "registerObjectInstanceResponse",
+                "registerObjectInstanceWithNameRequest": "registerObjectInstanceWithNameResponse",
+                "registerObjectInstanceWithRegionsRequest": "registerObjectInstanceWithRegionsResponse",
+                "registerObjectInstanceWithNameAndRegionsRequest": "registerObjectInstanceWithNameAndRegionsResponse",
+            }[request_kind]
             response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
             return rti_pb2.CallResponse(**{response_kind: response_type(result=_handle(datatypes_pb2.ObjectInstanceHandle, handle))})
         if request_kind == "reserveObjectInstanceNameRequest":
@@ -1466,7 +1701,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(reserveObjectInstanceNameResponse=rti_pb2.ReserveObjectInstanceNameResponse())
         if request_kind == "releaseObjectInstanceNameRequest":
             name = request.releaseObjectInstanceNameRequest.objectInstanceName
-            if self.reserved_object_instance_names.get(name) != self._current_federate_handle():
+            if self.reserved_object_instance_names.get(name) != self._current_federate_handle(peer):
                 return self._error("ObjectInstanceNameNotReserved", name)
             self.reserved_object_instance_names.pop(name, None)
             return rti_pb2.CallResponse(releaseObjectInstanceNameResponse=rti_pb2.ReleaseObjectInstanceNameResponse())
@@ -1501,7 +1736,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
         if request_kind == "releaseMultipleObjectInstanceNamesRequest":
             names = tuple(request.releaseMultipleObjectInstanceNamesRequest.objectInstanceNames)
-            owner = self._current_federate_handle()
+            owner = self._current_federate_handle(peer)
             for name in names:
                 if self.reserved_object_instance_names.get(name) != owner:
                     return self._error("ObjectInstanceNameNotReserved", name)
@@ -1541,6 +1776,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if record is None:
                 return self._error("ObjectInstanceNotKnown", object_instance)
             object_class = record["objectClass"]
+            for item in payload.attributeValues.attributeHandleValue:
+                attribute = item.attributeHandle.data.decode("ascii")
+                if self.attribute_owners.get((object_instance, attribute)) != source_handle:
+                    return self._error("AttributeNotOwned", attribute)
             published = self.published_object_attributes.get(object_class, set())
             if any(item.attributeHandle.data.decode("ascii") not in published for item in payload.attributeValues.attributeHandleValue):
                 return self._error("ObjectClassNotPublished", object_class)
@@ -1550,29 +1789,37 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 tuple(item.attributeHandle.data.decode("ascii") for item in payload.attributeValues.attributeHandleValue),
             )
             for target_handle, attribute_values in reflected_by_handle.items():
-                values = datatypes_pb2.AttributeHandleValueMap()
+                if object_instance in self.handle_locally_deleted_objects.get(target_handle, set()):
+                    self.handle_locally_deleted_objects[target_handle].discard(object_instance)
+                    self._queue_discovery(object_instance, object_class, record["name"], target_handles={target_handle})
                 reflected_items = [
                     item
                     for item in payload.attributeValues.attributeHandleValue
                     if item.attributeHandle.data.decode("ascii") in set(attribute_values)
                 ]
-                for item in reflected_items:
-                    row = values.attributeHandleValue.add()
-                    row.attributeHandle.CopyFrom(item.attributeHandle)
-                    row.value = item.value
-                self._enqueue_callback(
-                    callback_pb2.CallbackRequest(
-                        reflectAttributeValues=callback_pb2.ReflectAttributeValues(
-                            objectInstance=payload.objectInstance,
-                            attributeValues=values,
-                            userSuppliedTag=payload.userSuppliedTag,
-                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
-                            producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
-                            optionalSentRegions=self._conveyed_regions_for(object_instance, reflected_items),
-                        )
-                    ),
-                    target_handles={target_handle},
-                )
+                for transportation, grouped_items in self._partition_reflected_items_by_transport(
+                    object_instance,
+                    object_class,
+                    reflected_items,
+                ):
+                    values = datatypes_pb2.AttributeHandleValueMap()
+                    for item in grouped_items:
+                        row = values.attributeHandleValue.add()
+                        row.attributeHandle.CopyFrom(item.attributeHandle)
+                        row.value = item.value
+                    self._enqueue_callback(
+                        callback_pb2.CallbackRequest(
+                            reflectAttributeValues=callback_pb2.ReflectAttributeValues(
+                                objectInstance=payload.objectInstance,
+                                attributeValues=values,
+                                userSuppliedTag=payload.userSuppliedTag,
+                                transportationType=_handle(datatypes_pb2.TransportationTypeHandle, transportation),
+                                producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
+                                optionalSentRegions=self._conveyed_regions_for(object_instance, grouped_items),
+                            )
+                        ),
+                        target_handles={target_handle},
+                    )
             self.reflections_received += len(reflected_by_handle)
             self.object_instances_reflected += len(reflected_by_handle)
             for target_handle in reflected_by_handle:
@@ -1593,45 +1840,70 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if record is None:
                 return self._error("ObjectInstanceNotKnown", object_instance)
             object_class = record["objectClass"]
+            for item in payload.attributeValues.attributeHandleValue:
+                attribute = item.attributeHandle.data.decode("ascii")
+                if self.attribute_owners.get((object_instance, attribute)) != source_handle:
+                    return self._error("AttributeNotOwned", attribute)
             published = self.published_object_attributes.get(object_class, set())
             if any(item.attributeHandle.data.decode("ascii") not in published for item in payload.attributeValues.attributeHandleValue):
                 return self._error("ObjectClassNotPublished", object_class)
             retraction_handle = self._next_retraction_handle()
+            send_time_value = _logical_time_value(payload.time)
             reflected_by_handle = self._reflection_target_handles(
                 object_instance,
                 object_class,
                 tuple(item.attributeHandle.data.decode("ascii") for item in payload.attributeValues.attributeHandleValue),
             )
             for target_handle, attribute_values in reflected_by_handle.items():
-                values = datatypes_pb2.AttributeHandleValueMap()
+                if object_instance in self.handle_locally_deleted_objects.get(target_handle, set()):
+                    self.handle_locally_deleted_objects[target_handle].discard(object_instance)
+                    self._queue_discovery(object_instance, object_class, record["name"], target_handles={target_handle})
                 reflected_items = [
                     item
                     for item in payload.attributeValues.attributeHandleValue
                     if item.attributeHandle.data.decode("ascii") in set(attribute_values)
                 ]
-                for item in reflected_items:
-                    row = values.attributeHandleValue.add()
-                    row.attributeHandle.CopyFrom(item.attributeHandle)
-                    row.value = item.value
-                self._queue_tso_callback(
-                    retraction_handle,
-                    payload.time,
-                    callback_pb2.CallbackRequest(
-                        reflectAttributeValuesWithTime=callback_pb2.ReflectAttributeValuesWithTime(
-                            objectInstance=payload.objectInstance,
-                            attributeValues=values,
-                            userSuppliedTag=payload.userSuppliedTag,
-                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
-                            producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
-                            optionalSentRegions=self._conveyed_regions_for(object_instance, reflected_items),
-                            time=payload.time,
-                            sentOrderType=datatypes_pb2.TIMESTAMP,
-                            receivedOrderType=datatypes_pb2.TIMESTAMP,
-                            optionalRetraction=_handle(datatypes_pb2.MessageRetractionHandle, retraction_handle),
-                        )
-                    ),
-                    target_handles={target_handle},
-                )
+                reflected_items = [
+                    item
+                    for item in reflected_items
+                    if self._update_rate_allows_delivery(
+                        target_handle,
+                        object_class,
+                        item.attributeHandle.data.decode("ascii"),
+                        send_time_value,
+                    )
+                ]
+                if not reflected_items:
+                    continue
+                for transportation, grouped_items in self._partition_reflected_items_by_transport(
+                    object_instance,
+                    object_class,
+                    reflected_items,
+                ):
+                    values = datatypes_pb2.AttributeHandleValueMap()
+                    for item in grouped_items:
+                        row = values.attributeHandleValue.add()
+                        row.attributeHandle.CopyFrom(item.attributeHandle)
+                        row.value = item.value
+                    self._queue_tso_callback(
+                        retraction_handle,
+                        payload.time,
+                        callback_pb2.CallbackRequest(
+                            reflectAttributeValuesWithTime=callback_pb2.ReflectAttributeValuesWithTime(
+                                objectInstance=payload.objectInstance,
+                                attributeValues=values,
+                                userSuppliedTag=payload.userSuppliedTag,
+                                transportationType=_handle(datatypes_pb2.TransportationTypeHandle, transportation),
+                                producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
+                                optionalSentRegions=self._conveyed_regions_for(object_instance, grouped_items),
+                                time=payload.time,
+                                sentOrderType=datatypes_pb2.TIMESTAMP,
+                                receivedOrderType=datatypes_pb2.TIMESTAMP,
+                                optionalRetraction=_handle(datatypes_pb2.MessageRetractionHandle, retraction_handle),
+                            )
+                        ),
+                        target_handles={target_handle},
+                    )
             return rti_pb2.CallResponse(
                 updateAttributeValuesWithTimeResponse=rti_pb2.UpdateAttributeValuesWithTimeResponse(
                     result=self._message_retraction_return(retraction_handle)
@@ -1694,6 +1966,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             object_instance = payload.objectInstance.data.decode("ascii")
             if object_instance not in self.object_instances:
                 return self._error("ObjectInstanceNotKnown", object_instance)
+            current_handle = self._current_federate_handle(peer)
+            self.handle_locally_deleted_objects.setdefault(current_handle, set()).add(object_instance)
             return rti_pb2.CallResponse(localDeleteObjectInstanceResponse=rti_pb2.LocalDeleteObjectInstanceResponse())
         if request_kind == "requestInstanceAttributeValueUpdateRequest":
             payload = request.requestInstanceAttributeValueUpdateRequest
@@ -1913,7 +2187,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                             interactionClass=payload.interactionClass,
                             parameterValues=payload.parameterValues,
                             userSuppliedTag=payload.userSuppliedTag,
-                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            transportationType=self._interaction_transportation_type(interaction_class),
                             producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
                         )
                     ),
@@ -1940,7 +2214,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                             interactionClass=payload.interactionClass,
                             parameterValues=payload.parameterValues,
                             userSuppliedTag=payload.userSuppliedTag,
-                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            transportationType=self._interaction_transportation_type(interaction_class),
                             producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
                             optionalSentRegions=self._conveyed_regions_from(source_regions),
                         )
@@ -1972,7 +2246,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                             interactionClass=payload.interactionClass,
                             parameterValues=payload.parameterValues,
                             userSuppliedTag=payload.userSuppliedTag,
-                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            transportationType=self._interaction_transportation_type(interaction_class),
                             producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle(peer)),
                             time=payload.time,
                             sentOrderType=datatypes_pb2.TIMESTAMP,
@@ -1986,6 +2260,47 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.interactions_sent += 1
             return rti_pb2.CallResponse(
                 sendInteractionWithTimeResponse=rti_pb2.SendInteractionWithTimeResponse(
+                    result=self._message_retraction_return(retraction_handle)
+                )
+            )
+        if request_kind == "sendInteractionWithRegionsAndTimeRequest":
+            payload = request.sendInteractionWithRegionsAndTimeRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            source_regions = tuple(region.data.decode("ascii") for region in payload.regions.regionHandle)
+            if interaction_class not in self.published_interactions:
+                return self._error("InteractionClassNotPublished", interaction_class)
+            source_handle = self._current_federate_handle(peer)
+            if not self._validate_tso_send_time(source_handle, payload.time):
+                return self._error("InvalidLogicalTime", "Timestamp is earlier than the logical-time/lookahead lower bound")
+            retraction_handle = self._next_retraction_handle()
+            target_handles = self._interaction_target_handles(interaction_class, source_regions)
+            for target_handle in sorted(target_handles, key=int):
+                self._queue_tso_callback(
+                    retraction_handle,
+                    payload.time,
+                    callback_pb2.CallbackRequest(
+                        receiveInteractionWithTime=callback_pb2.ReceiveInteractionWithTime(
+                            interactionClass=payload.interactionClass,
+                            parameterValues=payload.parameterValues,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=self._interaction_transportation_type(interaction_class),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, source_handle),
+                            time=payload.time,
+                            sentOrderType=datatypes_pb2.TIMESTAMP,
+                            receivedOrderType=datatypes_pb2.TIMESTAMP,
+                            optionalRetraction=_handle(datatypes_pb2.MessageRetractionHandle, retraction_handle),
+                            optionalSentRegions=self._conveyed_regions_from(source_regions),
+                        )
+                    ),
+                    target_handles={target_handle},
+                )
+            self.interactions_received += len(target_handles)
+            self.interactions_sent += 1
+            self._increment_counter(self.handle_interactions_sent, source_handle)
+            for target_handle in target_handles:
+                self._increment_counter(self.handle_interactions_received, target_handle)
+            return rti_pb2.CallResponse(
+                sendInteractionWithRegionsAndTimeResponse=rti_pb2.SendInteractionWithRegionsAndTimeResponse(
                     result=self._message_retraction_return(retraction_handle)
                 )
             )
@@ -2484,7 +2799,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     @classmethod
     def _mom_bool(cls, params: dict[str, bytes], name: str, default: bool = True) -> bool:
         text = cls._mom_text(params, name, "HLAtrue" if default else "HLAfalse").lower()
-        return text in {"1", "true", "yes", "hlatrue", "on"}
+        if text in {"1", "true", "yes", "hlatrue", "on"}:
+            return True
+        if text in {"0", "false", "no", "hlafalse", "off"}:
+            return False
+        raise ValueError(f"Invalid MOM boolean value for {name}")
 
     @classmethod
     def _mom_time(cls, params: dict[str, bytes], name: str = "HLAtimeStamp") -> datatypes_pb2.LogicalTime:
@@ -2502,10 +2821,21 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         try:
             return int(text)
         except ValueError:
+            normalized = text.removeprefix("HLA").replace("_", "").replace("-", "").upper()
+            aliases = {
+                "NOACTION": datatypes_pb2.NO_ACTION,
+                "UNCONDITIONALLYDIVESTATTRIBUTES": datatypes_pb2.UNCONDITIONALLY_DIVEST_ATTRIBUTES,
+                "DELETEOBJECTS": datatypes_pb2.DELETE_OBJECTS,
+                "CANCELPENDINGOWNERSHIPACQUISITIONS": datatypes_pb2.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+                "DELETEOBJECTSTHENDIVEST": datatypes_pb2.DELETE_OBJECTS_THEN_DIVEST,
+                "CANCELTHENDELETETHENDIVEST": datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+            }
+            if normalized in aliases:
+                return aliases[normalized]
             try:
                 return datatypes_pb2.ResignAction.Value(text)
             except ValueError:
-                return datatypes_pb2.NO_ACTION
+                raise ValueError(f"Invalid MOM resign action {text!r}")
 
     @staticmethod
     def _increment_counter(counter: dict[str, int], handle: str, amount: int = 1) -> None:
@@ -2520,7 +2850,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 self._recompute_service_reporting()
                 self.switch_states[switch_name] = self.service_reporting
             else:
-                self.switch_states[switch_name] = self._mom_bool(params, "HLAreportingState")
+                target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
+                self.handle_exception_reporting[target_handle] = self._mom_bool(params, "HLAreportingState")
+                self._recompute_exception_reporting()
             return
         if leaf == "HLAsetSwitches":
             for parameter_name, raw_value in params.items():
@@ -2536,12 +2868,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if leaf == "HLAmodifyAttributeState":
             object_instance = self._mom_int(params, "HLAobjectInstance")
             attribute = self._mom_int(params, "HLAattribute")
-            state = self._mom_text(params, "HLAattributeState", "owned").lower()
+            state = self._mom_text(params, "HLAattributeState", "owned")
+            normalized_state = state.removeprefix("HLA").replace("_", "").replace("-", "").lower()
             key = (object_instance, attribute)
-            if state in {"unowned", "hlaunowned", "0"}:
+            if normalized_state in {"0", "unowned", "notowned", "attributeisnotowned", "none"}:
                 self.unowned_attributes.add(key)
-            else:
+                return
+            if normalized_state in {"1", "owned", "owner", "ownedbyfederate", "attributeowned"}:
                 self.unowned_attributes.discard(key)
+                return
+            raise ValueError("Invalid MOM ownership state for HLAattributeState")
 
     def _route_mom_service(self, leaf: str, params: dict[str, bytes], *, peer: str | None = None) -> None:
         if leaf == "HLAresignFederationExecution":
@@ -2655,6 +2991,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         self._enqueue_callback(callback, target_handles=remove_targets)
             return
         if leaf == "HLAlocalDeleteObjectInstance":
+            object_instance = self._mom_required_text(params, "HLAobjectInstance")
+            target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle(peer))
+            if object_instance not in self.object_instances:
+                raise ValueError(f"Unknown MOM local-delete object instance {object_instance}")
+            self.handle_locally_deleted_objects.setdefault(target_handle, set()).add(object_instance)
             return
         if leaf == "HLArequestAttributeTransportationTypeChange":
             object_instance = self._mom_int(params, "HLAobjectInstance")
@@ -2748,7 +3089,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
 
     @classmethod
     def _mom_order(cls, params: dict[str, bytes]) -> int:
-        return datatypes_pb2.TIMESTAMP if cls._mom_text(params, "HLAsendOrder", "0") in {"1", "TIMESTAMP", "TimeStamp"} else datatypes_pb2.RECEIVE
+        text = cls._mom_text(params, "HLAsendOrder", "0").strip()
+        try:
+            value = int(text)
+        except ValueError:
+            normalized = text.removeprefix("HLA").replace("_", "").replace("-", "").upper()
+            if normalized in {"TIMESTAMP", "TSO"}:
+                return datatypes_pb2.TIMESTAMP
+            if normalized in {"RECEIVE", "RO"}:
+                return datatypes_pb2.RECEIVE
+            raise ValueError("Invalid MOM order type for HLAsendOrder")
+        return datatypes_pb2.TIMESTAMP if value == 1 else datatypes_pb2.RECEIVE
 
     @classmethod
     def _mom_required_text(cls, params: dict[str, bytes], name: str) -> str:
@@ -2866,6 +3217,121 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 target_handles=target_handles,
             )
 
+    def _object_subscription_matches(self, published_class: str, subscribed_class: str) -> bool:
+        published_name = self.object_class_names.get(published_class, "")
+        subscribed_name = self.object_class_names.get(subscribed_class, "")
+        return bool(
+            published_name
+            and subscribed_name
+            and (published_name == subscribed_name or published_name.startswith(f"{subscribed_name}."))
+        )
+
+    def _interaction_subscription_matches(self, published_class: str, subscribed_class: str) -> bool:
+        published_name = self.interaction_names.get(published_class, "")
+        subscribed_name = self.interaction_names.get(subscribed_class, "")
+        return bool(
+            published_name
+            and subscribed_name
+            and (published_name == subscribed_name or published_name.startswith(f"{subscribed_name}."))
+        )
+
+    def _attribute_names_for_class(self, object_class: str, attributes: set[str]) -> set[str]:
+        return {
+            self.attribute_names[(object_class, attribute)]
+            for attribute in attributes
+            if (object_class, attribute) in self.attribute_names
+        }
+
+    def _registration_interest_snapshot(self) -> dict[str, set[str]]:
+        snapshot: dict[str, set[str]] = {}
+        for publisher_handle, object_class_map in self.handle_published_object_attributes.items():
+            interested_classes: set[str] = set()
+            for published_class, published_attributes in object_class_map.items():
+                published_names = self._attribute_names_for_class(published_class, published_attributes)
+                if not published_names:
+                    continue
+                for subscriber_handle, subscribed_map in self.handle_subscribed_object_attributes.items():
+                    if subscriber_handle == publisher_handle:
+                        continue
+                    matched = False
+                    for subscribed_class, subscribed_attributes in subscribed_map.items():
+                        if not self._object_subscription_matches(published_class, subscribed_class):
+                            continue
+                        subscribed_names = self._attribute_names_for_class(subscribed_class, subscribed_attributes)
+                        if published_names & subscribed_names:
+                            interested_classes.add(published_class)
+                            matched = True
+                            break
+                    if matched:
+                        break
+            snapshot[publisher_handle] = interested_classes
+        return snapshot
+
+    def _interaction_interest_snapshot(self) -> dict[str, set[str]]:
+        snapshot: dict[str, set[str]] = {}
+        for publisher_handle, published_classes in self.handle_published_interactions.items():
+            interested_classes: set[str] = set()
+            for published_class in published_classes:
+                for subscriber_handle, subscribed_classes in self.handle_subscribed_interactions.items():
+                    if subscriber_handle == publisher_handle:
+                        continue
+                    if any(
+                        self._interaction_subscription_matches(published_class, subscribed_class)
+                        for subscribed_class in subscribed_classes
+                    ):
+                        interested_classes.add(published_class)
+                        break
+            snapshot[publisher_handle] = interested_classes
+        return snapshot
+
+    def _emit_registration_interest_transitions(self, previous: dict[str, set[str]]) -> None:
+        current = self._registration_interest_snapshot()
+        for handle in sorted(set(previous) | set(current), key=int):
+            prior_classes = previous.get(handle, set())
+            current_classes = current.get(handle, set())
+            for object_class in sorted(prior_classes - current_classes, key=int):
+                self._enqueue_callback(
+                    callback_pb2.CallbackRequest(
+                        stopRegistrationForObjectClass=callback_pb2.StopRegistrationForObjectClass(
+                            objectClass=_handle(datatypes_pb2.ObjectClassHandle, object_class)
+                        )
+                    ),
+                    target_handles={handle},
+                )
+            for object_class in sorted(current_classes - prior_classes, key=int):
+                self._enqueue_callback(
+                    callback_pb2.CallbackRequest(
+                        startRegistrationForObjectClass=callback_pb2.StartRegistrationForObjectClass(
+                            objectClass=_handle(datatypes_pb2.ObjectClassHandle, object_class)
+                        )
+                    ),
+                    target_handles={handle},
+                )
+
+    def _emit_interaction_interest_transitions(self, previous: dict[str, set[str]]) -> None:
+        current = self._interaction_interest_snapshot()
+        for handle in sorted(set(previous) | set(current), key=int):
+            prior_classes = previous.get(handle, set())
+            current_classes = current.get(handle, set())
+            for interaction_class in sorted(prior_classes - current_classes, key=int):
+                self._enqueue_callback(
+                    callback_pb2.CallbackRequest(
+                        turnInteractionsOff=callback_pb2.TurnInteractionsOff(
+                            interactionClass=_handle(datatypes_pb2.InteractionClassHandle, interaction_class)
+                        )
+                    ),
+                    target_handles={handle},
+                )
+            for interaction_class in sorted(current_classes - prior_classes, key=int):
+                self._enqueue_callback(
+                    callback_pb2.CallbackRequest(
+                        turnInteractionsOn=callback_pb2.TurnInteractionsOn(
+                            interactionClass=_handle(datatypes_pb2.InteractionClassHandle, interaction_class)
+                        )
+                    ),
+                    target_handles={handle},
+                )
+
     def _rebuild_subscribed_object_aggregates(self) -> None:
         self.subscribed_object_attributes.clear()
         self.subscribed_object_regions.clear()
@@ -2932,6 +3398,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for handle in self._joined_handle_values()
         )
 
+    def _recompute_exception_reporting(self) -> None:
+        self.switch_states["exceptionReporting"] = any(
+            self.handle_exception_reporting.get(handle, False)
+            for handle in self._joined_handle_values()
+        )
+
     def _service_report_target_handles(self) -> set[str]:
         targets = {
             handle
@@ -2975,15 +3447,29 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def _queue_mom_exception_report(self, interaction_name: str, exception: Exception, *, parameter_error: bool) -> None:
         report_name = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
         report_class = self.interactions.get(report_name)
-        if report_class is None or not self._interaction_subscriber_matches(report_class, ()):
+        target_handles = self._exception_report_target_handles(report_class) if report_class is not None else set()
+        if report_class is None or not target_handles:
             return
-        self._queue_mom_report(
-            report_class,
-            {
-                "HLAservice": interaction_name.encode("utf-8"),
-                "HLAexception": f"{type(exception).__name__}: {exception}".encode("utf-8"),
-                "HLAparameterError": b"HLAtrue" if parameter_error else b"HLAfalse",
-            },
+        values = datatypes_pb2.ParameterHandleValueMap()
+        for parameter_name, payload in (
+            ("HLAservice", interaction_name.encode("utf-8")),
+            ("HLAexception", f"{type(exception).__name__}: {exception}".encode("utf-8")),
+            ("HLAparameterError", b"HLAtrue" if parameter_error else b"HLAfalse"),
+        ):
+            row = values.parameterHandleValue.add()
+            row.parameterHandle.data = self.parameters[(report_class, parameter_name)].encode("ascii")
+            row.value = payload
+        self._enqueue_callback_per_handle(
+            callback_pb2.CallbackRequest(
+                receiveInteraction=callback_pb2.ReceiveInteraction(
+                    interactionClass=_handle(datatypes_pb2.InteractionClassHandle, report_class),
+                    parameterValues=values,
+                    userSuppliedTag=b"MOM",
+                    transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                    producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                )
+            ),
+            target_handles=target_handles,
         )
 
     def _queue_object_publication_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
@@ -3218,6 +3704,14 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             target_handles=target_handles,
         )
 
+    def _exception_report_target_handles(self, report_class: str) -> set[str]:
+        target_handles = self._interaction_target_handles(report_class, ())
+        return {
+            handle
+            for handle in target_handles
+            if self.handle_exception_reporting.get(handle, self.switch_states.get("exceptionReporting", True))
+        }
+
     def _next_retraction_handle(self) -> str:
         handle = str(self.next_retraction_handle)
         self.next_retraction_handle += 1
@@ -3263,6 +3757,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for handle in self._joined_handle_values():
                 if self._try_grant_pending_time_advance(handle):
                     progressed = True
+            self._process_scheduled_save()
 
     def _try_grant_pending_time_advance(self, handle: str) -> bool:
         request = self._handle_pending_request(handle)
@@ -3306,7 +3801,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             optimistic_time = self._logical_time_from_value(min([requested_value, queued_through_requested[0][0]]) if queued_through_requested else requested_value)
         else:
             if mode in {"nextMessageRequest", "nextMessageRequestAvailable"} and queued_through_requested:
-                grant_time = datatypes_pb2.LogicalTime(data=requested_time.data)
+                grant_time = self._logical_time_from_value(queued_through_requested[0][0])
                 deliver_through = grant_time
             else:
                 allowed = True
@@ -3365,7 +3860,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         self.callback_targets[id(callback)] = (_peers, remaining)
                         remaining_callbacks.append(callback)
                     else:
-                        self.callback_targets.pop(id(callback), None)
+                        # Once a TSO callback becomes due for a specific handle,
+                        # keep that handle-level routing on the shared callback
+                        # queue until the peer actually evokes it.
+                        self.callback_targets[id(callback)] = (
+                            _peers,
+                            frozenset({handle}),
+                        )
                 else:
                     self.callback_targets.pop(id(callback), None)
             if delivered_any:
@@ -3402,6 +3903,45 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=time)),
             target_handles={handle},
         )
+
+    def _start_federation_save(self, label: str, time: datatypes_pb2.LogicalTime | None) -> None:
+        self.save_label = label
+        self.next_save_name = None
+        self.next_save_time = None
+        self.save_status = {handle: datatypes_pb2.FEDERATE_INSTRUCTED_TO_SAVE for handle in self._joined_handle_values()}
+        for handle in self._joined_handle_values():
+            if time is None:
+                callback = callback_pb2.CallbackRequest(
+                    initiateFederateSave=callback_pb2.InitiateFederateSave(label=label)
+                )
+            else:
+                callback = callback_pb2.CallbackRequest(
+                    initiateFederateSaveWithTime=callback_pb2.InitiateFederateSaveWithTime(
+                        label=label,
+                        time=time,
+                    )
+                )
+            self._enqueue_callback(callback, target_handles={handle})
+
+    def _process_scheduled_save(self) -> None:
+        if self.next_save_name is None or self.next_save_time is None or self.save_label is not None:
+            return
+        save_value = _logical_time_value(self.next_save_time)
+        for handle in self._joined_handle_values():
+            if not self.handle_time_constrained.get(handle, False):
+                continue
+            if _logical_time_value(self._handle_current_time(handle)) < save_value:
+                return
+            for retraction_handle, (time_value, callbacks) in self.queued_tso_callbacks.items():
+                if time_value > save_value:
+                    continue
+                if any(
+                    (target_handles is None or handle in target_handles)
+                    for callback in callbacks
+                    for _peers, target_handles in [self.callback_targets.get(id(callback), (None, None))]
+                ):
+                    return
+        self._start_federation_save(self.next_save_name, self.next_save_time)
 
     def _queue_request_retraction(self, handle: str) -> None:
         delivered_targets = set(self.delivered_retraction_targets.get(handle, frozenset()))
@@ -3479,6 +4019,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.joined_federates.pop(name, None)
         self.joined_federate_types.pop(handle, None)
         self.handle_service_reporting.pop(handle, None)
+        self.handle_exception_reporting.pop(handle, None)
         self.handle_published_object_attributes.pop(handle, None)
         self.handle_published_interactions.pop(handle, None)
         self.handle_published_directed_interactions.pop(handle, None)
@@ -3504,11 +4045,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if isinstance(federates, set):
                 federates.discard(handle)
         self._recompute_service_reporting()
+        self._recompute_exception_reporting()
         self.handle_subscribed_object_attributes.pop(handle, None)
         self.handle_subscribed_object_regions.pop(handle, None)
         self.handle_subscribed_interactions.pop(handle, None)
         self.handle_subscribed_interaction_regions.pop(handle, None)
         self.handle_subscribed_directed_interactions.pop(handle, None)
+        self.handle_locally_deleted_objects.pop(handle, None)
         if preserve_owned_attributes:
             owner_keys = {key for key, owner_handle in self.attribute_owners.items() if owner_handle == handle}
             self.offered_attributes.difference_update(owner_keys)
@@ -3645,6 +4188,87 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def _handle_lookahead(self, handle: str) -> datatypes_pb2.LogicalTimeInterval:
         return self.handle_lookahead.setdefault(handle, datatypes_pb2.LogicalTimeInterval(data=b"HLAinteger64Interval:1"))
 
+    def _attribute_transportation(self, object_instance: str, object_class: str, attribute: str) -> str:
+        return self.default_attribute_transportation.get(
+            (object_instance, attribute),
+            self.default_attribute_transportation.get((object_class, attribute), "1"),
+        )
+
+    @staticmethod
+    def _update_rate_hz(designator: str) -> float:
+        normalized = designator.strip().lower()
+        if normalized in {"", "hladefault", "hladefaultupdaterate", "default"}:
+            return 0.0
+        if normalized == "fast":
+            return 2.0
+        return 0.0
+
+    def _update_rate_allows_delivery(
+        self,
+        handle: str,
+        object_class: str,
+        attribute: str,
+        timestamp: float,
+    ) -> bool:
+        designator = self.handle_subscribed_object_update_rates.get(handle, {}).get((object_class, attribute), "")
+        rate_hz = self._update_rate_hz(designator)
+        if rate_hz <= 0.0:
+            return True
+        key = (object_class, attribute)
+        last_delivered = self.handle_last_update_rate_delivery_time.setdefault(handle, {}).get(key)
+        minimum_interval = 1.0 / rate_hz
+        if last_delivered is not None and (timestamp - last_delivered) < minimum_interval:
+            return False
+        self.handle_last_update_rate_delivery_time[handle][key] = timestamp
+        return True
+
+    def _reflected_transportation_type(
+        self,
+        object_instance: str,
+        object_class: str,
+        reflected_items: list[datatypes_pb2.AttributeHandleValuePair],
+    ):
+        if not reflected_items:
+            return _handle(datatypes_pb2.TransportationTypeHandle, "1")
+        transportations = {
+            self._attribute_transportation(
+                object_instance,
+                object_class,
+                item.attributeHandle.data.decode("ascii"),
+            )
+            for item in reflected_items
+        }
+        transportation = sorted(transportations)[0] if len(transportations) == 1 else "1"
+        return _handle(datatypes_pb2.TransportationTypeHandle, transportation)
+
+    def _partition_reflected_items_by_transport(
+        self,
+        object_instance: str,
+        object_class: str,
+        reflected_items: list[datatypes_pb2.AttributeHandleValuePair],
+    ) -> list[tuple[str, list[datatypes_pb2.AttributeHandleValuePair]]]:
+        grouped: dict[str, list[datatypes_pb2.AttributeHandleValuePair]] = {}
+        order: list[str] = []
+        for item in reflected_items:
+            transportation = self._attribute_transportation(
+                object_instance,
+                object_class,
+                item.attributeHandle.data.decode("ascii"),
+            )
+            if transportation not in grouped:
+                grouped[transportation] = []
+                order.append(transportation)
+            grouped[transportation].append(item)
+        return [(transportation, grouped[transportation]) for transportation in order]
+
+    def _interaction_transportation_type(self, interaction_class: str):
+        transportation = (
+            self.interaction_transportation[1]
+            if self.interaction_transportation is not None and self.interaction_transportation[0] == interaction_class
+            else "1"
+        )
+        return _handle(datatypes_pb2.TransportationTypeHandle, transportation)
+
     def _set_handle_lookahead(self, handle: str, lookahead: datatypes_pb2.LogicalTimeInterval) -> None:
         self.handle_lookahead[handle] = datatypes_pb2.LogicalTimeInterval(data=lookahead.data)
         self._sync_time_globals(handle)
@@ -3760,6 +4384,40 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.pending_attribute_requesters.clear()
 
     def _snapshot(self) -> _FederationSnapshot:
+        retained_queued_tso_callbacks = {
+            retraction_handle: (
+                time_value,
+                [
+                    callback
+                    for callback in callbacks
+                    if callback.WhichOneof("callbackRequest") != "receiveDirectedInteractionWithTime"
+                ],
+            )
+            for retraction_handle, (time_value, callbacks) in self.queued_tso_callbacks.items()
+        }
+        retained_queued_tso_callbacks = {
+            retraction_handle: (time_value, callbacks)
+            for retraction_handle, (time_value, callbacks) in retained_queued_tso_callbacks.items()
+            if callbacks
+        }
+        queued_tso_target_handles = {
+            retraction_handle: [
+                self.callback_targets.get(id(callback), (None, None))[1]
+                for callback in callbacks
+            ]
+            for retraction_handle, (_time_value, callbacks) in retained_queued_tso_callbacks.items()
+        }
+        retained_retraction_handles = {
+            int(handle)
+            for handle in (
+                set(retained_queued_tso_callbacks)
+                | set(self.delivered_retractions)
+                | set(self.requested_retractions)
+                | set(self.delivered_retraction_targets)
+            )
+            if handle.isdigit()
+        }
+        next_retraction_handle = max(retained_retraction_handles, default=0) + 1
         return _FederationSnapshot(
             object_instances=deepcopy(self.object_instances),
             reserved_object_instance_names=dict(self.reserved_object_instance_names),
@@ -3789,6 +4447,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             switch_states=dict(self.switch_states),
             service_reporting=self.service_reporting,
             handle_service_reporting=dict(self.handle_service_reporting),
+            handle_exception_reporting=dict(self.handle_exception_reporting),
             automatic_resign_directive=self.automatic_resign_directive,
             time_regulating=self.time_regulating,
             time_constrained=self.time_constrained,
@@ -3802,12 +4461,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             },
             callback_delivery_enabled=self.callback_delivery_enabled,
             peer_callback_delivery_enabled=dict(self.peer_callback_delivery_enabled),
+            handle_locally_deleted_objects=deepcopy(self.handle_locally_deleted_objects),
             directed_interaction_region_gates=set(self.directed_interaction_region_gates),
             published_directed_interactions=deepcopy(self.published_directed_interactions),
             handle_published_directed_interactions=deepcopy(self.handle_published_directed_interactions),
             handle_subscribed_directed_interactions=deepcopy(self.handle_subscribed_directed_interactions),
             handle_subscribed_interactions=deepcopy(self.handle_subscribed_interactions),
             handle_subscribed_interaction_regions=deepcopy(self.handle_subscribed_interaction_regions),
+            queued_tso_callbacks=deepcopy(retained_queued_tso_callbacks),
+            queued_tso_target_handles=deepcopy(queued_tso_target_handles),
+            delivered_retractions=set(self.delivered_retractions),
+            delivered_retraction_targets=dict(self.delivered_retraction_targets),
+            requested_retractions=set(self.requested_retractions),
+            next_retraction_handle=next_retraction_handle,
         )
 
     def _restore_snapshot(self, label: str | None) -> None:
@@ -3844,6 +4510,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.switch_states = dict(snapshot.switch_states)
         self.service_reporting = snapshot.service_reporting
         self.handle_service_reporting = dict(snapshot.handle_service_reporting)
+        self.handle_exception_reporting = dict(snapshot.handle_exception_reporting)
         self.automatic_resign_directive = snapshot.automatic_resign_directive
         self.time_regulating = snapshot.time_regulating
         self.time_constrained = snapshot.time_constrained
@@ -3855,29 +4522,36 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             handle: (mode, datatypes_pb2.LogicalTime(data=time.data))
             for handle, (mode, time) in snapshot.handle_pending_time_advance.items()
         }
-        self.callback_delivery_enabled = snapshot.callback_delivery_enabled
-        self.peer_callback_delivery_enabled = dict(snapshot.peer_callback_delivery_enabled)
+        # Callback enablement is a live per-peer runtime policy, not restored state.
+        self.handle_locally_deleted_objects = deepcopy(snapshot.handle_locally_deleted_objects)
         self.directed_interaction_region_gates = set(snapshot.directed_interaction_region_gates)
         self.published_directed_interactions = deepcopy(snapshot.published_directed_interactions)
         self.handle_published_directed_interactions = deepcopy(snapshot.handle_published_directed_interactions)
         self.handle_subscribed_directed_interactions = deepcopy(snapshot.handle_subscribed_directed_interactions)
         self.handle_subscribed_interactions = deepcopy(snapshot.handle_subscribed_interactions)
         self.handle_subscribed_interaction_regions = deepcopy(snapshot.handle_subscribed_interaction_regions)
+        self.queued_tso_callbacks = deepcopy(snapshot.queued_tso_callbacks)
+        self.delivered_retractions = set(snapshot.delivered_retractions)
+        self.delivered_retraction_targets = dict(snapshot.delivered_retraction_targets)
+        self.requested_retractions = set(snapshot.requested_retractions)
+        self.next_retraction_handle = snapshot.next_retraction_handle
         self._rebuild_published_object_aggregates()
         self._rebuild_published_interaction_aggregates()
         self._rebuild_published_directed_interactions()
         self._rebuild_subscribed_object_aggregates()
         self._rebuild_subscribed_interaction_aggregates()
         self._rebuild_subscribed_directed_interactions()
+        self.callback_targets.clear()
+        for retraction_handle, (_time_value, callbacks) in self.queued_tso_callbacks.items():
+            saved_targets = snapshot.queued_tso_target_handles.get(retraction_handle, [])
+            for index, callback in enumerate(callbacks):
+                target_handles = saved_targets[index] if index < len(saved_targets) else None
+                if target_handles is not None:
+                    self.callback_targets[id(callback)] = (None, frozenset(target_handles))
         remaining = self._joined_handle_values()
         if remaining:
             self._sync_time_globals(remaining[0])
         self.callback_queue.clear()
-        self.callback_targets.clear()
-        self.queued_tso_callbacks.clear()
-        self.delivered_retractions.clear()
-        self.delivered_retraction_targets.clear()
-        self.requested_retractions.clear()
         self.attribute_scope_state.clear()
 
     def _save_status_array(self) -> datatypes_pb2.FederateHandleSaveStatusPairArray:
@@ -4128,6 +4802,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         record = self.object_instances.pop(object_instance, None)
         if record is None:
             return None
+        for deleted_objects in self.handle_locally_deleted_objects.values():
+            deleted_objects.discard(object_instance)
         self.object_update_regions.pop(object_instance, None)
         self.attribute_scope_state = {
             key: value for key, value in self.attribute_scope_state.items() if key[1] != object_instance

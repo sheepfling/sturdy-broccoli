@@ -28,7 +28,11 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "CHANGE_INTERACTION_ORDER_TYPE": "changeInteractionOrderTypeRequest",
     "COMMIT_REGION_MODIFICATIONS": "commitRegionModificationsRequest",
     "CONFIRM_DIVESTITURE": "confirmDivestitureRequest",
+    "CREATE_FEDERATION_EXECUTION": "createFederationExecutionRequest",
+    "CREATE_FEDERATION_EXECUTION_WITH_TIME": "createFederationExecutionWithTimeRequest",
     "CREATE_REGION": "createRegionRequest",
+    "CREATE_WITH_MIM": "createFederationExecutionWithMIMRequest",
+    "CREATE_WITH_MIM_AND_TIME": "createFederationExecutionWithMIMAndTimeRequest",
     "DELETE_OBJECT_INSTANCE": "deleteObjectInstanceRequest",
     "DELETE_OBJECT_INSTANCE_TIMESTAMP": "deleteObjectInstanceWithTimeRequest",
     "DELETE_REGION": "deleteRegionRequest",
@@ -66,6 +70,8 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "GET_OBJECT_INSTANCE_NAME": "getObjectInstanceNameRequest",
     "IS_ATTRIBUTE_OWNED_BY_FEDERATE": "isAttributeOwnedByFederateRequest",
     "LOCAL_DELETE_OBJECT_INSTANCE": "localDeleteObjectInstanceRequest",
+    "LIST_FEDERATION_EXECUTIONS": "listFederationExecutionsRequest",
+    "LIST_FEDERATION_EXECUTION_MEMBERS": "listFederationExecutionMembersRequest",
     "MODIFY_LOOKAHEAD": "modifyLookaheadRequest",
     "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE": "negotiatedAttributeOwnershipDivestitureRequest",
     "NEXT_MESSAGE_REQUEST": "nextMessageRequestRequest",
@@ -88,11 +94,13 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "REQUEST_FEDERATION_SAVE": "requestFederationSaveWithTimeRequest",
     "RESIGN": "resignFederationExecutionRequest",
     "RETRACT": "retractRequest",
+    "SEND_INTERACTION_WITH_REGIONS_TIMESTAMP": "sendInteractionWithRegionsAndTimeRequest",
     "SEND_DIRECTED_INTERACTION_TIMESTAMP": "sendDirectedInteractionWithTimeRequest",
     "SEND_INTERACTION": "sendInteractionRequest",
     "SEND_INTERACTION_TIMESTAMP": "sendInteractionWithTimeRequest",
     "SEND_INTERACTION_WITH_REGIONS": "sendInteractionWithRegionsRequest",
     "SET_RANGE_BOUNDS": "setRangeBoundsRequest",
+    "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS": "subscribeInteractionClassWithRegionsRequest",
     "SET_AUTOMATIC_RESIGN_DIRECTIVE": "setAutomaticResignDirectiveRequest",
     "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES": "subscribeObjectClassAttributesRequest",
     "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS": "subscribeObjectClassAttributesWithRegionsRequest",
@@ -102,6 +110,7 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "UNASSOCIATE_REGIONS_FOR_UPDATES": "unassociateRegionsForUpdatesRequest",
     "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE": "unconditionalAttributeOwnershipDivestitureRequest",
     "UNPUBLISH_OBJECT_CLASS_ATTRIBUTES": "unpublishObjectClassAttributesRequest",
+    "UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS": "unsubscribeInteractionClassWithRegionsRequest",
     "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES": "unsubscribeObjectClassAttributesRequest",
     "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS": "unsubscribeObjectClassAttributesWithRegionsRequest",
     "UPDATE_ATTRIBUTE_VALUES": "updateAttributeValuesRequest",
@@ -113,8 +122,12 @@ _REQUEST_COMMANDS.update(
     {
         "connectRequest": "CONNECT",
         "connectWithLocalSettingsDesignatorRequest": "CONNECT",
+        "createFederationExecutionRequest": "CREATE_FEDERATION_EXECUTION",
+        "createFederationExecutionWithTimeRequest": "CREATE_FEDERATION_EXECUTION_WITH_TIME",
         "createFederationExecutionWithModulesRequest": "CREATE",
         "createFederationExecutionWithModulesAndTimeRequest": "CREATE",
+        "createFederationExecutionWithMIMRequest": "CREATE_WITH_MIM",
+        "createFederationExecutionWithMIMAndTimeRequest": "CREATE_WITH_MIM_AND_TIME",
         "joinFederationExecutionRequest": "JOIN",
         "joinFederationExecutionWithModulesRequest": "JOIN",
         "joinFederationExecutionWithNameRequest": "JOIN",
@@ -144,6 +157,10 @@ def _join_request_field(request: TransportRequest) -> str:
 _SPECIAL_REQUEST_FIELDS = {
     "CONNECT": _connect_request_field,
     "CREATE": _create_request_field,
+    "CREATE_FEDERATION_EXECUTION": lambda request: "createFederationExecutionRequest",
+    "CREATE_FEDERATION_EXECUTION_WITH_TIME": lambda request: "createFederationExecutionWithTimeRequest",
+    "CREATE_WITH_MIM": lambda request: "createFederationExecutionWithMIMRequest",
+    "CREATE_WITH_MIM_AND_TIME": lambda request: "createFederationExecutionWithMIMAndTimeRequest",
     "JOIN": _join_request_field,
 }
 
@@ -328,6 +345,19 @@ def _request_fields_for_call(request_field: str, fields: Sequence[Any]) -> Seque
         return fields[:2]
     if request_field == "createFederationExecutionWithModulesAndTimeRequest":
         return (fields[0], fields[2:] if len(fields) > 2 else (), fields[1] if len(fields) > 1 else "")
+    if request_field == "createFederationExecutionWithMIMRequest":
+        return (
+            fields[0],
+            fields[2:] if len(fields) > 2 else (),
+            fields[1] if len(fields) > 1 else "",
+        )
+    if request_field == "createFederationExecutionWithMIMAndTimeRequest":
+        return (
+            fields[0],
+            fields[3:] if len(fields) > 3 else (),
+            fields[2] if len(fields) > 2 else "",
+            fields[1] if len(fields) > 1 else "",
+        )
     if request_field == "createFederationExecutionWithModulesRequest":
         return (fields[0], fields[1:] if len(fields) > 1 else ())
     if request_field == "joinFederationExecutionWithModulesRequest":

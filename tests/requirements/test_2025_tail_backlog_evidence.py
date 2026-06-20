@@ -11,6 +11,9 @@ DIFFERENTIAL_SET = ROOT / "requirements/2025/differentials/HLA_1516_2025_vs_2010
 REUSE_DISPOSITION = ROOT / "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv"
 STRICT_DOC_INVENTORY = ROOT / "requirements/2025/STRICT_DOC_INVENTORY.json"
 SOURCE_TRACE = ROOT / "requirements/2025/SOURCE_TRACE.md"
+HARMONIZATION_REVIEW_QUEUE = ROOT / "requirements/2025/harmonization/hla_2025_review_queue.csv"
+HARMONIZATION_DISPOSITION_CSV = ROOT / "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv"
+HARMONIZATION_DISPOSITION_JSON = ROOT / "requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.json"
 FEDPRO_PROTO_DIR = ROOT / "packages/hla-transport-grpc/proto/rti1516_2025/fedpro"
 FEDPRO_2025_TEST = ROOT / "tests/transport/test_grpc_transport_2025.py"
 WSDL_2010 = ROOT / "CERTI/xml/ieee1516-2010/1516_1-2010/hla1516e.wsdl"
@@ -19,6 +22,10 @@ WSDL_2010 = ROOT / "CERTI/xml/ieee1516-2010/1516_1-2010/hla1516e.wsdl"
 def _csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as handle:
         return [{key: value or "" for key, value in row.items()} for row in csv.DictReader(handle)]
+
+
+def _json_rows(path: Path) -> list[dict[str, object]]:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 @pytest.mark.requirements("HLA2025-BLG-001",
@@ -416,3 +423,82 @@ def test_2025_differentials_capture_replacement_policy_and_mom_switch_surface() 
     assert "valueRequired" in service_reporting["2025_detail"]
     assert report_file["reuse_action"] == "Add"
     assert set_switches_parameter["reuse_action"] == "Add"
+
+
+@pytest.mark.requirements("HLA2025-TRACE-001", "HLA2025-TRACE-002", "HLA2025-REQ-001")
+def test_2025_harmonization_ledgers_track_refined_finish_line_slice_ids() -> None:
+    stale_slice_ids = {
+        "2025-logical-time",
+        "2025-fedpro-transport-contract",
+        "2025-mom-service-report-serialization",
+        "2025-object-management-support-callbacks",
+        "2025-object-advisory-and-transport-callbacks",
+        "2025-ownership-basic-tag-callbacks",
+        "2025-federation-lifecycle-services",
+        "2025-basic-declaration-services",
+        "2025-object-delete-and-update-request-callbacks",
+        "2025-object-transport-reporting-callbacks",
+        "2025-ownership-divestiture-and-release-flows",
+        "2025-ownership-acquisition-and-notification-flows",
+        "2025-support-identity-and-catalog-lookups",
+        "2025-support-policy-and-dimension-lookups",
+        "2025-support-switch-state-inquiries",
+        "2025-support-switch-state-control",
+        "2025-mom-manager-interaction-routing",
+        "2025-switch-inquiry-control",
+        "2025-support-handle-normalization-and-switches",
+        "2025-support-query-lookups",
+        "2025-time-control-and-advances",
+    }
+
+    review_rows = _csv_rows(HARMONIZATION_REVIEW_QUEUE)
+    disposition_rows = _csv_rows(HARMONIZATION_DISPOSITION_CSV)
+    disposition_json_rows = _json_rows(HARMONIZATION_DISPOSITION_JSON)
+
+    for rows in (review_rows, disposition_rows, disposition_json_rows):
+        assert stale_slice_ids.isdisjoint({str(row["known_seed_slice"]) for row in rows})
+
+    review_by_id = {row["id"]: row for row in review_rows}
+    disposition_by_id = {row["id"]: row for row in disposition_rows}
+    disposition_json_by_id = {str(row["id"]): row for row in disposition_json_rows}
+
+    expected_seed_by_id = {
+        "HLA2025-FI-SVC-065": "2025-object-delete-remove-flows",
+        "HLA2025-FI-SVC-068": "2025-object-scope-advisory-callbacks",
+        "HLA2025-FI-SVC-071": "2025-object-attribute-update-request-callbacks",
+        "HLA2025-FI-SVC-072": "2025-object-update-rate-advisory-callbacks",
+        "HLA2025-FI-SVC-074": "2025-object-attribute-transport-callbacks",
+        "HLA2025-FI-SVC-082": "2025-object-interaction-transport-callbacks",
+        "HLA2025-FI-SVC-083": "2025-ownership-divestiture-confirmation-flows",
+        "HLA2025-FI-SVC-092": "2025-ownership-release-and-if-wanted-flows",
+        "HLA2025-FI-SVC-089": "2025-ownership-acquisition-assumption-flows",
+        "HLA2025-FI-SVC-090": "2025-ownership-acquisition-availability-cancellation-flows",
+        "HLA2025-FI-SVC-098": "2025-ownership-query-and-resign-policies",
+        "HLA2025-FI-SVC-035": "2025-declaration-publication-services",
+        "HLA2025-FI-SVC-041": "2025-declaration-subscription-services",
+        "HLA2025-FI-SVC-047": "2025-declaration-relevance-advisory-callbacks",
+        "HLA2025-FI-SVC-001": "2025-connect-and-federation-catalog-services",
+        "HLA2025-FI-SVC-010": "2025-federate-membership-and-resign-services",
+        "HLA2025-FI-SVC-013": "2025-synchronization-point-services",
+        "HLA2025-FI-SVC-138": "2025-support-federate-and-object-identity-lookups",
+        "HLA2025-FI-SVC-145": "2025-support-attribute-interaction-catalog-lookups",
+        "HLA2025-FI-SVC-162": "2025-support-handle-normalization-and-region-introspection",
+        "HLA2025-FI-SVC-170": "2025-support-advisory-and-reporting-state-inquiries",
+        "HLA2025-FI-SVC-171": "2025-support-advisory-and-reporting-state-controls",
+        "HLA2025-FI-SVC-180": "2025-support-runtime-policy-state-inquiries",
+        "HLA2025-FI-SVC-181": "2025-support-runtime-policy-state-controls",
+        "HLA2025-FI-SVC-147": "2025-support-policy-update-and-transport-lookups",
+        "HLA2025-FI-SVC-163": "2025-support-interaction-dimension-and-range-lookups",
+        "HLA2025-FI-SVC-101": "2025-time-mode-enable-disable",
+        "HLA2025-FI-SVC-116": "2025-time-query-and-lookahead-control",
+        "HLA2025-FI-SVC-123": "2025-time-queries-retraction-and-order",
+        "HLA2025-FI-SVC-124": "2025-time-queries-retraction-and-order",
+    }
+
+    for requirement_id, expected_seed in expected_seed_by_id.items():
+        assert review_by_id[requirement_id]["known_seed_slice"] == expected_seed
+        assert expected_seed in review_by_id[requirement_id]["disposition_rationale"]
+        assert disposition_by_id[requirement_id]["known_seed_slice"] == expected_seed
+        assert expected_seed in disposition_by_id[requirement_id]["disposition_rationale"]
+        assert disposition_json_by_id[requirement_id]["known_seed_slice"] == expected_seed
+        assert expected_seed in str(disposition_json_by_id[requirement_id]["disposition_rationale"])

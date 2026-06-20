@@ -7,15 +7,22 @@ from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
 from hla.rti1516e.exceptions import (
     AttributeNotOwned,
+    AttributeNotDefined,
+    FederateNotExecutionMember,
     FederateHandleNotKnown,
+    InvalidAttributeHandle,
     InvalidFederateHandle,
     InvalidOrderName,
     InvalidOrderType,
+    InvalidParameterHandle,
+    InvalidRegion,
+    InvalidResignAction,
     InvalidServiceGroup,
     InvalidTransportationName,
     InvalidTransportationType,
     InvalidUpdateRateDesignator,
     NameNotFound,
+    NotConnected,
     ObjectInstanceNotKnown,
     AttributeRelevanceAdvisorySwitchIsOn,
     AttributeRelevanceAdvisorySwitchIsOff,
@@ -25,6 +32,9 @@ from hla.rti1516e.exceptions import (
     InteractionRelevanceAdvisorySwitchIsOff,
     ObjectClassRelevanceAdvisorySwitchIsOn,
     ObjectClassRelevanceAdvisorySwitchIsOff,
+    RegionNotCreatedByThisFederate,
+    RestoreInProgress,
+    SaveInProgress,
 )
 from hla.rti1516e.handles import (
     AttributeHandleFactory,
@@ -321,11 +331,21 @@ def test_support_normalizers_and_factories():
 
 def test_support_invalid_inputs_raise_expected_errors():
     _, owner, acquirer, _owner_fed, _acquirer_fed, h1, _h2 = joined_pair("support-invalid-fed")
+    obj_cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(obj_cls, "Position")
+    inter_cls = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    param = owner.get_parameter_handle(inter_cls, "TrackId")
 
     with pytest.raises(FederateHandleNotKnown):
         owner.get_federate_name(type(h1)(h1.value + 1000))
     with pytest.raises(InvalidFederateHandle):
         owner.normalize_federate_handle(type(h1)(h1.value + 1000))
+    with pytest.raises(InvalidAttributeHandle):
+        owner.get_attribute_name(obj_cls, param)  # type: ignore[arg-type]
+    with pytest.raises(InvalidAttributeHandle):
+        owner.get_available_dimensions_for_class_attribute(obj_cls, param)  # type: ignore[arg-type]
+    with pytest.raises(InvalidParameterHandle):
+        owner.get_parameter_name(inter_cls, attr)  # type: ignore[arg-type]
     with pytest.raises(InvalidServiceGroup):
         owner.normalize_service_group("not-a-service-group")
     with pytest.raises(InvalidOrderName):
@@ -383,6 +403,221 @@ def test_support_advisory_switches_toggle_and_reject_duplicates():
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     acquirer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("support-switch-fed")
+
+
+def test_support_dimension_handle_set_and_advisory_switches_cover_runtime_guards():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    unjoined_calls = (
+        lambda: rti.get_dimension_handle_set(object()),
+        lambda: rti.enable_object_class_relevance_advisory_switch(),
+        lambda: rti.disable_object_class_relevance_advisory_switch(),
+        lambda: rti.enable_attribute_relevance_advisory_switch(),
+        lambda: rti.disable_attribute_relevance_advisory_switch(),
+        lambda: rti.enable_attribute_scope_advisory_switch(),
+        lambda: rti.disable_attribute_scope_advisory_switch(),
+    )
+
+    for call in unjoined_calls:
+        with pytest.raises(NotConnected):
+            call()
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    for call in unjoined_calls:
+        with pytest.raises(FederateNotExecutionMember):
+            call()
+    rti.disconnect()
+
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("support-dimension-switch-guards-fed")
+    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
+    region = owner.create_region({dim})
+    invalid_region = type(region)(region.value + 1000)
+
+    with pytest.raises(InvalidRegion):
+        owner.get_dimension_handle_set(invalid_region)
+
+    owner.enable_object_class_relevance_advisory_switch()
+    with pytest.raises(ObjectClassRelevanceAdvisorySwitchIsOn):
+        owner.enable_object_class_relevance_advisory_switch()
+    owner.disable_object_class_relevance_advisory_switch()
+    with pytest.raises(ObjectClassRelevanceAdvisorySwitchIsOff):
+        owner.disable_object_class_relevance_advisory_switch()
+
+    owner.enable_attribute_relevance_advisory_switch()
+    with pytest.raises(AttributeRelevanceAdvisorySwitchIsOn):
+        owner.enable_attribute_relevance_advisory_switch()
+    owner.disable_attribute_relevance_advisory_switch()
+    with pytest.raises(AttributeRelevanceAdvisorySwitchIsOff):
+        owner.disable_attribute_relevance_advisory_switch()
+
+    owner.enable_attribute_scope_advisory_switch()
+    with pytest.raises(AttributeScopeAdvisorySwitchIsOn):
+        owner.enable_attribute_scope_advisory_switch()
+    owner.disable_attribute_scope_advisory_switch()
+    with pytest.raises(AttributeScopeAdvisorySwitchIsOff):
+        owner.disable_attribute_scope_advisory_switch()
+
+    guarded_calls = (
+        lambda: owner.get_dimension_handle_set(region),
+        lambda: owner.enable_object_class_relevance_advisory_switch(),
+        lambda: owner.disable_object_class_relevance_advisory_switch(),
+        lambda: owner.enable_attribute_relevance_advisory_switch(),
+        lambda: owner.disable_attribute_relevance_advisory_switch(),
+        lambda: owner.enable_attribute_scope_advisory_switch(),
+        lambda: owner.disable_attribute_scope_advisory_switch(),
+    )
+
+    owner.request_federation_save("SUPPORT-DIMENSION-SWITCH-GUARDS")
+    drain(owner, observer)
+    for call in guarded_calls:
+        with pytest.raises(SaveInProgress):
+            call()
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("SUPPORT-DIMENSION-SWITCH-GUARDS")
+    drain(owner, observer)
+    for call in guarded_calls:
+        with pytest.raises(RestoreInProgress):
+            call()
+
+    owner.abort_federation_restore()
+    drain(owner, observer)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("support-dimension-switch-guards-fed")
+
+
+def test_support_interaction_dimension_lookup_requires_active_membership():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+
+    with pytest.raises(NotConnected):
+        rti.get_available_dimensions_for_interaction_class(object())
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_available_dimensions_for_interaction_class(object())
+    rti.disconnect()
+
+
+def test_support_set_range_bounds_rejects_foreign_region_owner():
+    _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("support-foreign-region-fed")
+    owner_dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
+    acquirer_dim = acquirer.get_dimension_handle("HLAdefaultRoutingSpace")
+    owner_region = owner.create_region({owner_dim})
+
+    with pytest.raises(RegionNotCreatedByThisFederate):
+        acquirer.set_range_bounds(owner_region, acquirer_dim, RangeBounds(0, 10))
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("support-foreign-region-fed")
+
+
+def test_support_runtime_service_inquiries_and_factories_require_active_membership():
+    _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("support-runtime-membership-fed")
+
+    calls = (
+        lambda: owner.get_automatic_resign_directive(),
+        lambda: owner.get_attribute_handle_factory(),
+        lambda: owner.get_attribute_handle_set_factory(),
+        lambda: owner.get_attribute_handle_value_map_factory(),
+        lambda: owner.get_attribute_set_region_set_pair_list_factory(),
+        lambda: owner.get_dimension_handle_factory(),
+        lambda: owner.get_dimension_handle_set_factory(),
+        lambda: owner.get_federate_handle_factory(),
+        lambda: owner.get_federate_handle_set_factory(),
+        lambda: owner.get_interaction_class_handle_factory(),
+        lambda: owner.get_object_class_handle_factory(),
+        lambda: owner.get_object_instance_handle_factory(),
+        lambda: owner.get_parameter_handle_factory(),
+        lambda: owner.get_parameter_handle_value_map_factory(),
+        lambda: owner.get_region_handle_set_factory(),
+        lambda: owner.get_time_factory(),
+        lambda: owner.get_transportation_type_handle_factory(),
+    )
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    for call in calls:
+        with pytest.raises(FederateNotExecutionMember):
+            call()
+
+    owner.disconnect()
+    for call in calls:
+        with pytest.raises(NotConnected):
+            call()
+
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.destroy_federation_execution("support-runtime-membership-fed")
+
+
+def test_support_lookup_runtime_negatives_cover_invalid_not_member_and_not_connected():
+    _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("support-runtime-negative-fed")
+    obj_cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(obj_cls, "Position")
+    obj = owner.register_object_instance(obj_cls, "Support-Negative-1")
+    reliable = owner.get_transportation_type_handle("HLAreliable")
+
+    with pytest.raises(InvalidUpdateRateDesignator):
+        owner.get_update_rate_value("fast")
+    with pytest.raises(AttributeNotDefined):
+        owner.get_update_rate_value_for_attribute(obj, type(attr)(999999))
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.get_update_rate_value_for_attribute(type(obj)(999999), attr)
+    with pytest.raises(InvalidTransportationName):
+        owner.get_transportation_type("HLAimaginaryTransport")
+    with pytest.raises(InvalidTransportationType):
+        owner.get_transportation_type_name(type(reliable)(999999))
+    with pytest.raises(InvalidResignAction):
+        owner.set_automatic_resign_directive("bogus")  # type: ignore[arg-type]
+    with pytest.raises(InvalidServiceGroup):
+        owner.normalize_service_group("not-a-service-group")
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_update_rate_value("default")
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_update_rate_value_for_attribute(obj, attr)
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_transportation_type("HLAreliable")
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_transportation_type_handle("HLAreliable")
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_transportation_name(reliable)
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_transportation_type_name(reliable)
+    with pytest.raises(FederateNotExecutionMember):
+        owner.get_automatic_resign_directive()
+    with pytest.raises(FederateNotExecutionMember):
+        owner.set_automatic_resign_directive(ResignAction.NO_ACTION)
+    with pytest.raises(FederateNotExecutionMember):
+        owner.normalize_service_group(ServiceGroup.OBJECT_MANAGEMENT)
+
+    owner.disconnect()
+    with pytest.raises(NotConnected):
+        owner.get_update_rate_value("default")
+    with pytest.raises(NotConnected):
+        owner.get_update_rate_value_for_attribute(obj, attr)
+    with pytest.raises(NotConnected):
+        owner.get_transportation_type("HLAreliable")
+    with pytest.raises(NotConnected):
+        owner.get_transportation_type_handle("HLAreliable")
+    with pytest.raises(NotConnected):
+        owner.get_transportation_name(reliable)
+    with pytest.raises(NotConnected):
+        owner.get_transportation_type_name(reliable)
+    with pytest.raises(NotConnected):
+        owner.get_automatic_resign_directive()
+    with pytest.raises(NotConnected):
+        owner.set_automatic_resign_directive(ResignAction.NO_ACTION)
+    with pytest.raises(NotConnected):
+        owner.normalize_service_group(ServiceGroup.OBJECT_MANAGEMENT)
+
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.destroy_federation_execution("support-runtime-negative-fed")
 
 
 def test_discovery_uses_closest_subscribed_superclass_and_known_class_stays_stable(tmp_path: Path):

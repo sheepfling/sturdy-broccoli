@@ -14,6 +14,7 @@ from hla.rti1516e.exceptions import (
     InvalidRegionContext,
     InvalidUpdateRateDesignator,
     RegionDoesNotContainSpecifiedDimension,
+    RegionNotCreatedByThisFederate,
 )
 from hla.rti1516e.handles import (
     AttributeHandle,
@@ -35,6 +36,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
     def _svc_createRegion(self, dimensions: Iterable[DimensionHandle]) -> RegionHandle:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        assert self.state.handle is not None
         handle = self.engine._alloc(RegionHandle)
         dims = set(dimensions)
         for dimension in dims:
@@ -43,6 +45,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         self.state.region_bounds[handle] = {
             dimension: RangeBounds(0, (1 << 63) - 1) for dimension in dims
         }
+        federation.region_owners[handle] = self.state.handle
         return handle
 
     def _svc_commitRegionModifications(self, regions: Iterable[RegionHandle]) -> None:
@@ -75,6 +78,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
             raise InvalidRegion(repr(theRegion))
         self.state.regions.pop(theRegion, None)
         self.state.region_bounds.pop(theRegion, None)
+        federation.region_owners.pop(theRegion, None)
 
     def _svc_subscribeObjectClassAttributesWithRegions(
         self,
@@ -388,6 +392,8 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         if theRegion not in self.state.regions:
+            if theRegion in federation.region_owners:
+                raise RegionNotCreatedByThisFederate(repr(theRegion))
             raise InvalidRegion(repr(theRegion))
         if theDimension not in self.state.regions[theRegion]:
             raise RegionDoesNotContainSpecifiedDimension(repr(theDimension))

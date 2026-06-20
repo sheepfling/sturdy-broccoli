@@ -18,6 +18,9 @@ The four backend docs are intentionally parallel:
 
 - Backend columns refer to what a Python federate can rely on through
   `hla.rti.create_rti_ambassador(...)`.
+- This matrix is the clause-level snapshot for the backend-neutral
+  IEEE 1516.1-2010 surface, not the canonical finish-line artifact for the
+  2025 lane.
 - `certi-jpype` and `certi-py4j` inherit the same runtime status as the active
   `certi` runtime; separate adapter parity is covered by the Java-profile
   tests.
@@ -43,6 +46,11 @@ Use this file to answer:
 - which IEEE 1516.1-2010 clauses have working behavior now
 - where Python RTI is ahead of vendor/runtime paths
 - where CERTI or Pitch remains partial beyond the currently promoted overlap
+
+For the current 2025 closeout posture, use:
+
+- [python_rti_backend.md](python_rti_backend.md)
+- [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
 
 For CERTI-specific caveats, baseline-selection commands, and the distinction
 between repo-local patched CERTI and pristine upstream CERTI, see

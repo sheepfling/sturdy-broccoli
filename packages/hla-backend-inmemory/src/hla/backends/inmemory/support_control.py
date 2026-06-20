@@ -9,6 +9,7 @@ from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
 from hla.rti1516e.exceptions import (
     AttributeRelevanceAdvisorySwitchIsOff,
     AttributeRelevanceAdvisorySwitchIsOn,
+    InvalidAttributeHandle,
     AttributeScopeAdvisorySwitchIsOff,
     AttributeScopeAdvisorySwitchIsOn,
     InteractionRelevanceAdvisorySwitchIsOff,
@@ -152,6 +153,8 @@ class PythonRTISupportControlMixin(PythonRTISupportLookupMixin):
         theAttribute: AttributeHandle,
     ) -> hla_handles.DimensionHandleSet:
         self._require_joined()
+        if not isinstance(theAttribute, AttributeHandle):
+            raise InvalidAttributeHandle(repr(theAttribute))
         self.engine.attribute_name(theClass, theAttribute)
         return self._all_known_dimensions()
 

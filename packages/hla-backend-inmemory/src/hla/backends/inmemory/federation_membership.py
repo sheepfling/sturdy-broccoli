@@ -157,6 +157,8 @@ class PythonRTIFederationMembershipMixin:
             mom_instance = federation.objects.pop(mom_handle, None)
             if mom_instance is not None:
                 federation.object_names.pop(mom_instance.name, None)
+        for region in tuple(self.state.regions):
+            federation.region_owners.pop(region, None)
         federation.federates.pop(handle, None)
         self._process_time_advances(federation)
         self._refresh_all_mom_objects(federation, notify=True)
@@ -173,3 +175,8 @@ class PythonRTIFederationMembershipMixin:
         self.state.published_interactions.clear()
         self.state.subscribed_interactions.clear()
         self.state.interaction_interest_classes.clear()
+        self.state.regions.clear()
+        self.state.region_bounds.clear()
+        self.state.update_regions.clear()
+        self.state.object_region_subscriptions.clear()
+        self.state.interaction_region_subscriptions.clear()

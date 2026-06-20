@@ -1,6 +1,6 @@
 # Backend Capability Matrix
 
-Current backend support status for the `hla-2010` working scaffold.
+Current backend support status for the repo's operator-facing runtime families.
 
 This is document `3/4` in the backend documentation set.
 For the canonical documentation hierarchy, see
@@ -15,7 +15,19 @@ The four backend docs are intentionally parallel:
 
 ## Scope
 
-This matrix tracks what the Python federate can rely on through the common HLA 1516.1-2010 surface today.
+This matrix primarily tracks what a Python federate can rely on through the
+common HLA 1516.1-2010 surface today.
+
+It is not the canonical closeout view for the IEEE 1516.1-2025 lane.
+
+For the current 2025 implementation posture, use:
+
+- [python_rti_backend.md](python_rti_backend.md)
+- [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
+
+Those pages record the bounded working-surface evidence for the current
+`hla-backend-shim` 2025 lane and the explicit promotion-versus-split decision
+criteria.
 
 Use this file to answer:
 
@@ -26,6 +38,26 @@ Use this file to answer:
 
 Use the inventory doc for names and combinations, and use the conformance doc
 for clause-level status.
+
+## 2025 Note
+
+The repo now has a separate 2025 Python implementation lane:
+
+- `hla-backend-shim` for the current executable `rti1516_2025` backend
+- `python-2025-inprocess` for the direct runtime proof lane
+- `python-2025-fedpro-grpc` for the hosted FedPro route variant
+
+Current evidence does support a bounded claim for that lane:
+
+- it is a substantively validated working Python 2025 RTI surface for the
+  tracked runtime scenarios
+- it is not yet a full requirement-by-requirement 2025 conformance claim
+- it is not yet a permanent architectural proof that a future dedicated 2025
+  backend split will never be needed
+
+That distinction is intentional. This matrix stays focused on the broader
+operator-facing backend families, while the 2025 finish-line inventory carries
+the deeper requirement-level evidence.
 
 Legend:
 

@@ -7,8 +7,19 @@ Current real remote routes are:
 
 - Python RTI over `grpc`
 - Python RTI over `rest`
+- Python 2025 FedPro hosted route over `grpc`
 - CERTI over `grpc`
 - CERTI over `rest`
+
+Important distinctions:
+
+- `Python RTI over grpc/rest` refers to the older hosted route over the 2010
+  Python in-memory backend
+- `Python 2025 FedPro hosted route over grpc` refers to the bounded typed
+  transport route over the current `hla-backend-shim` 2025 lane
+- the 2025 hosted route is real executable runtime evidence, but it is still
+  tracked as a bounded runtime slice rather than a full remote-RTI semantics
+  or full MOM action/request conformance pass
 
 Current callback contract for both remote transports:
 
@@ -16,4 +27,13 @@ Current callback contract for both remote transports:
 - callback polling through `evokeCallback` / `evokeMultipleCallbacks`
 - no streaming callback channel yet
 
-Use this page when you want the transport-hosted route story.
+Route anchors:
+
+- `docs/networked_rti_python.md`
+- `packages/hla-transport-grpc/README.md`
+- `tests/transport/test_grpc_transport_2025.py`
+- `docs/plans/2025_requirements_finish_line.md`
+
+Use this page when you want the transport-hosted route story and the current
+distinction between the 2010 hosted Python lane and the bounded hosted 2025
+FedPro lane.

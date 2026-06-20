@@ -261,6 +261,8 @@ class _FederationRecord:
     queued_tso_callbacks: dict[int, "_QueuedTsoCallback"] = field(default_factory=dict)
     delivered_retraction_handles: set[int] = field(default_factory=set)
     delivered_retraction_targets: dict[int, FederateHandle] = field(default_factory=dict)
+    retraction_groups: dict[int, set[int]] = field(default_factory=dict)
+    retraction_group_lookup: dict[int, int] = field(default_factory=dict)
     saved_labels: set[str] = field(default_factory=set)
     saved_object_instances: dict[str, dict[int, "_ObjectInstanceRecord"]] = field(default_factory=dict)
     saved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
@@ -284,6 +286,8 @@ class _FederationRecord:
     saved_queued_tso_callbacks: dict[str, dict[int, "_QueuedTsoCallback"]] = field(default_factory=dict)
     saved_delivered_retraction_handles: dict[str, set[int]] = field(default_factory=dict)
     saved_delivered_retraction_targets: dict[str, dict[int, FederateHandle]] = field(default_factory=dict)
+    saved_retraction_groups: dict[str, dict[int, set[int]]] = field(default_factory=dict)
+    saved_retraction_group_lookup: dict[str, dict[int, int]] = field(default_factory=dict)
     save_label: str | None = None
     next_save_name: str | None = None
     next_save_time: Any | None = None
@@ -1060,13 +1064,30 @@ class Shim2025RTIAmbassador:
             InvalidMessageRetractionHandle,
         )
         federation = self._federation_record()
-        if federation.queued_tso_callbacks.pop(retraction_value, None) is not None:
+        canonical_handle, member_handles = self._resolve_retraction_group(federation, retraction_value)
+        queued_removed = False
+        delivered_targets: list[FederateHandle] = []
+        delivered_state_seen = False
+        for handle_value in member_handles:
+            if federation.queued_tso_callbacks.pop(handle_value, None) is not None:
+                queued_removed = True
+                self._drop_retraction_group_member(federation, handle_value)
+            if handle_value in federation.delivered_retraction_handles:
+                delivered_state_seen = True
+                target = federation.delivered_retraction_targets.pop(handle_value, None)
+                if target is not None:
+                    delivered_targets.append(target)
+        if queued_removed or delivered_targets:
+            seen_targets: set[int] = set()
+            for target in delivered_targets:
+                if target.value in seen_targets:
+                    continue
+                seen_targets.add(target.value)
+                self._deliver_to_federate_handle(target, "requestRetraction", MessageRetractionHandle(canonical_handle))
+            if not delivered_targets:
+                self._finalize_retraction_group_if_inactive(federation, canonical_handle)
             return
-        if retraction_value in federation.delivered_retraction_handles:
-            target = federation.delivered_retraction_targets.pop(retraction_value, None)
-            if target is not None:
-                self._deliver_to_federate_handle(target, "requestRetraction", MessageRetractionHandle(retraction_value))
-                return
+        if delivered_state_seen:
             raise MessageCanNoLongerBeRetracted(str(retraction))
         raise InvalidMessageRetractionHandle(str(retraction))
 
@@ -2150,7 +2171,7 @@ class Shim2025RTIAmbassador:
                     None,
                 )
         if callback_time is not None:
-            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            handle = self._canonicalize_retraction_handles(federation, retraction_handles)
             return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
@@ -2243,7 +2264,7 @@ class Shim2025RTIAmbassador:
                 None,
             )
         if callback_time is not None:
-            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            handle = self._canonicalize_retraction_handles(federation, retraction_handles)
             return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
@@ -2392,7 +2413,7 @@ class Shim2025RTIAmbassador:
                 None,
             )
         if callback_time is not None:
-            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            handle = self._canonicalize_retraction_handles(federation, retraction_handles)
             return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
@@ -2460,7 +2481,7 @@ class Shim2025RTIAmbassador:
             federation.object_instance_names.pop(record.object_instance_name, None)
         federation.object_instances.pop(object_instance_value, None)
         if callback_time is not None:
-            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            handle = self._canonicalize_retraction_handles(federation, retraction_handles)
             return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
@@ -2913,7 +2934,7 @@ class Shim2025RTIAmbassador:
         self._record("getUpdateRateValue", updateRateDesignator)
         self._require_joined("getUpdateRateValue")
         designator = str(updateRateDesignator)
-        normalized = "HLAdefault" if designator == "default" else designator
+        normalized = "HLAdefault" if designator in {"default", "HLAdefaultUpdateRate"} else designator
         update_rates = getattr(self._catalog(), "update_rates", {})
         if normalized in update_rates:
             return float(update_rates[normalized])
@@ -3184,7 +3205,14 @@ class Shim2025RTIAmbassador:
                 continue
             rti._deliver_callback("momServiceReport", dict(report))
 
-    def _queue_tso_callback(self, target_federate: FederateHandle, callback_time: Any, method_name: str, *args: Any) -> MessageRetractionHandle:
+    def _queue_tso_callback(
+        self,
+        target_federate: FederateHandle,
+        callback_time: Any,
+        method_name: str,
+        *args: Any,
+        exposed_retraction_handle: MessageRetractionHandle | None = None,
+    ) -> MessageRetractionHandle:
         federation = self._federation_record()
         handle = MessageRetractionHandle(federation.next_message_retraction_handle)
         federation.next_message_retraction_handle += 1
@@ -3193,10 +3221,82 @@ class Shim2025RTIAmbassador:
             callback_time=callback_time,
             serial=handle.value,
             method_name=method_name,
-            args=(*args, handle),
+            args=(*args, exposed_retraction_handle or handle),
         )
         self._process_time_advances()
         return handle
+
+    @staticmethod
+    def _register_retraction_group(
+        federation: _FederationRecord,
+        member_handles: Iterable[MessageRetractionHandle],
+    ) -> MessageRetractionHandle:
+        handles = tuple(member_handles)
+        if not handles:
+            return MessageRetractionHandle(0)
+        canonical = handles[0]
+        if len(handles) == 1:
+            return canonical
+        members = {handle.value for handle in handles}
+        federation.retraction_groups[canonical.value] = members
+        for handle in handles:
+            federation.retraction_group_lookup[handle.value] = canonical.value
+        return canonical
+
+    @staticmethod
+    def _resolve_retraction_group(
+        federation: _FederationRecord,
+        handle_value: int,
+    ) -> tuple[int, set[int]]:
+        if handle_value in federation.retraction_groups:
+            return handle_value, set(federation.retraction_groups[handle_value])
+        canonical = federation.retraction_group_lookup.get(handle_value)
+        if canonical is None:
+            return handle_value, {handle_value}
+        return canonical, set(federation.retraction_groups.get(canonical, {handle_value}))
+
+    @staticmethod
+    def _drop_retraction_group_member(federation: _FederationRecord, handle_value: int) -> None:
+        canonical = federation.retraction_group_lookup.get(handle_value)
+        if canonical is None:
+            return
+        members = federation.retraction_groups.get(canonical)
+        if members is None:
+            federation.retraction_group_lookup.pop(handle_value, None)
+            return
+        members.discard(handle_value)
+        federation.retraction_group_lookup.pop(handle_value, None)
+        if members:
+            federation.retraction_groups[canonical] = members
+            return
+        federation.retraction_groups.pop(canonical, None)
+
+    @staticmethod
+    def _finalize_retraction_group_if_inactive(federation: _FederationRecord, canonical_handle: int) -> None:
+        members = federation.retraction_groups.get(canonical_handle)
+        if members is None:
+            return
+        if any(member in federation.queued_tso_callbacks or member in federation.delivered_retraction_handles for member in members):
+            return
+        federation.retraction_groups.pop(canonical_handle, None)
+        for member in tuple(federation.retraction_group_lookup):
+            if federation.retraction_group_lookup.get(member) == canonical_handle:
+                federation.retraction_group_lookup.pop(member, None)
+
+    @classmethod
+    def _canonicalize_retraction_handles(
+        cls,
+        federation: _FederationRecord,
+        handles: list[MessageRetractionHandle],
+    ) -> MessageRetractionHandle:
+        canonical = cls._register_retraction_group(federation, handles)
+        if len(handles) <= 1:
+            return canonical
+        for handle in handles[1:]:
+            queued = federation.queued_tso_callbacks.get(handle.value)
+            if queued is not None:
+                queued.args = (*queued.args[:-1], canonical)
+        return canonical
 
     def _deliver_due_tso_callbacks(self) -> None:
         federation = self._federation_record()
@@ -3312,6 +3412,8 @@ class Shim2025RTIAmbassador:
             federation.saved_queued_tso_callbacks[label] = copy.deepcopy(federation.queued_tso_callbacks)
             federation.saved_delivered_retraction_handles[label] = set(federation.delivered_retraction_handles)
             federation.saved_delivered_retraction_targets[label] = dict(federation.delivered_retraction_targets)
+            federation.saved_retraction_groups[label] = copy.deepcopy(federation.retraction_groups)
+            federation.saved_retraction_group_lookup[label] = dict(federation.retraction_group_lookup)
             federation.saved_member_time_states[label] = {
                 federate_key: {
                     "lookahead": rti._lookahead,
@@ -3401,6 +3503,12 @@ class Shim2025RTIAmbassador:
             )
             federation.delivered_retraction_targets = dict(
                 federation.saved_delivered_retraction_targets.get(label, federation.delivered_retraction_targets)
+            )
+            federation.retraction_groups = copy.deepcopy(
+                federation.saved_retraction_groups.get(label, federation.retraction_groups)
+            )
+            federation.retraction_group_lookup = dict(
+                federation.saved_retraction_group_lookup.get(label, federation.retraction_group_lookup)
             )
             federation.interaction_order = copy.deepcopy(
                 federation.saved_interaction_order.get(label, federation.interaction_order)
@@ -3734,6 +3842,7 @@ class Shim2025RTIAmbassador:
                 federation.members.pop(self._federate_name, None)
                 federation.member_handles.pop(self._federate_name, None)
             if self._federate_handle is not None:
+                self._prune_tso_state_for_departing_federate(federation, self._federate_handle)
                 reserved_names = [
                     name
                     for name, owner in federation.reserved_object_instance_names.items()
@@ -3755,6 +3864,30 @@ class Shim2025RTIAmbassador:
                 federation.member_regions.pop(self._federate_handle.value, None)
                 federation.member_region_bounds.pop(self._federate_handle.value, None)
             self._refresh_mom_federation_object()
+
+    @staticmethod
+    def _prune_tso_state_for_departing_federate(
+        federation: _FederationRecord,
+        federate_handle: FederateHandle,
+    ) -> None:
+        queued_for_target = [
+            handle_value
+            for handle_value, queued in federation.queued_tso_callbacks.items()
+            if queued.target_federate == federate_handle
+        ]
+        for handle_value in queued_for_target:
+            federation.queued_tso_callbacks.pop(handle_value, None)
+            Shim2025RTIAmbassador._drop_retraction_group_member(federation, handle_value)
+
+        stale_delivered = [
+            handle_value
+            for handle_value, target in federation.delivered_retraction_targets.items()
+            if target == federate_handle
+        ]
+        for handle_value in stale_delivered:
+            federation.delivered_retraction_targets.pop(handle_value, None)
+            federation.delivered_retraction_handles.discard(handle_value)
+            Shim2025RTIAmbassador._drop_retraction_group_member(federation, handle_value)
 
     def _apply_resign_action(self, resign_action: ResignAction) -> None:
         if resign_action is ResignAction.NO_ACTION:
@@ -4640,6 +4773,8 @@ class Shim2025RTIAmbassador:
         for record in self._federation_record().object_instances.values():
             if target_federate not in set(record.attribute_owners.values()):
                 continue
+            if ".HLAmanager." in record.object_class_name:
+                continue
             counts[record.object_class_name] = counts.get(record.object_class_name, 0) + 1
         return counts
 
@@ -4648,6 +4783,8 @@ class Shim2025RTIAmbassador:
         result: dict[str, int] = {}
         for (federate_key, class_name), count in counts.items():
             if federate_key == target_federate.value:
+                if ".HLAmanager." in class_name:
+                    continue
                 result[class_name] = count
         return result
 
@@ -4928,7 +5065,7 @@ class Shim2025RTIAmbassador:
             return True
         if text in {"0", "false", "no", "hlafalse", "off"}:
             return False
-        return default
+        raise RTIinternalError("Invalid MOM boolean value")
 
     @staticmethod
     def _mom_int(value: bytes | None, field_name: str) -> int:
@@ -5012,11 +5149,16 @@ class Shim2025RTIAmbassador:
         try:
             mom_value = int(text)
         except ValueError:
-            normalized = text.removeprefix("HLA").upper()
-            try:
-                return OrderType[normalized]
-            except KeyError as exc:
-                raise RTIinternalError(f"Invalid MOM order type for {field_name}") from exc
+            normalized = text.removeprefix("HLA").replace("_", "").replace("-", "").upper()
+            aliases = {
+                "RECEIVE": OrderType.RECEIVE,
+                "RO": OrderType.RECEIVE,
+                "TIMESTAMP": OrderType.TIMESTAMP,
+                "TSO": OrderType.TIMESTAMP,
+            }
+            if normalized in aliases:
+                return aliases[normalized]
+            raise RTIinternalError(f"Invalid MOM order type for {field_name}")
         if mom_value == 0:
             return OrderType.RECEIVE
         if mom_value == 1:
@@ -5034,11 +5176,18 @@ class Shim2025RTIAmbassador:
         try:
             return ResignAction(int(text))
         except ValueError:
-            normalized = text.removeprefix("HLA").upper()
-            try:
-                return ResignAction[normalized]
-            except KeyError as exc:
-                raise RTIinternalError(f"Invalid MOM resign action {text!r}") from exc
+            normalized = text.removeprefix("HLA").replace("_", "").replace("-", "").upper()
+            aliases = {
+                "NOACTION": ResignAction.NO_ACTION,
+                "UNCONDITIONALLYDIVESTATTRIBUTES": ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES,
+                "DELETEOBJECTS": ResignAction.DELETE_OBJECTS,
+                "CANCELPENDINGOWNERSHIPACQUISITIONS": ResignAction.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+                "DELETEOBJECTSTHENDIVEST": ResignAction.DELETE_OBJECTS_THEN_DIVEST,
+                "CANCELTHENDELETETHENDIVEST": ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+            }
+            if normalized in aliases:
+                return aliases[normalized]
+            raise RTIinternalError(f"Invalid MOM resign action {text!r}")
 
     def _mom_request_report_values(
         self,
@@ -5179,6 +5328,9 @@ class Shim2025RTIAmbassador:
         transportation = self._transportation_handle_by_name("HLAreliable")
         federation = self._federation_record()
         for federate_key in sorted(federation.member_ambassadors):
+            member_rti = federation.member_rtis.get(federate_key)
+            if member_rti is not None and not member_rti._switches.get("exception_reporting", True):
+                continue
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "receiveInteraction",
@@ -5435,7 +5587,7 @@ class Shim2025RTIAmbassador:
 
     def _resolve_update_rate_designator(self, *unused: Any) -> tuple[float | None, str | None]:
         designator = next((str(arg) for arg in reversed(unused) if isinstance(arg, str)), None)
-        if designator in (None, "", "default", "HLAdefault"):
+        if designator in (None, "", "default", "HLAdefault", "HLAdefaultUpdateRate"):
             return (0.0, "HLAdefault") if designator is not None else (None, None)
         update_rates = getattr(self._catalog(), "update_rates", {})
         if designator not in update_rates:

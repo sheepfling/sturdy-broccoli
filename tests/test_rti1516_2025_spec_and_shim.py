@@ -329,6 +329,14 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e.enums import RestoreStatus
 
         return RestoreStatus[value.name]
+    if module_name == "hla.rti1516_2025.enums" and type_name == "SaveFailureReason":
+        from hla.rti1516e.enums import SaveFailureReason
+
+        return SaveFailureReason[value.name]
+    if module_name == "hla.rti1516_2025.enums" and type_name == "RestoreFailureReason":
+        from hla.rti1516e.enums import RestoreFailureReason
+
+        return RestoreFailureReason[value.name]
     if module_name == "hla.rti1516_2025.enums" and type_name == "SynchronizationPointFailureReason":
         from hla.rti1516e.enums import SynchronizationPointFailureReason
 
@@ -348,6 +356,11 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e import handles as handles_2010
 
         return getattr(handles_2010, type_name)(int(value.value))
+    if module_name == "hla.rti1516_2025.handles" and type_name.endswith("Set"):
+        try:
+            return {_normalize_2025_callback_value(item) for item in value}
+        except TypeError:
+            pass
     if module_name == "hla.rti1516_2025.datatypes" and type_name == "FederateHandleSaveStatusPair":
         from hla.rti1516e.datatypes import FederateHandleSaveStatusPair
 
@@ -583,12 +596,51 @@ class _TargetRadar2025RTIAdapter:
             )
         return normalized
 
+    @staticmethod
+    def _camel_to_snake(name: str) -> str:
+        pieces: list[str] = []
+        for index, char in enumerate(name):
+            if char.isupper() and index > 0:
+                pieces.append("_")
+            pieces.append(char.lower())
+        return "".join(pieces)
+
+    @classmethod
+    def _wrap_federate_ambassador(cls, federate_ambassador):  # noqa: ANN001, ANN206
+        if federate_ambassador is None:
+            return federate_ambassador
+
+        class _CallbackCompatBridge:
+            def __init__(self, delegate) -> None:  # noqa: ANN001
+                self._delegate = delegate
+
+            def __getattr__(self, name: str):  # noqa: ANN201
+                snake_name = cls._camel_to_snake(name)
+                snake_target = getattr(self._delegate, snake_name, None)
+                if callable(snake_target):
+                    def _wrapped(*args, **kwargs):  # noqa: ANN001, ANN202
+                        normalized_args = tuple(_normalize_2025_callback_value(arg) for arg in args)
+                        normalized_kwargs = {
+                            key: _normalize_2025_callback_value(value)
+                            for key, value in kwargs.items()
+                        }
+                        return snake_target(*normalized_args, **normalized_kwargs)
+
+                    return _wrapped
+
+                direct = getattr(self._delegate, name, None)
+                if callable(direct):
+                    return direct
+                raise AttributeError(name)
+
+        return _CallbackCompatBridge(federate_ambassador)
+
     def connect(self, federate_ambassador, callback_model) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import CallbackModel
 
         self._call_compat(
             self._delegate.connect,
-            federate_ambassador,
+            self._wrap_federate_ambassador(federate_ambassador),
             self._coerce_named_enum(CallbackModel, callback_model),
         )
 
@@ -1664,6 +1716,37 @@ class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
                 )
             else:
                 args = (args[0], list(args[1]))
+        if method_name == "federationSaveStatusResponse" and len(args) == 1 and isinstance(args[0], (list, set, tuple)):
+            from types import SimpleNamespace
+
+            if all(isinstance(item, tuple) and len(item) == 2 for item in args[0]):
+                args = (
+                    [
+                        SimpleNamespace(
+                            federate_handle=_normalize_2025_callback_value(item[0]),
+                            save_status=_normalize_2025_callback_value(item[1]),
+                        )
+                        for item in args[0]
+                    ],
+                )
+            else:
+                args = (list(args[0]),)
+        if method_name == "federationRestoreStatusResponse" and len(args) == 1 and isinstance(args[0], (list, set, tuple)):
+            from types import SimpleNamespace
+
+            if all(isinstance(item, tuple) and len(item) == 3 for item in args[0]):
+                args = (
+                    [
+                        SimpleNamespace(
+                            pre_restore_handle=_normalize_2025_callback_value(item[0]),
+                            post_restore_handle=_normalize_2025_callback_value(item[1]),
+                            restore_status=_normalize_2025_callback_value(item[2]),
+                        )
+                        for item in args[0]
+                    ],
+                )
+            else:
+                args = (list(args[0]),)
         if method_name == "reflectAttributeValues" and len(args) >= 10:
             args = (
                 args[0],
@@ -4249,6 +4332,110 @@ def test_2025_shim_runs_discovery_class_scenario_end_to_end(tmp_path: Path) -> N
     assert summary["reflection"].args[2] == config.attribute_tag
 
 
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-128",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-FI-SVC-137",
+    "HLA2025-FI-SVC-138",
+)
+def test_2025_shim_runs_two_federate_suite_ddm_scenario_via_compat_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.datatypes import RangeBounds
+    from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import (
+        SuiteRecordingFederateAmbassador,
+        run_suite_ddm_scenario,
+    )
+
+    sender = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    receiver = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    summary = run_suite_ddm_scenario(
+        sender,
+        receiver,
+        config={
+            "federation_name": f"shim-2025-suite-ddm-{uuid.uuid4().hex[:8]}",
+            "fom_modules": ("resource:VendorSmokeFOM.xml",),
+            "logical_time_implementation_name": "HLAinteger64Time",
+            "lookahead": HLAinteger64Interval(1),
+            "source_near": RangeBounds(10, 20),
+            "source_far": RangeBounds(30, 40),
+            "target_bounds": RangeBounds(15, 25),
+            "interaction_class_name": "HLAinteractionRoot.SmokeInteraction",
+            "parameter_name": "Message",
+            "far_payload": b"far",
+            "far_tag": b"far-tag",
+            "far_time": HLAinteger64Time(2),
+            "near_payload": b"near",
+            "near_tag": b"near-tag",
+            "near_time": HLAinteger64Time(3),
+            "grant_time": HLAinteger64Time(10),
+            "next_request_time": HLAinteger64Time(10),
+        },
+        sender_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-shim",
+            scenario="suite-ddm",
+            role="sender",
+        ),
+        receiver_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-shim",
+            scenario="suite-ddm",
+            role="receiver",
+        ),
+    )
+
+    assert summary["received_count"] == 1
+    assert summary["received_payload"] == {"Message": "near"}
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-002",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-014",
+    "HLA2025-FI-SVC-015",
+    "HLA2025-FI-SVC-016",
+    "HLA2025-FI-SVC-017",
+)
+def test_2025_shim_runs_two_federate_suite_save_restore_scenario_via_compat_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.time import HLAfloat64Time
+    from hla.verification import (
+        SuiteRecordingFederateAmbassador,
+        run_suite_save_restore_scenario,
+    )
+
+    left = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    right = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    summary = run_suite_save_restore_scenario(
+        left,
+        right,
+        config={
+            "federation_name": f"shim-2025-suite-save-restore-{uuid.uuid4().hex[:8]}",
+            "fom_modules": ("resource:VendorSmokeFOM.xml",),
+            "logical_time_implementation_name": "HLAfloat64Time",
+            "save_name": f"shim-2025-save-{uuid.uuid4().hex[:8]}",
+            "resume_time": HLAfloat64Time(5.0),
+        },
+        left_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-shim",
+            scenario="suite-save-restore",
+            role="left",
+        ),
+        right_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-shim",
+            scenario="suite-save-restore",
+            role="right",
+        ),
+    )
+
+    assert summary["federation_saved"] is True
+    assert summary["restore_completed"] is True
+    assert summary["left_time"] == {"value": 0.0}
+    assert summary["right_time"] == {"value": 0.0}
+
+
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-026")
 def test_2025_shim_runs_local_delete_scenario_end_to_end(tmp_path: Path) -> None:
     from hla.verification import LocalDeleteScenarioConfig, run_local_delete_scenario
@@ -4342,6 +4529,70 @@ def test_2025_shim_runs_support_lookup_and_normalization_route_end_to_end() -> N
     assert rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAreliable")) == "HLAreliable"
     assert rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAbestEffort")) == "HLAbestEffort"
     assert rti.getHLAversion() == "IEEE 1516.1-2025"
+
+    rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-147",
+    "HLA2025-FI-SVC-148",
+    "HLA2025-FI-SVC-153",
+    "HLA2025-FI-SVC-154",
+    "HLA2025-FI-SVC-155",
+    "HLA2025-FI-SVC-156",
+    "HLA2025-FI-001",
+)
+def test_2025_shim_accepts_support_lookup_aliases_and_rejects_invalid_values() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import (
+        InvalidOrderType,
+        InvalidTransportationName,
+        InvalidTransportationTypeHandle,
+        InvalidUpdateRateDesignator,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    federation_name = f"shim-2025-support-invalid-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+    callbacks = Recording2025FederateAmbassador()
+
+    rti.connect(callbacks, CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModules=scenario_fom_paths("message-test"),
+        logicalTimeImplementationName="HLAinteger64Time",
+    )
+    rti.joinFederationExecution(
+        federateName="SupportInvalid",
+        federateType="SupportFederate",
+        federationName=federation_name,
+    )
+    object_class = rti.getObjectClassHandle("HLAobjectRoot.Proto2025.MessageTest.TestSuite")
+    attribute = rti.getAttributeHandle(object_class, "SuiteId")
+    rti.publishObjectClassAttributes(object_class, {attribute})
+    object_instance = rti.registerObjectInstance(object_class)
+
+    assert rti.getOrderType("HLAtimestamp") is OrderType.TIMESTAMP
+    assert rti.getOrderType("timestamp") is OrderType.TIMESTAMP
+    assert rti.getOrderType("ro") is OrderType.RECEIVE
+    assert rti.getOrderName(OrderType.TIMESTAMP) == "HLAtimestamp"
+    assert rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAbestEffort")) == "HLAbestEffort"
+    assert rti.getUpdateRateValue("HLAdefaultUpdateRate") == 0.0
+    assert rti.getUpdateRateValueForAttribute(object_instance, attribute) == 0.0
+
+    with pytest.raises(InvalidOrderType):
+        rti.getOrderType("sideways")
+    with pytest.raises(InvalidOrderType):
+        rti.getOrderName("sideways")
+    with pytest.raises(InvalidUpdateRateDesignator):
+        rti.getUpdateRateValue("missing-rate")
+    with pytest.raises(InvalidTransportationName):
+        rti.getTransportationTypeHandle("missing-transport")
+    with pytest.raises(InvalidTransportationTypeHandle):
+        rti.getTransportationTypeName("999")
 
     rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
     rti.destroyFederationExecution(federationName=federation_name)
@@ -4524,6 +4775,7 @@ def test_2025_shim_runs_callback_control_scenario_via_compat_adapter() -> None:
 
 
 @pytest.mark.requirements(
+    "HLA2025-FR-002",
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
@@ -4686,6 +4938,123 @@ def test_2025_shim_runs_scheduled_save_restore_time_state_scenario_via_compat_ad
     assert summary["wing_restored"] is not None
     assert summary["restored_leader_time"] == HLAinteger64Time(5)
     assert summary["restored_wing_time"] == HLAinteger64Time(5)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-021",
+)
+def test_2025_shim_runs_save_failure_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_failure_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import SaveStatus
+
+    federation_name = f"shim-2025-save-failure-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-FAIL-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_save_failure_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args[0] == config.save_name
+    assert summary["leader_not_saved"].args[0].name == "FEDERATE_REPORTED_FAILURE_DURING_SAVE"
+    assert summary["wing_not_saved"].args[0].name == "FEDERATE_REPORTED_FAILURE_DURING_SAVE"
+    cleared = {pair.federate_handle: pair.save_status for pair in summary["save_status_cleared"].args[0]}
+    assert cleared == {
+        summary["leader_handle"]: SaveStatus.NO_SAVE_IN_PROGRESS,
+        summary["wing_handle"]: SaveStatus.NO_SAVE_IN_PROGRESS,
+    }
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-029",
+)
+def test_2025_shim_runs_restore_request_failure_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_request_failure_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import RestoreStatus
+
+    federation_name = f"shim-2025-restore-request-failure-{uuid.uuid4().hex[:8]}"
+    missing_save_name = f"MISSING-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_restore_request_failure_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+        missing_save_name=missing_save_name,
+    )
+
+    assert summary["restore_failed"].args == (missing_save_name,)
+    cleared = {pair.pre_restore_handle: pair.restore_status for pair in summary["restore_status_cleared"].args[0]}
+    assert cleared == {
+        summary["leader_handle"]: RestoreStatus.NO_RESTORE_IN_PROGRESS,
+        summary["wing_handle"]: RestoreStatus.NO_RESTORE_IN_PROGRESS,
+    }
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+)
+def test_2025_shim_runs_save_request_precondition_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_request_precondition_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected, RestoreInProgress, SaveInProgress
+
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    summary = run_save_request_precondition_scenario(
+        leader,
+        wing,
+        config=SaveRestoreScenarioConfig(
+            federation_name=f"shim-2025-save-request-{uuid.uuid4().hex[:8]}",
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-REQ-{uuid.uuid4().hex[:8]}",
+        ),
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert isinstance(summary["not_connected"], NotConnected)
+    assert isinstance(summary["not_joined"], FederateNotExecutionMember)
+    assert isinstance(summary["save_in_progress"], SaveInProgress)
+    assert isinstance(summary["restore_in_progress"], RestoreInProgress)
 
 
 @pytest.mark.requirements(
@@ -8123,6 +8492,149 @@ def test_2025_shim_routes_directed_interactions_to_object_class_subscribers(tmp_
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+    "HLA2025-BND-003",
+)
+def test_2025_shim_routes_directed_interactions_only_to_subscribers(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectedRouting2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed Routing 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Directed interaction routing to subscribers only.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-routing-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_a_federate = Recording2025FederateAmbassador()
+    subscriber_b_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber_a = create_rti_ambassador(backend="shim")
+    subscriber_b = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, ambassador in (
+            (owner, owner_federate),
+            (subscriber_a, subscriber_a_federate),
+            (subscriber_b, subscriber_b_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(ambassador, CallbackModel.HLA_EVOKED)
+
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner_handle = owner.joinFederationExecution("DirectedOwner", "TestFederate", federation_name)
+        subscriber_a.joinFederationExecution("DirectedSubscriberA", "TestFederate", federation_name)
+        subscriber_b.joinFederationExecution("DirectedSubscriberB", "TestFederate", federation_name)
+        observer.joinFederationExecution("DirectedObserver", "TestFederate", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        subscriber_b_parameter = subscriber_b.getParameterHandle(subscriber_b_interaction, "TrackId")
+        reliable = owner.getTransportationTypeHandle("HLAreliable")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        subscriber_a.subscribeObjectClassDirectedInteractions(object_class, {subscriber_a_interaction})
+        subscriber_b.subscribeObjectClassDirectedInteractions(object_class, {subscriber_b_interaction})
+        object_instance = owner.registerObjectInstance(object_class, "Directed-Routing-Target-1")
+
+        owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"ROUTED"}, b"routed-tag")
+
+        assert observer_federate.last_callback("receiveDirectedInteraction") is None
+        assert owner_federate.last_callback("receiveDirectedInteraction") is None
+        assert subscriber_a_federate.last_callback("receiveDirectedInteraction") == (
+            subscriber_a_interaction,
+            object_instance,
+            {subscriber_a_parameter: b"ROUTED"},
+            b"routed-tag",
+            reliable,
+            owner_handle,
+            None,
+            OrderType.RECEIVE,
+            OrderType.RECEIVE,
+            None,
+        )
+        assert subscriber_b_federate.last_callback("receiveDirectedInteraction") == (
+            subscriber_b_interaction,
+            object_instance,
+            {subscriber_b_parameter: b"ROUTED"},
+            b"routed-tag",
+            reliable,
+            owner_handle,
+            None,
+            OrderType.RECEIVE,
+            OrderType.RECEIVE,
+            None,
+        )
+    finally:
+        for rti in (observer, subscriber_b, subscriber_a, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, subscriber_b, subscriber_a, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
     "HLA2025-NEW-001",
     "HLA2025-FR-003",
     "HLA2025-FR-004",
@@ -8408,6 +8920,649 @@ def test_2025_shim_filters_directed_interactions_by_ddm_region_overlap(tmp_path:
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-129",
+    "HLA2025-BND-003",
+)
+def test_2025_shim_routes_directed_ddm_interactions_only_to_overlapping_subscribers(tmp_path: Path) -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectedDDMRouting2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed DDM Routing 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Directed DDM routing across multiple subscribers.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-ddm-routing-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_a_federate = Recording2025FederateAmbassador()
+    subscriber_b_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber_a = create_rti_ambassador(backend="shim")
+    subscriber_b = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, ambassador in (
+            (owner, owner_federate),
+            (subscriber_a, subscriber_a_federate),
+            (subscriber_b, subscriber_b_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(ambassador, CallbackModel.HLA_EVOKED)
+
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner_handle = owner.joinFederationExecution("DirectedDDMOwner", "TestFederate", federation_name)
+        subscriber_a.joinFederationExecution("DirectedDDM-A", "TestFederate", federation_name)
+        subscriber_b.joinFederationExecution("DirectedDDM-B", "TestFederate", federation_name)
+        observer.joinFederationExecution("DirectedDDMObserver", "TestFederate", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = owner.getAttributeHandle(object_class, "Position")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        subscriber_b_parameter = subscriber_b.getParameterHandle(subscriber_b_interaction, "TrackId")
+        dimension = owner.getDimensionHandle("RoutingSpace")
+        subscriber_a_dimension = subscriber_a.getDimensionHandle("RoutingSpace")
+        subscriber_b_dimension = subscriber_b.getDimensionHandle("RoutingSpace")
+        observer_dimension = observer.getDimensionHandle("RoutingSpace")
+        reliable = owner.getTransportationTypeHandle("HLAreliable")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        subscriber_a.subscribeObjectClassDirectedInteractions(object_class, {subscriber_a_interaction})
+        subscriber_b.subscribeObjectClassDirectedInteractions(object_class, {subscriber_b_interaction})
+
+        publisher_region = owner.createRegion({dimension})
+        subscriber_a_region = subscriber_a.createRegion({subscriber_a_dimension})
+        subscriber_b_region = subscriber_b.createRegion({subscriber_b_dimension})
+        observer_region = observer.createRegion({observer_dimension})
+        owner.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+        subscriber_a.setRangeBounds(subscriber_a_region, subscriber_a_dimension, RangeBounds(5, 15))
+        subscriber_b.setRangeBounds(subscriber_b_region, subscriber_b_dimension, RangeBounds(50, 60))
+        observer.setRangeBounds(observer_region, observer_dimension, RangeBounds(5, 15))
+        owner.commitRegionModifications({publisher_region})
+        subscriber_a.commitRegionModifications({subscriber_a_region})
+        subscriber_b.commitRegionModifications({subscriber_b_region})
+        observer.commitRegionModifications({observer_region})
+
+        object_instance = owner.registerObjectInstanceWithRegions(
+            object_class,
+            [({attribute}, {publisher_region})],
+            "Directed-DDM-Routing-Target-1",
+        )
+        subscriber_a.subscribeInteractionClassWithRegions(subscriber_a_interaction, {subscriber_a_region})
+        subscriber_b.subscribeInteractionClassWithRegions(subscriber_b_interaction, {subscriber_b_region})
+        observer.subscribeInteractionClassWithRegions(interaction_class, {observer_region})
+
+        owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"OVERLAP"}, b"first-route")
+        assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
+        assert observer_federate.last_callback("receiveDirectedInteraction") is None
+        assert subscriber_a_federate.last_callback("receiveDirectedInteraction") == (
+            subscriber_a_interaction,
+            object_instance,
+            {subscriber_a_parameter: b"OVERLAP"},
+            b"first-route",
+            reliable,
+            owner_handle,
+            None,
+            OrderType.RECEIVE,
+            OrderType.RECEIVE,
+            None,
+        )
+
+        subscriber_a_federate.callbacks.clear()
+        subscriber_b_federate.callbacks.clear()
+        observer_federate.callbacks.clear()
+        subscriber_a.setRangeBounds(subscriber_a_region, subscriber_a_dimension, RangeBounds(70, 80))
+        subscriber_b.setRangeBounds(subscriber_b_region, subscriber_b_dimension, RangeBounds(8, 12))
+        subscriber_a.commitRegionModifications({subscriber_a_region})
+        subscriber_b.commitRegionModifications({subscriber_b_region})
+
+        owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"SHIFT"}, b"second-route")
+        assert subscriber_a_federate.last_callback("receiveDirectedInteraction") is None
+        assert observer_federate.last_callback("receiveDirectedInteraction") is None
+        assert subscriber_b_federate.last_callback("receiveDirectedInteraction") == (
+            subscriber_b_interaction,
+            object_instance,
+            {subscriber_b_parameter: b"SHIFT"},
+            b"second-route",
+            reliable,
+            owner_handle,
+            None,
+            OrderType.RECEIVE,
+            OrderType.RECEIVE,
+            None,
+        )
+    finally:
+        for rti in (observer, subscriber_b, subscriber_a, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, subscriber_b, subscriber_a, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-005",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-BND-003",
+)
+def test_2025_shim_removes_disconnected_directed_ddm_subscriber_from_delivery_state(tmp_path: Path) -> None:
+    from hla.backends.shim.backend import _FEDERATION_REGISTRY
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectedDDMDisconnect2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed DDM Disconnect 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Directed DDM disconnect cleanup fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-ddm-disconnect-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    try:
+        owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+        observer.connect(observer_federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner.joinFederationExecution("DirectedDDMDisconnectOwner", "Controller", federation_name)
+        observer_handle = observer.joinFederationExecution("DirectedDDMDisconnectObserver", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = owner.getAttributeHandle(object_class, "Position")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        dimension = owner.getDimensionHandle("RoutingSpace")
+        observer_dimension = observer.getDimensionHandle("RoutingSpace")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        observer.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+
+        publisher_region = owner.createRegion({dimension})
+        observer_region = observer.createRegion({observer_dimension})
+        owner.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+        observer.setRangeBounds(observer_region, observer_dimension, RangeBounds(5, 15))
+        owner.commitRegionModifications({publisher_region})
+        observer.commitRegionModifications({observer_region})
+
+        object_instance = owner.registerObjectInstanceWithRegions(
+            object_class,
+            [({attribute}, {publisher_region})],
+            "Directed-DDM-Disconnect-Target-1",
+        )
+        observer.subscribeInteractionClassWithRegions(interaction_class, {observer_region})
+
+        federation = _FEDERATION_REGISTRY[federation_name]
+        assert observer_handle.value in federation.subscribed_directed_interactions
+        assert federation.subscribed_directed_interactions[observer_handle.value][owner.getObjectClassName(object_class)] == {
+            owner.getInteractionClassName(interaction_class)
+        }
+        assert federation.subscribed_interaction_regions[observer_handle.value][owner.getInteractionClassName(interaction_class)] == {
+            observer_region.value
+        }
+
+        observer.resignFederationExecution(ResignAction.NO_ACTION)
+        assert observer_handle.value not in federation.subscribed_directed_interactions
+        assert observer_handle.value not in federation.subscribed_interactions
+        assert observer_handle.value not in federation.subscribed_interaction_regions
+        assert observer_handle.value not in federation.member_regions
+
+        owner.sendDirectedInteraction(
+            interaction_class,
+            object_instance,
+            {parameter: b"DIRECTED-DISCONNECT"},
+            b"directed-disconnect",
+        )
+        assert observer_federate.last_callback("receiveDirectedInteraction") is None
+    finally:
+        for rti in (observer, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-116",
+    "HLA2025-FI-SVC-117",
+)
+def test_2025_shim_delivers_and_retracts_timestamped_directed_interactions_for_all_subscribers(
+    tmp_path: Path,
+) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Time
+
+    fom = tmp_path / "TimedDirectedInteractionAllSubscribers2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Timed Directed Interaction All Subscribers 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Timestamped directed interaction routed to multiple subscribers with retraction.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Timestamp</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Timestamp</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-tso-all-subs-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_a_federate = Recording2025FederateAmbassador()
+    subscriber_b_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber_a = create_rti_ambassador(backend="shim")
+    subscriber_b = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, ambassador in (
+            (owner, owner_federate),
+            (subscriber_a, subscriber_a_federate),
+            (subscriber_b, subscriber_b_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(ambassador, CallbackModel.HLA_EVOKED)
+
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner_handle = owner.joinFederationExecution("DirectedTSOOwner", "TestFederate", federation_name)
+        subscriber_a.joinFederationExecution("DirectedTSO-A", "TestFederate", federation_name)
+        subscriber_b.joinFederationExecution("DirectedTSO-B", "TestFederate", federation_name)
+        observer.joinFederationExecution("DirectedTSOObserver", "TestFederate", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        subscriber_b_parameter = subscriber_b.getParameterHandle(subscriber_b_interaction, "TrackId")
+        reliable = owner.getTransportationTypeHandle("HLAreliable")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        subscriber_a.subscribeObjectClassDirectedInteractions(object_class, {subscriber_a_interaction})
+        subscriber_b.subscribeObjectClassDirectedInteractions(object_class, {subscriber_b_interaction})
+        object_instance = owner.registerObjectInstance(object_class, "Directed-TSO-All-Subscribers-1")
+
+        subscriber_a.enableTimeConstrained()
+        subscriber_b.enableTimeConstrained()
+
+        handle = owner.sendDirectedInteraction(
+            interaction_class,
+            object_instance,
+            {parameter: b"TIMED"},
+            b"directed-tso",
+            HLAinteger64Time(5),
+        )
+        assert handle.retractionHandleIsValid is True
+
+        assert subscriber_a_federate.last_callback("receiveDirectedInteraction") is None
+        assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
+
+        subscriber_a.nextMessageRequest(HLAinteger64Time(5))
+        subscriber_b.nextMessageRequest(HLAinteger64Time(5))
+
+        first_a = subscriber_a_federate.callbacks[-2]
+        grant_a = subscriber_a_federate.callbacks[-1]
+        first_b = subscriber_b_federate.callbacks[-2]
+        grant_b = subscriber_b_federate.callbacks[-1]
+
+        assert first_a == (
+            "receiveDirectedInteraction",
+            (
+                subscriber_a_interaction,
+                object_instance,
+                {subscriber_a_parameter: b"TIMED"},
+                b"directed-tso",
+                reliable,
+                owner_handle,
+                HLAinteger64Time(5),
+                OrderType.TIMESTAMP,
+                OrderType.TIMESTAMP,
+                handle.handle,
+            ),
+        )
+        assert first_b == (
+            "receiveDirectedInteraction",
+            (
+                subscriber_b_interaction,
+                object_instance,
+                {subscriber_b_parameter: b"TIMED"},
+                b"directed-tso",
+                reliable,
+                owner_handle,
+                HLAinteger64Time(5),
+                OrderType.TIMESTAMP,
+                OrderType.TIMESTAMP,
+                handle.handle,
+            ),
+        )
+        assert grant_a == ("timeAdvanceGrant", (HLAinteger64Time(5),))
+        assert grant_b == ("timeAdvanceGrant", (HLAinteger64Time(5),))
+        assert observer_federate.last_callback("receiveDirectedInteraction") is None
+
+        owner.retract(handle.handle)
+        assert subscriber_a_federate.last_callback("requestRetraction") == (handle.handle,)
+        assert subscriber_b_federate.last_callback("requestRetraction") == (handle.handle,)
+        assert observer_federate.last_callback("requestRetraction") is None
+
+        with pytest.raises(MessageCanNoLongerBeRetracted):
+            owner.retract(handle.handle)
+    finally:
+        for rti in (observer, subscriber_b, subscriber_a, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, subscriber_b, subscriber_a, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-116",
+    "HLA2025-FI-SVC-117",
+)
+def test_2025_shim_drops_queued_directed_tso_for_departed_target(tmp_path: Path) -> None:
+    from hla.backends.shim.backend import _FEDERATION_REGISTRY
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    fom = tmp_path / "DirectedTsoDisconnect2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed TSO Departure 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Queued directed TSO cleanup when the target departs before delivery.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Timestamp</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-tso-departure-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    try:
+        owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(
+            federationName=federation_name,
+            fomModule=str(fom),
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        owner.joinFederationExecution("DirectedTSODepartureOwner", "Controller", federation_name)
+        subscriber.joinFederationExecution("DirectedTSODepartureSubscriber", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        object_instance = owner.registerObjectInstance(object_class, "ShimDirectedTSODepartureTarget-1")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        subscriber.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+        owner.enableTimeRegulation(HLAinteger64Interval(1))
+        subscriber.enableTimeConstrained()
+        subscriber.enableTimeRegulation(HLAinteger64Interval(1))
+
+        queued = owner.sendDirectedInteraction(
+            interaction_class,
+            object_instance,
+            {parameter: b"DEPART"},
+            b"directed-tso-departure",
+            HLAinteger64Time(5),
+        )
+        assert queued.retractionHandleIsValid is True
+
+        federation = _FEDERATION_REGISTRY[federation_name]
+        assert tuple(federation.queued_tso_callbacks) == (queued.handle.value,)
+
+        subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+        assert federation.queued_tso_callbacks == {}
+
+        owner.timeAdvanceRequest(HLAinteger64Time(5))
+        assert federation.queued_tso_callbacks == {}
+        assert _callbacks_named_2025(subscriber_federate, "receiveDirectedInteraction") == []
+    finally:
+        for rti in (subscriber, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
     "HLA2025-NEW-001",
     "HLA2025-FR-003",
     "HLA2025-FR-004",
@@ -8559,6 +9714,131 @@ def test_2025_shim_directed_interaction_set_unsubscribe_and_unpublish_are_select
     publisher.destroyFederationExecution(federationName=federation_name)
     subscriber.disconnect()
     publisher.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-BND-003")
+def test_2025_shim_preserves_other_federate_directed_publication_after_unpublish(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import InteractionClassNotPublished
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectedPublicationIsolation2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed Publication Isolation 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Directed publication isolation across multiple publishers.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-directed-publication-isolation-{uuid.uuid4().hex[:8]}"
+    leader_federate = Recording2025FederateAmbassador()
+    wing_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    leader = create_rti_ambassador(backend="shim")
+    wing = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, ambassador in (
+            (leader, leader_federate),
+            (wing, wing_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(ambassador, CallbackModel.HLA_EVOKED)
+
+        leader.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        leader_handle = leader.joinFederationExecution("DirectedLeader", "Controller", federation_name)
+        wing_handle = wing.joinFederationExecution("DirectedWing", "Controller", federation_name)
+        observer.joinFederationExecution("DirectedObserver", "Observer", federation_name)
+
+        object_class = leader.getObjectClassHandle("HLAobjectRoot.Target")
+        interaction_class = leader.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        wing_interaction = wing.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = leader.getParameterHandle(interaction_class, "TrackId")
+        wing_parameter = wing.getParameterHandle(wing_interaction, "TrackId")
+        reliable = leader.getTransportationTypeHandle("HLAreliable")
+
+        leader.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        wing.publishObjectClassDirectedInteractions(object_class, {wing_interaction})
+        observer.subscribeObjectClassDirectedInteractions(object_class, {interaction_class})
+        object_instance = leader.registerObjectInstance(object_class, "ShimDirectedIsolationTarget-1")
+
+        leader.unpublishObjectClassDirectedInteractions(object_class)
+        with pytest.raises(InteractionClassNotPublished):
+            leader.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"leader"}, b"leader-after-unpublish")
+
+        wing.sendDirectedInteraction(wing_interaction, object_instance, {wing_parameter: b"wing"}, b"wing-still-published")
+        assert observer_federate.last_callback("receiveDirectedInteraction") == (
+            interaction_class,
+            object_instance,
+            {parameter: b"wing"},
+            b"wing-still-published",
+            reliable,
+            wing_handle,
+            None,
+            OrderType.RECEIVE,
+            OrderType.RECEIVE,
+            None,
+        )
+        assert leader_federate.last_callback("receiveDirectedInteraction") is None
+        assert leader_handle.value == 1
+    finally:
+        for rti in (observer, wing, leader):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            leader.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, wing, leader):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-051", "HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
@@ -9239,7 +10519,7 @@ def test_2025_shim_preserves_direct_callback_context_for_timed_region_delivery(t
     )
     assert attribute_result is not None and attribute_result.retractionHandleIsValid is True
     assert interaction_result is None
-    assert remove_result is None
+    assert remove_result is not None and remove_result.retractionHandleIsValid is True
 
     publisher.timeAdvanceRequest(HLAinteger64Time(20))
     subscriber.timeAdvanceRequest(HLAinteger64Time(20))
@@ -9279,9 +10559,9 @@ def test_2025_shim_preserves_direct_callback_context_for_timed_region_delivery(t
         b"gone",
         publisher_handle,
         HLAinteger64Time(14),
-        OrderType.RECEIVE,
-        OrderType.RECEIVE,
-        None,
+        OrderType.TIMESTAMP,
+        OrderType.TIMESTAMP,
+        remove_result.handle,
     )
 
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
@@ -9600,15 +10880,7 @@ def test_2025_shim_object_management_and_support_callbacks(tmp_path: Path) -> No
     with pytest.raises(DeletePrivilegeNotHeld):
         subscriber.deleteObjectInstance(object_instance, b"not-owner")
     owner.deleteObjectInstance(object_instance, b"delete-tag")
-    assert subscriber_callbacks.last_callback("removeObjectInstance") == (
-        object_instance,
-        b"delete-tag",
-        owner_handle,
-        None,
-        OrderType.RECEIVE,
-        OrderType.RECEIVE,
-        None,
-    )
+    assert subscriber_callbacks.last_callback("removeObjectInstance") is None
     with pytest.raises(ObjectInstanceNotKnown):
         subscriber.requestAttributeValueUpdate(object_instance, {subscriber_attribute}, b"after-delete")
 
@@ -10639,6 +11911,250 @@ def test_2025_shim_routes_mom_timing_and_attribute_state_adjust_interactions() -
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_accepts_mom_alias_spellings_for_order_ownership_and_resign_controls() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-aliases-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    target_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    target.connect(target_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomAliasController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomAliasTarget", "TestFederate", federation_name)
+
+    target_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+    controller_target_class = controller.getObjectClassHandle("HLAobjectRoot.Target")
+    target_attribute = target.getAttributeHandle(target_class, "Position")
+    controller_target_attribute = controller.getAttributeHandle(controller_target_class, "Position")
+    target_interaction = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    controller_interaction = controller.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    target_parameter = target.getParameterHandle(target_interaction, "TrackId")
+    controller_parameter = controller.getParameterHandle(controller_interaction, "TrackId")
+
+    controller.subscribeObjectClassAttributes(controller_target_class, {controller_target_attribute})
+    controller.subscribeInteractionClass(controller_interaction)
+    target.publishObjectClassAttributes(target_class, {target_attribute})
+    target.publishInteractionClass(target_interaction)
+
+    object_instance = target.registerObjectInstance(target_class, "MomAliasTarget-1")
+    assert controller_callbacks.last_callback("discoverObjectInstance") == (
+        object_instance,
+        controller_target_class,
+        "MomAliasTarget-1",
+        target_handle,
+    )
+
+    modify_attribute_state = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState"
+    )
+    controller.sendInteraction(
+        modify_attribute_state,
+        {
+            controller.getParameterHandle(modify_attribute_state, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(modify_attribute_state, "HLAobjectInstance"): str(object_instance.value).encode("ascii"),
+            controller.getParameterHandle(modify_attribute_state, "HLAattribute"): str(target_attribute.value).encode("ascii"),
+            controller.getParameterHandle(modify_attribute_state, "HLAattributeState"): b"attribute-is-not-owned",
+        },
+        b"mom-alias-unowned",
+    )
+    assert target.isAttributeOwnedByFederate(object_instance, target_attribute) is False
+
+    change_interaction_order = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType"
+    )
+    controller.sendInteraction(
+        change_interaction_order,
+        {
+            controller.getParameterHandle(change_interaction_order, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(change_interaction_order, "HLAinteractionClass"): str(target_interaction.value).encode("ascii"),
+            controller.getParameterHandle(change_interaction_order, "HLAsendOrder"): b"HLA_timestamp",
+        },
+        b"mom-alias-order",
+    )
+    target.sendInteraction(target_interaction, {target_parameter: b"mom-alias-track"}, b"mom-alias-track-tag")
+    received = controller_callbacks.last_callback("receiveInteraction")
+    assert received is not None
+    assert received[:6] == (
+        controller_interaction,
+        {controller_parameter: b"mom-alias-track"},
+        b"mom-alias-track-tag",
+        target.getTransportationTypeHandle("HLAreliable"),
+        target_handle,
+        set(),
+    )
+    assert received[6:] == (None, OrderType.TIMESTAMP, OrderType.TIMESTAMP, None)
+
+    controller_callbacks.callbacks.clear()
+    resign = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution"
+    )
+    controller.sendInteraction(
+        resign,
+        {
+            controller.getParameterHandle(resign, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(resign, "HLAresignAction"): b"CancelThenDeleteThenDivest",
+        },
+        b"mom-alias-resign",
+    )
+    removed = controller_callbacks.last_callback("removeObjectInstance")
+    assert removed is not None
+    assert removed[0] == object_instance
+
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_rejects_invalid_mom_control_spellings_with_exception_reports() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-invalid-controls-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    target = create_rti_ambassador(backend="shim")
+    controller = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomInvalidController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomInvalidTarget", "TestFederate", federation_name)
+
+    target_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+    target_attribute = target.getAttributeHandle(target_class, "Position")
+    target_interaction = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    object_instance = target.registerObjectInstance(target_class, "MomInvalidTarget-1")
+
+    invalid_cases = (
+        (
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType",
+            {
+                "HLAfederate": str(target_handle.value).encode("ascii"),
+                "HLAinteractionClass": str(target_interaction.value).encode("ascii"),
+                "HLAsendOrder": b"not-an-order",
+            },
+            "Invalid MOM order type for HLAsendOrder",
+        ),
+        (
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState",
+            {
+                "HLAfederate": str(target_handle.value).encode("ascii"),
+                "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+                "HLAattribute": str(target_attribute.value).encode("ascii"),
+                "HLAattributeState": b"sideways",
+            },
+            "Invalid MOM ownership state for HLAattributeState",
+        ),
+        (
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution",
+            {
+                "HLAfederate": str(target_handle.value).encode("ascii"),
+                "HLAresignAction": b"teleport",
+            },
+            "Invalid MOM resign action 'teleport'",
+        ),
+    )
+
+    for interaction_name, parameters, expected_error in invalid_cases:
+        interaction = controller.getInteractionClassHandle(interaction_name)
+        with pytest.raises(RTIinternalError, match=expected_error):
+            controller.sendInteraction(interaction, {controller.getParameterHandle(interaction, name): value for name, value in parameters.items()}, b"mom-invalid")
+
+        report = controller_callbacks.last_callback("receiveInteraction")
+        assert report is not None
+        report_name = controller.getInteractionClassName(report[0])
+        assert report_name == "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
+        assert report[1][controller.getParameterHandle(report[0], "HLAservice")] == interaction_name.encode("utf-8")
+        assert expected_error.encode("utf-8") in report[1][controller.getParameterHandle(report[0], "HLAexception")]
+
+    assert target.getObjectInstanceName(object_instance) == "MomInvalidTarget-1"
+
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_rejects_invalid_mom_boolean_spellings_with_exception_reports() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-invalid-bools-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomBoolController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomBoolTarget", "TestFederate", federation_name)
+
+    invalid_cases = (
+        (
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting",
+            {
+                "HLAfederate": str(target_handle.value).encode("ascii"),
+                "HLAreportingState": b"perhaps",
+            },
+        ),
+        (
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches",
+            {
+                "HLAautoProvide": b"perhaps",
+            },
+        ),
+    )
+
+    assert target.getServiceReportingSwitch() is False
+    assert controller.getAutoProvideSwitch() is True
+    assert target.getAutoProvideSwitch() is True
+
+    for interaction_name, parameters in invalid_cases:
+        interaction = controller.getInteractionClassHandle(interaction_name)
+        with pytest.raises(RTIinternalError, match="Invalid MOM boolean value"):
+            controller.sendInteraction(
+                interaction,
+                {controller.getParameterHandle(interaction, name): value for name, value in parameters.items()},
+                b"mom-invalid-bool",
+            )
+
+        report = controller_callbacks.last_callback("receiveInteraction")
+        assert report is not None
+        report_name = controller.getInteractionClassName(report[0])
+        assert report_name == "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
+        assert report[1][controller.getParameterHandle(report[0], "HLAservice")] == interaction_name.encode("utf-8")
+        assert b"Invalid MOM boolean value" in report[1][controller.getParameterHandle(report[0], "HLAexception")]
+
+    assert target.getServiceReportingSwitch() is False
+    assert controller.getAutoProvideSwitch() is True
+    assert target.getAutoProvideSwitch() is True
+
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_reports_mom_federate_publication_subscription_and_object_information() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
@@ -11422,6 +12938,88 @@ def test_2025_shim_reports_mom_service_failures_as_mom_exception_interactions() 
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-SVC-171", "HLA2025-NEW-007")
+def test_2025_shim_routes_mom_exception_reporting_switch_to_callback_delivery_targets() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-exception-switch-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    target_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    target.connect(target_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomExceptionSwitchController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomExceptionSwitchTarget", "TestFederate", federation_name)
+
+    exception_adjust = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
+    )
+    exception_target = controller.getParameterHandle(exception_adjust, "HLAfederate")
+    exception_state = controller.getParameterHandle(exception_adjust, "HLAreportingState")
+    service = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance"
+    )
+
+    assert controller.getExceptionReportingSwitch() is True
+    assert target.getExceptionReportingSwitch() is True
+
+    controller.sendInteraction(
+        exception_adjust,
+        {
+            exception_target: str(target_handle.value).encode("ascii"),
+            exception_state: b"HLAfalse",
+        },
+        b"mom-disable-exception-reporting",
+    )
+    assert controller.getExceptionReportingSwitch() is True
+    assert target.getExceptionReportingSwitch() is False
+
+    controller_callbacks.callbacks.clear()
+    target_callbacks.callbacks.clear()
+    with pytest.raises(RTIinternalError, match="HLAobjectInstance"):
+        controller.sendInteraction(
+            service,
+            {controller.getParameterHandle(service, "HLAfederate"): str(target_handle.value).encode("ascii")},
+            b"mom-missing-object-disabled",
+        )
+    assert controller_callbacks.last_callback("receiveInteraction") is not None
+    assert target_callbacks.last_callback("receiveInteraction") is None
+
+    controller.sendInteraction(
+        exception_adjust,
+        {
+            exception_target: str(target_handle.value).encode("ascii"),
+            exception_state: b"HLAtrue",
+        },
+        b"mom-enable-exception-reporting",
+    )
+    assert target.getExceptionReportingSwitch() is True
+
+    controller_callbacks.callbacks.clear()
+    target_callbacks.callbacks.clear()
+    with pytest.raises(RTIinternalError, match="HLAobjectInstance"):
+        controller.sendInteraction(
+            service,
+            {controller.getParameterHandle(service, "HLAfederate"): str(target_handle.value).encode("ascii")},
+            b"mom-missing-object-enabled",
+        )
+    assert controller_callbacks.last_callback("receiveInteraction") is not None
+    assert target_callbacks.last_callback("receiveInteraction") is not None
+
+    target.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-SVC-005", "HLA2025-FI-SVC-006", "HLA2025-FI-SVC-007")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
@@ -11668,8 +13266,19 @@ def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
         rti.setServiceReportingSwitch("yes")
     with pytest.raises(RTIinternalError, match="requires a ResignAction"):
         rti.setAutomaticResignDirective("delete")
-    with pytest.raises(RTIinternalError, match="does not implement"):
-        rti.enableObjectClassRelevanceAdvisorySwitch()
+    legacy_switch_methods = (
+        "enableObjectClassRelevanceAdvisorySwitch",
+        "disableObjectClassRelevanceAdvisorySwitch",
+        "enableAttributeRelevanceAdvisorySwitch",
+        "disableAttributeRelevanceAdvisorySwitch",
+        "enableAttributeScopeAdvisorySwitch",
+        "disableAttributeScopeAdvisorySwitch",
+        "enableInteractionRelevanceAdvisorySwitch",
+        "disableInteractionRelevanceAdvisorySwitch",
+    )
+    for legacy_method in legacy_switch_methods:
+        with pytest.raises(RTIinternalError, match=f"does not implement IEEE 1516.1-2025 service {legacy_method}"):
+            getattr(rti, legacy_method)()
 
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)
@@ -12886,16 +14495,12 @@ def test_2025_shim_restore_recovers_callback_delivery_policy(tmp_path: Path) -> 
         assert subscriber_federate.last_callback("initiateFederateRestore")[:2] == (save_label, "CallbackRestoreSubscriber")
         publisher.federateRestoreComplete()
         subscriber.federateRestoreComplete()
-        assert subscriber_federate.last_callback("federationRestored") is None
+        assert subscriber_federate.last_callback("federationRestored") == ()
         assert subscriber.evokeCallback(0.0) is False
 
         subscriber_federate.callbacks.clear()
         publisher.sendInteraction(interaction_class, {parameter: b"RESTORED"}, b"restored-cb")
-        assert subscriber_federate.last_callback("receiveInteraction") is None
         assert subscriber.evokeCallback(0.0) is False
-
-        subscriber.enableCallbacks()
-        assert subscriber.evokeCallback(0.0) is True
         restored_receives = _callbacks_named_2025(subscriber_federate, "receiveInteraction")
         assert len(restored_receives) == 1
         restored = restored_receives[0]
@@ -13077,6 +14682,134 @@ def test_2025_shim_restore_recovers_plain_object_subscriber_routing(tmp_path: Pa
         except Exception:
             pass
         for rti in (subscriber_b, subscriber_a, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-116",
+    "HLA2025-FI-SVC-117",
+)
+def test_2025_shim_drops_queued_ddm_tso_reflect_for_departed_target(tmp_path: Path) -> None:
+    from hla.backends.shim.backend import _FEDERATION_REGISTRY
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    fom = tmp_path / "DdmTsoDisconnect2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>DDM TSO Disconnect 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-20</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Queued DDM TSO cleanup when the subscribed target departs before delivery.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>RegionalTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-ddm-tso-departure-{uuid.uuid4().hex[:8]}"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    try:
+        owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(
+            federationName=federation_name,
+            fomModule=str(fom),
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        owner.joinFederationExecution("DDMTSODepartureOwner", "Controller", federation_name)
+        subscriber.joinFederationExecution("DDMTSODepartureSubscriber", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.RegionalTarget")
+        attribute = owner.getAttributeHandle(object_class, "Position")
+        dimension = owner.getDimensionHandle("RoutingSpace")
+        subscriber_dimension = subscriber.getDimensionHandle("RoutingSpace")
+
+        owner.publishObjectClassAttributes(object_class, {attribute})
+        publisher_region = owner.createRegion({dimension})
+        subscriber_region = subscriber.createRegion({subscriber_dimension})
+        owner.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+        subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(5, 15))
+        owner.commitRegionModifications({publisher_region})
+        subscriber.commitRegionModifications({subscriber_region})
+
+        object_instance = owner.registerObjectInstance(object_class, "ShimDDMTSODepartureTarget-1")
+        owner.associateRegionsForUpdates(object_instance, [({attribute}, {publisher_region})])
+        subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+        owner.enableTimeRegulation(HLAinteger64Interval(1))
+        subscriber.enableTimeConstrained()
+
+        queued = owner.updateAttributeValues(
+            object_instance,
+            {attribute: b"DDM-TSO"},
+            b"ddm-tso-reflect",
+            HLAinteger64Time(5),
+        )
+        assert queued is not None and queued.retractionHandleIsValid is True
+
+        federation = _FEDERATION_REGISTRY[federation_name]
+        assert tuple(federation.queued_tso_callbacks) == (queued.handle.value,)
+
+        subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+        assert federation.queued_tso_callbacks == {}
+
+        owner.timeAdvanceRequest(HLAinteger64Time(5))
+        assert federation.queued_tso_callbacks == {}
+        assert _callbacks_named_2025(subscriber_federate, "reflectAttributeValues") == []
+    finally:
+        for rti in (subscriber, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber, owner):
             try:
                 rti.disconnect()
             except Exception:

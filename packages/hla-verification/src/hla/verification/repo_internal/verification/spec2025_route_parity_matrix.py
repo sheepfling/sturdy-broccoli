@@ -115,7 +115,9 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls plus real "
-        "listFederationExecutions/listFederationExecutionMembers callback flow, missing-federation member notices, and federateResigned callback delivery.",
+        "listFederationExecutions/listFederationExecutionMembers callback flow, explicit single-FOM and "
+        "createFederationExecutionWithMIM transport-command routing, missing-federation member notices, and "
+        "federateResigned callback delivery.",
     ),
     _row(
         "federation_lifecycle",
@@ -344,7 +346,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "evidence, queued-TSO GALT/LITS divergence after a live lookahead change, a hosted Target/Radar "
         "proof-ladder replay over the real 2025 FedPro route, the Target/Radar "
         "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
-        "save-restore-window-state, save-restore lookahead rollback with queued-TSO clearing, "
+        "save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, "
         "save-restore-output-resume, and save-restore-pipeline-resume proofs, and "
         "pre-delivery retract.",
     ),
@@ -390,7 +392,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers federation save/restore lifecycle, rollback callback slices, callback-delivery policy rollback, "
+        "Python 2025 shim covers federation save/restore lifecycle, rollback callback slices, callback-delivery runtime-policy preservation, "
         "plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, in-flight ownership "
         "and owner-visibility rollback, time/switch-control rollback, saved lookahead recovery, transport/order policy "
         "rollback, and pre-save queued-TSO redelivery after restore.",
@@ -403,7 +405,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, "
         "status callbacks, success/failure callbacks, abort callbacks, object registry rollback, logical-time rollback, "
-        "time/switch-control rollback, queued-TSO clearing after restore, and bounded radar-window state rollback.",
+        "time/switch-control rollback, queued-TSO redelivery after restore, and bounded radar-window state rollback.",
     ),
     _row(
         "save_restore",

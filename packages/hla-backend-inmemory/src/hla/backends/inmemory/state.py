@@ -127,6 +127,7 @@ class FederationState:
     object_names: dict[str, ObjectInstanceHandle] = field(default_factory=dict)
     reserved_object_names: dict[str, FederateHandle] = field(default_factory=dict)
     synchronization_points: dict[str, SynchronizationPointState] = field(default_factory=dict)
+    region_owners: dict[RegionHandle, FederateHandle] = field(default_factory=dict)
     save_label: str | None = None
     save_status: dict[FederateHandle, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
