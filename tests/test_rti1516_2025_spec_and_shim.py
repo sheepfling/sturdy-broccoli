@@ -1710,6 +1710,26 @@ def test_2025_target_radar_adapter_explicitly_covers_name_reservation_service_su
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_timed_delete_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_timed_delete.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"timed-delete scenario services: {missing}"
+    )
+
+
 class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
     """Narrow ownership callback bridge for shared scenario oracles."""
 
@@ -3922,6 +3942,68 @@ def test_2025_shim_runs_name_reservation_scenario_via_compat_adapter(tmp_path: P
         except Exception:
             pass
         for rti in (rival, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FR-003",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-111",
+)
+def test_2025_shim_runs_timed_delete_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516e.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TimedDeleteScenarioConfig, run_timed_delete_scenario
+
+    fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
+    _write_proto2025_smoke_object_fom(fom_path)
+
+    federation_name = f"shim-2025-timed-delete-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = TimedDeleteScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        federate_type="TimedDeleteFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"Compat-TimedDelete-{uuid.uuid4().hex[:8]}",
+        delete_tag=b"compat-delete-tag",
+    )
+
+    try:
+        summary = run_timed_delete_scenario(
+            owner,
+            observer,
+            config=config,
+            owner_federate=_CompatRecordingFederateAmbassador(),
+            observer_federate=_CompatRecordingFederateAmbassador(),
+        )
+
+        assert summary["remove_before_grant"] is None
+        assert summary["remove_after_grant"].args[0] == summary["object_instance"]
+        assert summary["remove_after_grant"].args[1] == config.delete_tag
+    finally:
+        for rti, resign_action in (
+            (observer, ResignAction.NO_ACTION),
+            (owner, ResignAction.NO_ACTION),
+        ):
+            try:
+                rti.resign_federation_execution(resign_action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (observer, owner):
             try:
                 rti.disconnect()
             except Exception:

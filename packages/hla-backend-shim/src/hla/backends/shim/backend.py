@@ -2188,12 +2188,30 @@ class Shim2025RTIAmbassador:
             raise DeletePrivilegeNotHeld(str(objectInstance))
 
         callback_time = self._coerce_time(time) if time is not None else None
+        if callback_time is not None:
+            self._validate_tso_send_time(callback_time)
         object_class_name = record.object_class_name
+        retraction_handles: list[MessageRetractionHandle] = []
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             if federate_key == self._current_federate_key() or object_class_name not in subscriptions:
                 continue
             target_rti = federation.member_rtis.get(federate_key)
             if target_rti is not None and object_instance_value in target_rti._locally_deleted_objects:
+                continue
+            if callback_time is not None:
+                retraction_handles.append(
+                    self._queue_tso_callback(
+                        FederateHandle(federate_key),
+                        callback_time,
+                        "removeObjectInstance",
+                        objectInstance,
+                        bytes(userSuppliedTag),
+                        self._current_federate_handle(),
+                        callback_time,
+                        OrderType.TIMESTAMP,
+                        OrderType.TIMESTAMP,
+                    )
+                )
                 continue
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
@@ -2210,6 +2228,9 @@ class Shim2025RTIAmbassador:
         if record.object_instance_name is not None:
             federation.object_instance_names.pop(record.object_instance_name, None)
         federation.object_instances.pop(object_instance_value, None)
+        if callback_time is not None:
+            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
     def localDeleteObjectInstance(self, objectInstance: Any) -> None:  # noqa: N802
