@@ -8232,6 +8232,103 @@ def test_2025_shim_restore_reverts_dirty_lookahead_and_redelivers_presave_queued
             pass
 
 
+@pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-023", "HLA2025-FI-SVC-032")
+def test_2025_shim_restore_recovers_time_and_switch_control_state() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    federation_name = f"shim-2025-control-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-CONTROL"
+    federate = Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(backend="shim")
+
+    try:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+        rti.createFederationExecution(
+            federationName=federation_name,
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        rti.joinFederationExecution(
+            federateName="ControlRestore",
+            federateType="TestFederate",
+            federationName=federation_name,
+        )
+
+        rti.enableTimeRegulation(HLAinteger64Interval(2))
+        rti.enableTimeConstrained()
+        assert federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
+        assert federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
+        rti.enableAsynchronousDelivery()
+        rti.setServiceReportingSwitch(True)
+        rti.setExceptionReportingSwitch(False)
+        rti.setAutomaticResignDirective(ResignAction.DELETE_OBJECTS)
+        rti.setConveyRegionDesignatorSetsSwitch(False)
+        rti.setObjectClassRelevanceAdvisorySwitch(True)
+
+        assert rti.queryLookahead() == HLAinteger64Interval(2)
+        assert rti.getServiceReportingSwitch() is True
+        assert rti.getExceptionReportingSwitch() is False
+        assert rti.getAutomaticResignDirective() is ResignAction.DELETE_OBJECTS
+        assert rti.getConveyRegionDesignatorSetsSwitch() is False
+        assert rti.getObjectClassRelevanceAdvisorySwitch() is True
+
+        federate.callbacks.clear()
+        rti.requestFederationSave(save_label)
+        assert federate.last_callback("initiateFederateSave") == (save_label,)
+        rti.federateSaveBegun()
+        rti.federateSaveComplete()
+        assert federate.last_callback("federationSaved") == ()
+
+        rti.modifyLookahead(HLAinteger64Interval(7))
+        rti.disableAsynchronousDelivery()
+        rti.disableTimeConstrained()
+        rti.disableTimeRegulation()
+        rti.setServiceReportingSwitch(False)
+        rti.setExceptionReportingSwitch(True)
+        rti.setAutomaticResignDirective(ResignAction.NO_ACTION)
+        rti.setConveyRegionDesignatorSetsSwitch(True)
+        rti.setObjectClassRelevanceAdvisorySwitch(False)
+
+        with pytest.raises(TimeRegulationIsNotEnabled):
+            rti.queryLookahead()
+        assert rti.getServiceReportingSwitch() is False
+        assert rti.getExceptionReportingSwitch() is True
+        assert rti.getAutomaticResignDirective() is ResignAction.NO_ACTION
+        assert rti.getConveyRegionDesignatorSetsSwitch() is True
+        assert rti.getObjectClassRelevanceAdvisorySwitch() is False
+
+        federate.callbacks.clear()
+        rti.requestFederationRestore(save_label)
+        assert federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert federate.last_callback("federationRestoreBegun") == ()
+        assert federate.last_callback("initiateFederateRestore")[:2] == (save_label, "ControlRestore")
+        rti.federateRestoreComplete()
+        assert federate.last_callback("federationRestored") == ()
+
+        assert rti.queryLookahead() == HLAinteger64Interval(2)
+        assert rti.getServiceReportingSwitch() is True
+        assert rti.getExceptionReportingSwitch() is False
+        assert rti.getAutomaticResignDirective() is ResignAction.DELETE_OBJECTS
+        assert rti.getConveyRegionDesignatorSetsSwitch() is False
+        assert rti.getObjectClassRelevanceAdvisorySwitch() is True
+    finally:
+        try:
+            rti.resignFederationExecution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            rti.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        try:
+            rti.disconnect()
+        except Exception:
+            pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction

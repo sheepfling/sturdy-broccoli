@@ -3006,6 +3006,9 @@ class Shim2025RTIAmbassador:
                     "lookahead": rti._lookahead,
                     "time_regulation_enabled": rti._time_regulation_enabled,
                     "time_constrained_enabled": rti._time_constrained_enabled,
+                    "asynchronous_delivery_enabled": rti._asynchronous_delivery_enabled,
+                    "automatic_resign_directive": rti._automatic_resign_directive,
+                    "switches": copy.deepcopy(rti._switches),
                 }
                 for federate_key, rti in federation.member_rtis.items()
             }
@@ -3060,6 +3063,17 @@ class Shim2025RTIAmbassador:
                 rti._time_constrained_enabled = bool(
                     values.get("time_constrained_enabled", rti._time_constrained_enabled)
                 )
+                rti._asynchronous_delivery_enabled = bool(
+                    values.get(
+                        "asynchronous_delivery_enabled",
+                        rti._asynchronous_delivery_enabled,
+                    )
+                )
+                rti._automatic_resign_directive = values.get(
+                    "automatic_resign_directive",
+                    rti._automatic_resign_directive,
+                )
+                rti._switches = dict(values.get("switches", rti._switches))
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationRestored")
             federation.restore_label = None

@@ -390,7 +390,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers federation save/restore lifecycle and rollback callback slices.",
+        "Python 2025 shim covers federation save/restore lifecycle, rollback callback slices, time/switch-control rollback, "
+        "saved lookahead recovery, and pre-save queued-TSO redelivery after restore.",
     ),
     _row(
         "save_restore",
@@ -400,7 +401,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, "
         "status callbacks, success/failure callbacks, abort callbacks, object registry rollback, logical-time rollback, "
-        "and bounded radar-window state rollback.",
+        "time/switch-control rollback, queued-TSO clearing after restore, and bounded radar-window state rollback.",
     ),
     _row(
         "save_restore",

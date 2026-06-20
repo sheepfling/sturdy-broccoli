@@ -1827,11 +1827,13 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             "summary_by_route": {
                 "python-2025-inprocess": (
                     "The in-process route exercises regulation/constrained enablement, time advance, flush queue, "
-                    "timestamped delivery, retraction, and restore rollback of logical time."
+                    "timestamped delivery, retraction, restore rollback of logical time, and restore recovery of "
+                    "saved lookahead plus time/switch control state."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route exercises regulation/constrained enablement, async delivery control, "
-                    "advance/grant flow, queued TSO delivery, retraction, and restore rollback of logical time."
+                    "advance/grant flow, queued TSO delivery, retraction, restore rollback of logical time, and "
+                    "restore recovery of saved lookahead plus time/switch control state."
                 ),
             },
             "boundary_by_route": {
