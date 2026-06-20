@@ -4166,6 +4166,81 @@ def test_2025_shim_runs_restore_object_state_scenario_via_compat_adapter() -> No
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-084",
+    "HLA2025-FI-SVC-085",
+)
+def test_2025_shim_runs_attribute_ownership_unavailable_scenario_via_compat_adapter() -> None:
+    from hla.verification import OwnershipScenarioConfig, run_attribute_ownership_unavailable_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-ownership-unavailable-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    acquirer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = OwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"shim-unavailable-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_attribute_ownership_unavailable_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["unavailable"].args[0] == summary["object_instance"]
+    assert summary["acquirer_attribute"] in summary["unavailable"].args[1]
+    assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is True
+    assert acquirer.is_attribute_owned_by_federate(summary["object_instance"], summary["acquirer_attribute"]) is False
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-086",
+)
+def test_2025_shim_runs_non_owner_update_rejection_scenario_via_compat_adapter() -> None:
+    from hla.verification import NonOwnerUpdateScenarioConfig, run_non_owner_update_rejection_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.exceptions import AttributeNotOwned
+
+    federation_name = f"shim-2025-non-owner-update-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = NonOwnerUpdateScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"shim-illegal-update-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_non_owner_update_rejection_scenario(
+        owner,
+        observer,
+        config=config,
+        owner_federate=_CompatRecordingFederateAmbassador(),
+        observer_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["failure"] is not None
+    assert isinstance(summary["failure"], AttributeNotOwned)
+    assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is True
+    assert observer.is_attribute_owned_by_federate(summary["observer_object_instance"], summary["observer_attribute"]) is False
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
