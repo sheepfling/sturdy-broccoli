@@ -1650,6 +1650,26 @@ def test_2025_target_radar_adapter_explicitly_covers_time_window_service_surface
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_basic_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_basic.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"basic smoke scenario services: {missing}"
+    )
+
+
 def test_2025_target_radar_adapter_explicitly_covers_connection_lost_callback_surface() -> None:
     scenario_path = (
         Path(__file__).resolve().parents[1]
