@@ -3905,6 +3905,43 @@ def test_2025_shim_runs_save_restore_queued_callback_scenario_via_compat_adapter
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
+)
+def test_2025_shim_runs_resigned_federate_callback_silence_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_resigned_federate_callback_silence_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-resign-callback-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"POST-RESIGN-SAVE-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_resigned_federate_callback_silence_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_initiate_save"].args == (config.save_name,)
+    assert summary["leader_saved"] is not None
+    assert summary["wing_record_count_after"] == summary["wing_record_count_before"]
+    assert summary["wing_post_resign_records"] == []
+
+
+@pytest.mark.requirements(
     "HLA2025-SS-043",
     "HLA2025-SS-044",
     "HLA2025-FR-004",
