@@ -8521,6 +8521,145 @@ def test_2025_shim_restore_recovers_transport_and_order_policy_state(tmp_path: P
                 pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-193",
+    "HLA2025-FI-SVC-194",
+)
+def test_2025_shim_restore_recovers_callback_delivery_policy(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "CallbackRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Callback Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused callback restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-callback-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-CALLBACKS"
+    publisher_federate = Recording2025FederateAmbassador()
+    subscriber_federate = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    try:
+        publisher.connect(publisher_federate, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
+        publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        publisher_handle = publisher.joinFederationExecution("CallbackRestorePublisher", "TestFederate", federation_name)
+        subscriber.joinFederationExecution("CallbackRestoreSubscriber", "TestFederate", federation_name)
+
+        interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_interaction_class = subscriber.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+        subscriber_parameter = subscriber.getParameterHandle(subscriber_interaction_class, "TrackId")
+        publisher.publishInteractionClass(interaction_class)
+        subscriber.subscribeInteractionClass(subscriber_interaction_class)
+
+        publisher_federate.callbacks.clear()
+        subscriber_federate.callbacks.clear()
+        subscriber.disableCallbacks()
+        publisher.sendInteraction(interaction_class, {parameter: b"SAVED"}, b"saved-cb")
+        assert subscriber_federate.last_callback("receiveInteraction") is None
+        assert subscriber.evokeCallback(0.0) is False
+
+        publisher.requestFederationSave(save_label)
+        publisher.federateSaveBegun()
+        subscriber.federateSaveBegun()
+        publisher.federateSaveComplete()
+        subscriber.federateSaveComplete()
+
+        publisher_federate.callbacks.clear()
+        subscriber_federate.callbacks.clear()
+        subscriber.enableCallbacks()
+        publisher.sendInteraction(interaction_class, {parameter: b"MUTATED"}, b"mutated-cb")
+        mutated = subscriber_federate.last_callback("receiveInteraction")
+        assert mutated is not None
+        assert mutated[:3] == (
+            subscriber_interaction_class,
+            {subscriber_parameter: b"MUTATED"},
+            b"mutated-cb",
+        )
+        assert mutated[4] == publisher_handle
+
+        publisher_federate.callbacks.clear()
+        subscriber_federate.callbacks.clear()
+        publisher.requestFederationRestore(save_label)
+        assert publisher_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert publisher_federate.last_callback("federationRestoreBegun") == ()
+        assert publisher_federate.last_callback("initiateFederateRestore")[:2] == (save_label, "CallbackRestorePublisher")
+        assert subscriber_federate.last_callback("initiateFederateRestore")[:2] == (save_label, "CallbackRestoreSubscriber")
+        publisher.federateRestoreComplete()
+        subscriber.federateRestoreComplete()
+        assert subscriber_federate.last_callback("federationRestored") is None
+        assert subscriber.evokeCallback(0.0) is False
+
+        subscriber_federate.callbacks.clear()
+        publisher.sendInteraction(interaction_class, {parameter: b"RESTORED"}, b"restored-cb")
+        assert subscriber_federate.last_callback("receiveInteraction") is None
+        assert subscriber.evokeCallback(0.0) is False
+
+        subscriber.enableCallbacks()
+        assert subscriber.evokeCallback(0.0) is True
+        restored_receives = _callbacks_named_2025(subscriber_federate, "receiveInteraction")
+        assert len(restored_receives) == 1
+        restored = restored_receives[0]
+        assert restored[:3] == (
+            subscriber_interaction_class,
+            {subscriber_parameter: b"RESTORED"},
+            b"restored-cb",
+        )
+        assert restored[3] == publisher.getTransportationTypeHandle("HLAreliable")
+        assert restored[4] == publisher_handle
+        assert restored[5] == set()
+        assert restored[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+        assert subscriber.evokeCallback(0.0) is False
+    finally:
+        for rti in (subscriber, publisher):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            publisher.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber, publisher):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction

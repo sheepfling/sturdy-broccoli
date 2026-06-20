@@ -3009,6 +3009,7 @@ class Shim2025RTIAmbassador:
                     "time_regulation_enabled": rti._time_regulation_enabled,
                     "time_constrained_enabled": rti._time_constrained_enabled,
                     "asynchronous_delivery_enabled": rti._asynchronous_delivery_enabled,
+                    "callbacks_enabled": rti._callbacks_enabled,
                     "automatic_resign_directive": rti._automatic_resign_directive,
                     "switches": copy.deepcopy(rti._switches),
                     "default_attribute_transportation": copy.deepcopy(rti._default_attribute_transportation),
@@ -3081,6 +3082,7 @@ class Shim2025RTIAmbassador:
                         rti._asynchronous_delivery_enabled,
                     )
                 )
+                rti._callbacks_enabled = bool(values.get("callbacks_enabled", rti._callbacks_enabled))
                 rti._automatic_resign_directive = values.get(
                     "automatic_resign_directive",
                     rti._automatic_resign_directive,
@@ -3095,7 +3097,11 @@ class Shim2025RTIAmbassador:
                 rti._default_attribute_order = copy.deepcopy(
                     values.get("default_attribute_order", rti._default_attribute_order)
                 )
+                rti._evoked_callback_queue.clear()
             for federate_handle in federation.member_handles.values():
+                target_rti = federation.member_rtis.get(federate_handle.value)
+                if target_rti is not None and not target_rti._callbacks_enabled:
+                    continue
                 self._deliver_to_federate_handle(federate_handle, "federationRestored")
             federation.restore_label = None
             federation.restore_status.clear()
