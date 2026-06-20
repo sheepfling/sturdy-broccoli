@@ -3509,6 +3509,111 @@ def test_2025_shim_runs_two_federate_exchange_scenario_via_compat_adapter(tmp_pa
     assert summary["cleanup"] in {"delete", "delete-unconfirmed", "divest"}
 
 
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+)
+def test_2025_shim_runs_exchange_round_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import ExchangeRoundConfig
+    from hla.verification import run_exchange_round
+    from hla.verification.scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
+
+    fom_path = tmp_path / "Proto2025ExchangeRoundFOM.xml"
+    _write_proto2025_declaration_fom(fom_path)
+
+    publisher_federate = _CompatRecordingFederateAmbassador()
+    subscriber_federate = _CompatRecordingFederateAmbassador()
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    federation_name = f"shim-2025-exchange-round-{uuid.uuid4().hex[:8]}"
+    publisher.connect(publisher_federate, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
+    publisher.create_federation_execution(federation_name, [str(fom_path)], "HLAinteger64Time")
+    publisher.join_federation_execution("Publisher", "SmokeFederate", federation_name)
+    subscriber.join_federation_execution("Subscriber", "SmokeFederate", federation_name)
+
+    publisher_class = publisher.get_object_class_handle("HLAobjectRoot.DemoObject")
+    subscriber_class = subscriber.get_object_class_handle("HLAobjectRoot.DemoObject")
+    publisher_attr = publisher.get_attribute_handle(publisher_class, "Payload")
+    subscriber_attr = subscriber.get_attribute_handle(subscriber_class, "Payload")
+    publisher.publish_object_class_attributes(publisher_class, {publisher_attr})
+    subscriber.subscribe_object_class_attributes(the_class=subscriber_class, attribute_list={subscriber_attr})
+
+    publisher_interaction = publisher.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
+    subscriber_interaction = subscriber.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
+    publisher_param = publisher.get_parameter_handle(publisher_interaction, "Message")
+    subscriber_param = subscriber.get_parameter_handle(subscriber_interaction, "Message")
+    publisher.publish_interaction_class(publisher_interaction)
+    subscriber.subscribe_interaction_class(subscriber_interaction)
+    drain_callbacks_pair(publisher, subscriber)
+
+    object_instance = register_named_object_instance(
+        publisher,
+        publisher_federate,
+        publisher_class,
+        f"DemoObject-{uuid.uuid4().hex[:8]}",
+    )
+    discover = wait_for_callback(subscriber, subscriber_federate, "discoverObjectInstance", loops=120)
+    assert discover is not None
+    discovered_object = discover.args[0]
+
+    publisher.enable_time_regulation(HLAinteger64Interval(1))
+    subscriber.enable_time_constrained()
+    wait_for_callback(publisher, publisher_federate, "timeRegulationEnabled", loops=120)
+    wait_for_callback(subscriber, subscriber_federate, "timeConstrainedEnabled", loops=120)
+    publisher.change_attribute_order_type(object_instance, {publisher_attr}, OrderType.TIMESTAMP)
+    publisher.change_interaction_order_type(publisher_interaction, OrderType.TIMESTAMP)
+    drain_callbacks_pair(publisher, subscriber, loops=16)
+
+    summary = {
+        "object_instance": object_instance,
+        "discovered_object": discovered_object,
+        "publisher_attribute": publisher_attr,
+        "subscriber_attribute": subscriber_attr,
+        "publisher_interaction": publisher_interaction,
+        "subscriber_interaction": subscriber_interaction,
+        "publisher_parameter": publisher_param,
+        "subscriber_parameter": subscriber_param,
+    }
+    round_config = ExchangeRoundConfig(
+        attribute_payload=b"round-attribute",
+        attribute_tag=b"round-attribute-tag",
+        interaction_payload=b"round-interaction",
+        interaction_tag=b"round-interaction-tag",
+        attribute_time=HLAinteger64Time(12),
+        interaction_time=HLAinteger64Time(13),
+    )
+
+    round_summary = run_exchange_round(
+        publisher,
+        subscriber,
+        summary=summary,
+        subscriber_federate=subscriber_federate,
+        config=round_config,
+    )
+
+    assert round_summary["reflect"].args[1] == {subscriber_attr: round_config.attribute_payload}
+    assert round_summary["reflect"].args[2] == round_config.attribute_tag
+    assert round_summary["reflect"].args[3] is OrderType.TIMESTAMP
+    assert round_summary["interaction"].args[1] == {subscriber_param: round_config.interaction_payload}
+    assert round_summary["interaction"].args[2] == round_config.interaction_tag
+    assert round_summary["interaction"].args[3] is OrderType.TIMESTAMP
+
+    subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+    publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    publisher.destroy_federation_execution(federation_name=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-021")
 def test_2025_shim_runs_declaration_invalid_attribute_publication_scenario_end_to_end(tmp_path: Path) -> None:
     from hla.verification import (
