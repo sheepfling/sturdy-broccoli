@@ -4114,6 +4114,59 @@ def test_2025_shim_runs_restore_federate_local_state_scenario_via_compat_adapter
 
 @pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+)
+def test_2025_shim_runs_restore_object_state_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_object_state_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-restore-object-state-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    leader_federate = _OwnershipCompatRecordingFederateAmbassador()
+    wing_federate = _OwnershipCompatRecordingFederateAmbassador()
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-OBJECT-STATE-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_restore_object_state_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=leader_federate,
+        wing_federate=wing_federate,
+    )
+
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args[0] == config.save_name
+    assert summary["leader_saved"] is not None
+    assert summary["wing_saved"] is not None
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["leader_restore_begun"] is not None
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_restored"] is not None
+    assert summary["wing_restored"] is not None
+    assert summary["informed"].args[0] == summary["object_instance"]
+    assert summary["informed"].args[1] == summary["owner_attribute"]
+    assert summary["informed_federate_name"] == config.wing_name
+    assert leader.get_object_instance_name(summary["object_instance"]) == "Restore-State-Object"
+    assert wing.get_object_instance_name(summary["acquirer_object_instance"]) == "Restore-State-Object"
+    assert wing.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+    assert leader.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is False
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-025",
