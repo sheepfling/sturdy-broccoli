@@ -335,6 +335,10 @@ def run_negotiated_attribute_ownership_scenario(
     release_acquirer_object = acquirer_object
     release_acquirer_attribute = acquirer_attr
     if release is None:
+        if divest_notice is not None:
+            owner_rti.confirm_divestiture(object_instance, {owner_attr}, config.request_tag)
+            drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
+            offered_acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
         assert offered_acquired is not None
         pending_object_name = f"{config.object_instance_name}-pending"
         owner_class = owner_rti.get_object_class_handle(config.object_class_name)

@@ -55,7 +55,7 @@ class PythonRTIOwnershipCoreMixin:
         attr: AttributeHandle,
     ) -> bool:
         owner = instance.attribute_owners.get(attr, instance.owner)
-        return owner is None or attr in instance.attribute_divesting
+        return owner is None
 
     @staticmethod
     def _pop_first_candidate(

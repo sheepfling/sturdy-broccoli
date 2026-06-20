@@ -4289,6 +4289,68 @@ def test_2025_shim_runs_release_request_ownership_scenario_via_compat_adapter() 
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-FI-SVC-126",
+)
+def test_2025_shim_runs_negotiated_attribute_ownership_scenario_via_compat_adapter() -> None:
+    from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-negotiated-route-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    acquirer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = NegotiatedOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"shim-negotiated-{uuid.uuid4().hex[:8]}",
+        assumption_tag=b"offer-tag",
+        request_tag=b"request-tag",
+        cancel_tag=b"cancel-tag",
+    )
+
+    summary = run_negotiated_attribute_ownership_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    if summary["assumption"] is not None:
+        assert summary["assumption"].args == (
+            summary["object_instance"],
+            {summary["acquirer_attribute"]},
+            config.assumption_tag,
+        )
+    if summary["divestiture_confirmation"] is not None:
+        assert summary["divestiture_confirmation"].args == (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            config.request_tag,
+        )
+    assert summary["release"].args[2] == config.cancel_tag
+    assert summary["cancellation"].args == (
+        summary["release_acquirer_object_instance"],
+        {summary["acquirer_attribute"]},
+    )
+    assert summary["divested"] == {summary["owner_attribute"]}
+    assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
+    assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+    assert summary["informed"].args[0] == summary["release_object_instance"]
+    assert summary["informed"].args[1] == summary["owner_attribute"]
+    assert acquirer.is_attribute_owned_by_federate(summary["release_acquirer_object_instance"], summary["acquirer_attribute"]) is True
+    assert owner.is_attribute_owned_by_federate(summary["release_object_instance"], summary["owner_attribute"]) is False
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
