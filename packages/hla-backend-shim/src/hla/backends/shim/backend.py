@@ -82,6 +82,7 @@ from hla.rti1516_2025.exceptions import (
     InvalidRegion,
     InvalidRegionContext,
     InvalidServiceGroup,
+    InvalidUpdateRateDesignator,
     InvalidTransportationName,
     InvalidTransportationTypeHandle,
     LogicalTimeAlreadyPassed,
@@ -375,6 +376,9 @@ class Shim2025RTIAmbassador:
         self._known_object_classes: dict[int, str] = {}
         self._known_object_names: dict[str, int] = {}
         self._locally_deleted_objects: set[int] = set()
+        self._subscribed_object_update_rates: dict[str, dict[str, float]] = {}
+        self._subscribed_object_update_rate_designators: dict[str, dict[str, str]] = {}
+        self._last_reflect_logical_times: dict[tuple[int, str], float] = {}
         self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
     @property
@@ -443,6 +447,9 @@ class Shim2025RTIAmbassador:
         self._known_object_classes.clear()
         self._known_object_names.clear()
         self._locally_deleted_objects.clear()
+        self._subscribed_object_update_rates.clear()
+        self._subscribed_object_update_rate_designators.clear()
+        self._last_reflect_logical_times.clear()
 
     def forceConnectionLost(self, faultDescription: str = "simulated connection lost") -> None:  # noqa: N802
         """Test harness hook for injecting a non-orderly connection loss."""
@@ -1265,6 +1272,7 @@ class Shim2025RTIAmbassador:
             attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
         except InvalidAttributeHandle as exc:
             raise AttributeNotDefined(str(exc)) from exc
+        explicit_update_rate, explicit_designator = self._resolve_update_rate_designator(*unused)
         federation = self._federation_record()
         affected_publishers = self._matching_object_publishers(federation, object_class_name, attribute_names)
         before_matches = {
@@ -1272,6 +1280,27 @@ class Shim2025RTIAmbassador:
             for publisher_key in affected_publishers
         }
         federation.subscribed_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set()).update(attribute_names)
+        rate_map = self._subscribed_object_update_rates.setdefault(object_class_name, {})
+        designator_map = self._subscribed_object_update_rate_designators.setdefault(object_class_name, {})
+        for attribute_name in attribute_names:
+            resolved_rate = explicit_update_rate
+            resolved_designator = explicit_designator
+            if resolved_rate is None:
+                resolved_rate = self._default_update_rate_for_attribute(object_class_name, attribute_name)
+                resolved_designator = self._default_update_rate_designator_for_attribute(object_class_name, attribute_name)
+            if resolved_rate is None:
+                rate_map.pop(attribute_name, None)
+                designator_map.pop(attribute_name, None)
+                continue
+            rate_map[attribute_name] = resolved_rate
+            if resolved_designator is None:
+                designator_map.pop(attribute_name, None)
+            else:
+                designator_map[attribute_name] = resolved_designator
+        if not rate_map:
+            self._subscribed_object_update_rates.pop(object_class_name, None)
+        if not designator_map:
+            self._subscribed_object_update_rate_designators.pop(object_class_name, None)
         self._discover_existing_objects_for_current_subscription(object_class_name)
         for publisher_key in affected_publishers:
             if not before_matches[publisher_key] and self._has_object_registration_interest(federation, publisher_key, object_class_name):
@@ -1300,6 +1329,8 @@ class Shim2025RTIAmbassador:
             for publisher_key in affected_publishers
         }
         federation.subscribed_object_attributes.setdefault(self._current_federate_key(), {}).pop(object_class_name, None)
+        self._subscribed_object_update_rates.pop(object_class_name, None)
+        self._subscribed_object_update_rate_designators.pop(object_class_name, None)
         for publisher_key in affected_publishers:
             if before_matches[publisher_key] and not self._has_object_registration_interest(federation, publisher_key, object_class_name):
                 self._deliver_to_federate_handle(
@@ -1326,6 +1357,18 @@ class Shim2025RTIAmbassador:
         subscribed.difference_update(attribute_names)
         if not subscribed:
             federation.subscribed_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+        rate_map = self._subscribed_object_update_rates.get(object_class_name)
+        if rate_map is not None:
+            for attribute_name in attribute_names:
+                rate_map.pop(attribute_name, None)
+            if not rate_map:
+                self._subscribed_object_update_rates.pop(object_class_name, None)
+        designator_map = self._subscribed_object_update_rate_designators.get(object_class_name)
+        if designator_map is not None:
+            for attribute_name in attribute_names:
+                designator_map.pop(attribute_name, None)
+            if not designator_map:
+                self._subscribed_object_update_rate_designators.pop(object_class_name, None)
         for publisher_key in affected_publishers:
             if before_matches[publisher_key] and not self._has_object_registration_interest(federation, publisher_key, object_class_name):
                 self._deliver_to_federate_handle(
@@ -1960,6 +2003,15 @@ class Shim2025RTIAmbassador:
                 for handle, value in values_by_handle.items()
                 if self._attribute_name_by_handle(object_class_name, handle) in subscribed_names
             }
+            if callback_time is not None:
+                reflected = self._apply_update_rate_reduction_for_subscriber(
+                    federate_key,
+                    objectInstance,
+                    discovery_class_name,
+                    record.object_class_name,
+                    reflected,
+                    callback_time,
+                )
             if not reflected:
                 continue
             target_rti = federation.member_rtis.get(federate_key)
@@ -2750,6 +2802,25 @@ class Shim2025RTIAmbassador:
             return "HLAtimestamp"
         raise InvalidOrderType(str(orderType))
 
+    def getUpdateRateValue(self, updateRateDesignator: str) -> float:  # noqa: N802
+        self._record("getUpdateRateValue", updateRateDesignator)
+        self._require_joined("getUpdateRateValue")
+        designator = str(updateRateDesignator)
+        normalized = "HLAdefault" if designator == "default" else designator
+        update_rates = getattr(self._catalog(), "update_rates", {})
+        if normalized in update_rates:
+            return float(update_rates[normalized])
+        if normalized == "HLAdefault":
+            return 0.0
+        raise InvalidUpdateRateDesignator(str(updateRateDesignator))
+
+    def getUpdateRateValueForAttribute(self, theObject: Any, theAttribute: Any) -> float:  # noqa: N802
+        self._record("getUpdateRateValueForAttribute", theObject, theAttribute)
+        self._require_joined("getUpdateRateValueForAttribute")
+        record = self._object_instance_record(theObject)
+        attribute_name = self._attribute_name_by_handle(record.object_class_name, theAttribute)
+        return self._subscribed_update_rate_for_attribute(self._current_federate_key(), record.object_class_name, attribute_name)
+
     def getTimeFactory(self) -> Any:  # noqa: N802
         self._record("getTimeFactory")
         self._require_connected("getTimeFactory")
@@ -3539,6 +3610,7 @@ class Shim2025RTIAmbassador:
         self._lookahead = self._logical_time_factory.makeZero()
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
+        self._last_reflect_logical_times.clear()
 
     def _release_join(self) -> None:
         if self._federation_name is None:
@@ -3547,6 +3619,9 @@ class Shim2025RTIAmbassador:
         self._known_object_classes.clear()
         self._known_object_names.clear()
         self._locally_deleted_objects.clear()
+        self._subscribed_object_update_rates.clear()
+        self._subscribed_object_update_rate_designators.clear()
+        self._last_reflect_logical_times.clear()
         federation = _FEDERATION_REGISTRY.get(self._federation_name)
         if federation is not None:
             if self._federate_name is not None:
@@ -5243,6 +5318,109 @@ class Shim2025RTIAmbassador:
             except KeyError as exc:
                 raise InvalidAttributeHandle(str(attribute)) from exc
         return tuple(names)
+
+    def _resolve_update_rate_designator(self, *unused: Any) -> tuple[float | None, str | None]:
+        designator = next((str(arg) for arg in reversed(unused) if isinstance(arg, str)), None)
+        if designator in (None, "", "default", "HLAdefault"):
+            return (0.0, "HLAdefault") if designator is not None else (None, None)
+        update_rates = getattr(self._catalog(), "update_rates", {})
+        if designator not in update_rates:
+            raise InvalidUpdateRateDesignator(designator)
+        return float(update_rates[designator]), designator
+
+    def _default_update_rate_for_attribute(self, object_class_name: str, attribute_name: str) -> float | None:
+        spec = self._catalog().object_classes.get(object_class_name)
+        if spec is None:
+            return None
+        designator = dict(getattr(spec, "attribute_update_rates", {})).get(attribute_name)
+        if not designator:
+            return None
+        normalized = "HLAdefault" if designator == "default" else str(designator)
+        update_rates = getattr(self._catalog(), "update_rates", {})
+        if normalized in update_rates:
+            return float(update_rates[normalized])
+        if normalized == "HLAdefault":
+            return 0.0
+        raise InvalidUpdateRateDesignator(str(designator))
+
+    def _default_update_rate_designator_for_attribute(self, object_class_name: str, attribute_name: str) -> str | None:
+        spec = self._catalog().object_classes.get(object_class_name)
+        if spec is None:
+            return None
+        designator = dict(getattr(spec, "attribute_update_rates", {})).get(attribute_name)
+        if not designator:
+            return None
+        normalized = "HLAdefault" if designator == "default" else str(designator)
+        update_rates = getattr(self._catalog(), "update_rates", {})
+        if normalized == "HLAdefault" or normalized in update_rates:
+            return normalized
+        raise InvalidUpdateRateDesignator(str(designator))
+
+    def _subscribed_update_rate_for_attribute(
+        self,
+        federate_key: int,
+        actual_class_name: str,
+        attribute_name: str,
+    ) -> float:
+        federation = self._federation_record()
+        target_rti = federation.member_rtis.get(federate_key)
+        if target_rti is None:
+            return 0.0
+        matches: list[tuple[int, float]] = []
+        lineage = set(self._object_class_lineage(actual_class_name))
+        for subscribed_class_name, rate_map in target_rti._subscribed_object_update_rates.items():
+            if subscribed_class_name not in lineage:
+                continue
+            if attribute_name not in rate_map:
+                continue
+            matches.append((len(subscribed_class_name), float(rate_map[attribute_name])))
+        if not matches:
+            return 0.0
+        return max(matches, key=lambda item: item[0])[1]
+
+    @staticmethod
+    def _time_scalar(value: Any) -> float | None:
+        if value is None:
+            return None
+        scalar = getattr(value, "value", value)
+        try:
+            return float(scalar)
+        except Exception:
+            return None
+
+    def _apply_update_rate_reduction_for_subscriber(
+        self,
+        federate_key: int,
+        object_instance: ObjectInstanceHandle,
+        reflected_class_name: str,
+        actual_class_name: str,
+        reflected: Mapping[AttributeHandle, bytes],
+        delivery_time: Any | None,
+    ) -> dict[AttributeHandle, bytes]:
+        federation = self._federation_record()
+        target_rti = federation.member_rtis.get(federate_key)
+        if target_rti is None:
+            return dict(reflected)
+        scalar_time = self._time_scalar(delivery_time)
+        if scalar_time is None and (target_rti._time_regulation_enabled or target_rti._time_constrained_enabled):
+            scalar_time = self._time_scalar(target_rti._logical_time)
+        if scalar_time is None:
+            return dict(reflected)
+        filtered: dict[AttributeHandle, bytes] = {}
+        for handle, value in reflected.items():
+            attribute_name = self._attribute_name_by_handle(reflected_class_name, handle)
+            rate = self._subscribed_update_rate_for_attribute(federate_key, actual_class_name, attribute_name)
+            key = (object_instance.value, attribute_name)
+            if rate <= 0.0:
+                filtered[handle] = value
+                target_rti._last_reflect_logical_times[key] = scalar_time
+                continue
+            min_interval = 1.0 / rate
+            last_time = target_rti._last_reflect_logical_times.get(key)
+            if last_time is None or (scalar_time - last_time) >= min_interval:
+                filtered[handle] = value
+                target_rti._last_reflect_logical_times[key] = scalar_time
+        return filtered
 
     def _parameter_names_from_handles(self, interaction_class_name: str, parameters: Any) -> tuple[str, ...]:
         try:

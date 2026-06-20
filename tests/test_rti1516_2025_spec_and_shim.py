@@ -456,27 +456,51 @@ class _TargetRadar2025RTIAdapter:
 
     @staticmethod
     def _coerce_time_value(value):  # noqa: ANN001, ANN205
-        from hla.rti1516_2025.time import HLAinteger64Time
+        from hla.rti1516_2025.time import HLAfloat64Time, HLAinteger64Time
 
-        if isinstance(value, HLAinteger64Time):
+        if isinstance(value, (HLAinteger64Time, HLAfloat64Time)):
             return value
+        value_type = type(value)
+        type_name = getattr(value_type, "__name__", "")
+        if type_name == "HLAfloat64Time":
+            scalar = value.getValue() if hasattr(value, "getValue") else value.value
+            return HLAfloat64Time(float(scalar))
+        if type_name == "HLAinteger64Time":
+            scalar = value.getValue() if hasattr(value, "getValue") else value.value
+            return HLAinteger64Time(int(scalar))
         if hasattr(value, "getValue"):
-            return HLAinteger64Time(int(value.getValue()))
-        if hasattr(value, "value"):
-            return HLAinteger64Time(int(value.value))
-        return HLAinteger64Time(int(value))
+            scalar = value.getValue()
+        elif hasattr(value, "value"):
+            scalar = value.value
+        else:
+            scalar = value
+        if isinstance(scalar, float):
+            return HLAfloat64Time(float(scalar))
+        return HLAinteger64Time(int(scalar))
 
     @staticmethod
     def _coerce_interval_value(value):  # noqa: ANN001, ANN205
-        from hla.rti1516_2025.time import HLAinteger64Interval
+        from hla.rti1516_2025.time import HLAfloat64Interval, HLAinteger64Interval
 
-        if isinstance(value, HLAinteger64Interval):
+        if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)):
             return value
+        value_type = type(value)
+        type_name = getattr(value_type, "__name__", "")
+        if type_name == "HLAfloat64Interval":
+            scalar = value.getValue() if hasattr(value, "getValue") else value.value
+            return HLAfloat64Interval(float(scalar))
+        if type_name == "HLAinteger64Interval":
+            scalar = value.getValue() if hasattr(value, "getValue") else value.value
+            return HLAinteger64Interval(int(scalar))
         if hasattr(value, "getValue"):
-            return HLAinteger64Interval(int(value.getValue()))
-        if hasattr(value, "value"):
-            return HLAinteger64Interval(int(value.value))
-        return HLAinteger64Interval(int(value))
+            scalar = value.getValue()
+        elif hasattr(value, "value"):
+            scalar = value.value
+        else:
+            scalar = value
+        if isinstance(scalar, float):
+            return HLAfloat64Interval(float(scalar))
+        return HLAinteger64Interval(int(scalar))
 
     @classmethod
     def _to_2025_handle(cls, value):  # noqa: ANN001, ANN205
@@ -662,11 +686,12 @@ class _TargetRadar2025RTIAdapter:
             {self._to_2025_handle(attribute) for attribute in attributes},
         )
 
-    def subscribe_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
+    def subscribe_object_class_attributes(self, object_class, attributes, *unused) -> None:  # noqa: ANN001
         self._call_compat(
             self._delegate.subscribeObjectClassAttributes,
             self._to_2025_handle(object_class),
             {self._to_2025_handle(attribute) for attribute in attributes},
+            *unused,
         )
 
     def subscribe_object_class_attributes_with_regions(self, object_class, attribute_region_associations) -> None:  # noqa: ANN001
@@ -1175,6 +1200,9 @@ class _TargetRadar2025RTIAdapter:
     def get_transportation_type_name(self, transportation_type) -> str:  # noqa: ANN001
         return self._call_compat(self._delegate.getTransportationTypeName, self._to_2025_handle(transportation_type))
 
+    def get_update_rate_value(self, update_rate_designator: str) -> float:
+        return float(self._call_compat(self._delegate.getUpdateRateValue, update_rate_designator))
+
     @staticmethod
     def get_transportation_type(transportation_name: str):  # noqa: ANN201
         from hla.rti1516e.enums import TransportationType
@@ -1578,6 +1606,26 @@ def test_2025_target_radar_adapter_explicitly_covers_support_service_surface() -
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"support-services scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_update_rate_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_update_rate.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"update-rate scenario services: {missing}"
     )
 
 
@@ -2817,6 +2865,35 @@ def test_2025_shim_runs_declaration_management_scenario_end_to_end(tmp_path: Pat
     assert summary["second_start_record"].args == (summary["publisher_class"],)
     assert summary["second_turn_on_record"].args == (summary["publisher_interaction"],)
     assert summary["second_turn_off_record"].args == (summary["publisher_interaction"],)
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-019")
+def test_2025_shim_runs_update_rate_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
+
+    fom_path = tmp_path / "Proto2025UpdateRateFOM.xml"
+    write_update_rate_fom(fom_path)
+
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = UpdateRateScenarioConfig(
+        federation_name=f"shim-2025-update-rate-{uuid.uuid4().hex[:8]}",
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAfloat64Time",
+    )
+
+    summary = run_update_rate_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["publisher_handle"] is not None
+    assert summary["subscriber_handle"] is not None
+    assert summary["values"] == [b"t1", b"t16"]
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-021")
