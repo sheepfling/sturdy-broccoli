@@ -310,6 +310,14 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e.enums import OrderType
 
         return OrderType[value.name]
+    if module_name == "hla.rti1516_2025.enums" and type_name == "SaveStatus":
+        from hla.rti1516e.enums import SaveStatus
+
+        return SaveStatus[value.name]
+    if module_name == "hla.rti1516_2025.enums" and type_name == "RestoreStatus":
+        from hla.rti1516e.enums import RestoreStatus
+
+        return RestoreStatus[value.name]
     if module_name == "hla.rti1516_2025.enums" and type_name == "SynchronizationPointFailureReason":
         from hla.rti1516e.enums import SynchronizationPointFailureReason
 
@@ -318,6 +326,28 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e.handles import FederateHandle
 
         return FederateHandle(int(value.value))
+    if module_name == "hla.rti1516_2025.datatypes" and type_name == "FederateHandleSaveStatusPair":
+        from hla.rti1516e.datatypes import FederateHandleSaveStatusPair
+
+        return FederateHandleSaveStatusPair(
+            _normalize_2025_callback_value(value.handle),
+            _normalize_2025_callback_value(value.status),
+        )
+    if module_name == "hla.rti1516_2025.datatypes" and type_name == "FederateRestoreStatus":
+        from hla.rti1516e.datatypes import FederateRestoreStatus
+
+        return FederateRestoreStatus(
+            _normalize_2025_callback_value(value.preRestoreHandle),
+            _normalize_2025_callback_value(value.postRestoreHandle),
+            _normalize_2025_callback_value(value.status),
+        )
+    if module_name == "hla.rti1516_2025.datatypes" and type_name == "TimeQueryReturn":
+        from hla.rti1516e.datatypes import TimeQueryReturn
+
+        return TimeQueryReturn(
+            bool(value.timeIsValid),
+            _normalize_2025_callback_value(value.time),
+        )
     if isinstance(value, tuple):
         return tuple(_normalize_2025_callback_value(item) for item in value)
     if isinstance(value, list):
@@ -732,6 +762,17 @@ class _TargetRadar2025RTIAdapter:
     def query_logical_time(self):  # noqa: ANN201
         return _normalize_2025_callback_value(self._delegate.queryLogicalTime())
 
+    def get_time_factory(self):  # noqa: ANN201
+        from hla.rti1516e.time import HLAfloat64TimeFactory, HLAinteger64TimeFactory
+
+        factory = self._delegate.getTimeFactory()
+        factory_name = getattr(factory, "name", None) or getattr(factory, "NAME", None) or factory.getName()
+        if factory_name == "HLAinteger64Time":
+            return HLAinteger64TimeFactory()
+        if factory_name == "HLAfloat64Time":
+            return HLAfloat64TimeFactory()
+        raise AssertionError(f"Unsupported 2025 time factory for compat adapter: {factory_name}")
+
     def get_attribute_name(self, object_class, attribute) -> str:  # noqa: ANN001
         return self._call_compat(
             self._delegate.getAttributeName,
@@ -973,6 +1014,48 @@ class _TargetRadar2025RTIAdapter:
     def federate_restore_complete(self) -> None:
         self._delegate.federateRestoreComplete()
 
+    def federate_save_not_complete(self) -> None:
+        self._delegate.federateSaveNotComplete()
+
+    def federate_restore_not_complete(self) -> None:
+        self._delegate.federateRestoreNotComplete()
+
+    def abort_federation_save(self) -> None:
+        self._call_compat(self._delegate.abortFederationSave)
+
+    def abort_federation_restore(self) -> None:
+        self._call_compat(self._delegate.abortFederationRestore)
+
+    def delete_object_instance(self, object_instance, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
+        if time is None:
+            self._call_compat(
+                self._delegate.deleteObjectInstance,
+                self._to_2025_handle(object_instance),
+                user_supplied_tag,
+            )
+            return
+        self._call_compat(
+            self._delegate.deleteObjectInstance,
+            self._to_2025_handle(object_instance),
+            user_supplied_tag,
+            self._coerce_time_value(time),
+        )
+
+    def is_attribute_owned_by_federate(self, object_instance, attribute) -> bool:  # noqa: ANN001
+        return bool(
+            self._call_compat(
+                self._delegate.isAttributeOwnedByFederate,
+                self._to_2025_handle(object_instance),
+                self._to_2025_handle(attribute),
+            )
+        )
+
+    def query_federation_save_status(self) -> None:
+        self._call_compat(self._delegate.queryFederationSaveStatus)
+
+    def query_federation_restore_status(self) -> None:
+        self._call_compat(self._delegate.queryFederationRestoreStatus)
+
     def resign_federation_execution(self, resign_action) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import ResignAction
 
@@ -1121,6 +1204,26 @@ def test_2025_target_radar_adapter_explicitly_covers_support_service_surface() -
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"support-services scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_save_restore_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_save_restore.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"save-restore scenario services: {missing}"
     )
 
 
@@ -2357,6 +2460,75 @@ def test_2025_shim_runs_support_factory_and_decode_scenario_via_compat_adapter()
     assert rti.get_transportation_type("HLAbestEffort") is TransportationType.BEST_EFFORT
     assert rti.get_transportation_name(TransportationType.RELIABLE) == "HLAreliable"
     assert rti.get_transportation_name(TransportationType.BEST_EFFORT) == "HLAbestEffort"
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-021",
+    "HLA2025-FI-SVC-022",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-024",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-027",
+    "HLA2025-FI-SVC-028",
+    "HLA2025-FI-SVC-029",
+    "HLA2025-FI-SVC-030",
+    "HLA2025-FI-SVC-031",
+    "HLA2025-FI-SVC-032",
+)
+def test_2025_shim_runs_backend_neutral_save_restore_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_restore_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.rti1516e.enums import RestoreStatus, SaveStatus
+
+    federation_name = f"shim-2025-save-restore-adapter-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name="SAVE-COMPAT-ADAPTER",
+    )
+
+    summary = run_save_restore_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    pending_save = {pair.federate_handle: pair.save_status for pair in summary["save_status_pending"].args[0]}
+    cleared_save = {pair.federate_handle: pair.save_status for pair in summary["save_status_cleared"].args[0]}
+    pending_restore = {pair.pre_restore_handle: pair.restore_status for pair in summary["restore_status_pending"].args[0]}
+    cleared_restore = {pair.pre_restore_handle: pair.restore_status for pair in summary["restore_status_cleared"].args[0]}
+
+    assert summary["leader_handle"] in pending_save
+    assert summary["wing_handle"] in pending_save
+    assert pending_save[summary["leader_handle"]] is not SaveStatus.NO_SAVE_IN_PROGRESS
+    assert pending_save[summary["wing_handle"]] is not SaveStatus.NO_SAVE_IN_PROGRESS
+    assert cleared_save == {
+        summary["leader_handle"]: SaveStatus.NO_SAVE_IN_PROGRESS,
+        summary["wing_handle"]: SaveStatus.NO_SAVE_IN_PROGRESS,
+    }
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_handle"] in pending_restore
+    assert summary["wing_handle"] in pending_restore
+    assert pending_restore[summary["leader_handle"]] is not RestoreStatus.NO_RESTORE_IN_PROGRESS
+    assert pending_restore[summary["wing_handle"]] is not RestoreStatus.NO_RESTORE_IN_PROGRESS
+    assert cleared_restore == {
+        summary["leader_handle"]: RestoreStatus.NO_RESTORE_IN_PROGRESS,
+        summary["wing_handle"]: RestoreStatus.NO_RESTORE_IN_PROGRESS,
+    }
 
 
 @pytest.mark.requirements(
