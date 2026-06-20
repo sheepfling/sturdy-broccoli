@@ -322,10 +322,21 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e.enums import SynchronizationPointFailureReason
 
         return SynchronizationPointFailureReason[value.name]
-    if module_name == "hla.rti1516_2025.handles" and type_name == "FederateHandle":
-        from hla.rti1516e.handles import FederateHandle
+    if module_name == "hla.rti1516_2025.handles" and type_name in {
+        "FederateHandle",
+        "ObjectClassHandle",
+        "InteractionClassHandle",
+        "ObjectInstanceHandle",
+        "AttributeHandle",
+        "ParameterHandle",
+        "DimensionHandle",
+        "MessageRetractionHandle",
+        "RegionHandle",
+        "TransportationTypeHandle",
+    }:
+        from hla.rti1516e import handles as handles_2010
 
-        return FederateHandle(int(value.value))
+        return getattr(handles_2010, type_name)(int(value.value))
     if module_name == "hla.rti1516_2025.datatypes" and type_name == "FederateHandleSaveStatusPair":
         from hla.rti1516e.datatypes import FederateHandleSaveStatusPair
 
@@ -666,6 +677,49 @@ class _TargetRadar2025RTIAdapter:
             self._to_2025_handle(object_instance),
             {self._to_2025_handle(attribute) for attribute in desired_attributes},
             user_supplied_tag,
+        )
+
+    def negotiated_attribute_ownership_divestiture(
+        self,
+        object_instance,
+        attributes,
+        user_supplied_tag: bytes = b"",
+    ) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.negotiatedAttributeOwnershipDivestiture,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+            user_supplied_tag,
+        )
+
+    def confirm_divestiture(
+        self,
+        object_instance,
+        confirmed_attributes,
+        user_supplied_tag: bytes = b"",
+    ) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.confirmDivestiture,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in confirmed_attributes},
+            user_supplied_tag,
+        )
+
+    def attribute_ownership_divestiture_if_wanted(self, object_instance, attributes):  # noqa: ANN001, ANN201
+        return {
+            self._to_2010_handle(attribute)
+            for attribute in self._call_compat(
+                self._delegate.attributeOwnershipDivestitureIfWanted,
+                self._to_2025_handle(object_instance),
+                {self._to_2025_handle(attribute) for attribute in attributes},
+            )
+        }
+
+    def cancel_attribute_ownership_acquisition(self, object_instance, attributes) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.cancelAttributeOwnershipAcquisition,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in attributes},
         )
 
     def attribute_ownership_release_denied(
@@ -1227,6 +1281,26 @@ def test_2025_target_radar_adapter_explicitly_covers_save_restore_service_surfac
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_ownership_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_ownership.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"ownership scenario services: {missing}"
+    )
+
+
 class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
     """Narrow ownership callback bridge for shared scenario oracles."""
 
@@ -1243,7 +1317,12 @@ class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassa
                 args = (args[0], args[1], FederateHandle(int(owner.value)))
         if method_name == "attributeIsNotOwned" and len(args) == 2 and isinstance(args[1], set) and len(args[1]) == 1:
             args = (args[0], next(iter(args[1])))
-        return super().record_callback(method_name, *args, **kwargs)
+        normalized_args = tuple(_normalize_2025_callback_value(arg) for arg in args)
+        normalized_kwargs = {
+            key: _normalize_2025_callback_value(value)
+            for key, value in kwargs.items()
+        }
+        return super().record_callback(method_name, *normalized_args, **normalized_kwargs)
 
 
 def _write_proto2025_resign_fom(path: Path) -> None:
@@ -2660,6 +2739,118 @@ def test_2025_shim_runs_attribute_ownership_scenario_end_to_end() -> None:
     assert summary["informed"].args[0] == summary["object_instance"]
     assert summary["informed"].args[1] == summary["owner_attribute"]
     assert summary["informed_federate_name"] == config.acquirer_name
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-FI-SVC-126",
+)
+def test_2025_shim_runs_negotiated_ownership_flow_via_compat_adapter() -> None:
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import NegotiatedOwnershipScenarioConfig
+
+    federation_name = f"shim-2025-negotiated-adapter-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    acquirer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    owner_federate = _OwnershipCompatRecordingFederateAmbassador()
+    acquirer_federate = _OwnershipCompatRecordingFederateAmbassador()
+    config = NegotiatedOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="NegotiatedOwnershipFederate",
+        object_class_name="HLAobjectRoot.Proto2025.MessageTest.TestSuite",
+        attribute_name="SuiteId",
+        object_instance_name=f"negotiated-suite-{uuid.uuid4().hex[:8]}",
+        assumption_tag=b"offer-tag",
+        request_tag=b"request-tag",
+        cancel_tag=b"cancel-tag",
+    )
+
+    owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+    acquirer.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
+    owner.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    owner.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer.join_federation_execution(config.acquirer_name, config.federate_type, config.federation_name)
+
+    object_class = owner.get_object_class_handle(config.object_class_name)
+    attribute = owner.get_attribute_handle(object_class, config.attribute_name)
+
+    offered = owner.register_object_instance(object_class, "Compat-Negotiated-1")
+    owner.negotiated_attribute_ownership_divestiture(offered, {attribute}, config.assumption_tag)
+    assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption").args == (
+        offered,
+        {attribute},
+        config.assumption_tag,
+    )
+
+    acquirer.attribute_ownership_acquisition(offered, {attribute}, b"acquire-tag")
+    assert owner_federate.last_callback("requestDivestitureConfirmation").args == (
+        offered,
+        {attribute},
+        b"acquire-tag",
+    )
+    owner.confirm_divestiture(offered, {attribute}, b"acquire-confirmed")
+    assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification").args == (
+        offered,
+        {attribute},
+        b"acquire-confirmed",
+    )
+    assert acquirer.is_attribute_owned_by_federate(offered, attribute) is True
+
+    pending = owner.register_object_instance(object_class, "Compat-Pending-1")
+    acquirer.attribute_ownership_acquisition(pending, {attribute}, config.request_tag)
+    assert owner_federate.last_callback("requestAttributeOwnershipRelease").args == (
+        pending,
+        {attribute},
+        config.request_tag,
+    )
+    acquirer.cancel_attribute_ownership_acquisition(pending, {attribute})
+    assert acquirer_federate.last_callback("confirmAttributeOwnershipAcquisitionCancellation").args == (
+        pending,
+        {attribute},
+    )
+
+    acquirer.attribute_ownership_acquisition(pending, {attribute}, config.cancel_tag)
+    divested = owner.attribute_ownership_divestiture_if_wanted(pending, {attribute})
+    assert divested == {attribute}
+    assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification").args == (
+        pending,
+        {attribute},
+        b"",
+    )
+    assert acquirer.is_attribute_owned_by_federate(pending, attribute) is True
+
+    confirmable = owner.register_object_instance(object_class, "Compat-Confirm-1")
+    owner.negotiated_attribute_ownership_divestiture(confirmable, {attribute}, b"confirm-offer")
+    assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption").args == (
+        confirmable,
+        {attribute},
+        b"confirm-offer",
+    )
+    acquirer.attribute_ownership_acquisition(confirmable, {attribute}, b"confirm-request")
+    assert owner_federate.last_callback("requestDivestitureConfirmation").args == (
+        confirmable,
+        {attribute},
+        b"confirm-request",
+    )
+    owner.confirm_divestiture(confirmable, {attribute}, b"confirm-divest")
+    assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification").args == (
+        confirmable,
+        {attribute},
+        b"confirm-divest",
+    )
+    assert acquirer.is_attribute_owned_by_federate(confirmable, attribute) is True
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")
@@ -6331,10 +6522,11 @@ def test_2025_shim_negotiated_ownership_matches_python_parity_flow(tmp_path: Pat
         {attribute},
         b"acquire-tag",
     )
+    owner.confirmDivestiture(offered, {attribute}, b"acquire-confirmed")
     assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
         offered,
         {attribute},
-        b"acquire-tag",
+        b"acquire-confirmed",
     )
     assert acquirer.isAttributeOwnedByFederate(offered, attribute) is True
 
