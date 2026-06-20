@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import inspect
 import json
 import struct
@@ -709,6 +710,28 @@ class _TargetRadar2025RTIAdapter:
         return self._delegate.evokeMultipleCallbacks(minimum_seconds, maximum_seconds)
 
 
+def _adapter_service_methods(cls: type[object]) -> set[str]:
+    return {
+        name
+        for name, value in cls.__dict__.items()
+        if callable(value) and not name.startswith("_")
+    }
+
+
+def _scan_target_radar_rti_methods(path: Path) -> set[str]:
+    module = ast.parse(path.read_text(encoding="utf-8"))
+    names: set[str] = set()
+
+    class _Visitor(ast.NodeVisitor):
+        def visit_Attribute(self, node: ast.Attribute) -> None:
+            if isinstance(node.value, ast.Name) and node.value.id.endswith("_rti"):
+                names.add(node.attr)
+            self.generic_visit(node)
+
+    _Visitor().visit(module)
+    return names
+
+
 class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
     """Record callbacks after normalizing 2025 callback values to 2010-compatible types."""
 
@@ -772,6 +795,26 @@ class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
             for key, value in kwargs.items()
         }
         return super().record_callback(method_name, *normalized_args, **normalized_kwargs)
+
+
+def test_2025_target_radar_adapter_explicitly_covers_time_window_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_target_radar_time.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"time-window scenario services: {missing}"
+    )
 
 
 class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
