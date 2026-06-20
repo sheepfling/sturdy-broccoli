@@ -2018,7 +2018,7 @@ class Shim2025RTIAmbassador:
             values_by_handle[AttributeHandle(attributes_by_name[attribute_name])] = bytes(value)
             record.attribute_values[attribute_name] = bytes(value)
 
-        transportation = self._default_transportation_for(object_class_name, values_by_handle)
+        transportation = self._attribute_transportation_for(record, values_by_handle)
         callback_time = self._coerce_time(time) if time is not None else None
         if callback_time is not None:
             self._validate_tso_send_time(callback_time)
@@ -5506,6 +5506,19 @@ class Shim2025RTIAmbassador:
     def _default_transportation_for(self, object_class_name: str, values_by_handle: Mapping[AttributeHandle, bytes]) -> TransportationTypeHandle:
         transportation_names = {
             self._default_attribute_transportation.get((object_class_name, self._attribute_name_by_handle(object_class_name, attribute)), "HLAreliable")
+            for attribute in values_by_handle
+        }
+        return self._transportation_handle_by_name(sorted(transportation_names)[0])
+
+    def _attribute_transportation_for(self, record: _ObjectInstanceRecord, values_by_handle: Mapping[AttributeHandle, bytes]) -> TransportationTypeHandle:
+        transportation_names = {
+            record.attribute_transportation.get(
+                self._attribute_name_by_handle(record.object_class_name, attribute),
+                self._default_attribute_transportation.get(
+                    (record.object_class_name, self._attribute_name_by_handle(record.object_class_name, attribute)),
+                    "HLAreliable",
+                ),
+            )
             for attribute in values_by_handle
         }
         return self._transportation_handle_by_name(sorted(transportation_names)[0])

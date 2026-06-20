@@ -1163,6 +1163,24 @@ class _TargetRadar2025RTIAdapter:
     def enable_time_constrained(self) -> None:
         self._delegate.enableTimeConstrained()
 
+    def disable_time_regulation(self) -> None:
+        self._delegate.disableTimeRegulation()
+
+    def disable_time_constrained(self) -> None:
+        self._delegate.disableTimeConstrained()
+
+    def enable_asynchronous_delivery(self) -> None:
+        self._delegate.enableAsynchronousDelivery()
+
+    def disable_asynchronous_delivery(self) -> None:
+        self._delegate.disableAsynchronousDelivery()
+
+    def modify_lookahead(self, lookahead) -> None:  # noqa: ANN001
+        self._delegate.modifyLookahead(self._coerce_interval_value(lookahead))
+
+    def query_lookahead(self):  # noqa: ANN201
+        return _normalize_2025_callback_value(self._delegate.queryLookahead())
+
     def query_galt(self):  # noqa: ANN201
         return self._delegate.queryGALT()
 
@@ -3959,6 +3977,139 @@ def test_2025_shim_runs_scheduled_save_restore_time_state_scenario_via_compat_ad
     assert summary["wing_restored"] is not None
     assert summary["restored_leader_time"] == HLAinteger64Time(5)
     assert summary["restored_wing_time"] == HLAinteger64Time(5)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-051",
+    "HLA2025-FI-SVC-052",
+    "HLA2025-FI-SVC-053",
+    "HLA2025-FI-SVC-054",
+    "HLA2025-FI-SVC-055",
+    "HLA2025-FI-SVC-056",
+    "HLA2025-MIL-004",
+    "HLA2025-MIL-005",
+)
+def test_2025_shim_runs_restore_federate_local_state_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_federate_local_state_scenario
+    from hla.verification.scenario_support import drain_callbacks_pair, order_value, wait_for_callback
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
+
+    federation_name = f"shim-2025-restore-local-state-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    leader_federate = _CompatRecordingFederateAmbassador()
+    wing_federate = _CompatRecordingFederateAmbassador()
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAfloat64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-LOCAL-STATE-{uuid.uuid4().hex[:8]}",
+    )
+
+    def assert_restored_state(r1, r2, context):  # noqa: ANN001
+        object_instance = context["object_instance"]
+        wing_object_instance = context["wing_object_instance"]
+        leader_attribute = context["leader_attribute"]
+        wing_attribute = context["wing_attribute"]
+        leader_interaction = context["leader_interaction"]
+        wing_parameter = context["wing_parameter"]
+        leader_parameter = context["leader_parameter"]
+        best_effort_transport = context["best_effort_transport"]
+
+        restored_lookahead = r1.query_lookahead()
+        assert float(restored_lookahead.value) == 2.0
+
+        leader_federate.clear()
+        wing_federate.clear()
+        r1.query_attribute_transportation_type(object_instance, leader_attribute)
+        r1.query_interaction_transportation_type(leader_interaction)
+        drain_callbacks_pair(r1, r2, loops=16)
+        attribute_report = wait_for_callback(r1, leader_federate, "reportAttributeTransportationType", loops=120)
+        interaction_report = wait_for_callback(r1, leader_federate, "reportInteractionTransportationType", loops=120)
+        assert attribute_report is not None
+        assert interaction_report is not None
+        assert attribute_report.args[0] == object_instance
+        assert attribute_report.args[1] == leader_attribute
+        assert attribute_report.args[2] == best_effort_transport
+        assert interaction_report.args[1] == leader_interaction
+        assert interaction_report.args[2] == best_effort_transport
+
+        r1.update_attribute_values(
+            object_instance,
+            {leader_attribute: b"restored-attribute"},
+            b"restored-attribute-tag",
+            HLAfloat64Time(6.0),
+        )
+        r1.send_interaction(
+            leader_interaction,
+            {leader_parameter: b"restored-interaction"},
+            b"restored-interaction-tag",
+            HLAfloat64Time(7.0),
+        )
+        r1.time_advance_request(HLAfloat64Time(8.0))
+        r2.time_advance_request(HLAfloat64Time(8.0))
+        drain_callbacks_pair(r1, r2, loops=24)
+
+        reflect = wait_for_callback(r2, wing_federate, "reflectAttributeValues", loops=120)
+        interaction = wait_for_callback(r2, wing_federate, "receiveInteraction", loops=120)
+        assert reflect is not None
+        assert interaction is not None
+        assert reflect.args[0] == wing_object_instance
+        assert reflect.args[1] == {wing_attribute: b"restored-attribute"}
+        assert reflect.args[2] == b"restored-attribute-tag"
+        assert order_value(reflect.args[3]) == OrderType.TIMESTAMP.value
+        assert reflect.args[4] == best_effort_transport
+        assert float(reflect.args[5].value) == 6.0
+        assert interaction.args[0] == context["wing_interaction"]
+        assert interaction.args[1] == {wing_parameter: b"restored-interaction"}
+        assert interaction.args[2] == b"restored-interaction-tag"
+        assert order_value(interaction.args[3]) == OrderType.TIMESTAMP.value
+        assert interaction.args[4] == best_effort_transport
+        assert float(interaction.args[5].value) == 7.0
+        context["restored_lookahead"] = restored_lookahead
+        context["post_restore_attribute_report"] = attribute_report
+        context["post_restore_interaction_report"] = interaction_report
+        context["post_restore_reflect"] = reflect
+        context["post_restore_receive_interaction"] = interaction
+        r1.disable_asynchronous_delivery()
+        r1.disable_time_regulation()
+        r2.disable_time_constrained()
+
+    summary = run_restore_federate_local_state_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=leader_federate,
+        wing_federate=wing_federate,
+        assert_restored_state=assert_restored_state,
+    )
+
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args[0] == config.save_name
+    assert summary["leader_saved"] is not None
+    assert summary["wing_saved"] is not None
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["leader_restore_begun"] is not None
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_restored"] is not None
+    assert summary["wing_restored"] is not None
+    assert summary["post_restore_attribute_report"].args[2] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert summary["post_restore_interaction_report"].args[2] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert order_value(summary["post_restore_reflect"].args[3]) == OrderType.TIMESTAMP.value
+    assert summary["post_restore_reflect"].args[4] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert float(summary["post_restore_reflect"].args[5].value) == 6.0
+    assert order_value(summary["post_restore_receive_interaction"].args[3]) == OrderType.TIMESTAMP.value
+    assert summary["post_restore_receive_interaction"].args[4] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert float(summary["post_restore_receive_interaction"].args[5].value) == 7.0
+    assert float(summary["restored_lookahead"].value) == HLAfloat64Interval(2.0).value
 
 
 @pytest.mark.requirements(
