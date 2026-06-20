@@ -504,6 +504,36 @@ class _TargetRadar2025RTIAdapter:
             return getattr(handles_2010, type_name)(int(value.value))
         return value
 
+    @classmethod
+    def _to_2025_range_bounds(cls, value):  # noqa: ANN001, ANN205
+        if value is None:
+            return None
+        value_type = type(value)
+        if getattr(value_type, "__module__", "") == "hla.rti1516_2025.datatypes" and getattr(value_type, "__name__", "") == "RangeBounds":
+            return value
+        if getattr(value_type, "__module__", "") == "hla.rti1516e.datatypes" and getattr(value_type, "__name__", "") == "RangeBounds":
+            from hla.rti1516_2025.datatypes import RangeBounds
+
+            return RangeBounds(int(value.lower), int(value.upper))
+        return value
+
+    @classmethod
+    def _to_2025_attribute_region_associations(cls, associations):  # noqa: ANN001, ANN205
+        normalized = []
+        for association in associations:
+            if isinstance(association, tuple) and len(association) == 2:
+                attributes, regions = association
+            else:
+                attributes = getattr(association, "attributes", getattr(association, "attributeHandles", None))
+                regions = getattr(association, "regions", getattr(association, "regionHandles", None))
+            normalized.append(
+                (
+                    {cls._to_2025_handle(attribute) for attribute in attributes},
+                    {cls._to_2025_handle(region) for region in regions},
+                )
+            )
+        return normalized
+
     def connect(self, federate_ambassador, callback_model) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import CallbackModel
 
@@ -520,6 +550,21 @@ class _TargetRadar2025RTIAdapter:
         logical_time_implementation_name: str | None = None,
     ) -> None:  # noqa: ANN001
         modules = list(fom_modules)
+        standard_mim_designators = {"HLAstandardMIM", "HLAstandardMIM.xml", "resource:MIM.xml"}
+        mim_modules = [module for module in modules if str(module) in standard_mim_designators]
+        if mim_modules:
+            fom_only_modules = [module for module in modules if str(module) not in standard_mim_designators]
+            mim_module = mim_modules[0]
+            if str(mim_module) in {"HLAstandardMIM", "HLAstandardMIM.xml"}:
+                mim_module = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
+            self._call_compat(
+                self._delegate.createFederationExecutionWithMIM,
+                federationName=federation_name,
+                fomModules=fom_only_modules,
+                mimModule=mim_module,
+                logicalTimeImplementationName=logical_time_implementation_name,
+            )
+            return
         kwargs = {"federationName": federation_name}
         if len(modules) == 1:
             kwargs["fomModule"] = modules[0]
@@ -596,6 +641,9 @@ class _TargetRadar2025RTIAdapter:
             self._call_compat(self._delegate.getAttributeHandle, self._to_2025_handle(object_class), attribute_name)
         )
 
+    def get_dimension_handle(self, dimension_name: str):  # noqa: ANN201
+        return self._to_2010_handle(self._call_compat(self._delegate.getDimensionHandle, dimension_name))
+
     def publish_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
         self._call_compat(
             self._delegate.publishObjectClassAttributes,
@@ -608,6 +656,20 @@ class _TargetRadar2025RTIAdapter:
             self._delegate.subscribeObjectClassAttributes,
             self._to_2025_handle(object_class),
             {self._to_2025_handle(attribute) for attribute in attributes},
+        )
+
+    def subscribe_object_class_attributes_with_regions(self, object_class, attribute_region_associations) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.subscribeObjectClassAttributesWithRegions,
+            self._to_2025_handle(object_class),
+            self._to_2025_attribute_region_associations(attribute_region_associations),
+        )
+
+    def unsubscribe_object_class_attributes_with_regions(self, object_class, attribute_region_associations) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unsubscribeObjectClassAttributesWithRegions,
+            self._to_2025_handle(object_class),
+            self._to_2025_attribute_region_associations(attribute_region_associations),
         )
 
     def subscribe_object_class_attributes_passively(self, object_class, attributes) -> None:  # noqa: ANN001
@@ -648,6 +710,21 @@ class _TargetRadar2025RTIAdapter:
             self._call_compat(self._delegate.registerObjectInstance, self._to_2025_handle(object_class), object_instance_name)
         )
 
+    def register_object_instance_with_regions(
+        self,
+        object_class,
+        attribute_region_associations,
+        object_instance_name: str | None = None,
+    ):  # noqa: ANN001, ANN201
+        return self._to_2010_handle(
+            self._call_compat(
+                self._delegate.registerObjectInstanceWithRegions,
+                self._to_2025_handle(object_class),
+                self._to_2025_attribute_region_associations(attribute_region_associations),
+                object_instance_name,
+            )
+        )
+
     def update_attribute_values(self, object_instance, attribute_values, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
         normalized_values = {
             self._to_2025_handle(attribute): value
@@ -675,6 +752,77 @@ class _TargetRadar2025RTIAdapter:
             self._to_2025_handle(object_instance),
             {self._to_2025_handle(attribute) for attribute in attributes},
             user_supplied_tag,
+        )
+
+    def request_attribute_value_update_with_regions(
+        self,
+        object_instance,
+        attribute_region_associations,
+        user_supplied_tag: bytes,
+    ) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.exceptions import RTIinternalError as RTIinternalError2025
+        from hla.rti1516e.exceptions import RTIinternalError as RTIinternalError2010
+
+        normalized_associations = self._to_2025_attribute_region_associations(attribute_region_associations)
+        try:
+            self._call_compat(
+                self._delegate.requestAttributeValueUpdateWithRegions,
+                self._to_2025_handle(object_instance),
+                normalized_associations,
+                user_supplied_tag,
+            )
+        except (RTIinternalError2025, RTIinternalError2010) as exc:
+            if "requestAttributeValueUpdateWithRegions" not in str(exc):
+                raise
+            attributes = {
+                attribute
+                for association_attributes, _association_regions in normalized_associations
+                for attribute in association_attributes
+            }
+            self._call_compat(
+                self._delegate.requestAttributeValueUpdate,
+                self._to_2025_handle(object_instance),
+                attributes,
+                user_supplied_tag,
+            )
+
+    def create_region(self, dimensions):  # noqa: ANN001, ANN201
+        return self._to_2010_handle(
+            self._call_compat(
+                self._delegate.createRegion,
+                {self._to_2025_handle(dimension) for dimension in dimensions},
+            )
+        )
+
+    def commit_region_modifications(self, region_handles) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.commitRegionModifications,
+            {self._to_2025_handle(region) for region in region_handles},
+        )
+
+    def delete_region(self, region_handle) -> None:  # noqa: ANN001
+        self._call_compat(self._delegate.deleteRegion, self._to_2025_handle(region_handle))
+
+    def set_range_bounds(self, region_handle, dimension_handle, range_bounds) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.setRangeBounds,
+            self._to_2025_handle(region_handle),
+            self._to_2025_handle(dimension_handle),
+            self._to_2025_range_bounds(range_bounds),
+        )
+
+    def associate_regions_for_updates(self, object_instance, attribute_region_associations) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.associateRegionsForUpdates,
+            self._to_2025_handle(object_instance),
+            self._to_2025_attribute_region_associations(attribute_region_associations),
+        )
+
+    def unassociate_regions_for_updates(self, object_instance, attribute_region_associations) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unassociateRegionsForUpdates,
+            self._to_2025_handle(object_instance),
+            self._to_2025_attribute_region_associations(attribute_region_associations),
         )
 
     def request_attribute_transportation_type_change(
@@ -847,11 +995,25 @@ class _TargetRadar2025RTIAdapter:
     def subscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.subscribeInteractionClass, self._to_2025_handle(interaction_class))
 
+    def subscribe_interaction_class_with_regions(self, interaction_class, regions) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.subscribeInteractionClassWithRegions,
+            self._to_2025_handle(interaction_class),
+            {self._to_2025_handle(region) for region in regions},
+        )
+
     def subscribe_interaction_class_passively(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.subscribeInteractionClassPassively, self._to_2025_handle(interaction_class))
 
     def unsubscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.unsubscribeInteractionClass, self._to_2025_handle(interaction_class))
+
+    def unsubscribe_interaction_class_with_regions(self, interaction_class, regions) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unsubscribeInteractionClassWithRegions,
+            self._to_2025_handle(interaction_class),
+            {self._to_2025_handle(region) for region in regions},
+        )
 
     def unpublish_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.unpublishInteractionClass, self._to_2025_handle(interaction_class))
@@ -878,6 +1040,28 @@ class _TargetRadar2025RTIAdapter:
             )
         except InvalidLogicalTime2025 as exc:
             raise InvalidLogicalTime2010(str(exc)) from exc
+
+    def send_interaction_with_regions(
+        self,
+        interaction_class,
+        parameter_values,
+        regions,
+        user_supplied_tag: bytes,
+        time=None,
+    ):  # noqa: ANN001, ANN201
+        args = (
+            self._to_2025_handle(interaction_class),
+            {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
+            {self._to_2025_handle(region) for region in regions},
+            user_supplied_tag,
+        )
+        if time is None:
+            return self._call_compat(self._delegate.sendInteractionWithRegions, *args)
+        return self._call_compat(
+            self._delegate.sendInteractionWithRegions,
+            *args,
+            self._coerce_time_value(time),
+        )
 
     def enable_time_regulation(self, lookahead) -> None:  # noqa: ANN001
         self._delegate.enableTimeRegulation(self._coerce_interval_value(lookahead))
@@ -1419,6 +1603,26 @@ def test_2025_target_radar_adapter_explicitly_covers_declaration_service_surface
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_ddm_object_region_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_ddm_object_regions.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"ddm object-region scenario services: {missing}"
+    )
+
+
 class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
     """Narrow ownership callback bridge for shared scenario oracles."""
 
@@ -1475,6 +1679,59 @@ def _write_proto2025_resign_fom(path: Path) -> None:
     <timeStamp><dataType>HLAinteger64BE</dataType></timeStamp>
     <lookahead><dataType>HLAinteger64BE</dataType></lookahead>
   </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+
+def _write_proto2025_default_routing_ddm_fom(path: Path) -> None:
+    path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Proto2025 Default Routing DDM Fixture</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Compat DDM fixture using HLAdefaultRoutingSpace.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+          <dimension>HLAdefaultRoutingSpace</dimension>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <dimension>HLAdefaultRoutingSpace</dimension>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
 </objectModel>
 """,
         encoding="utf-8",
@@ -3265,6 +3522,115 @@ def test_2025_shim_restores_transportation_type_state_via_compat_adapter(tmp_pat
     owner.destroy_federation_execution(federation_name=federation_name)
     observer.disconnect()
     owner.disconnect()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
+    "HLA2025-FI-SVC-136",
+)
+def test_2025_shim_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.verification import (
+        DdmObjectRegionLifecycleScenarioConfig,
+        run_ddm_object_region_lifecycle_scenario,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DefaultRoutingDDM.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"shim-2025-ddm-lifecycle-{uuid.uuid4().hex[:8]}"
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = DdmObjectRegionLifecycleScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="DdmObjectRegionFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"DDM-Compat-Region-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_ddm_object_region_lifecycle_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["discovery"].args[0] == summary["object_instance"]
+    assert summary["discovery"].args[1] == summary["subscriber_class"]
+    assert summary["provide"].args[0] == summary["object_instance"]
+    assert summary["provide"].args[2] == config.request_tag
+    assert summary["received"].args[0] == summary["subscriber_interaction"]
+    assert summary["received"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+    assert summary["suppressed_receive"] is None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
+    "HLA2025-FI-SVC-136",
+)
+def test_2025_shim_runs_ddm_declaration_gating_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.verification import (
+        DdmDeclarationGatingScenarioConfig,
+        run_ddm_declaration_gating_scenario,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DefaultRoutingDDMGating.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"shim-2025-ddm-gating-{uuid.uuid4().hex[:8]}"
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = DdmDeclarationGatingScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="DdmDeclarationGatingFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"DDM-Compat-Gating-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_ddm_declaration_gating_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["discovery_before_subscription"] is None
+    assert summary["reflection_before_subscription"] is None
+    assert summary["interaction_before_subscription"] is None
+    assert summary["discovery_after_subscription"].args[0] == summary["object_instance"]
+    assert summary["reflection_after_subscription"].args[1] == {
+        summary["subscriber_attribute"]: config.post_subscription_attribute_payload
+    }
+    assert summary["interaction_after_subscription"].args[1] == {
+        summary["subscriber_parameter"]: config.post_subscription_interaction_payload
+    }
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")

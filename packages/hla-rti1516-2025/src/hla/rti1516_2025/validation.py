@@ -17,6 +17,9 @@ _RESERVED_STANDARD_NAMES = frozenset(
     {
         "HLAobjectRoot",
         "HLAinteractionRoot",
+        "HLAdefaultRoutingSpace",
+        "HLAfederate",
+        "HLAserviceGroup",
         "HLAreliable",
         "HLAbestEffort",
         "HLAdefault",

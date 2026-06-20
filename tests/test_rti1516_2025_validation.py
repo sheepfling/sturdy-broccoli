@@ -1450,6 +1450,14 @@ def test_validate_fom_module_returns_structured_issue_payloads() -> None:
     assert any(issue["requirement"] == "HLA2025-OMT-001" and issue["table"] == "attributeTable" for issue in payloads)
 
 
+@pytest.mark.requirements("HLA2025-OMT-001")
+@pytest.mark.parametrize("name", ("HLAdefaultRoutingSpace", "HLAfederate", "HLAserviceGroup"))
+def test_validate_hla_name_allows_standard_mim_dimension_names(name: str) -> None:
+    from hla.rti1516_2025.validation import validate_hla_name
+
+    assert validate_hla_name(name, table="dimensionTable") == []
+
+
 @pytest.mark.requirements("HLA2025-FI-008", "HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_2025_shim_rejects_fom_with_invalid_hla_user_defined_names(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel
