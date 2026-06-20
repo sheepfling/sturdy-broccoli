@@ -686,6 +686,18 @@ class _TargetRadar2025RTIAdapter:
             {self._to_2025_handle(attribute) for attribute in attributes},
         )
 
+    def get_attribute_scope_advisory_switch(self) -> bool:
+        return self._delegate.getAttributeScopeAdvisorySwitch()
+
+    def set_attribute_scope_advisory_switch(self, value: bool) -> None:
+        self._delegate.setAttributeScopeAdvisorySwitch(value)
+
+    def enable_attribute_scope_advisory_switch(self) -> None:
+        self.set_attribute_scope_advisory_switch(True)
+
+    def disable_attribute_scope_advisory_switch(self) -> None:
+        self.set_attribute_scope_advisory_switch(False)
+
     def unsubscribe_object_class(self, object_class) -> None:  # noqa: ANN001
         self._call_compat(
             self._delegate.unsubscribeObjectClass,
@@ -1620,6 +1632,26 @@ def test_2025_target_radar_adapter_explicitly_covers_ddm_object_region_service_s
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"ddm object-region scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_object_scope_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_object_scope.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"object-scope scenario services: {missing}"
     )
 
 
@@ -3631,6 +3663,77 @@ def test_2025_shim_runs_ddm_declaration_gating_scenario_via_compat_adapter(tmp_p
     assert summary["interaction_after_subscription"].args[1] == {
         summary["subscriber_parameter"]: config.post_subscription_interaction_payload
     }
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-037",
+    "HLA2025-FI-SVC-040",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-126",
+)
+def test_2025_shim_runs_object_scope_relevance_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516e.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import ObjectScopeScenarioConfig, run_object_scope_relevance_scenario
+
+    fom_path = tmp_path / "Proto2025ObjectScopeDDM.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"shim-2025-object-scope-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    acquirer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = ObjectScopeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        observer_name="Observer",
+        federate_type="ObjectScopeFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        object_instance_name=f"Compat-Scope-{uuid.uuid4().hex[:8]}",
+    )
+
+    try:
+        summary = run_object_scope_relevance_scenario(
+            owner,
+            acquirer,
+            observer,
+            config=config,
+            owner_federate=_CompatRecordingFederateAmbassador(),
+            acquirer_federate=_CompatRecordingFederateAmbassador(),
+            observer_federate=_CompatRecordingFederateAmbassador(),
+        )
+
+        assert summary["initial_in_scope"].args == (summary["object_instance"], {summary["observer_attribute"]})
+        assert summary["out_of_scope"].args == (summary["object_instance"], {summary["observer_attribute"]})
+        assert summary["reacquired_in_scope"].args == (summary["object_instance"], {summary["observer_attribute"]})
+        assert summary["initial_reflection"].args[1] == {summary["observer_attribute"]: config.in_scope_payload}
+        assert summary["suppressed_reflection"] is None
+        assert summary["acquired_reflection"].args[1] == {summary["observer_attribute"]: config.acquired_payload}
+    finally:
+        for rti, resign_action in (
+            (observer, ResignAction.NO_ACTION),
+            (owner, ResignAction.NO_ACTION),
+            (acquirer, ResignAction.DELETE_OBJECTS),
+        ):
+            try:
+                rti.resign_federation_execution(resign_action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (observer, acquirer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")

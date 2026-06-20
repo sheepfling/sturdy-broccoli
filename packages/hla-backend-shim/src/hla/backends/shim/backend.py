@@ -4740,14 +4740,28 @@ class Shim2025RTIAmbassador:
     def _ranges_overlap(left: RangeBounds, right: RangeBounds) -> bool:
         return int(left.lower) <= int(right.upper) and int(right.lower) <= int(left.upper)
 
+    def _region_owner_key(self, preferred_key: int, region_value: int) -> int | None:
+        federation = self._federation_record()
+        if region_value in federation.member_regions.get(preferred_key, {}):
+            return preferred_key
+        for member_key, regions in federation.member_regions.items():
+            if region_value in regions:
+                return member_key
+        return None
+
     def _regions_overlap_pair(self, source_key: int, source_region: int, target_key: int, target_region: int) -> bool:
-        source_dims = self._federation_record().member_regions.get(source_key, {}).get(source_region, set())
-        target_dims = self._federation_record().member_regions.get(target_key, {}).get(target_region, set())
+        federation = self._federation_record()
+        resolved_source_key = self._region_owner_key(source_key, source_region)
+        resolved_target_key = self._region_owner_key(target_key, target_region)
+        if resolved_source_key is None or resolved_target_key is None:
+            return False
+        source_dims = federation.member_regions.get(resolved_source_key, {}).get(source_region, set())
+        target_dims = federation.member_regions.get(resolved_target_key, {}).get(target_region, set())
         common_dimensions = set(source_dims) & set(target_dims)
         if not common_dimensions:
             return False
-        source_bounds = self._federation_record().member_region_bounds.get(source_key, {}).get(source_region, {})
-        target_bounds = self._federation_record().member_region_bounds.get(target_key, {}).get(target_region, {})
+        source_bounds = federation.member_region_bounds.get(resolved_source_key, {}).get(source_region, {})
+        target_bounds = federation.member_region_bounds.get(resolved_target_key, {}).get(target_region, {})
         for dimension_name in common_dimensions:
             default_bounds = RangeBounds(0, self._dimension_default_upper_bound(dimension_name))
             if not self._ranges_overlap(source_bounds.get(dimension_name, default_bounds), target_bounds.get(dimension_name, default_bounds)):
