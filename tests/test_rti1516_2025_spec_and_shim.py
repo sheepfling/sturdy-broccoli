@@ -1369,6 +1369,12 @@ class _TargetRadar2025RTIAdapter:
             self._coerce_time_value(time),
         )
 
+    def local_delete_object_instance(self, object_instance) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.localDeleteObjectInstance,
+            self._to_2025_handle(object_instance),
+        )
+
     def is_attribute_owned_by_federate(self, object_instance, attribute) -> bool:  # noqa: ANN001
         return bool(
             self._call_compat(
@@ -1652,6 +1658,26 @@ def test_2025_target_radar_adapter_explicitly_covers_object_scope_service_surfac
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"object-scope scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_orphan_object_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_orphan_object.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"orphan-object scenario services: {missing}"
     )
 
 
@@ -3730,6 +3756,74 @@ def test_2025_shim_runs_object_scope_relevance_scenario_via_compat_adapter(tmp_p
         except Exception:
             pass
         for rti in (observer, acquirer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FR-003",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-008",
+    "HLA2025-FI-SVC-118",
+)
+def test_2025_shim_runs_orphan_object_lifecycle_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516e.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import OrphanObjectScenarioConfig, run_orphan_object_lifecycle_scenario
+
+    fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
+    _write_proto2025_smoke_object_fom(fom_path)
+
+    federation_name = f"shim-2025-orphan-object-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    late = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = OrphanObjectScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        late_name="Late",
+        federate_type="OrphanObjectFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"Compat-Orphan-{uuid.uuid4().hex[:8]}",
+    )
+
+    try:
+        summary = run_orphan_object_lifecycle_scenario(
+            owner,
+            observer,
+            late,
+            config=config,
+            owner_federate=_CompatRecordingFederateAmbassador(),
+            observer_federate=_CompatRecordingFederateAmbassador(),
+            late_federate=_CompatRecordingFederateAmbassador(),
+        )
+
+        assert summary["late_discovery"].args[0] == summary["object_instance"]
+        assert summary["observer_remove"] is None
+        assert summary["late_remove"].args[0] == summary["object_instance"]
+        assert summary["late_remove"].args[1] == config.delete_tag
+    finally:
+        for rti, resign_action in (
+            (late, ResignAction.NO_ACTION),
+            (observer, ResignAction.NO_ACTION),
+            (owner, ResignAction.NO_ACTION),
+        ):
+            try:
+                rti.resign_federation_execution(resign_action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (late, observer, owner):
             try:
                 rti.disconnect()
             except Exception:

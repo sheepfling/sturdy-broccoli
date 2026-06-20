@@ -296,6 +296,7 @@ class _FederationRecord:
 class _ObjectInstanceRecord:
     object_class_name: str
     object_instance_name: str | None
+    producing_federate: FederateHandle | None = None
     attribute_owners: dict[str, FederateHandle | None] = field(default_factory=dict)
     attribute_divesting: set[str] = field(default_factory=set)
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
@@ -1790,6 +1791,7 @@ class Shim2025RTIAmbassador:
         federation.object_instances[handle.value] = _ObjectInstanceRecord(
             object_class_name=object_class_name,
             object_instance_name=objectInstanceName,
+            producing_federate=self._federate_handle,
             attribute_owners=attribute_owners,
         )
         if objectInstanceName is not None:
@@ -2181,13 +2183,17 @@ class Shim2025RTIAmbassador:
             record = federation.object_instances[object_instance_value]
         except KeyError as exc:
             raise ObjectInstanceNotKnown(str(objectInstance)) from exc
-        if self._current_federate_handle() not in set(record.attribute_owners.values()):
+        delete_privilege_holder = record.producing_federate
+        if delete_privilege_holder is None or self._current_federate_handle() != delete_privilege_holder:
             raise DeletePrivilegeNotHeld(str(objectInstance))
 
         callback_time = self._coerce_time(time) if time is not None else None
         object_class_name = record.object_class_name
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             if federate_key == self._current_federate_key() or object_class_name not in subscriptions:
+                continue
+            target_rti = federation.member_rtis.get(federate_key)
+            if target_rti is not None and object_instance_value in target_rti._locally_deleted_objects:
                 continue
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
@@ -2826,6 +2832,7 @@ class Shim2025RTIAmbassador:
     def _deliver_callback_now(self, method_name: str, *args: Any) -> None:
         if self._federate_ambassador is None:
             raise RTIinternalError(f"Cannot deliver {method_name} without a connected federate ambassador")
+        self._apply_object_callback_state(method_name, args)
         callback = getattr(self._federate_ambassador, method_name, None)
         if callback is None:
             return
@@ -4960,7 +4967,13 @@ class Shim2025RTIAmbassador:
             if discovery_class_name != object_class_name:
                 continue
             owner_handles = {owner for owner in record.attribute_owners.values() if owner is not None}
-            producing_federate = sorted(owner_handles, key=lambda handle: handle.value)[0] if owner_handles else self._current_federate_handle()
+            producing_federate = (
+                sorted(owner_handles, key=lambda handle: handle.value)[0]
+                if owner_handles
+                else record.producing_federate
+            )
+            if producing_federate is None:
+                continue
             if producing_federate == self._current_federate_handle():
                 continue
             subscribed_names = (
