@@ -2942,7 +2942,99 @@ def test_2025_transport_server_reports_lits_from_queued_tso_for_target_federate_
         ).fields == ("1",)
 
         assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "8")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "8")
+
+        assert sender.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert receiver.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert receiver.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert sender.request(TransportRequest(command="DISCONNECT")).fields == ()
+        assert receiver.request(TransportRequest(command="DISCONNECT")).fields == ()
+    finally:
+        if sender is not None:
+            sender.close()
+        if receiver is not None:
+            receiver.close()
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-122",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_distinguishes_galt_from_lits_after_lookahead_change_with_queued_tso_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    sender = None
+    receiver = None
+    federation_name = "fedpro-2025-galt-lits-divergence"
+    try:
+        sender = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        receiver = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert sender.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert receiver.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert sender.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Exchange2025.xml"))).fields == ()
+        assert sender.request(TransportRequest(command="JOIN", fields=("FedPro2025DivergenceSender", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+        assert receiver.request(TransportRequest(command="JOIN", fields=("FedPro2025DivergenceReceiver", "TestFederate", federation_name))).fields == (
+            "2",
+            "HLAinteger64Time",
+        )
+
+        interaction_class = sender.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = sender.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        assert sender.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert receiver.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+
+        assert sender.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "2"))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert receiver.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+
+        assert sender.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "6"))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "6")
+        assert receiver.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "9"))).fields == ()
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "9")
+
+        assert sender.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(interaction_class, f"{parameter}:47414c542d4c495453", "7175657565642d646976657267656e6365", "HLAinteger64Time", "7"),
+            )
+        ).fields == ("1",)
+
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "8")
         assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "7")
+
+        assert sender.request(TransportRequest(command="MODIFY_LOOKAHEAD", fields=("HLAinteger64Interval", "12"))).fields == ()
+        assert sender.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "12")
+
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "18")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "7")
+
+        assert receiver.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "20"))).fields == ()
+        first_callback = receiver.request(TransportRequest(command="EVOKE")).fields
+        assert first_callback[:5] == (
+            "1",
+            "INTERACTION_TSO",
+            interaction_class,
+            f"{parameter}:47414c542d4c495453",
+            "7175657565642d646976657267656e6365",
+        )
+        assert first_callback[7:9] == ("HLAinteger64Time", "7")
+
+        second_callback = receiver.request(TransportRequest(command="EVOKE")).fields
+        assert second_callback in {
+            ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "20"),
+            ("0",),
+        }
+
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "18")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "18")
 
         assert sender.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert receiver.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
@@ -3824,6 +3916,15 @@ def test_2025_transport_server_keeps_two_scan_pipeline_outputs_separated_over_fe
             if transport is not None:
                 transport.close()
         server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_replays_time_window_proof_ladder_over_fedpro_schema():
+    test_2025_transport_server_blocks_window_closure_until_future_inputs_are_excluded_over_fedpro_schema()
+    test_2025_transport_server_proves_time_window_core_progression_over_fedpro_schema()
+    test_2025_transport_server_delivers_post_closure_timestamped_output_to_consumer_over_fedpro_schema()
+    test_2025_transport_server_preserves_consumer_timestamp_order_between_competing_output_and_radar_output_over_fedpro_schema()
+    test_2025_transport_server_keeps_two_scan_pipeline_outputs_separated_over_fedpro_schema()
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
@@ -7391,6 +7492,138 @@ def test_2025_transport_server_restore_recovers_time_and_switch_control_state_ov
     finally:
         if transport is not None:
             transport.close()
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-122",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_restore_reverts_dirty_lookahead_and_clears_presave_queued_tso_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    sender = None
+    receiver = None
+    federation_name = "fedpro-2025-time-restore-divergence"
+    try:
+        sender = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        receiver = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert sender.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert receiver.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert sender.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Exchange2025.xml"))).fields == ()
+        assert sender.request(TransportRequest(command="JOIN", fields=("RestoreDivergenceSender", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+        assert receiver.request(TransportRequest(command="JOIN", fields=("RestoreDivergenceReceiver", "TestFederate", federation_name))).fields == (
+            "2",
+            "HLAinteger64Time",
+        )
+
+        interaction_class = sender.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = sender.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        assert sender.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert receiver.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+
+        assert sender.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "2"))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert receiver.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "1"))).fields == ()
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+
+        assert sender.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "6"))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "6")
+        assert receiver.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "9"))).fields == ()
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "9")
+
+        assert sender.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(interaction_class, f"{parameter}:524553544f5245", "7072652d736176652d7175657565", "HLAinteger64Time", "7"),
+            )
+        ).fields == ("1",)
+
+        assert receiver.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "1")
+        assert sender.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "2")
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "8")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "7")
+
+        assert sender.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-DIVERGENCE",))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-DIVERGENCE")
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-DIVERGENCE")
+        assert sender.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        assert receiver.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        assert sender.request(TransportRequest(command="FEDERATE_SAVE_COMPLETE")).fields == ()
+        assert receiver.request(TransportRequest(command="FEDERATE_SAVE_COMPLETE")).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+
+        assert sender.request(TransportRequest(command="MODIFY_LOOKAHEAD", fields=("HLAinteger64Interval", "12"))).fields == ()
+        assert sender.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "12")
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "18")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "7")
+
+        assert sender.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("SAVE-DIVERGENCE",))).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", "SAVE-DIVERGENCE")
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", "SAVE-DIVERGENCE")
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORE_BEGUN")
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORE_BEGUN")
+        assert sender.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            "SAVE-DIVERGENCE",
+            "RestoreDivergenceSender",
+            "1",
+        )
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            "SAVE-DIVERGENCE",
+            "RestoreDivergenceReceiver",
+            "2",
+        )
+        assert sender.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
+        assert receiver.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
+        assert sender.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+        assert receiver.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+
+        assert sender.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "2")
+        assert receiver.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "1")
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "8")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "8")
+
+        assert receiver.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "20"))).fields == ()
+        first_post_restore = receiver.request(TransportRequest(command="EVOKE")).fields
+        second_post_restore = receiver.request(TransportRequest(command="EVOKE")).fields
+        assert first_post_restore in {
+            ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "20"),
+            ("0",),
+        }
+        assert second_post_restore in {
+            ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "20"),
+            ("0",),
+        }
+        assert {first_post_restore, second_post_restore} <= {
+            ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "20"),
+            ("0",),
+        }
+
+        assert receiver.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "8")
+        assert receiver.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "8")
+
+        assert sender.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert receiver.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert receiver.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert sender.request(TransportRequest(command="DISCONNECT")).fields == ()
+        assert receiver.request(TransportRequest(command="DISCONNECT")).fields == ()
+    finally:
+        if sender is not None:
+            sender.close()
+        if receiver is not None:
+            receiver.close()
         server.close()
 
 

@@ -364,6 +364,8 @@ class _TargetRadar2025RTIAdapter:
             raise compat_exc from exc
 
     def __getattr__(self, name: str):  # noqa: ANN201
+        if name.startswith("_"):
+            raise AttributeError(name)
         camel_name = self._SPECIAL_METHOD_NAMES.get(name)
         if camel_name is None and "_" in name:
             parts = name.split("_")
@@ -2241,6 +2243,74 @@ def test_2025_shim_runs_multiple_synchronization_points_scenario_end_to_end() ->
     assert summary["first_sync_wing"].args == (config.label, set())
     assert summary["second_sync_leader"].args == (config.second_label, set())
     assert summary["second_sync_wing"].args == (config.second_label, set())
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
+def test_2025_shim_runs_integrated_time_window_gauntlet_end_to_end() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TargetRadarTimeWindowConfig, run_target_radar_time_window_gauntlet_scenario
+
+    federation_name = f"shim-2025-time-window-gauntlet-{uuid.uuid4().hex[:8]}"
+    truth = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    sensor = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    radar = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    consumer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    fast = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    slow = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    for adapter in (truth, sensor, radar, consumer, fast, slow):
+        setattr(
+            adapter,
+            "_verification_spawn_like",
+            lambda: _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim")),
+        )
+    truth_federate = _CompatRecordingFederateAmbassador()
+    sensor_federate = _CompatRecordingFederateAmbassador()
+    radar_federate = _CompatRecordingFederateAmbassador()
+    consumer_federate = _CompatRecordingFederateAmbassador()
+    fast_federate = _CompatRecordingFederateAmbassador()
+    slow_federate = _CompatRecordingFederateAmbassador()
+    config = TargetRadarTimeWindowConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+    )
+
+    summary = run_target_radar_time_window_gauntlet_scenario(
+        truth,
+        sensor,
+        radar,
+        consumer,
+        fast,
+        slow,
+        config=config,
+        truth_federate=truth_federate,
+        sensor_federate=sensor_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+        fast_federate=fast_federate,
+        slow_federate=slow_federate,
+    )
+
+    assert summary["certification_target"] == "lookahead-processing-window-certified"
+    assert set(summary["subproofs"]) == {
+        "core",
+        "future_exclusion",
+        "output_delivery",
+        "consumer_order",
+        "pipeline",
+    }
+    assert summary["subproofs"]["core"]["certification_target"] == "time-window-core"
+    assert summary["subproofs"]["future_exclusion"]["certification_target"] == "time-window-future-exclusion"
+    assert summary["subproofs"]["output_delivery"]["certification_target"] == "time-window-output-delivery"
+    assert summary["subproofs"]["consumer_order"]["certification_target"] == "time-window-consumer-order"
+    assert summary["subproofs"]["pipeline"]["certification_target"] == "time-window-pipeline-two-scans"
+    assert summary["oracle_report"]["certification_target"] == "lookahead-processing-window-certified"
+    assert summary["oracle_report"]["assertions"] == {
+        "future_exclusion_blocked_until_window_safe": True,
+        "core_window_closure_proved": True,
+        "closed_window_output_delivered_legally": True,
+        "consumer_observed_timestamp_order": True,
+        "pipeline_overlapping_windows_proved": True,
+    }
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")

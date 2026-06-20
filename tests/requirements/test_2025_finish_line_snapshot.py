@@ -222,7 +222,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-121"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-123"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-FI-SVC-123"]["pytest_anchor_count"] == 5
     assert any("test_2025_shim_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-123"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_reports_lits_from_queued_tso_for_target_federate_over_fedpro_schema"
@@ -390,7 +390,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 22
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 23
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"
@@ -510,7 +510,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert any("test_2025_transport_server_round_trips_support_services_over_fedpro_schema" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert pytest_rows["HLA2025-NEW-007"]["pytest_anchor_count"] >= 10
-    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] == 90
+    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] == 93
     assert any(
         "test_2025_transport_server_orders_timestamped_interactions_across_two_federates_over_fedpro_schema" in anchor
         for anchor in pytest_rows["HLA2025-BND-003"]["pytest_anchors"]
