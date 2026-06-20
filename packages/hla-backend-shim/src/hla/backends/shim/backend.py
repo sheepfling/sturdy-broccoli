@@ -2413,19 +2413,18 @@ class Shim2025RTIAmbassador:
         for attribute_name in attribute_names:
             attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
             current_owner = record.attribute_owners.get(attribute_name)
-            if current_owner is None or attribute_name in record.attribute_divesting:
-                old_owner = current_owner
+            if current_owner is None:
                 record.attribute_owners[attribute_name] = self._federate_handle
-                record.attribute_divesting.discard(attribute_name)
-                if old_owner is not None:
-                    self._deliver_to_federate_handle(
-                        old_owner,
-                        "requestDivestitureConfirmation",
-                        objectInstance,
-                        {attribute_handle},
-                        bytes(userSuppliedTag),
-                    )
                 self._deliver_callback("attributeOwnershipAcquisitionNotification", objectInstance, {attribute_handle}, bytes(userSuppliedTag))
+            elif attribute_name in record.attribute_divesting:
+                self._add_attribute_candidate(record, attribute_name, self._federate_handle, bytes(userSuppliedTag))
+                self._deliver_to_federate_handle(
+                    current_owner,
+                    "requestDivestitureConfirmation",
+                    objectInstance,
+                    {attribute_handle},
+                    bytes(userSuppliedTag),
+                )
             else:
                 self._add_attribute_candidate(record, attribute_name, self._federate_handle, bytes(userSuppliedTag))
                 self._deliver_to_federate_handle(

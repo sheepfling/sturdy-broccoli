@@ -159,8 +159,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-035"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-083"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-083"]["pytest_anchor_count"] == 6
     assert any("test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-083"]["pytest_anchors"])
+    assert any(
+        "test_2025_shim_restores_cross_federate_attribute_owner_visibility"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-083"]["pytest_anchors"]
+    )
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"
         in anchor
@@ -400,7 +405,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 29
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 31
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"
@@ -484,6 +489,16 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     )
     assert any(
         "test_2025_shim_restore_recovers_plain_interaction_subscriber_routing"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
+    )
+    assert any(
+        "test_2025_shim_restore_recovers_inflight_ownership_state"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
+    )
+    assert any(
+        "test_2025_shim_restores_cross_federate_attribute_owner_visibility"
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
     )

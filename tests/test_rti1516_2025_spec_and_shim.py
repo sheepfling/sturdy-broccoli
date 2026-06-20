@@ -8961,6 +8961,269 @@ def test_2025_shim_restore_recovers_plain_interaction_subscriber_routing(tmp_pat
                 pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-097",
+)
+def test_2025_shim_restore_recovers_inflight_ownership_state(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import NoAcquisitionPending
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "Ownership2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Ownership 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused ownership restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-ownership-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-OWNERSHIP"
+    owner_federate = Recording2025FederateAmbassador()
+    acquirer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    acquirer = create_rti_ambassador(backend="shim")
+
+    try:
+        owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+        acquirer.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner.joinFederationExecution("OwnerRestore", "TestFederate", federation_name)
+        acquirer.joinFederationExecution("AcquirerRestore", "TestFederate", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(object_class, "Position")
+        acquirer_class = acquirer.getObjectClassHandle("HLAobjectRoot.Target")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_class, "Position")
+        object_instance = owner.registerObjectInstance(object_class, "ShimOwnershipRestoreTarget-1")
+
+        owner.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"saved-offer")
+        assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption") == (
+            object_instance,
+            {acquirer_attribute},
+            b"saved-offer",
+        )
+        acquirer.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, b"saved-pending")
+        assert owner_federate.last_callback("requestDivestitureConfirmation") == (
+            object_instance,
+            {owner_attribute},
+            b"saved-pending",
+        )
+
+        owner.requestFederationSave(save_label)
+        for rti in (owner, acquirer):
+            rti.federateSaveBegun()
+        for rti in (owner, acquirer):
+            rti.federateSaveComplete()
+
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute})
+        acquirer.cancelAttributeOwnershipAcquisition(object_instance, {acquirer_attribute})
+        assert acquirer_federate.last_callback("confirmAttributeOwnershipAcquisitionCancellation") == (
+            object_instance,
+            {acquirer_attribute},
+        )
+        with pytest.raises(NoAcquisitionPending):
+            owner.attributeOwnershipDivestitureIfWanted(object_instance, {owner_attribute})
+
+        owner.requestFederationRestore(save_label)
+        for rti in (owner, acquirer):
+            rti.federateRestoreComplete()
+
+        acquirer_federate.callbacks.clear()
+        divested = owner.attributeOwnershipDivestitureIfWanted(object_instance, {owner_attribute})
+        assert divested == {owner_attribute}
+        assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"",
+        )
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is True
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is False
+    finally:
+        for rti in (acquirer, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (acquirer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-097",
+)
+def test_2025_shim_restores_cross_federate_attribute_owner_visibility(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "Ownership2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Ownership 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused owner visibility restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-owner-visibility-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-OWNER-VIS"
+    owner_federate = Recording2025FederateAmbassador()
+    acquirer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    acquirer = create_rti_ambassador(backend="shim")
+
+    try:
+        owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+        acquirer.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner.joinFederationExecution("Owner", "Controller", federation_name)
+        acquirer_handle = acquirer.joinFederationExecution("Acquirer", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(object_class, "Position")
+        acquirer_class = acquirer.getObjectClassHandle("HLAobjectRoot.Target")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_class, "Position")
+        object_instance = owner.registerObjectInstance(object_class, "ShimOwnerVisibilityTarget-1")
+
+        owner.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"offer")
+        assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption") == (
+            object_instance,
+            {acquirer_attribute},
+            b"offer",
+        )
+        acquirer.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, b"acquire")
+        assert owner_federate.last_callback("requestDivestitureConfirmation") == (
+            object_instance,
+            {owner_attribute},
+            b"acquire",
+        )
+        owner.confirmDivestiture(object_instance, {owner_attribute}, b"confirm")
+        assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"confirm",
+        )
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        assert owner_federate.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+
+        owner.requestFederationSave(save_label)
+        for rti in (owner, acquirer):
+            rti.federateSaveBegun()
+        for rti in (owner, acquirer):
+            rti.federateSaveComplete()
+
+        acquirer.unconditionalAttributeOwnershipDivestiture(object_instance, {acquirer_attribute}, b"dirty-divest")
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        assert owner_federate.last_callback("attributeIsNotOwned") == (object_instance, {owner_attribute})
+
+        owner.requestFederationRestore(save_label)
+        for rti in (owner, acquirer):
+            rti.federateRestoreComplete()
+
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        assert owner_federate.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+    finally:
+        for rti in (acquirer, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (acquirer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
