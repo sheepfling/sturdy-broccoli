@@ -715,6 +715,13 @@ class _TargetRadar2025RTIAdapter:
             {self._to_2025_handle(attribute) for attribute in attributes},
         )
 
+    def subscribe_object_class_attributes_passively_with_regions(self, object_class, attribute_region_associations) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.subscribeObjectClassAttributesPassivelyWithRegions,
+            self._to_2025_handle(object_class),
+            self._to_2025_attribute_region_associations(attribute_region_associations),
+        )
+
     def unsubscribe_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
         self._call_compat(
             self._delegate.unsubscribeObjectClassAttributes,
@@ -1052,6 +1059,13 @@ class _TargetRadar2025RTIAdapter:
 
     def subscribe_interaction_class_passively(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.subscribeInteractionClassPassively, self._to_2025_handle(interaction_class))
+
+    def subscribe_interaction_class_passively_with_regions(self, interaction_class, regions) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.subscribeInteractionClassPassivelyWithRegions,
+            self._to_2025_handle(interaction_class),
+            {self._to_2025_handle(region) for region in regions},
+        )
 
     def unsubscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.unsubscribeInteractionClass, self._to_2025_handle(interaction_class))
@@ -1726,6 +1740,26 @@ def test_2025_target_radar_adapter_explicitly_covers_ddm_object_region_service_s
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"ddm object-region scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_ddm_passive_region_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_ddm_passive_regions.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"ddm passive-region scenario services: {missing}"
     )
 
 
@@ -3988,6 +4022,54 @@ def test_2025_shim_runs_ddm_declaration_gating_scenario_via_compat_adapter(tmp_p
     assert summary["interaction_after_subscription"].args[1] == {
         summary["subscriber_parameter"]: config.post_subscription_interaction_payload
     }
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-128",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-FI-SVC-137",
+    "HLA2025-FI-SVC-138",
+)
+def test_2025_shim_runs_ddm_passive_region_subscription_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import (
+        DdmPassiveRegionScenarioConfig,
+        run_ddm_passive_region_subscription_scenario,
+    )
+
+    fom_path = tmp_path / "Proto2025PassiveRoutingDDM.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"shim-2025-ddm-passive-{uuid.uuid4().hex[:8]}"
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = DdmPassiveRegionScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="DdmPassiveRegionFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"DDM-Passive-Compat-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_ddm_passive_region_subscription_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["discovery"].args[0] == summary["object_instance"]
+    assert summary["received"].args[0] == summary["subscriber_interaction"]
+    assert summary["received"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
 
 
 @pytest.mark.requirements(
