@@ -88,6 +88,8 @@ from hla.rti1516_2025.exceptions import (
     LogicalTimeAlreadyPassed,
     MessageCanNoLongerBeRetracted,
     NameNotFound,
+    TimeConstrainedAlreadyEnabled,
+    TimeRegulationAlreadyEnabled,
     NoAcquisitionPending,
     NotConnected,
     ObjectClassNotDefined,
@@ -961,6 +963,8 @@ class Shim2025RTIAmbassador:
     def enableTimeRegulation(self, lookahead: Any) -> None:  # noqa: N802
         self._record("enableTimeRegulation", lookahead)
         self._require_joined("enableTimeRegulation")
+        if self._time_regulation_enabled:
+            raise TimeRegulationAlreadyEnabled("Time regulation is already enabled")
         self._lookahead = self._coerce_interval(lookahead)
         self._time_regulation_enabled = True
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeRegulationEnabled"):
@@ -976,6 +980,8 @@ class Shim2025RTIAmbassador:
     def enableTimeConstrained(self) -> None:  # noqa: N802
         self._record("enableTimeConstrained")
         self._require_joined("enableTimeConstrained")
+        if self._time_constrained_enabled:
+            raise TimeConstrainedAlreadyEnabled("Time constrained mode is already enabled")
         self._time_constrained_enabled = True
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeConstrainedEnabled"):
             self._deliver_callback("timeConstrainedEnabled", self._logical_time)

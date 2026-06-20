@@ -370,6 +370,13 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
             bool(value.timeIsValid),
             _normalize_2025_callback_value(value.time),
         )
+    if module_name == "hla.rti1516_2025.datatypes" and type_name == "MessageRetractionReturn":
+        from hla.rti1516e.datatypes import MessageRetractionReturn
+
+        return MessageRetractionReturn(
+            bool(value.retractionHandleIsValid),
+            _normalize_2025_callback_value(value.handle),
+        )
     if module_name == "hla.rti1516e.datatypes" and type_name == "SupplementalRemoveInfo":
         return value
     if isinstance(value, tuple):
@@ -694,6 +701,12 @@ class _TargetRadar2025RTIAdapter:
 
     def next_message_request(self, time) -> None:  # noqa: ANN001
         self._delegate.nextMessageRequest(self._coerce_time_value(time))
+
+    def flush_queue_request(self, time) -> None:  # noqa: ANN001
+        self._delegate.flushQueueRequest(self._coerce_time_value(time))
+
+    def retract(self, retraction_handle) -> None:  # noqa: ANN001
+        self._call_compat(self._delegate.retract, self._to_2025_handle(retraction_handle))
 
     def get_object_class_handle(self, object_class_name: str):  # noqa: ANN201
         return self._to_2010_handle(self._call_compat(self._delegate.getObjectClassHandle, object_class_name))
@@ -1160,20 +1173,23 @@ class _TargetRadar2025RTIAdapter:
         from hla.rti1516e.exceptions import InvalidLogicalTime as InvalidLogicalTime2010
 
         if time is None:
-            self._call_compat(
-                self._delegate.sendInteraction,
-                self._to_2025_handle(interaction_class),
-                {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
-                user_supplied_tag,
+            return _normalize_2025_callback_value(
+                self._call_compat(
+                    self._delegate.sendInteraction,
+                    self._to_2025_handle(interaction_class),
+                    {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
+                    user_supplied_tag,
+                )
             )
-            return
         try:
-            self._call_compat(
-                self._delegate.sendInteraction,
-                self._to_2025_handle(interaction_class),
-                {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
-                user_supplied_tag,
-                self._coerce_time_value(time),
+            return _normalize_2025_callback_value(
+                self._call_compat(
+                    self._delegate.sendInteraction,
+                    self._to_2025_handle(interaction_class),
+                    {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
+                    user_supplied_tag,
+                    self._coerce_time_value(time),
+                )
             )
         except InvalidLogicalTime2025 as exc:
             raise InvalidLogicalTime2010(str(exc)) from exc
@@ -1193,24 +1209,26 @@ class _TargetRadar2025RTIAdapter:
             user_supplied_tag,
         )
         if time is None:
-            return self._call_compat(self._delegate.sendInteractionWithRegions, *args)
-        return self._call_compat(
-            self._delegate.sendInteractionWithRegions,
-            *args,
-            self._coerce_time_value(time),
+            return _normalize_2025_callback_value(self._call_compat(self._delegate.sendInteractionWithRegions, *args))
+        return _normalize_2025_callback_value(
+            self._call_compat(
+                self._delegate.sendInteractionWithRegions,
+                *args,
+                self._coerce_time_value(time),
+            )
         )
 
     def enable_time_regulation(self, lookahead) -> None:  # noqa: ANN001
-        self._delegate.enableTimeRegulation(self._coerce_interval_value(lookahead))
+        self._call_compat(self._delegate.enableTimeRegulation, self._coerce_interval_value(lookahead))
 
     def enable_time_constrained(self) -> None:
-        self._delegate.enableTimeConstrained()
+        self._call_compat(self._delegate.enableTimeConstrained)
 
     def disable_time_regulation(self) -> None:
-        self._delegate.disableTimeRegulation()
+        self._call_compat(self._delegate.disableTimeRegulation)
 
     def disable_time_constrained(self) -> None:
-        self._delegate.disableTimeConstrained()
+        self._call_compat(self._delegate.disableTimeConstrained)
 
     def enable_asynchronous_delivery(self) -> None:
         self._delegate.enableAsynchronousDelivery()
@@ -3908,6 +3926,145 @@ def test_2025_shim_runs_section8_ordering_and_queries_via_compat_adapter(time_fa
     assert summary["second_receive"].args[3] is OrderType.TIMESTAMP
     _assert_same_time_scalar(summary["second_receive"].args[5], config.first_timestamp)
     _assert_same_time_scalar(summary["second_grant"].args[0], config.first_timestamp)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-110",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_available_and_flush_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_available_and_flush_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-available-flush-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_available_and_flush_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["available_grant"] is not None
+    assert summary["flush_grant"] is not None
+    assert summary["flushed_receive"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-105",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-122",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_request_retraction_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_request_retraction_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-request-retraction-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_request_retraction_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["received"] is not None
+    assert summary["received"].args[1] == {summary["parameter"]: config.first_payload}
+    assert summary["received"].args[3] is OrderType.TIMESTAMP
+    assert summary["request_retraction"] is not None
+    assert summary["request_retraction"].args[0] == summary["sent"].handle
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-102",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_duplicate_enable_rejection_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_duplicate_enable_rejection_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-duplicate-enable-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_duplicate_enable_rejection_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["regulation_error"] is not None
+    assert summary["constrained_error"] is not None
+    assert summary["final_regulation_callback_count"] == summary["initial_regulation_callback_count"]
+    assert summary["final_constrained_callback_count"] == summary["initial_constrained_callback_count"]
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_tar_galt_boundary_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_tar_galt_boundary_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-tar-galt-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_tar_galt_boundary_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    _assert_same_time_scalar(summary["equal_galt"].time, config.receiver_window_time)
+    assert summary["grant"] is None
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
