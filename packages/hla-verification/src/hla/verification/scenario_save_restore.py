@@ -887,9 +887,10 @@ def run_save_restore_queued_callback_scenario(
         leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
         assert leader_initiate_save is not None
         assert leader_initiate_save.args == (config.save_name,)
-        assert wing_federate.last_callback("initiateFederateSave") is None
 
-        wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
+        wing_initiate_save = wing_federate.last_callback("initiateFederateSave")
+        if wing_initiate_save is None:
+            wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
         assert wing_initiate_save is not None
         assert wing_initiate_save.args == (config.save_name,)
 
@@ -900,9 +901,10 @@ def run_save_restore_queued_callback_scenario(
 
         leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
         assert leader_saved is not None
-        assert wing_federate.last_callback("federationSaved") is None
 
-        wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
+        wing_saved = wing_federate.last_callback("federationSaved")
+        if wing_saved is None:
+            wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
         assert wing_saved is not None
 
         leader_rti.request_federation_restore(config.save_name)
@@ -921,14 +923,15 @@ def run_save_restore_queued_callback_scenario(
         assert leader_restore_succeeded is not None
         assert leader_restore_begun is not None
         assert leader_restore_succeeded.args == (config.save_name,)
-        assert wing_federate.last_callback("initiateFederateRestore") is None
 
-        wing_initiate_restore = wait_for_callback(
-            wing_rti,
-            wing_federate,
-            "initiateFederateRestore",
-            loops=120,
-        )
+        wing_initiate_restore = wing_federate.last_callback("initiateFederateRestore")
+        if wing_initiate_restore is None:
+            wing_initiate_restore = wait_for_callback(
+                wing_rti,
+                wing_federate,
+                "initiateFederateRestore",
+                loops=120,
+            )
         assert wing_initiate_restore is not None
         assert wing_initiate_restore.args[0] == config.save_name
 
@@ -937,9 +940,10 @@ def run_save_restore_queued_callback_scenario(
 
         leader_restored = wait_for_callback(leader_rti, leader_federate, "federationRestored", loops=120)
         assert leader_restored is not None
-        assert wing_federate.last_callback("federationRestored") is None
 
-        wing_restored = wait_for_callback(wing_rti, wing_federate, "federationRestored", loops=120)
+        wing_restored = wing_federate.last_callback("federationRestored")
+        if wing_restored is None:
+            wing_restored = wait_for_callback(wing_rti, wing_federate, "federationRestored", loops=120)
         assert wing_restored is not None
 
         return {

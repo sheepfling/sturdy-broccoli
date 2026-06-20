@@ -3861,6 +3861,50 @@ def test_2025_shim_runs_backend_neutral_save_restore_scenario_via_compat_adapter
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-027",
+)
+def test_2025_shim_runs_save_restore_queued_callback_scenario_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_restore_queued_callback_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-save-restore-queued-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-QUEUED-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_save_restore_queued_callback_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args == (config.save_name,)
+    assert summary["leader_saved"] is not None
+    assert summary["wing_saved"] is not None
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["leader_restore_begun"] is not None
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_restored"] is not None
+    assert summary["wing_restored"] is not None
+
+
+@pytest.mark.requirements(
     "HLA2025-SS-043",
     "HLA2025-SS-044",
     "HLA2025-FR-004",
