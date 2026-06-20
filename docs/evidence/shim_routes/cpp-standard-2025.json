@@ -8,11 +8,13 @@
   "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip",
   "routes": {
     "cpp-standard-2025-grpc": {
+      "parity_scope": "bounded scenario-parity evidence",
       "scenario": "lifecycle-core",
       "status": "core-green",
       "surface": "official IEEE 1516.1-2025 C++ API"
     },
     "cpp-standard-2025-pybind": {
+      "parity_scope": "bounded scenario-parity evidence",
       "scenario": "lifecycle-core",
       "status": "core-green",
       "surface": "official IEEE 1516.1-2025 C++ API"
@@ -20,11 +22,28 @@
   },
   "scenario_evidence": {
     "scenarios": [
-      "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling"
+      "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
+      "2025 standard route object exchange: two-federate publish/subscribe, discover, reflect, receive, and unsubscribe suppression",
+      "2025 standard route logical time: enable regulation/constrained, modify lookahead, TAR/FQR, and query logical time/GALT/LITS",
+      "2025 standard route ownership: unavailable acquisition while owned, unconditional divestiture, reacquisition, and query callbacks",
+      "2025 standard route DDM: region creation/commit, outside-region suppression, overlap rediscovery, and in-region reflection",
+      "2025 standard route support services: lookup round trips plus switch inquiry/control coverage",
+      "2025 standard route save/restore: save status, restore status, object rollback, and logical-time rollback",
+      "2025 standard route MOM: service-report serialization, MIM/FOM module data, and manager request/report interactions",
+      "2025 standard route runtime capability: FOM handles, default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization"
     ],
-    "status": "core-green",
+    "scope": "bounded scenario-parity evidence, not full C++ RTI conformance",
+    "status": "scenario-parity-green",
     "tests": [
-      "tests/backends/test_standard_shim_artifacts.py"
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_object_exchange_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_time_management_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_ownership_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_ddm_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_support_services_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_save_restore_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_mom_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built"
     ]
   },
   "surface": "official IEEE 1516.1-2025 C++ API",

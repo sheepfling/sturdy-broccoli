@@ -24,6 +24,28 @@ PACKAGE = "com.sheepfling.hla.shimroutes.rti1516_2025"
 FACTORY_NAME = "Java 2025 Standard Shim"
 
 IMPLEMENTED = {"getHLAversion"}
+SCENARIO_PARITY_TESTS = [
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_object_exchange_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_time_management_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_ownership_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_ddm_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_support_services_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_save_restore_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_mom_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built",
+]
+SCENARIO_PARITY_SUMMARY = [
+    "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
+    "2025 standard route object exchange: two-federate publish/subscribe, discover, reflect, receive, and unsubscribe suppression",
+    "2025 standard route logical time: enable regulation/constrained, modify lookahead, TAR/FQR, and query logical time/GALT/LITS",
+    "2025 standard route ownership: unavailable acquisition while owned, unconditional divestiture, reacquisition, and query callbacks",
+    "2025 standard route DDM: region creation/commit, outside-region suppression, overlap rediscovery, and in-region reflection",
+    "2025 standard route support services: lookup round trips plus switch inquiry/control coverage",
+    "2025 standard route save/restore: save status, restore status, object rollback, and logical-time rollback",
+    "2025 standard route MOM: service-report serialization, MIM/FOM module data, and manager request/report interactions",
+    "2025 standard route runtime capability: FOM handles, default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization",
+]
 RUNTIME_CAPABILITY_REQUIREMENTS = [
     "HLA2025-BND-001",
     "HLA2025-FR-001",
@@ -209,16 +231,10 @@ def _write_report(methods: list[Method]) -> None:
         "implemented_services": implemented,
         "unsupported_services": unsupported,
         "scenario_evidence": {
-            "status": "trace-green",
-            "tests": [
-                "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
-                "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built",
-            ],
-            "scenarios": [
-                "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
-                "2025 standard route runtime capability: FOM handles, DDM/default policy calls, "
-                "object registration, ownership callbacks, logical time, and MOM service-report serialization",
-            ],
+            "status": "scenario-parity-green",
+            "scope": "bounded scenario-parity evidence, not full Java RTI conformance",
+            "tests": SCENARIO_PARITY_TESTS,
+            "scenarios": SCENARIO_PARITY_SUMMARY,
             "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
         },
         "routes": {
@@ -226,12 +242,14 @@ def _write_report(methods: list[Method]) -> None:
                 "status": "trace-green",
                 "surface": "official Java 2025 API",
                 "scenario": "runtime-capability",
+                "parity_scope": "bounded scenario-parity evidence",
                 "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
             },
             "java-standard-2025-py4j": {
                 "status": "trace-green",
                 "surface": "official Java 2025 API",
                 "scenario": "runtime-capability",
+                "parity_scope": "bounded scenario-parity evidence",
                 "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
             },
         },
@@ -248,13 +266,25 @@ def _write_report(methods: list[Method]) -> None:
                 f"- jar: `{JAR_PATH}`",
                 "- compile status: `passed`",
                 f"- factory: `{FACTORY_NAME}`",
-                "- status: `surface-backed + runtime-capability trace-green`",
+                "- status: `surface-backed + bounded scenario-parity evidence`",
                 "- scenario evidence: `tests/backends/test_standard_shim_artifacts.py`",
                 "",
                 "## Route Evidence",
                 "",
-                "- `java-standard-2025-jpype`: `trace-green` (`runtime-capability`)",
-                "- `java-standard-2025-py4j`: `trace-green` (`runtime-capability`)",
+                "- `java-standard-2025-jpype`: `trace-green` (`runtime-capability` anchor, bounded scenario parity overall)",
+                "- `java-standard-2025-py4j`: `trace-green` (`runtime-capability` anchor, bounded scenario parity overall)",
+                "",
+                "## Scenario Evidence",
+                "",
+                "- lifecycle core",
+                "- object exchange",
+                "- logical time management",
+                "- ownership transfer",
+                "- DDM region filtering",
+                "- support-services lookups and switches",
+                "- save/restore rollback",
+                "- MOM request/report routing",
+                "- runtime-capability aggregate trace",
                 "",
                 "## Implemented Services",
                 "",

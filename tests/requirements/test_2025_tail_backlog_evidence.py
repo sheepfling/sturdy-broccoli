@@ -334,6 +334,30 @@ def test_2025_cpp_binding_source_trace_is_separate_from_common_behavior_rows() -
     assert all(path.exists() for path in cpp_evidence)
 
 
+def test_2025_standard_route_artifact_reports_record_bounded_scenario_parity() -> None:
+    java_report = json.loads((ROOT / "docs/evidence/shim_routes/java-standard-2025.json").read_text(encoding="utf-8"))
+    cpp_report = json.loads((ROOT / "docs/evidence/shim_routes/cpp-standard-2025.json").read_text(encoding="utf-8"))
+
+    for report in (java_report, cpp_report):
+        scenario_evidence = report["scenario_evidence"]
+        scenarios = "\n".join(scenario_evidence["scenarios"])
+        tests = set(scenario_evidence["tests"])
+
+        assert scenario_evidence["status"] == "scenario-parity-green"
+        assert "bounded scenario-parity evidence" in scenario_evidence["scope"]
+        assert "object exchange" in scenarios
+        assert "logical time" in scenarios
+        assert "ownership" in scenarios
+        assert "DDM" in scenarios
+        assert "support services" in scenarios
+        assert "save/restore" in scenarios
+        assert "MOM" in scenarios
+        assert "runtime capability" in scenarios
+        assert "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_object_exchange_when_built" in tests
+        assert "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_mom_when_built" in tests
+        assert "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built" in tests
+
+
 @pytest.mark.requirements("HLA2025-BND-003", "HLA2025-RET-003", "HLA2025-FI-004")
 def test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding() -> None:
     disposition_rows = _csv_rows(REUSE_DISPOSITION)

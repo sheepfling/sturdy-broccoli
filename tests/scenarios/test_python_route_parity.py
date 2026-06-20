@@ -33,6 +33,7 @@ from hla.verification import (
     run_target_radar_time_window_consumer_order_scenario,
     run_target_radar_time_window_future_exclusion_scenario,
     run_target_radar_time_window_core_scenario,
+    run_target_radar_time_window_gauntlet_scenario,
     run_target_radar_time_window_output_delivery_scenario,
     run_target_radar_time_window_pipeline_scenario,
     run_target_radar_time_window_pipeline_restore_scenario,
@@ -368,6 +369,53 @@ def test_python_route_parity_target_radar_time_window_future_exclusion(route) ->
             remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
             disconnect_rtis=(pair.right, pair.left),
         )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_target_radar_time_window_gauntlet(route) -> None:
+    with python_rti_group(route, 6) as group:
+        truth, sensor, radar, consumer, fast, slow = group.members
+        config = TargetRadarTimeWindowConfig(
+            federation_name=f"python-radar-time-window-gauntlet-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+        summary = run_target_radar_time_window_gauntlet_scenario(
+            truth,
+            sensor,
+            radar,
+            consumer,
+            fast,
+            slow,
+            config=config,
+            truth_federate=RecordingFederateAmbassador(),
+            sensor_federate=RecordingFederateAmbassador(),
+            radar_federate=RecordingFederateAmbassador(),
+            consumer_federate=RecordingFederateAmbassador(),
+            fast_federate=RecordingFederateAmbassador(),
+            slow_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["certification_target"] == "lookahead-processing-window-certified"
+        assert set(summary["subproofs"]) == {
+            "core",
+            "future_exclusion",
+            "output_delivery",
+            "consumer_order",
+            "pipeline",
+        }
+        assert summary["subproofs"]["core"]["certification_target"] == "time-window-core"
+        assert summary["subproofs"]["future_exclusion"]["certification_target"] == "time-window-future-exclusion"
+        assert summary["subproofs"]["output_delivery"]["certification_target"] == "time-window-output-delivery"
+        assert summary["subproofs"]["consumer_order"]["certification_target"] == "time-window-consumer-order"
+        assert summary["subproofs"]["pipeline"]["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["oracle_report"]["certification_target"] == "lookahead-processing-window-certified"
+        assert summary["oracle_report"]["assertions"] == {
+            "future_exclusion_blocked_until_window_safe": True,
+            "core_window_closure_proved": True,
+            "closed_window_output_delivered_legally": True,
+            "consumer_observed_timestamp_order": True,
+            "pipeline_overlapping_windows_proved": True,
+        }
 
 
 @pytest.mark.parametrize("route", python_route_params())

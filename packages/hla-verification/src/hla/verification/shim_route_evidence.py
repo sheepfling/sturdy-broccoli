@@ -674,8 +674,14 @@ def run_standard_2025_object_exchange_trace(backend_name: str) -> dict[str, Any]
                 subscriber.resignFederationExecution(ResignAction.NO_ACTION)
                 trace.append(_event("resignFederationExecution", federate="subscriber", action=ResignAction.NO_ACTION))
             if publisher_joined:
-                publisher.resignFederationExecution(ResignAction.NO_ACTION)
-                trace.append(_event("resignFederationExecution", federate="publisher", action=ResignAction.NO_ACTION))
+                publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+                trace.append(
+                    _event(
+                        "resignFederationExecution",
+                        federate="publisher",
+                        action=ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+                    )
+                )
             if federation_created:
                 publisher.destroyFederationExecution(federation_name)
                 trace.append(_event("destroyFederationExecution", federation=federation_name))
@@ -816,8 +822,8 @@ def run_standard_2025_runtime_capability_trace(backend_name: str) -> dict[str, A
     finally:
         try:
             if joined:
-                rti.resignFederationExecution(ResignAction.NO_ACTION)
-                trace.append(_event("resignFederationExecution", action=ResignAction.NO_ACTION))
+                rti.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+                trace.append(_event("resignFederationExecution", action=ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST))
             if federation_created:
                 rti.destroyFederationExecution(federation_name)
                 trace.append(_event("destroyFederationExecution", federation=federation_name))
@@ -993,8 +999,14 @@ def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
     finally:
         try:
             if acquirer_joined:
-                acquirer.resignFederationExecution(ResignAction.NO_ACTION)
-                trace.append(_event("resignFederationExecution", federate="acquirer", action=ResignAction.NO_ACTION))
+                acquirer.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+                trace.append(
+                    _event(
+                        "resignFederationExecution",
+                        federate="acquirer",
+                        action=ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+                    )
+                )
             if owner_joined:
                 owner.resignFederationExecution(ResignAction.NO_ACTION)
                 trace.append(_event("resignFederationExecution", federate="owner", action=ResignAction.NO_ACTION))
@@ -1133,8 +1145,14 @@ def run_standard_2025_ddm_trace(backend_name: str) -> dict[str, Any]:
                 subscriber.resignFederationExecution(ResignAction.NO_ACTION)
                 trace.append(_event("resignFederationExecution", federate="subscriber", action=ResignAction.NO_ACTION))
             if publisher_joined:
-                publisher.resignFederationExecution(ResignAction.NO_ACTION)
-                trace.append(_event("resignFederationExecution", federate="publisher", action=ResignAction.NO_ACTION))
+                publisher.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+                trace.append(
+                    _event(
+                        "resignFederationExecution",
+                        federate="publisher",
+                        action=ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+                    )
+                )
             if federation_created:
                 publisher.destroyFederationExecution(federation_name)
                 trace.append(_event("destroyFederationExecution", federation=federation_name))
@@ -1234,8 +1252,8 @@ def run_standard_2025_support_services_trace(backend_name: str) -> dict[str, Any
     finally:
         try:
             if joined:
-                rti.resignFederationExecution(ResignAction.NO_ACTION)
-                trace.append(_event("resignFederationExecution", action=ResignAction.NO_ACTION))
+                rti.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+                trace.append(_event("resignFederationExecution", action=ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST))
             if federation_created:
                 rti.destroyFederationExecution(federation_name)
                 trace.append(_event("destroyFederationExecution", federation=federation_name))
@@ -1366,8 +1384,14 @@ def run_standard_2025_save_restore_trace(backend_name: str) -> dict[str, Any]:
                 wing.resignFederationExecution(ResignAction.NO_ACTION)
                 trace.append(_event("resignFederationExecution", federate="wing", action=ResignAction.NO_ACTION))
             if leader_joined:
-                leader.resignFederationExecution(ResignAction.NO_ACTION)
-                trace.append(_event("resignFederationExecution", federate="leader", action=ResignAction.NO_ACTION))
+                leader.resignFederationExecution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+                trace.append(
+                    _event(
+                        "resignFederationExecution",
+                        federate="leader",
+                        action=ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+                    )
+                )
             if federation_created:
                 leader.destroyFederationExecution(federation_name)
                 trace.append(_event("destroyFederationExecution", federation=federation_name))

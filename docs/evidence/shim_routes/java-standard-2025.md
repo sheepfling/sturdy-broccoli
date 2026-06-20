@@ -5,13 +5,25 @@
 - jar: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar`
 - compile status: `passed`
 - factory: `Java 2025 Standard Shim`
-- status: `surface-backed + runtime-capability trace-green`
+- status: `surface-backed + bounded scenario-parity evidence`
 - scenario evidence: `tests/backends/test_standard_shim_artifacts.py`
 
 ## Route Evidence
 
-- `java-standard-2025-jpype`: `trace-green` (`runtime-capability`)
-- `java-standard-2025-py4j`: `trace-green` (`runtime-capability`)
+- `java-standard-2025-jpype`: `trace-green` (`runtime-capability` anchor, bounded scenario parity overall)
+- `java-standard-2025-py4j`: `trace-green` (`runtime-capability` anchor, bounded scenario parity overall)
+
+## Scenario Evidence
+
+- lifecycle core
+- object exchange
+- logical time management
+- ownership transfer
+- DDM region filtering
+- support-services lookups and switches
+- save/restore rollback
+- MOM request/report routing
+- runtime-capability aggregate trace
 
 ## Implemented Services
 

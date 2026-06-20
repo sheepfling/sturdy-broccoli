@@ -55,7 +55,13 @@ def _matrix(args: argparse.Namespace) -> int:
                 for name, details in dict(report.get("routes", {})).items()
                 if isinstance(details, dict)
             }
-            if route_statuses and all(value == "core-green" for value in route_statuses.values()):
+            scenario_status = None
+            scenario_evidence = report.get("scenario_evidence")
+            if isinstance(scenario_evidence, dict):
+                scenario_status = scenario_evidence.get("status")
+            if scenario_status == "scenario-parity-green":
+                status = "surface-backed + scenario-parity"
+            elif route_statuses and all(value == "core-green" for value in route_statuses.values()):
                 status = "surface-backed + core-green"
             routes = ", ".join(
                 f"{route.name} ({route_statuses.get(route.name, 'surface-backed')})"

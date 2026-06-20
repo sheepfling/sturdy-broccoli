@@ -5,8 +5,9 @@ import struct
 from dataclasses import dataclass
 from typing import Any
 
-from hla.rti1516e.enums import CallbackModel, OrderType
-from hla.rti1516e.exceptions import InvalidLogicalTime
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import InvalidLogicalTime, RTIexception
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 
 from .scenario_support import drain_callbacks_pair, wait_for_callback
@@ -26,6 +27,73 @@ def _timestamp_value(value: Any) -> int:
 
 def _time_query_is_valid(query: Any) -> bool:
     return bool(getattr(query, "time_is_valid", getattr(query, "timeIsValid")))
+
+
+def _reset_callback_state(*federates: Any) -> None:
+    for federate in federates:
+        clear = getattr(federate, "clear", None)
+        if callable(clear):
+            clear()
+
+
+def _cleanup_time_window_members(
+    federation_name: str,
+    *,
+    destroyer_rti: Any,
+    remaining_resignations: tuple[tuple[Any, Any], ...],
+    destroyer_resign_action: Any = ResignAction.NO_ACTION,
+    disconnect_rtis: tuple[Any, ...],
+) -> None:
+    for rti, resign_action in remaining_resignations:
+        try:
+            rti.resign_federation_execution(resign_action)
+        except RTIexception:
+            pass
+    try:
+        destroyer_rti.resign_federation_execution(destroyer_resign_action)
+    except RTIexception:
+        pass
+    try:
+        destroyer_rti.destroy_federation_execution(federation_name)
+    except RTIexception:
+        pass
+    for rti in disconnect_rtis:
+        try:
+            rti.disconnect()
+        except RTIexception:
+            pass
+
+
+def _close_rti_if_supported(rti: Any) -> None:
+    close = getattr(rti, "close", None)
+    if callable(close):
+        close()
+    spawned_server = getattr(rti, "_verification_spawned_server", None)
+    if spawned_server is not None:
+        spawned_server.close()
+
+
+def _spawn_like_rti(template_rti: Any) -> Any:
+    spawn = getattr(template_rti, "_verification_spawn_like", None)
+    if callable(spawn):
+        return spawn()
+
+    backend = getattr(template_rti, "backend", None)
+    if backend is None:
+        raise TypeError("time-window gauntlet requires a delegating RTI ambassador with backend metadata")
+
+    engine = getattr(backend, "engine", None)
+    if engine is not None:
+        return create_rti_ambassador("python", engine=engine)
+
+    config = getattr(backend, "config", None)
+    transport = getattr(config, "transport", None)
+    transport_config = getattr(transport, "config", None)
+    target = getattr(transport_config, "target", None)
+    if target is not None:
+        return create_rti_ambassador("certi", transport={"kind": "grpc", "target": target})
+
+    raise TypeError(f"unsupported RTI route for time-window gauntlet cloning: {type(backend).__name__}")
 
 
 def _verify_time_window_core_oracle(
@@ -2441,14 +2509,20 @@ def run_target_radar_time_window_gauntlet_scenario(
     fast_federate: Any,
     slow_federate: Any,
 ) -> dict[str, Any]:
-    """Compatibility alias for the original over-broad route name."""
-    return run_target_radar_time_window_core_scenario(
-        truth_rti,
-        sensor_rti,
-        radar_rti,
-        consumer_rti,
-        fast_rti,
-        slow_rti,
+    """Run a bounded integrated gauntlet across the core time-window proof ladder."""
+    core_truth_rti = _spawn_like_rti(truth_rti)
+    core_sensor_rti = _spawn_like_rti(sensor_rti)
+    core_radar_rti = _spawn_like_rti(radar_rti)
+    core_consumer_rti = _spawn_like_rti(consumer_rti)
+    core_fast_rti = _spawn_like_rti(fast_rti)
+    core_slow_rti = _spawn_like_rti(slow_rti)
+    core_summary = run_target_radar_time_window_core_scenario(
+        core_truth_rti,
+        core_sensor_rti,
+        core_radar_rti,
+        core_consumer_rti,
+        core_fast_rti,
+        core_slow_rti,
         config=config,
         truth_federate=truth_federate,
         sensor_federate=sensor_federate,
@@ -2457,6 +2531,233 @@ def run_target_radar_time_window_gauntlet_scenario(
         fast_federate=fast_federate,
         slow_federate=slow_federate,
     )
+    _cleanup_time_window_members(
+        config.federation_name,
+        destroyer_rti=core_truth_rti,
+        destroyer_resign_action=ResignAction.NO_ACTION,
+        remaining_resignations=(
+            (core_sensor_rti, ResignAction.NO_ACTION),
+            (core_radar_rti, ResignAction.NO_ACTION),
+            (core_consumer_rti, ResignAction.NO_ACTION),
+            (core_fast_rti, ResignAction.NO_ACTION),
+            (core_slow_rti, ResignAction.NO_ACTION),
+        ),
+        disconnect_rtis=(core_slow_rti, core_fast_rti, core_consumer_rti, core_radar_rti, core_sensor_rti, core_truth_rti),
+    )
+    for member in (core_slow_rti, core_fast_rti, core_consumer_rti, core_radar_rti, core_sensor_rti, core_truth_rti):
+        _close_rti_if_supported(member)
+    _reset_callback_state(
+        truth_federate,
+        sensor_federate,
+        radar_federate,
+        consumer_federate,
+        fast_federate,
+        slow_federate,
+    )
+
+    future_config = TargetRadarFutureExclusionConfig(
+        federation_name=f"{config.federation_name}-future-exclusion",
+        fom_modules=tuple(config.fom_modules),
+        logical_time_implementation_name=config.logical_time_implementation_name,
+        federate_type=config.federate_type,
+        radar_name=config.radar_name,
+        slow_name=config.slow_name,
+        scan_window_start=config.scan_window_start,
+        scan_window_end=config.scan_window_end,
+        slow_initial_time=config.scan_window_start,
+        slow_clearance_time=config.scan_window_end - 1,
+        slow_lookahead=1,
+        illegal_late_time=config.scan_window_end - 1,
+        legal_boundary_time=config.scan_window_end,
+        post_boundary_resume_time=config.consumer_resume_time,
+    )
+    future_slow_rti = _spawn_like_rti(slow_rti)
+    future_radar_rti = _spawn_like_rti(radar_rti)
+    future_summary = run_target_radar_time_window_future_exclusion_scenario(
+        future_slow_rti,
+        future_radar_rti,
+        config=future_config,
+        slow_federate=slow_federate,
+        radar_federate=radar_federate,
+    )
+    _cleanup_time_window_members(
+        future_config.federation_name,
+        destroyer_rti=future_slow_rti,
+        destroyer_resign_action=ResignAction.NO_ACTION,
+        remaining_resignations=((future_radar_rti, ResignAction.NO_ACTION),),
+        disconnect_rtis=(future_radar_rti, future_slow_rti),
+    )
+    for member in (future_radar_rti, future_slow_rti):
+        _close_rti_if_supported(member)
+    _reset_callback_state(slow_federate, radar_federate)
+
+    output_config = TargetRadarOutputDeliveryConfig(
+        federation_name=f"{config.federation_name}-output-delivery",
+        fom_modules=tuple(config.fom_modules),
+        logical_time_implementation_name=config.logical_time_implementation_name,
+        federate_type=config.federate_type,
+        truth_name=config.truth_name,
+        radar_name=config.radar_name,
+        consumer_name=config.consumer_name,
+        target_object_name=f"{config.target_object_name}-output",
+        scan_window_start=config.scan_window_start,
+        scan_window_end=config.scan_window_end,
+        first_input_time=config.truth_update_time,
+        second_input_time=config.sensor_detection_time,
+        radar_output_time=config.scan_window_end + 1,
+        consumer_resume_time=config.consumer_resume_time,
+        duplicate_check_resume_time=config.consumer_resume_time + 10,
+        output_track_id=f"{config.track_object_name}-output-track",
+    )
+    output_truth_rti = _spawn_like_rti(truth_rti)
+    output_radar_rti = _spawn_like_rti(radar_rti)
+    output_consumer_rti = _spawn_like_rti(consumer_rti)
+    output_summary = run_target_radar_time_window_output_delivery_scenario(
+        output_truth_rti,
+        output_radar_rti,
+        output_consumer_rti,
+        config=output_config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+    _cleanup_time_window_members(
+        output_config.federation_name,
+        destroyer_rti=output_truth_rti,
+        destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+        remaining_resignations=(
+            (output_radar_rti, ResignAction.NO_ACTION),
+            (output_consumer_rti, ResignAction.NO_ACTION),
+        ),
+        disconnect_rtis=(output_consumer_rti, output_radar_rti, output_truth_rti),
+    )
+    for member in (output_consumer_rti, output_radar_rti, output_truth_rti):
+        _close_rti_if_supported(member)
+    _reset_callback_state(truth_federate, radar_federate, consumer_federate)
+
+    consumer_order_config = TargetRadarConsumerOrderConfig(
+        federation_name=f"{config.federation_name}-consumer-order",
+        fom_modules=tuple(config.fom_modules),
+        logical_time_implementation_name=config.logical_time_implementation_name,
+        federate_type=config.federate_type,
+        truth_name=config.truth_name,
+        radar_name=config.radar_name,
+        other_name=config.fast_name,
+        consumer_name=config.consumer_name,
+        target_object_name=f"{config.target_object_name}-order",
+        scan_window_start=config.scan_window_start,
+        scan_window_end=config.scan_window_end,
+        first_input_time=config.truth_update_time,
+        second_input_time=config.sensor_detection_time,
+        competing_event_time=config.scan_window_end,
+        radar_output_time=config.scan_window_end + 1,
+        consumer_resume_time=config.consumer_resume_time,
+        duplicate_check_resume_time=config.consumer_resume_time + 10,
+        competing_track_id=f"{config.track_object_name}-competing-track",
+        radar_output_track_id=f"{config.track_object_name}-radar-track",
+    )
+    consumer_order_truth_rti = _spawn_like_rti(truth_rti)
+    consumer_order_radar_rti = _spawn_like_rti(radar_rti)
+    consumer_order_fast_rti = _spawn_like_rti(fast_rti)
+    consumer_order_consumer_rti = _spawn_like_rti(consumer_rti)
+    consumer_order_summary = run_target_radar_time_window_consumer_order_scenario(
+        consumer_order_truth_rti,
+        consumer_order_radar_rti,
+        consumer_order_fast_rti,
+        consumer_order_consumer_rti,
+        config=consumer_order_config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        other_federate=fast_federate,
+        consumer_federate=consumer_federate,
+    )
+    _cleanup_time_window_members(
+        consumer_order_config.federation_name,
+        destroyer_rti=consumer_order_truth_rti,
+        destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+        remaining_resignations=(
+            (consumer_order_radar_rti, ResignAction.NO_ACTION),
+            (consumer_order_fast_rti, ResignAction.NO_ACTION),
+            (consumer_order_consumer_rti, ResignAction.NO_ACTION),
+        ),
+        disconnect_rtis=(
+            consumer_order_consumer_rti,
+            consumer_order_fast_rti,
+            consumer_order_radar_rti,
+            consumer_order_truth_rti,
+        ),
+    )
+    for member in (
+        consumer_order_consumer_rti,
+        consumer_order_fast_rti,
+        consumer_order_radar_rti,
+        consumer_order_truth_rti,
+    ):
+        _close_rti_if_supported(member)
+    _reset_callback_state(truth_federate, radar_federate, fast_federate, consumer_federate)
+
+    pipeline_config = TargetRadarPipelineConfig(
+        federation_name=f"{config.federation_name}-pipeline",
+        fom_modules=tuple(config.fom_modules),
+        logical_time_implementation_name=config.logical_time_implementation_name,
+        federate_type=config.federate_type,
+        truth_name=config.truth_name,
+        radar_name=config.radar_name,
+        consumer_name=config.consumer_name,
+        target_object_name=f"{config.target_object_name}-pipeline",
+    )
+    pipeline_truth_rti = _spawn_like_rti(truth_rti)
+    pipeline_radar_rti = _spawn_like_rti(radar_rti)
+    pipeline_consumer_rti = _spawn_like_rti(consumer_rti)
+    pipeline_summary = run_target_radar_time_window_pipeline_scenario(
+        pipeline_truth_rti,
+        pipeline_radar_rti,
+        pipeline_consumer_rti,
+        config=pipeline_config,
+        truth_federate=truth_federate,
+        radar_federate=radar_federate,
+        consumer_federate=consumer_federate,
+    )
+    _cleanup_time_window_members(
+        pipeline_config.federation_name,
+        destroyer_rti=pipeline_truth_rti,
+        destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+        remaining_resignations=(
+            (pipeline_radar_rti, ResignAction.NO_ACTION),
+            (pipeline_consumer_rti, ResignAction.NO_ACTION),
+        ),
+        disconnect_rtis=(pipeline_consumer_rti, pipeline_radar_rti, pipeline_truth_rti),
+    )
+    for member in (pipeline_consumer_rti, pipeline_radar_rti, pipeline_truth_rti):
+        _close_rti_if_supported(member)
+    _reset_callback_state(truth_federate, radar_federate, consumer_federate)
+
+    oracle_report = {
+        "certification_target": "lookahead-processing-window-certified",
+        "state_model": (
+            "FUTURE_EXCLUSION -> CORE_CLOSURE -> OUTPUT_PUBLISHED -> "
+            "CONSUMER_ORDERED -> PIPELINED"
+        ),
+        "assertions": {
+            "future_exclusion_blocked_until_window_safe": all(future_summary["oracle_report"]["assertions"].values()),
+            "core_window_closure_proved": all(core_summary["oracle_report"]["assertions"].values()),
+            "closed_window_output_delivered_legally": all(output_summary["oracle_report"]["assertions"].values()),
+            "consumer_observed_timestamp_order": all(consumer_order_summary["oracle_report"]["assertions"].values()),
+            "pipeline_overlapping_windows_proved": all(pipeline_summary["oracle_report"]["assertions"].values()),
+        },
+    }
+
+    return {
+        "certification_target": "lookahead-processing-window-certified",
+        "subproofs": {
+            "core": core_summary,
+            "future_exclusion": future_summary,
+            "output_delivery": output_summary,
+            "consumer_order": consumer_order_summary,
+            "pipeline": pipeline_summary,
+        },
+        "oracle_report": oracle_report,
+    }
 
 
 __all__ = [

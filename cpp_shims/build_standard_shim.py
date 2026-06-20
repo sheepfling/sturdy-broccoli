@@ -42,6 +42,29 @@ ARTIFACTS = {
     },
 }
 
+SCENARIO_PARITY_TESTS_2025 = [
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_object_exchange_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_time_management_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_ownership_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_ddm_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_support_services_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_save_restore_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_mom_when_built",
+    "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built",
+]
+SCENARIO_PARITY_SUMMARY_2025 = [
+    "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
+    "2025 standard route object exchange: two-federate publish/subscribe, discover, reflect, receive, and unsubscribe suppression",
+    "2025 standard route logical time: enable regulation/constrained, modify lookahead, TAR/FQR, and query logical time/GALT/LITS",
+    "2025 standard route ownership: unavailable acquisition while owned, unconditional divestiture, reacquisition, and query callbacks",
+    "2025 standard route DDM: region creation/commit, outside-region suppression, overlap rediscovery, and in-region reflection",
+    "2025 standard route support services: lookup round trips plus switch inquiry/control coverage",
+    "2025 standard route save/restore: save status, restore status, object rollback, and logical-time rollback",
+    "2025 standard route MOM: service-report serialization, MIM/FOM module data, and manager request/report interactions",
+    "2025 standard route runtime capability: FOM handles, default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization",
+]
+
 CPP_2010_HELPER_PATCHES = (
     {
         "path": "cpp/src/RTI/LogicalTimeFactory.h",
@@ -138,12 +161,21 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
         "implemented_services": [],
         "unsupported_services": ["RTIambassador surface is header-backed; service semantics are delegated to the Python shim route for the core scenario subset"],
         "scenario_evidence": {
-            "status": "core-green",
-            "tests": ["tests/backends/test_standard_shim_artifacts.py"],
+            "status": "core-green" if edition == "2010" else "scenario-parity-green",
+            "scope": (
+                "core exchange evidence delegated through the standard-route smoke tests"
+                if edition == "2010"
+                else "bounded scenario-parity evidence, not full C++ RTI conformance"
+            ),
+            "tests": (
+                ["tests/backends/test_standard_shim_artifacts.py"]
+                if edition == "2010"
+                else SCENARIO_PARITY_TESTS_2025
+            ),
             "scenarios": (
                 ["2010 standard route two-federate object, interaction, and time exchange"]
                 if edition == "2010"
-                else ["2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling"]
+                else SCENARIO_PARITY_SUMMARY_2025
             ),
         },
         "routes": {
@@ -151,6 +183,7 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
                 "status": "core-green",
                 "surface": config["surface"],
                 "scenario": "two-federate-core-exchange" if edition == "2010" else "lifecycle-core",
+                **({} if edition == "2010" else {"parity_scope": "bounded scenario-parity evidence"}),
             }
             for route in routes
         },
@@ -170,7 +203,7 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
                 f"- artifact: `{artifact_path}`",
                 "- compile status: `passed`",
                 f"- surface: `{config['surface']}`",
-                "- status: `surface-backed + core-green`",
+                f"- status: `{'surface-backed + core-green' if edition == '2010' else 'surface-backed + bounded scenario-parity evidence'}`",
                 "- scenario evidence: `tests/backends/test_standard_shim_artifacts.py`",
                 "",
                 "## Route Evidence",
@@ -179,6 +212,24 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
                     f"- `{route}`: `core-green` (`{'two-federate-core-exchange' if edition == '2010' else 'lifecycle-core'}`)"
                     for route in routes
                 ],
+                *(
+                    []
+                    if edition == "2010"
+                    else [
+                        "",
+                        "## Scenario Evidence",
+                        "",
+                        "- lifecycle core",
+                        "- object exchange",
+                        "- logical time management",
+                        "- ownership transfer",
+                        "- DDM region filtering",
+                        "- support-services lookups and switches",
+                        "- save/restore rollback",
+                        "- MOM request/report routing",
+                        "- runtime-capability aggregate trace",
+                    ]
+                ),
                 "",
             ]
         ),

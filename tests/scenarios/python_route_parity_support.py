@@ -44,6 +44,17 @@ def _close_rti(rti: Any) -> None:
     close = getattr(rti, "close", None)
     if callable(close):
         close()
+    spawned_server = getattr(rti, "_verification_spawned_server", None)
+    if spawned_server is not None:
+        try:
+            spawned_server.close()
+        except Exception:
+            pass
+
+
+def _attach_spawn_hook(rti: Any, spawn: Any) -> Any:
+    setattr(rti, "_verification_spawn_like", spawn)
+    return rti
 
 
 @contextmanager
@@ -51,8 +62,8 @@ def python_rti_pair(route: PythonRoute) -> Iterator[RtiPair]:
     with ExitStack() as stack:
         if route == "python-direct":
             engine = InMemoryRTIEngine()
-            left = create_rti_ambassador("python", engine=engine)
-            right = create_rti_ambassador("python", engine=engine)
+            left = _attach_spawn_hook(create_rti_ambassador("python", engine=engine), lambda: create_rti_ambassador("python", engine=engine))
+            right = _attach_spawn_hook(create_rti_ambassador("python", engine=engine), lambda: create_rti_ambassador("python", engine=engine))
             stack.callback(_close_rti, right)
             stack.callback(_close_rti, left)
             yield RtiPair(left=left, right=right)
@@ -63,8 +74,20 @@ def python_rti_pair(route: PythonRoute) -> Iterator[RtiPair]:
             right_server = start_python_grpc_server(engine=engine)
             stack.callback(right_server.close)
             stack.callback(left_server.close)
-            left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
-            right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
+            def _spawn_grpc() -> Any:
+                server = start_python_grpc_server(engine=engine)
+                member = create_rti_ambassador("certi", transport={"kind": "grpc", "target": server.target})
+                setattr(member, "_verification_spawned_server", server)
+                return member
+
+            left = _attach_spawn_hook(
+                create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target}),
+                _spawn_grpc,
+            )
+            right = _attach_spawn_hook(
+                create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target}),
+                _spawn_grpc,
+            )
             stack.callback(_close_rti, right)
             stack.callback(_close_rti, left)
             yield RtiPair(left=left, right=right)
@@ -83,7 +106,10 @@ def python_rti_group(route: PythonRoute, count: int) -> Iterator[RtiGroup]:
     with ExitStack() as stack:
         if route == "python-direct":
             engine = InMemoryRTIEngine()
-            members = tuple(create_rti_ambassador("python", engine=engine) for _ in range(count))
+            members = tuple(
+                _attach_spawn_hook(create_rti_ambassador("python", engine=engine), lambda: create_rti_ambassador("python", engine=engine))
+                for _ in range(count)
+            )
             for member in reversed(members):
                 stack.callback(_close_rti, member)
             yield RtiGroup(members=members)
@@ -93,8 +119,17 @@ def python_rti_group(route: PythonRoute, count: int) -> Iterator[RtiGroup]:
             servers = tuple(start_python_grpc_server(engine=engine) for _ in range(count))
             for server in reversed(servers):
                 stack.callback(server.close)
+            def _spawn_grpc() -> Any:
+                server = start_python_grpc_server(engine=engine)
+                member = create_rti_ambassador("certi", transport={"kind": "grpc", "target": server.target})
+                setattr(member, "_verification_spawned_server", server)
+                return member
+
             members = tuple(
-                create_rti_ambassador("certi", transport={"kind": "grpc", "target": server.target})
+                _attach_spawn_hook(
+                    create_rti_ambassador("certi", transport={"kind": "grpc", "target": server.target}),
+                    _spawn_grpc,
+                )
                 for server in servers
             )
             for member in reversed(members):
