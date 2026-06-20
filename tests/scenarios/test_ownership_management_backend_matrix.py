@@ -15,6 +15,7 @@ from hla.verification import (
     run_attribute_ownership_scenario,
     run_attribute_ownership_query_callback_scenario,
     run_attribute_ownership_unavailable_scenario,
+    run_confirm_divestiture_negotiated_scenario,
     run_non_owner_update_rejection_scenario,
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
@@ -150,6 +151,55 @@ def test_python_backend_negotiated_ownership_matrix():
     assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
     assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
     assert summary["informed"].args[0] == summary["release_object_instance"]
+    assert summary["informed"].args[1] == summary["owner_attribute"]
+
+    cleanup_federation(
+        config.federation_name,
+        destroyer=owner,
+        destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+        remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+        disconnect_rtis=(acquirer, owner),
+    )
+
+
+def test_python_backend_confirm_divestiture_negotiated_matrix():
+    engine = InMemoryRTIEngine()
+    owner = create_rti_ambassador("python", engine=engine)
+    acquirer = create_rti_ambassador("python", engine=engine)
+    config = NegotiatedOwnershipScenarioConfig(
+        federation_name=f"python-confirm-negotiated-{uuid.uuid4().hex[:8]}",
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"python-confirm-negotiated-{uuid.uuid4().hex[:8]}",
+        assumption_tag=b"assume-offer",
+        request_tag=b"acquire-request",
+        cancel_tag=b"reacquire-request",
+    )
+
+    summary = run_confirm_divestiture_negotiated_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=RecordingFederateAmbassador(),
+        acquirer_federate=RecordingFederateAmbassador(),
+    )
+
+    assert summary["divestiture_confirmation"].args == (
+        summary["object_instance"],
+        {summary["owner_attribute"]},
+        b"acquire-request",
+    )
+    assert summary["acquired"].args == (
+        summary["acquirer_object_instance"],
+        {summary["acquirer_attribute"]},
+        b"confirm-tag",
+    )
+    assert summary["informed"].args[0] == summary["object_instance"]
     assert summary["informed"].args[1] == summary["owner_attribute"]
 
     cleanup_federation(
