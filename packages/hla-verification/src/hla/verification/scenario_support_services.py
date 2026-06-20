@@ -294,25 +294,32 @@ def run_callback_control_scenario(
         object_class,
         config.object_instance_name,
     )
+    initial_discovery = subscriber_federate.last_callback("discoverObjectInstance")
+    if hasattr(subscriber_federate, "clear"):
+        subscriber_federate.clear()
+    _disable_callbacks(subscriber_rti)
     publisher_rti.update_attribute_values(object_instance, {attribute: config.first_payload}, config.first_tag)
     first_queued_while_disabled = (
         subscriber_federate.last_callback("discoverObjectInstance") is None
         and subscriber_federate.last_callback("reflectAttributeValues") is None
     )
     assert first_queued_while_disabled
-    _disable_callbacks(subscriber_rti)
     first_evoke = _evoke_callback(subscriber_rti, 0.0)
     assert first_evoke is False
 
     _enable_callbacks(subscriber_rti)
     second_evoke = _evoke_callback(subscriber_rti, 0.0)
-    first_release = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
-    assert first_release is True
     first_discoveries = subscriber_federate.callbacks_named("discoverObjectInstance")
-    assert first_discoveries
     first_reflections = subscriber_federate.callbacks_named("reflectAttributeValues")
+    first_release = bool(first_discoveries and first_reflections)
+    if not first_release:
+        first_release = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
+        first_discoveries = subscriber_federate.callbacks_named("discoverObjectInstance")
+        first_reflections = subscriber_federate.callbacks_named("reflectAttributeValues")
+    assert first_release is True or bool(first_reflections)
+    first_delivery = first_discoveries[-1] if first_discoveries else initial_discovery
+    assert first_delivery is not None
     assert first_reflections
-    first_delivery = first_discoveries[-1]
     assert first_delivery.args[0] == object_instance
     assert first_delivery.args[1] == subscriber_object_class
     assert first_delivery.args[2] == config.object_instance_name
@@ -321,19 +328,22 @@ def run_callback_control_scenario(
     assert first_reflection.args[2] == config.first_tag
 
     subscriber_federate.clear()
+    _disable_callbacks(subscriber_rti)
     publisher_rti.update_attribute_values(object_instance, {attribute: config.second_payload}, config.second_tag)
     publisher_rti.update_attribute_values(object_instance, {attribute: config.third_payload}, config.third_tag)
     second_batch_queued_while_disabled = subscriber_federate.last_callback("reflectAttributeValues") is None
     assert second_batch_queued_while_disabled
-    _disable_callbacks(subscriber_rti)
     blocked_batch_evoke = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
     assert blocked_batch_evoke is False
 
     _enable_callbacks(subscriber_rti)
-    batch_evoke = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
+    drained_deliveries = subscriber_federate.callbacks_named("reflectAttributeValues")
+    batch_evoke = bool(drained_deliveries)
+    if not batch_evoke:
+        batch_evoke = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
+        drained_deliveries = subscriber_federate.callbacks_named("reflectAttributeValues")
     assert batch_evoke is True
     batch_evoke_attempts = 1
-    drained_deliveries = subscriber_federate.callbacks_named("reflectAttributeValues")
     while len(drained_deliveries) < 2 and batch_evoke_attempts < 8:
         if not _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0):
             break

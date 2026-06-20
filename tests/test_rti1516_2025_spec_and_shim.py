@@ -1523,7 +1523,7 @@ class _TargetRadar2025RTIAdapter:
         self._delegate.disableCallbacks()
 
     def evoke_callback(self, minimum_seconds: float) -> bool:
-        return self._delegate.evokeMultipleCallbacks(minimum_seconds, minimum_seconds)
+        return self._delegate.evokeCallback(minimum_seconds)
 
     def evoke_multiple_callbacks(self, minimum_seconds: float, maximum_seconds: float) -> bool:
         return self._delegate.evokeMultipleCallbacks(minimum_seconds, maximum_seconds)
@@ -3714,6 +3714,81 @@ def test_2025_shim_runs_support_factory_and_decode_scenario_via_compat_adapter()
     assert rti.get_transportation_type("HLAbestEffort") is TransportationType.BEST_EFFORT
     assert rti.get_transportation_name(TransportationType.RELIABLE) == "HLAreliable"
     assert rti.get_transportation_name(TransportationType.BEST_EFFORT) == "HLAbestEffort"
+
+
+@pytest.mark.requirements(
+    "HLA2025-NEW-005",
+    "HLA2025-SS-001",
+    "HLA2025-SS-002",
+    "HLA2025-SS-003",
+    "HLA2025-FI-001",
+    "HLA2025-FI-003",
+)
+def test_2025_shim_runs_callback_control_scenario_via_compat_adapter() -> None:
+    from hla.verification import CallbackControlScenarioConfig, run_callback_control_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import ResignAction
+
+    federation_name = f"shim-2025-callback-control-adapter-{uuid.uuid4().hex[:8]}"
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = CallbackControlScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_instance_name=f"callback-adapter-{uuid.uuid4().hex[:8]}",
+    )
+    publisher_federate = _CompatRecordingFederateAmbassador()
+    subscriber_federate = _CompatRecordingFederateAmbassador()
+
+    try:
+        summary = run_callback_control_scenario(
+            publisher,
+            subscriber,
+            config=config,
+            publisher_federate=publisher_federate,
+            subscriber_federate=subscriber_federate,
+        )
+
+        assert summary["first_queued_while_disabled"] is True
+        assert summary["first_evoke"] is False
+        assert summary["first_delivery"] is not None
+        assert summary["first_reflection"] is not None
+        assert summary["first_delivery"].args[0] == summary["object_instance"]
+        assert summary["first_delivery"].args[1] == summary["subscriber_object_class"]
+        assert summary["first_delivery"].args[2] == config.object_instance_name
+        assert summary["first_reflection"].args[1] == {summary["subscriber_attribute"]: config.first_payload}
+        assert summary["first_reflection"].args[2] == config.first_tag
+        assert summary["second_batch_queued_while_disabled"] is True
+        assert summary["blocked_batch_evoke"] is False
+        assert summary["drained_deliveries"]
+        assert summary["drained_tags"] == [config.second_tag, config.third_tag]
+        assert summary["drained_payloads"] == [
+            {summary["subscriber_attribute"]: config.second_payload},
+            {summary["subscriber_attribute"]: config.third_payload},
+        ]
+        assert summary["post_drain"] is False
+    finally:
+        try:
+            subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            publisher.resign_federation_execution(ResignAction.NO_ACTION)
+        except Exception:
+            try:
+                publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+            except Exception:
+                pass
+        try:
+            publisher.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber, publisher):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
 
 
 @pytest.mark.requirements(
