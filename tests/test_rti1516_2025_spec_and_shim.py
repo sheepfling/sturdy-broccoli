@@ -5369,6 +5369,69 @@ def test_2025_shim_connection_lost_callback_tears_down_connection() -> None:
         rti.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-SVC-003")
+def test_2025_compat_records_connection_lost_callback_shape() -> None:
+    from hla.verification import run_connection_lost_callback_scenario
+
+    federate = _CompatRecordingFederateAmbassador()
+    summary = run_connection_lost_callback_scenario(
+        federate.connectionLost,
+        federate=federate,
+        fault_description="compat transport fault",
+    )
+
+    assert summary["record"].args == ("compat transport fault",)
+
+
+@pytest.mark.requirements("HLA2025-FI-001")
+def test_2025_compat_records_discovery_metadata_callback_shape() -> None:
+    from hla.rti1516_2025.handles import FederateHandle, ObjectClassHandle, ObjectInstanceHandle, RegionHandle
+    from hla.verification import run_discovery_metadata_callback_scenario
+
+    federate = _CompatRecordingFederateAmbassador()
+    summary = run_discovery_metadata_callback_scenario(
+        federate.discoverObjectInstance,
+        federate.hasProducingFederate,
+        federate.getProducingFederate,
+        federate.hasSentRegions,
+        federate.getSentRegions,
+        federate=federate,
+        object_handle=ObjectInstanceHandle(101),
+        object_class=ObjectClassHandle(202),
+        object_name="CompatDiscoveryObject",
+        producing_federate=FederateHandle(303),
+        sent_regions={RegionHandle(11), RegionHandle(12)},
+    )
+
+    assert summary["discover_record"].args[2] == "CompatDiscoveryObject"
+    assert summary["has_producing_record"].args[1].value == 303
+    assert sorted(region.value for region in summary["get_regions_record"].args[1]) == [11, 12]
+
+
+@pytest.mark.requirements("HLA2025-FI-001")
+def test_2025_compat_records_update_advisory_callback_shape() -> None:
+    from hla.rti1516_2025.handles import AttributeHandle, ObjectInstanceHandle
+    from hla.verification import run_update_advisory_callback_scenario
+
+    federate = _CompatRecordingFederateAmbassador()
+    summary = run_update_advisory_callback_scenario(
+        federate.attributesInScope,
+        federate.attributesOutOfScope,
+        federate.provideAttributeValueUpdate,
+        federate.turnUpdatesOnForObjectInstance,
+        federate.turnUpdatesOffForObjectInstance,
+        federate=federate,
+        object_handle=ObjectInstanceHandle(404),
+        attribute_handle=AttributeHandle(505),
+        tag=b"compat-update-advisory",
+        designator="Fast",
+    )
+
+    assert summary["provide_record"].args[2] == b"compat-update-advisory"
+    assert summary["turn_on_record"].args[2] == "Fast"
+    assert next(iter(summary["turn_off_record"].args[1])).value == 505
+
+
 @pytest.mark.requirements(
     "HLA2025-FI-SVC-193",
     "HLA2025-FI-SVC-194",
