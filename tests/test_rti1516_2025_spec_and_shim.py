@@ -1225,10 +1225,10 @@ class _TargetRadar2025RTIAdapter:
         return _normalize_2025_callback_value(self._delegate.queryLookahead())
 
     def query_galt(self):  # noqa: ANN201
-        return self._delegate.queryGALT()
+        return _normalize_2025_callback_value(self._delegate.queryGALT())
 
     def query_lits(self):  # noqa: ANN201
-        return self._delegate.queryLITS()
+        return _normalize_2025_callback_value(self._delegate.queryLITS())
 
     def query_logical_time(self):  # noqa: ANN201
         return _normalize_2025_callback_value(self._delegate.queryLogicalTime())
@@ -3823,6 +3823,91 @@ def test_2025_shim_blocks_early_timestamped_send_via_section8_compat_adapter(tim
     assert summary["interaction_error"] is not None
     assert type(summary["update_error"]).__name__ == "InvalidLogicalTime"
     assert type(summary["interaction_error"]).__name__ == "InvalidLogicalTime"
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-113",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_time_bound_queries_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516e.datatypes import TimeQueryReturn
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_time_bound_query_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-time-queries-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_time_bound_query_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert isinstance(summary["initial_galt"], TimeQueryReturn)
+    assert isinstance(summary["initial_lits"], TimeQueryReturn)
+    assert summary["initial_galt"].time_is_valid is True
+    assert summary["initial_lits"].time_is_valid is True
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-113",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_ordering_and_queries_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516e.datatypes import TimeQueryReturn
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_ordering_and_query_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-order-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_ordering_and_query_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert isinstance(summary["initial_galt"], TimeQueryReturn)
+    assert isinstance(summary["initial_lits"], TimeQueryReturn)
+    _assert_same_time_scalar(summary["sender_grant"].args[0], config.sender_advance_time)
+    assert summary["first_receive"].args[1] == {summary["parameter"]: config.second_payload}
+    assert summary["first_receive"].args[2] == config.second_tag
+    assert summary["first_receive"].args[3] is OrderType.TIMESTAMP
+    _assert_same_time_scalar(summary["first_receive"].args[5], config.second_timestamp)
+    _assert_same_time_scalar(summary["first_grant"].args[0], config.second_timestamp)
+    assert summary["second_receive"].args[1] == {summary["parameter"]: config.first_payload}
+    assert summary["second_receive"].args[2] == config.first_tag
+    assert summary["second_receive"].args[3] is OrderType.TIMESTAMP
+    _assert_same_time_scalar(summary["second_receive"].args[5], config.first_timestamp)
+    _assert_same_time_scalar(summary["second_grant"].args[0], config.first_timestamp)
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
