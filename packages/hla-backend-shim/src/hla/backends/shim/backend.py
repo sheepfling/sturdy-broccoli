@@ -2096,7 +2096,28 @@ class Shim2025RTIAmbassador:
                     for handle in reflected
                     for region_value in record.update_regions.get(self._attribute_name_by_handle(discovery_class_name, handle), set())
                 }
+                reflected_order = self._attribute_order_for(record, reflected)
+                explicit_receive_override = all(
+                    record.attribute_order.get(self._attribute_name_by_handle(record.object_class_name, handle)) is OrderType.RECEIVE
+                    for handle in reflected
+                )
                 if callback_time is not None:
+                    if reflected_order is OrderType.RECEIVE and explicit_receive_override:
+                        self._deliver_to_federate_handle(
+                            FederateHandle(federate_key),
+                            "reflectAttributeValues",
+                            objectInstance,
+                            reflected,
+                            bytes(userSuppliedTag),
+                            transportation,
+                            self._current_federate_handle(),
+                            sent_regions,
+                            None,
+                            OrderType.RECEIVE,
+                            OrderType.RECEIVE,
+                            None,
+                        )
+                        continue
                     retraction_handles.append(
                         self._queue_tso_callback(
                             FederateHandle(federate_key),
@@ -2124,8 +2145,8 @@ class Shim2025RTIAmbassador:
                     self._current_federate_handle(),
                     sent_regions,
                     None,
-                    self._attribute_order_for(record, reflected),
-                    self._attribute_order_for(record, reflected),
+                    reflected_order,
+                    reflected_order,
                     None,
                 )
         if callback_time is not None:
@@ -2169,7 +2190,27 @@ class Shim2025RTIAmbassador:
                 federation.mom_interactions_received,
                 (federate_key, interaction_class_name, self.getTransportationTypeName(transportation)),
             )
+            interaction_order = self._interaction_order_for(interaction_class_name)
+            explicit_receive_override = (
+                federation.interaction_order.get((self._current_federate_key(), interaction_class_name)) is OrderType.RECEIVE
+            )
             if callback_time is not None:
+                if interaction_order is OrderType.RECEIVE and explicit_receive_override:
+                    self._deliver_to_federate_handle(
+                        FederateHandle(federate_key),
+                        "receiveInteraction",
+                        interactionClass,
+                        values_by_handle,
+                        bytes(userSuppliedTag),
+                        transportation,
+                        self._current_federate_handle(),
+                        set(),
+                        None,
+                        OrderType.RECEIVE,
+                        OrderType.RECEIVE,
+                        None,
+                    )
+                    continue
                 retraction_handles.append(
                     self._queue_tso_callback(
                         FederateHandle(federate_key),
@@ -2197,8 +2238,8 @@ class Shim2025RTIAmbassador:
                 self._current_federate_handle(),
                 set(),
                 callback_time,
-                self._interaction_order_for(interaction_class_name),
-                self._interaction_order_for(interaction_class_name),
+                interaction_order,
+                interaction_order,
                 None,
             )
         if callback_time is not None:

@@ -4067,6 +4067,80 @@ def test_2025_shim_runs_section8_tar_galt_boundary_via_compat_adapter(time_facto
     assert summary["grant"] is None
 
 
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-121",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_available_and_retraction_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_available_and_retraction_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-available-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_available_and_retraction_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["available_grant"] is not None
+    _assert_same_time_scalar(summary["available_grant"].args[0], config.receiver_window_time)
+    assert not summary["after_retract_callbacks"]
+    assert summary["flush_grant"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_order_override_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_order_override_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-order-override-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_order_override_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["reflect"] is not None
+    assert summary["reflect"].args[1] == {summary["attribute"]: config.first_payload}
+    assert summary["reflect"].args[3] is OrderType.RECEIVE
+    assert len(summary["reflect"].args) >= 5
+    assert summary["receive"] is not None
+    assert summary["receive"].args[1] == {summary["parameter"]: config.second_payload}
+    assert summary["receive"].args[3] is OrderType.RECEIVE
+    assert len(summary["receive"].args) >= 5
+
+
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
 def test_2025_shim_runs_passive_full_declaration_scenario_via_compat_adapter(tmp_path: Path) -> None:
     from hla.verification import DeclarationManagementScenarioConfig, run_declaration_management_scenario
