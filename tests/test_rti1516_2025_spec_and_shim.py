@@ -2957,6 +2957,38 @@ def test_2025_shim_runs_fom_module_visibility_scenario_end_to_end() -> None:
 @pytest.mark.requirements(
     "HLA2025-FR-001",
     "HLA2025-FI-001",
+    "HLA2025-FI-008",
+    "HLA2025-OMT-007",
+)
+def test_2025_shim_runs_multi_module_fom_visibility_scenario_end_to_end() -> None:
+    from hla.verification import FederationLifecycleScenarioConfig, run_multi_module_fom_visibility_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-fom-multi-{uuid.uuid4().hex[:8]}"
+    rti = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = FederationLifecycleScenarioConfig(
+        federation_name=federation_name,
+        federate_name="Leader",
+        federate_type="LifecycleType",
+    )
+
+    summary = run_multi_module_fom_visibility_scenario(
+        rti,
+        config=config,
+        federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["federation_name"] == config.federation_name
+    assert summary["federate_handle"] is not None
+    assert b"DimA" in summary["payload"]
+    assert b"DimB" in summary["payload"]
+    assert b"TypeA" in summary["payload"]
+    assert b"TypeB" in summary["payload"]
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FI-001",
     "HLA2025-FI-002",
     "HLA2025-FI-SVC-004",
     "HLA2025-FI-SVC-005",

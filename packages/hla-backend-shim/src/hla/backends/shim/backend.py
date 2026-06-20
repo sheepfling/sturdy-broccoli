@@ -5040,6 +5040,14 @@ class Shim2025RTIAmbassador:
             return 0
 
     def _mom_module_data(self, modules: tuple[Any, ...], indicator: int) -> str:
+        if indicator == 0:
+            if len(modules) <= 1:
+                return self._mom_single_module_data(modules[0] if modules else None)
+            return "\n".join(
+                module_text
+                for module_text in (self._mom_single_module_data(module) for module in modules)
+                if module_text
+            )
         if not 0 <= indicator < len(modules):
             return ""
         return self._mom_single_module_data(modules[indicator])
