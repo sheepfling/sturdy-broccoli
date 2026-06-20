@@ -359,6 +359,8 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
             bool(value.timeIsValid),
             _normalize_2025_callback_value(value.time),
         )
+    if module_name == "hla.rti1516e.datatypes" and type_name == "SupplementalRemoveInfo":
+        return value
     if isinstance(value, tuple):
         return tuple(_normalize_2025_callback_value(item) for item in value)
     if isinstance(value, list):
@@ -1099,6 +1101,21 @@ class _TargetRadar2025RTIAdapter:
     def query_logical_time(self):  # noqa: ANN201
         return _normalize_2025_callback_value(self._delegate.queryLogicalTime())
 
+    def set_automatic_resign_directive(self, resign_action) -> None:  # noqa: ANN001
+        from hla.rti1516_2025.enums import ResignAction
+
+        self._call_compat(
+            self._delegate.setAutomaticResignDirective,
+            self._coerce_named_enum(ResignAction, resign_action),
+        )
+
+    def force_federate_loss(self, federate_handle, fault_description: str = "simulated federate fault") -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.forceFederateLoss,
+            self._to_2025_handle(federate_handle),
+            fault_description,
+        )
+
     def get_time_factory(self):  # noqa: ANN201
         from hla.rti1516e.time import HLAfloat64TimeFactory, HLAinteger64TimeFactory
 
@@ -1502,6 +1519,20 @@ class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
                 args[8],
                 args[9],
             )
+        if method_name == "removeObjectInstance" and len(args) >= 7:
+            from types import SimpleNamespace
+
+            args = (
+                args[0],
+                args[1],
+                args[4],
+                SimpleNamespace(
+                    producing_federate=_normalize_2025_callback_value(args[2]),
+                ),
+                args[3],
+                args[5],
+                args[6],
+            )
         normalized_args = tuple(_normalize_2025_callback_value(arg) for arg in args)
         normalized_kwargs = {
             key: _normalize_2025_callback_value(value)
@@ -1747,6 +1778,26 @@ def test_2025_target_radar_adapter_explicitly_covers_resign_service_surface() ->
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"resign scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_lost_federate_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_lost_federate.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"lost-federate scenario services: {missing}"
     )
 
 
@@ -2586,6 +2637,42 @@ def test_2025_shim_runs_disconnect_mom_cleanup_scenario_end_to_end(tmp_path: Pat
 
     assert summary["leader_before"].args[1]
     assert summary["federation_after"].args[1]
+    assert type(summary["object_instance_not_known"]).__name__ == "ObjectInstanceNotKnown"
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-003", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path) -> None:
+    from hla.verification import LostFederateScenarioConfig, run_lost_federate_mom_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025LostFederateFOM.xml"
+    _write_proto2025_smoke_object_fom(fom_path)
+
+    federation_name = f"shim-2025-lost-federate-{uuid.uuid4().hex[:8]}"
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    victim = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = LostFederateScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        observer_name="Observer",
+        victim_name="Victim",
+        federate_type="LostFederateProbe",
+        object_instance_name=f"shim-lost-{uuid.uuid4().hex[:8]}",
+        fault_description="shim induced loss",
+    )
+
+    summary = run_lost_federate_mom_scenario(
+        observer,
+        victim,
+        config=config,
+        observer_federate=_CompatRecordingFederateAmbassador(),
+        victim_federate=_CompatRecordingFederateAmbassador(),
+        induce_loss=observer.force_federate_loss,
+    )
+
+    assert summary["loss_record"].args[1]
+    assert summary["removal"].args[0] == summary["object_instance"]
     assert type(summary["object_instance_not_known"]).__name__ == "ObjectInstanceNotKnown"
 
 

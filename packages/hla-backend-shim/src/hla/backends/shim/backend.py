@@ -455,6 +455,78 @@ class Shim2025RTIAmbassador:
     def force_connection_lost(self, fault_description: str = "simulated connection lost") -> None:
         self.forceConnectionLost(fault_description)
 
+    def forceFederateLoss(  # noqa: N802
+        self,
+        federate: Any,
+        faultDescription: str = "simulated federate fault",
+    ) -> None:
+        """Test harness hook for injecting a non-orderly loss into another joined federate."""
+
+        self._record("forceFederateLoss", federate, faultDescription)
+        self._require_joined("forceFederateLoss")
+        federate_value = self._normalize_handle(federate, FederateHandle, InvalidFederateHandle)
+        federation = self._federation_record()
+
+        lost_name = next(
+            (name for name, handle in federation.member_handles.items() if handle.value == federate_value),
+            None,
+        )
+        target = federation.member_rtis.get(federate_value)
+        if lost_name is None or target is None or target._federate_handle is None:
+            raise FederateNotExecutionMember(repr(federate))
+
+        lost_handle = target._federate_handle
+        lost_time = target._logical_time
+        mom = import_module("hla.rti1516e.mom")
+        lost_handle_bytes = import_module("hla.rti1516e.handles").FederateHandle(int(lost_handle.value)).encode()
+        lost_time_bytes = import_module("hla.rti1516e.time").HLAinteger64Time(int(lost_time.value)).encode()
+        if target._federate_ambassador is not None:
+            target._deliver_callback_now("connectionLost", str(faultDescription))
+
+        self._send_mom_report_interaction(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost",
+            {
+                "HLAfederate": lost_handle_bytes,
+                "HLAfederateName": mom.encode_text(lost_name),
+                "HLAtimeStamp": lost_time_bytes,
+                "HLAfaultDescription": mom.encode_text(faultDescription),
+            },
+        )
+
+        automatic_resign = target._automatic_resign_directive
+        if automatic_resign in {
+            ResignAction.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+            ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            target._cancel_resigning_federate_pending_acquisitions()
+        if automatic_resign in {
+            ResignAction.DELETE_OBJECTS,
+            ResignAction.DELETE_OBJECTS_THEN_DIVEST,
+            ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            target._delete_objects_owned_by_specific_federate(lost_handle, user_supplied_tag=b"lost")
+        if automatic_resign in {
+            ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES,
+            ResignAction.DELETE_OBJECTS_THEN_DIVEST,
+            ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            target._divest_attributes_owned_by_specific_federate(lost_handle)
+        target._remove_current_federate_mom_object()
+        target._release_join()
+        target._joined = False
+        target._federation_name = None
+        target._federate_name = None
+        target._federate_handle = None
+        target._connected = False
+        target._federate_ambassador = None
+
+    def force_federate_loss(
+        self,
+        federate: Any,
+        fault_description: str = "simulated federate fault",
+    ) -> None:
+        self.forceFederateLoss(federate, fault_description)
+
     def createFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecution", *args, **kwargs)
         self._require_connected("createFederationExecution")
@@ -3548,21 +3620,30 @@ class Shim2025RTIAmbassador:
         return False
 
     def _delete_objects_owned_by_resigning_federate(self) -> None:
+        self._delete_objects_owned_by_specific_federate(self._current_federate_handle(), user_supplied_tag=b"")
+
+    def _delete_objects_owned_by_specific_federate(
+        self,
+        federate_handle: FederateHandle,
+        *,
+        user_supplied_tag: bytes,
+    ) -> None:
         federation = self._federation_record()
-        federate_handle = self._current_federate_handle()
         for object_instance_value, record in tuple(federation.object_instances.items()):
             if self._is_mom_object_class_name(record.object_class_name):
                 continue
             if federate_handle not in set(record.attribute_owners.values()):
                 continue
             object_instance = ObjectInstanceHandle(object_instance_value)
-            self._deliver_resign_remove_callbacks(object_instance, record)
+            self._deliver_forced_remove_callbacks(object_instance, record, federate_handle, user_supplied_tag)
             if record.object_instance_name is not None:
                 federation.object_instance_names.pop(record.object_instance_name, None)
             federation.object_instances.pop(object_instance_value, None)
 
     def _divest_resigning_federate_attributes(self) -> None:
-        federate_handle = self._current_federate_handle()
+        self._divest_attributes_owned_by_specific_federate(self._current_federate_handle())
+
+    def _divest_attributes_owned_by_specific_federate(self, federate_handle: FederateHandle) -> None:
         for object_instance_value, record in tuple(self._federation_record().object_instances.items()):
             if self._is_mom_object_class_name(record.object_class_name):
                 continue
@@ -3868,6 +3949,15 @@ class Shim2025RTIAmbassador:
         return False
 
     def _deliver_resign_remove_callbacks(self, object_instance: ObjectInstanceHandle, record: _ObjectInstanceRecord) -> None:
+        self._deliver_forced_remove_callbacks(object_instance, record, self._current_federate_handle(), b"")
+
+    def _deliver_forced_remove_callbacks(
+        self,
+        object_instance: ObjectInstanceHandle,
+        record: _ObjectInstanceRecord,
+        producing_federate: FederateHandle,
+        user_supplied_tag: bytes,
+    ) -> None:
         for federate_key, subscriptions in self._federation_record().subscribed_object_attributes.items():
             if federate_key == self._current_federate_key() or record.object_class_name not in subscriptions:
                 continue
@@ -3875,8 +3965,8 @@ class Shim2025RTIAmbassador:
                 FederateHandle(federate_key),
                 "removeObjectInstance",
                 object_instance,
-                b"",
-                self._current_federate_handle(),
+                bytes(user_supplied_tag),
+                producing_federate,
                 None,
                 OrderType.RECEIVE,
                 OrderType.RECEIVE,
