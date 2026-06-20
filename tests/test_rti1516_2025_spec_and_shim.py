@@ -575,7 +575,10 @@ class _TargetRadar2025RTIAdapter:
         fom_modules,
         logical_time_implementation_name: str | None = None,
     ) -> None:  # noqa: ANN001
-        modules = list(fom_modules)
+        if isinstance(fom_modules, (str, Path)):
+            modules = [fom_modules]
+        else:
+            modules = list(fom_modules)
         standard_mim_designators = {"HLAstandardMIM", "HLAstandardMIM.xml", "resource:MIM.xml"}
         mim_modules = [module for module in modules if str(module) in standard_mim_designators]
         if mim_modules:
@@ -686,7 +689,25 @@ class _TargetRadar2025RTIAdapter:
             {self._to_2025_handle(attribute) for attribute in attributes},
         )
 
-    def subscribe_object_class_attributes(self, object_class, attributes, *unused) -> None:  # noqa: ANN001
+    @staticmethod
+    def _normalize_object_class_subscription_args(object_class=None, attributes=None, **kwargs):  # noqa: ANN001, ANN205
+        if object_class is None:
+            object_class = kwargs.pop("the_class", None)
+        if attributes is None:
+            attributes = kwargs.pop("attribute_list", None)
+        if kwargs:
+            unexpected = ", ".join(sorted(kwargs))
+            raise TypeError(f"Unexpected subscription keyword arguments: {unexpected}")
+        if object_class is None or attributes is None:
+            raise TypeError("object_class and attributes are required")
+        return object_class, attributes
+
+    def subscribe_object_class_attributes(self, object_class=None, attributes=None, *unused, **kwargs) -> None:  # noqa: ANN001
+        object_class, attributes = self._normalize_object_class_subscription_args(
+            object_class,
+            attributes,
+            **kwargs,
+        )
         self._call_compat(
             self._delegate.subscribeObjectClassAttributes,
             self._to_2025_handle(object_class),
@@ -708,7 +729,12 @@ class _TargetRadar2025RTIAdapter:
             self._to_2025_attribute_region_associations(attribute_region_associations),
         )
 
-    def subscribe_object_class_attributes_passively(self, object_class, attributes) -> None:  # noqa: ANN001
+    def subscribe_object_class_attributes_passively(self, object_class=None, attributes=None, **kwargs) -> None:  # noqa: ANN001
+        object_class, attributes = self._normalize_object_class_subscription_args(
+            object_class,
+            attributes,
+            **kwargs,
+        )
         self._call_compat(
             self._delegate.subscribeObjectClassAttributesPassively,
             self._to_2025_handle(object_class),
@@ -1720,6 +1746,26 @@ def test_2025_target_radar_adapter_explicitly_covers_declaration_service_surface
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"declaration scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_exchange_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_exchange.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"exchange scenario services: {missing}"
     )
 
 
@@ -2928,6 +2974,70 @@ def test_2025_shim_runs_update_rate_scenario_via_compat_adapter(tmp_path: Path) 
     assert summary["publisher_handle"] is not None
     assert summary["subscriber_handle"] is not None
     assert summary["values"] == [b"t1", b"t16"]
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+)
+def test_2025_shim_runs_two_federate_exchange_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import (
+        TwoFederateExchangeConfig,
+        assert_two_federate_exchange_callback_history,
+        run_two_federate_exchange_scenario,
+    )
+
+    fom_path = tmp_path / "Proto2025ExchangeFOM.xml"
+    _write_proto2025_declaration_fom(fom_path)
+
+    publisher_federate = _CompatRecordingFederateAmbassador()
+    subscriber_federate = _CompatRecordingFederateAmbassador()
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = TwoFederateExchangeConfig(
+        federation_name=f"shim-2025-exchange-{uuid.uuid4().hex[:8]}",
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_class_name="HLAobjectRoot.DemoObject",
+        attribute_name="Payload",
+        interaction_class_name="HLAinteractionRoot.DemoInteraction",
+        parameter_name="Message",
+        object_instance_name=f"DemoObject-{uuid.uuid4().hex[:8]}",
+        enable_time_management=True,
+        lookahead=HLAinteger64Interval(1),
+        advance_time=HLAinteger64Time(10),
+        timestamped_attribute_time=HLAinteger64Time(5),
+        timestamped_interaction_time=HLAinteger64Time(6),
+    )
+
+    summary = run_two_federate_exchange_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    history = assert_two_federate_exchange_callback_history(
+        summary,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+        config=config,
+    )
+
+    assert summary["publisher_handle"] is not None
+    assert summary["subscriber_handle"] is not None
+    assert summary["discover"].args[2] == config.object_instance_name
+    assert summary["reflect"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+    assert summary["interaction"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+    assert history["timestamp_reflect"] is not None
+    assert history["timestamp_interaction"] is not None
+    assert summary["cleanup"] in {"delete", "delete-unconfirmed", "divest"}
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-021")
