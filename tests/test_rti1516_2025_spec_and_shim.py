@@ -279,6 +279,9 @@ class Recording2025FederateAmbassador:
     def attributeIsNotOwned(self, objectInstance, attributes) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("attributeIsNotOwned", (objectInstance, attributes)))
 
+    def attributeIsOwnedByRTI(self, objectInstance, attributes) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("attributeIsOwnedByRTI", (objectInstance, attributes)))
+
     def last_callback(self, method_name: str) -> tuple[object, ...] | None:
         for recorded_name, args in reversed(self.callbacks):
             if recorded_name == method_name:
@@ -2166,6 +2169,8 @@ class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassa
                 args = (args[0], args[1], FederateHandle(int(owner.value)))
         if method_name == "attributeIsNotOwned" and len(args) == 2 and isinstance(args[1], set) and len(args[1]) == 1:
             args = (args[0], next(iter(args[1])))
+        if method_name == "attributeIsOwnedByRTI" and len(args) == 2 and isinstance(args[1], set) and len(args[1]) == 1:
+            args = (args[0], next(iter(args[1])))
         normalized_args = tuple(_normalize_2025_callback_value(arg) for arg in args)
         normalized_kwargs = {
             key: _normalize_2025_callback_value(value)
@@ -4014,6 +4019,37 @@ def test_2025_shim_treats_callback_enablement_as_runtime_policy_not_saved_state_
                 rti.disconnect()
             except Exception:
                 pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-089",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-091",
+)
+def test_2025_shim_runs_attribute_ownership_query_callback_scenario_via_compat_adapter() -> None:
+    from hla.verification import run_attribute_ownership_query_callback_scenario
+
+    federate = _OwnershipCompatRecordingFederateAmbassador()
+    summary = run_attribute_ownership_query_callback_scenario(
+        federate.informAttributeOwnership,
+        federate.attributeIsNotOwned,
+        federate.attributeIsOwnedByRTI,
+        federate=federate,
+    )
+
+    assert summary["inform_record"].args == (
+        summary["object_handle"],
+        summary["attribute_handle"],
+        summary["owner_handle"],
+    )
+    assert summary["not_owned_record"].args == (
+        summary["object_handle"],
+        summary["attribute_handle"],
+    )
+    assert summary["rti_owned_record"].args == (
+        summary["object_handle"],
+        summary["attribute_handle"],
+    )
 
 
 @pytest.mark.requirements(
