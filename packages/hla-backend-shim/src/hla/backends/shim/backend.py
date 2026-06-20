@@ -2018,17 +2018,21 @@ class Shim2025RTIAmbassador:
             values_by_handle[AttributeHandle(attributes_by_name[attribute_name])] = bytes(value)
             record.attribute_values[attribute_name] = bytes(value)
 
-        transportation = self._attribute_transportation_for(record, values_by_handle)
         callback_time = self._coerce_time(time) if time is not None else None
         if callback_time is not None:
             self._validate_tso_send_time(callback_time)
         retraction_handles: list[MessageRetractionHandle] = []
         federation = self._federation_record()
         self._increment_mom_count(federation.mom_object_instances_updated, (self._current_federate_key(), object_class_name))
-        self._increment_mom_count(
-            federation.mom_updates_sent,
-            (self._current_federate_key(), object_class_name, self.getTransportationTypeName(transportation)),
-        )
+        source_values_by_transport: dict[TransportationTypeHandle, dict[AttributeHandle, bytes]] = {}
+        for handle, value in values_by_handle.items():
+            transportation = self._attribute_transportation_for(record, {handle: value})
+            source_values_by_transport.setdefault(transportation, {})[handle] = value
+        for transportation, grouped_values in source_values_by_transport.items():
+            self._increment_mom_count(
+                federation.mom_updates_sent,
+                (self._current_federate_key(), object_class_name, self.getTransportationTypeName(transportation)),
+            )
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             discovery_class_name = self._known_object_classes_for_federate(
                 federate_key,
@@ -2044,22 +2048,27 @@ class Shim2025RTIAmbassador:
                 discovery_class_name,
                 set(subscriptions.get(discovery_class_name, set())),
             )
-            reflected = {
+            reflected_all = {
                 AttributeHandle(self._attribute_handles(discovery_class_name)[self._attribute_name_by_handle(object_class_name, handle)]): value
                 for handle, value in values_by_handle.items()
                 if self._attribute_name_by_handle(object_class_name, handle) in subscribed_names
             }
             if callback_time is not None:
-                reflected = self._apply_update_rate_reduction_for_subscriber(
+                reflected_all = self._apply_update_rate_reduction_for_subscriber(
                     federate_key,
                     objectInstance,
                     discovery_class_name,
                     record.object_class_name,
-                    reflected,
+                    reflected_all,
                     callback_time,
                 )
-            if not reflected:
+            if not reflected_all:
                 continue
+            reflected_by_transport: dict[TransportationTypeHandle, dict[AttributeHandle, bytes]] = {}
+            for handle, value in reflected_all.items():
+                source_attribute = AttributeHandle(self._attribute_handles(object_class_name)[self._attribute_name_by_handle(discovery_class_name, handle)])
+                transportation = self._attribute_transportation_for(record, {source_attribute: value})
+                reflected_by_transport.setdefault(transportation, {})[handle] = value
             target_rti = federation.member_rtis.get(federate_key)
             if target_rti is not None and objectInstance.value in target_rti._locally_deleted_objects:
                 self._deliver_to_federate_handle(
@@ -2071,47 +2080,48 @@ class Shim2025RTIAmbassador:
                     self._current_federate_handle(),
                 )
             self._increment_mom_count(federation.mom_object_instances_reflected, (federate_key, object_class_name))
-            self._increment_mom_count(
-                federation.mom_reflections_received,
-                (federate_key, object_class_name, self.getTransportationTypeName(transportation)),
-            )
-            sent_regions = {
-                RegionHandle(region_value)
-                for handle in reflected
-                for region_value in record.update_regions.get(self._attribute_name_by_handle(object_class_name, handle), set())
-            }
-            if callback_time is not None:
-                retraction_handles.append(
-                    self._queue_tso_callback(
-                        FederateHandle(federate_key),
-                        callback_time,
-                        "reflectAttributeValues",
-                        objectInstance,
-                        reflected,
-                        bytes(userSuppliedTag),
-                        transportation,
-                        self._current_federate_handle(),
-                        sent_regions,
-                        callback_time,
-                        OrderType.TIMESTAMP,
-                        OrderType.TIMESTAMP,
-                    )
+            for transportation, reflected in reflected_by_transport.items():
+                self._increment_mom_count(
+                    federation.mom_reflections_received,
+                    (federate_key, object_class_name, self.getTransportationTypeName(transportation)),
                 )
-                continue
-            self._deliver_to_federate_handle(
-                FederateHandle(federate_key),
-                "reflectAttributeValues",
-                objectInstance,
-                reflected,
-                bytes(userSuppliedTag),
-                transportation,
-                self._current_federate_handle(),
-                sent_regions,
-                None,
-                self._attribute_order_for(record, reflected),
-                self._attribute_order_for(record, reflected),
-                None,
-            )
+                sent_regions = {
+                    RegionHandle(region_value)
+                    for handle in reflected
+                    for region_value in record.update_regions.get(self._attribute_name_by_handle(discovery_class_name, handle), set())
+                }
+                if callback_time is not None:
+                    retraction_handles.append(
+                        self._queue_tso_callback(
+                            FederateHandle(federate_key),
+                            callback_time,
+                            "reflectAttributeValues",
+                            objectInstance,
+                            reflected,
+                            bytes(userSuppliedTag),
+                            transportation,
+                            self._current_federate_handle(),
+                            sent_regions,
+                            callback_time,
+                            OrderType.TIMESTAMP,
+                            OrderType.TIMESTAMP,
+                        )
+                    )
+                    continue
+                self._deliver_to_federate_handle(
+                    FederateHandle(federate_key),
+                    "reflectAttributeValues",
+                    objectInstance,
+                    reflected,
+                    bytes(userSuppliedTag),
+                    transportation,
+                    self._current_federate_handle(),
+                    sent_regions,
+                    None,
+                    self._attribute_order_for(record, reflected),
+                    self._attribute_order_for(record, reflected),
+                    None,
+                )
         if callback_time is not None:
             handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
             return MessageRetractionReturn(bool(retraction_handles), handle)
@@ -2443,6 +2453,7 @@ class Shim2025RTIAmbassador:
     ) -> None:
         self._record("requestAttributeTransportationTypeChange", objectInstance, attributes, transportationType)
         self._require_joined("requestAttributeTransportationTypeChange")
+        self._require_no_save_or_restore("requestAttributeTransportationTypeChange")
         record = self._object_instance_record_known(objectInstance)
         transportation_name = self.getTransportationTypeName(transportationType)
         transportation = self._transportation_handle_by_name(transportation_name)
@@ -2458,6 +2469,7 @@ class Shim2025RTIAmbassador:
     def queryAttributeTransportationType(self, objectInstance: Any, attribute: Any) -> None:  # noqa: N802
         self._record("queryAttributeTransportationType", objectInstance, attribute)
         self._require_joined("queryAttributeTransportationType")
+        self._require_no_save_or_restore("queryAttributeTransportationType")
         record = self._object_instance_record_known(objectInstance)
         attribute_name = self._attribute_names_from_handles(record.object_class_name, {attribute})[0]
         transportation_name = record.attribute_transportation.get(
@@ -2474,6 +2486,7 @@ class Shim2025RTIAmbassador:
     def requestInteractionTransportationTypeChange(self, interactionClass: Any, transportationType: Any) -> None:  # noqa: N802
         self._record("requestInteractionTransportationTypeChange", interactionClass, transportationType)
         self._require_joined("requestInteractionTransportationTypeChange")
+        self._require_no_save_or_restore("requestInteractionTransportationTypeChange")
         interaction_class_name = self._interaction_class_name(interactionClass)
         if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
             raise InteractionClassNotPublished(interaction_class_name)
@@ -2485,6 +2498,7 @@ class Shim2025RTIAmbassador:
     def queryInteractionTransportationType(self, federate: Any, interactionClass: Any) -> None:  # noqa: N802
         self._record("queryInteractionTransportationType", federate, interactionClass)
         self._require_joined("queryInteractionTransportationType")
+        self._require_no_save_or_restore("queryInteractionTransportationType")
         federate_value = self._normalize_handle(federate, FederateHandle, InvalidFederateHandle)
         if federate_value not in {handle.value for handle in self._federation_record().member_handles.values()}:
             raise InvalidFederateHandle(str(federate))

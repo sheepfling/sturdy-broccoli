@@ -931,26 +931,48 @@ class _TargetRadar2025RTIAdapter:
         attributes,
         transportation_type,
     ) -> None:  # noqa: ANN001
-        self._call_compat(
-            self._delegate.requestAttributeTransportationTypeChange,
-            self._to_2025_handle(object_instance),
-            {self._to_2025_handle(attribute) for attribute in attributes},
-            self._to_2025_handle(transportation_type),
-        )
+        from hla.rti1516e.exceptions import AttributeNotDefined
+        from hla.rti1516e.exceptions import InvalidAttributeHandle
+        from hla.rti1516e.exceptions import InvalidTransportationType
+        from hla.rti1516_2025.exceptions import InvalidTransportationTypeHandle
+
+        try:
+            self._call_compat(
+                self._delegate.requestAttributeTransportationTypeChange,
+                self._to_2025_handle(object_instance),
+                {self._to_2025_handle(attribute) for attribute in attributes},
+                self._to_2025_handle(transportation_type),
+            )
+        except InvalidAttributeHandle as exc:
+            raise AttributeNotDefined(str(exc)) from exc
+        except InvalidTransportationTypeHandle as exc:
+            raise InvalidTransportationType(str(exc)) from exc
 
     def query_attribute_transportation_type(self, object_instance, attribute) -> None:  # noqa: ANN001
-        self._call_compat(
-            self._delegate.queryAttributeTransportationType,
-            self._to_2025_handle(object_instance),
-            self._to_2025_handle(attribute),
-        )
+        from hla.rti1516e.exceptions import AttributeNotDefined
+        from hla.rti1516e.exceptions import InvalidAttributeHandle
+
+        try:
+            self._call_compat(
+                self._delegate.queryAttributeTransportationType,
+                self._to_2025_handle(object_instance),
+                self._to_2025_handle(attribute),
+            )
+        except InvalidAttributeHandle as exc:
+            raise AttributeNotDefined(str(exc)) from exc
 
     def request_interaction_transportation_type_change(self, interaction_class, transportation_type) -> None:  # noqa: ANN001
-        self._call_compat(
-            self._delegate.requestInteractionTransportationTypeChange,
-            self._to_2025_handle(interaction_class),
-            self._to_2025_handle(transportation_type),
-        )
+        from hla.rti1516e.exceptions import InvalidTransportationType
+        from hla.rti1516_2025.exceptions import InvalidTransportationTypeHandle
+
+        try:
+            self._call_compat(
+                self._delegate.requestInteractionTransportationTypeChange,
+                self._to_2025_handle(interaction_class),
+                self._to_2025_handle(transportation_type),
+            )
+        except InvalidTransportationTypeHandle as exc:
+            raise InvalidTransportationType(str(exc)) from exc
 
     def query_interaction_transportation_type(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(
@@ -4955,6 +4977,89 @@ def test_2025_shim_runs_transportation_type_scenario_via_compat_adapter() -> Non
         summary["interaction"],
         summary["transport"],
     )
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+    "HLA2025-FI-SVC-069",
+    "HLA2025-FI-SVC-070",
+)
+def test_2025_shim_runs_transportation_type_restore_persistence_scenario_via_compat_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_restore_persistence_scenario
+
+    federation_name = f"shim-2025-transport-restore-route-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = TransportationTypeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        federate_type="TransportationFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        second_attribute_name="RCS",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"transport-restore-{uuid.uuid4().hex[:8]}",
+        save_name=f"TRANSPORT-SAVE-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_transportation_type_restore_persistence_scenario(
+        owner,
+        observer,
+        config=config,
+        owner_federate=_CompatRecordingFederateAmbassador(),
+        observer_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert len(summary["pre_restore_reflects"]) == 2
+    assert len(summary["post_restore_attribute_reports"]) >= 2
+    assert len(summary["post_restore_reflects"]) == 2
+    assert summary["post_restore_interaction_report"].args[1:] == (
+        summary["interaction"],
+        summary["best_effort_transport"],
+    )
+    assert summary["post_restore_interaction"].args[4] == summary["best_effort_transport"]
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+)
+def test_2025_shim_runs_transportation_type_rejection_scenario_via_compat_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_rejection_scenario
+
+    federation_name = f"shim-2025-transport-reject-route-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    observer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = TransportationTypeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_instance_name=f"transport-reject-{uuid.uuid4().hex[:8]}",
+        save_name=f"TRANSPORT-REJECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_transportation_type_rejection_scenario(
+        owner,
+        observer,
+        config=config,
+        owner_federate=_CompatRecordingFederateAmbassador(),
+        observer_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["object_instance"] is not None
+    assert summary["attribute"] is not None
+    assert summary["interaction"] is not None
 
 
 @pytest.mark.requirements(
