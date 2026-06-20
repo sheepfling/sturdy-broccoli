@@ -4241,6 +4241,54 @@ def test_2025_shim_runs_non_owner_update_rejection_scenario_via_compat_adapter()
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+)
+def test_2025_shim_runs_release_request_ownership_scenario_via_compat_adapter() -> None:
+    from hla.verification import ReleaseRequestOwnershipScenarioConfig, run_release_request_ownership_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-release-request-{uuid.uuid4().hex[:8]}"
+    owner = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    acquirer = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = ReleaseRequestOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"shim-release-{uuid.uuid4().hex[:8]}",
+        request_tag=b"acquire-request",
+        owner_action="ifwanted",
+    )
+
+    summary = run_release_request_ownership_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["release"].args == (
+        summary["object_instance"],
+        {summary["owner_attribute"]},
+        b"acquire-request",
+    )
+    assert summary["divested"] == {summary["owner_attribute"]}
+    assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+    assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+    assert summary["informed"].args[0] == summary["object_instance"]
+    assert summary["informed"].args[1] == summary["owner_attribute"]
+    assert acquirer.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+    assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is False
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
