@@ -3942,6 +3942,81 @@ def test_2025_shim_runs_resigned_federate_callback_silence_scenario_via_compat_a
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-SS-043",
+)
+def test_2025_shim_treats_callback_enablement_as_runtime_policy_not_saved_state_via_compat_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_callback_policy_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import ResignAction
+
+    federation_name = f"shim-2025-restore-callback-policy-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-CALLBACK-POLICY-{uuid.uuid4().hex[:8]}",
+    )
+
+    def setup_saved_state(_left, right, _context):
+        assert right._delegate._callbacks_enabled is True
+
+    def mutate_post_save_state(_left, right, _context):
+        right.disable_callbacks()
+        assert right._delegate._callbacks_enabled is False
+
+    def assert_restored_state(left, right, _context):
+        assert left._delegate._callbacks_enabled is True
+        assert right._delegate._callbacks_enabled is False
+
+    try:
+        summary = run_restore_callback_policy_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=_CompatRecordingFederateAmbassador(),
+            wing_federate=_CompatRecordingFederateAmbassador(),
+            setup_saved_state=setup_saved_state,
+            mutate_post_save_state=mutate_post_save_state,
+            assert_restored_state=assert_restored_state,
+        )
+
+        assert summary["leader_initiate_save"].args == (config.save_name,)
+        assert summary["wing_initiate_save"].args == (config.save_name,)
+        assert summary["leader_saved"] is not None
+        assert summary["wing_saved"] is not None
+        assert summary["leader_restore_succeeded"].args == (config.save_name,)
+        assert summary["leader_restore_begun"] is not None
+        assert wing._delegate._callbacks_enabled is False
+    finally:
+        try:
+            wing.resign_federation_execution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            leader.resign_federation_execution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            leader.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (wing, leader):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
     "HLA2025-SS-043",
     "HLA2025-SS-044",
     "HLA2025-FR-004",

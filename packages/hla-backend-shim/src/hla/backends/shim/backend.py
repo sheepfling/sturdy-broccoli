@@ -3322,7 +3322,6 @@ class Shim2025RTIAmbassador:
                         rti._asynchronous_delivery_enabled,
                     )
                 )
-                rti._callbacks_enabled = bool(values.get("callbacks_enabled", rti._callbacks_enabled))
                 rti._automatic_resign_directive = values.get(
                     "automatic_resign_directive",
                     rti._automatic_resign_directive,
