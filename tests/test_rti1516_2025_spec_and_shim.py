@@ -409,7 +409,12 @@ class _TargetRadar2025RTIAdapter:
             return exc
         from hla.rti1516e import exceptions as exceptions_2010
 
-        compat_type = getattr(exceptions_2010, exc_type.__name__, None)
+        compat_name = {
+            "CouldNotOpenFOM": "CouldNotOpenFDD",
+            "ErrorReadingFOM": "ErrorReadingFDD",
+            "InconsistentFOM": "InconsistentFDD",
+        }.get(exc_type.__name__, exc_type.__name__)
+        compat_type = getattr(exceptions_2010, compat_name, None)
         if compat_type is None:
             return exc
         return compat_type(str(exc))
@@ -620,13 +625,21 @@ class _TargetRadar2025RTIAdapter:
             logicalTimeImplementationName=logical_time_implementation_name,
         )
 
-    def join_federation_execution(self, federate_name: str, federate_type: str, federation_name: str):  # noqa: ANN201
-        handle = self._call_compat(
-            self._delegate.joinFederationExecution,
-            federateName=federate_name,
-            federateType=federate_type,
-            federationName=federation_name,
-        )
+    def join_federation_execution(  # noqa: ANN201
+        self,
+        federate_name: str,
+        federate_type: str,
+        federation_name: str,
+        additional_fom_modules=None,
+    ):
+        kwargs = {
+            "federateName": federate_name,
+            "federateType": federate_type,
+            "federationName": federation_name,
+        }
+        if additional_fom_modules is not None:
+            kwargs["additionalFomModules"] = list(additional_fom_modules)
+        handle = self._call_compat(self._delegate.joinFederationExecution, **kwargs)
         self._joined_federate_handle = self._to_2010_handle(handle)
         handle_type = type(handle)
         if getattr(handle_type, "__module__", "") == "hla.rti1516_2025.handles" and getattr(handle_type, "__name__", "") == "FederateHandle":
@@ -2870,6 +2883,45 @@ def test_2025_shim_runs_multi_participation_scenario_end_to_end() -> None:
     assert summary["leader_handle"] is not None
     assert summary["wing_handle"] is not None
     assert summary["shadow_handle"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FI-001",
+    "HLA2025-FI-002",
+    "HLA2025-OMT-007",
+)
+def test_2025_shim_runs_fom_integrity_negative_scenario_end_to_end() -> None:
+    from hla.verification import FederationLifecycleScenarioConfig, run_fom_integrity_negative_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-2025-fom-negative-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = FederationLifecycleScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        federate_name="Leader",
+        second_federate_name="Wing",
+        federate_type="LifecycleType",
+    )
+
+    summary = run_fom_integrity_negative_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert type(summary["create_missing"]).__name__ == "CouldNotOpenFDD"
+    assert type(summary["create_bad"]).__name__ == "ErrorReadingFDD"
+    assert type(summary["create_inconsistent"]).__name__ == "InconsistentFDD"
+    assert type(summary["join_missing"]).__name__ == "CouldNotOpenFDD"
+    assert type(summary["join_bad"]).__name__ == "ErrorReadingFDD"
+    assert type(summary["join_inconsistent"]).__name__ == "InconsistentFDD"
+    assert summary["leader_handle"] is not None
+    assert summary["wing_handle"] is not None
 
 
 @pytest.mark.requirements(
