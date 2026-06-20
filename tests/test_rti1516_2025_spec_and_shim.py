@@ -1730,6 +1730,26 @@ def test_2025_target_radar_adapter_explicitly_covers_timed_delete_service_surfac
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_resign_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_resign.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"resign scenario services: {missing}"
+    )
+
+
 class _OwnershipCompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
     """Narrow ownership callback bridge for shared scenario oracles."""
 
@@ -2501,6 +2521,72 @@ def test_2025_shim_runs_resign_precondition_scenario_end_to_end(tmp_path: Path) 
     assert type(summary["acquisition_pending"]).__name__ == "OwnershipAcquisitionPending"
     assert summary["object_instance"] is not None
     assert summary["attribute"] is not None
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_runs_resign_mom_cleanup_scenario_end_to_end(tmp_path: Path) -> None:
+    from hla.verification import ResignScenarioConfig, run_resign_mom_cleanup_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025ResignMOMFOM.xml"
+    _write_proto2025_resign_fom(fom_path)
+
+    federation_name = f"shim-2025-resign-mom-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = ResignScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="ResignFederate",
+    )
+
+    summary = run_resign_mom_cleanup_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["wing_before"].args[1]
+    assert summary["federation_after"].args[1]
+    assert type(summary["object_instance_not_known"]).__name__ == "ObjectInstanceNotKnown"
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_runs_disconnect_mom_cleanup_scenario_end_to_end(tmp_path: Path) -> None:
+    from hla.verification import ResignScenarioConfig, run_disconnect_mom_cleanup_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DisconnectMOMFOM.xml"
+    _write_proto2025_resign_fom(fom_path)
+
+    federation_name = f"shim-2025-disconnect-mom-{uuid.uuid4().hex[:8]}"
+    leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    wing = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = ResignScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="ResignFederate",
+    )
+
+    summary = run_disconnect_mom_cleanup_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_before"].args[1]
+    assert summary["federation_after"].args[1]
+    assert type(summary["object_instance_not_known"]).__name__ == "ObjectInstanceNotKnown"
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-017")

@@ -297,6 +297,7 @@ class _ObjectInstanceRecord:
     object_class_name: str
     object_instance_name: str | None
     producing_federate: FederateHandle | None = None
+    attribute_values: dict[str, bytes] = field(default_factory=dict)
     attribute_owners: dict[str, FederateHandle | None] = field(default_factory=dict)
     attribute_divesting: set[str] = field(default_factory=set)
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
@@ -594,6 +595,7 @@ class Shim2025RTIAmbassador:
                 label,
                 point.user_supplied_tag,
             )
+        self._ensure_mom_objects()
         return self._federate_handle
 
     def resignFederationExecution(self, resignAction: ResignAction) -> None:  # noqa: N802
@@ -609,6 +611,7 @@ class Shim2025RTIAmbassador:
         self._apply_resign_action(resignAction)
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "federateResigned"):
             self._deliver_callback("federateResigned", self._resign_reason_description(resignAction))
+        self._remove_current_federate_mom_object()
         self._release_join()
         self._joined = False
         self._federation_name = None
@@ -1850,6 +1853,7 @@ class Shim2025RTIAmbassador:
             if attribute_name not in self._published_attributes_for_current_federate(object_class_name):
                 raise ObjectClassNotPublished(object_class_name)
             values_by_handle[AttributeHandle(attributes_by_name[attribute_name])] = bytes(value)
+            record.attribute_values[attribute_name] = bytes(value)
 
         transportation = self._default_transportation_for(object_class_name, values_by_handle)
         callback_time = self._coerce_time(time) if time is not None else None
@@ -3497,6 +3501,7 @@ class Shim2025RTIAmbassador:
                 federation.subscribed_directed_interactions.pop(self._federate_handle.value, None)
                 federation.member_regions.pop(self._federate_handle.value, None)
                 federation.member_region_bounds.pop(self._federate_handle.value, None)
+            self._refresh_mom_federation_object()
 
     def _apply_resign_action(self, resign_action: ResignAction) -> None:
         if resign_action is ResignAction.NO_ACTION:
@@ -3536,6 +3541,8 @@ class Shim2025RTIAmbassador:
     def _resigning_federate_owns_attributes(self) -> bool:
         federate_handle = self._current_federate_handle()
         for record in self._federation_record().object_instances.values():
+            if self._is_mom_object_class_name(record.object_class_name):
+                continue
             if federate_handle in set(record.attribute_owners.values()):
                 return True
         return False
@@ -3544,6 +3551,8 @@ class Shim2025RTIAmbassador:
         federation = self._federation_record()
         federate_handle = self._current_federate_handle()
         for object_instance_value, record in tuple(federation.object_instances.items()):
+            if self._is_mom_object_class_name(record.object_class_name):
+                continue
             if federate_handle not in set(record.attribute_owners.values()):
                 continue
             object_instance = ObjectInstanceHandle(object_instance_value)
@@ -3555,6 +3564,8 @@ class Shim2025RTIAmbassador:
     def _divest_resigning_federate_attributes(self) -> None:
         federate_handle = self._current_federate_handle()
         for object_instance_value, record in tuple(self._federation_record().object_instances.items()):
+            if self._is_mom_object_class_name(record.object_class_name):
+                continue
             attribute_handles_by_name = self._attribute_handles(record.object_class_name)
             for attribute_name, owner in tuple(record.attribute_owners.items()):
                 if owner != federate_handle:
@@ -3571,6 +3582,234 @@ class Shim2025RTIAmbassador:
                         {attribute_handle},
                         acquisition_tag,
                     )
+
+    @staticmethod
+    def _is_mom_object_class_name(object_class_name: str) -> bool:
+        return ".HLAmanager." in object_class_name
+
+    @staticmethod
+    def _mom_runtime_federate_handle() -> FederateHandle:
+        return FederateHandle(0)
+
+    def _ensure_mom_objects(self) -> None:
+        federation = self._federation_record()
+        self._ensure_mom_federation_object(federation)
+        for federate_name, federate_handle in sorted(
+            federation.member_handles.items(),
+            key=lambda item: item[1].value,
+        ):
+            self._ensure_mom_federate_object(
+                federation,
+                federate_name,
+                federation.members.get(federate_name, ""),
+                federate_handle,
+            )
+        self._refresh_mom_federation_object()
+        for federate_name, federate_handle in sorted(
+            federation.member_handles.items(),
+            key=lambda item: item[1].value,
+        ):
+            self._refresh_mom_federate_object(
+                federate_name,
+                federation.members.get(federate_name, ""),
+                federate_handle,
+            )
+
+    def _ensure_mom_federation_object(self, federation: _FederationRecord) -> None:
+        class_name = "HLAobjectRoot.HLAmanager.HLAfederation"
+        object_name = f"HLAmanager.HLAfederation.{self._federation_name}"
+        if object_name in federation.object_instance_names:
+            return
+        self._register_internal_object_instance(
+            class_name,
+            object_name,
+            producing_federate=self._mom_runtime_federate_handle(),
+            owner_by_attribute={},
+        )
+
+    def _ensure_mom_federate_object(
+        self,
+        federation: _FederationRecord,
+        federate_name: str,
+        federate_type: str,
+        federate_handle: FederateHandle,
+    ) -> None:
+        class_name = "HLAobjectRoot.HLAmanager.HLAfederate"
+        object_name = f"HLAmanager.HLAfederate.{federate_handle.value}.{federate_name}"
+        if object_name in federation.object_instance_names:
+            return
+        owner_by_attribute = {
+            attribute_name: federate_handle
+            for attribute_name in self._attribute_handles(class_name)
+            if attribute_name in {"HLAfederateHandle", "HLAfederateName", "HLAfederateType"}
+        }
+        self._register_internal_object_instance(
+            class_name,
+            object_name,
+            producing_federate=federate_handle,
+            owner_by_attribute=owner_by_attribute,
+        )
+
+    def _register_internal_object_instance(
+        self,
+        object_class_name: str,
+        object_instance_name: str,
+        *,
+        producing_federate: FederateHandle,
+        owner_by_attribute: dict[str, FederateHandle | None],
+    ) -> ObjectInstanceHandle:
+        federation = self._federation_record()
+        handle = ObjectInstanceHandle(federation.next_object_instance_handle)
+        federation.next_object_instance_handle += 1
+        federation.object_instances[handle.value] = _ObjectInstanceRecord(
+            object_class_name=object_class_name,
+            object_instance_name=object_instance_name,
+            producing_federate=producing_federate,
+            attribute_owners=dict(owner_by_attribute),
+        )
+        federation.object_instance_names[object_instance_name] = handle.value
+        for federate_key, subscriptions in federation.subscribed_object_attributes.items():
+            if federate_key == self._current_federate_key():
+                continue
+            discovery_class_name = self._subscribed_discovery_class_name(
+                federate_key,
+                object_class_name,
+            )
+            if discovery_class_name is None:
+                continue
+            subscribed_names = set(subscriptions.get(discovery_class_name, set()))
+            reflected_names = self._reflectable_attribute_names_for_subscriber(
+                producing_federate.value,
+                federate_key,
+                federation.object_instances[handle.value],
+                discovery_class_name,
+                subscribed_names,
+            )
+            if reflected_names:
+                self._deliver_to_federate_handle(
+                    FederateHandle(federate_key),
+                    "discoverObjectInstance",
+                    handle,
+                    ObjectClassHandle(self._object_class_handles()[discovery_class_name]),
+                    object_instance_name,
+                    producing_federate,
+                )
+        return handle
+
+    def _refresh_mom_federation_object(self) -> None:
+        federation = self._federation_record()
+        object_name = f"HLAmanager.HLAfederation.{self._federation_name}"
+        object_value = federation.object_instance_names.get(object_name)
+        if object_value is None:
+            return
+        self._set_internal_object_attribute_values(
+            ObjectInstanceHandle(object_value),
+            {
+                "HLAfederatesInFederation": ",".join(sorted(federation.members)),
+            },
+        )
+
+    def _refresh_mom_federate_object(
+        self,
+        federate_name: str,
+        federate_type: str,
+        federate_handle: FederateHandle,
+    ) -> None:
+        federation = self._federation_record()
+        object_name = f"HLAmanager.HLAfederate.{federate_handle.value}.{federate_name}"
+        object_value = federation.object_instance_names.get(object_name)
+        if object_value is None:
+            return
+        self._set_internal_object_attribute_values(
+            ObjectInstanceHandle(object_value),
+            {
+                "HLAfederateHandle": str(federate_handle.value),
+                "HLAfederateName": federate_name,
+                "HLAfederateType": federate_type,
+            },
+        )
+
+    def _set_internal_object_attribute_values(
+        self,
+        object_instance: ObjectInstanceHandle,
+        attribute_values: Mapping[str, str | bytes],
+    ) -> None:
+        record = self._object_instance_record(object_instance)
+        changed: dict[AttributeHandle, bytes] = {}
+        handles_by_name = self._attribute_handles(record.object_class_name)
+        for attribute_name, raw_value in attribute_values.items():
+            if attribute_name not in handles_by_name:
+                continue
+            value = bytes(raw_value) if isinstance(raw_value, bytes) else str(raw_value).encode("utf-8")
+            if record.attribute_values.get(attribute_name) == value:
+                continue
+            record.attribute_values[attribute_name] = value
+            changed[AttributeHandle(handles_by_name[attribute_name])] = value
+        if not changed:
+            return
+        federation = self._federation_record()
+        for federate_key, subscriptions in federation.subscribed_object_attributes.items():
+            discovery_class_name = self._known_object_classes_for_federate(
+                federate_key,
+                object_instance,
+                record.object_class_name,
+            )
+            if discovery_class_name is None:
+                continue
+            subscribed_names = self._reflectable_attribute_names_for_subscriber(
+                record.producing_federate.value if record.producing_federate is not None else 0,
+                federate_key,
+                record,
+                discovery_class_name,
+                set(subscriptions.get(discovery_class_name, set())),
+            )
+            reflected = {
+                AttributeHandle(self._attribute_handles(discovery_class_name)[self._attribute_name_by_handle(record.object_class_name, handle)]): value
+                for handle, value in changed.items()
+                if self._attribute_name_by_handle(record.object_class_name, handle) in subscribed_names
+            }
+            if reflected:
+                self._deliver_to_federate_handle(
+                    FederateHandle(federate_key),
+                    "reflectAttributeValues",
+                    object_instance,
+                    reflected,
+                    b"MOM",
+                    self._transportation_handle_by_name("HLAreliable"),
+                    record.producing_federate or self._mom_runtime_federate_handle(),
+                    set(),
+                    None,
+                    OrderType.RECEIVE,
+                    OrderType.RECEIVE,
+                    None,
+                )
+
+    def _remove_current_federate_mom_object(self) -> None:
+        federation = self._federation_record()
+        federate_handle = self._current_federate_handle()
+        if self._federate_name is None:
+            return
+        object_name = f"HLAmanager.HLAfederate.{federate_handle.value}.{self._federate_name}"
+        object_value = federation.object_instance_names.pop(object_name, None)
+        if object_value is None:
+            return
+        record = federation.object_instances.pop(object_value, None)
+        if record is None:
+            return
+        for federate_key, subscriptions in federation.subscribed_object_attributes.items():
+            if federate_key == federate_handle.value or record.object_class_name not in subscriptions:
+                continue
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "removeObjectInstance",
+                ObjectInstanceHandle(object_value),
+                b"",
+                federate_handle,
+                None,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
 
     def _matching_object_publishers(
         self,
@@ -4689,6 +4928,28 @@ class Shim2025RTIAmbassador:
         attribute_handles: set[AttributeHandle],
         user_supplied_tag: bytes,
     ) -> None:
+        if self._is_mom_object_class_name(record.object_class_name):
+            reflected = {
+                attribute_handle: record.attribute_values.get(
+                    self._attribute_name_by_handle(record.object_class_name, attribute_handle),
+                    b"",
+                )
+                for attribute_handle in attribute_handles
+            }
+            self._deliver_callback(
+                "reflectAttributeValues",
+                object_instance,
+                reflected,
+                bytes(user_supplied_tag),
+                self._transportation_handle_by_name("HLAreliable"),
+                record.producing_federate or self._mom_runtime_federate_handle(),
+                set(),
+                None,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
+            return
         handles_by_name = self._attribute_handles(record.object_class_name)
         attributes_by_owner: dict[FederateHandle, set[AttributeHandle]] = {}
         for attribute in attribute_handles:
