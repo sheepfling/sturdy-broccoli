@@ -610,6 +610,39 @@ class _TargetRadar2025RTIAdapter:
             {self._to_2025_handle(attribute) for attribute in attributes},
         )
 
+    def subscribe_object_class_attributes_passively(self, object_class, attributes) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.subscribeObjectClassAttributesPassively,
+            self._to_2025_handle(object_class),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+        )
+
+    def unsubscribe_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unsubscribeObjectClassAttributes,
+            self._to_2025_handle(object_class),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+        )
+
+    def unsubscribe_object_class(self, object_class) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unsubscribeObjectClass,
+            self._to_2025_handle(object_class),
+        )
+
+    def unpublish_object_class(self, object_class) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unpublishObjectClass,
+            self._to_2025_handle(object_class),
+        )
+
+    def unpublish_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
+        self._call_compat(
+            self._delegate.unpublishObjectClassAttributes,
+            self._to_2025_handle(object_class),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+        )
+
     def register_object_instance(self, object_class, object_instance_name: str | None = None):  # noqa: ANN001, ANN201
         return self._to_2010_handle(
             self._call_compat(self._delegate.registerObjectInstance, self._to_2025_handle(object_class), object_instance_name)
@@ -813,6 +846,15 @@ class _TargetRadar2025RTIAdapter:
 
     def subscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._call_compat(self._delegate.subscribeInteractionClass, self._to_2025_handle(interaction_class))
+
+    def subscribe_interaction_class_passively(self, interaction_class) -> None:  # noqa: ANN001
+        self._call_compat(self._delegate.subscribeInteractionClassPassively, self._to_2025_handle(interaction_class))
+
+    def unsubscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
+        self._call_compat(self._delegate.unsubscribeInteractionClass, self._to_2025_handle(interaction_class))
+
+    def unpublish_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
+        self._call_compat(self._delegate.unpublishInteractionClass, self._to_2025_handle(interaction_class))
 
     def send_interaction(self, interaction_class, parameter_values, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
         from hla.rti1516_2025.exceptions import InvalidLogicalTime as InvalidLogicalTime2025
@@ -1354,6 +1396,26 @@ def test_2025_target_radar_adapter_explicitly_covers_transportation_type_service
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"transportation-type scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_declaration_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_declaration.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"declaration scenario services: {missing}"
     )
 
 
@@ -2346,6 +2408,64 @@ def test_2025_shim_runs_time_managed_declaration_independence_scenario_end_to_en
     assert summary["time_constrained"].args[0].value == 0
     assert summary["start_record"].args == (summary["publisher_class"],)
     assert summary["turn_on_record"].args == (summary["publisher_interaction"],)
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
+def test_2025_shim_runs_passive_full_declaration_scenario_via_compat_adapter(tmp_path: Path) -> None:
+    from hla.verification import DeclarationManagementScenarioConfig, run_declaration_management_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DeclarationPassiveFullFOM.xml"
+    _write_proto2025_declaration_fom(fom_path)
+
+    federation_name = f"shim-2025-declaration-passive-full-{uuid.uuid4().hex[:8]}"
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = DeclarationManagementScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="SmokeFederate",
+        object_class_name="HLAobjectRoot.DemoObject",
+        attribute_name="Payload",
+        interaction_class_name="HLAinteractionRoot.DemoInteraction",
+        parameter_name="Message",
+        object_instance_name="DeclarationPassiveFullObject-1",
+        attribute_payload=b"declaration-passive-full-payload",
+        attribute_tag=b"declaration-passive-full-tag",
+        interaction_payload=b"declaration-passive-full-interaction",
+        interaction_tag=b"declaration-passive-full-interaction-tag",
+        use_passive_object_subscription=True,
+        use_passive_interaction_subscription=True,
+        use_full_object_unpublish=True,
+        use_full_object_unsubscribe=True,
+        before_object_unpublish_rejection_probe=_enable_strict_object_publication_probe,
+        before_interaction_unpublish_rejection_probe=_enable_strict_interaction_publication_probe,
+    )
+
+    summary = run_declaration_management_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["publisher_handle"] is not None
+    assert summary["subscriber_handle"] is not None
+    assert summary["first_start_record"].args == (summary["publisher_class"],)
+    assert summary["first_turn_on_record"].args == (summary["publisher_interaction"],)
+    assert summary["discover_record"].args[2] == config.object_instance_name
+    assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+    assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+    assert summary["first_stop_record"].args == (summary["publisher_class"],)
+    assert summary["first_turn_off_record"].args == (summary["publisher_interaction"],)
+    assert summary["second_start_record"].args == (summary["publisher_class"],)
+    assert summary["second_turn_on_record"].args == (summary["publisher_interaction"],)
+    assert summary["second_stop_record"].args == (summary["publisher_class"],)
+    assert summary["second_turn_off_record"].args == (summary["publisher_interaction"],)
     assert summary["discover_record"].args[2] == config.object_instance_name
     assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
     assert summary["reflect_record"].args[2] == config.attribute_tag
