@@ -682,6 +682,9 @@ class _TargetRadar2025RTIAdapter:
     def get_dimension_handle(self, dimension_name: str):  # noqa: ANN201
         return self._to_2010_handle(self._call_compat(self._delegate.getDimensionHandle, dimension_name))
 
+    def get_dimension_name(self, dimension):  # noqa: ANN001, ANN201
+        return self._call_compat(self._delegate.getDimensionName, self._to_2025_handle(dimension))
+
     def publish_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
         self._call_compat(
             self._delegate.publishObjectClassAttributes,
@@ -2708,6 +2711,26 @@ def test_2025_shim_runs_federation_lifecycle_scenario_end_to_end() -> None:
     assert summary["federate_handle"] is not None
     assert summary["resign_action"] == config.resign_action
     assert summary["use_mim_create"] is False
+
+
+@pytest.mark.requirements("HLA2025-FI-003", "HLA2025-OM-001", "HLA2025-SUP-001")
+def test_2025_shim_runs_basic_backend_neutral_smoke_scenario_via_compat_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_basic_federate_scenario
+
+    summary = run_basic_federate_scenario(
+        lambda: _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim")),
+        federation_name=f"shim-2025-basic-{uuid.uuid4().hex[:8]}",
+    )
+
+    assert summary["backend"].kind in {"python/shim", "shim/2025"}
+    assert summary["interaction_class_name"] == "HLAinteractionRoot.Ping"
+    assert summary["parameter_name"] == "RequestId"
+    assert summary["dimension_name"] == "HLAdefaultRoutingSpace"
+    assert summary["event_names"].count("discover") == 1
+    assert summary["event_names"].count("reflect") == 1
+    assert summary["event_names"].count("interaction") == 1
+    assert "time_advance_grant" in summary["event_names"]
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-003")

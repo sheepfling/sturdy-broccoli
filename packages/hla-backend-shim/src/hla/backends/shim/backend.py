@@ -1921,8 +1921,6 @@ class Shim2025RTIAmbassador:
         if objectInstanceName is not None:
             self._known_object_names[objectInstanceName] = handle.value
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
-            if federate_key == self._current_federate_key():
-                continue
             discovery_class_name = self._subscribed_discovery_class_name(
                 federate_key,
                 object_class_name,
@@ -1982,8 +1980,6 @@ class Shim2025RTIAmbassador:
             (self._current_federate_key(), object_class_name, self.getTransportationTypeName(transportation)),
         )
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
-            if federate_key == self._current_federate_key():
-                continue
             discovery_class_name = self._known_object_classes_for_federate(
                 federate_key,
                 objectInstance,
@@ -2101,7 +2097,7 @@ class Shim2025RTIAmbassador:
             (self._current_federate_key(), interaction_class_name, self.getTransportationTypeName(transportation)),
         )
         for federate_key, subscriptions in federation.subscribed_interactions.items():
-            if federate_key == self._current_federate_key() or interaction_class_name not in subscriptions:
+            if interaction_class_name not in subscriptions:
                 continue
             self._increment_mom_count(
                 federation.mom_interactions_received,
@@ -5523,8 +5519,6 @@ class Shim2025RTIAmbassador:
                 else record.producing_federate
             )
             if producing_federate is None:
-                continue
-            if producing_federate == self._current_federate_handle():
                 continue
             subscribed_names = (
                 federation.subscribed_object_attributes.get(self._current_federate_key(), {})
