@@ -9416,6 +9416,173 @@ def test_2025_shim_restore_recovers_directed_ddm_subscriber_routing(tmp_path: Pa
                 pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-116",
+    "HLA2025-FI-SVC-117",
+)
+def test_2025_shim_restore_clears_stale_directed_tso_and_preserves_post_restore_routing(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import InvalidMessageRetractionHandle
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    fom = tmp_path / "DirectedTSORestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Directed TSO Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused directed TSO restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>TimeStamp</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-directed-tso-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-DIRECTED-TSO"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_federate = Recording2025FederateAmbassador()
+    observer_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+
+    try:
+        for rti, federate in (
+            (owner, owner_federate),
+            (subscriber, subscriber_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(
+            federationName=federation_name,
+            fomModule=str(fom),
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        owner_handle = owner.joinFederationExecution("DirectedTSOOwner", "Controller", federation_name)
+        subscriber.joinFederationExecution("DirectedTSOSubscriber", "Observer", federation_name)
+        observer.joinFederationExecution("DirectedTSOObserver", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_interaction = subscriber.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_parameter = subscriber.getParameterHandle(subscriber_interaction, "TrackId")
+        object_instance = owner.registerObjectInstance(object_class, "ShimDirectedTSORestoreTarget-1")
+
+        owner.publishObjectClassDirectedInteractions(object_class, {interaction_class})
+        subscriber.subscribeObjectClassDirectedInteractions(object_class, {subscriber_interaction})
+        owner.enableTimeRegulation(HLAinteger64Interval(1))
+        subscriber.enableTimeConstrained()
+        observer.enableTimeConstrained()
+
+        owner.requestFederationSave(save_label)
+        for rti in (owner, subscriber, observer):
+            rti.federateSaveBegun()
+        for rti in (owner, subscriber, observer):
+            rti.federateSaveComplete()
+
+        stale = owner.sendDirectedInteraction(
+            interaction_class,
+            object_instance,
+            {parameter: b"STALE"},
+            b"stale-tso",
+            HLAinteger64Time(5),
+        )
+        assert stale.retractionHandleIsValid is True
+
+        owner.requestFederationRestore(save_label)
+        for rti in (owner, subscriber, observer):
+            rti.federateRestoreComplete()
+
+        subscriber_federate.callbacks.clear()
+        observer_federate.callbacks.clear()
+        subscriber.nextMessageRequest(HLAinteger64Time(5))
+        observer.nextMessageRequest(HLAinteger64Time(5))
+        assert _callbacks_named_2025(subscriber_federate, "receiveDirectedInteraction") == []
+        assert _callbacks_named_2025(observer_federate, "receiveDirectedInteraction") == []
+
+        with pytest.raises(InvalidMessageRetractionHandle):
+            owner.retract(stale.handle)
+
+        owner.sendDirectedInteraction(
+            interaction_class,
+            object_instance,
+            {parameter: b"FRESH"},
+            b"fresh-tso",
+        )
+
+        fresh_receive = subscriber_federate.last_callback("receiveDirectedInteraction")
+        assert fresh_receive is not None
+        assert fresh_receive[:6] == (
+            subscriber_interaction,
+            object_instance,
+            {subscriber_parameter: b"FRESH"},
+            b"fresh-tso",
+            owner.getTransportationTypeHandle("HLAreliable"),
+            owner_handle,
+        )
+        assert fresh_receive[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+        assert observer_federate.last_callback("receiveDirectedInteraction") is None
+    finally:
+        for rti in (observer, subscriber, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, subscriber, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction

@@ -278,6 +278,9 @@ class _FederationRecord:
     saved_member_region_bounds: dict[str, dict[int, dict[int, dict[str, RangeBounds]]]] = field(default_factory=dict)
     saved_interaction_order: dict[str, dict[tuple[int, str], OrderType]] = field(default_factory=dict)
     saved_interaction_transportation: dict[str, dict[tuple[int, str], str]] = field(default_factory=dict)
+    saved_queued_tso_callbacks: dict[str, dict[int, "_QueuedTsoCallback"]] = field(default_factory=dict)
+    saved_delivered_retraction_handles: dict[str, set[int]] = field(default_factory=dict)
+    saved_delivered_retraction_targets: dict[str, dict[int, FederateHandle]] = field(default_factory=dict)
     save_label: str | None = None
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
@@ -3024,6 +3027,9 @@ class Shim2025RTIAmbassador:
             federation.saved_subscribed_directed_interactions[label] = copy.deepcopy(federation.subscribed_directed_interactions)
             federation.saved_member_regions[label] = copy.deepcopy(federation.member_regions)
             federation.saved_member_region_bounds[label] = copy.deepcopy(federation.member_region_bounds)
+            federation.saved_queued_tso_callbacks[label] = copy.deepcopy(federation.queued_tso_callbacks)
+            federation.saved_delivered_retraction_handles[label] = set(federation.delivered_retraction_handles)
+            federation.saved_delivered_retraction_targets[label] = dict(federation.delivered_retraction_targets)
             federation.saved_member_time_states[label] = {
                 federate_key: {
                     "lookahead": rti._lookahead,
@@ -3104,6 +3110,15 @@ class Shim2025RTIAmbassador:
             )
             federation.member_region_bounds = copy.deepcopy(
                 federation.saved_member_region_bounds.get(label, federation.member_region_bounds)
+            )
+            federation.queued_tso_callbacks = copy.deepcopy(
+                federation.saved_queued_tso_callbacks.get(label, federation.queued_tso_callbacks)
+            )
+            federation.delivered_retraction_handles = set(
+                federation.saved_delivered_retraction_handles.get(label, federation.delivered_retraction_handles)
+            )
+            federation.delivered_retraction_targets = dict(
+                federation.saved_delivered_retraction_targets.get(label, federation.delivered_retraction_targets)
             )
             federation.interaction_order = copy.deepcopy(
                 federation.saved_interaction_order.get(label, federation.interaction_order)
