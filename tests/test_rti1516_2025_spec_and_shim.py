@@ -309,6 +309,14 @@ def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
         from hla.rti1516e.time import HLAinteger64Interval
 
         return HLAinteger64Interval(int(value.value))
+    if module_name == "hla.rti1516_2025.time" and type_name == "HLAfloat64Time":
+        from hla.rti1516e.time import HLAfloat64Time
+
+        return HLAfloat64Time(float(value.value))
+    if module_name == "hla.rti1516_2025.time" and type_name == "HLAfloat64Interval":
+        from hla.rti1516e.time import HLAfloat64Interval
+
+        return HLAfloat64Interval(float(value.value))
     if module_name == "hla.rti1516_2025.enums" and type_name == "OrderType":
         from hla.rti1516e.enums import OrderType
 
@@ -1684,6 +1692,11 @@ class _CompatRecordingFederateAmbassador(CommonRecordingFederateAmbassador):
             for key, value in kwargs.items()
         }
         return super().record_callback(method_name, *normalized_args, **normalized_kwargs)
+
+
+def _assert_same_time_scalar(actual, expected) -> None:  # noqa: ANN001
+    assert type(actual) is type(expected)
+    assert getattr(actual, "value", actual) == pytest.approx(getattr(expected, "value", expected))
 
 
 def test_2025_target_radar_adapter_explicitly_covers_time_window_service_surface() -> None:
@@ -3740,6 +3753,76 @@ def test_2025_shim_runs_time_managed_declaration_independence_scenario_end_to_en
     assert summary["time_constrained"].args[0].value == 0
     assert summary["start_record"].args == (summary["publisher_class"],)
     assert summary["turn_on_record"].args == (summary["publisher_interaction"],)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-112",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_runs_section8_state_services_via_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_state_services_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-state-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_state_services_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    _assert_same_time_scalar(summary["publisher_initial_time"], config.first_timestamp.__class__(0))
+    _assert_same_time_scalar(summary["subscriber_initial_time"], config.first_timestamp.__class__(0))
+    _assert_same_time_scalar(summary["initial_lookahead"], config.lookahead)
+    _assert_same_time_scalar(summary["modified_lookahead"], config.modified_lookahead)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-122",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_shim_blocks_early_timestamped_send_via_section8_compat_adapter(time_factory_name: str) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_early_timestamp_send_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"shim-2025-section8-early-send-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    subscriber = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+
+    summary = run_section8_early_timestamp_send_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    _assert_same_time_scalar(summary["publisher_initial_lookahead"], config.lookahead)
+    _assert_same_time_scalar(summary["modified_lookahead"], config.modified_lookahead)
+    assert summary["update_error"] is not None
+    assert summary["interaction_error"] is not None
+    assert type(summary["update_error"]).__name__ == "InvalidLogicalTime"
+    assert type(summary["interaction_error"]).__name__ == "InvalidLogicalTime"
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
