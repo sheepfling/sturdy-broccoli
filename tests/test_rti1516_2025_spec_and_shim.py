@@ -1495,6 +1495,24 @@ class _TargetRadar2025RTIAdapter:
     def destroy_federation_execution(self, federation_name: str) -> None:
         self._call_compat(self._delegate.destroyFederationExecution, federationName=federation_name)
 
+    def register_federation_synchronization_point(self, label: str, user_supplied_tag: bytes, sync_set=None) -> None:  # noqa: ANN001
+        if sync_set is None:
+            self._call_compat(
+                self._delegate.registerFederationSynchronizationPoint,
+                label,
+                user_supplied_tag,
+            )
+            return
+        self._call_compat(
+            self._delegate.registerFederationSynchronizationPoint,
+            label,
+            user_supplied_tag,
+            {self._to_2025_handle(federate) for federate in sync_set},
+        )
+
+    def synchronization_point_achieved(self, label: str, success_indicator: bool = True) -> None:
+        self._call_compat(self._delegate.synchronizationPointAchieved, label, success_indicator)
+
     def enable_callbacks(self) -> None:
         self._delegate.enableCallbacks()
 
@@ -1729,6 +1747,26 @@ def test_2025_target_radar_adapter_explicitly_covers_update_advisory_callback_su
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_discovery_class_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_discovery_class.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"discovery-class scenario services: {missing}"
+    )
+
+
 def test_2025_target_radar_adapter_explicitly_covers_save_restore_service_surface() -> None:
     scenario_path = (
         Path(__file__).resolve().parents[1]
@@ -1746,6 +1784,26 @@ def test_2025_target_radar_adapter_explicitly_covers_save_restore_service_surfac
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"save-restore scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_federation_lifecycle_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_federation_lifecycle.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"federation-lifecycle scenario services: {missing}"
     )
 
 
@@ -1769,6 +1827,26 @@ def test_2025_target_radar_adapter_explicitly_covers_ownership_service_surface()
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_join_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_join.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"join scenario services: {missing}"
+    )
+
+
 def test_2025_target_radar_adapter_explicitly_covers_transportation_type_service_surface() -> None:
     scenario_path = (
         Path(__file__).resolve().parents[1]
@@ -1786,6 +1864,26 @@ def test_2025_target_radar_adapter_explicitly_covers_transportation_type_service
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"transportation-type scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_request_attribute_value_update_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_request_attribute_value_update.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"request-attribute-value-update scenario services: {missing}"
     )
 
 
@@ -1809,6 +1907,26 @@ def test_2025_target_radar_adapter_explicitly_covers_declaration_service_surface
     )
 
 
+def test_2025_target_radar_adapter_explicitly_covers_local_delete_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_local_delete.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"local-delete scenario services: {missing}"
+    )
+
+
 def test_2025_target_radar_adapter_explicitly_covers_exchange_service_surface() -> None:
     scenario_path = (
         Path(__file__).resolve().parents[1]
@@ -1826,6 +1944,26 @@ def test_2025_target_radar_adapter_explicitly_covers_exchange_service_surface() 
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"exchange scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_synchronization_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_sync.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"synchronization scenario services: {missing}"
     )
 
 
