@@ -338,6 +338,18 @@ class _TargetRadar2025RTIAdapter:
     _SPECIAL_METHOD_NAMES = {
         "create_federation_execution_with_mim": "createFederationExecutionWithMIM",
     }
+    _HANDLE_CLASS_NAMES = (
+        "FederateHandle",
+        "ObjectClassHandle",
+        "InteractionClassHandle",
+        "ObjectInstanceHandle",
+        "AttributeHandle",
+        "ParameterHandle",
+        "DimensionHandle",
+        "MessageRetractionHandle",
+        "RegionHandle",
+        "TransportationTypeHandle",
+    )
 
     def __init__(self, delegate) -> None:  # noqa: ANN001
         self._delegate = delegate
@@ -422,6 +434,34 @@ class _TargetRadar2025RTIAdapter:
             return HLAinteger64Interval(int(value.value))
         return HLAinteger64Interval(int(value))
 
+    @classmethod
+    def _to_2025_handle(cls, value):  # noqa: ANN001, ANN205
+        if value is None:
+            return None
+        value_type = type(value)
+        if getattr(value_type, "__module__", "") == "hla.rti1516_2025.handles":
+            return value
+        type_name = getattr(value_type, "__name__", "")
+        if getattr(value_type, "__module__", "") == "hla.rti1516e.handles" and type_name in cls._HANDLE_CLASS_NAMES:
+            from hla.rti1516_2025 import handles as handles_2025
+
+            return getattr(handles_2025, type_name)(int(value.value))
+        return value
+
+    @classmethod
+    def _to_2010_handle(cls, value):  # noqa: ANN001, ANN205
+        if value is None:
+            return None
+        value_type = type(value)
+        if getattr(value_type, "__module__", "") == "hla.rti1516e.handles":
+            return value
+        type_name = getattr(value_type, "__name__", "")
+        if getattr(value_type, "__module__", "") == "hla.rti1516_2025.handles" and type_name in cls._HANDLE_CLASS_NAMES:
+            from hla.rti1516e import handles as handles_2010
+
+            return getattr(handles_2010, type_name)(int(value.value))
+        return value
+
     def connect(self, federate_ambassador, callback_model) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import CallbackModel
 
@@ -488,15 +528,7 @@ class _TargetRadar2025RTIAdapter:
         return handle
 
     def get_federate_name(self, federate_handle):  # noqa: ANN001, ANN201
-        federate_type = type(federate_handle)
-        if (
-            getattr(federate_type, "__module__", "") == "hla.rti1516e.handles"
-            and getattr(federate_type, "__name__", "") == "FederateHandle"
-        ):
-            from hla.rti1516_2025.handles import FederateHandle
-
-            federate_handle = FederateHandle(int(federate_handle.value))
-        return self._delegate.getFederateName(federate_handle)
+        return self._delegate.getFederateName(self._to_2025_handle(federate_handle))
 
     def reserve_object_instance_name(self, object_instance_name: str) -> None:
         self._delegate.reserveObjectInstanceName(object_instance_name)
@@ -514,34 +546,60 @@ class _TargetRadar2025RTIAdapter:
         self._delegate.nextMessageRequest(self._coerce_time_value(time))
 
     def get_object_class_handle(self, object_class_name: str):  # noqa: ANN201
-        return self._call_compat(self._delegate.getObjectClassHandle, object_class_name)
+        return self._to_2010_handle(self._call_compat(self._delegate.getObjectClassHandle, object_class_name))
 
     def get_attribute_handle(self, object_class, attribute_name: str):  # noqa: ANN001, ANN201
-        return self._call_compat(self._delegate.getAttributeHandle, object_class, attribute_name)
+        return self._to_2010_handle(
+            self._call_compat(self._delegate.getAttributeHandle, self._to_2025_handle(object_class), attribute_name)
+        )
 
     def publish_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
-        self._call_compat(self._delegate.publishObjectClassAttributes, object_class, attributes)
+        self._call_compat(
+            self._delegate.publishObjectClassAttributes,
+            self._to_2025_handle(object_class),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+        )
 
     def subscribe_object_class_attributes(self, object_class, attributes) -> None:  # noqa: ANN001
-        self._call_compat(self._delegate.subscribeObjectClassAttributes, object_class, attributes)
+        self._call_compat(
+            self._delegate.subscribeObjectClassAttributes,
+            self._to_2025_handle(object_class),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+        )
 
     def register_object_instance(self, object_class, object_instance_name: str | None = None):  # noqa: ANN001, ANN201
-        return self._call_compat(self._delegate.registerObjectInstance, object_class, object_instance_name)
+        return self._to_2010_handle(
+            self._call_compat(self._delegate.registerObjectInstance, self._to_2025_handle(object_class), object_instance_name)
+        )
 
     def update_attribute_values(self, object_instance, attribute_values, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
+        normalized_values = {
+            self._to_2025_handle(attribute): value
+            for attribute, value in attribute_values.items()
+        }
         if time is None:
-            self._call_compat(self._delegate.updateAttributeValues, object_instance, attribute_values, user_supplied_tag)
+            self._call_compat(
+                self._delegate.updateAttributeValues,
+                self._to_2025_handle(object_instance),
+                normalized_values,
+                user_supplied_tag,
+            )
             return
         self._call_compat(
             self._delegate.updateAttributeValues,
-            object_instance,
-            attribute_values,
+            self._to_2025_handle(object_instance),
+            normalized_values,
             user_supplied_tag,
             self._coerce_time_value(time),
         )
 
     def request_attribute_value_update(self, object_instance, attributes, user_supplied_tag: bytes) -> None:  # noqa: ANN001
-        self._call_compat(self._delegate.requestAttributeValueUpdate, object_instance, attributes, user_supplied_tag)
+        self._call_compat(
+            self._delegate.requestAttributeValueUpdate,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in attributes},
+            user_supplied_tag,
+        )
 
     def unconditional_attribute_ownership_divestiture(
         self,
@@ -550,8 +608,8 @@ class _TargetRadar2025RTIAdapter:
         user_supplied_tag: bytes = b"",
     ) -> None:  # noqa: ANN001
         self._delegate.unconditionalAttributeOwnershipDivestiture(
-            object_instance,
-            attributes,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in attributes},
             user_supplied_tag,
         )
 
@@ -562,8 +620,8 @@ class _TargetRadar2025RTIAdapter:
         user_supplied_tag: bytes = b"",
     ) -> None:  # noqa: ANN001
         self._delegate.attributeOwnershipAcquisitionIfAvailable(
-            object_instance,
-            desired_attributes,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in desired_attributes},
             user_supplied_tag,
         )
 
@@ -575,8 +633,8 @@ class _TargetRadar2025RTIAdapter:
     ) -> None:  # noqa: ANN001
         self._call_compat(
             self._delegate.attributeOwnershipAcquisition,
-            object_instance,
-            desired_attributes,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in desired_attributes},
             user_supplied_tag,
         )
 
@@ -589,56 +647,70 @@ class _TargetRadar2025RTIAdapter:
         try:
             self._call_compat(
                 self._delegate.attributeOwnershipReleaseDenied,
-                object_instance,
-                attributes,
+                self._to_2025_handle(object_instance),
+                {self._to_2025_handle(attribute) for attribute in attributes},
                 user_supplied_tag,
             )
         except TypeError:
             self._call_compat(
                 self._delegate.attributeOwnershipReleaseDenied,
-                object_instance,
-                attributes,
+                self._to_2025_handle(object_instance),
+                {self._to_2025_handle(attribute) for attribute in attributes},
             )
 
     def query_attribute_ownership(self, object_instance, attributes) -> None:  # noqa: ANN001
         normalized_attributes = attributes
         if not isinstance(attributes, (set, frozenset, list, tuple)):
             normalized_attributes = {attributes}
-        self._delegate.queryAttributeOwnership(object_instance, normalized_attributes)
+        self._delegate.queryAttributeOwnership(
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in normalized_attributes},
+        )
 
     def change_attribute_order_type(self, object_instance, attributes, order_type) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import OrderType
 
         self._delegate.changeAttributeOrderType(
-            object_instance,
-            attributes,
+            self._to_2025_handle(object_instance),
+            {self._to_2025_handle(attribute) for attribute in attributes},
             self._coerce_named_enum(OrderType, order_type),
         )
 
     def get_interaction_class_handle(self, interaction_class_name: str):  # noqa: ANN201
-        return self._call_compat(self._delegate.getInteractionClassHandle, interaction_class_name)
+        return self._to_2010_handle(self._call_compat(self._delegate.getInteractionClassHandle, interaction_class_name))
 
     def get_parameter_handle(self, interaction_class, parameter_name: str):  # noqa: ANN001, ANN201
-        return self._call_compat(self._delegate.getParameterHandle, interaction_class, parameter_name)
+        return self._to_2010_handle(
+            self._call_compat(
+                self._delegate.getParameterHandle,
+                self._to_2025_handle(interaction_class),
+                parameter_name,
+            )
+        )
 
     def publish_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
-        self._call_compat(self._delegate.publishInteractionClass, interaction_class)
+        self._call_compat(self._delegate.publishInteractionClass, self._to_2025_handle(interaction_class))
 
     def subscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
-        self._call_compat(self._delegate.subscribeInteractionClass, interaction_class)
+        self._call_compat(self._delegate.subscribeInteractionClass, self._to_2025_handle(interaction_class))
 
     def send_interaction(self, interaction_class, parameter_values, user_supplied_tag: bytes, time=None) -> None:  # noqa: ANN001
         from hla.rti1516_2025.exceptions import InvalidLogicalTime as InvalidLogicalTime2025
         from hla.rti1516e.exceptions import InvalidLogicalTime as InvalidLogicalTime2010
 
         if time is None:
-            self._call_compat(self._delegate.sendInteraction, interaction_class, parameter_values, user_supplied_tag)
+            self._call_compat(
+                self._delegate.sendInteraction,
+                self._to_2025_handle(interaction_class),
+                {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
+                user_supplied_tag,
+            )
             return
         try:
             self._call_compat(
                 self._delegate.sendInteraction,
-                interaction_class,
-                parameter_values,
+                self._to_2025_handle(interaction_class),
+                {self._to_2025_handle(parameter): value for parameter, value in parameter_values.items()},
                 user_supplied_tag,
                 self._coerce_time_value(time),
             )
@@ -660,11 +732,226 @@ class _TargetRadar2025RTIAdapter:
     def query_logical_time(self):  # noqa: ANN201
         return _normalize_2025_callback_value(self._delegate.queryLogicalTime())
 
+    def get_attribute_name(self, object_class, attribute) -> str:  # noqa: ANN001
+        return self._call_compat(
+            self._delegate.getAttributeName,
+            self._to_2025_handle(object_class),
+            self._to_2025_handle(attribute),
+        )
+
+    def get_interaction_class_name(self, interaction_class) -> str:  # noqa: ANN001
+        return self._call_compat(self._delegate.getInteractionClassName, self._to_2025_handle(interaction_class))
+
+    def get_known_object_class_handle(self, object_instance):  # noqa: ANN001, ANN201
+        return self._to_2010_handle(
+            self._call_compat(self._delegate.getKnownObjectClassHandle, self._to_2025_handle(object_instance))
+        )
+
+    def get_object_class_name(self, object_class) -> str:  # noqa: ANN001
+        return self._call_compat(self._delegate.getObjectClassName, self._to_2025_handle(object_class))
+
+    def get_object_instance_handle(self, object_instance_name: str):  # noqa: ANN201
+        return self._to_2010_handle(self._call_compat(self._delegate.getObjectInstanceHandle, object_instance_name))
+
+    def get_object_instance_name(self, object_instance) -> str:  # noqa: ANN001
+        return self._call_compat(self._delegate.getObjectInstanceName, self._to_2025_handle(object_instance))
+
+    def get_order_name(self, order_type) -> str:  # noqa: ANN001
+        from hla.rti1516_2025.enums import OrderType
+
+        return self._call_compat(self._delegate.getOrderName, self._coerce_named_enum(OrderType, order_type))
+
+    def get_order_type(self, order_type_name: str):  # noqa: ANN201
+        from hla.rti1516e.enums import OrderType as OrderType2010
+
+        order_type = self._call_compat(self._delegate.getOrderType, order_type_name)
+        return OrderType2010[getattr(order_type, "name", str(order_type))]
+
+    def get_parameter_name(self, interaction_class, parameter) -> str:  # noqa: ANN001
+        return self._call_compat(
+            self._delegate.getParameterName,
+            self._to_2025_handle(interaction_class),
+            self._to_2025_handle(parameter),
+        )
+
+    def get_transportation_type_handle(self, transportation_type_name: str):  # noqa: ANN201
+        return self._to_2010_handle(self._call_compat(self._delegate.getTransportationTypeHandle, transportation_type_name))
+
+    def get_transportation_type_name(self, transportation_type) -> str:  # noqa: ANN001
+        return self._call_compat(self._delegate.getTransportationTypeName, self._to_2025_handle(transportation_type))
+
+    @staticmethod
+    def get_transportation_type(transportation_name: str):  # noqa: ANN201
+        from hla.rti1516e.enums import TransportationType
+
+        normalized = transportation_name.strip()
+        mapping = {
+            "HLAreliable": TransportationType.RELIABLE,
+            "HLAbestEffort": TransportationType.BEST_EFFORT,
+        }
+        return mapping[normalized]
+
+    @staticmethod
+    def get_transportation_name(transportation_type) -> str:  # noqa: ANN001
+        member_name = getattr(transportation_type, "name", "")
+        mapping = {
+            "RELIABLE": "HLAreliable",
+            "BEST_EFFORT": "HLAbestEffort",
+        }
+        return mapping[member_name]
+
+    @staticmethod
+    def get_attribute_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import AttributeHandleFactory
+
+        return AttributeHandleFactory()
+
+    @staticmethod
+    def get_attribute_handle_set_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import AttributeHandleSetFactory
+
+        return AttributeHandleSetFactory()
+
+    @staticmethod
+    def get_attribute_handle_value_map_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import AttributeHandleValueMapFactory
+
+        return AttributeHandleValueMapFactory()
+
+    @staticmethod
+    def get_attribute_set_region_set_pair_list_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import AttributeSetRegionSetPairListFactory
+
+        return AttributeSetRegionSetPairListFactory()
+
+    @staticmethod
+    def get_dimension_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import DimensionHandleFactory
+
+        return DimensionHandleFactory()
+
+    @staticmethod
+    def get_dimension_handle_set_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import DimensionHandleSetFactory
+
+        return DimensionHandleSetFactory()
+
+    @staticmethod
+    def get_federate_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import FederateHandleFactory
+
+        return FederateHandleFactory()
+
+    @staticmethod
+    def get_federate_handle_set_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import FederateHandleSetFactory
+
+        return FederateHandleSetFactory()
+
+    @staticmethod
+    def get_interaction_class_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import InteractionClassHandleFactory
+
+        return InteractionClassHandleFactory()
+
+    @staticmethod
+    def get_object_class_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import ObjectClassHandleFactory
+
+        return ObjectClassHandleFactory()
+
+    @staticmethod
+    def get_object_instance_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import ObjectInstanceHandleFactory
+
+        return ObjectInstanceHandleFactory()
+
+    @staticmethod
+    def get_parameter_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import ParameterHandleFactory
+
+        return ParameterHandleFactory()
+
+    @staticmethod
+    def get_parameter_handle_value_map_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import ParameterHandleValueMapFactory
+
+        return ParameterHandleValueMapFactory()
+
+    @staticmethod
+    def get_region_handle_set_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import RegionHandleSetFactory
+
+        return RegionHandleSetFactory()
+
+    @staticmethod
+    def get_transportation_type_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import TransportationTypeHandleFactory
+
+        return TransportationTypeHandleFactory()
+
+    def normalize_federate_handle(self, federate_handle) -> int:  # noqa: ANN001
+        return int(self._call_compat(self._delegate.normalizeFederateHandle, self._to_2025_handle(federate_handle)))
+
+    @staticmethod
+    def decode_attribute_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import AttributeHandle
+
+        return AttributeHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_dimension_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import DimensionHandle
+
+        return DimensionHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_federate_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import FederateHandle
+
+        return FederateHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_interaction_class_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import InteractionClassHandle
+
+        return InteractionClassHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_message_retraction_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import MessageRetractionHandle
+
+        return MessageRetractionHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_object_class_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import ObjectClassHandle
+
+        return ObjectClassHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_object_instance_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import ObjectInstanceHandle
+
+        return ObjectInstanceHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_parameter_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import ParameterHandle
+
+        return ParameterHandle.decode(data, offset)
+
+    @staticmethod
+    def decode_region_handle(data: bytes, offset: int = 0):  # noqa: ANN201
+        from hla.rti1516e.handles import RegionHandle
+
+        return RegionHandle.decode(data, offset)
+
     def change_interaction_order_type(self, interaction_class, order_type) -> None:  # noqa: ANN001
         from hla.rti1516_2025.enums import OrderType
 
         self._delegate.changeInteractionOrderType(
-            interaction_class,
+            self._to_2025_handle(interaction_class),
             self._coerce_named_enum(OrderType, order_type),
         )
 
@@ -814,6 +1101,26 @@ def test_2025_target_radar_adapter_explicitly_covers_time_window_service_surface
     assert missing == [], (
         "Target/Radar 2025 compat adapter is missing explicit wrappers for "
         f"time-window scenario services: {missing}"
+    )
+
+
+def test_2025_target_radar_adapter_explicitly_covers_support_service_surface() -> None:
+    scenario_path = (
+        Path(__file__).resolve().parents[1]
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "scenario_support_services.py"
+    )
+    required_methods = _scan_target_radar_rti_methods(scenario_path)
+    adapter_methods = _adapter_service_methods(_TargetRadar2025RTIAdapter)
+    missing = sorted(required_methods - adapter_methods)
+
+    assert missing == [], (
+        "Target/Radar 2025 compat adapter is missing explicit wrappers for "
+        f"support-services scenario services: {missing}"
     )
 
 
@@ -1950,6 +2257,106 @@ def test_2025_shim_runs_support_lookup_and_normalization_route_end_to_end() -> N
     rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
     rti.destroyFederationExecution(federationName=federation_name)
     rti.disconnect()
+
+
+@pytest.mark.requirements(
+    "HLA2025-SS-001",
+    "HLA2025-SS-002",
+    "HLA2025-SS-003",
+    "HLA2025-SS-004",
+    "HLA2025-SS-005",
+    "HLA2025-SS-006",
+    "HLA2025-FI-001",
+)
+def test_2025_shim_runs_support_factory_and_decode_scenario_via_compat_adapter() -> None:
+    from hla.verification import SupportServicesScenarioConfig, run_support_factory_and_decode_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.rti1516e.enums import OrderType, TransportationType
+    from hla.rti1516e.handles import (
+        AttributeHandleFactory,
+        AttributeHandleSetFactory,
+        AttributeHandleValueMapFactory,
+        AttributeSetRegionSetPairListFactory,
+        DimensionHandleFactory,
+        DimensionHandleSetFactory,
+        FederateHandleFactory,
+        FederateHandleSetFactory,
+        InteractionClassHandleFactory,
+        ObjectClassHandleFactory,
+        ObjectInstanceHandleFactory,
+        ParameterHandleFactory,
+        ParameterHandleValueMapFactory,
+        RegionHandleSetFactory,
+        TransportationTypeHandleFactory,
+    )
+
+    federation_name = f"shim-2025-support-adapter-{uuid.uuid4().hex[:8]}"
+    rti = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend="shim"))
+    config = SupportServicesScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_class_name="HLAobjectRoot.Proto2025.MessageTest.TestSuite",
+        attribute_name="SuiteId",
+        interaction_class_name="HLAinteractionRoot.Proto2025.MessageTest.SendStimulus",
+        parameter_name="TestCaseId",
+        object_instance_name="support-adapter-suite",
+    )
+
+    summary = run_support_factory_and_decode_scenario(
+        rti,
+        config=config,
+        federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["lookup_summary"] == {
+        "federate_name": config.federate_name,
+        "normalized_federate_handle": summary["federate_handle"].value,
+        "object_class_name": config.object_class_name,
+        "attribute_name": config.attribute_name,
+        "interaction_class_name": config.interaction_class_name,
+        "parameter_name": config.parameter_name,
+        "object_instance_name": config.object_instance_name,
+        "object_instance_handle": summary["object_instance"],
+        "known_object_class": summary["object_class"],
+        "receive_order_name": "HLAreceive",
+        "timestamp_order_type": OrderType.TIMESTAMP,
+        "reliable_transport_name": "HLAreliable",
+        "best_effort_transport_name": "HLAbestEffort",
+        "reliable_transport_enum_name": "HLAreliable",
+        "best_effort_transport_enum_name": "HLAbestEffort",
+    }
+
+    assert isinstance(summary["factory_summary"]["attribute_factory"], AttributeHandleFactory)
+    assert isinstance(summary["factory_summary"]["attribute_set_factory"], AttributeHandleSetFactory)
+    assert isinstance(summary["factory_summary"]["attribute_value_map_factory"], AttributeHandleValueMapFactory)
+    assert isinstance(
+        summary["factory_summary"]["attribute_region_pair_list_factory"],
+        AttributeSetRegionSetPairListFactory,
+    )
+    assert isinstance(summary["factory_summary"]["dimension_factory"], DimensionHandleFactory)
+    assert isinstance(summary["factory_summary"]["dimension_set_factory"], DimensionHandleSetFactory)
+    assert isinstance(summary["factory_summary"]["federate_factory"], FederateHandleFactory)
+    assert isinstance(summary["factory_summary"]["federate_set_factory"], FederateHandleSetFactory)
+    assert isinstance(summary["factory_summary"]["interaction_factory"], InteractionClassHandleFactory)
+    assert isinstance(summary["factory_summary"]["object_class_factory"], ObjectClassHandleFactory)
+    assert isinstance(summary["factory_summary"]["object_instance_factory"], ObjectInstanceHandleFactory)
+    assert isinstance(summary["factory_summary"]["parameter_factory"], ParameterHandleFactory)
+    assert isinstance(summary["factory_summary"]["parameter_value_map_factory"], ParameterHandleValueMapFactory)
+    assert isinstance(summary["factory_summary"]["region_set_factory"], RegionHandleSetFactory)
+    assert isinstance(summary["factory_summary"]["transportation_factory"], TransportationTypeHandleFactory)
+
+    assert summary["decoded_summary"]["federate_handle"] == summary["federate_handle"]
+    assert summary["decoded_summary"]["object_class_handle"] == summary["object_class"]
+    assert summary["decoded_summary"]["interaction_class_handle"] == summary["interaction_class"]
+    assert summary["decoded_summary"]["object_instance_handle"] == summary["object_instance"]
+    assert summary["decoded_summary"]["attribute_handle"] == summary["attribute"]
+    assert summary["decoded_summary"]["parameter_handle"] == summary["parameter"]
+    assert rti.get_transportation_type("HLAreliable") is TransportationType.RELIABLE
+    assert rti.get_transportation_type("HLAbestEffort") is TransportationType.BEST_EFFORT
+    assert rti.get_transportation_name(TransportationType.RELIABLE) == "HLAreliable"
+    assert rti.get_transportation_name(TransportationType.BEST_EFFORT) == "HLAbestEffort"
 
 
 @pytest.mark.requirements(
