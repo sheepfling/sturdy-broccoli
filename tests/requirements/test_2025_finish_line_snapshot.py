@@ -390,7 +390,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_parser_rejects_unknown_2025_switch_definitions" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-166"]["pytest_anchors"])
     assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
     assert any("test_2025_parser_rejects_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 25
+    assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] == 26
     assert any("test_2025_shim_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
         "test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet"

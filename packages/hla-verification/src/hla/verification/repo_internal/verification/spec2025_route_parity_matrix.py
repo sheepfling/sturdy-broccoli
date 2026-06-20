@@ -391,7 +391,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
         "Python 2025 shim covers federation save/restore lifecycle, rollback callback slices, time/switch-control rollback, "
-        "saved lookahead recovery, and pre-save queued-TSO redelivery after restore.",
+        "saved lookahead recovery, transport/order policy rollback, and pre-save queued-TSO redelivery after restore.",
     ),
     _row(
         "save_restore",

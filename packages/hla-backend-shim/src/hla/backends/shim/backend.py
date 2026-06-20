@@ -265,6 +265,8 @@ class _FederationRecord:
     saved_next_object_instance_handles: dict[str, int] = field(default_factory=dict)
     saved_member_logical_times: dict[str, dict[int, Any]] = field(default_factory=dict)
     saved_member_time_states: dict[str, dict[int, dict[str, Any]]] = field(default_factory=dict)
+    saved_interaction_order: dict[str, dict[tuple[int, str], OrderType]] = field(default_factory=dict)
+    saved_interaction_transportation: dict[str, dict[tuple[int, str], str]] = field(default_factory=dict)
     save_label: str | None = None
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
@@ -1944,7 +1946,7 @@ class Shim2025RTIAmbassador:
             return None
         if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
             raise InteractionClassNotPublished(interaction_class_name)
-        transportation = self._transportation_handle_by_name("HLAreliable")
+        transportation = self._interaction_transportation_for(interaction_class_name)
         callback_time = self._coerce_time(time) if time is not None else None
         if callback_time is not None:
             self._validate_tso_send_time(callback_time)
@@ -2017,7 +2019,7 @@ class Shim2025RTIAmbassador:
         for parameter, value in dict(parameterValues).items():
             parameter_name = self._parameter_names_from_handles(interaction_class_name, {parameter})[0]
             values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
-        transportation = self._transportation_handle_by_name("HLAreliable")
+        transportation = self._interaction_transportation_for(interaction_class_name)
         callback_time = self._coerce_time(time) if time is not None else None
         if callback_time is not None:
             self._validate_tso_send_time(callback_time)
@@ -3009,9 +3011,13 @@ class Shim2025RTIAmbassador:
                     "asynchronous_delivery_enabled": rti._asynchronous_delivery_enabled,
                     "automatic_resign_directive": rti._automatic_resign_directive,
                     "switches": copy.deepcopy(rti._switches),
+                    "default_attribute_transportation": copy.deepcopy(rti._default_attribute_transportation),
+                    "default_attribute_order": copy.deepcopy(rti._default_attribute_order),
                 }
                 for federate_key, rti in federation.member_rtis.items()
             }
+            federation.saved_interaction_order[label] = copy.deepcopy(federation.interaction_order)
+            federation.saved_interaction_transportation[label] = copy.deepcopy(federation.interaction_transportation)
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationSaved")
             federation.save_label = None
@@ -3044,6 +3050,12 @@ class Shim2025RTIAmbassador:
             federation.reserved_object_instance_names = dict(
                 federation.saved_reserved_object_instance_names.get(label, {})
             )
+            federation.interaction_order = copy.deepcopy(
+                federation.saved_interaction_order.get(label, federation.interaction_order)
+            )
+            federation.interaction_transportation = copy.deepcopy(
+                federation.saved_interaction_transportation.get(label, federation.interaction_transportation)
+            )
             federation.next_object_instance_handle = federation.saved_next_object_instance_handles.get(
                 label,
                 federation.next_object_instance_handle,
@@ -3074,6 +3086,15 @@ class Shim2025RTIAmbassador:
                     rti._automatic_resign_directive,
                 )
                 rti._switches = dict(values.get("switches", rti._switches))
+                rti._default_attribute_transportation = copy.deepcopy(
+                    values.get(
+                        "default_attribute_transportation",
+                        rti._default_attribute_transportation,
+                    )
+                )
+                rti._default_attribute_order = copy.deepcopy(
+                    values.get("default_attribute_order", rti._default_attribute_order)
+                )
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationRestored")
             federation.restore_label = None
@@ -4823,6 +4844,13 @@ class Shim2025RTIAmbassador:
             (self._current_federate_key(), interaction_class_name),
             OrderType.RECEIVE,
         )
+
+    def _interaction_transportation_for(self, interaction_class_name: str) -> TransportationTypeHandle:
+        transportation_name = self._federation_record().interaction_transportation.get(
+            (self._current_federate_key(), interaction_class_name),
+            "HLAreliable",
+        )
+        return self._transportation_handle_by_name(transportation_name)
 
     @staticmethod
     def _coerce_order_type(order_type: Any) -> OrderType:

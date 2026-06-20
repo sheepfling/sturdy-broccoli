@@ -8329,6 +8329,198 @@ def test_2025_shim_restore_recovers_time_and_switch_control_state() -> None:
             pass
 
 
+@pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-023", "HLA2025-FI-SVC-032")
+def test_2025_shim_restore_recovers_transport_and_order_policy_state(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "PolicyRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Policy Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused policy restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-2025-policy-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-POLICY"
+    owner_federate = Recording2025FederateAmbassador()
+    subscriber_federate = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    try:
+        owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner_handle = owner.joinFederationExecution("PolicyRestoreOwner", "TestFederate", federation_name)
+        subscriber.joinFederationExecution("PolicyRestoreSubscriber", "TestFederate", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = owner.getAttributeHandle(object_class, "Position")
+        subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "Position")
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_interaction_class = subscriber.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_parameter = subscriber.getParameterHandle(subscriber_interaction_class, "TrackId")
+        reliable = owner.getTransportationTypeHandle("HLAreliable")
+        best_effort = owner.getTransportationTypeHandle("HLAbestEffort")
+
+        owner.publishObjectClassAttributes(object_class, {attribute})
+        owner.publishInteractionClass(interaction_class)
+        subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+        subscriber.subscribeInteractionClass(subscriber_interaction_class)
+        object_instance = owner.registerObjectInstance(object_class, "PolicyRestoreTarget-1")
+        assert subscriber_federate.last_callback("discoverObjectInstance") == (
+            object_instance,
+            subscriber_object_class,
+            "PolicyRestoreTarget-1",
+            owner_handle,
+        )
+
+        owner.changeDefaultAttributeTransportationType(object_class, {attribute}, best_effort)
+        owner.changeDefaultAttributeOrderType(object_class, {attribute}, OrderType.TIMESTAMP)
+        owner.requestInteractionTransportationTypeChange(interaction_class, best_effort)
+        assert owner_federate.last_callback("confirmInteractionTransportationTypeChange") == (interaction_class, best_effort)
+        owner.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
+        assert owner.defaultAttributePolicySnapshot() == {
+            "transportation": {"HLAobjectRoot.Target.Position": "HLAbestEffort"},
+            "order": {"HLAobjectRoot.Target.Position": "TIMESTAMP"},
+        }
+        subscriber.queryInteractionTransportationType(owner_handle, subscriber_interaction_class)
+        assert subscriber_federate.last_callback("reportInteractionTransportationType") == (
+            owner_handle,
+            subscriber_interaction_class,
+            best_effort,
+        )
+
+        owner_federate.callbacks.clear()
+        subscriber_federate.callbacks.clear()
+        owner.requestFederationSave(save_label)
+        assert owner_federate.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_federate.last_callback("initiateFederateSave") == (save_label,)
+        owner.federateSaveBegun()
+        subscriber.federateSaveBegun()
+        owner.federateSaveComplete()
+        subscriber.federateSaveComplete()
+        assert owner_federate.last_callback("federationSaved") == ()
+        assert subscriber_federate.last_callback("federationSaved") == ()
+
+        owner.changeDefaultAttributeTransportationType(object_class, {attribute}, reliable)
+        owner.changeDefaultAttributeOrderType(object_class, {attribute}, OrderType.RECEIVE)
+        owner.requestInteractionTransportationTypeChange(interaction_class, reliable)
+        assert owner_federate.last_callback("confirmInteractionTransportationTypeChange") == (interaction_class, reliable)
+        owner.changeInteractionOrderType(interaction_class, OrderType.RECEIVE)
+
+        owner_federate.callbacks.clear()
+        subscriber_federate.callbacks.clear()
+        owner.requestFederationRestore(save_label)
+        assert owner_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_federate.last_callback("federationRestoreBegun") == ()
+        assert subscriber_federate.last_callback("federationRestoreBegun") == ()
+        owner.federateRestoreComplete()
+        subscriber.federateRestoreComplete()
+        assert owner_federate.last_callback("federationRestored") == ()
+        assert subscriber_federate.last_callback("federationRestored") == ()
+
+        assert owner.defaultAttributePolicySnapshot() == {
+            "transportation": {"HLAobjectRoot.Target.Position": "HLAbestEffort"},
+            "order": {"HLAobjectRoot.Target.Position": "TIMESTAMP"},
+        }
+        subscriber.queryInteractionTransportationType(owner_handle, subscriber_interaction_class)
+        assert subscriber_federate.last_callback("reportInteractionTransportationType") == (
+            owner_handle,
+            subscriber_interaction_class,
+            best_effort,
+        )
+
+        subscriber_federate.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {attribute: b"restored-attr"}, b"restored-attr-tag")
+        reflection = subscriber_federate.last_callback("reflectAttributeValues")
+        assert reflection is not None
+        assert reflection[:6] == (
+            object_instance,
+            {subscriber_attribute: b"restored-attr"},
+            b"restored-attr-tag",
+            best_effort,
+            owner_handle,
+            set(),
+        )
+        assert reflection[6:] == (None, OrderType.TIMESTAMP, OrderType.TIMESTAMP, None)
+
+        owner.sendInteraction(interaction_class, {parameter: b"restored-track"}, b"restored-track-tag")
+        received = subscriber_federate.last_callback("receiveInteraction")
+        assert received is not None
+        assert received[:6] == (
+            subscriber_interaction_class,
+            {subscriber_parameter: b"restored-track"},
+            b"restored-track-tag",
+            best_effort,
+            owner_handle,
+            set(),
+        )
+        assert received[6:] == (None, OrderType.TIMESTAMP, OrderType.TIMESTAMP, None)
+    finally:
+        for rti in (subscriber, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 def test_2025_shim_proves_time_window_core_progression() -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
