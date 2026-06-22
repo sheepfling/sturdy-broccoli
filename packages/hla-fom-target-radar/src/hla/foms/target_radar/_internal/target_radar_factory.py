@@ -79,6 +79,15 @@ def make_target_radar_factory(
 
         return factory
 
+    if normalized in _TARGET_RADAR_2025_BACKENDS:
+        create_rti_ambassador = import_module("hla.rti1516_2025.factory").create_rti_ambassador
+
+        def factory(_role: str) -> Any:
+            rti = create_rti_ambassador(backend=normalized, **backend_options)
+            return TargetRadar2025RTIAdapter(rti)
+
+        return factory
+
     create_rti_ambassador = import_module("hla.rti").create_rti_ambassador
 
     def factory(_role: str) -> Any:

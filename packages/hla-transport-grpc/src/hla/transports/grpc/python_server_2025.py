@@ -180,10 +180,10 @@ def _raise_resolution_error(kind: str, details: str, *, open_name: str, read_nam
     raise RuntimeError((open_name, details))
 
 
-def _merge_2025_fom_modules(modules: tuple[object, ...], *, mim_module: object) -> None:
+def _merge_2025_fom_modules(modules: tuple[object, ...], *, mim_module: object) -> object:
     fom = import_module("hla.rti1516e.fom")
     try:
-        fom.merge_fom_modules(modules, mim_module=mim_module)
+        return fom.merge_fom_modules(modules, mim_module=mim_module)
     except fom.FOMMergeError as exc:
         raise RuntimeError(("InconsistentFOM", str(exc))) from exc
 
@@ -279,6 +279,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("104", "HLAfederateName"): "206",
             ("105", "Payload"): "207",
         }
+        self.next_object_class_handle = max(int(handle) for handle in self.object_classes.values()) + 1
+        self.next_attribute_handle = max(int(handle) for handle in self.attributes.values()) + 1
         self.attribute_names = {(object_class, value): name for (object_class, name), value in self.attributes.items()}
         self.interactions = {
             "HLAinteractionRoot.TrackReport": "400",
@@ -328,6 +330,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         for leaf in _MOM_FEDERATE_SERVICE_LEAVES:
             self.interactions[f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.{leaf}"] = str(next_interaction_handle)
             next_interaction_handle += 1
+        self.next_interaction_handle = next_interaction_handle
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
             ("400", "TrackId"): "500",
@@ -404,6 +407,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.next_parameter_handle = 800
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
+        self.next_dimension_handle = max(int(handle) for handle in self.dimensions.values()) + 1
         self.dimension_names = {value: key for key, value in self.dimensions.items()}
         self.transportations = {"HLAreliable": "1", "HLAbestEffort": "2"}
         self.transportation_names = {value: key for key, value in self.transportations.items()}
@@ -509,6 +513,47 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.callback_queue: list[callback_pb2.CallbackRequest] = []
         self.callback_targets: dict[int, tuple[frozenset[str] | None, frozenset[str] | None]] = {}
 
+    def _install_fom_catalog_handles(self, catalog: object) -> None:
+        for class_name, spec in sorted(getattr(catalog, "object_classes", {}).items()):
+            class_handle = self.object_classes.get(class_name)
+            if class_handle is None:
+                class_handle = str(self.next_object_class_handle)
+                self.next_object_class_handle += 1
+                self.object_classes[class_name] = class_handle
+                self.object_class_names[class_handle] = class_name
+            for attribute_name in getattr(spec, "attributes", ()):
+                key = (class_handle, attribute_name)
+                if key in self.attributes:
+                    continue
+                attribute_handle = str(self.next_attribute_handle)
+                self.next_attribute_handle += 1
+                self.attributes[key] = attribute_handle
+                self.attribute_names[(class_handle, attribute_handle)] = attribute_name
+
+        for interaction_name, spec in sorted(getattr(catalog, "interaction_classes", {}).items()):
+            interaction_handle = self.interactions.get(interaction_name)
+            if interaction_handle is None:
+                interaction_handle = str(self.next_interaction_handle)
+                self.next_interaction_handle += 1
+                self.interactions[interaction_name] = interaction_handle
+                self.interaction_names[interaction_handle] = interaction_name
+            for parameter_name in getattr(spec, "parameters", ()):
+                key = (interaction_handle, parameter_name)
+                if key in self.parameters:
+                    continue
+                parameter_handle = str(self.next_parameter_handle)
+                self.next_parameter_handle += 1
+                self.parameters[key] = parameter_handle
+                self.parameter_names[(interaction_handle, parameter_handle)] = parameter_name
+
+        for dimension_name in sorted(getattr(catalog, "dimensions", ())):
+            if dimension_name in self.dimensions:
+                continue
+            dimension_handle = str(self.next_dimension_handle)
+            self.next_dimension_handle += 1
+            self.dimensions[dimension_name] = dimension_handle
+            self.dimension_names[dimension_handle] = dimension_name
+
     def Call(self, request, context):  # noqa: N802 - grpc generated naming
         request_kind = request.WhichOneof("callRequest")
         peer = self._context_peer(context)
@@ -567,10 +612,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     fom = import_module("hla.rti1516e.fom")
                     resolved_mim = fom.standard_mim_module()
                 resolved_foms = _resolve_2025_fom_modules(fom_designators, mim=False)
-                _merge_2025_fom_modules(resolved_foms, mim_module=resolved_mim)
+                merged_catalog = _merge_2025_fom_modules(resolved_foms, mim_module=resolved_mim)
             except RuntimeError as exc:
                 name, details = exc.args[0]
                 return self._error(name, details)
+            self._install_fom_catalog_handles(merged_catalog)
             self.federations.add(payload.federationName)
             self.federation_logical_time_implementations[payload.federationName] = getattr(
                 payload,
@@ -675,13 +721,14 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         resolved_join_foms = _resolve_2025_fom_modules(fom_designators, mim=False)
                         base_designators = self.federation_fom_designators.get(federation_name, ())
                         resolved_base_foms = _resolve_2025_fom_modules(base_designators, mim=False)
-                        _merge_2025_fom_modules(
+                        merged_catalog = _merge_2025_fom_modules(
                             resolved_base_foms + resolved_join_foms,
                             mim_module=fom.standard_mim_module(),
                         )
                     except RuntimeError as exc:
                         name, details = exc.args[0]
                         return self._error(name, details)
+                    self._install_fom_catalog_handles(merged_catalog)
             federate_name = getattr(payload, "federateName", "") or f"fedpro-federate-{self.next_federate_handle}"
             if federate_name in self.joined_federates:
                 return self._error("FederateNameAlreadyInUse", federate_name)
