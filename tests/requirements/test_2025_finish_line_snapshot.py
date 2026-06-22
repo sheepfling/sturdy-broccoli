@@ -1421,6 +1421,29 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert binding_boundary_audit["ready_for_binding_boundary_mapping_claim"] is True
     assert "explicit boundary note that enumerates all three rows" in binding_boundary_audit["current_assessment"]
     assert "does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance" in binding_boundary_audit["residual_boundary"]
+    hosted_fedpro_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
+    assert hosted_fedpro_audit["audit_status"] == "hosted-fedpro-bounded-proof-captured"
+    assert hosted_fedpro_audit["doc_path"] == "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md"
+    assert hosted_fedpro_audit["doc_exists"] is True
+    assert hosted_fedpro_audit["route"] == "python-2025-fedpro-grpc"
+    assert hosted_fedpro_audit["scenario_count"] == 8
+    assert hosted_fedpro_audit["scenarios"] == [
+        "ddm",
+        "federation_lifecycle",
+        "mom",
+        "object_exchange",
+        "ownership",
+        "save_restore",
+        "support_services",
+        "time_management",
+    ]
+    assert hosted_fedpro_audit["expected_scenarios"] == hosted_fedpro_audit["scenarios"]
+    assert hosted_fedpro_audit["all_rows_parity_covered"] is True
+    assert hosted_fedpro_audit["identity_ready"] is True
+    assert hosted_fedpro_audit["doc_narrative_ready"] is True
+    assert hosted_fedpro_audit["ready_for_hosted_fedpro_bounded_proof_claim"] is True
+    assert "requirement-facing proof note tied to the eight tracked hosted scenario families" in hosted_fedpro_audit["current_assessment"]
+    assert "does not promote the hosted FedPro lane into full remote-RTI semantics" in hosted_fedpro_audit["residual_boundary"]
     boundary_statement = snapshot["supported_boundary_statement"]
     assert boundary_statement["statement_status"] == "supported-boundary-statement"
     assert boundary_statement["ready"] is True

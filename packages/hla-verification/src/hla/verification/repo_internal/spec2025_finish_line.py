@@ -3550,6 +3550,75 @@ def _build_binding_boundary_mapping_audit(
     }
 
 
+def _build_hosted_fedpro_bounded_proof_audit(
+    project_root: Path,
+    route_parity_matrix: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    hosted_rows = [row for row in route_parity_matrix["rows"] if row["route"] == "python-2025-fedpro-grpc"]
+    hosted_rows.sort(key=lambda row: row["scenario"])
+    expected_scenarios = [
+        "ddm",
+        "federation_lifecycle",
+        "mom",
+        "object_exchange",
+        "ownership",
+        "save_restore",
+        "support_services",
+        "time_management",
+    ]
+    all_rows_parity_covered = all(row["status"] == "parity-covered" for row in hosted_rows)
+    identity_ready = all(
+        row["runtime_provider"] == "python2025"
+        and row["implementation_lane"] == "hla-backend-python2025"
+        and row["counts_as_python_2025_rti"] is True
+        and row["wrapper_only"] is False
+        for row in hosted_rows
+    )
+    doc_checks = [
+        "`python-2025-fedpro-grpc`" in doc_text,
+        "`hla-backend-python2025`" in doc_text,
+        "`tests/transport/test_grpc_transport_2025.py`" in doc_text,
+        "`tests/scenarios/test_python_route_parity.py`" in doc_text,
+        "bounded runtime slice" in doc_text,
+        "not a separate 2025 RTI owner" in doc_text
+        or ("second full RTI" in doc_text and "implementation lane" in doc_text),
+        "transport-seam and cross-binding" in doc_text,
+    ]
+    return {
+        "audit_status": "hosted-fedpro-bounded-proof-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "route": "python-2025-fedpro-grpc",
+        "scenario_count": len(hosted_rows),
+        "scenarios": [row["scenario"] for row in hosted_rows],
+        "expected_scenarios": expected_scenarios,
+        "all_rows_parity_covered": all_rows_parity_covered,
+        "identity_ready": identity_ready,
+        "doc_narrative_ready": all(doc_checks),
+        "ready_for_hosted_fedpro_bounded_proof_claim": (
+            doc_path.exists()
+            and len(hosted_rows) == len(expected_scenarios)
+            and [row["scenario"] for row in hosted_rows] == expected_scenarios
+            and all_rows_parity_covered
+            and identity_ready
+            and all(doc_checks)
+        ),
+        "current_assessment": (
+            "The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It "
+            "now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit "
+            "python2025 runtime identity, and an auditable statement that the route is a bounded transport/runtime "
+            "slice over hla-backend-python2025."
+        ),
+        "residual_boundary": (
+            "This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted "
+            "FedPro lane into full remote-RTI semantics or exhaustive cross-binding conformance."
+        ),
+    }
+
+
 def _build_promotion_split_audit(
     closeout_readiness: Mapping[str, Any],
     claim_audit: Mapping[str, Any],
@@ -7286,6 +7355,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         completion_rows,
     )
+    hosted_fedpro_bounded_proof_audit = _build_hosted_fedpro_bounded_proof_audit(
+        project_root,
+        route_parity_matrix,
+    )
     duplicate_umbrella_mapping_audit = _build_duplicate_umbrella_mapping_audit(
         project_root,
         harmonization_rows,
@@ -7376,6 +7449,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "retired_legacy_mapping_audit": retired_legacy_mapping_audit,
         "omt_xs_any_mapping_audit": omt_xs_any_mapping_audit,
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
+        "hosted_fedpro_bounded_proof_audit": hosted_fedpro_bounded_proof_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
         "supported_boundary_statement": supported_boundary_statement,
@@ -7442,6 +7516,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     retired_legacy_mapping_audit = snapshot["retired_legacy_mapping_audit"]
     omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
+    hosted_fedpro_bounded_proof_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
     supported_boundary = snapshot["supported_boundary_statement"]
@@ -7739,6 +7814,27 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     )
     for boundary_role, row_ids in binding_boundary_mapping_audit["by_boundary_role"].items():
         lines.append(f"- {boundary_role}: {len(row_ids)} rows ({', '.join(row_ids)})")
+    lines.extend(
+        [
+            "",
+            "## Hosted FedPro Bounded Proof Audit",
+            "",
+            f"- Audit status: {hosted_fedpro_bounded_proof_audit['audit_status']}",
+            f"- Doc path: {hosted_fedpro_bounded_proof_audit['doc_path']}",
+            f"- Doc exists: {hosted_fedpro_bounded_proof_audit['doc_exists']}",
+            f"- Route: {hosted_fedpro_bounded_proof_audit['route']}",
+            f"- Scenario count: {hosted_fedpro_bounded_proof_audit['scenario_count']}",
+            f"- All rows parity-covered: {hosted_fedpro_bounded_proof_audit['all_rows_parity_covered']}",
+            f"- Identity ready: {hosted_fedpro_bounded_proof_audit['identity_ready']}",
+            f"- Doc narrative ready: {hosted_fedpro_bounded_proof_audit['doc_narrative_ready']}",
+            f"- Ready for hosted FedPro bounded proof claim: {hosted_fedpro_bounded_proof_audit['ready_for_hosted_fedpro_bounded_proof_claim']}",
+            f"- Assessment: {hosted_fedpro_bounded_proof_audit['current_assessment']}",
+            f"- Residual boundary: {hosted_fedpro_bounded_proof_audit['residual_boundary']}",
+            "",
+            f"Hosted scenarios: {', '.join(hosted_fedpro_bounded_proof_audit['scenarios'])}",
+            "",
+        ]
+    )
     lines.extend(
         [
             "",

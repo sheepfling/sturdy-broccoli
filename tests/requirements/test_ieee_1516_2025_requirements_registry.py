@@ -36,6 +36,7 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "declaration_management_bounded_proof.md",
         "ddm_bounded_proof.md",
         "federation_management_bounded_proof.md",
+        "hosted_fedpro_bounded_proof.md",
         "framework_rules.md",
         "federate_interface.md",
         "object_management_bounded_proof.md",
@@ -62,6 +63,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         "ddm_bounded_proof.md",
         "support_services_bounded_proof.md",
         "time_management_bounded_proof.md",
+        "hosted_fedpro_bounded_proof.md",
         "binding_and_hosted_route_boundaries.md",
         "callback_binding_deltas.md",
         "omt_xs_any_extension_tolerance.md",
@@ -71,6 +73,25 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
     assert "bounded requirement-facing proof note" in normalized
     assert "main `python2025` lane plus hosted replay" in normalized
     assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime" in text
+
+
+@pytest.mark.requirements("HLA2025-BND-003", "HLA2025-MIL-001", "HLA2025-MIL-002")
+def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit() -> None:
+    text = (REGISTRY_DIR / "hosted_fedpro_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records the repo's current hosted-route claim for `python-2025-fedpro-grpc`." in normalized
+    assert "bounded transport/runtime slice rather than a second RTI implementation family" in normalized
+    assert "The hosted route is parity-covered across the tracked scenario families" in normalized
+    assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`tests/scenarios/test_python_route_parity.py`" in text
+    assert "`docs/backend_route_inventory_remote.md`" in text
+    assert "`packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`" in text
+    assert "`federation_lifecycle`" in text
+    assert "`time_management`" in text
+    assert "`support_services`" in text
+    assert "`hla-backend-python2025`" in text
+    assert "does not claim that `python-2025-fedpro-grpc` is a second full RTI implementation lane" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

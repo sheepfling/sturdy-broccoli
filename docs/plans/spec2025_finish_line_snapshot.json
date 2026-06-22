@@ -7711,6 +7711,39 @@
     ]
   },
   "finish_rule": "Each future or reopened row needs a positive test, a negative unsupported-boundary test, or an explicit supported-subset/unsupported-boundary disposition before it can be counted as closed.",
+  "hosted_fedpro_bounded_proof_audit": {
+    "all_rows_parity_covered": true,
+    "audit_status": "hosted-fedpro-bounded-proof-captured",
+    "current_assessment": "The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.",
+    "doc_exists": true,
+    "doc_narrative_ready": true,
+    "doc_path": "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md",
+    "expected_scenarios": [
+      "ddm",
+      "federation_lifecycle",
+      "mom",
+      "object_exchange",
+      "ownership",
+      "save_restore",
+      "support_services",
+      "time_management"
+    ],
+    "identity_ready": true,
+    "ready_for_hosted_fedpro_bounded_proof_claim": true,
+    "residual_boundary": "This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted FedPro lane into full remote-RTI semantics or exhaustive cross-binding conformance.",
+    "route": "python-2025-fedpro-grpc",
+    "scenario_count": 8,
+    "scenarios": [
+      "ddm",
+      "federation_lifecycle",
+      "mom",
+      "object_exchange",
+      "ownership",
+      "save_restore",
+      "support_services",
+      "time_management"
+    ]
+  },
   "hosted_shared_scenario_coverage_audit": {
     "audit_status": "hosted-shared-fedpro-scenarios-accounted-for",
     "current_assessment": "Every shared hosted FedPro 2025 scenario is now represented in the conformance evidence ledger, so the hosted route summary is no longer silently under-counting the main python2025 runtime surface.",
@@ -19351,11 +19384,12 @@
         "requirement_id": "HLA2025-BND-002"
       },
       {
-        "pytest_anchor_count": 231,
+        "pytest_anchor_count": 232,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_lane",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_unknown_backend_specific_options",
@@ -22482,7 +22516,7 @@
         "requirement_id": "HLA2025-FR-010"
       },
       {
-        "pytest_anchor_count": 35,
+        "pytest_anchor_count": 36,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
@@ -22506,6 +22540,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_state",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_direct_runtime_accepts_semantically_equivalent_2010_resign_action",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
@@ -22523,7 +22558,7 @@
         "requirement_id": "HLA2025-MIL-001"
       },
       {
-        "pytest_anchor_count": 22,
+        "pytest_anchor_count": 23,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
@@ -22546,7 +22581,8 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_prevents_fake_dual_provider_tests_with_hardcoded_runtime_selection",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_state",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
-          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane"
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit"
         ],
         "requirement_id": "HLA2025-MIL-002"
       },

@@ -234,6 +234,23 @@ Binding boundary rows by role:
 - cpp-binding: 1 rows (HLA2025-BND-002)
 - hosted-fedpro: 1 rows (HLA2025-BND-003)
 
+## Hosted FedPro Bounded Proof Audit
+
+- Audit status: hosted-fedpro-bounded-proof-captured
+- Doc path: docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md
+- Doc exists: True
+- Route: python-2025-fedpro-grpc
+- Scenario count: 8
+- All rows parity-covered: True
+- Identity ready: True
+- Doc narrative ready: True
+- Ready for hosted FedPro bounded proof claim: True
+- Assessment: The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.
+- Residual boundary: This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted FedPro lane into full remote-RTI semantics or exhaustive cross-binding conformance.
+
+Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management
+
+
 Requirement-by-requirement area closure:
 
 - fi_service_catalog: covered=196
