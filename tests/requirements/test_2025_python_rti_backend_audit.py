@@ -96,6 +96,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     promotion_split = snapshot["promotion_split_audit"]
     claim_audit = snapshot["completion_claim_audit"]
     blocker_partition = snapshot["full_claim_blocker_partition_audit"]
+    closeout_blocker_partition = snapshot["closeout_blocker_partition_audit"]
     requirement_audit = snapshot["requirement_by_requirement_audit"]
     implementation_lane = snapshot["implementation_lane_audit"]
     current_lane_statement = snapshot["current_lane_working_surface_statement"]
@@ -259,6 +260,21 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
         for row in blocker_partition["blocker_rows"]
     )
     assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
+    assert closeout_blocker_partition["audit_status"] == "closeout-blocker-partition-captured"
+    assert closeout_blocker_partition["all_current_closeout_blockers_are_external_to_main_python2025_runtime"] is True
+    assert closeout_blocker_partition["direct_runtime_incompleteness_blocker_count"] == 0
+    assert closeout_blocker_partition["boundary_only_blocker_count"] == 6
+    assert any(
+        row["blocker"] == "implemented_slice_requirement_granularity_gap"
+        and row["classification"] == "requirement-granularity-boundary"
+        for row in closeout_blocker_partition["blocker_rows"]
+    )
+    assert any(
+        row["blocker"] == "legacy_only_explicit_exclusion"
+        and row["classification"] == "legacy-exclusion-boundary"
+        for row in closeout_blocker_partition["blocker_rows"]
+    )
+    assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_blocker_partition["current_assessment"]
     assert claim_audit["ready_for_supported-boundary_statement"] is True
     assert claim_audit["ready_for_full_2025_conformance_claim"] is False
     assert claim_audit["requirement_universe"] == {

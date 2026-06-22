@@ -29,6 +29,26 @@ Conformance blockers:
 - OMT component coverage includes foreign xs:any extension payload preservation, but arbitrary third-party extension execution semantics remain out of scope.
 - Legacy-only rows remain explicit exclusions, so overall completion cannot be promoted to an unconditional 2025 conformance claim.
 
+## Closeout Blocker Partition Audit
+
+- Audit status: closeout-blocker-partition-captured
+- Closeout blocker count: 6
+- Partitioned blocker count: 6
+- Direct-runtime incompleteness blocker count: 0
+- Boundary-only blocker count: 6
+- All current closeout blockers external to main python2025 runtime: True
+- Assessment: The broader closeout blockers are now explicitly partitioned too. On the current tree they all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits rather than missing core executable behavior in the main hla-backend-python2025 runtime lane.
+- Residual boundary: This partition audit clarifies why closeout remains incomplete without treating the main python2025 runtime as behaviorally unfinished.
+
+Partitioned blockers:
+
+- row_level_requirement_closeout_limit: requirement-closeout-boundary, counts_against_main_python2025_runtime_completeness=False (row-level disposition still includes retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass)
+- implemented_slice_requirement_granularity_gap: requirement-granularity-boundary, counts_against_main_python2025_runtime_completeness=False (many implemented slices still aggregate multiple requirements under bounded supported-scope language)
+- standard_java_cpp_cross_binding_gap: external-binding-boundary, counts_against_main_python2025_runtime_completeness=False (Java/C++ standard-route evidence remains artifact-gated/runtime-capability proof rather than full cross-binding behavior conformance)
+- hosted_fedpro_cross_binding_gap: external-hosted-boundary, counts_against_main_python2025_runtime_completeness=False (hosted FedPro supported-scope rows stop short of full RTI semantics and full cross-binding conformance)
+- omt_extension_execution_scope_gap: external-omt-boundary, counts_against_main_python2025_runtime_completeness=False (OMT xs:any coverage preserves foreign extension payloads but leaves arbitrary third-party extension execution semantics out of scope)
+- legacy_only_explicit_exclusion: legacy-exclusion-boundary, counts_against_main_python2025_runtime_completeness=False (legacy-only rows remain explicit exclusions from an unconditional 2025 completion claim)
+
 ## Pytest Anchor Audit
 
 - Anchored requirements: 716

@@ -3255,6 +3255,66 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("Java and C++ standard-route evidence" in blocker for blocker in closeout["conformance_blockers"])
     assert any("hosted FedPro route is verified as a runtime slice" in blocker for blocker in closeout["conformance_blockers"])
     assert any("hosted/cross-binding proof limit rather than evidence that the direct python2025 runtime lane lacks those semantics" in blocker for blocker in closeout["conformance_blockers"])
+    closeout_partition = snapshot["closeout_blocker_partition_audit"]
+    assert closeout_partition["audit_status"] == "closeout-blocker-partition-captured"
+    assert closeout_partition["closeout_blocker_count"] == 6
+    assert closeout_partition["partitioned_blocker_count"] == 6
+    assert closeout_partition["direct_runtime_incompleteness_blocker_count"] == 0
+    assert closeout_partition["boundary_only_blocker_count"] == 6
+    assert closeout_partition["all_current_closeout_blockers_are_external_to_main_python2025_runtime"] is True
+    assert closeout_partition["blocker_rows"] == [
+        {
+            "blocker": "row_level_requirement_closeout_limit",
+            "classification": "requirement-closeout-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "row-level disposition still includes retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass"
+            ),
+        },
+        {
+            "blocker": "implemented_slice_requirement_granularity_gap",
+            "classification": "requirement-granularity-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "many implemented slices still aggregate multiple requirements under bounded supported-scope language"
+            ),
+        },
+        {
+            "blocker": "standard_java_cpp_cross_binding_gap",
+            "classification": "external-binding-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "Java/C++ standard-route evidence remains artifact-gated/runtime-capability proof rather than full cross-binding behavior conformance"
+            ),
+        },
+        {
+            "blocker": "hosted_fedpro_cross_binding_gap",
+            "classification": "external-hosted-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "hosted FedPro supported-scope rows stop short of full RTI semantics and full cross-binding conformance"
+            ),
+        },
+        {
+            "blocker": "omt_extension_execution_scope_gap",
+            "classification": "external-omt-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "OMT xs:any coverage preserves foreign extension payloads but leaves arbitrary third-party extension execution semantics out of scope"
+            ),
+        },
+        {
+            "blocker": "legacy_only_explicit_exclusion",
+            "classification": "legacy-exclusion-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "legacy-only rows remain explicit exclusions from an unconditional 2025 completion claim"
+            ),
+        },
+    ]
+    assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_partition["current_assessment"]
+    assert "missing core executable behavior in the main hla-backend-python2025 runtime lane" in closeout_partition["current_assessment"]
+    assert "without treating the main python2025 runtime as behaviorally unfinished" in closeout_partition["residual_boundary"]
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")
@@ -4158,6 +4218,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["main_python2025_implementation_claim_audit"]["ready_for_main_python2025_implementation_claim"] is True
     assert payload["main_python2025_implementation_claim_audit"]["ready_for_full_2025_conformance_claim"] is False
     assert payload["full_claim_blocker_partition_audit"]["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
+    assert payload["closeout_blocker_partition_audit"]["all_current_closeout_blockers_are_external_to_main_python2025_runtime"] is True
     assert payload["closeout_readiness"]["ready_for_slice_closeout"] is True
     assert payload["closeout_readiness"]["ready_for_full_completion_claim"] is False
 
@@ -4168,6 +4229,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "Imported requirement-depth rows: 691" in markdown
     assert "Imported provisional disposition rows: 691" in markdown
     assert "Closeout Readiness" in markdown
+    assert "Closeout Blocker Partition Audit" in markdown
     assert "Pytest Anchor Audit" in markdown
     assert "Unanchored Requirement Audit" in markdown
     assert "FI Service Proof Audit" in markdown
@@ -4299,6 +4361,10 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert blocker_partition["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
     assert blocker_partition["direct_runtime_incompleteness_blocker_count"] == 0
     assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
+    closeout_partition = payload["closeout_blocker_partition_audit"]
+    assert closeout_partition["all_current_closeout_blockers_are_external_to_main_python2025_runtime"] is True
+    assert closeout_partition["direct_runtime_incompleteness_blocker_count"] == 0
+    assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_partition["current_assessment"]
 
     assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["runtime_provider"] == "python2025"
     assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"

@@ -1290,6 +1290,54 @@
     "row_count": 55,
     "sample_callback_helper_only_rows": []
   },
+  "closeout_blocker_partition_audit": {
+    "all_current_closeout_blockers_are_external_to_main_python2025_runtime": true,
+    "audit_status": "closeout-blocker-partition-captured",
+    "blocker_rows": [
+      {
+        "blocker": "row_level_requirement_closeout_limit",
+        "classification": "requirement-closeout-boundary",
+        "counts_against_main_python2025_runtime_completeness": false,
+        "evidence_basis": "row-level disposition still includes retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass"
+      },
+      {
+        "blocker": "implemented_slice_requirement_granularity_gap",
+        "classification": "requirement-granularity-boundary",
+        "counts_against_main_python2025_runtime_completeness": false,
+        "evidence_basis": "many implemented slices still aggregate multiple requirements under bounded supported-scope language"
+      },
+      {
+        "blocker": "standard_java_cpp_cross_binding_gap",
+        "classification": "external-binding-boundary",
+        "counts_against_main_python2025_runtime_completeness": false,
+        "evidence_basis": "Java/C++ standard-route evidence remains artifact-gated/runtime-capability proof rather than full cross-binding behavior conformance"
+      },
+      {
+        "blocker": "hosted_fedpro_cross_binding_gap",
+        "classification": "external-hosted-boundary",
+        "counts_against_main_python2025_runtime_completeness": false,
+        "evidence_basis": "hosted FedPro supported-scope rows stop short of full RTI semantics and full cross-binding conformance"
+      },
+      {
+        "blocker": "omt_extension_execution_scope_gap",
+        "classification": "external-omt-boundary",
+        "counts_against_main_python2025_runtime_completeness": false,
+        "evidence_basis": "OMT xs:any coverage preserves foreign extension payloads but leaves arbitrary third-party extension execution semantics out of scope"
+      },
+      {
+        "blocker": "legacy_only_explicit_exclusion",
+        "classification": "legacy-exclusion-boundary",
+        "counts_against_main_python2025_runtime_completeness": false,
+        "evidence_basis": "legacy-only rows remain explicit exclusions from an unconditional 2025 completion claim"
+      }
+    ],
+    "boundary_only_blocker_count": 6,
+    "closeout_blocker_count": 6,
+    "current_assessment": "The broader closeout blockers are now explicitly partitioned too. On the current tree they all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits rather than missing core executable behavior in the main hla-backend-python2025 runtime lane.",
+    "direct_runtime_incompleteness_blocker_count": 0,
+    "partitioned_blocker_count": 6,
+    "residual_boundary": "This partition audit clarifies why closeout remains incomplete without treating the main python2025 runtime as behaviorally unfinished."
+  },
   "closeout_readiness": {
     "conformance_blockers": [
       "The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass; this is a requirement-closeout limit rather than evidence that the main python2025 runtime lane is behaviorally incomplete.",
