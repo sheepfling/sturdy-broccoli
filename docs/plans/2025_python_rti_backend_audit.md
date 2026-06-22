@@ -255,6 +255,13 @@ Recent evidence run already recorded in this worktree:
 - full hosted 2025 FedPro transport suite:
   `251 passed in 57.24s`
 
+Canonical operator proof lanes also ran green on the current tree:
+
+- `./tools/python verify-main-2025`:
+  `324 passed across wrapper subcommands plus Target/Radar example`
+- `./tools/python verify-routes-2025`:
+  `434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example`
+
 Hosted shared-scenario coverage audit:
 
 - Shared hosted FedPro scenarios: 36
@@ -350,6 +357,20 @@ So the correct statement today is:
 
 - yes: substantively validated working Python 2025 RTI surface
 - no: not yet a final unconditional 2025 conformance claim
+
+The newer finish-line partition audits make one more thing explicit:
+
+- the remaining full-claim blockers are now partitioned as external ownership
+  boundaries rather than hidden direct-runtime incompleteness inside
+  `hla-backend-python2025`
+- the broader closeout blockers are also partitioned as requirement-granularity,
+  hosted-route, cross-binding, OMT-extension-scope, or legacy-exclusion limits
+  rather than missing core executable behavior in the main Python 2025 runtime
+  lane
+- that does not erase the remaining work, but it does make the ownership of the
+  remaining work much clearer
+- the main `python2025` lane is no longer being held back by vague blocker
+  language that might be read as “the runtime is still missing core semantics”
 
 Non-claims that must stay explicit:
 

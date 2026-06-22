@@ -107,6 +107,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     hosted_shared = snapshot["hosted_shared_scenario_coverage_audit"]
     dimensions = {item["id"]: item for item in snapshot["objective_dimension_audit"]["dimensions"]}
     vendor_time_audit = snapshot["time_window_vendor_parity_audit"]
+    proof_lane_audit = snapshot["python2025_proof_lane_audit"]
 
     assert audit_path.exists()
     assert implementation_lane["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
@@ -275,6 +276,15 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
         for row in closeout_blocker_partition["blocker_rows"]
     )
     assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_blocker_partition["current_assessment"]
+    assert "Canonical operator proof lanes also ran green on the current tree" in audit_text
+    assert all(
+        f"`{run['command']}`" in audit_text and f"`{run['result']}`" in audit_text
+        for run in proof_lane_audit["current_operator_runs"]
+    )
+    assert "The newer finish-line partition audits make one more thing explicit" in audit_text
+    assert "remaining full-claim blockers are now partitioned as external ownership boundaries" in normalized_audit_text_lower
+    assert "broader closeout blockers are also partitioned as requirement-granularity, hosted-route, cross-binding, omt-extension-scope, or legacy-exclusion limits" in normalized_audit_text_lower
+    assert "the main `python2025` lane is no longer being held back by vague blocker language" in normalized_audit_text_lower
     assert claim_audit["ready_for_supported-boundary_statement"] is True
     assert claim_audit["ready_for_full_2025_conformance_claim"] is False
     assert claim_audit["requirement_universe"] == {
