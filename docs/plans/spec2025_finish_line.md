@@ -167,7 +167,7 @@ Requirement-by-requirement duplicate/umbrella breakdown:
 - Framework row count: 10
 - Delta row count: 12
 - Ready for duplicate umbrella mapping claim: True
-- Assessment: The duplicate/umbrella rows are no longer just grouped by role in the finish-line bundle. The repo now has explicit proof-note documents for both framework-rule umbrellas and callback/configuration/binding delta umbrellas, and every umbrella row is anchored to and enumerated by those notes.
+- Assessment: The duplicate/umbrella rows are no longer just grouped by role in the finish-line bundle. The repo now has explicit proof-note documents for both framework-rule umbrellas and callback/configuration/binding delta umbrellas, and every umbrella row is anchored to, enumerated by, and child-linked from those notes.
 - Residual boundary: This audit improves the traceability of umbrella rows, but it does not change their status into standalone one-row conformance claims.
 
 Duplicate umbrella rows by role:

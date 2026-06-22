@@ -3187,8 +3187,15 @@ def _build_duplicate_umbrella_mapping_audit(
 ) -> dict[str, Any]:
     framework_doc_rel = "docs/requirements/ieee-1516-2025/framework_rules.md"
     delta_doc_rel = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+    registry_rel = "docs/requirements/ieee-1516-2025/requirements.json"
+    backlog_rel = "requirements/2025/requirement_completion_backlog.csv"
     framework_text = (project_root / framework_doc_rel).read_text(encoding="utf-8")
     delta_text = (project_root / delta_doc_rel).read_text(encoding="utf-8")
+    registry_data = json.loads((project_root / registry_rel).read_text(encoding="utf-8"))
+    registry_row_ids = {row["id"] for row in registry_data["requirements"]}
+    backlog_row_ids = {row["id"] for row in _read_csv(project_root / backlog_rel)}
+    all_row_ids = {row["id"] for row in harmonization_rows} | registry_row_ids | backlog_row_ids
+    row_disposition_by_id = {row["id"]: row["harmonization_disposition"] for row in harmonization_rows}
     rows = [row for row in harmonization_rows if row["harmonization_disposition"] == "duplicate/umbrella"]
     by_row_role: dict[str, list[str]] = {}
     for row in rows:
@@ -3197,6 +3204,8 @@ def _build_duplicate_umbrella_mapping_audit(
         row_ids.sort()
     framework_rows = [row for row in rows if row["row_role"] == "framework-umbrella"]
     delta_rows = [row for row in rows if row["row_role"] == "delta-umbrella"]
+    framework_child_links = _extract_umbrella_child_links(framework_text, row_id_prefix="HLA2025-FR-")
+    delta_child_links = _extract_umbrella_child_links(delta_text, row_id_prefix="HLA2025-")
     framework_missing_doc_anchor = sorted(
         row["id"] for row in framework_rows if framework_doc_rel not in row["suggested_repo_evidence_path"]
     )
@@ -3205,34 +3214,87 @@ def _build_duplicate_umbrella_mapping_audit(
     )
     framework_missing_from_doc = sorted(row["id"] for row in framework_rows if row["id"] not in framework_text)
     delta_missing_from_doc = sorted(row["id"] for row in delta_rows if row["id"] not in delta_text)
+    framework_missing_child_links = sorted(row["id"] for row in framework_rows if not framework_child_links.get(row["id"]))
+    delta_missing_child_links = sorted(row["id"] for row in delta_rows if not delta_child_links.get(row["id"]))
+    framework_unknown_child_ids: dict[str, list[str]] = {}
+    for row_id, child_ids in framework_child_links.items():
+        unknown_child_ids = sorted(child_id for child_id in child_ids if child_id not in all_row_ids)
+        if unknown_child_ids:
+            framework_unknown_child_ids[row_id] = unknown_child_ids
+    delta_unknown_child_ids: dict[str, list[str]] = {}
+    for row_id, child_ids in delta_child_links.items():
+        unknown_child_ids = sorted(child_id for child_id in child_ids if child_id not in all_row_ids)
+        if unknown_child_ids:
+            delta_unknown_child_ids[row_id] = unknown_child_ids
+    framework_rows_without_concrete_child = sorted(
+        row_id
+        for row_id, child_ids in framework_child_links.items()
+        if not any(row_disposition_by_id.get(child_id) != "duplicate/umbrella" for child_id in child_ids)
+    )
+    delta_rows_without_concrete_child = sorted(
+        row_id
+        for row_id, child_ids in delta_child_links.items()
+        if not any(row_disposition_by_id.get(child_id) != "duplicate/umbrella" for child_id in child_ids)
+    )
     return {
         "audit_status": "duplicate-umbrella-mapping-captured",
         "row_count": len(rows),
         "framework_doc_path": framework_doc_rel,
         "delta_doc_path": delta_doc_rel,
+        "registry_path": registry_rel,
+        "backlog_path": backlog_rel,
         "framework_row_count": len(framework_rows),
         "delta_row_count": len(delta_rows),
         "framework_missing_doc_anchor": framework_missing_doc_anchor,
         "delta_missing_doc_anchor": delta_missing_doc_anchor,
         "framework_missing_from_doc": framework_missing_from_doc,
         "delta_missing_from_doc": delta_missing_from_doc,
+        "framework_child_links": framework_child_links,
+        "delta_child_links": delta_child_links,
+        "framework_missing_child_links": framework_missing_child_links,
+        "delta_missing_child_links": delta_missing_child_links,
+        "framework_unknown_child_ids": framework_unknown_child_ids,
+        "delta_unknown_child_ids": delta_unknown_child_ids,
+        "framework_rows_without_concrete_child": framework_rows_without_concrete_child,
+        "delta_rows_without_concrete_child": delta_rows_without_concrete_child,
         "by_row_role": by_row_role,
         "ready_for_duplicate_umbrella_mapping_claim": (
             not framework_missing_doc_anchor
             and not delta_missing_doc_anchor
             and not framework_missing_from_doc
             and not delta_missing_from_doc
+            and not framework_missing_child_links
+            and not delta_missing_child_links
+            and not framework_unknown_child_ids
+            and not delta_unknown_child_ids
+            and not framework_rows_without_concrete_child
+            and not delta_rows_without_concrete_child
         ),
         "current_assessment": (
             "The duplicate/umbrella rows are no longer just grouped by role in the finish-line bundle. The repo now "
             "has explicit proof-note documents for both framework-rule umbrellas and callback/configuration/binding "
-            "delta umbrellas, and every umbrella row is anchored to and enumerated by those notes."
+            "delta umbrellas, and every umbrella row is anchored to, enumerated by, and child-linked from those notes."
         ),
         "residual_boundary": (
             "This audit improves the traceability of umbrella rows, but it does not change their status into "
             "standalone one-row conformance claims."
         ),
     }
+
+
+def _extract_umbrella_child_links(text: str, *, row_id_prefix: str) -> dict[str, list[str]]:
+    child_links: dict[str, list[str]] = {}
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith(f"| {row_id_prefix}"):
+            continue
+        columns = [column.strip() for column in stripped.strip("|").split("|")]
+        if len(columns) < 3:
+            continue
+        row_id = columns[0]
+        child_ids = sorted({match for match in re.findall(r"HLA2025-[A-Z0-9-]+", stripped) if match != row_id})
+        child_links[row_id] = child_ids
+    return child_links
 
 
 def _build_omt_xs_any_mapping_audit(

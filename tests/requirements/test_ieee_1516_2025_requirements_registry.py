@@ -120,8 +120,11 @@ def test_framework_rules_markdown_maps_umbrella_rows_to_child_evidence() -> None
     assert "`HLA2025-FI-009`, `HLA2025-MOD-006`, `HLA2025-FI-SVC-101`, `HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-112`, `HLA2025-FI-SVC-121`" in text
     assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "| HLA2025-FR-005 |" in text
+    assert "| HLA2025-FR-010 |" in text
     assert "The primary implementation lane behind the executable anchors above is `hla-backend-python2025`." in normalized
     assert "`hla-backend-shim` is not a runtime owner for these framework rules." in normalized
+    assert "Each rule closes only through linked child FI, OMT, and runtime evidence" in normalized
 
 
 @pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")
@@ -137,8 +140,11 @@ def test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_bindi
     assert "`HLA2025-BND-001`, `HLA2025-BND-002`, `HLA2025-FI-003`, `HLA2025-FI-004`" in text
     assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "| HLA2025-FI-CB-008 |" in text
+    assert "| HLA2025-BIND-JAVA-CPP-001 |" in text
     assert "The primary runtime owner behind the executable anchors above is `hla-backend-python2025`." in normalized
     assert "`hla-backend-shim`, `hla-backend-cpp-shim`, and the Java bridge packages are wrapper/binding surfaces over that runtime lane;" in normalized
+    assert "Each row closes only through the linked child FI/binding rows" in normalized
 
 
 @pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")

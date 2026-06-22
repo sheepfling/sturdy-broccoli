@@ -1286,9 +1286,40 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert duplicate_umbrella_audit["delta_missing_doc_anchor"] == []
     assert duplicate_umbrella_audit["framework_missing_from_doc"] == []
     assert duplicate_umbrella_audit["delta_missing_from_doc"] == []
+    assert duplicate_umbrella_audit["framework_missing_child_links"] == []
+    assert duplicate_umbrella_audit["delta_missing_child_links"] == []
+    assert duplicate_umbrella_audit["framework_unknown_child_ids"] == {}
+    assert duplicate_umbrella_audit["delta_unknown_child_ids"] == {}
+    assert duplicate_umbrella_audit["framework_rows_without_concrete_child"] == []
+    assert duplicate_umbrella_audit["delta_rows_without_concrete_child"] == []
+    assert duplicate_umbrella_audit["framework_child_links"]["HLA2025-FR-001"] == [
+        "HLA2025-OMT-001",
+        "HLA2025-OMT-005",
+        "HLA2025-OMT-006",
+        "HLA2025-REQ-001",
+    ]
+    assert duplicate_umbrella_audit["framework_child_links"]["HLA2025-FR-010"] == [
+        "HLA2025-FI-009",
+        "HLA2025-FI-SVC-101",
+        "HLA2025-FI-SVC-107",
+        "HLA2025-FI-SVC-112",
+        "HLA2025-FI-SVC-121",
+        "HLA2025-MOD-006",
+    ]
+    assert duplicate_umbrella_audit["delta_child_links"]["HLA2025-FI-CB-007"] == [
+        "HLA2025-BND-003",
+        "HLA2025-FI-SVC-063",
+        "HLA2025-FI-SVC-064",
+    ]
+    assert duplicate_umbrella_audit["delta_child_links"]["HLA2025-BIND-JAVA-CPP-001"] == [
+        "HLA2025-BND-001",
+        "HLA2025-BND-002",
+        "HLA2025-FI-003",
+        "HLA2025-FI-004",
+    ]
     assert duplicate_umbrella_audit["by_row_role"] == requirement_audit["duplicate_umbrella_rows_by_role"]
     assert duplicate_umbrella_audit["ready_for_duplicate_umbrella_mapping_claim"] is True
-    assert "explicit proof-note documents for both framework-rule umbrellas" in duplicate_umbrella_audit["current_assessment"]
+    assert "anchored to, enumerated by, and child-linked from those notes" in duplicate_umbrella_audit["current_assessment"]
     assert "does not change their status into standalone one-row conformance claims" in duplicate_umbrella_audit["residual_boundary"]
     retired_mapping_audit = snapshot["retired_legacy_mapping_audit"]
     assert retired_mapping_audit["audit_status"] == "retired-legacy-mapping-captured"
