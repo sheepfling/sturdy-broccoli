@@ -515,6 +515,9 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "the same boundary applies to the remaining non-python binding evidence too" in normalized_audit_text_lower
     assert "java and c++ route work is binding/adaptation-seam proof" in normalized_audit_text_lower
     assert "it is not evidence that the main python 2025 runtime is still missing core rti semantics" in normalized_audit_text_lower
+    assert "python2025_direct_bounded_proof.md" in audit_text
+    assert "compact excluded-area inventory behind this bounded claim" in normalized_audit_text_lower
+    assert "forcing readers to mine the full generated finish-line bundle" in normalized_audit_text_lower
     assert "promoting the current lane as the working python 2025 rti surface" in normalized_audit_text_lower
     assert "the architecture should still preserve a clean enough seam" in normalized_audit_text_lower
     assert "the repo is not building two duplicate python 2025 rtis" in normalized_audit_text_lower
@@ -1338,6 +1341,10 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "wrapper-only compatibility behavior" in normalized_python_rti_map
     assert "run `./tools/python verify-main-2025` as the default proof command after changes in that path" in normalized_python_rti_map
     assert "run `./tools/python verify-routes-2025` when the change must stay aligned with the bounded hosted `python-2025-fedpro-grpc` route" in normalized_python_rti_map
+    assert "`docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`" in normalized_backend
+    assert "main executable bounded proof surface for the current 2025 python rti" in normalized_backend
+    assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in normalized_backend
+    assert "explicit non-claim map around that bounded working-surface statement" in normalized_backend
 
     assert "read [`first_run.md`](first_run.md) for the 2010 pure-python bootstrap lane" in normalized_docs_index
     assert "read [`python_rti_backend.md`](python_rti_backend.md) for the main 2025 python rti lane in `hla-backend-python2025`" in normalized_docs_index
@@ -1350,6 +1357,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`" in normalized_docs_index
     assert "[verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, galt/lits, and radar-window proof front door for the primary 2025 python rti lane" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane" in normalized_docs_index
+    assert "[requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)" in normalized_docs_index
+    assert "[requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit non-claim map for shim aliases, java/c++ bindings, hosted-route boundaries, umbrella rows, retired rows, and omt extension semantics around the main `python2025` lane" in normalized_docs_index
     assert "java/c++ standard-surface binding routes and evidence contract" in normalized_docs_index
     assert "the main requirement-backed semantics now live across package-owned modules such as:" in normalized_requirements_index
     assert "`backend_factory_runtime.py`" in requirements_index_doc

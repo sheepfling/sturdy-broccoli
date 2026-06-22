@@ -594,10 +594,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert pytest_rows["HLA2025-FI-007"]["pytest_anchor_count"] == 2
     assert any("test_each_proto2025_2025_scenario_fom_set_merges_with_standard_mim" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
     assert any("test_proto2025_2025_example_foms_drive_two_federate_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 6
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
     assert any("test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 6
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
     assert any("test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
     assert pytest_rows["HLA2025-MOD-001"]["pytest_anchor_count"] == 2

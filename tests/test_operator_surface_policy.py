@@ -221,6 +221,19 @@ def test_package_dependency_tree_doc_uses_tools_surface() -> None:
     assert "python3 scripts/generate_package_dependency_tree.py" not in text
 
 
+def test_package_dependency_tree_generator_keeps_python2025_as_runtime_owner() -> None:
+    script_text = (ROOT / "scripts" / "generate_package_dependency_tree.py").read_text(encoding="utf-8")
+    doc_text = _primary_text(ROOT / "docs" / "package_dependency_tree.md")
+
+    expected = (
+        "`hla-backend-python2025` is the main full 2025 Python RTI backend, and "
+        "`hla-backend-shim` is temporary import-compatibility scaffolding plus a "
+        "legacy compatibility wrapper that depends on it rather than a peer RTI lane."
+    )
+    assert expected in script_text
+    assert expected in doc_text
+
+
 def test_rti_options_doc_uses_tools_surface() -> None:
     text = _primary_text(ROOT / "docs" / "rti_options_and_test_matrix.md")
     assert "./tools/rti-options generate" in text

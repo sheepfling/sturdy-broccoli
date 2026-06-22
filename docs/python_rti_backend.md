@@ -134,6 +134,8 @@ Primary evidence anchors:
 
 - `docs/plans/2025_requirements_finish_line.md`
 - `docs/plans/2025_python_rti_backend_audit.md`
+- `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
 - `packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py`
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
 - `examples/target_radar_simulation.py`
@@ -144,6 +146,17 @@ Primary evidence anchors:
 - `tests/requirements/test_2025_route_parity_matrix.py`
 - `tests/backends/test_shim_route_trace_evidence.py`
 - `tests/transport/test_grpc_transport_2025.py`
+
+For the explicit non-claim map around that bounded working-surface statement,
+use `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`.
+That note gathers the current exclusions for legacy aliases, Java/C++ binding
+lanes, hosted transport boundaries, duplicate/umbrella rows, retired rows, and
+out-of-scope OMT extension semantics in one requirement-facing place.
+
+The matching direct note,
+`docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`,
+captures the main executable bounded proof surface for the current 2025 Python
+RTI.
 
 The current bounded claim is:
 

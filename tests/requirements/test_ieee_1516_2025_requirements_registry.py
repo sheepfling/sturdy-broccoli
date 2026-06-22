@@ -45,6 +45,8 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "omt_xs_any_extension_tolerance.md",
         "omt.md",
         "ownership_management_bounded_proof.md",
+        "python2025_direct_bounded_proof.md",
+        "python2025_exclusion_boundaries.md",
         "support_services_bounded_proof.md",
         "standard_binding_runtime_capability_bounded_proof.md",
         "time_management_bounded_proof.md",
@@ -60,6 +62,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
 
     for filename in (
         "federation_management_bounded_proof.md",
+        "python2025_direct_bounded_proof.md",
         "declaration_management_bounded_proof.md",
         "object_management_bounded_proof.md",
         "ownership_management_bounded_proof.md",
@@ -69,6 +72,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         "time_management_bounded_proof.md",
         "hosted_fedpro_bounded_proof.md",
         "binding_and_hosted_route_boundaries.md",
+        "python2025_exclusion_boundaries.md",
         "callback_binding_deltas.md",
         "omt_xs_any_extension_tolerance.md",
     ):
@@ -76,7 +80,9 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
 
     assert "bounded requirement-facing proof note" in normalized
     assert "main `python2025` lane plus hosted replay" in normalized
+    assert "direct `python2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
     assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime" in text
+    assert "explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics" in normalized
 
 
 @pytest.mark.requirements("HLA2025-BND-003", "HLA2025-MIL-001", "HLA2025-MIL-002")
@@ -106,10 +112,66 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
 
     assert "## Current Technical Lane" in text
     assert "deeper runtime-proof expansion over the promoted `python2025` RTI surface" in normalized
+    assert "the dedicated direct `python2025` bounded proof note" in normalized
     assert "the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime families" in normalized
     assert "wrapper-only shim boundaries" in normalized
+    assert "one explicit exclusion map that gathers the non-claim areas around the main `python2025` runtime lane" in normalized
     assert "FOM/OMT validation still matters inside that lane" in normalized
     assert "one proof family inside the broader 2025 runtime-evidence closeout" in normalized
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
+def test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas() -> None:
+    text = (REGISTRY_DIR / "python2025_exclusion_boundaries.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records what the repository is explicitly **not** claiming" in text
+    assert "main IEEE 1516.1-2025 Python RTI implementation statement" in text
+    assert "`hla-backend-python2025` is the sole repo-owned Python RTI implementation lane" in normalized
+    assert "Legacy aliases and shim imports" in text
+    assert "Java/C++ bindings" in text
+    assert "Hosted transport boundaries" in text
+    assert "Duplicate/umbrella rows" in text
+    assert "Retired/legacy-only rows" in text
+    assert "OMT extension semantics" in text
+    assert "`hla-backend-shim` is deprecated temporary import-compatibility scaffolding and wrapper-only compatibility support" in normalized
+    assert "not alternate Python RTIs and not exhaustive cross-binding behavior conformance" in normalized
+    assert "bounded hosted transport/runtime slice over `hla-backend-python2025`" in normalized
+    assert "normalization aids and mapping notes rather than standalone one-row conformance assertions" in normalized
+    assert "explicit exclusions from active 2025 support obligations" in normalized
+    assert "Arbitrary third-party extension execution semantics remain out of scope" in text
+    assert "`../../python_rti_backend.md`" in text
+    assert "`hosted_fedpro_bounded_proof.md`" in text
+    assert "`standard_binding_runtime_capability_bounded_proof.md`" in text
+    assert "`retired_legacy_mapping.md`" in text
+    assert "`omt_xs_any_extension_tolerance.md`" in text
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-MIL-001", "HLA2025-MIL-002")
+def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit() -> None:
+    text = (REGISTRY_DIR / "python2025_direct_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records the repo's current direct-lane claim for `python2025`." in normalized
+    assert "The direct lane is the main executable bounded proof surface for the current 2025 Python RTI." in normalized
+    assert "`hla-backend-python2025`" in text
+    assert "`federation_lifecycle`" in text
+    assert "`object_exchange`" in text
+    assert "`ownership`" in text
+    assert "`ddm`" in text
+    assert "`time_management`" in text
+    assert "`save_restore`" in text
+    assert "`mom`" in text
+    assert "`support_services`" in text
+    assert "`omt_validation`" in text
+    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/scenarios/test_target_radar_scenario.py`" in text
+    assert "`tests/test_fom_target_radar_split_package.py`" in text
+    assert "`tests/test_rti1516_2025_validation.py`" in text
+    assert "`docs/test_surface.md`" in text
+    assert "verify-main-2025" in text
+    assert "not a wrapper-owned surface and not a full unqualified conformance claim" in normalized
+    assert "does not treat `hla-backend-shim` as part of the implementation owner claim for this lane" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-003", "HLA2025-FR-004")

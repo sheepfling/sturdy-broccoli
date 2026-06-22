@@ -200,6 +200,8 @@ Primary evidence anchors:
 
 - [python_rti_backend.md](../python_rti_backend.md)
 - [2025_requirements_finish_line.md](2025_requirements_finish_line.md)
+- [../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)
+- [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
 - [../packages/hla-backend-python2025/README.md](../../packages/hla-backend-python2025/README.md)
 - [../packages/hla-backend-shim/README.md](../../packages/hla-backend-shim/README.md)
 - [../examples/target_radar_simulation.py](../../examples/target_radar_simulation.py)
@@ -212,6 +214,12 @@ Primary evidence anchors:
 - [../tests/transport/test_grpc_transport_2025.py](../../tests/transport/test_grpc_transport_2025.py)
 - [../tests/requirements/test_2025_finish_line_snapshot.py](../../tests/requirements/test_2025_finish_line_snapshot.py)
 - [../tests/requirements/test_2025_route_parity_matrix.py](../../tests/requirements/test_2025_route_parity_matrix.py)
+
+For the compact excluded-area inventory behind this bounded claim, use
+[`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md).
+That requirement-facing note keeps the shim-alias, Java/C++, hosted-route,
+umbrella-row, retired-row, and OMT-extension boundaries explicit without
+forcing readers to mine the full generated finish-line bundle.
 
 ## Current Proof Contract
 

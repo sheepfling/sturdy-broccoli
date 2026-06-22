@@ -28,6 +28,7 @@ Source anchors for modal terms:
 - `omt.md`: OMT/FOM naming, DIF, component, identification, conformance, and merge requirements.
 - `traceability_matrix.md`: initial requirement-to-project-lane and primary-`python2025` runtime plus binding/hosted-route scenario mapping.
 - `federation_management_bounded_proof.md`: bounded requirement-facing proof note for federation lifecycle, synchronization, and save/restore control families over the main `python2025` lane plus hosted replay.
+- `python2025_direct_bounded_proof.md`: bounded requirement-facing proof note for the direct `python2025` main-surface runtime lane over `hla-backend-python2025`.
 - `declaration_management_bounded_proof.md`: bounded requirement-facing proof note for publication, subscription, advisory, and name-reservation families.
 - `object_management_bounded_proof.md`: bounded requirement-facing proof note for object registration, updates, interactions, routing, and delete/remove families.
 - `ownership_management_bounded_proof.md`: bounded requirement-facing proof note for divestiture, acquisition, release, query, and resign-time ownership policies.
@@ -37,6 +38,7 @@ Source anchors for modal terms:
 - `standard_binding_runtime_capability_bounded_proof.md`: bounded requirement-facing proof note for Java/C++ standard-route artifact-gated runtime-capability traces over the main `python2025` runtime.
 - `hosted_fedpro_bounded_proof.md`: bounded requirement-facing proof note for the hosted `python-2025-fedpro-grpc` transport/runtime slice over the main `python2025` RTI lane.
 - `binding_and_hosted_route_boundaries.md`: bounded requirement-facing note for Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime.
+- `python2025_exclusion_boundaries.md`: explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics around the main `python2025` claim.
 - `callback_binding_deltas.md`: bounded requirement-facing note for callback/configuration/binding delta rows.
 - `omt_xs_any_extension_tolerance.md`: bounded requirement-facing note for OMT `xs:any` extension preservation and schema-tolerant round-trip behavior.
 - `executable_tests/`: imported v3 executable-test backlog with 1117 candidate test rows.
@@ -71,12 +73,18 @@ requirement-facing evidence map for:
 
 - federation, object, ownership, DDM, save/restore, MOM, support-service, and
   time-management bounded proof notes over `hla-backend-python2025`
+- the dedicated direct `python2025` bounded proof note that treats the main
+  in-process lane as its own requirement-facing executable surface instead of
+  only as architecture prose
 - the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime
   families without turning the hosted route into a separate RTI owner
 - the dedicated Java/C++ standard binding bounded proof that keeps those lanes as adaptation evidence over the
   same runtime rather than alternate implementation owners
 - explicit bounded-extension, legacy-only, and wrapper-only shim boundaries so
   the main 2025 Python RTI claim stays narrow enough to defend
+- one explicit exclusion map that gathers the non-claim areas around the main
+  `python2025` runtime lane so those boundaries stay auditable outside the
+  generated finish-line bundle
 
 For code ownership, read those proof notes against the extracted
 `hla-backend-python2025` runtime layout rather than against the thin public
