@@ -363,7 +363,7 @@ Extracted Python 2025 runtime helper modules:
 - Aggregated slices >=10 requirements and runtime-backed: 3
 - Aggregated slices >=20 requirements: 7
 - Aggregated slices >=20 requirements and runtime-backed: 2
-- Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy slice now has an explicit requirement-family map, so the main current-package pressure points are save-restore-lifecycle and directed-interaction-boundary, with DDM still a credible next target if the repo wants leaf-level implemented slices rather than one larger family-mapped aggregate.
+- Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy and save-restore slices now have explicit requirement-family maps, so the main current-package pressure point is directed-interaction-boundary, with DDM and save/restore still credible next targets if the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.
 - Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits before extracting a dedicated 2025 backend.
 
 Largest implemented slices:
@@ -510,6 +510,26 @@ OMT schema-constraint families:
 - Direct test count: 5
 - Hosted test count: 5
 
+
+## Save/Restore Requirement-Family Audit
+
+- Audit status: save-restore-requirement-family-map-captured
+- Slice id: 2025-save-restore-lifecycle
+- Requirement count: 20
+- Family count: 5
+- All save/restore rows family-mapped: True
+- Unmapped requirement ids: 0
+- Unexpected requirement ids: 0
+- Assessment: The large save/restore aggregate is now backed by an explicit requirement-family map instead of only one flat slice-level claim. That makes the lifecycle-control, shared rollback, routing rollback, and ownership/time rollback boundaries auditable requirement-by-requirement.
+- Residual boundary: This is still a requirement-family map over one larger save/restore runtime slice, not a promise that every save/restore requirement now has its own standalone implemented-evidence slice.
+
+Save/restore requirement families:
+
+- lifecycle-control: 13 requirements, in-slice=True
+- shared-scenario-rollback: 1 requirements, in-slice=True
+- routing-policy-rollback: 4 requirements, in-slice=True
+- ownership-rollback: 1 requirements, in-slice=True
+- time-window-and-time-state-rollback: 1 requirements, in-slice=True
 
 ## Federation-Management Decomposition Audit
 

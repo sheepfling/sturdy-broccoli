@@ -1659,8 +1659,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {"slice_id": "2025-save-restore-lifecycle", "requirement_count": 20, "runtime_backend_backed": True},
         {"slice_id": "2025-directed-interaction-boundary", "requirement_count": 11, "runtime_backend_backed": True},
     ]
-    assert "DDM/default-policy slice now has an explicit requirement-family map" in aggregation_audit["current_assessment"]
-    assert "save-restore-lifecycle and directed-interaction-boundary" in aggregation_audit["current_assessment"]
+    assert "DDM/default-policy and save-restore slices now have explicit requirement-family maps" in aggregation_audit["current_assessment"]
+    assert "directed-interaction-boundary" in aggregation_audit["current_assessment"]
     service_utilization_audit = snapshot["service_utilization_decomposition_audit"]
     assert service_utilization_audit["audit_status"] == "service-utilization-decomposition-captured"
     assert service_utilization_audit["slice_id"] == "2025-service-utilization-crosscheck"
@@ -3493,6 +3493,14 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Slice id: 2025-save-restore-lifecycle" in markdown
     assert "Proof families: 5" in markdown
     assert "save-restore/time-window-and-time-state-rollback" in markdown
+    assert "Save/Restore Requirement-Family Audit" in markdown
+    assert "Family count: 5" in markdown
+    assert "All save/restore rows family-mapped: True" in markdown
+    assert "lifecycle-control: 13 requirements, in-slice=True" in markdown
+    assert "shared-scenario-rollback: 1 requirements, in-slice=True" in markdown
+    assert "routing-policy-rollback: 4 requirements, in-slice=True" in markdown
+    assert "ownership-rollback: 1 requirements, in-slice=True" in markdown
+    assert "time-window-and-time-state-rollback: 1 requirements, in-slice=True" in markdown
     assert "Federation-Management Decomposition Audit" in markdown
     assert "Slice id: 2025-federation-management-proof-families" in markdown
     assert "Proof families: 6" in markdown
@@ -4201,6 +4209,48 @@ def test_2025_ddm_default_policy_requirement_family_audit_maps_all_rows() -> Non
     assert families["directed-ddm-routing"]["requirement_ids"] == ["HLA2025-MOD-007"]
     assert families["passive-alias-and-compat-scenarios"]["requirement_ids"] == ["HLA2025-FI-005"]
     assert families["ddm-restore-and-disconnect-cleanup"]["requirement_ids"] == ["HLA2025-FI-001"]
+    assert all(family["all_requirements_in_slice"] is True for family in audit["families"])
+    assert "explicit requirement-family map" in audit["current_assessment"]
+    assert "standalone implemented-evidence slice" in audit["residual_boundary"]
+
+
+def test_2025_save_restore_requirement_family_audit_maps_all_rows() -> None:
+    snapshot = build_spec2025_finish_line_snapshot(ROOT)
+
+    audit = snapshot["save_restore_requirement_family_audit"]
+
+    assert audit["audit_status"] == "save-restore-requirement-family-map-captured"
+    assert audit["slice_id"] == "2025-save-restore-lifecycle"
+    assert audit["requirement_count"] == 20
+    assert audit["family_count"] == 5
+    assert audit["all_save_restore_rows_family_mapped"] is True
+    assert audit["unmapped_requirement_ids"] == []
+    assert audit["unexpected_requirement_ids"] == []
+    families = {family["family"]: family for family in audit["families"]}
+    assert families["lifecycle-control"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-018",
+        "HLA2025-FI-SVC-019",
+        "HLA2025-FI-SVC-020",
+        "HLA2025-FI-SVC-021",
+        "HLA2025-FI-SVC-022",
+        "HLA2025-FI-SVC-023",
+        "HLA2025-FI-SVC-026",
+        "HLA2025-FI-SVC-027",
+        "HLA2025-FI-SVC-028",
+        "HLA2025-FI-SVC-029",
+        "HLA2025-FI-SVC-030",
+        "HLA2025-FI-SVC-031",
+        "HLA2025-FI-SVC-032",
+    ]
+    assert families["shared-scenario-rollback"]["requirement_ids"] == ["HLA2025-REQ-002"]
+    assert families["routing-policy-rollback"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-024",
+        "HLA2025-FI-SVC-025",
+        "HLA2025-FI-SVC-033",
+        "HLA2025-FI-SVC-034",
+    ]
+    assert families["ownership-rollback"]["requirement_ids"] == ["HLA2025-FI-005"]
+    assert families["time-window-and-time-state-rollback"]["requirement_ids"] == ["HLA2025-FI-001"]
     assert all(family["all_requirements_in_slice"] is True for family in audit["families"])
     assert "explicit requirement-family map" in audit["current_assessment"]
     assert "standalone implemented-evidence slice" in audit["residual_boundary"]

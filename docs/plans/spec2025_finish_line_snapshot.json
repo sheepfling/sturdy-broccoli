@@ -28655,6 +28655,74 @@
     "requirement_count": 20,
     "slice_id": "2025-save-restore-lifecycle"
   },
+  "save_restore_requirement_family_audit": {
+    "all_save_restore_rows_family_mapped": true,
+    "audit_status": "save-restore-requirement-family-map-captured",
+    "current_assessment": "The large save/restore aggregate is now backed by an explicit requirement-family map instead of only one flat slice-level claim. That makes the lifecycle-control, shared rollback, routing rollback, and ownership/time rollback boundaries auditable requirement-by-requirement.",
+    "families": [
+      {
+        "all_requirements_in_slice": true,
+        "family": "lifecycle-control",
+        "requirement_count": 13,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-018",
+          "HLA2025-FI-SVC-019",
+          "HLA2025-FI-SVC-020",
+          "HLA2025-FI-SVC-021",
+          "HLA2025-FI-SVC-022",
+          "HLA2025-FI-SVC-023",
+          "HLA2025-FI-SVC-026",
+          "HLA2025-FI-SVC-027",
+          "HLA2025-FI-SVC-028",
+          "HLA2025-FI-SVC-029",
+          "HLA2025-FI-SVC-030",
+          "HLA2025-FI-SVC-031",
+          "HLA2025-FI-SVC-032"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "shared-scenario-rollback",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-REQ-002"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "routing-policy-rollback",
+        "requirement_count": 4,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-024",
+          "HLA2025-FI-SVC-025",
+          "HLA2025-FI-SVC-033",
+          "HLA2025-FI-SVC-034"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "ownership-rollback",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-FI-005"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "time-window-and-time-state-rollback",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-FI-001"
+        ]
+      }
+    ],
+    "family_count": 5,
+    "requirement_count": 20,
+    "residual_boundary": "This is still a requirement-family map over one larger save/restore runtime slice, not a promise that every save/restore requirement now has its own standalone implemented-evidence slice.",
+    "slice_id": "2025-save-restore-lifecycle",
+    "unexpected_requirement_ids": [],
+    "unmapped_requirement_ids": []
+  },
   "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
   "service_utilization_decomposition_audit": {
     "all_backing_fi_rows_traceable": true,
@@ -29626,7 +29694,7 @@
     "aggregated_slice_count_ge_20_requirements": 7,
     "aggregated_slice_count_ge_20_requirements_runtime_backed": 2,
     "audit_status": "slice-aggregation-pressure-captured",
-    "current_assessment": "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy slice now has an explicit requirement-family map, so the main current-package pressure points are save-restore-lifecycle and directed-interaction-boundary, with DDM still a credible next target if the repo wants leaf-level implemented slices rather than one larger family-mapped aggregate.",
+    "current_assessment": "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy and save-restore slices now have explicit requirement-family maps, so the main current-package pressure point is directed-interaction-boundary, with DDM and save/restore still credible next targets if the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.",
     "implemented_slice_count": 74,
     "largest_implemented_slices": [
       {

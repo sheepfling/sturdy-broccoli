@@ -4170,10 +4170,10 @@ def _build_slice_aggregation_pressure_audit() -> dict[str, Any]:
         "largest_runtime_backed_aggregated_slices": aggregated_ge10_runtime[:10],
         "current_assessment": (
             "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a "
-            "lot of requirement mass. The runtime-heavy DDM/default-policy slice now has an explicit "
-            "requirement-family map, so the main current-package pressure points are save-restore-lifecycle and "
-            "directed-interaction-boundary, with DDM still a credible next target if the repo wants leaf-level "
-            "implemented slices rather than one larger family-mapped aggregate."
+            "lot of requirement mass. The runtime-heavy DDM/default-policy and save-restore slices now have explicit "
+            "requirement-family maps, so the main current-package pressure point is directed-interaction-boundary, "
+            "with DDM and save/restore still credible next targets if the repo wants leaf-level implemented slices "
+            "rather than larger family-mapped aggregates."
         ),
         "next_decomposition_boundary": (
             "If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or "
@@ -4576,6 +4576,99 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these proof families before extracting save/restore "
             "runtime semantics into a dedicated 2025 backend."
+        ),
+    }
+
+
+def _build_save_restore_requirement_family_audit() -> dict[str, Any]:
+    slice_requirement_ids = {
+        "HLA2025-FI-SVC-018",
+        "HLA2025-FI-SVC-019",
+        "HLA2025-FI-SVC-020",
+        "HLA2025-FI-SVC-021",
+        "HLA2025-FI-SVC-022",
+        "HLA2025-FI-SVC-023",
+        "HLA2025-FI-SVC-024",
+        "HLA2025-FI-SVC-025",
+        "HLA2025-FI-SVC-026",
+        "HLA2025-FI-SVC-027",
+        "HLA2025-FI-SVC-028",
+        "HLA2025-FI-SVC-029",
+        "HLA2025-FI-SVC-030",
+        "HLA2025-FI-SVC-031",
+        "HLA2025-FI-SVC-032",
+        "HLA2025-FI-SVC-033",
+        "HLA2025-FI-SVC-034",
+        "HLA2025-FI-001",
+        "HLA2025-FI-005",
+        "HLA2025-REQ-002",
+    }
+    families = [
+        {
+            "family": "lifecycle-control",
+            "requirement_ids": [
+                "HLA2025-FI-SVC-018",
+                "HLA2025-FI-SVC-019",
+                "HLA2025-FI-SVC-020",
+                "HLA2025-FI-SVC-021",
+                "HLA2025-FI-SVC-022",
+                "HLA2025-FI-SVC-023",
+                "HLA2025-FI-SVC-026",
+                "HLA2025-FI-SVC-027",
+                "HLA2025-FI-SVC-028",
+                "HLA2025-FI-SVC-029",
+                "HLA2025-FI-SVC-030",
+                "HLA2025-FI-SVC-031",
+                "HLA2025-FI-SVC-032",
+            ],
+        },
+        {
+            "family": "shared-scenario-rollback",
+            "requirement_ids": ["HLA2025-REQ-002"],
+        },
+        {
+            "family": "routing-policy-rollback",
+            "requirement_ids": [
+                "HLA2025-FI-SVC-024",
+                "HLA2025-FI-SVC-025",
+                "HLA2025-FI-SVC-033",
+                "HLA2025-FI-SVC-034",
+            ],
+        },
+        {
+            "family": "ownership-rollback",
+            "requirement_ids": ["HLA2025-FI-005"],
+        },
+        {
+            "family": "time-window-and-time-state-rollback",
+            "requirement_ids": ["HLA2025-FI-001"],
+        },
+    ]
+    mapped_requirement_ids = {
+        requirement_id
+        for family in families
+        for requirement_id in family["requirement_ids"]
+    }
+    for family in families:
+        family["requirement_count"] = len(family["requirement_ids"])
+        family["all_requirements_in_slice"] = set(family["requirement_ids"]) <= slice_requirement_ids
+    return {
+        "audit_status": "save-restore-requirement-family-map-captured",
+        "slice_id": "2025-save-restore-lifecycle",
+        "requirement_count": len(slice_requirement_ids),
+        "family_count": len(families),
+        "all_save_restore_rows_family_mapped": mapped_requirement_ids == slice_requirement_ids,
+        "unmapped_requirement_ids": sorted(slice_requirement_ids - mapped_requirement_ids),
+        "unexpected_requirement_ids": sorted(mapped_requirement_ids - slice_requirement_ids),
+        "families": families,
+        "current_assessment": (
+            "The large save/restore aggregate is now backed by an explicit requirement-family map instead of only one "
+            "flat slice-level claim. That makes the lifecycle-control, shared rollback, routing rollback, and "
+            "ownership/time rollback boundaries auditable requirement-by-requirement."
+        ),
+        "residual_boundary": (
+            "This is still a requirement-family map over one larger save/restore runtime slice, not a promise that every "
+            "save/restore requirement now has its own standalone implemented-evidence slice."
         ),
     }
 
@@ -6704,6 +6797,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     binding_route_decomposition_audit = _build_binding_route_decomposition_audit()
     support_services_decomposition_audit = _build_support_services_decomposition_audit()
     object_management_decomposition_audit = _build_object_management_decomposition_audit()
+    save_restore_requirement_family_audit = _build_save_restore_requirement_family_audit()
     ownership_decomposition_audit = _build_ownership_decomposition_audit()
     directed_interaction_decomposition_audit = _build_directed_interaction_decomposition_audit()
     ddm_default_policy_decomposition_audit = _build_ddm_default_policy_decomposition_audit()
@@ -6842,6 +6936,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "omt_xs_any_extension_decomposition_audit": omt_xs_any_extension_decomposition_audit,
         "omt_schema_constraint_decomposition_audit": omt_schema_constraint_decomposition_audit,
         "save_restore_decomposition_audit": save_restore_decomposition_audit,
+        "save_restore_requirement_family_audit": save_restore_requirement_family_audit,
         "federation_management_decomposition_audit": federation_management_decomposition_audit,
         "callback_decomposition_audit": callback_decomposition_audit,
         "time_management_decomposition_audit": time_management_decomposition_audit,
@@ -6901,6 +6996,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     omt_xs_any_extension_decomposition_audit = snapshot["omt_xs_any_extension_decomposition_audit"]
     omt_schema_constraint_decomposition_audit = snapshot["omt_schema_constraint_decomposition_audit"]
     save_restore_decomposition_audit = snapshot["save_restore_decomposition_audit"]
+    save_restore_requirement_family_audit = snapshot["save_restore_requirement_family_audit"]
     federation_management_decomposition_audit = snapshot["federation_management_decomposition_audit"]
     callback_decomposition_audit = snapshot["callback_decomposition_audit"]
     time_management_decomposition_audit = snapshot["time_management_decomposition_audit"]
@@ -7406,6 +7502,30 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
                 f"- Hosted test count: {len(family['hosted_tests'])}",
                 "",
             ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Save/Restore Requirement-Family Audit",
+            "",
+            f"- Audit status: {save_restore_requirement_family_audit['audit_status']}",
+            f"- Slice id: {save_restore_requirement_family_audit['slice_id']}",
+            f"- Requirement count: {save_restore_requirement_family_audit['requirement_count']}",
+            f"- Family count: {save_restore_requirement_family_audit['family_count']}",
+            f"- All save/restore rows family-mapped: {save_restore_requirement_family_audit['all_save_restore_rows_family_mapped']}",
+            f"- Unmapped requirement ids: {len(save_restore_requirement_family_audit['unmapped_requirement_ids'])}",
+            f"- Unexpected requirement ids: {len(save_restore_requirement_family_audit['unexpected_requirement_ids'])}",
+            f"- Assessment: {save_restore_requirement_family_audit['current_assessment']}",
+            f"- Residual boundary: {save_restore_requirement_family_audit['residual_boundary']}",
+            "",
+            "Save/restore requirement families:",
+            "",
+        ]
+    )
+    for family in save_restore_requirement_family_audit["families"]:
+        lines.append(
+            f"- {family['family']}: {family['requirement_count']} requirements, "
+            f"in-slice={family['all_requirements_in_slice']}"
         )
     lines.extend(
         [
