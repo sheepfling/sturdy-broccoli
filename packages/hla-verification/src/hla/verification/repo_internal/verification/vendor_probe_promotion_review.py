@@ -62,6 +62,13 @@ _PROFILE_SPECS: tuple[dict[str, str], ...] = (
         "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
         "documented_state": "deeper runtime probe for a currently bridge-divergent path, not yet a promoted stable parity slice",
     },
+    {
+        "profile": "pitch-time-window-probe",
+        "vendor": "pitch",
+        "area": "time_window_future_exclusion",
+        "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+        "documented_state": "two-federate-safe lookahead-window probe for vendor credence, not a replacement for the broader Python route proof ladder",
+    },
 )
 
 

@@ -2833,6 +2833,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "tests/vendors/test_pitch_real_backend_matrix.py::"
             "test_pitch_time_window_future_exclusion_matrix"
         ),
+        "recommended_pitch_operator_route": "./tools/pitch time-window-probe",
         "why_selected": (
             "This is the smallest lookahead-window proof that still exercises future-message exclusion. It keeps "
             "the topology to two federates, so a successful Pitch run would add meaningful vendor credence "
@@ -2842,6 +2843,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     vendor_rows = {row["scenario_id"]: row for row in vendor_time_audit["routes"]}
     assert vendor_rows["time-window-future-exclusion"]["federate_count"] == 2
     assert vendor_rows["time-window-future-exclusion"]["trial_pitch_safe"] is True
+    assert vendor_rows["time-window-future-exclusion"]["recommended_pitch_operator_route"] == "./tools/pitch time-window-probe"
     assert vendor_rows["time-window-future-exclusion"]["current_pitch_runtime_boundary"] == "seat-availability"
     assert "two-federate future-exclusion proof" in vendor_rows["time-window-future-exclusion"]["current_pitch_runtime_boundary_evidence"]
     assert vendor_rows["time-window-restore-state"]["federate_count"] == 2

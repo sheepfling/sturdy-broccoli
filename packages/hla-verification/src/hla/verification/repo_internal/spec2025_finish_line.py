@@ -4401,6 +4401,7 @@ def _build_time_window_vendor_parity_audit() -> dict[str, Any]:
                 "tests/vendors/test_pitch_real_backend_matrix.py::"
                 "test_pitch_time_window_future_exclusion_matrix"
             ),
+            "recommended_pitch_operator_route": "./tools/pitch time-window-probe",
             "current_pitch_runtime_boundary": "seat-availability",
             "current_pitch_runtime_boundary_evidence": (
                 "Pitch managed runtime currently reports no available pRTI federate seats for this two-federate "
@@ -4465,6 +4466,7 @@ def _build_time_window_vendor_parity_audit() -> dict[str, Any]:
             "scenario_id": current_trial_candidate["scenario_id"],
             "federate_count": current_trial_candidate["federate_count"],
             "pitch_vendor_test": current_trial_candidate["pitch_vendor_test"],
+            "recommended_pitch_operator_route": current_trial_candidate["recommended_pitch_operator_route"],
             "why_selected": (
                 "This is the smallest lookahead-window proof that still exercises future-message exclusion. It keeps "
                 "the topology to two federates, so a successful Pitch run would add meaningful vendor credence "

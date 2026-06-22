@@ -22,6 +22,7 @@ PROFILE_OPERATOR_COMMANDS: dict[str, str] = {
     "pitch-ddm-probe": "./tools/pitch ddm-probe",
     "pitch-negotiated": "./tools/pitch negotiated",
     "pitch-negotiated-probe": "./tools/pitch negotiated-probe",
+    "pitch-time-window-probe": "./tools/pitch time-window-probe",
 }
 
 

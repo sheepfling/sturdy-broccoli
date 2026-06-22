@@ -433,6 +433,50 @@ def test_vendor_green_pitch_negotiated_probe_profile_is_reachable(tmp_path: Path
     assert payload["profile"] == "pitch-negotiated-probe"
 
 
+def test_pitch_time_window_probe_uses_probe_profile(tmp_path: Path) -> None:
+    delegate = tmp_path / "vendor_green_delegate.py"
+    _write_vendor_green_delegate(delegate)
+    env = os.environ.copy()
+    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
+
+    result = subprocess.run(
+        ["bash", "./tools/pitch", "time-window-probe"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
+    assert payload["profile"] == "pitch-time-window-probe"
+
+
+def test_vendor_green_pitch_time_window_probe_profile_is_reachable(tmp_path: Path) -> None:
+    delegate = tmp_path / "vendor_green_delegate.py"
+    _write_vendor_green_delegate(delegate)
+    env = os.environ.copy()
+    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
+
+    result = subprocess.run(
+        ["bash", "scripts/ci/vendor_green.sh", "pitch-time-window-probe"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
+    assert payload["profile"] == "pitch-time-window-probe"
+
+
 def test_pitch_lost_federate_probe_uses_probe_profile(tmp_path: Path) -> None:
     delegate = tmp_path / "vendor_green_delegate.py"
     _write_vendor_green_delegate(delegate)

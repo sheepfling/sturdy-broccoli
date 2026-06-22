@@ -31500,6 +31500,7 @@
     "current_trial_candidate": {
       "federate_count": 2,
       "pitch_vendor_test": "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+      "recommended_pitch_operator_route": "./tools/pitch time-window-probe",
       "scenario_id": "time-window-future-exclusion",
       "why_selected": "This is the smallest lookahead-window proof that still exercises future-message exclusion. It keeps the topology to two federates, so a successful Pitch run would add meaningful vendor credence without depending on the larger multi-federate gauntlet."
     },
@@ -31513,6 +31514,7 @@
         "pitch_vendor_test": "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
         "purpose": "Prove radar window closure stays blocked while another regulating federate can still legally send into the closing window, then prove closure becomes legal only after that future input is excluded.",
         "python_route_parity_test": "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
+        "recommended_pitch_operator_route": "./tools/pitch time-window-probe",
         "roles": [
           "SlowRegulatorFederate",
           "RadarFederate"

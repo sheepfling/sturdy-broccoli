@@ -420,6 +420,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     ]
     assert vendor_time_audit["current_trial_candidate"]["scenario_id"] == "time-window-future-exclusion"
     assert vendor_time_audit["current_trial_candidate"]["federate_count"] == 2
+    assert vendor_time_audit["current_trial_candidate"]["recommended_pitch_operator_route"] == "./tools/pitch time-window-probe"
 
     assert "real executable python 2025 rti surface" in normalized_audit_text_lower
     assert "the main full python 2025 rti implementation now runs from `hla-backend-python2025`" in normalized_audit_text_lower
