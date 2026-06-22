@@ -201,6 +201,7 @@ Primary evidence anchors:
 - [python_rti_backend.md](../python_rti_backend.md)
 - [2025_requirements_finish_line.md](2025_requirements_finish_line.md)
 - [../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md)
+- [../requirements/ieee-1516-2025/save_restore_bounded_proof.md](../requirements/ieee-1516-2025/save_restore_bounded_proof.md)
 - [../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
@@ -228,6 +229,13 @@ claim, use
 [`../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md).
 That note makes the repo-owned Proto2025 and Target/Radar suite explicit
 without implying that every possible example FOM composition is proven.
+
+For the explicit save/restore rollback families behind the same bounded claim,
+use
+[`../requirements/ieee-1516-2025/save_restore_bounded_proof.md`](../requirements/ieee-1516-2025/save_restore_bounded_proof.md).
+That note makes the lifecycle-control, rollback, routing/policy, ownership,
+and time-window/time-state recovery families auditable without pretending every
+save/restore clause is now a standalone final conformance proof.
 
 For the explicit Target/Radar lookahead ladder behind the same bounded claim,
 use

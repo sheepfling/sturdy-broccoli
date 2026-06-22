@@ -1488,6 +1488,26 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert hosted_fedpro_audit["ready_for_hosted_fedpro_bounded_proof_claim"] is True
     assert "per-scenario transport-plus-parity test anchors" in hosted_fedpro_audit["current_assessment"]
     assert "does not promote the hosted FedPro lane into full remote-RTI semantics" in hosted_fedpro_audit["residual_boundary"]
+    save_restore_bounded_audit = snapshot["save_restore_bounded_proof_audit"]
+    assert save_restore_bounded_audit["audit_status"] == "save-restore-bounded-proof-captured"
+    assert save_restore_bounded_audit["doc_path"] == "docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md"
+    assert save_restore_bounded_audit["doc_exists"] is True
+    assert save_restore_bounded_audit["proof_family_count"] == 5
+    assert save_restore_bounded_audit["requirement_family_count"] == 5
+    assert save_restore_bounded_audit["required_family_labels"] == [
+        "Lifecycle control",
+        "Shared scenario rollback",
+        "Routing and policy rollback",
+        "Ownership rollback",
+        "Time-window and time-state rollback",
+    ]
+    assert save_restore_bounded_audit["missing_family_labels"] == []
+    assert save_restore_bounded_audit["missing_row_markers"] == []
+    assert save_restore_bounded_audit["missing_test_markers"] == []
+    assert save_restore_bounded_audit["doc_narrative_ready"] is True
+    assert save_restore_bounded_audit["ready_for_save_restore_bounded_proof_claim"] is True
+    assert "save/restore surface is no longer only captured as one generated decomposition plus family-map pair" in save_restore_bounded_audit["current_assessment"]
+    assert "does not turn every save/restore requirement into its own standalone clause-by-clause conformance proof" in save_restore_bounded_audit["residual_boundary"]
     lookahead_window_audit = snapshot["lookahead_window_bounded_proof_audit"]
     assert lookahead_window_audit["audit_status"] == "lookahead-window-bounded-proof-captured"
     assert lookahead_window_audit["doc_path"] == "docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md"
@@ -3925,6 +3945,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Ready for retired legacy mapping claim: True" in markdown
     assert "Federate Interface legacy API: 11 rows" in markdown
     assert "OMT legacy schema: 13 rows" in markdown
+    assert "Save/Restore Bounded Proof Audit" in markdown
+    assert "Doc path: docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md" in markdown
+    assert "Ready for save/restore bounded proof claim: True" in markdown
     assert "Lookahead Window Bounded Proof Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md" in markdown
     assert "Ready for lookahead window bounded proof claim: True" in markdown

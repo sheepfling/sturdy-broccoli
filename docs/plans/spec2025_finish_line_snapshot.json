@@ -20179,8 +20179,9 @@
         "requirement_id": "HLA2025-FI-004"
       },
       {
-        "pytest_anchor_count": 33,
+        "pytest_anchor_count": 34,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_encoding_auth_contexts.py::test_invalid_credentials_fail_before_rti_connection",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resign_controls",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_applies_resign_time_ownership_policies",
@@ -20485,8 +20486,9 @@
         "requirement_id": "HLA2025-FI-SVC-017"
       },
       {
-        "pytest_anchor_count": 85,
+        "pytest_anchor_count": 86,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",
@@ -20705,8 +20707,9 @@
         "requirement_id": "HLA2025-FI-SVC-023"
       },
       {
-        "pytest_anchor_count": 4,
+        "pytest_anchor_count": 5,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
@@ -26699,10 +26702,11 @@
         "requirement_id": "HLA2025-REQ-001"
       },
       {
-        "pytest_anchor_count": 32,
+        "pytest_anchor_count": 33,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_ieee_1516_2025_requirements_registry_has_initial_tranche",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_hla_factory_rejects_mismatched_spec_provider_combinations",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_encoding_auth_contexts.py::test_2010_profile_does_not_gain_2025_auth_or_repository_surface",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2010_and_2025_backend_selection_do_not_cross_wire",
@@ -29254,6 +29258,27 @@
       }
     ],
     "scenario_count": 8
+  },
+  "save_restore_bounded_proof_audit": {
+    "audit_status": "save-restore-bounded-proof-captured",
+    "current_assessment": "The save/restore surface is no longer only captured as one generated decomposition plus family-map pair. It now has an explicit requirement-facing proof note tied to lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback over the main python2025 runtime lane and hosted replay.",
+    "doc_exists": true,
+    "doc_narrative_ready": true,
+    "doc_path": "docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md",
+    "missing_family_labels": [],
+    "missing_row_markers": [],
+    "missing_test_markers": [],
+    "proof_family_count": 5,
+    "ready_for_save_restore_bounded_proof_claim": true,
+    "required_family_labels": [
+      "Lifecycle control",
+      "Shared scenario rollback",
+      "Routing and policy rollback",
+      "Ownership rollback",
+      "Time-window and time-state rollback"
+    ],
+    "requirement_family_count": 5,
+    "residual_boundary": "This audit makes the current save/restore rollback claim explicit and reviewable, but it does not turn every save/restore requirement into its own standalone clause-by-clause conformance proof."
   },
   "save_restore_decomposition_audit": {
     "audit_status": "save-restore-decomposition-captured",

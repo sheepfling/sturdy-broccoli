@@ -135,6 +135,7 @@ Primary evidence anchors:
 - `docs/plans/2025_requirements_finish_line.md`
 - `docs/plans/2025_python_rti_backend_audit.md`
 - `docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
@@ -165,6 +166,13 @@ The matching tracked-scenario note,
 captures exactly which repo-owned Proto2025 and Target/Radar example/FOM-backed
 scenarios are part of the bounded claim and which broader example-FOM space is
 still outside that tracked suite.
+
+The matching save/restore note,
+`docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md`,
+captures the current rollback-family contract for lifecycle control, shared
+rollback, routing/policy rollback, ownership rollback, and time-window/time
+state rollback instead of leaving that evidence only inside the broader
+federation-management note or generated decomposition text.
 
 The matching lookahead-window note,
 `docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`,

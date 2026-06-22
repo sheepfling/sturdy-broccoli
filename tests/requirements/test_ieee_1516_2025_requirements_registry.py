@@ -49,6 +49,7 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "ownership_management_bounded_proof.md",
         "python2025_direct_bounded_proof.md",
         "python2025_exclusion_boundaries.md",
+        "save_restore_bounded_proof.md",
         "support_services_bounded_proof.md",
         "standard_binding_runtime_capability_bounded_proof.md",
         "time_management_bounded_proof.md",
@@ -64,6 +65,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
 
     for filename in (
         "fom_backed_scenario_bounded_proof.md",
+        "save_restore_bounded_proof.md",
         "lookahead_window_bounded_proof.md",
         "federation_management_bounded_proof.md",
         "python2025_direct_bounded_proof.md",
@@ -85,6 +87,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
     assert "bounded requirement-facing proof note" in normalized
     assert "main `python2025` lane plus hosted replay" in normalized
     assert "tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python2025` lanes" in normalized
+    assert "save/restore lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback" in normalized
     assert "Target/Radar lookahead ladder, including future-exclusion, output ordering, pipeline overlap, negative-oracle guards, and bounded save/restore window rollback" in normalized
     assert "direct `python2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
     assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime" in text
@@ -119,6 +122,7 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
     assert "## Current Technical Lane" in text
     assert "deeper runtime-proof expansion over the promoted `python2025` RTI surface" in normalized
     assert "the tracked example/FOM-backed scenario bounded proof note" in normalized
+    assert "the dedicated save/restore bounded proof note" in normalized
     assert "the dedicated lookahead-window bounded proof note" in normalized
     assert "the dedicated direct `python2025` bounded proof note" in normalized
     assert "the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime families" in normalized
@@ -200,6 +204,26 @@ def test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary
     assert "`Proto2025_TimeMgmtTest.xml`" in text
     assert "It does not yet prove every conceivable example FOM scenario outside the tracked suite." in normalized
     assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
+
+
+@pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-024", "HLA2025-FI-005", "HLA2025-REQ-002")
+def test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit() -> None:
+    text = (REGISTRY_DIR / "save_restore_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records the repo's current requirement-facing save/restore claim as a bounded proof statement" in normalized
+    assert "`HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`" in text
+    assert "`HLA2025-REQ-002`" in text
+    assert "`HLA2025-FI-SVC-024`, `HLA2025-FI-SVC-025`, `HLA2025-FI-SVC-033`, `HLA2025-FI-SVC-034`" in text
+    assert "`HLA2025-FI-005`" in text
+    assert "`HLA2025-FI-001`" in text
+    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`tests/scenarios/test_save_restore_backend_matrix.py`" in text
+    assert "`tests/scenarios/test_python_route_parity.py`" in text
+    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
+    assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in text
+    assert "does not claim that every save/restore requirement now has its own standalone clause-by-clause conformance proof" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-003", "HLA2025-FR-004")

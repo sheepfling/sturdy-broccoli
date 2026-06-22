@@ -33,6 +33,7 @@ Source anchors for modal terms:
 - `declaration_management_bounded_proof.md`: bounded requirement-facing proof note for publication, subscription, advisory, and name-reservation families.
 - `object_management_bounded_proof.md`: bounded requirement-facing proof note for object registration, updates, interactions, routing, and delete/remove families.
 - `ownership_management_bounded_proof.md`: bounded requirement-facing proof note for divestiture, acquisition, release, query, and resign-time ownership policies.
+- `save_restore_bounded_proof.md`: bounded requirement-facing proof note for save/restore lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback.
 - `ddm_bounded_proof.md`: bounded requirement-facing proof note for region lifecycle, overlap routing, declaration gating, and passive/DDM cleanup families.
 - `support_services_bounded_proof.md`: bounded requirement-facing proof note for support-service traceability, handle/name lookup, callback-control, and switch/control inquiry families.
 - `time_management_bounded_proof.md`: bounded requirement-facing proof note for time-mode control, grants, GALT/LITS/lookahead observability, and Target/Radar window proofs.
@@ -83,6 +84,9 @@ requirement-facing evidence map for:
   only as architecture prose
 - the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime
   families without turning the hosted route into a separate RTI owner
+- the dedicated save/restore bounded proof note that separates rollback
+  families from the broader federation-management note so restore semantics
+  stay auditable as their own bounded runtime family
 - the dedicated lookahead-window bounded proof note that breaks the
   Target/Radar closure/output/order/pipeline ladder out of the broader
   time-management family so the bounded certification contract stays auditable

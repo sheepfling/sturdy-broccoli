@@ -286,6 +286,18 @@ Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, sa
 
 Pitch probe routes: ./tools/pitch time-window-probe, ./tools/pitch time-window-restore-state-probe
 
+## Save/Restore Bounded Proof Audit
+
+- Audit status: save-restore-bounded-proof-captured
+- Doc path: docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md
+- Doc exists: True
+- Proof family count: 5
+- Requirement-family count: 5
+- Doc narrative ready: True
+- Ready for save/restore bounded proof claim: True
+- Assessment: The save/restore surface is no longer only captured as one generated decomposition plus family-map pair. It now has an explicit requirement-facing proof note tied to lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback over the main python2025 runtime lane and hosted replay.
+- Residual boundary: This audit makes the current save/restore rollback claim explicit and reviewable, but it does not turn every save/restore requirement into its own standalone clause-by-clause conformance proof.
+
 ## Standard Binding Runtime-Capability Audit
 
 - Audit status: standard-binding-runtime-capability-captured

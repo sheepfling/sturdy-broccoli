@@ -3882,6 +3882,79 @@ def _build_lookahead_window_bounded_proof_audit(
     }
 
 
+def _build_save_restore_bounded_proof_audit(
+    project_root: Path,
+    save_restore_decomposition_audit: Mapping[str, Any],
+    save_restore_requirement_family_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    normalized_doc_text = " ".join(doc_text.split())
+    required_family_labels = [
+        "Lifecycle control",
+        "Shared scenario rollback",
+        "Routing and policy rollback",
+        "Ownership rollback",
+        "Time-window and time-state rollback",
+    ]
+    missing_family_labels = [label for label in required_family_labels if label not in doc_text]
+    required_row_markers = [
+        "`HLA2025-FI-SVC-018`",
+        "`HLA2025-FI-SVC-024`",
+        "`HLA2025-FI-SVC-033`",
+        "`HLA2025-FI-SVC-034`",
+        "`HLA2025-FI-005`",
+        "`HLA2025-FI-001`",
+        "`HLA2025-REQ-002`",
+    ]
+    missing_row_markers = [marker for marker in required_row_markers if marker not in doc_text]
+    required_test_markers = [
+        "`tests/test_rti1516_2025_python2025_runtime.py`",
+        "`tests/transport/test_grpc_transport_2025.py`",
+        "`tests/scenarios/test_save_restore_backend_matrix.py`",
+        "`tests/scenarios/test_python_route_parity.py`",
+    ]
+    missing_test_markers = [marker for marker in required_test_markers if marker not in doc_text]
+    doc_checks = [
+        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-shim` is not an implementation owner" in doc_text,
+        "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in doc_text,
+        "does not claim that every save/restore requirement now has its own standalone clause-by-clause conformance proof" in normalized_doc_text,
+    ]
+    return {
+        "audit_status": "save-restore-bounded-proof-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "proof_family_count": save_restore_decomposition_audit["proof_family_count"],
+        "requirement_family_count": save_restore_requirement_family_audit["family_count"],
+        "required_family_labels": required_family_labels,
+        "missing_family_labels": missing_family_labels,
+        "missing_row_markers": missing_row_markers,
+        "missing_test_markers": missing_test_markers,
+        "doc_narrative_ready": all(doc_checks),
+        "ready_for_save_restore_bounded_proof_claim": (
+            doc_path.exists()
+            and save_restore_decomposition_audit["proof_family_count"] == 5
+            and save_restore_requirement_family_audit["family_count"] == 5
+            and not missing_family_labels
+            and not missing_row_markers
+            and not missing_test_markers
+            and all(doc_checks)
+        ),
+        "current_assessment": (
+            "The save/restore surface is no longer only captured as one generated decomposition plus family-map pair. "
+            "It now has an explicit requirement-facing proof note tied to lifecycle control, shared rollback, "
+            "routing/policy rollback, ownership rollback, and time-window/time-state rollback over the main "
+            "python2025 runtime lane and hosted replay."
+        ),
+        "residual_boundary": (
+            "This audit makes the current save/restore rollback claim explicit and reviewable, but it does not turn "
+            "every save/restore requirement into its own standalone clause-by-clause conformance proof."
+        ),
+    }
+
+
 def _build_standard_binding_runtime_capability_audit(
     project_root: Path,
     route_parity_matrix: Mapping[str, Any],
@@ -7963,6 +8036,11 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         route_parity_matrix,
     )
+    save_restore_bounded_proof_audit = _build_save_restore_bounded_proof_audit(
+        project_root,
+        save_restore_decomposition_audit,
+        save_restore_requirement_family_audit,
+    )
     lookahead_window_bounded_proof_audit = _build_lookahead_window_bounded_proof_audit(
         project_root,
         route_parity_matrix,
@@ -8080,6 +8158,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "omt_xs_any_mapping_audit": omt_xs_any_mapping_audit,
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
         "hosted_fedpro_bounded_proof_audit": hosted_fedpro_bounded_proof_audit,
+        "save_restore_bounded_proof_audit": save_restore_bounded_proof_audit,
         "lookahead_window_bounded_proof_audit": lookahead_window_bounded_proof_audit,
         "standard_binding_runtime_capability_audit": standard_binding_runtime_capability_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
@@ -8152,6 +8231,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
     hosted_fedpro_bounded_proof_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
+    save_restore_bounded_proof_audit = snapshot["save_restore_bounded_proof_audit"]
     lookahead_window_bounded_proof_audit = snapshot["lookahead_window_bounded_proof_audit"]
     standard_binding_runtime_capability_audit = snapshot["standard_binding_runtime_capability_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
@@ -8516,6 +8596,18 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Residual boundary: {lookahead_window_bounded_proof_audit['residual_boundary']}",
             "",
             f"Pitch probe routes: {', '.join(lookahead_window_bounded_proof_audit['pitch_probe_routes'])}",
+            "",
+            "## Save/Restore Bounded Proof Audit",
+            "",
+            f"- Audit status: {save_restore_bounded_proof_audit['audit_status']}",
+            f"- Doc path: {save_restore_bounded_proof_audit['doc_path']}",
+            f"- Doc exists: {save_restore_bounded_proof_audit['doc_exists']}",
+            f"- Proof family count: {save_restore_bounded_proof_audit['proof_family_count']}",
+            f"- Requirement-family count: {save_restore_bounded_proof_audit['requirement_family_count']}",
+            f"- Doc narrative ready: {save_restore_bounded_proof_audit['doc_narrative_ready']}",
+            f"- Ready for save/restore bounded proof claim: {save_restore_bounded_proof_audit['ready_for_save_restore_bounded_proof_claim']}",
+            f"- Assessment: {save_restore_bounded_proof_audit['current_assessment']}",
+            f"- Residual boundary: {save_restore_bounded_proof_audit['residual_boundary']}",
             "",
             "## Standard Binding Runtime-Capability Audit",
             "",
