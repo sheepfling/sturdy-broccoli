@@ -3955,6 +3955,74 @@ def _build_save_restore_bounded_proof_audit(
     }
 
 
+def _build_callback_bounded_proof_audit(
+    project_root: Path,
+    callback_decomposition_audit: Mapping[str, Any],
+    callback_proof_audit: Mapping[str, Any],
+    callback_route_parity_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/callback_bounded_proof.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    normalized_doc_text = " ".join(doc_text.split())
+    required_family_labels = [
+        "Declaration relevance and interest advisories",
+        "Federation sync, save/restore, and reporting callbacks",
+        "Object discovery, delivery, and removal",
+        "Object advisory, transport, and name-reservation callbacks",
+        "Supplemental callback context and region metadata",
+        "Ownership negotiation and query callbacks",
+        "Time grant, regulation, and retraction callbacks",
+        "Callback control and backlog hygiene",
+    ]
+    missing_family_labels = [label for label in required_family_labels if label not in doc_text]
+    required_test_markers = [
+        "`tests/test_rti1516_2025_python2025_runtime.py`",
+        "`tests/transport/test_grpc_transport_2025.py`",
+        "`tests/scenarios/test_federation_management_backend_matrix.py`",
+        "`tests/scenarios/test_save_restore_backend_matrix.py`",
+        "`tests/scenarios/test_ownership_management_backend_matrix.py`",
+        "`tests/scenarios/test_python_route_parity.py`",
+    ]
+    missing_test_markers = [marker for marker in required_test_markers if marker not in doc_text]
+    doc_checks = [
+        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-shim` is not an implementation owner" in doc_text,
+        "does not claim exhaustive callback-by-callback signature equivalence" in normalized_doc_text,
+        "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in doc_text,
+    ]
+    return {
+        "audit_status": "callback-bounded-proof-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "proof_family_count": callback_decomposition_audit["proof_family_count"],
+        "callback_row_count": callback_proof_audit["row_count"],
+        "hosted_route_backed_callback_count": callback_route_parity_audit["hosted_or_route_backed_callback_count"],
+        "required_family_labels": required_family_labels,
+        "missing_family_labels": missing_family_labels,
+        "missing_test_markers": missing_test_markers,
+        "doc_narrative_ready": all(doc_checks),
+        "ready_for_callback_bounded_proof_claim": (
+            doc_path.exists()
+            and callback_decomposition_audit["proof_family_count"] == 8
+            and callback_proof_audit["row_count"] == 55
+            and callback_route_parity_audit["hosted_or_route_backed_callback_count"] == 55
+            and not missing_family_labels
+            and not missing_test_markers
+            and all(doc_checks)
+        ),
+        "current_assessment": (
+            "The callback surface is no longer only captured as a callback ledger plus decomposition audit. It now has "
+            "an explicit requirement-facing proof note tied to the current callback proof families, direct callback "
+            "anchors, and hosted replay over the main python2025 runtime lane."
+        ),
+        "residual_boundary": (
+            "This audit makes the current callback claim explicit and reviewable, but it does not turn the repo into an "
+            "exhaustive callback signature/ordering equivalence proof across every binding."
+        ),
+    }
+
+
 def _build_standard_binding_runtime_capability_audit(
     project_root: Path,
     route_parity_matrix: Mapping[str, Any],
@@ -8041,6 +8109,12 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         save_restore_decomposition_audit,
         save_restore_requirement_family_audit,
     )
+    callback_bounded_proof_audit = _build_callback_bounded_proof_audit(
+        project_root,
+        callback_decomposition_audit,
+        callback_proof_audit,
+        callback_route_parity_audit,
+    )
     lookahead_window_bounded_proof_audit = _build_lookahead_window_bounded_proof_audit(
         project_root,
         route_parity_matrix,
@@ -8159,6 +8233,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
         "hosted_fedpro_bounded_proof_audit": hosted_fedpro_bounded_proof_audit,
         "save_restore_bounded_proof_audit": save_restore_bounded_proof_audit,
+        "callback_bounded_proof_audit": callback_bounded_proof_audit,
         "lookahead_window_bounded_proof_audit": lookahead_window_bounded_proof_audit,
         "standard_binding_runtime_capability_audit": standard_binding_runtime_capability_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
@@ -8232,6 +8307,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
     hosted_fedpro_bounded_proof_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
     save_restore_bounded_proof_audit = snapshot["save_restore_bounded_proof_audit"]
+    callback_bounded_proof_audit = snapshot["callback_bounded_proof_audit"]
     lookahead_window_bounded_proof_audit = snapshot["lookahead_window_bounded_proof_audit"]
     standard_binding_runtime_capability_audit = snapshot["standard_binding_runtime_capability_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
@@ -8608,6 +8684,19 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Ready for save/restore bounded proof claim: {save_restore_bounded_proof_audit['ready_for_save_restore_bounded_proof_claim']}",
             f"- Assessment: {save_restore_bounded_proof_audit['current_assessment']}",
             f"- Residual boundary: {save_restore_bounded_proof_audit['residual_boundary']}",
+            "",
+            "## Callback Bounded Proof Audit",
+            "",
+            f"- Audit status: {callback_bounded_proof_audit['audit_status']}",
+            f"- Doc path: {callback_bounded_proof_audit['doc_path']}",
+            f"- Doc exists: {callback_bounded_proof_audit['doc_exists']}",
+            f"- Proof family count: {callback_bounded_proof_audit['proof_family_count']}",
+            f"- Callback row count: {callback_bounded_proof_audit['callback_row_count']}",
+            f"- Hosted/direct route-backed callback count: {callback_bounded_proof_audit['hosted_route_backed_callback_count']}",
+            f"- Doc narrative ready: {callback_bounded_proof_audit['doc_narrative_ready']}",
+            f"- Ready for callback bounded proof claim: {callback_bounded_proof_audit['ready_for_callback_bounded_proof_claim']}",
+            f"- Assessment: {callback_bounded_proof_audit['current_assessment']}",
+            f"- Residual boundary: {callback_bounded_proof_audit['residual_boundary']}",
             "",
             "## Standard Binding Runtime-Capability Audit",
             "",

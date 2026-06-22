@@ -520,11 +520,14 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "forcing readers to mine the full generated finish-line bundle" in normalized_audit_text_lower
     assert "fom_backed_scenario_bounded_proof.md" in audit_text
     assert "save_restore_bounded_proof.md" in audit_text
+    assert "callback_bounded_proof.md" in audit_text
     assert "lookahead_window_bounded_proof.md" in audit_text
     assert "tracked example/fom-backed scenario boundary behind the same bounded claim" in normalized_audit_text_lower
     assert "without implying that every possible example fom composition is proven" in normalized_audit_text_lower
     assert "explicit save/restore rollback families behind the same bounded claim" in normalized_audit_text_lower
     assert "lifecycle-control, rollback, routing/policy, ownership, and time-window/time-state recovery families auditable" in normalized_audit_text_lower
+    assert "explicit callback families behind the same bounded claim" in normalized_audit_text_lower
+    assert "declaration advisories, object delivery, ownership callbacks, time/retraction callbacks, and callback-control hygiene auditable" in normalized_audit_text_lower
     assert "explicit target/radar lookahead ladder behind the same bounded claim" in normalized_audit_text_lower
     assert "closure, future-exclusion, output-delivery, consumer-order, pipeline, negative-oracle, and pitch-safe vendor-credence boundaries auditable" in normalized_audit_text_lower
     assert "promoting the current lane as the working python 2025 rti surface" in normalized_audit_text_lower
@@ -1389,12 +1392,14 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`" in normalized_backend
     assert "`docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`" in normalized_backend
     assert "`docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md`" in normalized_backend
+    assert "`docs/requirements/ieee-1516-2025/callback_bounded_proof.md`" in normalized_backend
     assert "`docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`" in normalized_backend
     assert "main executable bounded proof surface for the current 2025 python rti" in normalized_backend
     assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in normalized_backend
     assert "explicit non-claim map around that bounded working-surface statement" in normalized_backend
     assert "captures exactly which repo-owned proto2025 and target/radar example/fom-backed scenarios are part of the bounded claim" in normalized_backend
     assert "captures the current rollback-family contract for lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time state rollback" in normalized_backend
+    assert "captures the current callback-family contract for declaration advisories, object delivery, ownership callbacks, time/retraction callbacks, and callback-control hygiene" in normalized_backend
     assert "captures the explicit target/radar closure, future-exclusion, output-delivery, consumer-order, pipeline, negative-oracle, and bounded restore-window ladder" in normalized_backend
 
     assert "read [`first_run.md`](first_run.md) for the 2010 pure-python bootstrap lane" in normalized_docs_index
@@ -1411,6 +1416,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md): tracked proto2025 and target/radar example/fom-backed scenario boundary for the bounded `python2025` claim" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/save_restore_bounded_proof.md](requirements/ieee-1516-2025/save_restore_bounded_proof.md): explicit save/restore rollback-family boundary for lifecycle control, routing/policy rollback, ownership rollback, and time-window rollback on the bounded `python2025` claim" in normalized_docs_index
+    assert "[requirements/ieee-1516-2025/callback_bounded_proof.md](requirements/ieee-1516-2025/callback_bounded_proof.md): explicit callback-delivery family boundary for direct/hosted `python2025` callback proofs, callback-control hygiene, and callback surface limits on the bounded `python2025` claim" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/lookahead_window_bounded_proof.md](requirements/ieee-1516-2025/lookahead_window_bounded_proof.md): explicit target/radar lookahead-window proof ladder, negative-oracle guards, and pitch-safe vendor-credence boundary for the bounded `python2025` claim" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit non-claim map for shim aliases, java/c++ bindings, hosted-route boundaries, umbrella rows, retired rows, and omt extension semantics around the main `python2025` lane" in normalized_docs_index

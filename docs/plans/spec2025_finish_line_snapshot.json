@@ -228,6 +228,30 @@
       "2025-fedpro-hosted-runtime-extended-state"
     ]
   },
+  "callback_bounded_proof_audit": {
+    "audit_status": "callback-bounded-proof-captured",
+    "callback_row_count": 55,
+    "current_assessment": "The callback surface is no longer only captured as a callback ledger plus decomposition audit. It now has an explicit requirement-facing proof note tied to the current callback proof families, direct callback anchors, and hosted replay over the main python2025 runtime lane.",
+    "doc_exists": true,
+    "doc_narrative_ready": true,
+    "doc_path": "docs/requirements/ieee-1516-2025/callback_bounded_proof.md",
+    "hosted_route_backed_callback_count": 55,
+    "missing_family_labels": [],
+    "missing_test_markers": [],
+    "proof_family_count": 8,
+    "ready_for_callback_bounded_proof_claim": true,
+    "required_family_labels": [
+      "Declaration relevance and interest advisories",
+      "Federation sync, save/restore, and reporting callbacks",
+      "Object discovery, delivery, and removal",
+      "Object advisory, transport, and name-reservation callbacks",
+      "Supplemental callback context and region metadata",
+      "Ownership negotiation and query callbacks",
+      "Time grant, regulation, and retraction callbacks",
+      "Callback control and backlog hygiene"
+    ],
+    "residual_boundary": "This audit makes the current callback claim explicit and reviewable, but it does not turn the repo into an exhaustive callback signature/ordering equivalence proof across every binding."
+  },
   "callback_decomposition_audit": {
     "audit_status": "callback-decomposition-captured",
     "current_assessment": "Callback proof is no longer just a flat ledger plus one route-backed count. Its current evidence separates into declaration advisories, federation sync/save-restore/reporting, object delivery, advisory or name-reservation callbacks, supplemental callback context, ownership callbacks, time or retraction callbacks, and callback-control hygiene families, with direct and hosted anchors across every family.",
@@ -19656,15 +19680,16 @@
     "status": "imported-harmonization-candidate"
   },
   "requirement_pytest_anchor_audit": {
-    "anchored_requirement_count": 716,
+    "anchored_requirement_count": 718,
     "current_assessment": "Repo-native HLA2025 requirement markers now provide direct pytest-function anchors for the supported working-surface claim, complementing the broader evidence-slice ledgers.",
-    "row_count": 716,
+    "row_count": 718,
     "rows": [
       {
-        "pytest_anchor_count": 2,
+        "pytest_anchor_count": 3,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_repoint_delta_umbrella_rows_to_real_callback_binding_evidence",
-          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_binding_evidence"
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_binding_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit"
         ],
         "requirement_id": "HLA2025-BIND-FEDPRO-001"
       },
@@ -20284,12 +20309,27 @@
         "requirement_id": "HLA2025-FI-009"
       },
       {
-        "pytest_anchor_count": 2,
+        "pytest_anchor_count": 3,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_repoint_delta_umbrella_rows_to_real_callback_binding_evidence",
-          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_binding_evidence"
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_binding_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit"
         ],
         "requirement_id": "HLA2025-FI-CB-001"
+      },
+      {
+        "pytest_anchor_count": 1,
+        "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit"
+        ],
+        "requirement_id": "HLA2025-FI-CB-005"
+      },
+      {
+        "pytest_anchor_count": 1,
+        "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit"
+        ],
+        "requirement_id": "HLA2025-FI-CB-008"
       },
       {
         "pytest_anchor_count": 2,

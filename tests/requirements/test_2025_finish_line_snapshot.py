@@ -111,11 +111,26 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert matrix["high_priority_missing_anchor_count"] == 0
     assert matrix["high_priority_missing_anchors"] == []
     pytest_anchor_audit = snapshot["requirement_pytest_anchor_audit"]
-    assert pytest_anchor_audit["row_count"] == 716
-    assert pytest_anchor_audit["anchored_requirement_count"] == 716
+    assert pytest_anchor_audit["row_count"] == 718
+    assert pytest_anchor_audit["anchored_requirement_count"] == 718
     assert "direct pytest-function anchors" in pytest_anchor_audit["current_assessment"]
     pytest_rows = {row["requirement_id"]: row for row in pytest_anchor_audit["rows"]}
-    for prefix in ("HLA2025-FI-", "HLA2025-BND-", "HLA2025-MOD-", "HLA2025-NEW-", "HLA2025-FR-"):
+    fi_single_anchor_rows = [
+        row["requirement_id"]
+        for row in pytest_anchor_audit["rows"]
+        if row["requirement_id"].startswith("HLA2025-FI-")
+        and not row["requirement_id"].startswith("HLA2025-FI-CB-")
+        and row["pytest_anchor_count"] == 1
+    ]
+    assert fi_single_anchor_rows == []
+    callback_single_anchor_rows = [
+        row["requirement_id"]
+        for row in pytest_anchor_audit["rows"]
+        if row["requirement_id"].startswith("HLA2025-FI-CB-")
+        and row["pytest_anchor_count"] == 1
+    ]
+    assert callback_single_anchor_rows == ["HLA2025-FI-CB-005", "HLA2025-FI-CB-008"]
+    for prefix in ("HLA2025-BND-", "HLA2025-MOD-", "HLA2025-NEW-", "HLA2025-FR-"):
         single_anchor_rows = [
             row["requirement_id"]
             for row in pytest_anchor_audit["rows"]
@@ -1508,6 +1523,29 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert save_restore_bounded_audit["ready_for_save_restore_bounded_proof_claim"] is True
     assert "save/restore surface is no longer only captured as one generated decomposition plus family-map pair" in save_restore_bounded_audit["current_assessment"]
     assert "does not turn every save/restore requirement into its own standalone clause-by-clause conformance proof" in save_restore_bounded_audit["residual_boundary"]
+    callback_bounded_audit = snapshot["callback_bounded_proof_audit"]
+    assert callback_bounded_audit["audit_status"] == "callback-bounded-proof-captured"
+    assert callback_bounded_audit["doc_path"] == "docs/requirements/ieee-1516-2025/callback_bounded_proof.md"
+    assert callback_bounded_audit["doc_exists"] is True
+    assert callback_bounded_audit["proof_family_count"] == 8
+    assert callback_bounded_audit["callback_row_count"] == 55
+    assert callback_bounded_audit["hosted_route_backed_callback_count"] == 55
+    assert callback_bounded_audit["required_family_labels"] == [
+        "Declaration relevance and interest advisories",
+        "Federation sync, save/restore, and reporting callbacks",
+        "Object discovery, delivery, and removal",
+        "Object advisory, transport, and name-reservation callbacks",
+        "Supplemental callback context and region metadata",
+        "Ownership negotiation and query callbacks",
+        "Time grant, regulation, and retraction callbacks",
+        "Callback control and backlog hygiene",
+    ]
+    assert callback_bounded_audit["missing_family_labels"] == []
+    assert callback_bounded_audit["missing_test_markers"] == []
+    assert callback_bounded_audit["doc_narrative_ready"] is True
+    assert callback_bounded_audit["ready_for_callback_bounded_proof_claim"] is True
+    assert "callback surface is no longer only captured as a callback ledger plus decomposition audit" in callback_bounded_audit["current_assessment"]
+    assert "does not turn the repo into an exhaustive callback signature/ordering equivalence proof across every binding" in callback_bounded_audit["residual_boundary"]
     lookahead_window_audit = snapshot["lookahead_window_bounded_proof_audit"]
     assert lookahead_window_audit["audit_status"] == "lookahead-window-bounded-proof-captured"
     assert lookahead_window_audit["doc_path"] == "docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md"
@@ -3894,7 +3932,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Closeout Readiness" in markdown
     assert "Promotion Vs Split Audit" in markdown
     assert "Pytest Anchor Audit" in markdown
-    assert "Anchored requirements: 716" in markdown
+    assert "Anchored requirements: 718" in markdown
     assert "Unanchored Requirement Audit" in markdown
     assert "Unanchored ledger requirements: 0" in markdown
     assert "FI Service Proof Audit" in markdown
@@ -3948,6 +3986,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Save/Restore Bounded Proof Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md" in markdown
     assert "Ready for save/restore bounded proof claim: True" in markdown
+    assert "Callback Bounded Proof Audit" in markdown
+    assert "Doc path: docs/requirements/ieee-1516-2025/callback_bounded_proof.md" in markdown
+    assert "Ready for callback bounded proof claim: True" in markdown
     assert "Lookahead Window Bounded Proof Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md" in markdown
     assert "Ready for lookahead window bounded proof claim: True" in markdown
@@ -4243,7 +4284,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["requirement_depth_expansion"]["row_count"] == 691
     assert payload["requirement_coverage_disposition"]["covered_row_count"] == 645
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
-    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 716
+    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 718
     assert payload["unanchored_requirement_audit"]["row_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
     payload_route_rows = {

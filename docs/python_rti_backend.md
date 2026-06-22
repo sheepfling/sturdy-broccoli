@@ -136,6 +136,7 @@ Primary evidence anchors:
 - `docs/plans/2025_python_rti_backend_audit.md`
 - `docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/save_restore_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/callback_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
@@ -173,6 +174,13 @@ captures the current rollback-family contract for lifecycle control, shared
 rollback, routing/policy rollback, ownership rollback, and time-window/time
 state rollback instead of leaving that evidence only inside the broader
 federation-management note or generated decomposition text.
+
+The matching callback note,
+`docs/requirements/ieee-1516-2025/callback_bounded_proof.md`,
+captures the current callback-family contract for declaration advisories,
+object delivery, ownership callbacks, time/retraction callbacks, and
+callback-control hygiene instead of leaving that evidence only inside the
+generic callback-model explainer or generated callback audits.
 
 The matching lookahead-window note,
 `docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`,

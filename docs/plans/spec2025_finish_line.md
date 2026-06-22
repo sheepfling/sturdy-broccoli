@@ -51,7 +51,7 @@ Partitioned blockers:
 
 ## Pytest Anchor Audit
 
-- Anchored requirements: 716
+- Anchored requirements: 718
 - Assessment: Repo-native HLA2025 requirement markers now provide direct pytest-function anchors for the supported working-surface claim, complementing the broader evidence-slice ledgers.
 
 ## Unanchored Requirement Audit
@@ -297,6 +297,19 @@ Pitch probe routes: ./tools/pitch time-window-probe, ./tools/pitch time-window-r
 - Ready for save/restore bounded proof claim: True
 - Assessment: The save/restore surface is no longer only captured as one generated decomposition plus family-map pair. It now has an explicit requirement-facing proof note tied to lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback over the main python2025 runtime lane and hosted replay.
 - Residual boundary: This audit makes the current save/restore rollback claim explicit and reviewable, but it does not turn every save/restore requirement into its own standalone clause-by-clause conformance proof.
+
+## Callback Bounded Proof Audit
+
+- Audit status: callback-bounded-proof-captured
+- Doc path: docs/requirements/ieee-1516-2025/callback_bounded_proof.md
+- Doc exists: True
+- Proof family count: 8
+- Callback row count: 55
+- Hosted/direct route-backed callback count: 55
+- Doc narrative ready: True
+- Ready for callback bounded proof claim: True
+- Assessment: The callback surface is no longer only captured as a callback ledger plus decomposition audit. It now has an explicit requirement-facing proof note tied to the current callback proof families, direct callback anchors, and hosted replay over the main python2025 runtime lane.
+- Residual boundary: This audit makes the current callback claim explicit and reviewable, but it does not turn the repo into an exhaustive callback signature/ordering equivalence proof across every binding.
 
 ## Standard Binding Runtime-Capability Audit
 

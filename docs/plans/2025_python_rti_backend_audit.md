@@ -202,6 +202,7 @@ Primary evidence anchors:
 - [2025_requirements_finish_line.md](2025_requirements_finish_line.md)
 - [../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md)
 - [../requirements/ieee-1516-2025/save_restore_bounded_proof.md](../requirements/ieee-1516-2025/save_restore_bounded_proof.md)
+- [../requirements/ieee-1516-2025/callback_bounded_proof.md](../requirements/ieee-1516-2025/callback_bounded_proof.md)
 - [../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
@@ -236,6 +237,13 @@ use
 That note makes the lifecycle-control, rollback, routing/policy, ownership,
 and time-window/time-state recovery families auditable without pretending every
 save/restore clause is now a standalone final conformance proof.
+
+For the explicit callback families behind the same bounded claim, use
+[`../requirements/ieee-1516-2025/callback_bounded_proof.md`](../requirements/ieee-1516-2025/callback_bounded_proof.md).
+That note makes declaration advisories, object delivery, ownership callbacks,
+time/retraction callbacks, and callback-control hygiene auditable without
+pretending the repo has exhaustive callback signature/ordering equivalence
+across every binding.
 
 For the explicit Target/Radar lookahead ladder behind the same bounded claim,
 use
