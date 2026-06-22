@@ -1488,6 +1488,51 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert hosted_fedpro_audit["ready_for_hosted_fedpro_bounded_proof_claim"] is True
     assert "per-scenario transport-plus-parity test anchors" in hosted_fedpro_audit["current_assessment"]
     assert "does not promote the hosted FedPro lane into full remote-RTI semantics" in hosted_fedpro_audit["residual_boundary"]
+    lookahead_window_audit = snapshot["lookahead_window_bounded_proof_audit"]
+    assert lookahead_window_audit["audit_status"] == "lookahead-window-bounded-proof-captured"
+    assert lookahead_window_audit["doc_path"] == "docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md"
+    assert lookahead_window_audit["doc_exists"] is True
+    assert lookahead_window_audit["proof_level_count"] == 10
+    assert lookahead_window_audit["required_proof_levels"] == [
+        "time-window-core",
+        "time-window-future-exclusion",
+        "time-window-output-delivery",
+        "time-window-consumer-order",
+        "time-window-pipeline-two-scans",
+        "time-window-receive-order-poison",
+        "time-window-save-restore-window-state",
+        "time-window-save-restore-output-resume",
+        "time-window-save-restore-pipeline-resume",
+        "lookahead-processing-window-certified",
+    ]
+    assert lookahead_window_audit["missing_proof_levels"] == []
+    assert lookahead_window_audit["route_row_count"] == 4
+    assert lookahead_window_audit["routes"] == [
+        "save_restore:python-2025-fedpro-grpc",
+        "save_restore:python-2025-inprocess",
+        "time_management:python-2025-fedpro-grpc",
+        "time_management:python-2025-inprocess",
+    ]
+    assert lookahead_window_audit["required_evidence_tests"] == {
+        "time_management:python-2025-fedpro-grpc": [
+            "tests/scenarios/test_python_route_parity.py",
+            "tests/transport/test_grpc_transport_2025.py",
+        ],
+        "time_management:python-2025-inprocess": [
+            "tests/scenarios/test_python_route_parity.py",
+            "tests/test_rti1516_2025_python2025_runtime.py",
+        ],
+    }
+    assert lookahead_window_audit["missing_evidence_tests"] == {}
+    assert lookahead_window_audit["route_note_checks_ready"] is True
+    assert lookahead_window_audit["doc_narrative_ready"] is True
+    assert lookahead_window_audit["pitch_probe_routes"] == [
+        "./tools/pitch time-window-probe",
+        "./tools/pitch time-window-restore-state-probe",
+    ]
+    assert lookahead_window_audit["ready_for_lookahead_window_bounded_proof_claim"] is True
+    assert "Target/Radar lookahead ladder is no longer only embedded in the generic time-management and milestone wording" in lookahead_window_audit["current_assessment"]
+    assert "does not convert the bounded ladder into an unconditional clause-by-clause 2025 time-policy conformance pass" in lookahead_window_audit["residual_boundary"]
     standard_binding_audit = snapshot["standard_binding_runtime_capability_audit"]
     assert standard_binding_audit["audit_status"] == "standard-binding-runtime-capability-captured"
     assert standard_binding_audit["doc_path"] == "docs/requirements/ieee-1516-2025/standard_binding_runtime_capability_bounded_proof.md"
@@ -3880,6 +3925,10 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Ready for retired legacy mapping claim: True" in markdown
     assert "Federate Interface legacy API: 11 rows" in markdown
     assert "OMT legacy schema: 13 rows" in markdown
+    assert "Lookahead Window Bounded Proof Audit" in markdown
+    assert "Doc path: docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md" in markdown
+    assert "Ready for lookahead window bounded proof claim: True" in markdown
+    assert "Pitch probe routes: ./tools/pitch time-window-probe, ./tools/pitch time-window-restore-state-probe" in markdown
     assert "Requirement-by-requirement area closure:" in markdown
     assert "Completion Claim Audit" in markdown
     assert "Ready for supported-boundary statement: True" in markdown

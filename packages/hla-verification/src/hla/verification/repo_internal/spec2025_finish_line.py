@@ -3759,6 +3759,129 @@ def _build_hosted_fedpro_bounded_proof_audit(
     }
 
 
+def _build_lookahead_window_bounded_proof_audit(
+    project_root: Path,
+    route_parity_matrix: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    normalized_doc_text = " ".join(doc_text.split())
+    route_rows = [
+        row
+        for row in route_parity_matrix["rows"]
+        if (row["scenario"], row["route"])
+        in {
+            ("time_management", "python-2025-inprocess"),
+            ("time_management", "python-2025-fedpro-grpc"),
+            ("save_restore", "python-2025-inprocess"),
+            ("save_restore", "python-2025-fedpro-grpc"),
+        }
+    ]
+    route_rows.sort(key=lambda row: (row["scenario"], row["route"]))
+    by_route = {(row["scenario"], row["route"]): row for row in route_rows}
+    required_proof_levels = [
+        "time-window-core",
+        "time-window-future-exclusion",
+        "time-window-output-delivery",
+        "time-window-consumer-order",
+        "time-window-pipeline-two-scans",
+        "time-window-receive-order-poison",
+        "time-window-save-restore-window-state",
+        "time-window-save-restore-output-resume",
+        "time-window-save-restore-pipeline-resume",
+        "lookahead-processing-window-certified",
+    ]
+    missing_proof_levels = [level for level in required_proof_levels if f"`{level}`" not in doc_text]
+    direct_time_row = by_route.get(("time_management", "python-2025-inprocess"))
+    hosted_time_row = by_route.get(("time_management", "python-2025-fedpro-grpc"))
+    direct_save_restore_row = by_route.get(("save_restore", "python-2025-inprocess"))
+    hosted_save_restore_row = by_route.get(("save_restore", "python-2025-fedpro-grpc"))
+    route_note_checks = [
+        direct_time_row is not None
+        and "future-exclusion blocking until GALT/LITS reach the window end" in direct_time_row["notes"]
+        and "pipeline-two-scans" in direct_time_row["notes"]
+        and "oracle-rejection guards" in direct_time_row["notes"],
+        hosted_time_row is not None
+        and "package-owned future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet" in hosted_time_row["notes"]
+        and "save-restore-pipeline-resume" in hosted_time_row["notes"]
+        and "oracle-rejection guards" in hosted_time_row["notes"],
+        direct_save_restore_row is not None
+        and "saved lookahead recovery" in direct_save_restore_row["notes"]
+        and "queued-TSO redelivery after restore" in direct_save_restore_row["notes"],
+        hosted_save_restore_row is not None
+        and "restore-output-resume, and pipeline-resume scenario adapter paths" in hosted_save_restore_row["notes"]
+        and "bounded radar-window state rollback" in hosted_save_restore_row["notes"],
+    ]
+    required_evidence_tests = {
+        ("time_management", "python-2025-inprocess"): {
+            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/scenarios/test_python_route_parity.py",
+        },
+        ("time_management", "python-2025-fedpro-grpc"): {
+            "tests/transport/test_grpc_transport_2025.py",
+            "tests/scenarios/test_python_route_parity.py",
+        },
+    }
+    missing_evidence_tests: dict[str, list[str]] = {}
+    for key, expected_tests in required_evidence_tests.items():
+        row = by_route.get(key)
+        if row is None:
+            missing_evidence_tests[f"{key[0]}:{key[1]}"] = sorted(expected_tests)
+            continue
+        missing = sorted(expected_tests - set(row["evidence_tests"]))
+        if missing:
+            missing_evidence_tests[f"{key[0]}:{key[1]}"] = missing
+    doc_checks = [
+        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-shim` is not an implementation owner" in doc_text,
+        "`./tools/pitch time-window-probe`" in doc_text,
+        "`./tools/pitch time-window-restore-state-probe`" in doc_text,
+        "must fail if the RTI allows a future-message exclusion bug or a closed-window causality leak" in normalized_doc_text,
+        "Hosted FedPro replay remains a bounded hosted route over" in normalized_doc_text,
+    ]
+    return {
+        "audit_status": "lookahead-window-bounded-proof-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "proof_level_count": len(required_proof_levels),
+        "required_proof_levels": required_proof_levels,
+        "missing_proof_levels": missing_proof_levels,
+        "route_row_count": len(route_rows),
+        "routes": [f"{row['scenario']}:{row['route']}" for row in route_rows],
+        "required_evidence_tests": {
+            f"{scenario}:{route}": sorted(tests)
+            for (scenario, route), tests in required_evidence_tests.items()
+        },
+        "missing_evidence_tests": missing_evidence_tests,
+        "route_note_checks_ready": all(route_note_checks),
+        "doc_narrative_ready": all(doc_checks),
+        "pitch_probe_routes": [
+            "./tools/pitch time-window-probe",
+            "./tools/pitch time-window-restore-state-probe",
+        ],
+        "ready_for_lookahead_window_bounded_proof_claim": (
+            doc_path.exists()
+            and len(route_rows) == 4
+            and not missing_proof_levels
+            and not missing_evidence_tests
+            and all(route_note_checks)
+            and all(doc_checks)
+        ),
+        "current_assessment": (
+            "The Target/Radar lookahead ladder is no longer only embedded in the generic time-management and "
+            "milestone wording. It now has an explicit requirement-facing proof note tied to the direct and hosted "
+            "time-management rows, the save/restore window-resume rows, the named proof ladder, and the narrow "
+            "Pitch-safe vendor-credence boundary."
+        ),
+        "residual_boundary": (
+            "This audit makes the current lookahead-window claim explicit and reviewable, but it does not convert "
+            "the bounded ladder into an unconditional clause-by-clause 2025 time-policy conformance pass for every "
+            "possible topology."
+        ),
+    }
+
+
 def _build_standard_binding_runtime_capability_audit(
     project_root: Path,
     route_parity_matrix: Mapping[str, Any],
@@ -7840,6 +7963,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         route_parity_matrix,
     )
+    lookahead_window_bounded_proof_audit = _build_lookahead_window_bounded_proof_audit(
+        project_root,
+        route_parity_matrix,
+    )
     standard_binding_runtime_capability_audit = _build_standard_binding_runtime_capability_audit(
         project_root,
         route_parity_matrix,
@@ -7953,6 +8080,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "omt_xs_any_mapping_audit": omt_xs_any_mapping_audit,
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
         "hosted_fedpro_bounded_proof_audit": hosted_fedpro_bounded_proof_audit,
+        "lookahead_window_bounded_proof_audit": lookahead_window_bounded_proof_audit,
         "standard_binding_runtime_capability_audit": standard_binding_runtime_capability_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
@@ -8024,6 +8152,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
     hosted_fedpro_bounded_proof_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
+    lookahead_window_bounded_proof_audit = snapshot["lookahead_window_bounded_proof_audit"]
     standard_binding_runtime_capability_audit = snapshot["standard_binding_runtime_capability_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
@@ -8372,6 +8501,21 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     )
     lines.extend(
         [
+            "",
+            "## Lookahead Window Bounded Proof Audit",
+            "",
+            f"- Audit status: {lookahead_window_bounded_proof_audit['audit_status']}",
+            f"- Doc path: {lookahead_window_bounded_proof_audit['doc_path']}",
+            f"- Doc exists: {lookahead_window_bounded_proof_audit['doc_exists']}",
+            f"- Proof level count: {lookahead_window_bounded_proof_audit['proof_level_count']}",
+            f"- Route row count: {lookahead_window_bounded_proof_audit['route_row_count']}",
+            f"- Route note checks ready: {lookahead_window_bounded_proof_audit['route_note_checks_ready']}",
+            f"- Doc narrative ready: {lookahead_window_bounded_proof_audit['doc_narrative_ready']}",
+            f"- Ready for lookahead window bounded proof claim: {lookahead_window_bounded_proof_audit['ready_for_lookahead_window_bounded_proof_claim']}",
+            f"- Assessment: {lookahead_window_bounded_proof_audit['current_assessment']}",
+            f"- Residual boundary: {lookahead_window_bounded_proof_audit['residual_boundary']}",
+            "",
+            f"Pitch probe routes: {', '.join(lookahead_window_bounded_proof_audit['pitch_probe_routes'])}",
             "",
             "## Standard Binding Runtime-Capability Audit",
             "",

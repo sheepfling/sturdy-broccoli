@@ -271,6 +271,21 @@ Binding boundary rows by role:
 Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management
 
 
+## Lookahead Window Bounded Proof Audit
+
+- Audit status: lookahead-window-bounded-proof-captured
+- Doc path: docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md
+- Doc exists: True
+- Proof level count: 10
+- Route row count: 4
+- Route note checks ready: True
+- Doc narrative ready: True
+- Ready for lookahead window bounded proof claim: True
+- Assessment: The Target/Radar lookahead ladder is no longer only embedded in the generic time-management and milestone wording. It now has an explicit requirement-facing proof note tied to the direct and hosted time-management rows, the save/restore window-resume rows, the named proof ladder, and the narrow Pitch-safe vendor-credence boundary.
+- Residual boundary: This audit makes the current lookahead-window claim explicit and reviewable, but it does not convert the bounded ladder into an unconditional clause-by-clause 2025 time-policy conformance pass for every possible topology.
+
+Pitch probe routes: ./tools/pitch time-window-probe, ./tools/pitch time-window-restore-state-probe
+
 ## Standard Binding Runtime-Capability Audit
 
 - Audit status: standard-binding-runtime-capability-captured
