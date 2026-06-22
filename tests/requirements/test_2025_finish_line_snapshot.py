@@ -468,10 +468,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_renumbered_service_utilization_rows_preserve_behavior_and_update_references" in anchor
         for anchor in pytest_rows["HLA2025-OMT-SU-196"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchor_count"] == 4
     assert any("test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
     assert any("test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
     assert any("test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
+    assert any("test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
     for row_id in (
         "HLA2025-OMT-COMP-166",
         "HLA2025-OMT-COMP-168",
@@ -483,10 +484,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "test_2025_parser_round_trips_additional_switch_metadata" in anchor
             for anchor in pytest_rows[row_id]["pytest_anchors"]
         )
-    assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 4
     assert any("test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
     assert any("test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
     assert any("test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
+    assert any("test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
     assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] >= 48
     assert any("test_2025_provider_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
@@ -1330,6 +1332,77 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert retired_mapping_audit["ready_for_retired_legacy_mapping_claim"] is True
     assert "explicit mapping note that enumerates every retired row" in retired_mapping_audit["current_assessment"]
     assert "does not convert those legacy-only rows into active 2025 support obligations" in retired_mapping_audit["residual_boundary"]
+    omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
+    assert omt_xs_any_mapping_audit["audit_status"] == "omt-xs-any-mapping-captured"
+    assert omt_xs_any_mapping_audit["doc_path"] == "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
+    assert omt_xs_any_mapping_audit["row_count"] == 45
+    assert omt_xs_any_mapping_audit["doc_exists"] is True
+    assert omt_xs_any_mapping_audit["rows_with_doc_anchor_count"] == 45
+    assert omt_xs_any_mapping_audit["rows_missing_doc_anchor"] == []
+    assert omt_xs_any_mapping_audit["rows_mentioned_in_doc_count"] == 45
+    assert omt_xs_any_mapping_audit["rows_missing_from_doc"] == []
+    assert omt_xs_any_mapping_audit["family_count"] == 5
+    assert omt_xs_any_mapping_audit["family_headings_ready"] is True
+    assert omt_xs_any_mapping_audit["by_family"] == {
+        "object-model-root-and-identity": [
+            "HLA2025-OMT-COMP-006",
+            "HLA2025-OMT-COMP-008",
+        ],
+        "object-class-and-attribute-extension-points": [
+            "HLA2025-OMT-COMP-019",
+            "HLA2025-OMT-COMP-021",
+            "HLA2025-OMT-COMP-027",
+            "HLA2025-OMT-COMP-035",
+            "HLA2025-OMT-COMP-039",
+            "HLA2025-OMT-COMP-045",
+            "HLA2025-OMT-COMP-047",
+            "HLA2025-OMT-COMP-056",
+            "HLA2025-OMT-COMP-057",
+            "HLA2025-OMT-COMP-059",
+            "HLA2025-OMT-COMP-067",
+            "HLA2025-OMT-COMP-068",
+            "HLA2025-OMT-COMP-070",
+            "HLA2025-OMT-COMP-077",
+            "HLA2025-OMT-COMP-081",
+            "HLA2025-OMT-COMP-082",
+        ],
+        "interaction-class-and-parameter-extension-points": [
+            "HLA2025-OMT-COMP-102",
+            "HLA2025-OMT-COMP-106",
+            "HLA2025-OMT-COMP-107",
+            "HLA2025-OMT-COMP-113",
+            "HLA2025-OMT-COMP-115",
+            "HLA2025-OMT-COMP-129",
+            "HLA2025-OMT-COMP-130",
+            "HLA2025-OMT-COMP-134",
+        ],
+        "datatype-and-encoding-extension-points": [
+            "HLA2025-OMT-COMP-145",
+            "HLA2025-OMT-COMP-147",
+            "HLA2025-OMT-COMP-154",
+            "HLA2025-OMT-COMP-156",
+            "HLA2025-OMT-COMP-171",
+            "HLA2025-OMT-COMP-176",
+            "HLA2025-OMT-COMP-178",
+            "HLA2025-OMT-COMP-181",
+            "HLA2025-OMT-COMP-189",
+            "HLA2025-OMT-COMP-193",
+            "HLA2025-OMT-COMP-197",
+            "HLA2025-OMT-COMP-198",
+        ],
+        "container-table-and-reference-extension-points": [
+            "HLA2025-OMT-COMP-202",
+            "HLA2025-OMT-COMP-204",
+            "HLA2025-OMT-COMP-208",
+            "HLA2025-OMT-COMP-210",
+            "HLA2025-OMT-COMP-219",
+            "HLA2025-OMT-COMP-222",
+            "HLA2025-OMT-COMP-224",
+        ],
+    }
+    assert omt_xs_any_mapping_audit["ready_for_omt_xs_any_mapping_claim"] is True
+    assert "requirement-facing proof note that enumerates every row by family" in omt_xs_any_mapping_audit["current_assessment"]
+    assert "does not convert foreign extension payload tolerance into arbitrary third-party extension execution semantics" in omt_xs_any_mapping_audit["residual_boundary"]
     binding_boundary_audit = snapshot["binding_boundary_mapping_audit"]
     assert binding_boundary_audit["audit_status"] == "binding-boundary-mapping-captured"
     assert binding_boundary_audit["doc_path"] == "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"

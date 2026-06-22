@@ -143,9 +143,13 @@ def test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit()
     assert "This bounded-proof note covers the 45 OMT component rows" in normalized
     assert "payload preservation, schema-tolerant parsing, and serializer round-trip" in normalized
     assert "does not claim arbitrary third-party extension execution semantics" in normalized
-    assert "`HLA2025-OMT-COMP-019`, `HLA2025-OMT-COMP-045`, `HLA2025-OMT-COMP-082`" in text
+    assert "`HLA2025-OMT-COMP-006`, `HLA2025-OMT-COMP-008`" in text
+    assert "`HLA2025-OMT-COMP-019`, `HLA2025-OMT-COMP-021`, `HLA2025-OMT-COMP-027`" in text
     assert "`HLA2025-OMT-COMP-102`, `HLA2025-OMT-COMP-110`, `HLA2025-OMT-COMP-134`" in text
-    assert "`HLA2025-OMT-COMP-006`, `HLA2025-OMT-COMP-057`, `HLA2025-OMT-COMP-197`" in text
+    assert "`HLA2025-OMT-COMP-145`, `HLA2025-OMT-COMP-147`, `HLA2025-OMT-COMP-154`" in text
+    assert "`HLA2025-OMT-COMP-202`, `HLA2025-OMT-COMP-204`, `HLA2025-OMT-COMP-208`" in text
+    assert "### `object-model-root-and-identity`" in text
+    assert "### `container-table-and-reference-extension-points`" in text
     assert "`tests/test_rti1516_2025_validation.py`" in text
     assert "`packages/hla-rti1516e/src/hla/rti1516e/fom.py`" in text
 

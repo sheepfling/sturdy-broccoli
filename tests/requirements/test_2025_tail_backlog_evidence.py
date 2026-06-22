@@ -140,6 +140,65 @@ def test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidenc
             assert "packages/hla-rti1516e/src/hla/rti1516e/fom.py" in evidence
 
 
+@pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")
+def test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows() -> None:
+    text = (ROOT / OMT_XS_ANY_DOC).read_text(encoding="utf-8")
+
+    assert "object-model-root-and-identity" in text
+    assert "object-class-and-attribute-extension-points" in text
+    assert "interaction-class-and-parameter-extension-points" in text
+    assert "datatype-and-encoding-extension-points" in text
+    assert "container-table-and-reference-extension-points" in text
+    for number in (
+        6,
+        8,
+        19,
+        21,
+        27,
+        35,
+        39,
+        45,
+        47,
+        56,
+        57,
+        59,
+        67,
+        68,
+        70,
+        77,
+        81,
+        82,
+        102,
+        106,
+        107,
+        113,
+        115,
+        129,
+        130,
+        134,
+        145,
+        147,
+        154,
+        156,
+        171,
+        176,
+        178,
+        181,
+        189,
+        193,
+        197,
+        198,
+        202,
+        204,
+        208,
+        210,
+        219,
+        222,
+        224,
+    ):
+        assert f"HLA2025-OMT-COMP-{number:03d}" in text
+
+
 @pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
 def test_harmonization_packets_keep_retired_rows_on_explicit_legacy_mapping_doc() -> None:
     for rows in (

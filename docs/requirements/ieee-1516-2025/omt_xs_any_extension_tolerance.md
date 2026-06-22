@@ -29,11 +29,33 @@ semantics or interpretation as native HLA metadata.
 
 | Family | Requirement count | Example requirement IDs | Focus |
 | --- | ---: | --- | --- |
-| `model-identification-and-top-level-extension-points` | 2 | `HLA2025-OMT-COMP-202`, `HLA2025-OMT-COMP-224` | Foreign extension points around objectModel identity and top-level reference sections. |
-| `object-class-and-attribute-extension-points` | 16 | `HLA2025-OMT-COMP-019`, `HLA2025-OMT-COMP-045`, `HLA2025-OMT-COMP-082` | Foreign extension points attached to object classes, attributes, update metadata, dimensions, and associations. |
+| `object-model-root-and-identity` | 2 | `HLA2025-OMT-COMP-006`, `HLA2025-OMT-COMP-008` | Foreign extension points around objectModel identity and model-level descriptive metadata. |
+| `object-class-and-attribute-extension-points` | 16 | `HLA2025-OMT-COMP-019`, `HLA2025-OMT-COMP-045`, `HLA2025-OMT-COMP-082` | Foreign extension points attached to object classes, attributes, update metadata, and associations. |
 | `interaction-class-and-parameter-extension-points` | 8 | `HLA2025-OMT-COMP-102`, `HLA2025-OMT-COMP-110`, `HLA2025-OMT-COMP-134` | Foreign extension points attached to interaction classes, parameters, order metadata, and associations. |
-| `datatype-and-encoding-extension-points` | 12 | `HLA2025-OMT-COMP-006`, `HLA2025-OMT-COMP-057`, `HLA2025-OMT-COMP-197` | Foreign extension points attached to datatype, encoding, array, fixed-record, variant-record, and enumerator structures. |
-| `container-table-and-reference-extension-points` | 7 | `HLA2025-OMT-COMP-008`, `HLA2025-OMT-COMP-035`, `HLA2025-OMT-COMP-223` | Foreign extension points attached to table containers, datatype collections, and reference containers. |
+| `datatype-and-encoding-extension-points` | 12 | `HLA2025-OMT-COMP-145`, `HLA2025-OMT-COMP-181`, `HLA2025-OMT-COMP-197` | Foreign extension points attached to datatype, encoding, array, record, and enumerator structures. |
+| `container-table-and-reference-extension-points` | 7 | `HLA2025-OMT-COMP-202`, `HLA2025-OMT-COMP-210`, `HLA2025-OMT-COMP-224` | Foreign extension points attached to table containers and top-level reference sections. |
+
+## Full Requirement Ledger
+
+### `object-model-root-and-identity`
+
+`HLA2025-OMT-COMP-006`, `HLA2025-OMT-COMP-008`
+
+### `object-class-and-attribute-extension-points`
+
+`HLA2025-OMT-COMP-019`, `HLA2025-OMT-COMP-021`, `HLA2025-OMT-COMP-027`, `HLA2025-OMT-COMP-035`, `HLA2025-OMT-COMP-039`, `HLA2025-OMT-COMP-045`, `HLA2025-OMT-COMP-047`, `HLA2025-OMT-COMP-056`, `HLA2025-OMT-COMP-057`, `HLA2025-OMT-COMP-059`, `HLA2025-OMT-COMP-067`, `HLA2025-OMT-COMP-068`, `HLA2025-OMT-COMP-070`, `HLA2025-OMT-COMP-077`, `HLA2025-OMT-COMP-081`, `HLA2025-OMT-COMP-082`
+
+### `interaction-class-and-parameter-extension-points`
+
+`HLA2025-OMT-COMP-102`, `HLA2025-OMT-COMP-106`, `HLA2025-OMT-COMP-107`, `HLA2025-OMT-COMP-113`, `HLA2025-OMT-COMP-115`, `HLA2025-OMT-COMP-129`, `HLA2025-OMT-COMP-130`, `HLA2025-OMT-COMP-134`
+
+### `datatype-and-encoding-extension-points`
+
+`HLA2025-OMT-COMP-145`, `HLA2025-OMT-COMP-147`, `HLA2025-OMT-COMP-154`, `HLA2025-OMT-COMP-156`, `HLA2025-OMT-COMP-171`, `HLA2025-OMT-COMP-176`, `HLA2025-OMT-COMP-178`, `HLA2025-OMT-COMP-181`, `HLA2025-OMT-COMP-189`, `HLA2025-OMT-COMP-193`, `HLA2025-OMT-COMP-197`, `HLA2025-OMT-COMP-198`
+
+### `container-table-and-reference-extension-points`
+
+`HLA2025-OMT-COMP-202`, `HLA2025-OMT-COMP-204`, `HLA2025-OMT-COMP-208`, `HLA2025-OMT-COMP-210`, `HLA2025-OMT-COMP-219`, `HLA2025-OMT-COMP-222`, `HLA2025-OMT-COMP-224`
 
 ## Reading of the Evidence
 

@@ -193,6 +193,28 @@ Retired rows by service group:
 - Federate Interface legacy API: 11 rows (HLA2025-FI-RET-001, HLA2025-FI-RET-002, HLA2025-FI-RET-003, HLA2025-FI-RET-004, HLA2025-FI-RET-005, HLA2025-FI-RET-006, HLA2025-FI-RET-007, HLA2025-FI-RET-008, HLA2025-FI-RET-009, HLA2025-FI-RET-010, HLA2025-FI-RET-011)
 - OMT legacy schema: 13 rows (HLA2025-OMT-RET-001, HLA2025-OMT-RET-002, HLA2025-OMT-RET-003, HLA2025-OMT-RET-004, HLA2025-OMT-RET-005, HLA2025-OMT-RET-006, HLA2025-OMT-RET-007, HLA2025-OMT-RET-008, HLA2025-OMT-RET-009, HLA2025-OMT-RET-010, HLA2025-OMT-RET-011, HLA2025-OMT-RET-012, HLA2025-OMT-RET-013)
 
+## OMT xs:any Mapping Audit
+
+- Audit status: omt-xs-any-mapping-captured
+- Doc path: docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md
+- Row count: 45
+- Doc exists: True
+- Rows with doc anchor: 45
+- Rows mentioned in doc: 45
+- Family count: 5
+- Family headings ready: True
+- Ready for OMT xs:any mapping claim: True
+- Assessment: The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a requirement-facing proof note that enumerates every row by family and states the exact supported claim: foreign payload preservation, tolerant parsing, and serializer round-trip without promoting those payloads into repo-native HLA semantics.
+- Residual boundary: This audit makes the xs:any bounded claim explicit and fully reviewable, but it does not convert foreign extension payload tolerance into arbitrary third-party extension execution semantics.
+
+OMT xs:any rows by family:
+
+- object-model-root-and-identity: 2 rows (HLA2025-OMT-COMP-006, HLA2025-OMT-COMP-008)
+- object-class-and-attribute-extension-points: 16 rows (HLA2025-OMT-COMP-019, HLA2025-OMT-COMP-021, HLA2025-OMT-COMP-027, HLA2025-OMT-COMP-035, HLA2025-OMT-COMP-039, HLA2025-OMT-COMP-045, HLA2025-OMT-COMP-047, HLA2025-OMT-COMP-056, HLA2025-OMT-COMP-057, HLA2025-OMT-COMP-059, HLA2025-OMT-COMP-067, HLA2025-OMT-COMP-068, HLA2025-OMT-COMP-070, HLA2025-OMT-COMP-077, HLA2025-OMT-COMP-081, HLA2025-OMT-COMP-082)
+- interaction-class-and-parameter-extension-points: 8 rows (HLA2025-OMT-COMP-102, HLA2025-OMT-COMP-106, HLA2025-OMT-COMP-107, HLA2025-OMT-COMP-113, HLA2025-OMT-COMP-115, HLA2025-OMT-COMP-129, HLA2025-OMT-COMP-130, HLA2025-OMT-COMP-134)
+- datatype-and-encoding-extension-points: 12 rows (HLA2025-OMT-COMP-145, HLA2025-OMT-COMP-147, HLA2025-OMT-COMP-154, HLA2025-OMT-COMP-156, HLA2025-OMT-COMP-171, HLA2025-OMT-COMP-176, HLA2025-OMT-COMP-178, HLA2025-OMT-COMP-181, HLA2025-OMT-COMP-189, HLA2025-OMT-COMP-193, HLA2025-OMT-COMP-197, HLA2025-OMT-COMP-198)
+- container-table-and-reference-extension-points: 7 rows (HLA2025-OMT-COMP-202, HLA2025-OMT-COMP-204, HLA2025-OMT-COMP-208, HLA2025-OMT-COMP-210, HLA2025-OMT-COMP-219, HLA2025-OMT-COMP-222, HLA2025-OMT-COMP-224)
+
 ## Binding Boundary Mapping Audit
 
 - Audit status: binding-boundary-mapping-captured

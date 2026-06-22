@@ -3235,6 +3235,118 @@ def _build_duplicate_umbrella_mapping_audit(
     }
 
 
+def _build_omt_xs_any_mapping_audit(
+    project_root: Path,
+    harmonization_rows: list[Mapping[str, str]],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    rows = [
+        row
+        for row in harmonization_rows
+        if row["id"].startswith("HLA2025-OMT-COMP-")
+        and "xs:any" in row["service_or_check"]
+    ]
+    rows.sort(key=lambda row: row["id"])
+    rows_with_doc_anchor = [
+        row["id"]
+        for row in rows
+        if doc_rel in row["suggested_repo_evidence_path"]
+    ]
+    rows_missing_doc_anchor = sorted({row["id"] for row in rows} - set(rows_with_doc_anchor))
+    rows_mentioned_in_doc = [row["id"] for row in rows if row["id"] in doc_text]
+    rows_missing_from_doc = sorted({row["id"] for row in rows} - set(rows_mentioned_in_doc))
+    family_map = {
+        "object-model-root-and-identity": (
+            "HLA2025-OMT-COMP-006",
+            "HLA2025-OMT-COMP-008",
+        ),
+        "object-class-and-attribute-extension-points": (
+            "HLA2025-OMT-COMP-019",
+            "HLA2025-OMT-COMP-021",
+            "HLA2025-OMT-COMP-027",
+            "HLA2025-OMT-COMP-035",
+            "HLA2025-OMT-COMP-039",
+            "HLA2025-OMT-COMP-045",
+            "HLA2025-OMT-COMP-047",
+            "HLA2025-OMT-COMP-056",
+            "HLA2025-OMT-COMP-057",
+            "HLA2025-OMT-COMP-059",
+            "HLA2025-OMT-COMP-067",
+            "HLA2025-OMT-COMP-068",
+            "HLA2025-OMT-COMP-070",
+            "HLA2025-OMT-COMP-077",
+            "HLA2025-OMT-COMP-081",
+            "HLA2025-OMT-COMP-082",
+        ),
+        "interaction-class-and-parameter-extension-points": (
+            "HLA2025-OMT-COMP-102",
+            "HLA2025-OMT-COMP-106",
+            "HLA2025-OMT-COMP-107",
+            "HLA2025-OMT-COMP-113",
+            "HLA2025-OMT-COMP-115",
+            "HLA2025-OMT-COMP-129",
+            "HLA2025-OMT-COMP-130",
+            "HLA2025-OMT-COMP-134",
+        ),
+        "datatype-and-encoding-extension-points": (
+            "HLA2025-OMT-COMP-145",
+            "HLA2025-OMT-COMP-147",
+            "HLA2025-OMT-COMP-154",
+            "HLA2025-OMT-COMP-156",
+            "HLA2025-OMT-COMP-171",
+            "HLA2025-OMT-COMP-176",
+            "HLA2025-OMT-COMP-178",
+            "HLA2025-OMT-COMP-181",
+            "HLA2025-OMT-COMP-189",
+            "HLA2025-OMT-COMP-193",
+            "HLA2025-OMT-COMP-197",
+            "HLA2025-OMT-COMP-198",
+        ),
+        "container-table-and-reference-extension-points": (
+            "HLA2025-OMT-COMP-202",
+            "HLA2025-OMT-COMP-204",
+            "HLA2025-OMT-COMP-208",
+            "HLA2025-OMT-COMP-210",
+            "HLA2025-OMT-COMP-219",
+            "HLA2025-OMT-COMP-222",
+            "HLA2025-OMT-COMP-224",
+        ),
+    }
+    family_headings_ready = all(f"### `{family}`" in doc_text for family in family_map)
+    return {
+        "audit_status": "omt-xs-any-mapping-captured",
+        "doc_path": doc_rel,
+        "row_count": len(rows),
+        "doc_exists": doc_path.exists(),
+        "rows_with_doc_anchor_count": len(rows_with_doc_anchor),
+        "rows_missing_doc_anchor": rows_missing_doc_anchor,
+        "rows_mentioned_in_doc_count": len(rows_mentioned_in_doc),
+        "rows_missing_from_doc": rows_missing_from_doc,
+        "family_count": len(family_map),
+        "family_headings_ready": family_headings_ready,
+        "by_family": {family: list(row_ids) for family, row_ids in family_map.items()},
+        "ready_for_omt_xs_any_mapping_claim": (
+            doc_path.exists()
+            and len(rows) == 45
+            and not rows_missing_doc_anchor
+            and not rows_missing_from_doc
+            and family_headings_ready
+        ),
+        "current_assessment": (
+            "The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a "
+            "requirement-facing proof note that enumerates every row by family and states the exact supported claim: "
+            "foreign payload preservation, tolerant parsing, and serializer round-trip without promoting those "
+            "payloads into repo-native HLA semantics."
+        ),
+        "residual_boundary": (
+            "This audit makes the xs:any bounded claim explicit and fully reviewable, but it does not convert foreign "
+            "extension payload tolerance into arbitrary third-party extension execution semantics."
+        ),
+    }
+
+
 def _build_supported_boundary_statement(
     claim_audit: Mapping[str, Any],
     objective_audit: Mapping[str, Any],
@@ -7166,6 +7278,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         harmonization_rows,
     )
+    omt_xs_any_mapping_audit = _build_omt_xs_any_mapping_audit(
+        project_root,
+        harmonization_rows,
+    )
     binding_boundary_mapping_audit = _build_binding_boundary_mapping_audit(
         project_root,
         completion_rows,
@@ -7258,6 +7374,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "python_rti_milestone_audit": python_rti_milestone_audit,
         "requirement_by_requirement_audit": requirement_by_requirement_audit,
         "retired_legacy_mapping_audit": retired_legacy_mapping_audit,
+        "omt_xs_any_mapping_audit": omt_xs_any_mapping_audit,
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
@@ -7323,6 +7440,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     milestone_audit = snapshot["python_rti_milestone_audit"]
     requirement_by_requirement_audit = snapshot["requirement_by_requirement_audit"]
     retired_legacy_mapping_audit = snapshot["retired_legacy_mapping_audit"]
+    omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
@@ -7576,6 +7694,29 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     )
     for service_group, row_ids in retired_legacy_mapping_audit["by_service_group"].items():
         lines.append(f"- {service_group}: {len(row_ids)} rows ({', '.join(row_ids)})")
+    lines.extend(
+        [
+            "",
+            "## OMT xs:any Mapping Audit",
+            "",
+            f"- Audit status: {omt_xs_any_mapping_audit['audit_status']}",
+            f"- Doc path: {omt_xs_any_mapping_audit['doc_path']}",
+            f"- Row count: {omt_xs_any_mapping_audit['row_count']}",
+            f"- Doc exists: {omt_xs_any_mapping_audit['doc_exists']}",
+            f"- Rows with doc anchor: {omt_xs_any_mapping_audit['rows_with_doc_anchor_count']}",
+            f"- Rows mentioned in doc: {omt_xs_any_mapping_audit['rows_mentioned_in_doc_count']}",
+            f"- Family count: {omt_xs_any_mapping_audit['family_count']}",
+            f"- Family headings ready: {omt_xs_any_mapping_audit['family_headings_ready']}",
+            f"- Ready for OMT xs:any mapping claim: {omt_xs_any_mapping_audit['ready_for_omt_xs_any_mapping_claim']}",
+            f"- Assessment: {omt_xs_any_mapping_audit['current_assessment']}",
+            f"- Residual boundary: {omt_xs_any_mapping_audit['residual_boundary']}",
+            "",
+            "OMT xs:any rows by family:",
+            "",
+        ]
+    )
+    for family, row_ids in omt_xs_any_mapping_audit["by_family"].items():
+        lines.append(f"- {family}: {len(row_ids)} rows ({', '.join(row_ids)})")
     lines.extend(
         [
             "",

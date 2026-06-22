@@ -17383,6 +17383,78 @@
     "unexpected_requirement_ids": [],
     "unmapped_requirement_ids": []
   },
+  "omt_xs_any_mapping_audit": {
+    "audit_status": "omt-xs-any-mapping-captured",
+    "by_family": {
+      "container-table-and-reference-extension-points": [
+        "HLA2025-OMT-COMP-202",
+        "HLA2025-OMT-COMP-204",
+        "HLA2025-OMT-COMP-208",
+        "HLA2025-OMT-COMP-210",
+        "HLA2025-OMT-COMP-219",
+        "HLA2025-OMT-COMP-222",
+        "HLA2025-OMT-COMP-224"
+      ],
+      "datatype-and-encoding-extension-points": [
+        "HLA2025-OMT-COMP-145",
+        "HLA2025-OMT-COMP-147",
+        "HLA2025-OMT-COMP-154",
+        "HLA2025-OMT-COMP-156",
+        "HLA2025-OMT-COMP-171",
+        "HLA2025-OMT-COMP-176",
+        "HLA2025-OMT-COMP-178",
+        "HLA2025-OMT-COMP-181",
+        "HLA2025-OMT-COMP-189",
+        "HLA2025-OMT-COMP-193",
+        "HLA2025-OMT-COMP-197",
+        "HLA2025-OMT-COMP-198"
+      ],
+      "interaction-class-and-parameter-extension-points": [
+        "HLA2025-OMT-COMP-102",
+        "HLA2025-OMT-COMP-106",
+        "HLA2025-OMT-COMP-107",
+        "HLA2025-OMT-COMP-113",
+        "HLA2025-OMT-COMP-115",
+        "HLA2025-OMT-COMP-129",
+        "HLA2025-OMT-COMP-130",
+        "HLA2025-OMT-COMP-134"
+      ],
+      "object-class-and-attribute-extension-points": [
+        "HLA2025-OMT-COMP-019",
+        "HLA2025-OMT-COMP-021",
+        "HLA2025-OMT-COMP-027",
+        "HLA2025-OMT-COMP-035",
+        "HLA2025-OMT-COMP-039",
+        "HLA2025-OMT-COMP-045",
+        "HLA2025-OMT-COMP-047",
+        "HLA2025-OMT-COMP-056",
+        "HLA2025-OMT-COMP-057",
+        "HLA2025-OMT-COMP-059",
+        "HLA2025-OMT-COMP-067",
+        "HLA2025-OMT-COMP-068",
+        "HLA2025-OMT-COMP-070",
+        "HLA2025-OMT-COMP-077",
+        "HLA2025-OMT-COMP-081",
+        "HLA2025-OMT-COMP-082"
+      ],
+      "object-model-root-and-identity": [
+        "HLA2025-OMT-COMP-006",
+        "HLA2025-OMT-COMP-008"
+      ]
+    },
+    "current_assessment": "The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a requirement-facing proof note that enumerates every row by family and states the exact supported claim: foreign payload preservation, tolerant parsing, and serializer round-trip without promoting those payloads into repo-native HLA semantics.",
+    "doc_exists": true,
+    "doc_path": "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
+    "family_count": 5,
+    "family_headings_ready": true,
+    "ready_for_omt_xs_any_mapping_claim": true,
+    "residual_boundary": "This audit makes the xs:any bounded claim explicit and fully reviewable, but it does not convert foreign extension payload tolerance into arbitrary third-party extension execution semantics.",
+    "row_count": 45,
+    "rows_mentioned_in_doc_count": 45,
+    "rows_missing_doc_anchor": [],
+    "rows_missing_from_doc": [],
+    "rows_with_doc_anchor_count": 45
+  },
   "ownership_decomposition_audit": {
     "audit_status": "ownership-decomposition-captured",
     "current_assessment": "Ownership proof is no longer just a broad strong-slice claim. Its current evidence separates into divestiture/confirmation, release/if-wanted, acquisition/assumption, availability/cancellation, query/resign-policy, and rollback/restore families, with direct and hosted anchors across every family.",
@@ -23061,9 +23133,10 @@
         "requirement_id": "HLA2025-OMT-COMP-005"
       },
       {
-        "pytest_anchor_count": 3,
+        "pytest_anchor_count": 4,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_validation.py::test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points"
         ],
@@ -23294,9 +23367,10 @@
         "requirement_id": "HLA2025-OMT-COMP-038"
       },
       {
-        "pytest_anchor_count": 3,
+        "pytest_anchor_count": 4,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_validation.py::test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points"
         ],
@@ -24593,9 +24667,10 @@
         "requirement_id": "HLA2025-OMT-COMP-223"
       },
       {
-        "pytest_anchor_count": 3,
+        "pytest_anchor_count": 4,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_omt_xs_any_bounded_proof_doc_enumerates_all_tracked_rows",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_validation.py::test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points"
         ],
