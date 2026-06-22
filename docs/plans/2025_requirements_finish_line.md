@@ -204,7 +204,7 @@ Retired rows by service group:
 - Family count: 5
 - Family headings ready: True
 - Ready for OMT xs:any mapping claim: True
-- Assessment: The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a requirement-facing proof note that enumerates every row by family and states the exact supported claim: foreign payload preservation, tolerant parsing, and serializer round-trip without promoting those payloads into repo-native HLA semantics.
+- Assessment: The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a requirement-facing proof note that enumerates every row by family, a concrete parser round-trip test for foreign namespace payload preservation, and explicit implementation anchors that keep those payloads isolated from repo-native HLA semantics.
 - Residual boundary: This audit makes the xs:any bounded claim explicit and fully reviewable, but it does not convert foreign extension payload tolerance into arbitrary third-party extension execution semantics.
 
 OMT xs:any rows by family:

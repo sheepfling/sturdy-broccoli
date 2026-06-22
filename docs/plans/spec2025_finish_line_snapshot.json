@@ -17618,18 +17618,22 @@
         "HLA2025-OMT-COMP-008"
       ]
     },
-    "current_assessment": "The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a requirement-facing proof note that enumerates every row by family and states the exact supported claim: foreign payload preservation, tolerant parsing, and serializer round-trip without promoting those payloads into repo-native HLA semantics.",
+    "current_assessment": "The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a requirement-facing proof note that enumerates every row by family, a concrete parser round-trip test for foreign namespace payload preservation, and explicit implementation anchors that keep those payloads isolated from repo-native HLA semantics.",
     "doc_exists": true,
     "doc_path": "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md",
+    "executable_anchor_ready": true,
     "family_count": 5,
     "family_headings_ready": true,
+    "implementation_anchor_ready": true,
+    "implementation_path": "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
     "ready_for_omt_xs_any_mapping_claim": true,
     "residual_boundary": "This audit makes the xs:any bounded claim explicit and fully reviewable, but it does not convert foreign extension payload tolerance into arbitrary third-party extension execution semantics.",
     "row_count": 45,
     "rows_mentioned_in_doc_count": 45,
     "rows_missing_doc_anchor": [],
     "rows_missing_from_doc": [],
-    "rows_with_doc_anchor_count": 45
+    "rows_with_doc_anchor_count": 45,
+    "test_path": "tests/test_rti1516_2025_validation.py"
   },
   "ownership_decomposition_audit": {
     "audit_status": "ownership-decomposition-captured",

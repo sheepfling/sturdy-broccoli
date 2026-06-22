@@ -3304,6 +3304,10 @@ def _build_omt_xs_any_mapping_audit(
     doc_rel = "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
     doc_path = project_root / doc_rel
     doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    test_rel = "tests/test_rti1516_2025_validation.py"
+    impl_rel = "packages/hla-rti1516e/src/hla/rti1516e/fom.py"
+    test_text = (project_root / test_rel).read_text(encoding="utf-8")
+    impl_text = (project_root / impl_rel).read_text(encoding="utf-8")
     rows = [
         row
         for row in harmonization_rows
@@ -3377,17 +3381,34 @@ def _build_omt_xs_any_mapping_audit(
         ),
     }
     family_headings_ready = all(f"### `{family}`" in doc_text for family in family_map)
+    executable_anchor_checks = [
+        "test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in test_text,
+        "serialize_fom_module(module, edition=\"2025\")" in test_text,
+        "assert module.foreign_extensions" in test_text,
+        "assert len(reparsed.foreign_extensions) == len(module.foreign_extensions)" in test_text,
+        "payload-text" in test_text and "nested-text" in test_text and "attribute-child" in test_text,
+    ]
+    implementation_anchor_checks = [
+        "class ForeignExtensionSpec" in impl_text,
+        "Foreign-namespace OMT extension payload retained without interpretation." in impl_text,
+        "foreign_extensions: tuple[ForeignExtensionSpec, ...] = ()" in impl_text,
+        "or self.foreign_extensions" in impl_text,
+    ]
     return {
         "audit_status": "omt-xs-any-mapping-captured",
         "doc_path": doc_rel,
         "row_count": len(rows),
         "doc_exists": doc_path.exists(),
+        "test_path": test_rel,
+        "implementation_path": impl_rel,
         "rows_with_doc_anchor_count": len(rows_with_doc_anchor),
         "rows_missing_doc_anchor": rows_missing_doc_anchor,
         "rows_mentioned_in_doc_count": len(rows_mentioned_in_doc),
         "rows_missing_from_doc": rows_missing_from_doc,
         "family_count": len(family_map),
         "family_headings_ready": family_headings_ready,
+        "executable_anchor_ready": all(executable_anchor_checks),
+        "implementation_anchor_ready": all(implementation_anchor_checks),
         "by_family": {family: list(row_ids) for family, row_ids in family_map.items()},
         "ready_for_omt_xs_any_mapping_claim": (
             doc_path.exists()
@@ -3395,12 +3416,14 @@ def _build_omt_xs_any_mapping_audit(
             and not rows_missing_doc_anchor
             and not rows_missing_from_doc
             and family_headings_ready
+            and all(executable_anchor_checks)
+            and all(implementation_anchor_checks)
         ),
         "current_assessment": (
             "The 45 OMT xs:any rows are no longer just grouped under a bounded decomposition slice. They now have a "
-            "requirement-facing proof note that enumerates every row by family and states the exact supported claim: "
-            "foreign payload preservation, tolerant parsing, and serializer round-trip without promoting those "
-            "payloads into repo-native HLA semantics."
+            "requirement-facing proof note that enumerates every row by family, a concrete parser round-trip test for "
+            "foreign namespace payload preservation, and explicit implementation anchors that keep those payloads "
+            "isolated from repo-native HLA semantics."
         ),
         "residual_boundary": (
             "This audit makes the xs:any bounded claim explicit and fully reviewable, but it does not convert foreign "

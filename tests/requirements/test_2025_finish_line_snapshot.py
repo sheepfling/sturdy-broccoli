@@ -1433,8 +1433,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "HLA2025-OMT-COMP-224",
         ],
     }
+    assert omt_xs_any_mapping_audit["test_path"] == "tests/test_rti1516_2025_validation.py"
+    assert omt_xs_any_mapping_audit["implementation_path"] == "packages/hla-rti1516e/src/hla/rti1516e/fom.py"
     assert omt_xs_any_mapping_audit["ready_for_omt_xs_any_mapping_claim"] is True
-    assert "requirement-facing proof note that enumerates every row by family" in omt_xs_any_mapping_audit["current_assessment"]
+    assert omt_xs_any_mapping_audit["executable_anchor_ready"] is True
+    assert omt_xs_any_mapping_audit["implementation_anchor_ready"] is True
+    assert "concrete parser round-trip test for foreign namespace payload preservation" in omt_xs_any_mapping_audit["current_assessment"]
     assert "does not convert foreign extension payload tolerance into arbitrary third-party extension execution semantics" in omt_xs_any_mapping_audit["residual_boundary"]
     binding_boundary_audit = snapshot["binding_boundary_mapping_audit"]
     assert binding_boundary_audit["audit_status"] == "binding-boundary-mapping-captured"
