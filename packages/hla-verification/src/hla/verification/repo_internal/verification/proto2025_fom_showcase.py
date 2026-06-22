@@ -1,17 +1,20 @@
 """Executable showcase scenarios for the packaged Proto2025 v0.1 FOM set."""
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
 import csv
 import json
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from hla.foms.proto2025_message_test._internal import run_message_test_showcase
 from hla.foms.proto2025_space_lite._internal import run_space_lite_showcase
 from hla.foms.proto2025_time_mgmt_test._internal import run_time_mgmt_test_showcase
 from hla.foms.target_radar._internal import run_target_radar_scenario, target_radar_fom_path
+from hla.foms.target_radar._internal.target_radar_factory import make_target_radar_factory
+from hla.rti1516_2025.factory import create_rti_ambassador
 
 
 @dataclass(frozen=True)
@@ -52,8 +55,25 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[Mapping[str, Any]])
     return path
 
 
-def _run_target_radar_showcase(*, target_radar_steps: int) -> dict[str, Any]:
+def _showcase_profile_name(backend_options: Mapping[str, Any]) -> str:
+    transport = backend_options.get("transport")
+    if isinstance(transport, Mapping):
+        kind = str(transport.get("kind", "")).strip().lower()
+        if kind == "grpc":
+            return "python2025-fedpro-grpc"
+        if kind:
+            return f"python2025-{kind}"
+    return "python2025-direct"
+
+
+def _run_target_radar_showcase(
+    *,
+    target_radar_steps: int,
+    target_radar_factory: Callable[[str], Any] | None = None,
+) -> dict[str, Any]:
+    factory = target_radar_factory or make_target_radar_factory("python2025")
     result = run_target_radar_scenario(
+        factory,
         federation_name=f"Proto2025TargetRadarShowcase-{uuid.uuid4().hex[:8]}",
         steps=target_radar_steps,
         fom_modules=[target_radar_fom_path()],
@@ -81,15 +101,37 @@ def _run_target_radar_showcase(*, target_radar_steps: int) -> dict[str, Any]:
     }
 
 
-def run_proto2025_fom_showcase(*, target_radar_steps: int = 3) -> dict[str, Any]:
+def run_proto2025_fom_showcase(
+    *,
+    target_radar_steps: int = 3,
+    backend_options: Mapping[str, Any] | None = None,
+    profile: str | None = None,
+) -> dict[str, Any]:
     """Run all packaged FOM examples plus the existing Target/Radar simulation."""
 
-    scenarios = [run_message_test_showcase(), run_space_lite_showcase(), run_time_mgmt_test_showcase()]
-    scenarios.append(_run_target_radar_showcase(target_radar_steps=target_radar_steps))
+    resolved_backend_options = dict(backend_options or {})
+
+    def _spawn_rti() -> Any:
+        return create_rti_ambassador(**resolved_backend_options)
+
+    scenarios = [
+        run_message_test_showcase(rti_factory=_spawn_rti),
+        run_space_lite_showcase(rti_factory=_spawn_rti),
+        run_time_mgmt_test_showcase(rti_factory=_spawn_rti),
+    ]
+    scenarios.append(
+        _run_target_radar_showcase(
+            target_radar_steps=target_radar_steps,
+            target_radar_factory=make_target_radar_factory(
+                "python2025",
+                backend_options=resolved_backend_options,
+            ),
+        )
+    )
     return {
         "suite_name": "proto2025-fom-simulation-showcase",
         "suite_version": "0.1",
-        "profile": "python2025-direct",
+        "profile": profile or _showcase_profile_name(resolved_backend_options),
         "status": "lifecycle-green" if all(row["execution_complete"] for row in scenarios) else "failed",
         "scenario_count": len(scenarios),
         "scenarios": scenarios,

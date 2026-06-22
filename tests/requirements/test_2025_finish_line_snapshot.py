@@ -1833,7 +1833,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "ambassador shell is thin" in concentration_audit["current_assessment"]
     assert "wrapper-only compatibility logic should keep shrinking" in concentration_audit["extraction_pressure_boundary"]
     assert concentration_audit["top_evidence_anchors"][:5] == [
-        {"path": "tests/transport/test_grpc_transport_2025.py", "slice_count": 52},
+        {"path": "tests/transport/test_grpc_transport_2025.py", "slice_count": 53},
         {"path": "tests/test_rti1516_2025_python2025_runtime.py", "slice_count": 49},
         {"path": "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py", "slice_count": 42},
         {"path": "tests/test_rti1516_2025_validation.py", "slice_count": 12},

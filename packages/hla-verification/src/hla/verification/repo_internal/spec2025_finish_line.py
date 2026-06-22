@@ -255,6 +255,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "requirements": ("HLA2025-FR-001", "HLA2025-FR-003", "HLA2025-FR-004"),
         "evidence": (
             "tests/scenarios/test_proto2025_fom_showcase.py",
+            "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-verification/src/hla/verification/repo_internal/verification/proto2025_fom_showcase.py",
         ),
     },
@@ -7197,8 +7198,9 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                     "exchange, FOM showcase, and save/restore rollback paths."
                 ),
                 "python-2025-fedpro-grpc": (
-                    "The hosted FedPro route executes the tracked FOM-backed runtime scenarios used by the current "
-                    "object, MOM, and save/restore route tests."
+                    "The hosted FedPro route now executes the tracked FOM-backed runtime scenarios through the "
+                    "package-owned Proto2025 example/FOM showcase, including MessageTest, SpaceLite, TimeMgmtTest, "
+                    "and Target/Radar, rather than relying only on indirect object, MOM, and save/restore route slices."
                 ),
             },
             "boundary_by_route": {

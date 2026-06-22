@@ -1,6 +1,7 @@
 """Repo-internal executable showcase scenario for Proto2025 TimeMgmtTest."""
 from __future__ import annotations
 
+from collections.abc import Callable
 import uuid
 from pathlib import Path
 from typing import Any
@@ -27,11 +28,12 @@ def _jsonable(value: Any) -> Any:
     return repr(value)
 
 
-def run_time_mgmt_test_showcase() -> dict[str, Any]:
+def run_time_mgmt_test_showcase(*, rti_factory: Callable[[], Any] | None = None) -> dict[str, Any]:
     """Run the package-owned TimeMgmtTest showcase scenario."""
 
-    source = create_rti_ambassador()
-    sink = create_rti_ambassador()
+    spawn_rti = rti_factory or create_rti_ambassador
+    source = spawn_rti()
+    sink = spawn_rti()
     source_fed = RecordingFederateAmbassador()
     sink_fed = RecordingFederateAmbassador()
     foms = scenario_fom_paths("time-mgmt-test")

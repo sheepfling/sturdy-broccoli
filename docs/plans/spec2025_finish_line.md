@@ -335,7 +335,7 @@ Full-claim blockers:
 - Assessment: The route clears the tracked milestone gates as a bounded Python 2025 working surface.
 
 - Best-attempt Python RTI 2025 working surface: bounded-working-slice (Hosted FedPro Python 2025 is a best-attempt bounded working surface across the tracked runtime scenario set, with broad hosted replay across lifecycle, object, time, save/restore, support-service, and callback scenarios, not a full RTI semantics or exhaustive cross-binding conformance claim.)
-- Tracked example and FOM-backed scenario execution: covered-scenario-slice (The hosted FedPro route executes the tracked FOM-backed runtime scenarios used by the current object, MOM, and save/restore route tests.)
+- Tracked example and FOM-backed scenario execution: covered-scenario-slice (The hosted FedPro route now executes the tracked FOM-backed runtime scenarios through the package-owned Proto2025 example/FOM showcase, including MessageTest, SpaceLite, TimeMgmtTest, and Target/Radar, rather than relying only on indirect object, MOM, and save/restore route slices.)
 - Message exchange and routing: covered-routing-slice (The hosted FedPro route sends, receives, discovers, reflects, directs, and DDM-filters the tracked message flows over the typed transport surface.)
 - Time synchronization and advance flow: covered-time-advance-slice (The hosted FedPro route exercises regulation/constrained enablement, async delivery control, advance/grant flow, queued TSO delivery, retraction, restore rollback of logical time, and restore recovery of saved lookahead plus time/switch control state.)
 - GALT and LITS behavior: bounded-query-evidence (The hosted FedPro route has executable GALT/LITS query evidence inside the hosted time-management slice, including queued-TSO GALT/LITS divergence after a live lookahead change, the hosted Target/Radar proof-ladder replay, negative-oracle guards rejecting mismatched LITS boundaries, premature output, reversed consumer order, cross-window contamination, and dirty post-restore replay, restore rollback of dirty lookahead with pre-save queued TSO redelivered after restore, and the Target/Radar future-exclusion proof.)
@@ -381,7 +381,7 @@ Explicit boundaries:
 
 Top evidence anchors:
 
-- 52: tests/transport/test_grpc_transport_2025.py
+- 53: tests/transport/test_grpc_transport_2025.py
 - 49: tests/test_rti1516_2025_python2025_runtime.py
 - 42: packages/hla-backend-python2025/src/hla/backends/python2025/backend.py
 - 12: tests/test_rti1516_2025_validation.py
@@ -1739,7 +1739,7 @@ Permanent-decision blockers:
 | 2025-time-queries-retraction-and-order | implemented-slice | HLA2025-FI-SVC-121, HLA2025-FI-SVC-122, HLA2025-FI-SVC-123, HLA2025-FI-SVC-124, HLA2025-FI-SVC-125, HLA2025-FR-010, HLA2025-FI-009 | tests/test_rti1516_2025_python2025_runtime.py, tests/transport/test_grpc_transport_2025.py, tests/backends/test_shim_route_trace_evidence.py, packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py |
 | 2025-lookahead-window-proofs | implemented-slice | HLA2025-FI-SVC-107, HLA2025-FI-SVC-108, HLA2025-FI-SVC-121, HLA2025-FI-SVC-122, HLA2025-FI-SVC-123, HLA2025-MOD-006 | tests/test_rti1516_2025_python2025_runtime.py, tests/transport/test_grpc_transport_2025.py, tests/backends/test_shim_route_trace_evidence.py |
 | 2025-save-restore-lifecycle | implemented-slice | HLA2025-FI-SVC-018, HLA2025-FI-SVC-019, HLA2025-FI-SVC-020, HLA2025-FI-SVC-021, HLA2025-FI-SVC-022, HLA2025-FI-SVC-023, HLA2025-FI-SVC-024, HLA2025-FI-SVC-025, HLA2025-FI-SVC-026, HLA2025-FI-SVC-027, HLA2025-FI-SVC-028, HLA2025-FI-SVC-029, HLA2025-FI-SVC-030, HLA2025-FI-SVC-031, HLA2025-FI-SVC-032, HLA2025-FI-SVC-033, HLA2025-FI-SVC-034, HLA2025-FI-001, HLA2025-FI-005, HLA2025-REQ-002 | tests/test_rti1516_2025_python2025_runtime.py, tests/transport/test_grpc_transport_2025.py, packages/hla-backend-python2025/src/hla/backends/python2025/backend.py |
-| 2025-fom-showcase | implemented-slice | HLA2025-FR-001, HLA2025-FR-003, HLA2025-FR-004 | tests/scenarios/test_proto2025_fom_showcase.py, packages/hla-verification/src/hla/verification/repo_internal/verification/proto2025_fom_showcase.py |
+| 2025-fom-showcase | implemented-slice | HLA2025-FR-001, HLA2025-FR-003, HLA2025-FR-004 | tests/scenarios/test_proto2025_fom_showcase.py, tests/transport/test_grpc_transport_2025.py, packages/hla-verification/src/hla/verification/repo_internal/verification/proto2025_fom_showcase.py |
 | 2025-handle-normalization | implemented-slice | HLA2025-NEW-005, HLA2025-FI-001 | tests/test_rti1516_2025_python2025_runtime.py, tests/transport/test_grpc_transport_2025.py, packages/hla-rti1516-2025/src/hla/rti1516_2025/handles.py, packages/hla-backend-python2025/src/hla/backends/python2025/backend.py |
 | 2025-switch-set-get-model | implemented-slice | HLA2025-MOD-008, HLA2025-FI-001 | tests/test_rti1516_2025_python2025_runtime.py, tests/transport/test_grpc_transport_2025.py, packages/hla-backend-python2025/src/hla/backends/python2025/backend.py |
 | 2025-retired-advisory-switch-enable-disable-mapping | legacy-only | HLA2025-RET-001 | tests/requirements/test_2025_tail_backlog_evidence.py, docs/requirements/ieee-1516-2025/retired_legacy_mapping.md, packages/hla-backend-python2025/src/hla/backends/python2025/backend.py |

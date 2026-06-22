@@ -185,6 +185,7 @@ from hla.verification import (
     run_target_radar_time_window_restore_state_scenario,
     write_update_rate_fom,
 )
+from hla.verification.repo_internal.verification.proto2025_fom_showcase import run_proto2025_fom_showcase
 from hla.verification.scenario_support import drain_callbacks_pair, wait_for_callback
 from hla.verification.scenario_target_radar_time import (
     _verify_time_window_consumer_order_oracle,
@@ -8631,6 +8632,29 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_target_radar_sh
     assert any(name == "provide_attribute_value_update" for name, _payload in result.target_events)
     assert [name for name, _payload in result.radar_events].count("track") == 3
     assert result.track_reports[0].target_name == "Target-1"
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_proto2025_fom_showcase() -> None:
+    server = start_2025_grpc_server()
+    try:
+        summary = run_proto2025_fom_showcase(
+            target_radar_steps=2,
+            backend_options={"transport": {"kind": "grpc", "target": server.target}},
+        )
+    finally:
+        server.close()
+
+    assert summary["profile"] == "python2025-fedpro-grpc"
+    assert summary["status"] == "lifecycle-green"
+    assert summary["scenario_count"] == 4
+    assert all(row["execution_complete"] for row in summary["scenarios"])
+    by_scenario = {row["scenario"]: row for row in summary["scenarios"]}
+    assert by_scenario["message-test"]["fom_modules"] == ["Proto2025_Base.xml", "Proto2025_MessageTest.xml"]
+    assert by_scenario["space-lite"]["fom_modules"] == ["Proto2025_Base.xml", "Proto2025_SpaceLite.xml"]
+    assert by_scenario["time-mgmt-test"]["fom_modules"] == ["Proto2025_Base.xml", "Proto2025_TimeMgmtTest.xml"]
+    assert by_scenario["time-mgmt-test"]["delivered_tags"][-2:] == ["event-1", "event-2"]
+    assert len(by_scenario["target-radar"]["track_reports"]) == 2
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")

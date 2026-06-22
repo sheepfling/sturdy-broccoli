@@ -1,6 +1,7 @@
 """Repo-internal executable showcase scenario for Proto2025 MessageTest."""
 from __future__ import annotations
 
+from collections.abc import Callable
 import uuid
 from pathlib import Path
 from typing import Any
@@ -17,11 +18,12 @@ def _drain(*rtis: object, rounds: int = 25) -> None:
             rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
-def run_message_test_showcase() -> dict[str, Any]:
+def run_message_test_showcase(*, rti_factory: Callable[[], Any] | None = None) -> dict[str, Any]:
     """Run the package-owned MessageTest showcase scenario."""
 
-    publisher = create_rti_ambassador()
-    subscriber = create_rti_ambassador()
+    spawn_rti = rti_factory or create_rti_ambassador
+    publisher = spawn_rti()
+    subscriber = spawn_rti()
     publisher_fed = RecordingFederateAmbassador()
     subscriber_fed = RecordingFederateAmbassador()
     foms = scenario_fom_paths("message-test")
