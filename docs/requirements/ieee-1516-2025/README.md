@@ -27,6 +27,7 @@ Source anchors for modal terms:
 - `federate_interface.md`: Federate Interface service, conformance, callback, FDD, exception, and time requirements.
 - `omt.md`: OMT/FOM naming, DIF, component, identification, conformance, and merge requirements.
 - `traceability_matrix.md`: initial requirement-to-project-lane and primary-`python2025` runtime plus binding/hosted-route scenario mapping.
+- `fom_backed_scenario_bounded_proof.md`: bounded requirement-facing note for the tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python2025` lanes.
 - `federation_management_bounded_proof.md`: bounded requirement-facing proof note for federation lifecycle, synchronization, and save/restore control families over the main `python2025` lane plus hosted replay.
 - `python2025_direct_bounded_proof.md`: bounded requirement-facing proof note for the direct `python2025` main-surface runtime lane over `hla-backend-python2025`.
 - `declaration_management_bounded_proof.md`: bounded requirement-facing proof note for publication, subscription, advisory, and name-reservation families.
@@ -73,6 +74,9 @@ requirement-facing evidence map for:
 
 - federation, object, ownership, DDM, save/restore, MOM, support-service, and
   time-management bounded proof notes over `hla-backend-python2025`
+- the tracked example/FOM-backed scenario bounded proof note that makes the
+  repo-owned Proto2025 and Target/Radar suite explicit without overclaiming
+  every possible FOM composition
 - the dedicated direct `python2025` bounded proof note that treats the main
   in-process lane as its own requirement-facing executable surface instead of
   only as architecture prose

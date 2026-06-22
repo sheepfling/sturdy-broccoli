@@ -200,6 +200,7 @@ Primary evidence anchors:
 
 - [python_rti_backend.md](../python_rti_backend.md)
 - [2025_requirements_finish_line.md](2025_requirements_finish_line.md)
+- [../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
 - [../packages/hla-backend-python2025/README.md](../../packages/hla-backend-python2025/README.md)
@@ -220,6 +221,12 @@ For the compact excluded-area inventory behind this bounded claim, use
 That requirement-facing note keeps the shim-alias, Java/C++, hosted-route,
 umbrella-row, retired-row, and OMT-extension boundaries explicit without
 forcing readers to mine the full generated finish-line bundle.
+
+For the tracked example/FOM-backed scenario boundary behind the same bounded
+claim, use
+[`../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md).
+That note makes the repo-owned Proto2025 and Target/Radar suite explicit
+without implying that every possible example FOM composition is proven.
 
 ## Current Proof Contract
 

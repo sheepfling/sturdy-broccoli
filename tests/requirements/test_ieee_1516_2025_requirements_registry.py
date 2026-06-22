@@ -38,6 +38,7 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "declaration_management_bounded_proof.md",
         "ddm_bounded_proof.md",
         "federation_management_bounded_proof.md",
+        "fom_backed_scenario_bounded_proof.md",
         "hosted_fedpro_bounded_proof.md",
         "framework_rules.md",
         "federate_interface.md",
@@ -61,6 +62,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
     normalized = " ".join(text.split())
 
     for filename in (
+        "fom_backed_scenario_bounded_proof.md",
         "federation_management_bounded_proof.md",
         "python2025_direct_bounded_proof.md",
         "declaration_management_bounded_proof.md",
@@ -80,6 +82,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
 
     assert "bounded requirement-facing proof note" in normalized
     assert "main `python2025` lane plus hosted replay" in normalized
+    assert "tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python2025` lanes" in normalized
     assert "direct `python2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
     assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime" in text
     assert "explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics" in normalized
@@ -112,6 +115,7 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
 
     assert "## Current Technical Lane" in text
     assert "deeper runtime-proof expansion over the promoted `python2025` RTI surface" in normalized
+    assert "the tracked example/FOM-backed scenario bounded proof note" in normalized
     assert "the dedicated direct `python2025` bounded proof note" in normalized
     assert "the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime families" in normalized
     assert "wrapper-only shim boundaries" in normalized
@@ -172,6 +176,26 @@ def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit
     assert "verify-main-2025" in text
     assert "not a wrapper-owned surface and not a full unqualified conformance claim" in normalized
     assert "does not treat `hla-backend-shim` as part of the implementation owner claim for this lane" in normalized
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-MIL-002", "HLA2025-FR-001", "HLA2025-FR-003", "HLA2025-FR-004")
+def test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit() -> None:
+    text = (REGISTRY_DIR / "fom_backed_scenario_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records the repo's current requirement-facing claim for tracked example and FOM-backed scenario execution" in normalized
+    assert "`message-test`" in text
+    assert "`space-lite`" in text
+    assert "`time-mgmt-test`" in text
+    assert "`target-radar`" in text
+    assert "`tests/scenarios/test_proto2025_fom_showcase.py`" in text
+    assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`tests/scenarios/test_python_route_parity.py`" in text
+    assert "`Proto2025_MessageTest.xml`" in text
+    assert "`Proto2025_SpaceLite.xml`" in text
+    assert "`Proto2025_TimeMgmtTest.xml`" in text
+    assert "It does not yet prove every conceivable example FOM scenario outside the tracked suite." in normalized
+    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-003", "HLA2025-FR-004")
