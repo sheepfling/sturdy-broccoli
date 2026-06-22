@@ -1271,6 +1271,21 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "hla-backend-shim in a wrapper-only compatibility role" in requirement_audit["current_assessment"]
     assert any("third-party extension execution semantics" in blocker for blocker in requirement_audit["full_claim_blockers"])
     assert any("framework-rule umbrellas and callback/configuration/binding delta umbrellas" in blocker for blocker in requirement_audit["full_claim_blockers"])
+    duplicate_umbrella_audit = snapshot["duplicate_umbrella_mapping_audit"]
+    assert duplicate_umbrella_audit["audit_status"] == "duplicate-umbrella-mapping-captured"
+    assert duplicate_umbrella_audit["row_count"] == 22
+    assert duplicate_umbrella_audit["framework_doc_path"] == "docs/requirements/ieee-1516-2025/framework_rules.md"
+    assert duplicate_umbrella_audit["delta_doc_path"] == "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+    assert duplicate_umbrella_audit["framework_row_count"] == 10
+    assert duplicate_umbrella_audit["delta_row_count"] == 12
+    assert duplicate_umbrella_audit["framework_missing_doc_anchor"] == []
+    assert duplicate_umbrella_audit["delta_missing_doc_anchor"] == []
+    assert duplicate_umbrella_audit["framework_missing_from_doc"] == []
+    assert duplicate_umbrella_audit["delta_missing_from_doc"] == []
+    assert duplicate_umbrella_audit["by_row_role"] == requirement_audit["duplicate_umbrella_rows_by_role"]
+    assert duplicate_umbrella_audit["ready_for_duplicate_umbrella_mapping_claim"] is True
+    assert "explicit proof-note documents for both framework-rule umbrellas" in duplicate_umbrella_audit["current_assessment"]
+    assert "does not change their status into standalone one-row conformance claims" in duplicate_umbrella_audit["residual_boundary"]
     retired_mapping_audit = snapshot["retired_legacy_mapping_audit"]
     assert retired_mapping_audit["audit_status"] == "retired-legacy-mapping-captured"
     assert retired_mapping_audit["doc_path"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
@@ -3508,6 +3523,12 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Requirement-By-Requirement Audit" in markdown
     assert "Audit status: row-level-requirement-disposition-audit-captured" in markdown
     assert "Ready for row-level audit claim: True" in markdown
+    assert "Duplicate Umbrella Mapping Audit" in markdown
+    assert "Framework doc path: docs/requirements/ieee-1516-2025/framework_rules.md" in markdown
+    assert "Delta doc path: docs/requirements/ieee-1516-2025/callback_binding_deltas.md" in markdown
+    assert "Ready for duplicate umbrella mapping claim: True" in markdown
+    assert "framework-umbrella: 10 rows" in markdown
+    assert "delta-umbrella: 12 rows" in markdown
     assert "Retired Legacy Mapping Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/retired_legacy_mapping.md" in markdown
     assert "Ready for retired legacy mapping claim: True" in markdown

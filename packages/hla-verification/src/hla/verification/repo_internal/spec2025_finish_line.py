@@ -3181,6 +3181,60 @@ def _build_retired_legacy_mapping_audit(
     }
 
 
+def _build_duplicate_umbrella_mapping_audit(
+    project_root: Path,
+    harmonization_rows: list[Mapping[str, str]],
+) -> dict[str, Any]:
+    framework_doc_rel = "docs/requirements/ieee-1516-2025/framework_rules.md"
+    delta_doc_rel = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+    framework_text = (project_root / framework_doc_rel).read_text(encoding="utf-8")
+    delta_text = (project_root / delta_doc_rel).read_text(encoding="utf-8")
+    rows = [row for row in harmonization_rows if row["harmonization_disposition"] == "duplicate/umbrella"]
+    by_row_role: dict[str, list[str]] = {}
+    for row in rows:
+        by_row_role.setdefault(row["row_role"], []).append(row["id"])
+    for row_ids in by_row_role.values():
+        row_ids.sort()
+    framework_rows = [row for row in rows if row["row_role"] == "framework-umbrella"]
+    delta_rows = [row for row in rows if row["row_role"] == "delta-umbrella"]
+    framework_missing_doc_anchor = sorted(
+        row["id"] for row in framework_rows if framework_doc_rel not in row["suggested_repo_evidence_path"]
+    )
+    delta_missing_doc_anchor = sorted(
+        row["id"] for row in delta_rows if delta_doc_rel not in row["suggested_repo_evidence_path"]
+    )
+    framework_missing_from_doc = sorted(row["id"] for row in framework_rows if row["id"] not in framework_text)
+    delta_missing_from_doc = sorted(row["id"] for row in delta_rows if row["id"] not in delta_text)
+    return {
+        "audit_status": "duplicate-umbrella-mapping-captured",
+        "row_count": len(rows),
+        "framework_doc_path": framework_doc_rel,
+        "delta_doc_path": delta_doc_rel,
+        "framework_row_count": len(framework_rows),
+        "delta_row_count": len(delta_rows),
+        "framework_missing_doc_anchor": framework_missing_doc_anchor,
+        "delta_missing_doc_anchor": delta_missing_doc_anchor,
+        "framework_missing_from_doc": framework_missing_from_doc,
+        "delta_missing_from_doc": delta_missing_from_doc,
+        "by_row_role": by_row_role,
+        "ready_for_duplicate_umbrella_mapping_claim": (
+            not framework_missing_doc_anchor
+            and not delta_missing_doc_anchor
+            and not framework_missing_from_doc
+            and not delta_missing_from_doc
+        ),
+        "current_assessment": (
+            "The duplicate/umbrella rows are no longer just grouped by role in the finish-line bundle. The repo now "
+            "has explicit proof-note documents for both framework-rule umbrellas and callback/configuration/binding "
+            "delta umbrellas, and every umbrella row is anchored to and enumerated by those notes."
+        ),
+        "residual_boundary": (
+            "This audit improves the traceability of umbrella rows, but it does not change their status into "
+            "standalone one-row conformance claims."
+        ),
+    }
+
+
 def _build_supported_boundary_statement(
     claim_audit: Mapping[str, Any],
     objective_audit: Mapping[str, Any],
@@ -7049,6 +7103,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         harmonization_rows,
     )
+    duplicate_umbrella_mapping_audit = _build_duplicate_umbrella_mapping_audit(
+        project_root,
+        harmonization_rows,
+    )
     supported_boundary_statement = _build_supported_boundary_statement(
         completion_claim_audit,
         objective_dimension_audit,
@@ -7133,6 +7191,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "python_rti_milestone_audit": python_rti_milestone_audit,
         "requirement_by_requirement_audit": requirement_by_requirement_audit,
         "retired_legacy_mapping_audit": retired_legacy_mapping_audit,
+        "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
         "supported_boundary_statement": supported_boundary_statement,
         "implementation_concentration_audit": implementation_concentration_audit,
@@ -7196,6 +7255,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     milestone_audit = snapshot["python_rti_milestone_audit"]
     requirement_by_requirement_audit = snapshot["requirement_by_requirement_audit"]
     retired_legacy_mapping_audit = snapshot["retired_legacy_mapping_audit"]
+    duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
     supported_boundary = snapshot["supported_boundary_statement"]
     implementation_concentration_audit = snapshot["implementation_concentration_audit"]
@@ -7403,6 +7463,27 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
         ]
     )
     for row_role, row_ids in requirement_by_requirement_audit["duplicate_umbrella_rows_by_role"].items():
+        lines.append(f"- {row_role}: {len(row_ids)} rows ({', '.join(row_ids)})")
+    lines.extend(
+        [
+            "",
+            "## Duplicate Umbrella Mapping Audit",
+            "",
+            f"- Audit status: {duplicate_umbrella_mapping_audit['audit_status']}",
+            f"- Row count: {duplicate_umbrella_mapping_audit['row_count']}",
+            f"- Framework doc path: {duplicate_umbrella_mapping_audit['framework_doc_path']}",
+            f"- Delta doc path: {duplicate_umbrella_mapping_audit['delta_doc_path']}",
+            f"- Framework row count: {duplicate_umbrella_mapping_audit['framework_row_count']}",
+            f"- Delta row count: {duplicate_umbrella_mapping_audit['delta_row_count']}",
+            f"- Ready for duplicate umbrella mapping claim: {duplicate_umbrella_mapping_audit['ready_for_duplicate_umbrella_mapping_claim']}",
+            f"- Assessment: {duplicate_umbrella_mapping_audit['current_assessment']}",
+            f"- Residual boundary: {duplicate_umbrella_mapping_audit['residual_boundary']}",
+            "",
+            "Duplicate umbrella rows by role:",
+            "",
+        ]
+    )
+    for row_role, row_ids in duplicate_umbrella_mapping_audit["by_row_role"].items():
         lines.append(f"- {row_role}: {len(row_ids)} rows ({', '.join(row_ids)})")
     lines.extend(
         [

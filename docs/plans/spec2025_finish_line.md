@@ -158,6 +158,23 @@ Requirement-by-requirement duplicate/umbrella breakdown:
 - framework-umbrella: 10 rows (HLA2025-FR-001, HLA2025-FR-002, HLA2025-FR-003, HLA2025-FR-004, HLA2025-FR-005, HLA2025-FR-006, HLA2025-FR-007, HLA2025-FR-008, HLA2025-FR-009, HLA2025-FR-010)
 - delta-umbrella: 12 rows (HLA2025-BIND-FEDPRO-001, HLA2025-BIND-JAVA-CPP-001, HLA2025-FI-AUTH-001, HLA2025-FI-CB-001, HLA2025-FI-CB-002, HLA2025-FI-CB-003, HLA2025-FI-CB-004, HLA2025-FI-CB-005, HLA2025-FI-CB-006, HLA2025-FI-CB-007, HLA2025-FI-CB-008, HLA2025-FI-CFG-001)
 
+## Duplicate Umbrella Mapping Audit
+
+- Audit status: duplicate-umbrella-mapping-captured
+- Row count: 22
+- Framework doc path: docs/requirements/ieee-1516-2025/framework_rules.md
+- Delta doc path: docs/requirements/ieee-1516-2025/callback_binding_deltas.md
+- Framework row count: 10
+- Delta row count: 12
+- Ready for duplicate umbrella mapping claim: True
+- Assessment: The duplicate/umbrella rows are no longer just grouped by role in the finish-line bundle. The repo now has explicit proof-note documents for both framework-rule umbrellas and callback/configuration/binding delta umbrellas, and every umbrella row is anchored to and enumerated by those notes.
+- Residual boundary: This audit improves the traceability of umbrella rows, but it does not change their status into standalone one-row conformance claims.
+
+Duplicate umbrella rows by role:
+
+- framework-umbrella: 10 rows (HLA2025-FR-001, HLA2025-FR-002, HLA2025-FR-003, HLA2025-FR-004, HLA2025-FR-005, HLA2025-FR-006, HLA2025-FR-007, HLA2025-FR-008, HLA2025-FR-009, HLA2025-FR-010)
+- delta-umbrella: 12 rows (HLA2025-BIND-FEDPRO-001, HLA2025-BIND-JAVA-CPP-001, HLA2025-FI-AUTH-001, HLA2025-FI-CB-001, HLA2025-FI-CB-002, HLA2025-FI-CB-003, HLA2025-FI-CB-004, HLA2025-FI-CB-005, HLA2025-FI-CB-006, HLA2025-FI-CB-007, HLA2025-FI-CB-008, HLA2025-FI-CFG-001)
+
 ## Retired Legacy Mapping Audit
 
 - Audit status: retired-legacy-mapping-captured
