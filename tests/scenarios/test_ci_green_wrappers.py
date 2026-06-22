@@ -688,9 +688,10 @@ raise SystemExit(0)
 
     assert result.returncode == 0, result.stdout or result.stderr
     calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
-    assert len(calls) == 16
+    assert len(calls) == 17
     expected_suffixes = [
         ["-m", "pytest", "-q", "tests/test_python2025_split_package.py", "tests/test_package_import_isolation.py", "tests/test_package_dependency_metadata.py", "tests/test_root_facade_policy.py"],
+        ["-m", "pytest", "-q", "tests/scenarios/test_target_radar_scenario.py::test_target_radar_example_supports_2025_backends", "tests/test_fom_target_radar_split_package.py::test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter", "tests/test_fom_target_radar_split_package.py::test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_surface"],
         ["-m", "pytest", "-q", "tests/requirements/test_2025_python_rti_backend_audit.py"],
         ["-m", "pytest", "-q", "tests/requirements/test_ieee_1516_2025_requirements_registry.py"],
         ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter or primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface or primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter"],

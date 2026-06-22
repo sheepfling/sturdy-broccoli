@@ -1520,6 +1520,9 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter" in normalized_tools_python
     assert "primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface" in normalized_tools_python
     assert "primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter" in normalized_tools_python
+    assert "test_target_radar_example_supports_2025_backends" in normalized_tools_python
+    assert "test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter" in normalized_tools_python
+    assert "test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_surface" in normalized_tools_python
     assert "primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter" in normalized_tools_python
     assert "test_2025_provider_runs_federation_lifecycle_scenario_end_to_end" in normalized_tools_python
     assert "test_2025_provider_runs_federation_listing_scenario_end_to_end" in normalized_tools_python
