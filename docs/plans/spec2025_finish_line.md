@@ -260,7 +260,7 @@ Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, sa
 - Identity ready: True
 - Doc narrative ready: True
 - Ready for standard binding runtime-capability claim: True
-- Assessment: The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. They now have a requirement-facing bounded-proof note tied to their route families, parity-covered scenario counts, and explicit main-runtime identity over hla-backend-python2025.
+- Assessment: The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. They now have a requirement-facing bounded-proof note tied to their route families, per-row executable plus artifact anchors, parity-covered scenario counts, and explicit main-runtime identity over hla-backend-python2025.
 - Residual boundary: This audit strengthens the Java/C++ binding proof story, but it does not promote standard-route traces into exhaustive cross-binding behavior equivalence or separate RTI implementation ownership.
 
 Standard binding rows by requirement:

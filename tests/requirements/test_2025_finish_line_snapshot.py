@@ -1493,7 +1493,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert standard_binding_audit["doc_path"] == "docs/requirements/ieee-1516-2025/standard_binding_runtime_capability_bounded_proof.md"
     assert standard_binding_audit["doc_exists"] is True
     assert standard_binding_audit["row_count"] == 32
+    assert standard_binding_audit["required_evidence_test"] == "tests/backends/test_standard_shim_artifacts.py"
     assert standard_binding_audit["identity_ready"] is True
+    assert standard_binding_audit["rows_missing_required_evidence_test"] == []
+    assert standard_binding_audit["rows_missing_route_trace_artifact"] == []
+    assert standard_binding_audit["rows_missing_binding_aggregate_artifact"] == []
+    assert standard_binding_audit["rows_missing_backing_note"] == []
+    assert standard_binding_audit["rows_missing_seam_note"] == []
     assert standard_binding_audit["doc_narrative_ready"] is True
     assert standard_binding_audit["by_binding_requirement"] == {
         "HLA2025-BND-001": {
@@ -1508,7 +1514,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         },
     }
     assert standard_binding_audit["ready_for_standard_binding_runtime_capability_claim"] is True
-    assert "requirement-facing bounded-proof note tied to their route families" in standard_binding_audit["current_assessment"]
+    assert "per-row executable plus artifact anchors" in standard_binding_audit["current_assessment"]
     assert "does not promote standard-route traces into exhaustive cross-binding behavior equivalence" in standard_binding_audit["residual_boundary"]
     boundary_statement = snapshot["supported_boundary_statement"]
     assert boundary_statement["statement_status"] == "supported-boundary-statement"

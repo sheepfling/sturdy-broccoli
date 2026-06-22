@@ -3766,6 +3766,27 @@ def _build_standard_binding_runtime_capability_audit(
         }
         for requirement_id, rows in by_binding.items()
     }
+    required_evidence_test = "tests/backends/test_standard_shim_artifacts.py"
+    rows_missing_required_evidence_test = sorted(
+        f"{row['route']}:{row['scenario']}"
+        for row in standard_rows
+        if required_evidence_test not in row["evidence_tests"]
+    )
+    rows_missing_route_trace_artifact = sorted(
+        f"{row['route']}:{row['scenario']}"
+        for row in standard_rows
+        if f"docs/evidence/shim_routes/route_traces/{row['route']}.json" not in row["evidence_artifacts"]
+    )
+    rows_missing_binding_aggregate_artifact = sorted(
+        f"{row['route']}:{row['scenario']}"
+        for row in standard_rows
+        if (
+            "docs/evidence/shim_routes/java-standard-2025.json"
+            if row["route"].startswith("java-")
+            else "docs/evidence/shim_routes/cpp-standard-2025.json"
+        )
+        not in row["evidence_artifacts"]
+    )
     doc_checks = [
         "`java-standard-2025-jpype`" in doc_text,
         "`java-standard-2025-py4j`" in doc_text,
@@ -3783,12 +3804,28 @@ def _build_standard_binding_runtime_capability_audit(
         and row["wrapper_only"] is False
         for row in standard_rows
     )
+    rows_missing_backing_note = sorted(
+        f"{row['route']}:{row['scenario']}"
+        for row in standard_rows
+        if "executed over the primary python2025 runtime lane in hla-backend-python2025" not in row["notes"]
+    )
+    rows_missing_seam_note = sorted(
+        f"{row['route']}:{row['scenario']}"
+        for row in standard_rows
+        if "binding/adaptation-seam evidence over the main hla-backend-python2025 runtime" not in row["notes"]
+    )
     return {
         "audit_status": "standard-binding-runtime-capability-captured",
         "doc_path": doc_rel,
         "doc_exists": doc_path.exists(),
         "row_count": len(standard_rows),
+        "required_evidence_test": required_evidence_test,
         "identity_ready": identity_ready,
+        "rows_missing_required_evidence_test": rows_missing_required_evidence_test,
+        "rows_missing_route_trace_artifact": rows_missing_route_trace_artifact,
+        "rows_missing_binding_aggregate_artifact": rows_missing_binding_aggregate_artifact,
+        "rows_missing_backing_note": rows_missing_backing_note,
+        "rows_missing_seam_note": rows_missing_seam_note,
         "doc_narrative_ready": all(doc_checks),
         "by_binding_requirement": {
             requirement_id: {
@@ -3802,6 +3839,11 @@ def _build_standard_binding_runtime_capability_audit(
             doc_path.exists()
             and len(standard_rows) == 32
             and identity_ready
+            and not rows_missing_required_evidence_test
+            and not rows_missing_route_trace_artifact
+            and not rows_missing_binding_aggregate_artifact
+            and not rows_missing_backing_note
+            and not rows_missing_seam_note
             and all(doc_checks)
             and parity_counts["HLA2025-BND-001"]["parity-covered"] == 16
             and parity_counts["HLA2025-BND-001"]["non-covered"] == 0
@@ -3810,8 +3852,9 @@ def _build_standard_binding_runtime_capability_audit(
         ),
         "current_assessment": (
             "The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. "
-            "They now have a requirement-facing bounded-proof note tied to their route families, parity-covered "
-            "scenario counts, and explicit main-runtime identity over hla-backend-python2025."
+            "They now have a requirement-facing bounded-proof note tied to their route families, per-row executable "
+            "plus artifact anchors, parity-covered scenario counts, and explicit main-runtime identity over "
+            "hla-backend-python2025."
         ),
         "residual_boundary": (
             "This audit strengthens the Java/C++ binding proof story, but it does not promote standard-route traces "

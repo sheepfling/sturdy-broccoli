@@ -30288,14 +30288,20 @@
         ]
       }
     },
-    "current_assessment": "The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. They now have a requirement-facing bounded-proof note tied to their route families, parity-covered scenario counts, and explicit main-runtime identity over hla-backend-python2025.",
+    "current_assessment": "The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. They now have a requirement-facing bounded-proof note tied to their route families, per-row executable plus artifact anchors, parity-covered scenario counts, and explicit main-runtime identity over hla-backend-python2025.",
     "doc_exists": true,
     "doc_narrative_ready": true,
     "doc_path": "docs/requirements/ieee-1516-2025/standard_binding_runtime_capability_bounded_proof.md",
     "identity_ready": true,
     "ready_for_standard_binding_runtime_capability_claim": true,
+    "required_evidence_test": "tests/backends/test_standard_shim_artifacts.py",
     "residual_boundary": "This audit strengthens the Java/C++ binding proof story, but it does not promote standard-route traces into exhaustive cross-binding behavior equivalence or separate RTI implementation ownership.",
-    "row_count": 32
+    "row_count": 32,
+    "rows_missing_backing_note": [],
+    "rows_missing_binding_aggregate_artifact": [],
+    "rows_missing_required_evidence_test": [],
+    "rows_missing_route_trace_artifact": [],
+    "rows_missing_seam_note": []
   },
   "support_service_proof_audit": {
     "by_negative_path_status": {
