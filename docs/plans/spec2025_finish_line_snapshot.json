@@ -17898,6 +17898,20 @@
   },
   "python2025_proof_lane_audit": {
     "audit_status": "python2025-proof-lanes-captured",
+    "current_operator_runs": [
+      {
+        "command": "./tools/python verify-main-2025",
+        "lane_id": "python-main-2025",
+        "result": "324 passed across wrapper subcommands plus Target/Radar example",
+        "scope": "current-tree direct python2025 package-boundary, federation/object/DDM, support/ownership/MOM, time-window, save/restore, callback, OMT, and example-scenario proof lane"
+      },
+      {
+        "command": "./tools/python verify-routes-2025",
+        "lane_id": "python-routes-2025",
+        "result": "434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example",
+        "scope": "current-tree direct python2025 plus bounded hosted FedPro route verification lane, including transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay"
+      }
+    ],
     "default_direct_lane": {
       "description": "Primary python2025 main-surface verification lane for direct runtime proofs across time, save/restore, ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence.",
       "docs": [
@@ -17939,7 +17953,7 @@
       "title": "Hosted Python 2025 route lane"
     },
     "ready_for_main_implementation_operator_lane_claim": true,
-    "residual_boundary": "This lane audit proves command identity and operator-facing proof-lane ownership. It does not replace the need to keep those proof lanes green on the current tree.",
+    "residual_boundary": "This lane audit now proves command identity, operator-facing proof-lane ownership, and one current-tree green execution of both canonical wrapper commands. It still does not replace the need to keep those proof lanes green as the tree changes.",
     "shared_claim": "The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over that same runtime."
   },
   "python2025_source_responsibility_audit": {

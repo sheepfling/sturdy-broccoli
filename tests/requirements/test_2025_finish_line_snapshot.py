@@ -2739,13 +2739,34 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     }
     assert "./tools/python verify-main-2025 as the default direct proof lane" in proof_lane_audit["shared_claim"]
     assert "./tools/python verify-routes-2025 as the bounded hosted FedPro extension" in proof_lane_audit["shared_claim"]
+    assert proof_lane_audit["current_operator_runs"] == [
+        {
+            "lane_id": "python-main-2025",
+            "command": "./tools/python verify-main-2025",
+            "result": "324 passed across wrapper subcommands plus Target/Radar example",
+            "scope": (
+                "current-tree direct python2025 package-boundary, federation/object/DDM, support/ownership/MOM, "
+                "time-window, save/restore, callback, OMT, and example-scenario proof lane"
+            ),
+        },
+        {
+            "lane_id": "python-routes-2025",
+            "command": "./tools/python verify-routes-2025",
+            "result": "434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example",
+            "scope": (
+                "current-tree direct python2025 plus bounded hosted FedPro route verification lane, including "
+                "transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay"
+            ),
+        },
+    ]
     assert proof_lane_audit["evidence_anchors"] == [
         "testing/test_surface_manifest.json",
         "tools/python",
         "docs/test_surface.md",
         "README.md",
     ]
-    assert "does not replace the need to keep those proof lanes green" in proof_lane_audit["residual_boundary"]
+    assert "one current-tree green execution of both canonical wrapper commands" in proof_lane_audit["residual_boundary"]
+    assert "does not replace the need to keep those proof lanes green as the tree changes" in proof_lane_audit["residual_boundary"]
     vendor_time_audit = snapshot["time_window_vendor_parity_audit"]
     assert vendor_time_audit["audit_status"] == "time-window-vendor-parity-captured"
     assert vendor_time_audit["route_count"] == 3
@@ -3935,6 +3956,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Ready for main-implementation operator-lane claim: True" in markdown
     assert "Direct lane: ./tools/python verify-main-2025" in markdown
     assert "Hosted extension lane: ./tools/python verify-routes-2025" in markdown
+    assert "Current operator runs:" in markdown
+    assert "python-main-2025 / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example" in markdown
+    assert "python-routes-2025 / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example" in markdown
     assert "Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md" in markdown
     assert "Reference 2010 backend package: hla-backend-inmemory" in markdown
     assert "Backend packages discovered: 6" in markdown

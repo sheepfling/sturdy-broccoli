@@ -3559,6 +3559,26 @@ def _build_python2025_proof_lane_audit(project_root: Path) -> dict[str, Any]:
             "python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over "
             "that same runtime."
         ),
+        "current_operator_runs": [
+            {
+                "lane_id": "python-main-2025",
+                "command": "./tools/python verify-main-2025",
+                "result": "324 passed across wrapper subcommands plus Target/Radar example",
+                "scope": (
+                    "current-tree direct python2025 package-boundary, federation/object/DDM, support/ownership/MOM, "
+                    "time-window, save/restore, callback, OMT, and example-scenario proof lane"
+                ),
+            },
+            {
+                "lane_id": "python-routes-2025",
+                "command": "./tools/python verify-routes-2025",
+                "result": "434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example",
+                "scope": (
+                    "current-tree direct python2025 plus bounded hosted FedPro route verification lane, including "
+                    "transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay"
+                ),
+            },
+        ],
         "evidence_anchors": [
             "testing/test_surface_manifest.json",
             "tools/python",
@@ -3566,8 +3586,9 @@ def _build_python2025_proof_lane_audit(project_root: Path) -> dict[str, Any]:
             "README.md",
         ],
         "residual_boundary": (
-            "This lane audit proves command identity and operator-facing proof-lane ownership. It does not replace "
-            "the need to keep those proof lanes green on the current tree."
+            "This lane audit now proves command identity, operator-facing proof-lane ownership, and one current-tree "
+            "green execution of both canonical wrapper commands. It still does not replace the need to keep those "
+            "proof lanes green as the tree changes."
         ),
     }
 
@@ -8990,6 +9011,17 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Hosted extension lane cost: {python2025_proof_lane_audit['hosted_extension_lane']['estimated_cost']}",
             f"- Claim: {python2025_proof_lane_audit['shared_claim']}",
             f"- Residual boundary: {python2025_proof_lane_audit['residual_boundary']}",
+            "",
+            "Current operator runs:",
+            "",
+        ]
+    )
+    for run in python2025_proof_lane_audit["current_operator_runs"]:
+        lines.append(
+            f"- {run['lane_id']} / {run['command']}: {run['result']} ({run['scope']})"
+        )
+    lines.extend(
+        [
             "",
             f"Evidence anchors: {', '.join(python2025_proof_lane_audit['evidence_anchors'])}",
             "",

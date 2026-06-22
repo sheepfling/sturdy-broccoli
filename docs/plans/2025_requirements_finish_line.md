@@ -1309,7 +1309,12 @@ Python 2025 route variants:
 - Hosted extension lane id: python-routes-2025
 - Hosted extension lane cost: medium
 - Claim: The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over that same runtime.
-- Residual boundary: This lane audit proves command identity and operator-facing proof-lane ownership. It does not replace the need to keep those proof lanes green on the current tree.
+- Residual boundary: This lane audit now proves command identity, operator-facing proof-lane ownership, and one current-tree green execution of both canonical wrapper commands. It still does not replace the need to keep those proof lanes green as the tree changes.
+
+Current operator runs:
+
+- python-main-2025 / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example (current-tree direct python2025 package-boundary, federation/object/DDM, support/ownership/MOM, time-window, save/restore, callback, OMT, and example-scenario proof lane)
+- python-routes-2025 / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example (current-tree direct python2025 plus bounded hosted FedPro route verification lane, including transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay)
 
 Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md
 
