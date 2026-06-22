@@ -1153,6 +1153,22 @@ Python 2025 route variants:
 - python-2025-inprocess: in-process-backend-route (separate RTI family: False, all milestone parity-covered: True)
 - python-2025-fedpro-grpc: hosted-transport-route (separate RTI family: False, all milestone parity-covered: True)
 
+## Python2025 Proof-Lane Audit
+
+- Audit status: python2025-proof-lanes-captured
+- Ready for main-implementation operator-lane claim: True
+- Direct lane: ./tools/python verify-main-2025
+- Direct lane id: python-main-2025
+- Direct lane cost: medium
+- Hosted extension lane: ./tools/python verify-routes-2025
+- Hosted extension lane id: python-routes-2025
+- Hosted extension lane cost: medium
+- Claim: The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over that same runtime.
+- Residual boundary: This lane audit proves command identity and operator-facing proof-lane ownership. It does not replace the need to keep those proof lanes green on the current tree.
+
+Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md
+
+
 Hosted runtime identity evidence:
 
 - Audit status: direct-server-client-identity-aligned

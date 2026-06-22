@@ -2433,6 +2433,53 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "docs/plans/2025_python_rti_backend_audit.md",
         "docs/python_rti_backend.md",
     ]
+    proof_lane_audit = snapshot["python2025_proof_lane_audit"]
+    assert proof_lane_audit["audit_status"] == "python2025-proof-lanes-captured"
+    assert proof_lane_audit["ready_for_main_implementation_operator_lane_claim"] is True
+    assert proof_lane_audit["default_direct_lane"] == {
+        "lane_id": "python-main-2025",
+        "title": "Python 2025 main-surface lane",
+        "owner_command": ["./tools/python", "verify-main-2025"],
+        "estimated_cost": "medium",
+        "docs": [
+            "docs/python_rti_backend.md",
+            "docs/test_surface.md",
+            "docs/local_verification_commands.md",
+            "docs/python_rti_reading_map.md",
+        ],
+        "preflight_kind": "always-ready",
+        "description": (
+            "Primary python2025 main-surface verification lane for direct runtime proofs across time, save/restore, "
+            "ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence."
+        ),
+    }
+    assert proof_lane_audit["hosted_extension_lane"] == {
+        "lane_id": "python-routes-2025",
+        "title": "Hosted Python 2025 route lane",
+        "owner_command": ["./tools/python", "verify-routes-2025"],
+        "estimated_cost": "medium",
+        "docs": [
+            "docs/networked_rti_python.md",
+            "docs/test_surface.md",
+            "docs/local_verification_commands.md",
+            "docs/plans/spec2025_route_parity_matrix.md",
+        ],
+        "preflight_kind": "aggregate",
+        "description": (
+            "python2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, "
+            "ownership, callback, support-service, and MOM proofs, transport-route behavior, route-parity artifacts, "
+            "and the package-owned Target/Radar example path."
+        ),
+    }
+    assert "./tools/python verify-main-2025 as the default direct proof lane" in proof_lane_audit["shared_claim"]
+    assert "./tools/python verify-routes-2025 as the bounded hosted FedPro extension" in proof_lane_audit["shared_claim"]
+    assert proof_lane_audit["evidence_anchors"] == [
+        "testing/test_surface_manifest.json",
+        "tools/python",
+        "docs/test_surface.md",
+        "README.md",
+    ]
+    assert "does not replace the need to keep those proof lanes green" in proof_lane_audit["residual_boundary"]
     vendor_time_audit = snapshot["time_window_vendor_parity_audit"]
     assert vendor_time_audit["audit_status"] == "time-window-vendor-parity-captured"
     assert vendor_time_audit["route_count"] == 3
@@ -3607,6 +3654,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Compatibility wrapper status: compatibility-maintained" in markdown
     assert "Compatibility wrapper role: compatibility-wrapper" in markdown
     assert "Compatibility wrapper delegates runtime semantics to: hla-backend-python2025" in markdown
+    assert "Python2025 Proof-Lane Audit" in markdown
+    assert "Ready for main-implementation operator-lane claim: True" in markdown
+    assert "Direct lane: ./tools/python verify-main-2025" in markdown
+    assert "Hosted extension lane: ./tools/python verify-routes-2025" in markdown
+    assert "Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md" in markdown
     assert "Reference 2010 backend package: hla-backend-inmemory" in markdown
     assert "Backend packages discovered: 6" in markdown
     assert "Dedicated 2025 candidates cleanly separated: True" in markdown

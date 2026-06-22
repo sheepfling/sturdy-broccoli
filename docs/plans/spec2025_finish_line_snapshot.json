@@ -17545,6 +17545,52 @@
       "The row-level requirement-by-requirement audit cannot be promoted from bounded disposition evidence to cleaner all-covered runtime proof without further shrinking wrapper-only compatibility logic around the main python2025 runtime."
     ]
   },
+  "python2025_proof_lane_audit": {
+    "audit_status": "python2025-proof-lanes-captured",
+    "default_direct_lane": {
+      "description": "Primary python2025 main-surface verification lane for direct runtime proofs across time, save/restore, ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence.",
+      "docs": [
+        "docs/python_rti_backend.md",
+        "docs/test_surface.md",
+        "docs/local_verification_commands.md",
+        "docs/python_rti_reading_map.md"
+      ],
+      "estimated_cost": "medium",
+      "lane_id": "python-main-2025",
+      "owner_command": [
+        "./tools/python",
+        "verify-main-2025"
+      ],
+      "preflight_kind": "always-ready",
+      "title": "Python 2025 main-surface lane"
+    },
+    "evidence_anchors": [
+      "testing/test_surface_manifest.json",
+      "tools/python",
+      "docs/test_surface.md",
+      "README.md"
+    ],
+    "hosted_extension_lane": {
+      "description": "python2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, transport-route behavior, route-parity artifacts, and the package-owned Target/Radar example path.",
+      "docs": [
+        "docs/networked_rti_python.md",
+        "docs/test_surface.md",
+        "docs/local_verification_commands.md",
+        "docs/plans/spec2025_route_parity_matrix.md"
+      ],
+      "estimated_cost": "medium",
+      "lane_id": "python-routes-2025",
+      "owner_command": [
+        "./tools/python",
+        "verify-routes-2025"
+      ],
+      "preflight_kind": "aggregate",
+      "title": "Hosted Python 2025 route lane"
+    },
+    "ready_for_main_implementation_operator_lane_claim": true,
+    "residual_boundary": "This lane audit proves command identity and operator-facing proof-lane ownership. It does not replace the need to keep those proof lanes green on the current tree.",
+    "shared_claim": "The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over that same runtime."
+  },
   "python2025_source_responsibility_audit": {
     "ambassador_class": "Python2025RTIAmbassador",
     "ambassador_line_count": 18,

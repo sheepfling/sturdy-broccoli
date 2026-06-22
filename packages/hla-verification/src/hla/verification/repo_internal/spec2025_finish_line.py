@@ -3200,6 +3200,70 @@ def _build_hosted_shared_scenario_coverage_audit(project_root: Path) -> dict[str
     }
 
 
+def _build_python2025_proof_lane_audit(project_root: Path) -> dict[str, Any]:
+    manifest = json.loads((project_root / "testing" / "test_surface_manifest.json").read_text(encoding="utf-8"))
+    tools_python = (project_root / "tools" / "python").read_text(encoding="utf-8")
+    test_surface = (project_root / "docs" / "test_surface.md").read_text(encoding="utf-8")
+    root_readme = (project_root / "README.md").read_text(encoding="utf-8")
+    lane_rows = {
+        row["id"]: row
+        for row in manifest["lanes"]
+        if row["id"] in {"python-main-2025", "python-routes-2025"}
+    }
+    direct_lane = lane_rows["python-main-2025"]
+    hosted_lane = lane_rows["python-routes-2025"]
+    direct_command = " ".join(direct_lane["owner_command"])
+    hosted_command = " ".join(hosted_lane["owner_command"])
+    readiness_checks = [
+        direct_command in tools_python,
+        hosted_command in tools_python,
+        direct_command in test_surface,
+        hosted_command in test_surface,
+        direct_command in root_readme,
+        hosted_command in root_readme,
+        "Use `verify-main-2025` as the default direct `python2025` proof lane." in root_readme,
+        "`verify-routes-2025` when you also need the bounded hosted" in root_readme,
+    ]
+    return {
+        "audit_status": "python2025-proof-lanes-captured",
+        "ready_for_main_implementation_operator_lane_claim": all(readiness_checks),
+        "default_direct_lane": {
+            "lane_id": direct_lane["id"],
+            "title": direct_lane["title"],
+            "owner_command": direct_lane["owner_command"],
+            "estimated_cost": direct_lane["estimated_cost"],
+            "docs": direct_lane["docs"],
+            "preflight_kind": direct_lane["preflight"]["kind"],
+            "description": direct_lane["description"],
+        },
+        "hosted_extension_lane": {
+            "lane_id": hosted_lane["id"],
+            "title": hosted_lane["title"],
+            "owner_command": hosted_lane["owner_command"],
+            "estimated_cost": hosted_lane["estimated_cost"],
+            "docs": hosted_lane["docs"],
+            "preflight_kind": hosted_lane["preflight"]["kind"],
+            "description": hosted_lane["description"],
+        },
+        "shared_claim": (
+            "The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator "
+            "surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real "
+            "python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over "
+            "that same runtime."
+        ),
+        "evidence_anchors": [
+            "testing/test_surface_manifest.json",
+            "tools/python",
+            "docs/test_surface.md",
+            "README.md",
+        ],
+        "residual_boundary": (
+            "This lane audit proves command identity and operator-facing proof-lane ownership. It does not replace "
+            "the need to keep those proof lanes green on the current tree."
+        ),
+    }
+
+
 def _build_promotion_split_audit(
     closeout_readiness: Mapping[str, Any],
     claim_audit: Mapping[str, Any],
@@ -6905,6 +6969,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "conformance_blockers": conformance_blockers,
     }
     time_window_vendor_parity_audit = _build_time_window_vendor_parity_audit()
+    python2025_proof_lane_audit = _build_python2025_proof_lane_audit(project_root)
     objective_dimension_audit = _build_objective_dimension_audit(
         route_parity_matrix,
         omt_requirement_proof_audit=omt_requirement_proof_audit,
@@ -7037,6 +7102,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "implementation_lane_audit": implementation_lane_audit,
         "hosted_shared_scenario_coverage_audit": hosted_shared_scenario_coverage_audit,
         "time_window_vendor_parity_audit": time_window_vendor_parity_audit,
+        "python2025_proof_lane_audit": python2025_proof_lane_audit,
         "extraction_readiness_audit": extraction_readiness_audit,
         "extraction_impact_audit": extraction_impact_audit,
         "promotion_split_audit": promotion_split_audit,
@@ -7096,6 +7162,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     implementation_lane_audit = snapshot["implementation_lane_audit"]
     hosted_shared_scenario_coverage_audit = snapshot["hosted_shared_scenario_coverage_audit"]
     time_window_vendor_parity_audit = snapshot["time_window_vendor_parity_audit"]
+    python2025_proof_lane_audit = snapshot["python2025_proof_lane_audit"]
     extraction_readiness_audit = snapshot["extraction_readiness_audit"]
     extraction_impact_audit = snapshot["extraction_impact_audit"]
     promotion_split_audit = snapshot["promotion_split_audit"]
@@ -8037,6 +8104,26 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"(separate RTI family: {route['is_separate_rti_family']}, "
             f"all milestone parity-covered: {route['all_route_parity_covered']})"
         )
+    lines.extend(
+        [
+            "",
+            "## Python2025 Proof-Lane Audit",
+            "",
+            f"- Audit status: {python2025_proof_lane_audit['audit_status']}",
+            f"- Ready for main-implementation operator-lane claim: {python2025_proof_lane_audit['ready_for_main_implementation_operator_lane_claim']}",
+            f"- Direct lane: {' '.join(python2025_proof_lane_audit['default_direct_lane']['owner_command'])}",
+            f"- Direct lane id: {python2025_proof_lane_audit['default_direct_lane']['lane_id']}",
+            f"- Direct lane cost: {python2025_proof_lane_audit['default_direct_lane']['estimated_cost']}",
+            f"- Hosted extension lane: {' '.join(python2025_proof_lane_audit['hosted_extension_lane']['owner_command'])}",
+            f"- Hosted extension lane id: {python2025_proof_lane_audit['hosted_extension_lane']['lane_id']}",
+            f"- Hosted extension lane cost: {python2025_proof_lane_audit['hosted_extension_lane']['estimated_cost']}",
+            f"- Claim: {python2025_proof_lane_audit['shared_claim']}",
+            f"- Residual boundary: {python2025_proof_lane_audit['residual_boundary']}",
+            "",
+            f"Evidence anchors: {', '.join(python2025_proof_lane_audit['evidence_anchors'])}",
+            "",
+        ]
+    )
     lines.extend(
         [
             "",
