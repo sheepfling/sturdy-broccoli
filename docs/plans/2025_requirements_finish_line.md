@@ -494,7 +494,7 @@ Extracted Python 2025 runtime helper modules:
 - Aggregated slices >=20 requirements: 7
 - Aggregated slices >=20 requirements and runtime-backed: 2
 - Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy, save/restore, and directed-interaction slices now have explicit requirement-family maps, so the remaining pressure is no longer about unnamed large bundles; it is about whether the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.
-- Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits before extracting a dedicated 2025 backend.
+- Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits inside the main python2025 backend lane.
 
 Largest implemented slices:
 
@@ -608,7 +608,7 @@ OMT schema-constraint families:
 - Direct-backed families: 5
 - Hosted-backed families: 5
 - Assessment: The save/restore slice is no longer just one broad working-surface claim. Its current evidence already separates into lifecycle control, shared rollback scenarios, routing/policy rollback, ownership rollback, and time-window/time-state rollback, with both direct and hosted anchors across every family, including restore-failure/abort control flow and restore persistence of transport/order policy metadata.
-- Next split boundary: If this slice needs further tightening, split it first by these proof families before extracting save/restore runtime semantics into a dedicated 2025 backend.
+- Next split boundary: If this slice needs further tightening, split it first by these proof families before further modularizing save/restore runtime semantics inside hla-backend-python2025.
 
 ### save-restore/lifecycle-control
 
@@ -1017,7 +1017,7 @@ Save/restore requirement families:
 - Direct-backed families: 5
 - Hosted-backed families: 5
 - Assessment: The directed-interaction slice is no longer just one boundary claim. Its evidence separates into base routing/callback delivery, timestamped delivery and retraction, DDM overlap filtering, selective set and publication isolation, and restore-path routing cleanup, with direct and hosted anchors across all families.
-- Next split boundary: If this slice needs further tightening, split it first by these directed-interaction proof families before moving directed-routing semantics into a dedicated 2025 backend.
+- Next split boundary: If this slice needs further tightening, split it first by these directed-interaction proof families before further modularizing directed-routing semantics inside hla-backend-python2025.
 
 ### directed-interaction/base-routing-and-callback-delivery
 
@@ -1079,7 +1079,7 @@ Directed-interaction requirement families:
 - Direct-backed families: 6
 - Hosted-backed families: 6
 - Assessment: The DDM/default-policy slice is no longer just one large region-policy bucket. Its evidence separates into lookup/default-policy control, object-region routing and scope advisories, interaction-region routing, directed DDM routing, passive/compat aliases, and DDM restore/disconnect cleanup.
-- Next split boundary: If this slice needs further tightening, split it first by these DDM/default-policy proof families before moving region-routing semantics into a dedicated 2025 backend.
+- Next split boundary: If this slice needs further tightening, split it first by these DDM/default-policy proof families before further modularizing region-routing semantics inside hla-backend-python2025.
 
 ### ddm-default-policy/lookup-and-default-policy-control
 

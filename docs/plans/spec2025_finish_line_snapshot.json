@@ -1448,7 +1448,7 @@
     "current_assessment": "The DDM/default-policy slice is no longer just one large region-policy bucket. Its evidence separates into lookup/default-policy control, object-region routing and scope advisories, interaction-region routing, directed DDM routing, passive/compat aliases, and DDM restore/disconnect cleanup.",
     "direct_family_count": 6,
     "hosted_family_count": 6,
-    "next_split_boundary": "If this slice needs further tightening, split it first by these DDM/default-policy proof families before moving region-routing semantics into a dedicated 2025 backend.",
+    "next_split_boundary": "If this slice needs further tightening, split it first by these DDM/default-policy proof families before further modularizing region-routing semantics inside hla-backend-python2025.",
     "proof_families": [
       {
         "direct_tests": [
@@ -2113,7 +2113,7 @@
     "current_assessment": "The directed-interaction slice is no longer just one boundary claim. Its evidence separates into base routing/callback delivery, timestamped delivery and retraction, DDM overlap filtering, selective set and publication isolation, and restore-path routing cleanup, with direct and hosted anchors across all families.",
     "direct_family_count": 5,
     "hosted_family_count": 5,
-    "next_split_boundary": "If this slice needs further tightening, split it first by these directed-interaction proof families before moving directed-routing semantics into a dedicated 2025 backend.",
+    "next_split_boundary": "If this slice needs further tightening, split it first by these directed-interaction proof families before further modularizing directed-routing semantics inside hla-backend-python2025.",
     "proof_families": [
       {
         "direct_tests": [
@@ -29189,7 +29189,7 @@
     "current_assessment": "The save/restore slice is no longer just one broad working-surface claim. Its current evidence already separates into lifecycle control, shared rollback scenarios, routing/policy rollback, ownership rollback, and time-window/time-state rollback, with both direct and hosted anchors across every family, including restore-failure/abort control flow and restore persistence of transport/order policy metadata.",
     "direct_family_count": 5,
     "hosted_family_count": 5,
-    "next_split_boundary": "If this slice needs further tightening, split it first by these proof families before extracting save/restore runtime semantics into a dedicated 2025 backend.",
+    "next_split_boundary": "If this slice needs further tightening, split it first by these proof families before further modularizing save/restore runtime semantics inside hla-backend-python2025.",
     "proof_families": [
       {
         "direct_tests": [
@@ -30404,7 +30404,7 @@
         "slice_id": "2025-directed-interaction-boundary"
       }
     ],
-    "next_decomposition_boundary": "If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits before extracting a dedicated 2025 backend."
+    "next_decomposition_boundary": "If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits inside the main python2025 backend lane."
   },
   "standard_binding_runtime_capability_audit": {
     "audit_status": "standard-binding-runtime-capability-captured",

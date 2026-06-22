@@ -4866,7 +4866,7 @@ def _build_slice_aggregation_pressure_audit() -> dict[str, Any]:
         ),
         "next_decomposition_boundary": (
             "If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or "
-            "behavior-family audits before extracting a dedicated 2025 backend."
+            "behavior-family audits inside the main python2025 backend lane."
         ),
     }
 
@@ -5263,8 +5263,8 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "restore-failure/abort control flow and restore persistence of transport/order policy metadata."
         ),
         "next_split_boundary": (
-            "If this slice needs further tightening, split it first by these proof families before extracting save/restore "
-            "runtime semantics into a dedicated 2025 backend."
+            "If this slice needs further tightening, split it first by these proof families before further modularizing "
+            "save/restore runtime semantics inside hla-backend-python2025."
         ),
     }
 
@@ -6022,7 +6022,7 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
         ),
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these directed-interaction proof families before "
-            "moving directed-routing semantics into a dedicated 2025 backend."
+            "further modularizing directed-routing semantics inside hla-backend-python2025."
         ),
     }
 
@@ -6200,7 +6200,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
         ),
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these DDM/default-policy proof families before "
-            "moving region-routing semantics into a dedicated 2025 backend."
+            "further modularizing region-routing semantics inside hla-backend-python2025."
         ),
     }
 
