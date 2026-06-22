@@ -42,6 +42,7 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "hosted_fedpro_bounded_proof.md",
         "framework_rules.md",
         "federate_interface.md",
+        "lookahead_window_bounded_proof.md",
         "object_management_bounded_proof.md",
         "omt_xs_any_extension_tolerance.md",
         "omt.md",
@@ -63,6 +64,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
 
     for filename in (
         "fom_backed_scenario_bounded_proof.md",
+        "lookahead_window_bounded_proof.md",
         "federation_management_bounded_proof.md",
         "python2025_direct_bounded_proof.md",
         "declaration_management_bounded_proof.md",
@@ -83,6 +85,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
     assert "bounded requirement-facing proof note" in normalized
     assert "main `python2025` lane plus hosted replay" in normalized
     assert "tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python2025` lanes" in normalized
+    assert "Target/Radar lookahead ladder, including future-exclusion, output ordering, pipeline overlap, negative-oracle guards, and bounded save/restore window rollback" in normalized
     assert "direct `python2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
     assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime" in text
     assert "explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics" in normalized
@@ -116,6 +119,7 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
     assert "## Current Technical Lane" in text
     assert "deeper runtime-proof expansion over the promoted `python2025` RTI surface" in normalized
     assert "the tracked example/FOM-backed scenario bounded proof note" in normalized
+    assert "the dedicated lookahead-window bounded proof note" in normalized
     assert "the dedicated direct `python2025` bounded proof note" in normalized
     assert "the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime families" in normalized
     assert "wrapper-only shim boundaries" in normalized
@@ -236,6 +240,31 @@ def test_framework_rules_markdown_maps_umbrella_rows_to_child_evidence() -> None
     assert "The primary implementation lane behind the executable anchors above is `hla-backend-python2025`." in normalized
     assert "`hla-backend-shim` is not a runtime owner for these framework rules." in normalized
     assert "Each rule closes only through linked child FI, OMT, and runtime evidence" in normalized
+
+
+@pytest.mark.requirements("HLA2025-FI-SVC-107", "HLA2025-FI-SVC-116", "HLA2025-FI-SVC-121", "HLA2025-MOD-006")
+def test_lookahead_window_bounded_proof_markdown_keeps_proof_ladder_and_boundary_explicit() -> None:
+    text = (REGISTRY_DIR / "lookahead_window_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records the repo's current requirement-facing claim for lookahead window closure" in normalized
+    assert "`time-window-core`" in text
+    assert "`time-window-future-exclusion`" in text
+    assert "`time-window-output-delivery`" in text
+    assert "`time-window-consumer-order`" in text
+    assert "`time-window-pipeline-two-scans`" in text
+    assert "`time-window-receive-order-poison`" in text
+    assert "`time-window-save-restore-window-state`" in text
+    assert "`time-window-save-restore-output-resume`" in text
+    assert "`time-window-save-restore-pipeline-resume`" in text
+    assert "`lookahead-processing-window-certified`" in text
+    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/transport/test_grpc_transport_2025.py`" in text
+    assert "`tests/scenarios/test_python_route_parity.py`" in text
+    assert "`./tools/pitch time-window-probe`" in text
+    assert "`./tools/pitch time-window-restore-state-probe`" in text
+    assert "must fail if the RTI allows a future-message exclusion bug or a closed-window causality leak" in normalized
+    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")

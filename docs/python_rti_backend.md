@@ -135,6 +135,7 @@ Primary evidence anchors:
 - `docs/plans/2025_requirements_finish_line.md`
 - `docs/plans/2025_python_rti_backend_audit.md`
 - `docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`
 - `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
 - `packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py`
@@ -164,6 +165,13 @@ The matching tracked-scenario note,
 captures exactly which repo-owned Proto2025 and Target/Radar example/FOM-backed
 scenarios are part of the bounded claim and which broader example-FOM space is
 still outside that tracked suite.
+
+The matching lookahead-window note,
+`docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`,
+captures the explicit Target/Radar closure, future-exclusion, output-delivery,
+consumer-order, pipeline, negative-oracle, and bounded restore-window ladder
+instead of leaving that contract only inside the broader time-management note
+or finish-line milestone prose.
 
 The current bounded claim is:
 

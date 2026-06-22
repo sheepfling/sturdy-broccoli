@@ -519,8 +519,11 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "compact excluded-area inventory behind this bounded claim" in normalized_audit_text_lower
     assert "forcing readers to mine the full generated finish-line bundle" in normalized_audit_text_lower
     assert "fom_backed_scenario_bounded_proof.md" in audit_text
+    assert "lookahead_window_bounded_proof.md" in audit_text
     assert "tracked example/fom-backed scenario boundary behind the same bounded claim" in normalized_audit_text_lower
     assert "without implying that every possible example fom composition is proven" in normalized_audit_text_lower
+    assert "explicit target/radar lookahead ladder behind the same bounded claim" in normalized_audit_text_lower
+    assert "closure, future-exclusion, output-delivery, consumer-order, pipeline, negative-oracle, and pitch-safe vendor-credence boundaries auditable" in normalized_audit_text_lower
     assert "promoting the current lane as the working python 2025 rti surface" in normalized_audit_text_lower
     assert "the architecture should still preserve a clean enough seam" in normalized_audit_text_lower
     assert "the repo is not building two duplicate python 2025 rtis" in normalized_audit_text_lower
@@ -1120,6 +1123,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`lookahead-processing-window-certified`" in normalized_time_model
     assert "the same proof ladder is replayed over the hosted `python-2025-fedpro-grpc` route" in normalized_time_model
     assert "matching negative-oracle tests reject premature closure, mismatched lits boundaries, premature output, reversed consumer order, cross-window contamination, closed-window mutation, and dirty post-restore replay" in normalized_time_model
+    assert "[`../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)" in normalized_time_model
     assert "direct in-process `python2025` time-management services plus the target/radar time-window proof ladder and negative-oracle guards" in normalized_time_model
     assert "`hla.backends.python2025.time_management_runtime`" in normalized_time_model
     assert "`hla.backends.python2025.federation_time_surface_mixin`" in normalized_time_model
@@ -1381,10 +1385,12 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "run `./tools/python verify-routes-2025` when the change must stay aligned with the bounded hosted `python-2025-fedpro-grpc` route" in normalized_python_rti_map
     assert "`docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`" in normalized_backend
     assert "`docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`" in normalized_backend
+    assert "`docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`" in normalized_backend
     assert "main executable bounded proof surface for the current 2025 python rti" in normalized_backend
     assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in normalized_backend
     assert "explicit non-claim map around that bounded working-surface statement" in normalized_backend
     assert "captures exactly which repo-owned proto2025 and target/radar example/fom-backed scenarios are part of the bounded claim" in normalized_backend
+    assert "captures the explicit target/radar closure, future-exclusion, output-delivery, consumer-order, pipeline, negative-oracle, and bounded restore-window ladder" in normalized_backend
 
     assert "read [`first_run.md`](first_run.md) for the 2010 pure-python bootstrap lane" in normalized_docs_index
     assert "read [`python_rti_backend.md`](python_rti_backend.md) for the main 2025 python rti lane in `hla-backend-python2025`" in normalized_docs_index
@@ -1399,6 +1405,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[../tools/pitch](../tools/pitch): narrow vendor-runtime operator path when you need the pitch-safe two-federate `time-window-probe` or `time-window-restore-state-probe` bounded credence routes without widening the main `python2025` claim" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md): tracked proto2025 and target/radar example/fom-backed scenario boundary for the bounded `python2025` claim" in normalized_docs_index
+    assert "[requirements/ieee-1516-2025/lookahead_window_bounded_proof.md](requirements/ieee-1516-2025/lookahead_window_bounded_proof.md): explicit target/radar lookahead-window proof ladder, negative-oracle guards, and pitch-safe vendor-credence boundary for the bounded `python2025` claim" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit non-claim map for shim aliases, java/c++ bindings, hosted-route boundaries, umbrella rows, retired rows, and omt extension semantics around the main `python2025` lane" in normalized_docs_index
     assert "java/c++ standard-surface binding routes and evidence contract" in normalized_docs_index

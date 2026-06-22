@@ -201,6 +201,7 @@ Primary evidence anchors:
 - [python_rti_backend.md](../python_rti_backend.md)
 - [2025_requirements_finish_line.md](2025_requirements_finish_line.md)
 - [../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md)
+- [../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)
 - [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
 - [../packages/hla-backend-python2025/README.md](../../packages/hla-backend-python2025/README.md)
@@ -227,6 +228,14 @@ claim, use
 [`../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`](../requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md).
 That note makes the repo-owned Proto2025 and Target/Radar suite explicit
 without implying that every possible example FOM composition is proven.
+
+For the explicit Target/Radar lookahead ladder behind the same bounded claim,
+use
+[`../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md).
+That note makes the current closure, future-exclusion, output-delivery,
+consumer-order, pipeline, negative-oracle, and Pitch-safe vendor-credence
+boundaries auditable without pretending the repo has a blanket time-policy
+conformance proof.
 
 ## Current Proof Contract
 

@@ -207,6 +207,13 @@ What it proves today is narrower and more honest:
   boundaries, premature output, reversed consumer order, cross-window
   contamination, closed-window mutation, and dirty post-restore replay
 
+The matching requirement-facing note for that ladder is:
+
+- [`../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md`](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)
+  - keeps the closure/output/order/pipeline/save-restore ladder and its
+    vendor-credence boundary explicit instead of leaving it only in generated
+    milestone prose
+
 ## 2025 Evidence Anchors
 
 The main 2025 runtime evidence is:
