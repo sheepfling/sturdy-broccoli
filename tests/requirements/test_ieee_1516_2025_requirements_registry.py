@@ -8,6 +8,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_DIR = ROOT / "docs/requirements/ieee-1516-2025"
 REGISTRY = REGISTRY_DIR / "requirements.json"
+HARMONIZATION_WORKLIST = ROOT / "requirements/2025/harmonization/hla_2025_harmonization_worklist.csv"
+EXECUTABLE_REQUIREMENTS = REGISTRY_DIR / "executable_tests/hla_2025_executable_test_requirements_v3.csv"
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")
@@ -103,10 +105,32 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
 
     assert "## Current Technical Lane" in text
     assert "deeper runtime-proof expansion over the promoted `python2025` RTI surface" in normalized
-    assert "route-parity and hosted FedPro evidence that replays those runtime families" in normalized
+    assert "the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime families" in normalized
     assert "wrapper-only shim boundaries" in normalized
     assert "FOM/OMT validation still matters inside that lane" in normalized
     assert "one proof family inside the broader 2025 runtime-evidence closeout" in normalized
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-003", "HLA2025-FR-004")
+def test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route() -> None:
+    traceability_text = (REGISTRY_DIR / "traceability_matrix.md").read_text(encoding="utf-8")
+    traceability_normalized = " ".join(traceability_text.split())
+    worklist_text = HARMONIZATION_WORKLIST.read_text(encoding="utf-8")
+    executable_text = EXECUTABLE_REQUIREMENTS.read_text(encoding="utf-8")
+
+    assert "primary-`python2025` runtime plus binding/hosted-route scenario mapping" in (
+        REGISTRY_DIR / "README.md"
+    ).read_text(encoding="utf-8")
+    assert "| HLA2025-FR-003 | python2025 runtime + binding routes |" in traceability_text
+    assert "| HLA2025-FR-004 | python2025 runtime + binding routes |" in traceability_text
+    assert "| HLA2025-FI-004 | binding/intake routes |" in traceability_text
+    assert "language shim routes" not in traceability_normalized
+    assert "language shim intake" not in traceability_normalized
+    assert "Map service to the primary python2025 runtime lane, Java surface, C++ surface, and FedPro/vendor route" in worklist_text
+    assert "Map service to Python shim route" not in worklist_text
+    assert "python2025-plus-binding route scenario" in executable_text
+    assert "route-matrix scenario runner can produce normalized route traces and requirement-tagged evidence across the primary python2025 runtime lane" in executable_text
+    assert "language-shim route scenario" not in executable_text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-001", "HLA2025-FR-010")

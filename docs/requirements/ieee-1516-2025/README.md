@@ -26,7 +26,7 @@ Source anchors for modal terms:
 - `framework_rules.md`: Framework and Rules requirements, including Rules 1-10.
 - `federate_interface.md`: Federate Interface service, conformance, callback, FDD, exception, and time requirements.
 - `omt.md`: OMT/FOM naming, DIF, component, identification, conformance, and merge requirements.
-- `traceability_matrix.md`: initial requirement-to-project-lane and language-shim route scenario mapping.
+- `traceability_matrix.md`: initial requirement-to-project-lane and primary-`python2025` runtime plus binding/hosted-route scenario mapping.
 - `federation_management_bounded_proof.md`: bounded requirement-facing proof note for federation lifecycle, synchronization, and save/restore control families over the main `python2025` lane plus hosted replay.
 - `declaration_management_bounded_proof.md`: bounded requirement-facing proof note for publication, subscription, advisory, and name-reservation families.
 - `object_management_bounded_proof.md`: bounded requirement-facing proof note for object registration, updates, interactions, routing, and delete/remove families.
