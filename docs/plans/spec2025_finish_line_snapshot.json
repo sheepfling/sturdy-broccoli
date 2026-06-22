@@ -26195,8 +26195,10 @@
         "requirement_id": "HLA2025-REQ-002"
       },
       {
-        "pytest_anchor_count": 1,
+        "pytest_anchor_count": 3,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_retired_rows_on_explicit_legacy_mapping_doc",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_retired_legacy_mapping_doc_accounts_for_all_retired_rows",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_supports_explicit_switch_inquiry_and_control_model"
         ],
         "requirement_id": "HLA2025-RET-001"
@@ -26209,9 +26211,11 @@
         "requirement_id": "HLA2025-RET-002"
       },
       {
-        "pytest_anchor_count": 1,
+        "pytest_anchor_count": 3,
         "pytest_anchors": [
-          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding"
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_harmonization_packets_keep_retired_rows_on_explicit_legacy_mapping_doc",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_retired_legacy_mapping_doc_accounts_for_all_retired_rows"
         ],
         "requirement_id": "HLA2025-RET-003"
       },
@@ -26333,6 +26337,51 @@
         "requirement_id": "HLA2025-VER-002"
       }
     ]
+  },
+  "retired_legacy_mapping_audit": {
+    "audit_status": "retired-legacy-mapping-captured",
+    "by_service_group": {
+      "Federate Interface legacy API": [
+        "HLA2025-FI-RET-001",
+        "HLA2025-FI-RET-002",
+        "HLA2025-FI-RET-003",
+        "HLA2025-FI-RET-004",
+        "HLA2025-FI-RET-005",
+        "HLA2025-FI-RET-006",
+        "HLA2025-FI-RET-007",
+        "HLA2025-FI-RET-008",
+        "HLA2025-FI-RET-009",
+        "HLA2025-FI-RET-010",
+        "HLA2025-FI-RET-011"
+      ],
+      "OMT legacy schema": [
+        "HLA2025-OMT-RET-001",
+        "HLA2025-OMT-RET-002",
+        "HLA2025-OMT-RET-003",
+        "HLA2025-OMT-RET-004",
+        "HLA2025-OMT-RET-005",
+        "HLA2025-OMT-RET-006",
+        "HLA2025-OMT-RET-007",
+        "HLA2025-OMT-RET-008",
+        "HLA2025-OMT-RET-009",
+        "HLA2025-OMT-RET-010",
+        "HLA2025-OMT-RET-011",
+        "HLA2025-OMT-RET-012",
+        "HLA2025-OMT-RET-013"
+      ]
+    },
+    "current_assessment": "The retired/legacy-only rows are no longer just a count in the finish-line bundle. They now have an explicit mapping note that enumerates every retired row and the candidate 2025 replacement surface, which makes the exclusion boundary auditable rather than implied.",
+    "doc_exists": true,
+    "doc_path": "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
+    "ready_for_retired_legacy_mapping_claim": true,
+    "residual_boundary": "This audit proves exclusion mapping and documentation quality for retired rows. It does not convert those legacy-only rows into active 2025 support obligations.",
+    "row_count": 24,
+    "rows_mentioned_in_doc_count": 24,
+    "rows_missing_candidate_replacement_note": [],
+    "rows_missing_doc_anchor": [],
+    "rows_missing_from_doc": [],
+    "rows_with_candidate_replacement_note_count": 24,
+    "rows_with_doc_anchor_count": 24
   },
   "route_parity_audit": {
     "by_route": {

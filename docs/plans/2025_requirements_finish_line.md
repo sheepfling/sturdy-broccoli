@@ -158,6 +158,24 @@ Requirement-by-requirement duplicate/umbrella breakdown:
 - framework-umbrella: 10 rows (HLA2025-FR-001, HLA2025-FR-002, HLA2025-FR-003, HLA2025-FR-004, HLA2025-FR-005, HLA2025-FR-006, HLA2025-FR-007, HLA2025-FR-008, HLA2025-FR-009, HLA2025-FR-010)
 - delta-umbrella: 12 rows (HLA2025-BIND-FEDPRO-001, HLA2025-BIND-JAVA-CPP-001, HLA2025-FI-AUTH-001, HLA2025-FI-CB-001, HLA2025-FI-CB-002, HLA2025-FI-CB-003, HLA2025-FI-CB-004, HLA2025-FI-CB-005, HLA2025-FI-CB-006, HLA2025-FI-CB-007, HLA2025-FI-CB-008, HLA2025-FI-CFG-001)
 
+## Retired Legacy Mapping Audit
+
+- Audit status: retired-legacy-mapping-captured
+- Doc path: docs/requirements/ieee-1516-2025/retired_legacy_mapping.md
+- Row count: 24
+- Doc exists: True
+- Rows with doc anchor: 24
+- Rows mentioned in doc: 24
+- Rows with candidate replacement note: 24
+- Ready for retired legacy mapping claim: True
+- Assessment: The retired/legacy-only rows are no longer just a count in the finish-line bundle. They now have an explicit mapping note that enumerates every retired row and the candidate 2025 replacement surface, which makes the exclusion boundary auditable rather than implied.
+- Residual boundary: This audit proves exclusion mapping and documentation quality for retired rows. It does not convert those legacy-only rows into active 2025 support obligations.
+
+Retired rows by service group:
+
+- Federate Interface legacy API: 11 rows (HLA2025-FI-RET-001, HLA2025-FI-RET-002, HLA2025-FI-RET-003, HLA2025-FI-RET-004, HLA2025-FI-RET-005, HLA2025-FI-RET-006, HLA2025-FI-RET-007, HLA2025-FI-RET-008, HLA2025-FI-RET-009, HLA2025-FI-RET-010, HLA2025-FI-RET-011)
+- OMT legacy schema: 13 rows (HLA2025-OMT-RET-001, HLA2025-OMT-RET-002, HLA2025-OMT-RET-003, HLA2025-OMT-RET-004, HLA2025-OMT-RET-005, HLA2025-OMT-RET-006, HLA2025-OMT-RET-007, HLA2025-OMT-RET-008, HLA2025-OMT-RET-009, HLA2025-OMT-RET-010, HLA2025-OMT-RET-011, HLA2025-OMT-RET-012, HLA2025-OMT-RET-013)
+
 Requirement-by-requirement area closure:
 
 - fi_service_catalog: covered=196

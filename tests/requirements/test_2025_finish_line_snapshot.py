@@ -1271,6 +1271,50 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "hla-backend-shim in a wrapper-only compatibility role" in requirement_audit["current_assessment"]
     assert any("third-party extension execution semantics" in blocker for blocker in requirement_audit["full_claim_blockers"])
     assert any("framework-rule umbrellas and callback/configuration/binding delta umbrellas" in blocker for blocker in requirement_audit["full_claim_blockers"])
+    retired_mapping_audit = snapshot["retired_legacy_mapping_audit"]
+    assert retired_mapping_audit["audit_status"] == "retired-legacy-mapping-captured"
+    assert retired_mapping_audit["doc_path"] == "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
+    assert retired_mapping_audit["row_count"] == 24
+    assert retired_mapping_audit["doc_exists"] is True
+    assert retired_mapping_audit["rows_with_doc_anchor_count"] == 24
+    assert retired_mapping_audit["rows_missing_doc_anchor"] == []
+    assert retired_mapping_audit["rows_mentioned_in_doc_count"] == 24
+    assert retired_mapping_audit["rows_missing_from_doc"] == []
+    assert retired_mapping_audit["rows_with_candidate_replacement_note_count"] == 24
+    assert retired_mapping_audit["rows_missing_candidate_replacement_note"] == []
+    assert retired_mapping_audit["by_service_group"] == {
+        "Federate Interface legacy API": [
+            "HLA2025-FI-RET-001",
+            "HLA2025-FI-RET-002",
+            "HLA2025-FI-RET-003",
+            "HLA2025-FI-RET-004",
+            "HLA2025-FI-RET-005",
+            "HLA2025-FI-RET-006",
+            "HLA2025-FI-RET-007",
+            "HLA2025-FI-RET-008",
+            "HLA2025-FI-RET-009",
+            "HLA2025-FI-RET-010",
+            "HLA2025-FI-RET-011",
+        ],
+        "OMT legacy schema": [
+            "HLA2025-OMT-RET-001",
+            "HLA2025-OMT-RET-002",
+            "HLA2025-OMT-RET-003",
+            "HLA2025-OMT-RET-004",
+            "HLA2025-OMT-RET-005",
+            "HLA2025-OMT-RET-006",
+            "HLA2025-OMT-RET-007",
+            "HLA2025-OMT-RET-008",
+            "HLA2025-OMT-RET-009",
+            "HLA2025-OMT-RET-010",
+            "HLA2025-OMT-RET-011",
+            "HLA2025-OMT-RET-012",
+            "HLA2025-OMT-RET-013",
+        ],
+    }
+    assert retired_mapping_audit["ready_for_retired_legacy_mapping_claim"] is True
+    assert "explicit mapping note that enumerates every retired row" in retired_mapping_audit["current_assessment"]
+    assert "does not convert those legacy-only rows into active 2025 support obligations" in retired_mapping_audit["residual_boundary"]
     boundary_statement = snapshot["supported_boundary_statement"]
     assert boundary_statement["statement_status"] == "supported-boundary-statement"
     assert boundary_statement["ready"] is True
@@ -3464,6 +3508,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Requirement-By-Requirement Audit" in markdown
     assert "Audit status: row-level-requirement-disposition-audit-captured" in markdown
     assert "Ready for row-level audit claim: True" in markdown
+    assert "Retired Legacy Mapping Audit" in markdown
+    assert "Doc path: docs/requirements/ieee-1516-2025/retired_legacy_mapping.md" in markdown
+    assert "Ready for retired legacy mapping claim: True" in markdown
+    assert "Federate Interface legacy API: 11 rows" in markdown
+    assert "OMT legacy schema: 13 rows" in markdown
     assert "Requirement-by-requirement area closure:" in markdown
     assert "Completion Claim Audit" in markdown
     assert "Ready for supported-boundary statement: True" in markdown

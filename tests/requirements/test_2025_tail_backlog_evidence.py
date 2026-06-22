@@ -34,6 +34,7 @@ SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/ba
 CALLBACK_BINDING_DELTA_DOC = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
 BINDING_HOSTED_BOUNDARY_DOC = "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
 OMT_XS_ANY_DOC = "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
+RETIRED_LEGACY_MAPPING_DOC = "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
 SUPPORT_SERVICES_DOC = "docs/requirements/ieee-1516-2025/support_services_bounded_proof.md"
 TIME_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/time_management_bounded_proof.md"
 FEDERATION_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md"
@@ -54,6 +55,32 @@ DELTA_UMBRELLA_IDS = {
     "HLA2025-FI-AUTH-001",
     "HLA2025-BIND-FEDPRO-001",
     "HLA2025-BIND-JAVA-CPP-001",
+}
+RETIRED_LEGACY_IDS = {
+    "HLA2025-FI-RET-001",
+    "HLA2025-FI-RET-002",
+    "HLA2025-FI-RET-003",
+    "HLA2025-FI-RET-004",
+    "HLA2025-FI-RET-005",
+    "HLA2025-FI-RET-006",
+    "HLA2025-FI-RET-007",
+    "HLA2025-FI-RET-008",
+    "HLA2025-FI-RET-009",
+    "HLA2025-FI-RET-010",
+    "HLA2025-FI-RET-011",
+    "HLA2025-OMT-RET-001",
+    "HLA2025-OMT-RET-002",
+    "HLA2025-OMT-RET-003",
+    "HLA2025-OMT-RET-004",
+    "HLA2025-OMT-RET-005",
+    "HLA2025-OMT-RET-006",
+    "HLA2025-OMT-RET-007",
+    "HLA2025-OMT-RET-008",
+    "HLA2025-OMT-RET-009",
+    "HLA2025-OMT-RET-010",
+    "HLA2025-OMT-RET-011",
+    "HLA2025-OMT-RET-012",
+    "HLA2025-OMT-RET-013",
 }
 
 
@@ -111,6 +138,36 @@ def test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidenc
             assert OMT_XS_ANY_DOC in evidence
             assert "tests/test_rti1516_2025_validation.py" in evidence
             assert "packages/hla-rti1516e/src/hla/rti1516e/fom.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
+def test_harmonization_packets_keep_retired_rows_on_explicit_legacy_mapping_doc() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [row for row in rows if row.get("id") in RETIRED_LEGACY_IDS]
+        assert len(matched) == len(RETIRED_LEGACY_IDS)
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert RETIRED_LEGACY_MAPPING_DOC in evidence
+            assert str(row.get("harmonization_disposition", "")) == "retired/legacy-only"
+
+
+@pytest.mark.requirements("HLA2025-RET-001", "HLA2025-RET-003")
+def test_retired_legacy_mapping_doc_accounts_for_all_retired_rows() -> None:
+    text = (ROOT / RETIRED_LEGACY_MAPPING_DOC).read_text(encoding="utf-8")
+
+    assert "retired/legacy-only" in text
+    assert "not active 2025 obligations" in text
+    assert "hla-backend-python2025" in text
+    assert "hla-backend-shim" in text
+    for row_id in sorted(RETIRED_LEGACY_IDS):
+        assert row_id in text
+    assert "disableAttributeRelevanceAdvisorySwitch" in text
+    assert "releaseMultipleObjectInstanceNames" in text
+    assert "logicalTimeInterval" in text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

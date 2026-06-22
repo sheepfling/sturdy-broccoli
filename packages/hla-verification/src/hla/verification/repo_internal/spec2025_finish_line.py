@@ -3124,6 +3124,63 @@ def _build_requirement_by_requirement_audit(
     }
 
 
+def _build_retired_legacy_mapping_audit(
+    project_root: Path,
+    harmonization_rows: list[Mapping[str, str]],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    rows = [row for row in harmonization_rows if row["harmonization_disposition"] == "retired/legacy-only"]
+    by_service_group: dict[str, list[str]] = {}
+    for row in rows:
+        by_service_group.setdefault(row["service_group"], []).append(row["id"])
+    for row_ids in by_service_group.values():
+        row_ids.sort()
+    rows_with_doc_anchor = [
+        row["id"]
+        for row in rows
+        if doc_rel in row["suggested_repo_evidence_path"]
+    ]
+    rows_missing_doc_anchor = sorted({row["id"] for row in rows} - set(rows_with_doc_anchor))
+    rows_mentioned_in_doc = [row["id"] for row in rows if row["id"] in doc_text]
+    rows_missing_from_doc = sorted({row["id"] for row in rows} - set(rows_mentioned_in_doc))
+    rows_with_candidate_replacement_note = [
+        row["id"] for row in rows if "candidate replacement:" in row["notes"]
+    ]
+    rows_missing_candidate_replacement_note = sorted(
+        {row["id"] for row in rows} - set(rows_with_candidate_replacement_note)
+    )
+    return {
+        "audit_status": "retired-legacy-mapping-captured",
+        "doc_path": doc_rel,
+        "row_count": len(rows),
+        "doc_exists": doc_path.exists(),
+        "rows_with_doc_anchor_count": len(rows_with_doc_anchor),
+        "rows_missing_doc_anchor": rows_missing_doc_anchor,
+        "rows_mentioned_in_doc_count": len(rows_mentioned_in_doc),
+        "rows_missing_from_doc": rows_missing_from_doc,
+        "rows_with_candidate_replacement_note_count": len(rows_with_candidate_replacement_note),
+        "rows_missing_candidate_replacement_note": rows_missing_candidate_replacement_note,
+        "by_service_group": by_service_group,
+        "ready_for_retired_legacy_mapping_claim": (
+            doc_path.exists()
+            and not rows_missing_doc_anchor
+            and not rows_missing_from_doc
+            and not rows_missing_candidate_replacement_note
+        ),
+        "current_assessment": (
+            "The retired/legacy-only rows are no longer just a count in the finish-line bundle. They now have an "
+            "explicit mapping note that enumerates every retired row and the candidate 2025 replacement surface, "
+            "which makes the exclusion boundary auditable rather than implied."
+        ),
+        "residual_boundary": (
+            "This audit proves exclusion mapping and documentation quality for retired rows. It does not convert those "
+            "legacy-only rows into active 2025 support obligations."
+        ),
+    }
+
+
 def _build_supported_boundary_statement(
     claim_audit: Mapping[str, Any],
     objective_audit: Mapping[str, Any],
@@ -6988,6 +7045,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         binding_requirement_proof_audit,
         omt_requirement_proof_audit,
     )
+    retired_legacy_mapping_audit = _build_retired_legacy_mapping_audit(
+        project_root,
+        harmonization_rows,
+    )
     supported_boundary_statement = _build_supported_boundary_statement(
         completion_claim_audit,
         objective_dimension_audit,
@@ -7071,6 +7132,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "support_service_proof_audit": support_service_proof_audit,
         "python_rti_milestone_audit": python_rti_milestone_audit,
         "requirement_by_requirement_audit": requirement_by_requirement_audit,
+        "retired_legacy_mapping_audit": retired_legacy_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
         "supported_boundary_statement": supported_boundary_statement,
         "implementation_concentration_audit": implementation_concentration_audit,
@@ -7133,6 +7195,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     support_service_audit = snapshot["support_service_proof_audit"]
     milestone_audit = snapshot["python_rti_milestone_audit"]
     requirement_by_requirement_audit = snapshot["requirement_by_requirement_audit"]
+    retired_legacy_mapping_audit = snapshot["retired_legacy_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
     supported_boundary = snapshot["supported_boundary_statement"]
     implementation_concentration_audit = snapshot["implementation_concentration_audit"]
@@ -7341,6 +7404,28 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     )
     for row_role, row_ids in requirement_by_requirement_audit["duplicate_umbrella_rows_by_role"].items():
         lines.append(f"- {row_role}: {len(row_ids)} rows ({', '.join(row_ids)})")
+    lines.extend(
+        [
+            "",
+            "## Retired Legacy Mapping Audit",
+            "",
+            f"- Audit status: {retired_legacy_mapping_audit['audit_status']}",
+            f"- Doc path: {retired_legacy_mapping_audit['doc_path']}",
+            f"- Row count: {retired_legacy_mapping_audit['row_count']}",
+            f"- Doc exists: {retired_legacy_mapping_audit['doc_exists']}",
+            f"- Rows with doc anchor: {retired_legacy_mapping_audit['rows_with_doc_anchor_count']}",
+            f"- Rows mentioned in doc: {retired_legacy_mapping_audit['rows_mentioned_in_doc_count']}",
+            f"- Rows with candidate replacement note: {retired_legacy_mapping_audit['rows_with_candidate_replacement_note_count']}",
+            f"- Ready for retired legacy mapping claim: {retired_legacy_mapping_audit['ready_for_retired_legacy_mapping_claim']}",
+            f"- Assessment: {retired_legacy_mapping_audit['current_assessment']}",
+            f"- Residual boundary: {retired_legacy_mapping_audit['residual_boundary']}",
+            "",
+            "Retired rows by service group:",
+            "",
+        ]
+    )
+    for service_group, row_ids in retired_legacy_mapping_audit["by_service_group"].items():
+        lines.append(f"- {service_group}: {len(row_ids)} rows ({', '.join(row_ids)})")
     lines.extend(
         [
             "",
