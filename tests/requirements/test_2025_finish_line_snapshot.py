@@ -2683,14 +2683,15 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "The README-advertised Target/Radar python2025 example path is now executable under package-owned "
             "2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, "
             "and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute "
-            "the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window "
-            "gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back "
-            "to shim-owned semantics or raw transport-only wrappers."
+            "the shared Target/Radar example scenario plus the shared future-exclusion, output-delivery, "
+            "consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, "
+            "and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers."
         ),
         "evidence_tests": [
             "tests/scenarios/test_target_radar_scenario.py::test_target_radar_example_supports_2025_backends",
             "tests/test_fom_target_radar_split_package.py::test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter",
             "tests/test_fom_target_radar_split_package.py::test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_surface",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_target_radar_shared_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario",
@@ -4489,14 +4490,15 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
             "The README-advertised Target/Radar python2025 example path is now executable under package-owned "
             "2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, "
             "and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute "
-            "the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window "
-            "gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back "
-            "to shim-owned semantics or raw transport-only wrappers."
+            "the shared Target/Radar example scenario plus the shared future-exclusion, output-delivery, "
+            "consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, "
+            "and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers."
         ),
         "evidence_tests": [
             "tests/scenarios/test_target_radar_scenario.py::test_target_radar_example_supports_2025_backends",
             "tests/test_fom_target_radar_split_package.py::test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter",
             "tests/test_fom_target_radar_split_package.py::test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_surface",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_target_radar_shared_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario",

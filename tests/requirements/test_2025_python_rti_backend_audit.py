@@ -165,10 +165,14 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "README-advertised Target/Radar python2025 example path is now executable under package-owned 2025 adapter coverage" in shared_scenario[
         "current_assessment"
     ]
+    assert "factory-hosted python2025 FedPro route can execute the shared Target/Radar example scenario plus the shared future-exclusion" in shared_scenario[
+        "current_assessment"
+    ]
     assert shared_scenario["evidence_tests"] == [
         "tests/scenarios/test_target_radar_scenario.py::test_target_radar_example_supports_2025_backends",
         "tests/test_fom_target_radar_split_package.py::test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter",
         "tests/test_fom_target_radar_split_package.py::test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_surface",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_target_radar_shared_scenario",
         "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
         "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario",
         "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario",
