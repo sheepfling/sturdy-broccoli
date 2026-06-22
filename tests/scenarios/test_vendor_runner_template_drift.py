@@ -68,6 +68,8 @@ def test_vendor_runtime_smoke_workflow_fans_out_explicit_probe_profiles() -> Non
         {"name": "pitch-save-restore-probe", "command": "./tools/pitch save-restore-probe", "ci_profile": "pitch"},
         {"name": "pitch-ddm-probe", "command": "./tools/pitch ddm-probe", "ci_profile": "pitch"},
         {"name": "pitch-negotiated-probe", "command": "./tools/pitch negotiated-probe", "ci_profile": "pitch"},
+        {"name": "pitch-time-window-probe", "command": "./tools/pitch time-window-probe", "ci_profile": "pitch"},
+        {"name": "pitch-time-window-restore-state-probe", "command": "./tools/pitch time-window-restore-state-probe", "ci_profile": "pitch"},
         {"name": "pitch-lost-federate-probe", "command": "./tools/pitch lost-federate-probe", "ci_profile": "pitch"},
     ]
     steps = job["steps"]
@@ -95,6 +97,8 @@ def test_ci_workflow_has_repeated_probe_stability_job() -> None:
         {"name": "pitch-save-restore-probe", "command": "./tools/pitch save-restore-review 5"},
         {"name": "pitch-ddm-probe", "command": "./tools/pitch ddm-review 5"},
         {"name": "pitch-negotiated-probe", "command": "./tools/pitch negotiated-review 5"},
+        {"name": "pitch-time-window-probe", "command": "./tools/pitch time-window-review 5"},
+        {"name": "pitch-time-window-restore-state-probe", "command": "./tools/pitch time-window-restore-state-review 5"},
         {"name": "pitch-lost-federate-probe", "command": "./tools/pitch lost-federate-review 5"},
     ]
     steps = job["steps"]

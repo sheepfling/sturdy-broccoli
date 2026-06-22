@@ -28,6 +28,12 @@ jobs:
           - name: pitch-negotiated-probe
             command: ./tools/pitch negotiated-probe
             ci_profile: pitch
+          - name: pitch-time-window-probe
+            command: ./tools/pitch time-window-probe
+            ci_profile: pitch
+          - name: pitch-time-window-restore-state-probe
+            command: ./tools/pitch time-window-restore-state-probe
+            ci_profile: pitch
           - name: pitch-lost-federate-probe
             command: ./tools/pitch lost-federate-probe
             ci_profile: pitch

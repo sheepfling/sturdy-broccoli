@@ -1,5 +1,5 @@
 {
-  "artifact_count": 34,
+  "artifact_count": 36,
   "artifacts": [
     {
       "artifact_kind": "script",
@@ -162,6 +162,28 @@
       "note": "Optional repeated-run stability summary for the Pitch negotiated-ownership probe.",
       "path": "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
       "profile": "pitch-negotiated-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": true,
+      "note": "Optional repeated-run stability summary for the Pitch two-federate time-window future-exclusion probe.",
+      "path": "analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-time-window-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": true,
+      "note": "Optional repeated-run stability summary for the Pitch two-federate time-window restore-state probe.",
+      "path": "analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-time-window-restore-state-probe",
       "required": false,
       "role": "probe stability summary",
       "vendor_family": "pitch"
@@ -376,7 +398,7 @@
       "vendor_family": "pitch"
     }
   ],
-  "existing_count": 25,
+  "existing_count": 27,
   "gap_profiles": {
     "certi-ddm": null,
     "certi-save-restore": null,
@@ -481,7 +503,31 @@
     "pitch-ddm-probe": null,
     "pitch-lost-federate-probe": null,
     "pitch-negotiated-probe": null,
-    "pitch-save-restore-probe": null
+    "pitch-save-restore-probe": null,
+    "pitch-time-window-probe": {
+      "attempt_count": 5,
+      "evidence_tier": "probe",
+      "failure_count": 0,
+      "path": "analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-time-window-probe",
+      "promotion_note": "repeated-run stability evidence is present; promotion still requires clause-level parity review",
+      "promotion_readiness": "candidate",
+      "repeat_count": 5,
+      "stable": true,
+      "success_count": 5
+    },
+    "pitch-time-window-restore-state-probe": {
+      "attempt_count": 5,
+      "evidence_tier": "probe",
+      "failure_count": 0,
+      "path": "analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-time-window-restore-state-probe",
+      "promotion_note": "repeated-run stability evidence is present; promotion still requires clause-level parity review",
+      "promotion_readiness": "candidate",
+      "repeat_count": 5,
+      "stable": true,
+      "success_count": 5
+    }
   },
   "profile_commands": [
     {
@@ -587,6 +633,20 @@
       "evidence_tier": "probe",
       "profile": "pitch-negotiated-probe",
       "purpose": "Run the current narrow executable Pitch negotiated-ownership runtime probe after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch time-window-probe",
+      "evidence_tier": "probe",
+      "profile": "pitch-time-window-probe",
+      "purpose": "Run the current narrow executable Pitch two-federate time-window future-exclusion probe after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch time-window-restore-state-probe",
+      "evidence_tier": "probe",
+      "profile": "pitch-time-window-restore-state-probe",
+      "purpose": "Run the current narrow executable Pitch two-federate time-window restore-state probe after preflight.",
       "vendor_family": "pitch"
     },
     {
@@ -736,6 +796,28 @@
       "existing_count": 0,
       "missing_required_count": 0,
       "profile": "pitch-negotiated-probe",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 1,
+      "missing_required_count": 0,
+      "profile": "pitch-time-window-probe",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 1,
+      "missing_required_count": 0,
+      "profile": "pitch-time-window-restore-state-probe",
       "vendor_family": "pitch"
     },
     {

@@ -118,6 +118,10 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     stability_root = Path("analysis/vendor_probe_stability")
     certi_ddm_stability_path = stability_root / "certi-ddm-probe" / "vendor_probe_stability_summary.json"
     pitch_stability_path = stability_root / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
+    pitch_time_window_stability_path = stability_root / "pitch-time-window-probe" / "vendor_probe_stability_summary.json"
+    pitch_time_window_restore_stability_path = (
+        stability_root / "pitch-time-window-restore-state-probe" / "vendor_probe_stability_summary.json"
+    )
     pitch_lost_federate_stability_path = (
         stability_root / "pitch-lost-federate-probe" / "vendor_probe_stability_summary.json"
     )
@@ -143,6 +147,16 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         certi_ddm_stability_path.read_text(encoding="utf-8") if certi_ddm_stability_path.exists() else None
     )
     pitch_stability_original = pitch_stability_path.read_text(encoding="utf-8") if pitch_stability_path.exists() else None
+    pitch_time_window_stability_original = (
+        pitch_time_window_stability_path.read_text(encoding="utf-8")
+        if pitch_time_window_stability_path.exists()
+        else None
+    )
+    pitch_time_window_restore_stability_original = (
+        pitch_time_window_restore_stability_path.read_text(encoding="utf-8")
+        if pitch_time_window_restore_stability_path.exists()
+        else None
+    )
     pitch_lost_federate_stability_original = (
         pitch_lost_federate_stability_path.read_text(encoding="utf-8")
         if pitch_lost_federate_stability_path.exists()
@@ -208,6 +222,30 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         promotion_note="repeated-run stability evidence is present; promotion still requires clause-level parity review",
     )
     _write_probe_stability(
+        pitch_time_window_stability_path,
+        profile="pitch-time-window-probe",
+        evidence_tier="probe",
+        repeat_count=5,
+        attempt_count=5,
+        success_count=5,
+        failure_count=0,
+        stable=True,
+        promotion_readiness="candidate",
+        promotion_note="repeated-run stability evidence is present; promotion still requires clause-level parity review",
+    )
+    _write_probe_stability(
+        pitch_time_window_restore_stability_path,
+        profile="pitch-time-window-restore-state-probe",
+        evidence_tier="probe",
+        repeat_count=5,
+        attempt_count=5,
+        success_count=5,
+        failure_count=0,
+        stable=True,
+        promotion_readiness="candidate",
+        promotion_note="repeated-run stability evidence is present; promotion still requires clause-level parity review",
+    )
+    _write_probe_stability(
         pitch_lost_federate_stability_path,
         profile="pitch-lost-federate-probe",
         evidence_tier="probe",
@@ -223,7 +261,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     promotion_review_path.write_text(
         json.dumps(
             {
-                "candidate_count": 2,
+                "candidate_count": 4,
                 "profiles": [
                     {
                         "profile": "certi-ddm-probe",
@@ -235,6 +273,20 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
                     {
                         "profile": "pitch-negotiated-probe",
                         "next_action": "resolve the documented bridge-divergent state before promotion; keep the lane at probe status",
+                        "promotion_readiness": "candidate",
+                        "review_decision": "candidate-review",
+                        "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+                    },
+                    {
+                        "profile": "pitch-time-window-probe",
+                        "next_action": "compare pitch-time-window-probe against packages/hla-vendor-pitch/docs/pitch_decision_tree.md and promote only if clause-level parity is now defensible",
+                        "promotion_readiness": "candidate",
+                        "review_decision": "candidate-review",
+                        "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+                    },
+                    {
+                        "profile": "pitch-time-window-restore-state-probe",
+                        "next_action": "compare pitch-time-window-restore-state-probe against packages/hla-vendor-pitch/docs/pitch_decision_tree.md and promote only if clause-level parity is now defensible",
                         "promotion_readiness": "candidate",
                         "review_decision": "candidate-review",
                         "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
@@ -310,7 +362,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert summary["probe_stability"]["pitch-lost-federate-probe"]["failure_count"] == 1
         assert summary["probe_stability"]["certi-ddm-probe"]["promotion_readiness"] == "candidate"
         assert summary["probe_stability"]["certi-ddm-probe"]["attempt_count"] == 5
-        assert summary["probe_promotion_review"]["candidate_count"] == 2
+        assert summary["probe_promotion_review"]["candidate_count"] == 4
 
         with paths.artifact_manifest_csv.open() as handle:
             rows = list(csv.DictReader(handle))
@@ -329,6 +381,12 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert any(row["evidence_tier"] == "known-gap" for row in rows)
         assert any(row["path"] == "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json" for row in rows)
         assert any(row["path"] == "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(
+            row["path"]
+            == "analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json"
+            for row in rows
+        )
         assert any(row["path"] == "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json" for row in rows)
         assert any(row["path"] == "analysis/vendor_gap_profiles/certi-save-restore.json" for row in rows)
         assert any(row["path"] == "analysis/vendor_gap_profiles/pitch-lost-federate.json" for row in rows)
@@ -346,6 +404,8 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert "./tools/pitch negotiated-probe` [probe]" in report_text
         assert "./tools/pitch negotiated` [known-gap]" in report_text
         assert "./tools/pitch negotiated-review 5" in report_text
+        assert "./tools/pitch time-window-probe` [probe]" in report_text
+        assert "./tools/pitch time-window-restore-state-probe` [probe]" in report_text
         assert "./tools/pitch lost-federate-probe` [probe]" in report_text
         assert "./tools/pitch lost-federate` [known-gap]" in report_text
         assert "./tools/pitch lost-federate-review 5" in report_text
@@ -361,7 +421,10 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert "promotion `candidate`" in report_text
         assert "decision `candidate-review`" in report_text
         assert "next: compare certi-ddm-probe against docs/backend_conformance_matrix.md and promote only if clause-level parity is now defensible" in report_text
+        assert "next: compare pitch-time-window-probe against packages/hla-vendor-pitch/docs/pitch_decision_tree.md and promote only if clause-level parity is now defensible" in report_text
+        assert "next: compare pitch-time-window-restore-state-probe against packages/hla-vendor-pitch/docs/pitch_decision_tree.md and promote only if clause-level parity is now defensible" in report_text
         assert "next: resolve the documented bridge-divergent state before promotion; keep the lane at probe status" in report_text
+        assert "candidate count: `4`" in report_text
         assert "repo-green" in report_text
         assert "./tools/pitch ddm" in report_text
         assert "Required markers for `certi` in `repo-green`:" in report_text

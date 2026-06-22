@@ -23,6 +23,7 @@ PROFILE_OPERATOR_COMMANDS: dict[str, str] = {
     "pitch-negotiated": "./tools/pitch negotiated",
     "pitch-negotiated-probe": "./tools/pitch negotiated-probe",
     "pitch-time-window-probe": "./tools/pitch time-window-probe",
+    "pitch-time-window-restore-state-probe": "./tools/pitch time-window-restore-state-probe",
 }
 
 

@@ -180,6 +180,24 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
     },
     {
         "vendor_family": "pitch",
+        "profile": "pitch-time-window-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the Pitch two-federate time-window future-exclusion probe.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-time-window-restore-state-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the Pitch two-federate time-window restore-state probe.",
+    },
+    {
+        "vendor_family": "pitch",
         "profile": "pitch-lost-federate-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
@@ -441,6 +459,18 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
         "profile": "pitch-negotiated-probe",
         "command": "./tools/pitch negotiated-probe",
         "purpose": "Run the current narrow executable Pitch negotiated-ownership runtime probe after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-time-window-probe",
+        "command": "./tools/pitch time-window-probe",
+        "purpose": "Run the current narrow executable Pitch two-federate time-window future-exclusion probe after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-time-window-restore-state-probe",
+        "command": "./tools/pitch time-window-restore-state-probe",
+        "purpose": "Run the current narrow executable Pitch two-federate time-window restore-state probe after preflight.",
     },
     {
         "vendor_family": "pitch",
@@ -718,6 +748,12 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         ),
         "pitch-negotiated-probe": _load_probe_stability_summary(
             probe_stability_dir / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "pitch-time-window-probe": _load_probe_stability_summary(
+            probe_stability_dir / "pitch-time-window-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "pitch-time-window-restore-state-probe": _load_probe_stability_summary(
+            probe_stability_dir / "pitch-time-window-restore-state-probe" / "vendor_probe_stability_summary.json"
         ),
         "pitch-lost-federate-probe": _load_probe_stability_summary(
             probe_stability_dir / "pitch-lost-federate-probe" / "vendor_probe_stability_summary.json"

@@ -69,6 +69,13 @@ _PROFILE_SPECS: tuple[dict[str, str], ...] = (
         "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
         "documented_state": "two-federate-safe lookahead-window probe for vendor credence, not a replacement for the broader Python route proof ladder",
     },
+    {
+        "profile": "pitch-time-window-restore-state-probe",
+        "vendor": "pitch",
+        "area": "time_window_restore_state",
+        "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+        "documented_state": "two-federate-safe restore-state proof for vendor credence, not a replacement for the broader Python save/restore and time-window ladder",
+    },
 )
 
 

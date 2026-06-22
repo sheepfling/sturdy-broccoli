@@ -4425,6 +4425,7 @@ def _build_time_window_vendor_parity_audit() -> dict[str, Any]:
                 "tests/vendors/test_pitch_real_backend_matrix.py::"
                 "test_pitch_time_window_restore_state_matrix"
             ),
+            "recommended_pitch_operator_route": "./tools/pitch time-window-restore-state-probe",
             "current_pitch_runtime_boundary": "seat-availability",
             "current_pitch_runtime_boundary_evidence": (
                 "Pitch managed runtime currently reports no available pRTI federate seats for this two-federate "

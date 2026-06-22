@@ -31,6 +31,7 @@ Profiles:
 - pitch-negotiated
 - pitch-negotiated-probe
 - pitch-time-window-probe
+- pitch-time-window-restore-state-probe
 - pitch-lost-federate
 - pitch-lost-federate-probe
 - matrix
@@ -582,6 +583,23 @@ case "$PROFILE" in
     export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
     run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py -k 'pitch_time_window_future_exclusion_matrix'
     ;;
+  pitch-time-window-restore-state-probe)
+    hla2010_shell_log "vendor runtime profile: pitch time-window restore-state probe"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
+    test -n "${HLA2010_PITCH_HOME:-}" || { echo "Pitch runtime bundle is required"; exit 1; }
+    export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
+    export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
+    export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
+    run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py -k 'pitch_time_window_restore_state_matrix'
+    ;;
   pitch-lost-federate)
     hla2010_shell_log "vendor runtime profile: pitch lost federate"
     if guard_vendor_preflight pitch; then
@@ -662,7 +680,7 @@ case "$PROFILE" in
     fi
     ;;
   *)
-    echo "usage: $0 [certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe|pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-time-window-probe|pitch-lost-federate|pitch-lost-federate-probe|matrix|all]" >&2
+    echo "usage: $0 [certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe|pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-time-window-probe|pitch-time-window-restore-state-probe|pitch-lost-federate|pitch-lost-federate-probe|matrix|all]" >&2
     exit 2
     ;;
 esac

@@ -349,6 +349,10 @@ jobs:
             command: ./tools/pitch ddm-review 5
           - name: pitch-negotiated-probe
             command: ./tools/pitch negotiated-review 5
+          - name: pitch-time-window-probe
+            command: ./tools/pitch time-window-review 5
+          - name: pitch-time-window-restore-state-probe
+            command: ./tools/pitch time-window-restore-state-review 5
           - name: pitch-lost-federate-probe
             command: ./tools/pitch lost-federate-review 5
     env:

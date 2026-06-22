@@ -42,12 +42,16 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
     root = Path("analysis/vendor_probe_stability")
     certi_save_restore = root / "certi-save-restore-probe" / "vendor_probe_stability_summary.json"
     pitch_neg = root / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
+    pitch_time_window = root / "pitch-time-window-probe" / "vendor_probe_stability_summary.json"
+    pitch_time_window_restore = root / "pitch-time-window-restore-state-probe" / "vendor_probe_stability_summary.json"
     pitch_save_restore = root / "pitch-save-restore-probe" / "vendor_probe_stability_summary.json"
     pitch_ddm = root / "pitch-ddm-probe" / "vendor_probe_stability_summary.json"
     certi_ddm = root / "certi-ddm-probe" / "vendor_probe_stability_summary.json"
     originals = {
         certi_save_restore: certi_save_restore.read_text(encoding="utf-8") if certi_save_restore.exists() else None,
         pitch_neg: pitch_neg.read_text(encoding="utf-8") if pitch_neg.exists() else None,
+        pitch_time_window: pitch_time_window.read_text(encoding="utf-8") if pitch_time_window.exists() else None,
+        pitch_time_window_restore: pitch_time_window_restore.read_text(encoding="utf-8") if pitch_time_window_restore.exists() else None,
         pitch_save_restore: pitch_save_restore.read_text(encoding="utf-8") if pitch_save_restore.exists() else None,
         pitch_ddm: pitch_ddm.read_text(encoding="utf-8") if pitch_ddm.exists() else None,
         certi_ddm: certi_ddm.read_text(encoding="utf-8") if certi_ddm.exists() else None,
@@ -77,6 +81,22 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
         success_count=5,
     )
     _write_stability(
+        pitch_time_window,
+        profile="pitch-time-window-probe",
+        promotion_readiness="candidate",
+        stable=True,
+        attempt_count=5,
+        success_count=5,
+    )
+    _write_stability(
+        pitch_time_window_restore,
+        profile="pitch-time-window-restore-state-probe",
+        promotion_readiness="candidate",
+        stable=True,
+        attempt_count=5,
+        success_count=5,
+    )
+    _write_stability(
         pitch_save_restore,
         profile="pitch-save-restore-probe",
         promotion_readiness="needs-more-runs",
@@ -96,7 +116,7 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
         paths = write_vendor_probe_promotion_review(tmp_path)
         payload = json.loads(paths.summary_json.read_text(encoding="utf-8"))
         assert payload["suite_name"] == "vendor-probe-promotion-review"
-        assert payload["candidate_count"] == 2
+        assert payload["candidate_count"] == 4
         rows = {row["profile"]: row for row in payload["profiles"]}
         assert rows["certi-save-restore-probe"]["review_decision"] == "candidate-review"
         assert "docs/backend_conformance_matrix.md" in rows["certi-save-restore-probe"]["next_action"]
@@ -108,12 +128,17 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
         assert rows["pitch-save-restore-probe"]["review_decision"] == "needs-more-runs"
         assert rows["pitch-save-restore-probe"]["next_action"] == "./tools/pitch save-restore-review 5"
         assert rows["pitch-ddm-probe"]["review_decision"] == "needs-more-runs"
+        assert rows["pitch-time-window-probe"]["review_decision"] == "candidate-review"
+        assert "pitch_decision_tree.md" in rows["pitch-time-window-probe"]["next_action"]
+        assert rows["pitch-time-window-restore-state-probe"]["review_decision"] == "candidate-review"
+        assert "pitch_decision_tree.md" in rows["pitch-time-window-restore-state-probe"]["next_action"]
         report = paths.report_markdown.read_text(encoding="utf-8")
         assert "Vendor Probe Promotion Review" in report
         assert "candidate-review" in report
         assert "blocked-by-documented-gap" in report
         assert "needs-more-runs" in report
         assert "next: compare certi-ddm-probe against docs/backend_conformance_matrix.md" in report
+        assert "next: compare pitch-time-window-probe against packages/hla-vendor-pitch/docs/pitch_decision_tree.md" in report
         assert "next: resolve the documented bridge-divergent state before promotion" in report
     finally:
         for path, original in originals.items():

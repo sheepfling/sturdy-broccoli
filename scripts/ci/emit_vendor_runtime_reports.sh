@@ -33,7 +33,7 @@ vendors_for_profile() {
     certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe)
       printf '%s\n' certi
       ;;
-    pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe)
+    pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-time-window-probe|pitch-time-window-restore-state-probe)
       printf '%s\n' pitch
       ;;
     matrix|all|"")

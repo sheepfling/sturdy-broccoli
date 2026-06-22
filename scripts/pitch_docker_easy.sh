@@ -364,6 +364,8 @@ Simple Pitch Docker workflow:
   $script_name negotiated-review [repeat-count] # run repeated review for the real Pitch negotiated-ownership probe
   $script_name time-window-probe # run the Pitch-safe two-federate time-window future-exclusion probe
   $script_name time-window-review [repeat-count] # run repeated review for the Pitch-safe time-window future-exclusion probe
+  $script_name time-window-restore-state-probe # run the Pitch-safe two-federate time-window restore-state probe
+  $script_name time-window-restore-state-review [repeat-count] # run repeated review for the Pitch-safe time-window restore-state probe
   $script_name lost-federate # report the current real Pitch lost-federate gap profile
   $script_name lost-federate-probe # run the current narrow real Pitch lost-federate probe
   $script_name lost-federate-review [repeat-count] # run repeated review for the real Pitch lost-federate probe
@@ -452,6 +454,12 @@ case "${1:-start}" in
     ;;
   time-window-review)
     bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-time-window-probe "${2:-5}"
+    ;;
+  time-window-restore-state-probe)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-time-window-restore-state-probe
+    ;;
+  time-window-restore-state-review)
+    bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-time-window-restore-state-probe "${2:-5}"
     ;;
   lost-federate)
     "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-lost-federate

@@ -1,9 +1,9 @@
 # Vendor Parity Artifacts
 
 - suite: `vendor-parity-artifacts`
-- artifacts indexed: `34`
+- artifacts indexed: `36`
 - required artifacts: `19`
-- existing artifacts: `25`
+- existing artifacts: `27`
 - missing required artifacts: `0`
 
 ## Profiles
@@ -16,6 +16,8 @@
 | pitch | pitch-save-restore-probe | probe | 1 | 0 | 0 | stability-summary |
 | pitch | pitch-ddm-probe | probe | 1 | 0 | 0 | stability-summary |
 | pitch | pitch-negotiated-probe | probe | 1 | 0 | 0 | stability-summary |
+| pitch | pitch-time-window-probe | probe | 1 | 1 | 0 | stability-summary |
+| pitch | pitch-time-window-restore-state-probe | probe | 1 | 1 | 0 | stability-summary |
 | pitch | pitch-lost-federate-probe | probe | 1 | 0 | 0 | stability-summary |
 | certi | certi-save-restore | known-gap | 1 | 0 | 0 | gap-profile |
 | certi | certi-ddm | known-gap | 1 | 0 | 0 | gap-profile |
@@ -58,6 +60,10 @@
   Emit the current explicit Pitch negotiated-ownership known-gap status after preflight.
 - `./tools/pitch negotiated-probe` [probe]
   Run the current narrow executable Pitch negotiated-ownership runtime probe after preflight.
+- `./tools/pitch time-window-probe` [probe]
+  Run the current narrow executable Pitch two-federate time-window future-exclusion probe after preflight.
+- `./tools/pitch time-window-restore-state-probe` [probe]
+  Run the current narrow executable Pitch two-federate time-window restore-state probe after preflight.
 - `./tools/pitch lost-federate` [known-gap]
   Emit the current explicit Pitch lost-federate known-gap status after preflight.
 - `./tools/pitch lost-federate-probe` [probe]
@@ -155,6 +161,8 @@ Required ports for `pitch` in `pitch vendor-green`:
 - `pitch-save-restore-probe`: no stability artifact is currently present
 - `pitch-ddm-probe`: no stability artifact is currently present
 - `pitch-negotiated-probe`: no stability artifact is currently present
+- `pitch-time-window-probe`: stable `True`, success `5` / attempts `5`, promotion `candidate`, file `analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json`
+- `pitch-time-window-restore-state-probe`: stable `True`, success `5` / attempts `5`, promotion `candidate`, file `analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json`
 - `pitch-lost-federate-probe`: no stability artifact is currently present
 
 ## Promotion Review

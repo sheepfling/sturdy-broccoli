@@ -19,7 +19,7 @@ ci_state_profile() {
     certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe)
       printf '%s\n' certi
       ;;
-    pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-time-window-probe|pitch-lost-federate|pitch-lost-federate-probe)
+    pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-time-window-probe|pitch-time-window-restore-state-probe|pitch-lost-federate|pitch-lost-federate-probe)
       printf '%s\n' pitch
       ;;
     matrix)
@@ -80,6 +80,7 @@ render_operator_command() {
     pitch-negotiated) echo "./tools/pitch negotiated" ;;
     pitch-negotiated-probe) echo "./tools/pitch negotiated-probe" ;;
     pitch-time-window-probe) echo "./tools/pitch time-window-probe" ;;
+    pitch-time-window-restore-state-probe) echo "./tools/pitch time-window-restore-state-probe" ;;
     pitch-lost-federate) echo "./tools/pitch lost-federate" ;;
     pitch-lost-federate-probe) echo "./tools/pitch lost-federate-probe" ;;
     *) echo "$VENDOR_GREEN_CMD $1" ;;

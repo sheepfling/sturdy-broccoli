@@ -137,6 +137,8 @@ run_probe_review_mode() {
     pitch-save-restore-probe \
     pitch-ddm-probe \
     pitch-negotiated-probe \
+    pitch-time-window-probe \
+    pitch-time-window-restore-state-probe \
     pitch-lost-federate-probe
   do
     run_lane "probe_review_${profile}" \
@@ -157,6 +159,8 @@ run_vendor_smoke_mode() {
     "pitch-save-restore-probe pitch $ROOT_DIR/tools/pitch save-restore-probe" \
     "pitch-ddm-probe pitch $ROOT_DIR/tools/pitch ddm-probe" \
     "pitch-negotiated-probe pitch $ROOT_DIR/tools/pitch negotiated-probe" \
+    "pitch-time-window-probe pitch $ROOT_DIR/tools/pitch time-window-probe" \
+    "pitch-time-window-restore-state-probe pitch $ROOT_DIR/tools/pitch time-window-restore-state-probe" \
     "pitch-lost-federate-probe pitch $ROOT_DIR/tools/pitch lost-federate-probe"
   do
     read -r name profile command_args <<<"$entry"

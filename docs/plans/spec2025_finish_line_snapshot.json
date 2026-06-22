@@ -31529,6 +31529,7 @@
         "pitch_vendor_test": "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_restore_state_matrix",
         "purpose": "Prove that restore reopens or recloses the radar window at the saved point without leaking dirty future state across the checkpoint boundary.",
         "python_route_parity_test": "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "recommended_pitch_operator_route": "./tools/pitch time-window-restore-state-probe",
         "roles": [
           "TruthFederate",
           "RadarFederate"
