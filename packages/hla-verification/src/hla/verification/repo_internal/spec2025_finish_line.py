@@ -3619,6 +3619,90 @@ def _build_hosted_fedpro_bounded_proof_audit(
     }
 
 
+def _build_standard_binding_runtime_capability_audit(
+    project_root: Path,
+    route_parity_matrix: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/standard_binding_runtime_capability_bounded_proof.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    standard_routes = {
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    }
+    standard_rows = [row for row in route_parity_matrix["rows"] if row["route"] in standard_routes]
+    standard_rows.sort(key=lambda row: (row["route"], row["scenario"]))
+    by_binding = {
+        "HLA2025-BND-001": [row for row in standard_rows if row["route"].startswith("java-")],
+        "HLA2025-BND-002": [row for row in standard_rows if row["route"].startswith("cpp-")],
+    }
+    route_counts = {
+        requirement_id: sorted({row["route"] for row in rows})
+        for requirement_id, rows in by_binding.items()
+    }
+    parity_counts = {
+        requirement_id: {
+            "parity-covered": sum(1 for row in rows if row["status"] == "parity-covered"),
+            "non-covered": sum(1 for row in rows if row["status"] != "parity-covered"),
+        }
+        for requirement_id, rows in by_binding.items()
+    }
+    doc_checks = [
+        "`java-standard-2025-jpype`" in doc_text,
+        "`java-standard-2025-py4j`" in doc_text,
+        "`cpp-standard-2025-pybind`" in doc_text,
+        "`cpp-standard-2025-grpc`" in doc_text,
+        "`hla-backend-python2025`" in doc_text,
+        "`tests/backends/test_standard_shim_artifacts.py`" in doc_text,
+        "artifact-gated/runtime-capability" in doc_text,
+        "does not claim exhaustive cross-binding behavior equivalence" in doc_text,
+    ]
+    identity_ready = all(
+        row["runtime_provider"] == "python2025"
+        and row["implementation_lane"] == "hla-backend-python2025"
+        and row["counts_as_python_2025_rti"] is False
+        and row["wrapper_only"] is False
+        for row in standard_rows
+    )
+    return {
+        "audit_status": "standard-binding-runtime-capability-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "row_count": len(standard_rows),
+        "identity_ready": identity_ready,
+        "doc_narrative_ready": all(doc_checks),
+        "by_binding_requirement": {
+            requirement_id: {
+                "routes": route_counts[requirement_id],
+                "parity_covered_row_count": parity_counts[requirement_id]["parity-covered"],
+                "non_covered_row_count": parity_counts[requirement_id]["non-covered"],
+            }
+            for requirement_id in ("HLA2025-BND-001", "HLA2025-BND-002")
+        },
+        "ready_for_standard_binding_runtime_capability_claim": (
+            doc_path.exists()
+            and len(standard_rows) == 32
+            and identity_ready
+            and all(doc_checks)
+            and parity_counts["HLA2025-BND-001"]["parity-covered"] == 16
+            and parity_counts["HLA2025-BND-001"]["non-covered"] == 0
+            and parity_counts["HLA2025-BND-002"]["parity-covered"] == 16
+            and parity_counts["HLA2025-BND-002"]["non-covered"] == 0
+        ),
+        "current_assessment": (
+            "The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. "
+            "They now have a requirement-facing bounded-proof note tied to their route families, parity-covered "
+            "scenario counts, and explicit main-runtime identity over hla-backend-python2025."
+        ),
+        "residual_boundary": (
+            "This audit strengthens the Java/C++ binding proof story, but it does not promote standard-route traces "
+            "into exhaustive cross-binding behavior equivalence or separate RTI implementation ownership."
+        ),
+    }
+
+
 def _build_promotion_split_audit(
     closeout_readiness: Mapping[str, Any],
     claim_audit: Mapping[str, Any],
@@ -7359,6 +7443,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         route_parity_matrix,
     )
+    standard_binding_runtime_capability_audit = _build_standard_binding_runtime_capability_audit(
+        project_root,
+        route_parity_matrix,
+    )
     duplicate_umbrella_mapping_audit = _build_duplicate_umbrella_mapping_audit(
         project_root,
         harmonization_rows,
@@ -7450,6 +7538,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "omt_xs_any_mapping_audit": omt_xs_any_mapping_audit,
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
         "hosted_fedpro_bounded_proof_audit": hosted_fedpro_bounded_proof_audit,
+        "standard_binding_runtime_capability_audit": standard_binding_runtime_capability_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
         "supported_boundary_statement": supported_boundary_statement,
@@ -7517,6 +7606,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
     hosted_fedpro_bounded_proof_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
+    standard_binding_runtime_capability_audit = snapshot["standard_binding_runtime_capability_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
     supported_boundary = snapshot["supported_boundary_statement"]
@@ -7835,6 +7925,30 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             "",
         ]
     )
+    lines.extend(
+        [
+            "",
+            "## Standard Binding Runtime-Capability Audit",
+            "",
+            f"- Audit status: {standard_binding_runtime_capability_audit['audit_status']}",
+            f"- Doc path: {standard_binding_runtime_capability_audit['doc_path']}",
+            f"- Doc exists: {standard_binding_runtime_capability_audit['doc_exists']}",
+            f"- Row count: {standard_binding_runtime_capability_audit['row_count']}",
+            f"- Identity ready: {standard_binding_runtime_capability_audit['identity_ready']}",
+            f"- Doc narrative ready: {standard_binding_runtime_capability_audit['doc_narrative_ready']}",
+            f"- Ready for standard binding runtime-capability claim: {standard_binding_runtime_capability_audit['ready_for_standard_binding_runtime_capability_claim']}",
+            f"- Assessment: {standard_binding_runtime_capability_audit['current_assessment']}",
+            f"- Residual boundary: {standard_binding_runtime_capability_audit['residual_boundary']}",
+            "",
+            "Standard binding rows by requirement:",
+            "",
+        ]
+    )
+    for requirement_id, row in standard_binding_runtime_capability_audit["by_binding_requirement"].items():
+        lines.append(
+            f"- {requirement_id}: routes={', '.join(row['routes'])}; "
+            f"parity-covered={row['parity_covered_row_count']}; non-covered={row['non_covered_row_count']}"
+        )
     lines.extend(
         [
             "",

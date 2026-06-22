@@ -34,6 +34,7 @@ Source anchors for modal terms:
 - `ddm_bounded_proof.md`: bounded requirement-facing proof note for region lifecycle, overlap routing, declaration gating, and passive/DDM cleanup families.
 - `support_services_bounded_proof.md`: bounded requirement-facing proof note for support-service traceability, handle/name lookup, callback-control, and switch/control inquiry families.
 - `time_management_bounded_proof.md`: bounded requirement-facing proof note for time-mode control, grants, GALT/LITS/lookahead observability, and Target/Radar window proofs.
+- `standard_binding_runtime_capability_bounded_proof.md`: bounded requirement-facing proof note for Java/C++ standard-route artifact-gated runtime-capability traces over the main `python2025` runtime.
 - `hosted_fedpro_bounded_proof.md`: bounded requirement-facing proof note for the hosted `python-2025-fedpro-grpc` transport/runtime slice over the main `python2025` RTI lane.
 - `binding_and_hosted_route_boundaries.md`: bounded requirement-facing note for Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime.
 - `callback_binding_deltas.md`: bounded requirement-facing note for callback/configuration/binding delta rows.
@@ -72,6 +73,8 @@ requirement-facing evidence map for:
   time-management bounded proof notes over `hla-backend-python2025`
 - the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime
   families without turning the hosted route into a separate RTI owner
+- the dedicated Java/C++ standard binding bounded proof that keeps those lanes as adaptation evidence over the
+  same runtime rather than alternate implementation owners
 - explicit bounded-extension, legacy-only, and wrapper-only shim boundaries so
   the main 2025 Python RTI claim stays narrow enough to defend
 

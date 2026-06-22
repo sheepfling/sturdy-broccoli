@@ -594,10 +594,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert pytest_rows["HLA2025-FI-007"]["pytest_anchor_count"] == 2
     assert any("test_each_proto2025_2025_scenario_fom_set_merges_with_standard_mim" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
     assert any("test_proto2025_2025_example_foms_drive_two_federate_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 5
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 4
+    assert any("test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
+    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 5
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
+    assert any("test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
     assert pytest_rows["HLA2025-MOD-001"]["pytest_anchor_count"] == 2
     assert any("test_2025_exception_delta_inventory_names_native_2025_exceptions_without_legacy_fdd_terms" in anchor for anchor in pytest_rows["HLA2025-MOD-001"]["pytest_anchors"])
     assert any("test_2025_provider_validates_callback_model_and_credentials_at_connect" in anchor for anchor in pytest_rows["HLA2025-MOD-001"]["pytest_anchors"])
@@ -1444,6 +1446,28 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert hosted_fedpro_audit["ready_for_hosted_fedpro_bounded_proof_claim"] is True
     assert "requirement-facing proof note tied to the eight tracked hosted scenario families" in hosted_fedpro_audit["current_assessment"]
     assert "does not promote the hosted FedPro lane into full remote-RTI semantics" in hosted_fedpro_audit["residual_boundary"]
+    standard_binding_audit = snapshot["standard_binding_runtime_capability_audit"]
+    assert standard_binding_audit["audit_status"] == "standard-binding-runtime-capability-captured"
+    assert standard_binding_audit["doc_path"] == "docs/requirements/ieee-1516-2025/standard_binding_runtime_capability_bounded_proof.md"
+    assert standard_binding_audit["doc_exists"] is True
+    assert standard_binding_audit["row_count"] == 32
+    assert standard_binding_audit["identity_ready"] is True
+    assert standard_binding_audit["doc_narrative_ready"] is True
+    assert standard_binding_audit["by_binding_requirement"] == {
+        "HLA2025-BND-001": {
+            "routes": ["java-standard-2025-jpype", "java-standard-2025-py4j"],
+            "parity_covered_row_count": 16,
+            "non_covered_row_count": 0,
+        },
+        "HLA2025-BND-002": {
+            "routes": ["cpp-standard-2025-grpc", "cpp-standard-2025-pybind"],
+            "parity_covered_row_count": 16,
+            "non_covered_row_count": 0,
+        },
+    }
+    assert standard_binding_audit["ready_for_standard_binding_runtime_capability_claim"] is True
+    assert "requirement-facing bounded-proof note tied to their route families" in standard_binding_audit["current_assessment"]
+    assert "does not promote standard-route traces into exhaustive cross-binding behavior equivalence" in standard_binding_audit["residual_boundary"]
     boundary_statement = snapshot["supported_boundary_statement"]
     assert boundary_statement["statement_status"] == "supported-boundary-statement"
     assert boundary_statement["ready"] is True

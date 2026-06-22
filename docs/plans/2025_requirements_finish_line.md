@@ -251,6 +251,23 @@ Binding boundary rows by role:
 Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management
 
 
+## Standard Binding Runtime-Capability Audit
+
+- Audit status: standard-binding-runtime-capability-captured
+- Doc path: docs/requirements/ieee-1516-2025/standard_binding_runtime_capability_bounded_proof.md
+- Doc exists: True
+- Row count: 32
+- Identity ready: True
+- Doc narrative ready: True
+- Ready for standard binding runtime-capability claim: True
+- Assessment: The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. They now have a requirement-facing bounded-proof note tied to their route families, parity-covered scenario counts, and explicit main-runtime identity over hla-backend-python2025.
+- Residual boundary: This audit strengthens the Java/C++ binding proof story, but it does not promote standard-route traces into exhaustive cross-binding behavior equivalence or separate RTI implementation ownership.
+
+Standard binding rows by requirement:
+
+- HLA2025-BND-001: routes=java-standard-2025-jpype, java-standard-2025-py4j; parity-covered=16; non-covered=0
+- HLA2025-BND-002: routes=cpp-standard-2025-grpc, cpp-standard-2025-pybind; parity-covered=16; non-covered=0
+
 Requirement-by-requirement area closure:
 
 - fi_service_catalog: covered=196

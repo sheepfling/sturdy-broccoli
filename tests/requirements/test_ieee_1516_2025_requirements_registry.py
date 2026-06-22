@@ -44,6 +44,7 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "omt.md",
         "ownership_management_bounded_proof.md",
         "support_services_bounded_proof.md",
+        "standard_binding_runtime_capability_bounded_proof.md",
         "time_management_bounded_proof.md",
         "traceability_matrix.md",
     }
@@ -62,6 +63,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         "ownership_management_bounded_proof.md",
         "ddm_bounded_proof.md",
         "support_services_bounded_proof.md",
+        "standard_binding_runtime_capability_bounded_proof.md",
         "time_management_bounded_proof.md",
         "hosted_fedpro_bounded_proof.md",
         "binding_and_hosted_route_boundaries.md",
@@ -154,6 +156,25 @@ def test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_l
     assert "`hla-backend-shim` remains a compatibility wrapper and is not a runtime owner" in normalized
     assert "Java bridge packages and `hla-backend-cpp-shim` remain wrapper/binding surfaces" in normalized
     assert "Hosted FedPro is a bounded transport/runtime slice over `hla-backend-python2025`;" in normalized
+
+
+@pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002")
+def test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit() -> None:
+    text = (REGISTRY_DIR / "standard_binding_runtime_capability_bounded_proof.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "This note records the repo's current requirement-facing claim for the standard Java and C++ 2025 binding routes." in normalized
+    assert "artifact-gated/runtime-capability traces over the main `hla-backend-python2025` runtime" in normalized
+    assert "Both Java and C++ standard-route families are parity-covered across the tracked eight scenario families" in normalized
+    assert "`java-standard-2025-jpype`" in text
+    assert "`java-standard-2025-py4j`" in text
+    assert "`cpp-standard-2025-pybind`" in text
+    assert "`cpp-standard-2025-grpc`" in text
+    assert "`tests/backends/test_standard_shim_artifacts.py`" in text
+    assert "`docs/evidence/shim_routes/java-standard-2025.json`" in text
+    assert "`docs/evidence/shim_routes/cpp-standard-2025.json`" in text
+    assert "`packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`" in text
+    assert "does not claim exhaustive cross-binding behavior equivalence" in normalized
 
 
 @pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")
