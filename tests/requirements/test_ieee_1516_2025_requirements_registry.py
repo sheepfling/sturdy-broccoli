@@ -95,6 +95,7 @@ def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_bo
     assert "`time_management`" in text
     assert "`support_services`" in text
     assert "`hla-backend-python2025`" in text
+    assert "shared Target/Radar example path" in normalized
     assert "does not claim that `python-2025-fedpro-grpc` is a second full RTI implementation lane" in normalized
 
 

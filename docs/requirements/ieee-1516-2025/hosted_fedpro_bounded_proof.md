@@ -27,7 +27,7 @@ full remote-RTI semantics claim.
 | `object_exchange` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted object exchange covers discovery, reflection, interaction delivery, callback backlog hygiene, and FOM-backed object/interaction replay. |
 | `ownership` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted ownership covers acquisition/divestiture/query callback flow, owner visibility, and bounded save/restore ownership rollback. |
 | `ddm` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted DDM covers region overlap filtering, directed interaction gating, passive routing, and cleanup of disconnected subscriptions. |
-| `time_management` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted time management covers regulation/constrained mode, grants, queued TSO delivery, GALT/LITS/lookahead queries, and the bounded Target/Radar window proofs. |
+| `time_management` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted time management covers regulation/constrained mode, grants, queued TSO delivery, GALT/LITS/lookahead queries, the shared Target/Radar example path, and the bounded Target/Radar window proofs. |
 | `save_restore` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted save/restore covers lifecycle callbacks, checkpoint replay, stale queued-state cleanup, and restore-path route hygiene. |
 | `mom` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted MOM covers service-report callbacks, MIM/FOM data reporting, routed manager adjust actions, and bounded federation/time-management MOM replay. |
 | `support_services` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted support services cover handle/name round trips, query helpers, callback-delivery control, switch inquiry, and reservation/release callback flows. |
@@ -46,7 +46,9 @@ full remote-RTI semantics claim.
   `parity-covered` on `python-2025-fedpro-grpc`.
 - `tests/transport/test_grpc_transport_2025.py` is the executable hosted-route
   anchor. It proves the transport-facing request/response/callback behavior and
-  the direct hosted `python2025` ambassador path.
+  the direct hosted `python2025` ambassador path, including the factory-hosted
+  shared Target/Radar example scenario and the package-owned Target/Radar time
+  window/save-restore proofs.
 - `tests/scenarios/test_python_route_parity.py` is the shared-scenario replay
   anchor. It proves the hosted route replays the same bounded scenario families
   as the direct `python2025` lane.

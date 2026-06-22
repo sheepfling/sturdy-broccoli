@@ -3714,6 +3714,7 @@ def _build_hosted_fedpro_bounded_proof_audit(
         "`tests/transport/test_grpc_transport_2025.py`" in doc_text,
         "`tests/scenarios/test_python_route_parity.py`" in doc_text,
         "bounded runtime slice" in doc_text,
+        "shared Target/Radar example" in doc_text,
         "not a separate 2025 RTI owner" in doc_text
         or ("second full RTI" in doc_text and "implementation lane" in doc_text),
         "transport-seam and cross-binding" in doc_text,
