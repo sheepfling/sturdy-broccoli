@@ -95,6 +95,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
 
     promotion_split = snapshot["promotion_split_audit"]
     claim_audit = snapshot["completion_claim_audit"]
+    blocker_partition = snapshot["full_claim_blocker_partition_audit"]
     requirement_audit = snapshot["requirement_by_requirement_audit"]
     implementation_lane = snapshot["implementation_lane_audit"]
     current_lane_statement = snapshot["current_lane_working_surface_statement"]
@@ -242,6 +243,22 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert objective_audit["surface_claim"] == "bounded-working-surface"
     assert objective_audit["ready_for_bounded_working_surface_claim"] is True
     assert objective_audit["ready_for_full_2025_completion_claim"] is False
+    assert blocker_partition["audit_status"] == "full-claim-blocker-partition-captured"
+    assert blocker_partition["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
+    assert blocker_partition["direct_runtime_incompleteness_blocker_count"] == 0
+    assert blocker_partition["boundary_only_blocker_count"] == 4
+    assert any(
+        row["blocker"] == "hosted_fedpro_full_conformance_gap"
+        and row["classification"] == "external-hosted-boundary"
+        and row["counts_against_main_python2025_runtime_completeness"] is False
+        for row in blocker_partition["blocker_rows"]
+    )
+    assert any(
+        row["blocker"] == "standard_java_cpp_binding_behavior_gap"
+        and row["classification"] == "external-binding-boundary"
+        for row in blocker_partition["blocker_rows"]
+    )
+    assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
     assert claim_audit["ready_for_supported-boundary_statement"] is True
     assert claim_audit["ready_for_full_2025_conformance_claim"] is False
     assert claim_audit["requirement_universe"] == {

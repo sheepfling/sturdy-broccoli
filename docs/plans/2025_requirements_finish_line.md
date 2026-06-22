@@ -1251,6 +1251,24 @@ Full-conformance blockers:
 - The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics or exhaustive cross-binding conformance pass.
 - Duplicate/umbrella rows remain normalization aids rather than direct one-row conformance assertions.
 
+## Full-Claim Blocker Partition Audit
+
+- Audit status: full-claim-blocker-partition-captured
+- Full-claim blocker count: 4
+- Partitioned blocker count: 4
+- Direct-runtime incompleteness blocker count: 0
+- Boundary-only blocker count: 4
+- All current full-claim blockers external to main python2025 runtime: True
+- Assessment: The remaining blockers in the full-2025 claim are now explicitly partitioned. On the current tree they all sit outside direct main-lane python2025 runtime completeness: they are OMT extension-scope, Java/C++ binding, hosted-route, or row-granularity boundaries rather than missing core executable behavior in hla-backend-python2025.
+- Residual boundary: This partition audit clarifies blocker ownership. It does not convert those external boundaries into a full 2025 conformance pass.
+
+Partitioned blockers:
+
+- omt_xs_any_extension_boundary: external-boundary, counts_against_main_python2025_runtime_completeness=False (bounded OMT extension-payload preservation rather than arbitrary third-party extension execution semantics)
+- standard_java_cpp_binding_behavior_gap: external-binding-boundary, counts_against_main_python2025_runtime_completeness=False (Java/C++ rows remain artifact/runtime-capability binding evidence rather than exhaustive behavior conformance)
+- hosted_fedpro_full_conformance_gap: external-hosted-boundary, counts_against_main_python2025_runtime_completeness=False (hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or cross-binding pass)
+- duplicate_umbrella_row_granularity_gap: row-granularity-boundary, counts_against_main_python2025_runtime_completeness=False (duplicate/umbrella rows remain normalization aids instead of direct one-row conformance assertions)
+
 ## Implementation Lane Audit
 
 - Audit status: current-lane-architecture-captured

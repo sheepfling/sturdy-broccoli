@@ -6767,6 +6767,74 @@ def _build_main_python2025_implementation_claim_audit(
     }
 
 
+def _build_full_claim_blocker_partition_audit(
+    completion_claim_audit: Mapping[str, Any],
+    closeout_readiness: Mapping[str, Any],
+    main_python2025_implementation_claim_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    blocker_rows = [
+        {
+            "blocker": "omt_xs_any_extension_boundary",
+            "classification": "external-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "bounded OMT extension-payload preservation rather than arbitrary third-party extension execution semantics"
+            ),
+        },
+        {
+            "blocker": "standard_java_cpp_binding_behavior_gap",
+            "classification": "external-binding-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "Java/C++ rows remain artifact/runtime-capability binding evidence rather than exhaustive behavior conformance"
+            ),
+        },
+        {
+            "blocker": "hosted_fedpro_full_conformance_gap",
+            "classification": "external-hosted-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or cross-binding pass"
+            ),
+        },
+        {
+            "blocker": "duplicate_umbrella_row_granularity_gap",
+            "classification": "row-granularity-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "duplicate/umbrella rows remain normalization aids instead of direct one-row conformance assertions"
+            ),
+        },
+    ]
+    direct_runtime_blocker_count = sum(
+        1 for row in blocker_rows if row["counts_against_main_python2025_runtime_completeness"]
+    )
+    return {
+        "audit_status": "full-claim-blocker-partition-captured",
+        "full_claim_blocker_count": len(completion_claim_audit["full_claim_blockers"]),
+        "partitioned_blocker_count": len(blocker_rows),
+        "direct_runtime_incompleteness_blocker_count": direct_runtime_blocker_count,
+        "boundary_only_blocker_count": len(blocker_rows) - direct_runtime_blocker_count,
+        "all_current_full_claim_blockers_are_external_to_main_python2025_runtime": (
+            len(completion_claim_audit["full_claim_blockers"]) == len(blocker_rows)
+            and direct_runtime_blocker_count == 0
+            and main_python2025_implementation_claim_audit["ready_for_main_python2025_implementation_claim"]
+            and closeout_readiness["ready_for_slice_closeout"]
+        ),
+        "blocker_rows": blocker_rows,
+        "current_assessment": (
+            "The remaining blockers in the full-2025 claim are now explicitly partitioned. On the current tree they "
+            "all sit outside direct main-lane python2025 runtime completeness: they are OMT extension-scope, "
+            "Java/C++ binding, hosted-route, or row-granularity boundaries rather than missing core executable "
+            "behavior in hla-backend-python2025."
+        ),
+        "residual_boundary": (
+            "This partition audit clarifies blocker ownership. It does not convert those external boundaries into a "
+            "full 2025 conformance pass."
+        ),
+    }
+
+
 def _route_dimension_summary(
     route_parity_rows: list[dict[str, Any]],
     scenarios: tuple[str, ...],
@@ -7734,6 +7802,11 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         completion_claim_audit,
         promotion_split_audit,
     )
+    full_claim_blocker_partition_audit = _build_full_claim_blocker_partition_audit(
+        completion_claim_audit,
+        closeout_readiness,
+        main_python2025_implementation_claim_audit,
+    )
 
     return {
         "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
@@ -7811,6 +7884,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "current_lane_coherence_audit": current_lane_coherence_audit,
         "current_lane_working_surface_statement": current_lane_working_surface_statement,
         "main_python2025_implementation_claim_audit": main_python2025_implementation_claim_audit,
+        "full_claim_blocker_partition_audit": full_claim_blocker_partition_audit,
         "implementation_lane_audit": implementation_lane_audit,
         "hosted_shared_scenario_coverage_audit": hosted_shared_scenario_coverage_audit,
         "time_window_vendor_parity_audit": time_window_vendor_parity_audit,
@@ -7878,6 +7952,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     current_lane_coherence_audit = snapshot["current_lane_coherence_audit"]
     current_lane_working_surface_statement = snapshot["current_lane_working_surface_statement"]
     main_python2025_implementation_claim_audit = snapshot["main_python2025_implementation_claim_audit"]
+    full_claim_blocker_partition_audit = snapshot["full_claim_blocker_partition_audit"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
     hosted_shared_scenario_coverage_audit = snapshot["hosted_shared_scenario_coverage_audit"]
     time_window_vendor_parity_audit = snapshot["time_window_vendor_parity_audit"]
@@ -8940,6 +9015,30 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     )
     for item in main_python2025_implementation_claim_audit["full_conformance_blockers"]:
         lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "## Full-Claim Blocker Partition Audit",
+            "",
+            f"- Audit status: {full_claim_blocker_partition_audit['audit_status']}",
+            f"- Full-claim blocker count: {full_claim_blocker_partition_audit['full_claim_blocker_count']}",
+            f"- Partitioned blocker count: {full_claim_blocker_partition_audit['partitioned_blocker_count']}",
+            f"- Direct-runtime incompleteness blocker count: {full_claim_blocker_partition_audit['direct_runtime_incompleteness_blocker_count']}",
+            f"- Boundary-only blocker count: {full_claim_blocker_partition_audit['boundary_only_blocker_count']}",
+            f"- All current full-claim blockers external to main python2025 runtime: {full_claim_blocker_partition_audit['all_current_full_claim_blockers_are_external_to_main_python2025_runtime']}",
+            f"- Assessment: {full_claim_blocker_partition_audit['current_assessment']}",
+            f"- Residual boundary: {full_claim_blocker_partition_audit['residual_boundary']}",
+            "",
+            "Partitioned blockers:",
+            "",
+        ]
+    )
+    for row in full_claim_blocker_partition_audit["blocker_rows"]:
+        lines.append(
+            f"- {row['blocker']}: {row['classification']}, "
+            f"counts_against_main_python2025_runtime_completeness={row['counts_against_main_python2025_runtime_completeness']} "
+            f"({row['evidence_basis']})"
+        )
     lines.extend(
         [
             "",

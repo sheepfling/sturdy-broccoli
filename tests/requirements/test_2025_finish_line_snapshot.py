@@ -2450,6 +2450,50 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("hosted FedPro route remains a bounded runtime slice" in item for item in main_impl_claim["full_conformance_blockers"])
     assert "separates the two judgments cleanly" in main_impl_claim["current_assessment"]
     assert "main python2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
+    blocker_partition = snapshot["full_claim_blocker_partition_audit"]
+    assert blocker_partition["audit_status"] == "full-claim-blocker-partition-captured"
+    assert blocker_partition["full_claim_blocker_count"] == 4
+    assert blocker_partition["partitioned_blocker_count"] == 4
+    assert blocker_partition["direct_runtime_incompleteness_blocker_count"] == 0
+    assert blocker_partition["boundary_only_blocker_count"] == 4
+    assert blocker_partition["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
+    assert blocker_partition["blocker_rows"] == [
+        {
+            "blocker": "omt_xs_any_extension_boundary",
+            "classification": "external-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "bounded OMT extension-payload preservation rather than arbitrary third-party extension execution semantics"
+            ),
+        },
+        {
+            "blocker": "standard_java_cpp_binding_behavior_gap",
+            "classification": "external-binding-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "Java/C++ rows remain artifact/runtime-capability binding evidence rather than exhaustive behavior conformance"
+            ),
+        },
+        {
+            "blocker": "hosted_fedpro_full_conformance_gap",
+            "classification": "external-hosted-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or cross-binding pass"
+            ),
+        },
+        {
+            "blocker": "duplicate_umbrella_row_granularity_gap",
+            "classification": "row-granularity-boundary",
+            "counts_against_main_python2025_runtime_completeness": False,
+            "evidence_basis": (
+                "duplicate/umbrella rows remain normalization aids instead of direct one-row conformance assertions"
+            ),
+        },
+    ]
+    assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
+    assert "missing core executable behavior in hla-backend-python2025" in blocker_partition["current_assessment"]
+    assert "does not convert those external boundaries into a full 2025 conformance pass" in blocker_partition["residual_boundary"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
     assert implementation_lane_audit["audit_status"] == "current-lane-architecture-captured"
     assert implementation_lane_audit["current_2025_lane"] == {
@@ -4113,6 +4157,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["objective_dimension_audit"]["ready_for_full_2025_completion_claim"] is False
     assert payload["main_python2025_implementation_claim_audit"]["ready_for_main_python2025_implementation_claim"] is True
     assert payload["main_python2025_implementation_claim_audit"]["ready_for_full_2025_conformance_claim"] is False
+    assert payload["full_claim_blocker_partition_audit"]["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
     assert payload["closeout_readiness"]["ready_for_slice_closeout"] is True
     assert payload["closeout_readiness"]["ready_for_full_completion_claim"] is False
 
@@ -4134,6 +4179,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "Completion Claim Audit" in markdown
     assert "Supported Boundary Statement" in markdown
     assert "Main Python2025 Implementation Claim Audit" in markdown
+    assert "Full-Claim Blocker Partition Audit" in markdown
     assert "Objective Audit" in markdown
     assert "Implemented Evidence Slices" in markdown
     matrix = paths["verification_matrix"].read_text(encoding="utf-8")
@@ -4249,6 +4295,10 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
     assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
     assert "main python2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
+    blocker_partition = payload["full_claim_blocker_partition_audit"]
+    assert blocker_partition["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
+    assert blocker_partition["direct_runtime_incompleteness_blocker_count"] == 0
+    assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
 
     assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["runtime_provider"] == "python2025"
     assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
