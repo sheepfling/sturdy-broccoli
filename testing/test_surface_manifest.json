@@ -225,7 +225,7 @@
     {
       "id": "matrix",
       "title": "Compliance and matrix lane",
-      "description": "Regenerate compliance artifacts, discover backend coverage, and rerun the Section 8 backend gate.",
+      "description": "Regenerate compliance artifacts, refresh the checked-in 2025 finish-line bundle, discover backend coverage, and rerun the Section 8 backend gate.",
       "owner_command": [
         "./tools/test-surface",
         "run",
@@ -235,6 +235,10 @@
         [
           "./tools/compliance",
           "generate"
+        ],
+        [
+          "python3",
+          "scripts/run_spec2025_finish_line.py"
         ],
         [
           "./tools/compliance",

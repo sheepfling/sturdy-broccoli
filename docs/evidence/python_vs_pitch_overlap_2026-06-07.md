@@ -45,7 +45,7 @@ python3 -m pytest -q tests/test_real_vendor_runtime_smoke.py -k pitch -rs
 
 The generated Python suite report at
 [two_federate_suite_report.md](../../analysis/python_two_federate_suite_2026-06-07/two_federate_suite_report.md)
-shows seven exercised scenario slices:
+for that 2026-06-07 run showed seven exercised scenario slices:
 
 - `exchange_time`
 - `synchronization`
@@ -54,6 +54,12 @@ shows seven exercised scenario slices:
 - `save_restore`
 - `ddm`
 - `target_radar`
+
+The current reusable two-federate suite has since expanded beyond that
+historical run and now also includes the Pitch-safe `time_window_future_exclusion`
+and `time_window_restore_state` slices. Those newer slices were not part of the
+2026-06-07 overlap rerun, so they are not counted as Pitch-overlap evidence in
+this dated comparison note.
 
 That means the Python RTI remains ahead on breadth of locally executable
 scenario coverage, especially for:

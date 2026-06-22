@@ -318,7 +318,13 @@ def _validate_object_classes(module: Any) -> list[ValidationIssue]:
                 allow_standard=allow_standard,
             )
         )
-        issues.extend(_validate_name_collection(spec.declared_attributes, table="attributeTable"))
+        issues.extend(
+            _validate_name_collection(
+                spec.declared_attributes,
+                table="attributeTable",
+                allow_standard_names=getattr(module, "is_mim", False),
+            )
+        )
         for attribute_name, value in getattr(spec, "attribute_value_required", {}).items():
             if str(value).lower() not in {"true", "false"}:
                 issues.append(
@@ -346,7 +352,13 @@ def _validate_interaction_classes(module: Any) -> list[ValidationIssue]:
                 allow_standard=allow_standard,
             )
         )
-        issues.extend(_validate_name_collection(spec.declared_parameters, table="parameterTable"))
+        issues.extend(
+            _validate_name_collection(
+                spec.declared_parameters,
+                table="parameterTable",
+                allow_standard_names=getattr(module, "is_mim", False),
+            )
+        )
     return issues
 
 
@@ -371,9 +383,21 @@ def _validate_datatypes(module: Any) -> list[ValidationIssue]:
                 )
             )
     for spec in getattr(module, "fixed_record_datatypes", {}).values():
-        issues.extend(_validate_name_collection((field.name for field in spec.fields), table="fixedRecordFields"))
+        issues.extend(
+            _validate_name_collection(
+                (field.name for field in spec.fields),
+                table="fixedRecordFields",
+                allow_standard_names=getattr(module, "is_mim", False),
+            )
+        )
     for spec in getattr(module, "variant_record_datatypes", {}).values():
-        issues.extend(_validate_name_collection((alt.name for alt in spec.alternatives if alt.name), table="variantRecordAlternatives"))
+        issues.extend(
+            _validate_name_collection(
+                (alt.name for alt in spec.alternatives if alt.name),
+                table="variantRecordAlternatives",
+                allow_standard_names=getattr(module, "is_mim", False),
+            )
+        )
     return issues
 
 

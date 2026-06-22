@@ -142,7 +142,7 @@ Primary anchors:
 ## Test Coverage
 
 - Main in-process Python RTI 2025 proof suite:
-  - [test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)
+  - [test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
 - 2025 route-parity and finish-line evidence:
   - [test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)
   - [test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)

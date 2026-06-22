@@ -35,13 +35,13 @@ The matching discovery commands are:
 
 | Lane | Primary command | Purpose |
 |---|---|---|
-| `fast` | `./tools/python verify-fast` | low-cost operator, docs, and Python matrix checks |
+| `fast` | `./tools/python verify-fast` | low-cost operator, docs, Python matrix, and 2025 requirements-evidence index checks |
 | `repo-green` | `./tools/python verify` | full supported local repo-green lane |
 | `python-main-2025` | `./tools/python verify-main-2025` | primary `python2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and OMT evidence |
 | `python-routes` | `./tools/python verify-routes` | hosted 2010 Python RTI parity, transport-route semantics, and hosted example checks |
-| `python-routes-2025` | `./tools/python verify-routes-2025` | bounded `python2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, route-parity artifacts, and hosted example checks |
+| `python-routes-2025` | `./tools/python verify-routes-2025` | bounded `python2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and hosted example checks |
 | `vendor` | `./tools/vendor-green matrix` | strict real-runtime lane after vendor preflight |
-| `matrix` | `./tools/test-surface run matrix` | regenerate compliance/matrix artifacts and rerun matrix gates |
+| `matrix` | `./tools/test-surface run matrix` | regenerate compliance artifacts, refresh the checked-in 2025 finish-line bundle, and rerun matrix gates |
 
 ## Python 2025 Main Surface
 
@@ -58,7 +58,8 @@ when you change:
 This lane is intentionally broader than hosted-route hygiene and intentionally
 separate from it. It is the shortest operator path that combines the direct
 `python2025` runtime slices, the package/runtime boundary guardrails that keep
-`shim` wrapper-only, and the dedicated OMT evidence surface.
+`shim` wrapper-only, the requirement-facing bounded proof-note registry, and
+the dedicated OMT evidence surface.
 
 It also now includes the explicit raw `python2025` proofs for:
 
@@ -83,8 +84,10 @@ normal route-level hygiene lane for the main `python2025` RTI plus the bounded
 `python-2025-fedpro-grpc` route. That lane covers the hosted 2025 transport
 suite, explicit in-process `python2025` time-window, save/restore, ownership,
 callback, support-service, and MOM proof selectors, the checked-in 2025
-route-parity ledger, regeneration of the generated 2025 route-parity
-artifacts, and the README-advertised `python2025` Target/Radar example path.
+route-parity ledger, the 2025 requirements-registry/bounded-proof-note
+surface, regeneration of the checked-in 2025 finish-line bundle (including the
+route-parity artifacts), and the README-advertised `python2025` Target/Radar
+example path.
 Pair it with:
 
 - [`python_rti_backend.md`](python_rti_backend.md)

@@ -126,12 +126,6 @@ This section is generated from `create_backend(...)` by
 - `python-in-memory`
 - `python-inmemory`
 
-### Python 2025
-
-- `python2025`
-- `python-2025`
-- `python-2025-backend`
-
 ### Generic Java Adapter Paths
 
 - `java-jpype`
@@ -195,6 +189,10 @@ These are only useful when you provide a Java RTI configuration explicitly.
 - `java-shim-py4j`
 - `shim-py4j`
 
+### Spec Shim
+
+- `shim`
+
 <!-- GENERATED_BACKEND_ALIASES_END -->
 
 ## Recommended Operational View
@@ -256,7 +254,7 @@ Current CERTI qualifier:
 
 ### Python RTI 2025
 
-- [test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)
+- [test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
 - [test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)
 - [test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py)
 - [test_python_route_parity.py](../tests/scenarios/test_python_route_parity.py)

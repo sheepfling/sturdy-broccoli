@@ -50,11 +50,12 @@ def build_two_federate_target_radar_artifact_summary(summary: Mapping[str, Any])
         "suite_description": (
             "A two-federate verification suite exercising exchange, timestamped delivery, "
             "synchronization, ownership transfer, negotiated ownership, save/restore, DDM "
-            "region filtering, and a realistic target/radar flow."
+            "region filtering, Pitch-safe time-window future-exclusion and restore-state "
+            "proofs, and a realistic target/radar flow."
         ),
         "overview_caption": (
             "Composite Python in-memory run covering exchange/time, sync, ownership, negotiated "
-            "ownership, and target/radar."
+            "ownership, time-window safety/restore, and target/radar."
         ),
         "range_chart_title": "Target/radar range growth",
     }

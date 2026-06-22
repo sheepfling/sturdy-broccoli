@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import sys
 import tomllib
 from pathlib import Path
 
 SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
-ROOT = Path.cwd()
-DOC = ROOT / "docs" / "rti_options_and_test_matrix.md"
 
 START = "<!-- GENERATED_BACKEND_ALIASES_START -->"
 END = "<!-- GENERATED_BACKEND_ALIASES_END -->"
@@ -97,13 +96,23 @@ def _render_generated_section() -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def main() -> None:
-    original = DOC.read_text(encoding="utf-8")
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Refresh the generated backend alias inventory in the RTI options matrix.")
+    parser.add_argument(
+        "--project-root",
+        default=str(SCRIPT_REPO_ROOT),
+        help="Repository root containing docs/rti_options_and_test_matrix.md",
+    )
+    args = parser.parse_args(argv)
+    root = Path(args.project_root).resolve()
+    doc = root / "docs" / "rti_options_and_test_matrix.md"
+
+    original = doc.read_text(encoding="utf-8")
     start = original.index(START) + len(START)
     end = original.index(END)
     generated = "\n\n" + _render_generated_section() + "\n"
     updated = original[:start] + generated + original[end:]
-    DOC.write_text(updated, encoding="utf-8")
+    doc.write_text(updated, encoding="utf-8")
 
 
 if __name__ == "__main__":

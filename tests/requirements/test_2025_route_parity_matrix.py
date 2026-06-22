@@ -80,7 +80,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "future-exclusion blocking until GALT/LITS reach the window end" in rows[("time_management", "python-2025-inprocess")].notes
     assert "oracle-rejection guards" in rows[("time_management", "python-2025-inprocess")].notes
     assert rows[("time_management", "python-2025-inprocess")].evidence_tests == (
-        "tests/test_rti1516_2025_spec_and_shim.py",
+        "tests/test_rti1516_2025_python2025_runtime.py",
         "tests/scenarios/test_python_route_parity.py",
     )
     assert rows[("time_management", "python-2025-fedpro-grpc")].evidence_tests == (
@@ -473,6 +473,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in md_text
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in md_text
+    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in md_text
     assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`" in md_text
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in md_text
     assert "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
@@ -500,6 +501,7 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in md_text
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in md_text
+    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in md_text
     assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`" in md_text
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in md_text
     assert "| federation_lifecycle | python-2025-inprocess | parity-covered | scenario-parity |" in md_text

@@ -65,6 +65,7 @@ def test_tools_python_help_describes_repo_green_operator_lane() -> None:
 
     assert result.returncode == 0
     assert "./tools/python verify" in result.stdout
+    assert "./tools/python verify-fast" in result.stdout
     assert "./tools/python verify-main-2025" in result.stdout
     assert "./tools/python verify-routes" in result.stdout
     assert "./tools/python verify-routes-2025" in result.stdout
@@ -429,6 +430,83 @@ def test_tools_python_verify_routes_2025_can_delegate(tmp_path: Path) -> None:
     assert (tmp_path / "artifacts" / "verify-routes-2025.json").exists()
 
 
+def test_tools_python_verify_fast_can_delegate(tmp_path: Path) -> None:
+    delegate = tmp_path / "verify_fast_delegate.py"
+    _write_delegate_script(
+        delegate,
+        payloads={"verify-fast.json": {"tool": "python-verify-fast", "result": "ok"}},
+        exit_code=0,
+    )
+    env = os.environ.copy()
+    env["HLA2010_PYTHON_VERIFY_FAST_DELEGATE"] = str(delegate)
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "artifacts")
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-fast"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert (tmp_path / "artifacts" / "verify-fast.json").exists()
+
+
+def test_tools_python_verify_fast_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
+    fake_python = tmp_path / "fake_python.py"
+    log_path = tmp_path / "calls_fast.jsonl"
+    fake_python.write_text(
+        """#!/usr/bin/env python3
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+log_path = Path(os.environ["HLA2010_TEST_LOG_PATH"])
+argv = sys.argv[1:]
+log_path.parent.mkdir(parents=True, exist_ok=True)
+with log_path.open("a", encoding="utf-8") as handle:
+    handle.write(json.dumps({"argv": argv, "pythonpath": os.environ.get("PYTHONPATH", "")}) + "\\n")
+raise SystemExit(0)
+""",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o755)
+    env = os.environ.copy()
+    env["HLA2010_PYTHON_VERIFY_ROUTES_PYTHON"] = str(fake_python)
+    env["HLA2010_TEST_LOG_PATH"] = str(log_path)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-fast"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+    assert len(calls) == 1
+    assert calls[0]["argv"] == [
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_operator_surface_policy.py",
+        "tests/scenarios/test_test_surface_wrapper.py",
+        "tests/scenarios/test_ci_green_wrappers.py",
+        "tests/requirements/test_2025_route_parity_matrix.py",
+        "tests/requirements/test_ieee_1516_2025_requirements_registry.py",
+    ]
+    pythonpath = calls[0]["pythonpath"]
+    assert str(ROOT / "packages/hla-rti1516-2025/src") in pythonpath
+    assert str(ROOT / "packages/hla-verification/src") in pythonpath
+
+
 def test_tools_python_verify_main_2025_can_delegate(tmp_path: Path) -> None:
     delegate = tmp_path / "verify_main_2025_delegate.py"
     _write_delegate_script(
@@ -543,24 +621,25 @@ raise SystemExit(0)
 
     assert result.returncode == 0, result.stdout or result.stderr
     calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
-    assert len(calls) == 17
+    assert len(calls) == 18
     expected_suffixes = [
         ["-m", "pytest", "-q", "tests/requirements/test_2025_python_rti_backend_audit.py"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter or primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface or primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter"],
+        ["-m", "pytest", "-q", "tests/requirements/test_ieee_1516_2025_requirements_registry.py"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter or primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface or primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter"],
         ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py", "-k", "test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_federation_listing_scenario_over_fedpro_route or test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_schema or test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema or test_2025_transport_server_runs_ddm_object_region_lifecycle_scenario_over_fedpro_route or test_2025_transport_server_runs_ddm_declaration_gating_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_object_scope_relevance_scenario_over_fedpro_route or test_2025_transport_server_routes_directed_interactions_only_to_subscribers_over_fedpro_schema or test_2025_transport_server_routes_directed_ddm_interactions_only_to_overlapping_subscribers_over_fedpro_schema"],
         ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py", "-k", "test_2025_transport_server_round_trips_support_services_over_fedpro_schema or test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_schema or test_2025_transport_server_runs_attribute_ownership_scenario_over_fedpro_route or test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema or test_2025_transport_server_routes_mom_adjust_controls_to_observable_switch_state_over_fedpro_schema or test_2025_transport_server_reports_failed_mom_service_actions_as_mom_exception_interactions"],
         ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py", "-k", "test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario or test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario or test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario or test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario or test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario or test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_pipeline_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_receive_order_poison_scenario_over_fedpro_route or test_2025_transport_server_runs_shared_pipeline_restore_scenario_over_fedpro_route"],
         ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py", "-k", "test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route or test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route or test_2025_transport_server_runs_save_restore_queued_callback_scenario_over_fedpro_route or test_2025_transport_server_runs_scheduled_save_restore_time_state_scenario_over_fedpro_route or test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema or test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema or test_2025_transport_server_runs_example_fom_save_restore_gauntlet_over_fedpro_schema or test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema or test_2025_transport_server_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso_over_fedpro_schema or test_2025_transport_server_restores_closed_window_output_resume_without_dirty_replay_over_fedpro_schema"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "time_window and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "save_restore and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "ownership and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "callback and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "support_service and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "mom and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "time_window and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "save_restore and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "ownership and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "callback and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "support_service and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "mom and python2025"],
         ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py"],
         ["-m", "pytest", "-q", "tests/requirements/test_2025_route_parity_matrix.py"],
         ["-m", "pytest", "-q", "tests/requirements/test_2025_finish_line_snapshot.py", "-k", "checked_in_finish_line_artifacts_preserve_python2025_route_identity"],
-        ["scripts/run_spec2025_route_parity_matrix.py"],
+        ["scripts/run_spec2025_finish_line.py"],
         ["examples/target_radar_simulation.py", "--backend", "python2025", "--steps", "5"],
     ]
     for call, expected_argv in zip(calls, expected_suffixes, strict=True):
@@ -609,21 +688,22 @@ raise SystemExit(0)
 
     assert result.returncode == 0, result.stdout or result.stderr
     calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
-    assert len(calls) == 15
+    assert len(calls) == 16
     expected_suffixes = [
         ["-m", "pytest", "-q", "tests/test_python2025_split_package.py", "tests/test_package_import_isolation.py", "tests/test_package_dependency_metadata.py", "tests/test_root_facade_policy.py"],
         ["-m", "pytest", "-q", "tests/requirements/test_2025_python_rti_backend_audit.py"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter or primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface or primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "test_2025_provider_runs_federation_lifecycle_scenario_end_to_end or test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end or test_2025_provider_runs_federation_listing_scenario_end_to_end or test_2025_provider_runs_two_federate_object_and_interaction_exchange or test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter or test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter or test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter or test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter or test_2025_provider_routes_directed_interactions_only_to_subscribers or test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "test_2025_provider_round_trips_automatic_resign_directive_support_service or test_2025_provider_runs_callback_control_route_with_object_reflection_end_to_end or test_2025_provider_runs_attribute_ownership_scenario_end_to_end or test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter or test_2025_provider_runs_attribute_ownership_query_callback_scenario_via_compat_adapter or test_2025_provider_serializes_mom_service_reports_without_overclaiming_conformance or test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interactions or test_2025_provider_routes_mom_adjust_interactions_for_reporting_switches or test_2025_provider_routes_mom_time_management_service_interactions or test_2025_provider_routes_mom_object_and_ownership_service_interactions"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end or test_2025_provider_runs_time_window_core_scenario_end_to_end or test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end or test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end or test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end or test_2025_provider_runs_time_window_pipeline_scenario_end_to_end or test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end or test_2025_provider_runs_time_window_restore_state_scenario_end_to_end or test_2025_provider_runs_time_window_restore_output_scenario_end_to_end or test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end or test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary or test_2025_output_delivery_oracle_rejects_output_before_window_close or test_2025_consumer_order_oracle_rejects_reversed_delivery_order or test_2025_pipeline_oracle_rejects_cross_window_payload_contamination or test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak or test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore or test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay or test_2025_receive_order_poison_oracle_rejects_closed_window_mutation"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter or test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter or test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter or test_2025_provider_runs_federation_save_restore_lifecycle or test_2025_provider_runs_example_fom_save_restore_gauntlet or test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet or test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso or test_2025_provider_restores_closed_window_output_resume_without_dirty_replay or test_2025_provider_restores_pipeline_resume_without_cross_window_replay"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "time_window and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "save_restore and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "ownership and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "callback and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "support_service and python2025"],
-        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "mom and python2025"],
+        ["-m", "pytest", "-q", "tests/requirements/test_ieee_1516_2025_requirements_registry.py"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter or primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface or primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "test_2025_provider_runs_federation_lifecycle_scenario_end_to_end or test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end or test_2025_provider_runs_federation_listing_scenario_end_to_end or test_2025_provider_runs_two_federate_object_and_interaction_exchange or test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter or test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter or test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter or test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter or test_2025_provider_routes_directed_interactions_only_to_subscribers or test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "test_2025_provider_round_trips_automatic_resign_directive_support_service or test_2025_provider_runs_callback_control_route_with_object_reflection_end_to_end or test_2025_provider_runs_attribute_ownership_scenario_end_to_end or test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter or test_2025_provider_runs_attribute_ownership_query_callback_scenario_via_compat_adapter or test_2025_provider_serializes_mom_service_reports_without_overclaiming_conformance or test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interactions or test_2025_provider_routes_mom_adjust_interactions_for_reporting_switches or test_2025_provider_routes_mom_time_management_service_interactions or test_2025_provider_routes_mom_object_and_ownership_service_interactions"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end or test_2025_provider_runs_time_window_core_scenario_end_to_end or test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end or test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end or test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end or test_2025_provider_runs_time_window_pipeline_scenario_end_to_end or test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end or test_2025_provider_runs_time_window_restore_state_scenario_end_to_end or test_2025_provider_runs_time_window_restore_output_scenario_end_to_end or test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end or test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary or test_2025_output_delivery_oracle_rejects_output_before_window_close or test_2025_consumer_order_oracle_rejects_reversed_delivery_order or test_2025_pipeline_oracle_rejects_cross_window_payload_contamination or test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak or test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore or test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay or test_2025_receive_order_poison_oracle_rejects_closed_window_mutation"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter or test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter or test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter or test_2025_provider_runs_federation_save_restore_lifecycle or test_2025_provider_runs_example_fom_save_restore_gauntlet or test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet or test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso or test_2025_provider_restores_closed_window_output_resume_without_dirty_replay or test_2025_provider_restores_pipeline_resume_without_cross_window_replay"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "time_window and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "save_restore and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "ownership and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "callback and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "support_service and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_python2025_runtime.py", "-k", "mom and python2025"],
         ["-m", "pytest", "-q", "tests/test_rti1516_2025_validation.py", "tests/factories/test_fom_omt_parsing.py"],
         ["examples/target_radar_simulation.py", "--backend", "python2025", "--steps", "5"],
     ]

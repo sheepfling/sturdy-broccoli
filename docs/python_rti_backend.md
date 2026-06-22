@@ -44,6 +44,12 @@ The important distinction is architectural, not naming-based:
   and wrapper-facing normalization do not get confused with core RTI
   ownership
 
+That runtime is no longer concentrated in one monolithic backend file. The
+current package shape uses a thin public `backend.py` shell plus focused
+runtime and surface modules such as `backend_factory_runtime.py`,
+`runtime_state.py`, `federation_management_runtime.py`,
+`time_management_runtime.py`, and the `*_surface_mixin.py` split.
+
 ## Why The Compatibility Wrapper Still Exists
 
 The wrapper package name reflects repository history, not current runtime
@@ -75,6 +81,10 @@ That means the practical repo stance is:
   tightly that a later extraction becomes impossible
 
 In repo terms, `python2025` is the RTI lane. `shim` is not.
+
+For runtime selection and verification, use `backend="python2025"`. Treat
+`backend="shim"` as a compatibility-only legacy alias path, not as a supported
+main 2025 RTI selection surface.
 
 The important clarification is that the dedicated runtime already exists. The
 remaining architectural question is how narrow the compatibility wrapper should
@@ -129,7 +139,7 @@ Primary evidence anchors:
 - `examples/target_radar_simulation.py`
 - `tests/scenarios/test_target_radar_scenario.py`
 - `tests/test_fom_target_radar_split_package.py`
-- `tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main in-process python2025 proof suite)
+- `tests/test_rti1516_2025_python2025_runtime.py` (main in-process python2025 proof suite)
 - `tests/requirements/test_2025_finish_line_snapshot.py`
 - `tests/requirements/test_2025_route_parity_matrix.py`
 - `tests/backends/test_shim_route_trace_evidence.py`
@@ -139,7 +149,7 @@ The current bounded claim is:
 
 - the Python-centered 2025 surface is validated as a bounded working RTI
   surface across federation management, object management, time management,
-  support services, callbacks, OMT handling, and binding routes
+  support services, callbacks, OMT handling, and binding and hosted routes
 
 What that currently includes:
 
@@ -180,7 +190,7 @@ What that currently includes:
 
 Recent 2025 suite state:
 
-- `tests/test_rti1516_2025_spec_and_shim.py`: full green; despite the historical filename, this is the main executable in-process proof suite for `hla-backend-python2025`
+- `tests/test_rti1516_2025_python2025_runtime.py`: full green; this is the main executable in-process proof suite for `hla-backend-python2025`
 - the direct in-process 2025 suite now explicitly proves partial-delivery TSO
   retraction semantics on the main `python2025` lane: an interaction can be
   delivered to one constrained subscriber, retracted, and withheld from a

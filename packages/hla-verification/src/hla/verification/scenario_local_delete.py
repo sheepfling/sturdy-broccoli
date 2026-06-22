@@ -6,8 +6,17 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
+from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 
-from .scenario_support import drain_callbacks_pair, register_named_object_instance
+from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
 
 
 @dataclass(frozen=True)
@@ -63,7 +72,14 @@ def run_local_delete_scenario(
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    discovery_before_delete = wait_for_callback(
+        observer_rti,
+        observer_federate,
+        "discoverObjectInstance",
+        loops=120,
+    )
+    assert discovery_before_delete is not None
+    assert _same_handle_value(observer_rti.get_object_instance_handle(config.object_instance_name), object_instance)
 
     observer_federate.clear()
     observer_rti.local_delete_object_instance(object_instance)
@@ -71,11 +87,11 @@ def run_local_delete_scenario(
     with_class_missing = False
     try:
         observer_rti.get_object_instance_handle(config.object_instance_name)
-    except ObjectInstanceNotKnown:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         with_object_missing = True
     try:
         observer_rti.get_known_object_class_handle(object_instance)
-    except ObjectInstanceNotKnown:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         with_class_missing = True
     assert with_object_missing
     assert with_class_missing
@@ -91,8 +107,8 @@ def run_local_delete_scenario(
     reflection = observer_federate.last_callback("reflectAttributeValues")
     assert discovery is not None
     assert reflection is not None
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
-    assert observer_rti.get_known_object_class_handle(object_instance) == observer_class
+    assert _same_handle_value(observer_rti.get_object_instance_handle(config.object_instance_name), object_instance)
+    assert _same_handle_value(observer_rti.get_known_object_class_handle(object_instance), observer_class)
 
     return {
         "owner_handle": owner_handle,

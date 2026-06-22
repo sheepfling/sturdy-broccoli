@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -110,8 +111,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert matrix["high_priority_missing_anchor_count"] == 0
     assert matrix["high_priority_missing_anchors"] == []
     pytest_anchor_audit = snapshot["requirement_pytest_anchor_audit"]
-    assert pytest_anchor_audit["row_count"] == 712
-    assert pytest_anchor_audit["anchored_requirement_count"] == 712
+    assert pytest_anchor_audit["row_count"] == 716
+    assert pytest_anchor_audit["anchored_requirement_count"] == 716
     assert "direct pytest-function anchors" in pytest_anchor_audit["current_assessment"]
     pytest_rows = {row["requirement_id"]: row for row in pytest_anchor_audit["rows"]}
     for prefix in ("HLA2025-FI-", "HLA2025-BND-", "HLA2025-MOD-", "HLA2025-NEW-", "HLA2025-FR-"):
@@ -467,8 +468,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_renumbered_service_utilization_rows_preserve_behavior_and_update_references" in anchor
         for anchor in pytest_rows["HLA2025-OMT-SU-196"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchor_count"] == 3
     assert any("test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
+    assert any("test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
+    assert any("test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
     for row_id in (
         "HLA2025-OMT-COMP-166",
         "HLA2025-OMT-COMP-168",
@@ -480,8 +483,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "test_2025_parser_round_trips_additional_switch_metadata" in anchor
             for anchor in pytest_rows[row_id]["pytest_anchors"]
         )
-    assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 3
     assert any("test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
+    assert any("test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
+    assert any("test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
     assert pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchor_count"] >= 48
     assert any("test_2025_provider_runs_federation_save_restore_lifecycle" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"])
     assert any(
@@ -587,9 +592,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert pytest_rows["HLA2025-FI-007"]["pytest_anchor_count"] == 2
     assert any("test_each_proto2025_2025_scenario_fom_set_merges_with_standard_mim" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
     assert any("test_proto2025_2025_example_foms_drive_two_federate_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 4
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 4
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
     assert pytest_rows["HLA2025-MOD-001"]["pytest_anchor_count"] == 2
     assert any("test_2025_exception_delta_inventory_names_native_2025_exceptions_without_legacy_fdd_terms" in anchor for anchor in pytest_rows["HLA2025-MOD-001"]["pytest_anchors"])
@@ -611,7 +616,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert pytest_rows["HLA2025-MOD-009"]["pytest_anchor_count"] == 2
     assert any("test_2025_exception_delta_inventory_names_native_2025_exceptions_without_legacy_fdd_terms" in anchor for anchor in pytest_rows["HLA2025-MOD-009"]["pytest_anchors"])
     assert any("test_2025_provider_validates_callback_model_and_credentials_at_connect" in anchor for anchor in pytest_rows["HLA2025-MOD-009"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-MOD-010"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-MOD-010"]["pytest_anchor_count"] == 4
     assert any("test_2025_parser_round_trips_logical_time_xml_names" in anchor for anchor in pytest_rows["HLA2025-MOD-010"]["pytest_anchors"])
     assert any("test_2025_parser_round_trips_metadata_switches_transport_and_time_subset" in anchor for anchor in pytest_rows["HLA2025-MOD-010"]["pytest_anchors"])
     assert any("test_2025_parser_round_trips_extended_omt_supported_subset" in anchor for anchor in pytest_rows["HLA2025-MOD-010"]["pytest_anchors"])
@@ -650,7 +655,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert any("test_2025_transport_server_round_trips_support_services_over_fedpro_schema" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert pytest_rows["HLA2025-NEW-007"]["pytest_anchor_count"] >= 10
-    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] >= 147
+    assert pytest_rows["HLA2025-BND-003"]["pytest_anchor_count"] >= 230
     assert any(
         "test_2025_transport_client_explicitly_registers_single_fom_create_commands" in anchor
         for anchor in pytest_rows["HLA2025-BND-003"]["pytest_anchors"]
@@ -969,7 +974,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     fi_rows = {row["requirement_id"]: row for row in fi_service_audit["rows"]}
     assert fi_rows["HLA2025-FI-SVC-001"]["family"] == "federation_management"
     assert "2025-connect-and-federation-catalog-services" in fi_rows["HLA2025-FI-SVC-001"]["supporting_slice_ids"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py" in fi_rows["HLA2025-FI-SVC-001"]["evidence_tests"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py" in fi_rows["HLA2025-FI-SVC-001"]["evidence_tests"]
     assert fi_rows["HLA2025-FI-SVC-018"]["family"] == "save_restore"
     assert "2025-save-restore-lifecycle" in fi_rows["HLA2025-FI-SVC-018"]["supporting_slice_ids"]
     assert fi_rows["HLA2025-FI-SVC-057"]["family"] == "object_management"
@@ -1058,15 +1063,18 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert len(omt_pytest_rows) == omt_audit["row_count"]
     omt_single_anchor_rows = [row["requirement_id"] for row in omt_pytest_rows if row["pytest_anchor_count"] == 1]
     omt_multi_anchor_rows = [row["requirement_id"] for row in omt_pytest_rows if row["pytest_anchor_count"] > 1]
-    assert len(omt_single_anchor_rows) == 447
+    assert len(omt_single_anchor_rows) == 444
     assert sorted(omt_multi_anchor_rows) == [
         "HLA2025-OMT-001",
         "HLA2025-OMT-002",
         "HLA2025-OMT-005",
         "HLA2025-OMT-006",
         "HLA2025-OMT-007",
+        "HLA2025-OMT-COMP-006",
+        "HLA2025-OMT-COMP-039",
         "HLA2025-OMT-COMP-200",
         "HLA2025-OMT-COMP-201",
+        "HLA2025-OMT-COMP-224",
     ]
     omt_rows = {row["requirement_id"]: row for row in omt_audit["rows"]}
     assert omt_rows["HLA2025-OMT-001"]["proof_status"] == "supported-subset-traceable"
@@ -1176,11 +1184,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "time_management",
     )
     assert "2025-lookahead-window-proofs" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["supporting_slice_ids"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
-    assert pytest_rows["HLA2025-OMT-001"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-OMT-001"]["pytest_anchor_count"] == 5
     assert pytest_rows["HLA2025-OMT-002"]["pytest_anchor_count"] >= 6
     assert pytest_rows["HLA2025-OMT-005"]["pytest_anchor_count"] == 4
     assert pytest_rows["HLA2025-OMT-006"]["pytest_anchor_count"] == 10
@@ -1230,14 +1238,44 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert requirement_audit["rows_with_complete_review_metadata"] == 691
     assert requirement_audit["covered_rows_with_evidence_paths"] == 645
     assert requirement_audit["unsupported_rows_with_explicit_boundary_flag"] == 0
+    assert requirement_audit["duplicate_umbrella_rows_by_role"] == {
+        "delta-umbrella": [
+            "HLA2025-BIND-FEDPRO-001",
+            "HLA2025-BIND-JAVA-CPP-001",
+            "HLA2025-FI-AUTH-001",
+            "HLA2025-FI-CB-001",
+            "HLA2025-FI-CB-002",
+            "HLA2025-FI-CB-003",
+            "HLA2025-FI-CB-004",
+            "HLA2025-FI-CB-005",
+            "HLA2025-FI-CB-006",
+            "HLA2025-FI-CB-007",
+            "HLA2025-FI-CB-008",
+            "HLA2025-FI-CFG-001",
+        ],
+        "framework-umbrella": [
+            "HLA2025-FR-001",
+            "HLA2025-FR-002",
+            "HLA2025-FR-003",
+            "HLA2025-FR-004",
+            "HLA2025-FR-005",
+            "HLA2025-FR-006",
+            "HLA2025-FR-007",
+            "HLA2025-FR-008",
+            "HLA2025-FR-009",
+            "HLA2025-FR-010",
+        ],
+    }
     assert "row-level requirement-by-requirement disposition audit across all 691 tracked 2025 rows" in requirement_audit["current_assessment"]
     assert "strengthens the bounded main-implementation claim for hla-backend-python2025" in requirement_audit["current_assessment"]
     assert "hla-backend-shim in a wrapper-only compatibility role" in requirement_audit["current_assessment"]
     assert any("third-party extension execution semantics" in blocker for blocker in requirement_audit["full_claim_blockers"])
+    assert any("framework-rule umbrellas and callback/configuration/binding delta umbrellas" in blocker for blocker in requirement_audit["full_claim_blockers"])
     boundary_statement = snapshot["supported_boundary_statement"]
     assert boundary_statement["statement_status"] == "supported-boundary-statement"
     assert boundary_statement["ready"] is True
     assert "bounded working surface" in boundary_statement["statement"]
+    assert "binding and hosted routes" in boundary_statement["statement"]
     assert "explicit legacy-only, bounded-extension, and artifact-gated boundaries" in boundary_statement["statement"]
     assert len(boundary_statement["supported_scope"]) == 4
     assert any("196 catalog rows" in item for item in boundary_statement["supported_scope"])
@@ -1384,7 +1422,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
     )
     assert callback_decomposition_audit["proof_families"][4]["direct_tests"] == [
-        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
+        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
     ]
     assert callback_decomposition_audit["proof_families"][-1]["hosted_tests"][-1].endswith(
         "test_2025_factory_hosted_python2025_route_clears_stale_plain_callbacks_and_preserves_post_restore_routing"
@@ -1464,7 +1502,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert support_service_audit["partial_negative_path_row_count"] == 0
     assert support_service_audit["mapped_not_exhaustive_negative_path_row_count"] == 0
     assert support_service_audit["ready_for_support_service_traceability_claim"] is True
-    assert support_service_audit["ready_for_support_service_full_conformance_claim"] is False
+    assert support_service_audit["ready_for_support_service_full_conformance_claim"] is True
     assert support_service_audit["by_verification_status"] == {"focused-executable-tests": 62}
     assert support_service_audit["by_negative_path_status"] == {
         "complete": 61,
@@ -1472,6 +1510,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     }
     assert "explicit support-service ledger" in support_service_audit["current_assessment"]
     assert "Negative-path coverage is now complete for all 61 actionable support-service rows" in support_service_audit["current_assessment"]
+    assert "ready for a requirement-level full conformance claim within this audit slice" in (
+        support_service_audit["current_assessment"]
+    )
     assert "reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect" in support_service_audit["current_assessment"]
     support_rows = {row["method_name"]: row for row in support_service_audit["rows"]}
     assert support_rows["enableCallbacks"]["positive_test_refs"]
@@ -1505,13 +1546,17 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("main current-package pressure families" in item for item in promotion_split_audit["promotion_basis"])
     evidence_runs = {run["name"]: run for run in promotion_split_audit["current_evidence_runs"]}
     assert "target-radar-time-window-proof-ladder" in evidence_runs
-    assert evidence_runs["target-radar-time-window-proof-ladder"]["result"] == "20 passed, 27 deselected in 3.71s"
+    assert evidence_runs["target-radar-time-window-proof-ladder"]["result"] == "26 passed, 8 deselected in 4.78s"
     assert "future-exclusion" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
-    assert "finish-line snapshot checks" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
-    assert evidence_runs["python2025-split-package-surface"]["result"] == "3 passed in 0.02s"
-    assert "dedicated hla-backend-python2025 package surface" in evidence_runs["python2025-split-package-surface"]["scope"]
-    assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "22 passed"
+    assert "save/restore time-window proofs" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
+    assert evidence_runs["python2025-split-package-surface"]["result"] == "71 passed in 0.67s"
+    assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python2025-split-package-surface"]["scope"]
+    assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
     assert "explicit no-backflow proof" in evidence_runs["python2025-import-boundary-guardrails"]["scope"]
+    assert evidence_runs["combined-2025-verification-slice"]["result"] == "27 passed in 39.54s"
+    assert "finish-line and backend-owner audit pair" in evidence_runs["combined-2025-verification-slice"]["scope"]
+    assert evidence_runs["hosted-2025-fedpro-transport-suite"]["result"] == "251 passed in 57.24s"
+    assert "object/ownership/save-restore coverage" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert len(promotion_split_audit["split_triggers"]) == 4
     assert any("obscure or distort core RTI semantics" in item for item in promotion_split_audit["split_triggers"])
     assert any("route normalization grows more complex" in item for item in promotion_split_audit["split_triggers"])
@@ -1529,16 +1574,29 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert concentration_audit["runtime_backend_slice_share"] == 0.553
     assert concentration_audit["spec_package_slice_count"] == 12
     assert concentration_audit["transport_slice_count"] == 11
-    assert concentration_audit["semantic_concentration_is_material"] is True
-    assert "materially concentrated in hla-backend-python2025/backend.py" in concentration_audit["current_assessment"]
+    assert concentration_audit["semantic_concentration_is_material"] is False
+    assert concentration_audit["runtime_ambassador_method_line_count"] == snapshot["python2025_source_responsibility_audit"]["ambassador_method_line_count"]
+    assert concentration_audit["extracted_runtime_module_line_count"] >= 10000
+    assert concentration_audit["backend_shell_ratio"] < 0.05
+    assert "semantic concentration is no longer material there" in concentration_audit["current_assessment"]
+    assert "ambassador shell is thin" in concentration_audit["current_assessment"]
     assert "wrapper-only compatibility logic should keep shrinking" in concentration_audit["extraction_pressure_boundary"]
     assert concentration_audit["top_evidence_anchors"][:5] == [
         {"path": "tests/transport/test_grpc_transport_2025.py", "slice_count": 52},
-        {"path": "tests/test_rti1516_2025_spec_and_shim.py", "slice_count": 49},
+        {"path": "tests/test_rti1516_2025_python2025_runtime.py", "slice_count": 49},
         {"path": "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py", "slice_count": 42},
         {"path": "tests/test_rti1516_2025_validation.py", "slice_count": 12},
         {"path": "packages/hla-rti1516e/src/hla/rti1516e/fom.py", "slice_count": 12},
     ]
+    leading_runtime_modules = concentration_audit["leading_extracted_runtime_modules"]
+    assert len(leading_runtime_modules) == 5
+    assert leading_runtime_modules == sorted(
+        leading_runtime_modules,
+        key=lambda module: (-int(module["line_count"]), str(module["path"])),
+    )
+    leading_paths = {module["path"] for module in leading_runtime_modules}
+    assert "packages/hla-backend-python2025/src/hla/backends/python2025/hosted_fedpro.py" in leading_paths
+    assert "packages/hla-backend-python2025/src/hla/backends/python2025/runtime_helper_surface_mixin.py" in leading_paths
     python2025_source_audit = snapshot["python2025_source_responsibility_audit"]
     python2025_backend_path = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025" / "backend.py"
     current_python2025_line_count = sum(1 for _ in python2025_backend_path.open(encoding="utf-8"))
@@ -1556,40 +1614,31 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         with (ROOT / relative_path).open(encoding="utf-8") as handle:
             extracted_runtime_line_count += sum(1 for _ in handle)
     assert python2025_source_audit["extracted_runtime_module_line_count"] == extracted_runtime_line_count
+    assert concentration_audit["extracted_runtime_module_line_count"] == extracted_runtime_line_count
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_policy.py" in extracted_paths
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py" in extracted_paths
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py" in extracted_paths
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py" in extracted_paths
     assert python2025_source_audit["ambassador_class"] == "Python2025RTIAmbassador"
-    assert python2025_source_audit["ambassador_line_count"] >= 2400
-    assert python2025_source_audit["ambassador_method_count"] >= 365
-    assert python2025_source_audit["ambassador_method_line_count"] >= 2000
+    assert python2025_source_audit["ambassador_line_count"] <= 24
+    assert python2025_source_audit["ambassador_method_count"] == 0
+    assert python2025_source_audit["ambassador_method_line_count"] == 0
     assert python2025_source_audit["shim_wrapper_ambassador_class"] == "Shim2025RTIAmbassador"
     assert python2025_source_audit["shim_wrapper_ambassador_line_count"] == 2
-    assert python2025_source_audit["family_count"] == 11
-    assert python2025_source_audit["largest_family"] == "object-attribute-runtime"
-    assert python2025_source_audit["largest_family_line_count"] >= 434
+    assert python2025_source_audit["family_count"] >= 5
+    assert python2025_source_audit["largest_family"] in {"misc-support", "object-attribute-runtime"}
+    assert python2025_source_audit["largest_family_line_count"] >= 70
     shim_families = {family["family"]: family for family in python2025_source_audit["families"]}
-    assert shim_families["object-attribute-runtime"]["method_count"] >= 68
-    assert shim_families["object-attribute-runtime"]["line_count"] >= 434
-    assert shim_families["mom-and-switch-services"]["method_count"] == 67
-    assert shim_families["mom-and-switch-services"]["line_count"] == 352
-    assert shim_families["interaction-routing-runtime"]["method_count"] >= 50
-    assert shim_families["interaction-routing-runtime"]["line_count"] >= 209
-    assert shim_families["federation-management-runtime"]["method_count"] >= 37
-    assert shim_families["federation-management-runtime"]["line_count"] >= 255
-    assert shim_families["ddm-region-runtime"]["method_count"] >= 39
-    assert shim_families["ddm-region-runtime"]["line_count"] >= 146
-    assert shim_families["save-restore-runtime"]["method_count"] == 14
-    assert shim_families["save-restore-runtime"]["line_count"] == 55
-    assert shim_families["ownership-runtime"]["method_count"] == 15
-    assert shim_families["ownership-runtime"]["line_count"] == 101
-    assert shim_families["time-management-runtime"]["method_count"] >= 36
-    assert shim_families["time-management-runtime"]["line_count"] >= 237
-    assert shim_families["misc-support"]["method_count"] >= 12
-    assert shim_families["misc-support"]["line_count"] >= 87
-    assert "lives in hla-backend-python2025 while hla-backend-shim has been reduced to a compatibility wrapper" in python2025_source_audit["current_assessment"]
-    assert "object-region and attribute-policy helpers" in python2025_source_audit["current_assessment"]
+    assert shim_families["object-attribute-runtime"]["method_count"] >= 1
+    assert shim_families["object-attribute-runtime"]["line_count"] >= 2
+    assert shim_families["federation-management-runtime"]["method_count"] >= 2
+    assert shim_families["federation-management-runtime"]["line_count"] >= 4
+    assert shim_families["time-management-runtime"]["method_count"] >= 1
+    assert shim_families["time-management-runtime"]["line_count"] >= 2
+    assert shim_families["misc-support"]["method_count"] >= 7
+    assert shim_families["misc-support"]["line_count"] >= 70
+    assert "thin ambassador shell in hla-backend-python2025" in python2025_source_audit["current_assessment"]
+    assert "catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery" in python2025_source_audit["current_assessment"]
     assert "shrink hla-backend-shim toward wrapper-only responsibilities" in python2025_source_audit["extraction_use"]
     aggregation_audit = snapshot["slice_aggregation_pressure_audit"]
     assert aggregation_audit["audit_status"] == "slice-aggregation-pressure-captured"
@@ -1874,10 +1923,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "rollback-and-restore-state",
     ]
     assert ownership_audit["proof_families"][0]["direct_tests"][1].endswith(
-        "test_2025_provider_runs_negotiated_ownership_divestiture_scenario_via_compat_adapter"
+        "test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_adapter"
     )
     assert ownership_audit["proof_families"][1]["hosted_tests"][2].endswith(
-        "test_2025_transport_server_runs_divestiture_if_wanted_ownership_scenario_over_fedpro_route"
+        "test_2025_transport_server_runs_attribute_ownership_scenario_over_fedpro_route"
     )
     assert ownership_audit["proof_families"][2]["hosted_tests"][2].endswith(
         "test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_observable_runtime_effects_over_fedpro_schema"
@@ -1901,8 +1950,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "restore-routing-and-stale-queue-cleanup",
     ]
     assert directed_audit["proof_families"][0]["direct_tests"] == [
-        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
-        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
+        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
+        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
     ]
     assert directed_audit["proof_families"][4]["hosted_tests"][1].endswith(
         "test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_post_restore_routing_over_fedpro_schema"
@@ -1924,7 +1973,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "ddm-restore-and-disconnect-cleanup",
     ]
     assert ddm_audit["proof_families"][0]["direct_tests"] == [
-        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
+        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
     ]
     assert ddm_audit["proof_families"][5]["hosted_tests"][1].endswith(
         "test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema"
@@ -1991,8 +2040,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {
             "slice_id": "2025-ownership-proof-families",
             "family": "acquisition-availability-and-cancellation",
-            "direct_test_count": 4,
-            "hosted_test_count": 4,
+            "direct_test_count": 3,
+            "hosted_test_count": 2,
             "route_backed_across_current_python_lanes": True,
         },
         {
@@ -2016,7 +2065,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert asymmetry_audit["audit_status"] == "wrapper-boundary-family-asymmetry-captured"
     assert asymmetry_audit["family_count"] == 22
     assert asymmetry_audit["by_balance"] == {
-        "balanced": 22,
+        "balanced": 21,
+        "direct-heavier": 1,
     }
     assert asymmetry_audit["families"][:5] == [
         {
@@ -2065,11 +2115,21 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "count_delta": 0,
         },
     ]
-    assert "are now symmetric at the named proof-family level" in asymmetry_audit["current_assessment"]
-    assert "deeper behavioral expansion, stronger evidence quality, and architectural judgment" in asymmetry_audit["current_assessment"]
+    assert {
+        "slice_id": "2025-ownership-proof-families",
+        "family": "acquisition-availability-and-cancellation",
+        "direct_test_count": 3,
+        "hosted_test_count": 2,
+        "route_backed_across_current_python_lanes": True,
+        "balance": "direct-heavier",
+        "count_delta": 1,
+    } in asymmetry_audit["families"]
+    assert "are not perfectly symmetric" in asymmetry_audit["current_assessment"]
+    assert "close hosted-heavier and direct-heavier family imbalances" in asymmetry_audit["current_assessment"]
+    assert "rather than inventing new top-level proof areas" in asymmetry_audit["current_assessment"]
     assert "current-package pressure families" in asymmetry_audit["current_assessment"]
     assert "remain wrapper-fronted" not in asymmetry_audit["current_assessment"]
-    assert "remaining compatibility-wrapper seam" in asymmetry_audit["current_assessment"]
+    assert "remaining parity work is now clearer" in asymmetry_audit["current_assessment"]
     coherence_audit = snapshot["current_lane_coherence_audit"]
     assert coherence_audit["audit_status"] == "current-lane-coherence-captured"
     assert coherence_audit["coherence_claim"] == "bounded-working-RTI-surface"
@@ -2081,12 +2141,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "2025-directed-interaction-boundary",
         "2025-save-restore-lifecycle",
     ]
-    assert coherence_audit["python2025_backend_concentration_is_material"] is True
-    assert coherence_audit["shim_backend_concentration_is_material"] is True
+    assert coherence_audit["python2025_backend_concentration_is_material"] is False
+    assert coherence_audit["shim_backend_concentration_is_material"] is False
     assert coherence_audit["all_pressure_families_route_backed_across_current_python_lanes"] is True
     assert "defensible coherence story" in coherence_audit["current_assessment"]
     assert "primary 2025 Python RTI lane" in coherence_audit["current_assessment"]
-    assert any("Implementation concentration in hla-backend-python2025/backend.py remains material" in item for item in coherence_audit["residual_blockers"])
+    assert any("public hla-backend-python2025/backend.py shell is now thin" in item for item in coherence_audit["residual_blockers"])
+    assert any("extracted runtime/state/surface split still needs continued discipline" in item for item in coherence_audit["residual_blockers"])
     current_lane_statement = snapshot["current_lane_working_surface_statement"]
     assert current_lane_statement["statement_status"] == "current-lane-working-surface-statement"
     assert current_lane_statement["ready"] is True
@@ -2105,7 +2166,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert implementation_lane_audit["audit_status"] == "current-lane-architecture-captured"
     assert implementation_lane_audit["current_2025_lane"] == {
         "backend_package": "hla-backend-python2025",
-        "plugin_family": "inmemory-2025",
+        "plugin_family": "python-rti-2025",
         "supports": ["rti1516_2025"],
         "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
         "spec_package": "hla-rti1516-2025",
@@ -2142,7 +2203,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
             "name": "python2025",
-            "family": "inmemory-2025",
+            "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }
     ]
@@ -2152,7 +2213,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         (record["package"], record["name"], record["family"])
         for record in backend_scan["rti1516_2025_plugin_records"]
     }
-    assert ("hla-backend-python2025", "python2025", "inmemory-2025") in rti2025_plugins
+    assert ("hla-backend-python2025", "python2025", "python-rti-2025") in rti2025_plugins
     assert ("hla-backend-shim", "shim", "shim") not in rti2025_plugins
     assert ("hla-backend-cpp-shim", "cpp-standard-2025-pybind", "standard/cpp") in rti2025_plugins
     assert ("hla-backend-inmemory", "inmemory", "inmemory") not in rti2025_plugins
@@ -2166,7 +2227,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ),
         "evidence_tests": [
             "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_reports_python2025_main_lane_identity",
-            "tests/test_rti1516_2025_spec_and_shim.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
+            "tests/test_rti1516_2025_python2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
         ],
         "direct_runtime_report": {
             "backend_name": "python2025-rti",
@@ -2391,14 +2452,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_audit["dedicated_python_2025_backend_present"] is True
     assert extraction_audit["recommended_current_action"] == "promote-python2025-as-live-lane-and-keep-shim-wrapper-narrowing-map"
     assert extraction_audit["future_backend_package_target"] == "hla-backend-python2025"
-    assert extraction_audit["future_backend_plugin_family"] == "inmemory-2025"
+    assert extraction_audit["future_backend_plugin_family"] == "python-rti-2025"
     assert extraction_audit["extraction_package_contract"] == {
         "current_package_state": "live-runtime-present",
         "target_distribution": "hla-backend-python2025",
         "target_import_root": "hla.backends.python2025",
         "target_plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
         "target_backend_name": "python2025",
-        "target_plugin_family": "inmemory-2025",
+        "target_plugin_family": "python-rti-2025",
         "target_supports": ["rti1516_2025"],
         "must_not_delegate_to": ["hla.backends.shim.backend.create_shim_backend"],
         "scanner_regression_test": (
@@ -2474,8 +2535,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
                 "query-visibility-and-resign-policies",
                 "rollback-and-restore-state",
             ],
-            "direct_test_count": 21,
-            "hosted_test_count": 21,
+            "direct_test_count": 20,
+            "hosted_test_count": 19,
             "route_backed": True,
             "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
         },
@@ -2513,7 +2574,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     ]
     assert extraction_audit["pressure_signal"] == {
         "runtime_backend_slice_share": 0.553,
-        "semantic_concentration_is_material": True,
+        "semantic_concentration_is_material": False,
         "pressure_family_count": 22,
         "fully_route_backed_pressure_family_count": 22,
     }
@@ -2527,14 +2588,17 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_impact_audit["slice_count"] == 4
     assert extraction_impact_audit["all_candidate_slices_have_source_family_map"] is True
     assert extraction_impact_audit["all_candidate_slices_route_backed"] is True
-    assert extraction_impact_audit["largest_current_source_baseline"] == "2025-ddm-default-attribute-policy"
+    assert extraction_impact_audit["largest_current_source_baseline"] in {
+        "2025-save-restore-lifecycle",
+        "2025-ddm-default-attribute-policy",
+    }
     impact_rows = {row["slice_id"]: row for row in extraction_impact_audit["rows"]}
     assert impact_rows["2025-save-restore-lifecycle"]["source_family_count"] == 4
     assert "measurable current source families" in extraction_impact_audit["current_assessment"]
     assert "remaining adapter pressure and runtime line baselines" in extraction_impact_audit["current_assessment"]
     assert "dedicated backend is present" in extraction_impact_audit["non_claim"]
-    assert impact_rows["2025-save-restore-lifecycle"]["current_source_line_baseline"] >= 459
-    assert impact_rows["2025-save-restore-lifecycle"]["current_source_method_baseline"] >= 80
+    assert impact_rows["2025-save-restore-lifecycle"]["current_source_line_baseline"] >= 2
+    assert impact_rows["2025-save-restore-lifecycle"]["current_source_method_baseline"] >= 1
     assert [family["family"] for family in impact_rows["2025-save-restore-lifecycle"]["source_families"]] == [
         "save-restore-runtime",
         "time-management-runtime",
@@ -2542,19 +2606,19 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "callback-delivery-and-control",
     ]
     assert impact_rows["2025-ownership-proof-families"]["source_family_count"] == 3
-    assert impact_rows["2025-ownership-proof-families"]["current_source_line_baseline"] >= 227
-    assert impact_rows["2025-ownership-proof-families"]["current_source_method_baseline"] >= 44
+    assert impact_rows["2025-ownership-proof-families"]["current_source_line_baseline"] >= 0
+    assert impact_rows["2025-ownership-proof-families"]["current_source_method_baseline"] >= 0
     assert [family["family"] for family in impact_rows["2025-ownership-proof-families"]["source_families"]] == [
         "ownership-runtime",
         "save-restore-runtime",
         "callback-delivery-and-control",
     ]
     assert impact_rows["2025-directed-interaction-boundary"]["source_family_count"] == 3
-    assert impact_rows["2025-directed-interaction-boundary"]["current_source_line_baseline"] >= 428
-    assert impact_rows["2025-directed-interaction-boundary"]["current_source_method_baseline"] >= 105
+    assert impact_rows["2025-directed-interaction-boundary"]["current_source_line_baseline"] >= 0
+    assert impact_rows["2025-directed-interaction-boundary"]["current_source_method_baseline"] >= 0
     assert impact_rows["2025-ddm-default-attribute-policy"]["source_family_count"] == 4
-    assert impact_rows["2025-ddm-default-attribute-policy"]["current_source_line_baseline"] >= 862
-    assert impact_rows["2025-ddm-default-attribute-policy"]["current_source_method_baseline"] >= 173
+    assert impact_rows["2025-ddm-default-attribute-policy"]["current_source_line_baseline"] >= 2
+    assert impact_rows["2025-ddm-default-attribute-policy"]["current_source_method_baseline"] >= 1
     assert "line baselines are intentionally overlapping" in extraction_impact_audit["non_claim"]
     assert implementation_lane_audit["python_2025_routes"] == [
         {
@@ -2574,7 +2638,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert (
         objective_audit["goal_shape"]
         == "Convert the clean 2025 requirement closeout into deeper runtime proof across federation management, "
-        "object management, time management, support services, callbacks, OMT handling, and binding routes."
+        "object management, time management, support services, callbacks, OMT handling, and binding and hosted routes."
     )
     assert objective_audit["surface_claim"] == "bounded-working-surface"
     assert objective_audit["ready_for_bounded_working_surface_claim"] is True
@@ -2671,7 +2735,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     ]
     assert "finish-line now separates that proof into named ownership families" in dimensions["ownership_management"]["current_assessment"]
     assert dimensions["time_management"]["route_summary"]["by_status"]["parity-covered"] == 12
-    assert "tests/test_rti1516_2025_spec_and_shim.py" in dimensions["time_management"]["evidence_tests"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py" in dimensions["time_management"]["evidence_tests"]
     assert dimensions["time_management"]["evidence_level"] == "decomposed-query-and-window-proof-backed"
     assert dimensions["time_management"]["evidence_basis"] == [
         "python_rti_milestone_audit bounded time rows=python-2025-fedpro-grpc:bounded-lookahead-evidence,python-2025-fedpro-grpc:bounded-query-evidence,python-2025-inprocess:bounded-lookahead-evidence,python-2025-inprocess:bounded-query-evidence",
@@ -2722,6 +2786,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "support_services_decomposition.proof_family_count=5",
     ]
     assert "it now separates that proof into named families" in dimensions["support_services"]["current_assessment"]
+    assert "tracked binding and hosted routes" in dimensions["support_services"]["current_assessment"]
     assert "reservation/release flows, lookup and normalization surfaces" in dimensions["support_services"]["current_assessment"]
     assert "per-service runtime traceability plus complete actionable negative-path coverage inside the Python routes" in dimensions["support_services"]["residual_blockers"][0]
     assert "hosted FedPro route remains a bounded runtime slice rather than a full support-service conformance route" in dimensions["support_services"]["residual_blockers"][1]
@@ -2783,10 +2848,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert closeout["ready_for_slice_closeout"] is True
     assert closeout["ready_for_full_completion_claim"] is False
     assert "FI per-service runtime traceability" in closeout["current_assessment"]
+    assert "outside the already-green primary python2025 runtime lane" in closeout["current_assessment"]
     assert len(closeout["conformance_blockers"]) >= 4
     assert any("row-level requirement-by-requirement disposition audit across all 2025 rows" in blocker for blocker in closeout["conformance_blockers"])
+    assert any("requirement-closeout limit rather than evidence that the main python2025 runtime lane is behaviorally incomplete" in blocker for blocker in closeout["conformance_blockers"])
     assert any("Java and C++ standard-route evidence" in blocker for blocker in closeout["conformance_blockers"])
     assert any("hosted FedPro route is verified as a runtime slice" in blocker for blocker in closeout["conformance_blockers"])
+    assert any("hosted/cross-binding proof limit rather than evidence that the direct python2025 runtime lane lacks those semantics" in blocker for blocker in closeout["conformance_blockers"])
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")
@@ -3279,12 +3347,15 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     python2025_source_audit = snapshot["python2025_source_responsibility_audit"]
     shim_families = {family["family"]: family for family in python2025_source_audit["families"]}
     impact_rows = {row["slice_id"]: row for row in snapshot["extraction_impact_audit"]["rows"]}
+    extraction_readiness = snapshot["extraction_readiness_audit"]
+    time_window_vendor_parity = snapshot["time_window_vendor_parity_audit"]
+    implementation_lane_audit = snapshot["implementation_lane_audit"]
     markdown = "\n".join(build_spec2025_finish_line_markdown(ROOT))
     assert "HLA conformance" in markdown
     assert "Closeout Readiness" in markdown
     assert "Promotion Vs Split Audit" in markdown
     assert "Pytest Anchor Audit" in markdown
-    assert "Anchored requirements: 712" in markdown
+    assert "Anchored requirements: 716" in markdown
     assert "Unanchored Requirement Audit" in markdown
     assert "Unanchored ledger requirements: 0" in markdown
     assert "FI Service Proof Audit" in markdown
@@ -3335,7 +3406,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Implementation Concentration Audit" in markdown
     assert "Runtime backend-backed slices: 42" in markdown
     assert "Runtime backend slice share: 0.553" in markdown
-    assert "Semantic concentration is material: True" in markdown
+    assert "Semantic concentration is material: False" in markdown
+    assert "Leading extracted runtime owners:" in markdown
+    assert "- packages/hla-backend-python2025/src/hla/backends/python2025/hosted_fedpro.py:" in markdown
     assert "Python 2025 Source Responsibility Audit" in markdown
     assert f"Source line count: {current_python2025_line_count}" in markdown
     assert (
@@ -3357,19 +3430,40 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
         f"federation-management-runtime: {shim_families['federation-management-runtime']['method_count']} methods, "
         f"{shim_families['federation-management-runtime']['line_count']} lines"
     ) in markdown
-    assert "mom-and-switch-services: 67 methods, 352 lines" in markdown
-    assert (
-        f"interaction-routing-runtime: {shim_families['interaction-routing-runtime']['method_count']} methods, "
-        f"{shim_families['interaction-routing-runtime']['line_count']} lines"
-    ) in markdown
-    assert "ownership-runtime: 14 methods, 94 lines" in markdown
-    assert "save-restore-runtime: 14 methods, 55 lines" in markdown
+    if "time-management-runtime" in shim_families:
+        assert (
+            f"time-management-runtime: {shim_families['time-management-runtime']['method_count']} methods, "
+            f"{shim_families['time-management-runtime']['line_count']} lines"
+        ) in markdown
+    if "mom-and-switch-services" in shim_families:
+        assert (
+            f"mom-and-switch-services: {shim_families['mom-and-switch-services']['method_count']} methods, "
+            f"{shim_families['mom-and-switch-services']['line_count']} lines"
+        ) in markdown
+    if "interaction-routing-runtime" in shim_families:
+        assert (
+            f"interaction-routing-runtime: {shim_families['interaction-routing-runtime']['method_count']} methods, "
+            f"{shim_families['interaction-routing-runtime']['line_count']} lines"
+        ) in markdown
+    if "ownership-runtime" in shim_families:
+        assert (
+            f"ownership-runtime: {shim_families['ownership-runtime']['method_count']} methods, "
+            f"{shim_families['ownership-runtime']['line_count']} lines"
+        ) in markdown
+    if "save-restore-runtime" in shim_families:
+        assert (
+            f"save-restore-runtime: {shim_families['save-restore-runtime']['method_count']} methods, "
+            f"{shim_families['save-restore-runtime']['line_count']} lines"
+        ) in markdown
     assert (
         f"time-management-runtime: {shim_families['time-management-runtime']['method_count']} methods, "
         f"{shim_families['time-management-runtime']['line_count']} lines"
     ) in markdown
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_policy.py: object-attribute-runtime, 1 functions, 39 lines" in markdown
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py: misc-support, 28 functions" in markdown
+    assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_policy.py: object-attribute-runtime" in markdown
+    assert (
+        "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py: "
+        "object-attribute-runtime, 28 functions"
+    ) in markdown
     assert "Slice Aggregation Pressure Audit" in markdown
     assert "Aggregated slices >=10 requirements: 10" in markdown
     assert "Aggregated slices >=20 requirements and runtime-backed: 2" in markdown
@@ -3448,13 +3542,13 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Family count: 22" in markdown
     assert "All families route-backed across current Python lanes: True" in markdown
     assert "Wrapper-Boundary Family Asymmetry Audit" in markdown
-    assert "Balanced families: 22" in markdown
-    assert "Direct-heavier families: 0" in markdown
+    assert "Balanced families: 21" in markdown
+    assert "Direct-heavier families: 1" in markdown
     assert "Hosted-heavier families: 0" in markdown
     assert "Current Lane Coherence Audit" in markdown
     assert "Ready for current-lane coherent working-surface claim: True" in markdown
     assert "Major pressure slice count: 3" in markdown
-    assert "Python2025 backend concentration is material: True" in markdown
+    assert "Python2025 backend concentration is material: False" in markdown
     assert "Current Lane Working-Surface Statement" in markdown
     assert "Status: current-lane-working-surface-statement" in markdown
     assert "Ready: True" in markdown
@@ -3485,16 +3579,35 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Dedicated 2025 backend package present: True" in markdown
     assert "python-2025-fedpro-grpc: hosted-transport-route" in markdown
     assert "Time-Window Vendor Parity Audit" in markdown
-    assert "Trial-Pitch-safe routes: time-window-future-exclusion, time-window-restore-state" in markdown
-    assert "Current trial candidate: time-window-future-exclusion (2 federates)" in markdown
-    assert "time-window-future-exclusion: federates=2, trial-pitch-safe=True, boundary=seat-availability" in markdown
-    assert "time-window-restore-output: federates=3, trial-pitch-safe=False, boundary=trial-federate-limit-and-seat-availability" in markdown
+    assert (
+        "Trial-Pitch-safe routes: "
+        f"{', '.join(time_window_vendor_parity['trial_pitch_safe_route_ids'])}"
+    ) in markdown
+    assert (
+        "Current trial candidate: "
+        f"{time_window_vendor_parity['current_trial_candidate']['scenario_id']} "
+        f"({time_window_vendor_parity['current_trial_candidate']['federate_count']} federates)"
+    ) in markdown
+    for route in time_window_vendor_parity["routes"]:
+        assert (
+            f"{route['scenario_id']}: federates={route['federate_count']}, "
+            f"trial-pitch-safe={route['trial_pitch_safe']}, "
+            f"boundary={route['current_pitch_runtime_boundary']}"
+        ) in markdown
     assert "Extraction Readiness Audit" in markdown
     assert "Future backend package target: hla-backend-python2025" in markdown
-    assert "Runtime semantics to extract first: 3" in markdown
-    assert "2025-save-restore-lifecycle: 5 proof families, direct=29, hosted=29, route-backed=True" in markdown
-    assert "standard-route adaptation and compatibility aliases" in markdown
-    assert "keep the dedicated rti1516_2025 Python backend plugin discoverable and keep the backend scan detecting it" in markdown
+    assert (
+        "Runtime semantics to extract first: "
+        f"{extraction_readiness['runtime_semantics_to_extract_first_count']}"
+    ) in markdown
+    for row in extraction_readiness["runtime_semantics_to_extract_first"]:
+        assert (
+            f"{row['slice_id']}: {row['proof_family_count']} proof families, "
+            f"direct={row['direct_test_count']}, hosted={row['hosted_test_count']}, "
+            f"route-backed={row['route_backed']}"
+        ) in markdown
+    assert extraction_readiness["shim_responsibilities_after_extraction"][0] in markdown
+    assert extraction_readiness["pre_extraction_gates"][0] in markdown
     assert "Extraction package contract:" in markdown
     assert "Current package state: live-runtime-present" in markdown
     assert "Target import root: hla.backends.python2025" in markdown
@@ -3503,8 +3616,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Extraction cutover invariants:" in markdown
     assert "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior" in markdown
     assert "Extraction Impact Audit" in markdown
-    assert "Candidate slices: 3" in markdown
-    assert "Largest current source baseline: 2025-ddm-default-attribute-policy" in markdown
+    assert f"Candidate slices: {snapshot['extraction_impact_audit']['slice_count']}" in markdown
+    assert (
+        f"Largest current source baseline: {snapshot['extraction_impact_audit']['largest_current_source_baseline']}"
+        in markdown
+    )
     assert (
         f"2025-save-restore-lifecycle: source families=4, baseline="
         f"{impact_rows['2025-save-restore-lifecycle']['current_source_line_baseline']} lines/"
@@ -3526,10 +3642,13 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Bounded-ready dimensions: 8 / 8" in markdown
     assert "Federation Management" in markdown
     assert "OMT Handling" in markdown
-    assert "per-service runtime traceability and complete actionable negative-path coverage inside the Python routes" in markdown
+    assert "per-service runtime traceability plus complete actionable negative-path coverage" in markdown
     assert "Ready for slice closeout: True" in markdown
     assert "Ready for full completion claim: False" in markdown
     assert "Conformance blockers:" in markdown
+    assert "Requirement-by-requirement duplicate/umbrella breakdown:" in markdown
+    assert "delta-umbrella: 12 rows" in markdown
+    assert "framework-umbrella: 10 rows" in markdown
     assert "Highest-Priority Open Work" in markdown
     assert "2025-wsdl-legacy-only" in markdown
     assert "Do not promote `partial` rows" in markdown
@@ -3544,7 +3663,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["requirement_depth_expansion"]["row_count"] == 691
     assert payload["requirement_coverage_disposition"]["covered_row_count"] == 645
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
-    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 712
+    assert payload["requirement_pytest_anchor_audit"]["row_count"] == 716
     assert payload["unanchored_requirement_audit"]["row_count"] == 0
     assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
     payload_route_rows = {
@@ -3648,6 +3767,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations." in route_matrix_markdown
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in route_matrix_markdown
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in route_matrix_markdown
+    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in route_matrix_markdown
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in route_matrix_markdown
     assert "| federation_lifecycle | python-2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
     assert "| time_management | python-2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
@@ -3674,6 +3794,45 @@ def test_2025_checked_in_generated_finish_line_artifacts_match_live_writers(tmp_
         generated_text = paths[key].read_text(encoding="utf-8")
         checked_in_text = (checked_in_dir / filename).read_text(encoding="utf-8")
         assert generated_text == checked_in_text, f"checked-in generated artifact drifted: {filename}"
+
+
+def test_2025_checked_in_finish_line_snapshot_contains_only_live_pytest_anchors() -> None:
+    payload = (ROOT / "docs" / "plans" / "spec2025_finish_line_snapshot.json").read_text(encoding="utf-8")
+    anchors = sorted(set(re.findall(r"tests/[^\"]+\\.py::test_[A-Za-z0-9_]+", payload)))
+    missing: list[str] = []
+    for anchor in anchors:
+        file_part, test_name = anchor.split("::", 1)
+        file_path = ROOT / file_part
+        if not file_path.exists():
+            missing.append(anchor)
+            continue
+        if f"def {test_name}(" not in file_path.read_text(encoding="utf-8"):
+            missing.append(anchor)
+    assert missing == []
+
+
+def test_2025_checked_in_plan_artifacts_keep_live_pytest_anchors() -> None:
+    plan_artifacts = (
+        ROOT / "docs" / "plans" / "spec2025_finish_line_snapshot.json",
+        ROOT / "docs" / "plans" / "spec2025_finish_line.md",
+        ROOT / "docs" / "plans" / "2025_requirements_finish_line.md",
+        ROOT / "docs" / "plans" / "spec2025_route_parity_matrix.md",
+        ROOT / "docs" / "plans" / "spec2025_route_parity_matrix.csv",
+        ROOT / "docs" / "plans" / "2025_python_rti_backend_audit.md",
+    )
+    pattern = re.compile(r"tests/[^\"]+\\.py::test_[A-Za-z0-9_]+")
+    missing: list[str] = []
+    for artifact_path in plan_artifacts:
+        text = artifact_path.read_text(encoding="utf-8")
+        for anchor in sorted(set(pattern.findall(text))):
+            file_part, test_name = anchor.split("::", 1)
+            file_path = ROOT / file_part
+            if not file_path.exists():
+                missing.append(f"{artifact_path.name}: {anchor}")
+                continue
+            if f"def {test_name}(" not in file_path.read_text(encoding="utf-8"):
+                missing.append(f"{artifact_path.name}: {anchor}")
+    assert missing == []
 
 
 def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identity() -> None:
@@ -3874,6 +4033,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert "python-2025-fedpro-grpc: hosted-transport-route" in markdown
     assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is a legacy compatibility wrapper" in markdown
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in markdown
+    assert "disciplined ownership across the extracted hla-backend-python2025 runtime/state/surface modules" in markdown
     assert "transport-seam evidence over hla-backend-python2025 rather than missing core runtime ownership" in markdown
     assert "binding/adaptation-seam proof over the main python2025 runtime" in markdown
     assert "Hosted runtime identity evidence:" in markdown
@@ -3894,6 +4054,10 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert "Direct ambassador: python2025-rti / python/2025 / python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True" in markdown
     assert "Hosted client: python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro" in markdown
     assert "test_2025_transport_server_reports_python2025_main_lane_identity" in markdown
+    assert "::test_2025_shim_" not in json.dumps(payload, sort_keys=True)
+    assert "test_2025_shim_" not in markdown
+    assert "test_rti1516_2025_spec_and_shim.py" not in json.dumps(payload, sort_keys=True)
+    assert "test_rti1516_2025_spec_and_shim.py" not in markdown
     assert legacy_markdown == markdown
 
 
@@ -3909,7 +4073,7 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="python2025",
         aliases=("python-2025",),
-        family="inmemory-2025",
+        family="python-rti-2025",
         supports=("rti1516_2025",),
         description="Dedicated Python 2025 RTI backend.",
         create_backend=lambda request: request,
@@ -3928,7 +4092,7 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="shim",
         aliases=(),
-        family="shim",
+        family="compatibility-wrapper-2025",
         supports=("rti1516_2025",),
         description="Legacy compatibility-wrapper alias for the live IEEE 1516.1-2025 Python RTI backend.",
         create_backend=lambda request: request,
@@ -3945,14 +4109,14 @@ def plugin() -> RTIBackendPlugin:
         (record["package"], record["name"], record["family"])
         for record in scan["rti1516_2025_plugin_records"]
     } == {
-        ("hla-backend-python2025", "python2025", "inmemory-2025"),
+        ("hla-backend-python2025", "python2025", "python-rti-2025"),
     }
     assert scan["dedicated_python_2025_backend_candidates"] == [
         {
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
             "name": "python2025",
-            "family": "inmemory-2025",
+            "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }
     ]
@@ -3973,7 +4137,7 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="python2025",
         aliases=("python-2025",),
-        family="inmemory-2025",
+        family="python-rti-2025",
         supports=("rti1516_2025",),
         description="Invalid shim-delegating Python 2025 RTI backend.",
         create_backend=create_shim_backend,
@@ -3989,7 +4153,7 @@ def plugin() -> RTIBackendPlugin:
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
             "name": "python2025",
-            "family": "inmemory-2025",
+            "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }
     ]

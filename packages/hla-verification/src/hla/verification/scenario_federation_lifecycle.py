@@ -18,6 +18,16 @@ from hla.rti1516e.exceptions import (
     FederationExecutionDoesNotExist,
     InconsistentFDD,
 )
+from hla.rti1516_2025.exceptions import (
+    AlreadyConnected as AlreadyConnected2025,
+    CouldNotOpenFOM as CouldNotOpenFOM2025,
+    ErrorReadingFOM as ErrorReadingFOM2025,
+    FederateIsExecutionMember as FederateIsExecutionMember2025,
+    FederatesCurrentlyJoined as FederatesCurrentlyJoined2025,
+    FederationExecutionAlreadyExists as FederationExecutionAlreadyExists2025,
+    FederationExecutionDoesNotExist as FederationExecutionDoesNotExist2025,
+    InconsistentFOM as InconsistentFOM2025,
+)
 from .scenario_support import drain_callbacks, wait_for_callback, wait_for_callback_count
 
 
@@ -389,25 +399,25 @@ def run_fom_integrity_negative_scenario(
 
         try:
             leader_rti.create_federation_execution(f"{config.federation_name}-missing", [missing_fom])
-        except CouldNotOpenFDD as exc:
+        except (CouldNotOpenFDD, CouldNotOpenFOM2025) as exc:
             create_missing = exc
         else:  # pragma: no cover - scenario contract
-            raise AssertionError("Expected missing create FOM to raise CouldNotOpenFDD")
+            raise AssertionError("Expected missing create FOM to raise CouldNotOpenFDD/CouldNotOpenFOM")
 
         try:
             leader_rti.create_federation_execution(f"{config.federation_name}-bad", [bad_fom])
-        except ErrorReadingFDD as exc:
+        except (ErrorReadingFDD, ErrorReadingFOM2025) as exc:
             create_bad = exc
         else:  # pragma: no cover - scenario contract
-            raise AssertionError("Expected malformed create FOM to raise ErrorReadingFDD")
+            raise AssertionError("Expected malformed create FOM to raise ErrorReadingFDD/ErrorReadingFOM")
 
         transactional_federation_name = f"{config.federation_name}-transactional"
         try:
             leader_rti.create_federation_execution(transactional_federation_name, [primary_fom, conflicting_fom])
-        except InconsistentFDD as exc:
+        except (InconsistentFDD, InconsistentFOM2025) as exc:
             create_inconsistent = exc
         else:  # pragma: no cover - scenario contract
-            raise AssertionError("Expected conflicting create FOM set to raise InconsistentFDD")
+            raise AssertionError("Expected conflicting create FOM set to raise InconsistentFDD/InconsistentFOM")
 
         leader_rti.create_federation_execution(transactional_federation_name, [primary_fom])
         leader_rti.destroy_federation_execution(transactional_federation_name)
@@ -426,10 +436,10 @@ def run_fom_integrity_negative_scenario(
                 config.federation_name,
                 [missing_fom],
             )
-        except CouldNotOpenFDD as exc:
+        except (CouldNotOpenFDD, CouldNotOpenFOM2025) as exc:
             join_missing = exc
         else:  # pragma: no cover - scenario contract
-            raise AssertionError("Expected missing join FOM to raise CouldNotOpenFDD")
+            raise AssertionError("Expected missing join FOM to raise CouldNotOpenFDD/CouldNotOpenFOM")
 
         try:
             wing_rti.join_federation_execution(
@@ -438,10 +448,10 @@ def run_fom_integrity_negative_scenario(
                 config.federation_name,
                 [bad_fom],
             )
-        except ErrorReadingFDD as exc:
+        except (ErrorReadingFDD, ErrorReadingFOM2025) as exc:
             join_bad = exc
         else:  # pragma: no cover - scenario contract
-            raise AssertionError("Expected malformed join FOM to raise ErrorReadingFDD")
+            raise AssertionError("Expected malformed join FOM to raise ErrorReadingFDD/ErrorReadingFOM")
 
         try:
             wing_rti.join_federation_execution(
@@ -450,10 +460,10 @@ def run_fom_integrity_negative_scenario(
                 config.federation_name,
                 [conflicting_fom],
             )
-        except InconsistentFDD as exc:
+        except (InconsistentFDD, InconsistentFOM2025) as exc:
             join_inconsistent = exc
         else:  # pragma: no cover - scenario contract
-            raise AssertionError("Expected conflicting join FOM set to raise InconsistentFDD")
+            raise AssertionError("Expected conflicting join FOM set to raise InconsistentFDD/InconsistentFOM")
 
         wing_handle = wing_rti.join_federation_execution(
             config.second_federate_name,
@@ -498,7 +508,7 @@ def run_federation_lifecycle_negative_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
-    except AlreadyConnected as exc:
+    except (AlreadyConnected, AlreadyConnected2025) as exc:
         already_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected a repeated connect attempt to raise AlreadyConnected")
@@ -514,7 +524,7 @@ def run_federation_lifecycle_negative_scenario(
             list(config.fom_modules),
             config.logical_time_implementation_name,
         )
-    except FederationExecutionAlreadyExists as exc:
+    except (FederationExecutionAlreadyExists, FederationExecutionAlreadyExists2025) as exc:
         duplicate_create = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected a duplicate create attempt to raise FederationExecutionAlreadyExists")
@@ -526,7 +536,7 @@ def run_federation_lifecycle_negative_scenario(
     )
     try:
         leader_rti.disconnect()
-    except FederateIsExecutionMember as exc:
+    except (FederateIsExecutionMember, FederateIsExecutionMember2025) as exc:
         disconnect_while_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected disconnect while joined to raise FederateIsExecutionMember")
@@ -539,7 +549,7 @@ def run_federation_lifecycle_negative_scenario(
     )
     try:
         leader_rti.destroy_federation_execution(config.federation_name)
-    except FederatesCurrentlyJoined as exc:
+    except (FederatesCurrentlyJoined, FederatesCurrentlyJoined2025) as exc:
         destroy_with_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected destroy with joined members to raise FederatesCurrentlyJoined")
@@ -549,7 +559,7 @@ def run_federation_lifecycle_negative_scenario(
     leader_rti.destroy_federation_execution(config.federation_name)
     try:
         leader_rti.destroy_federation_execution(config.federation_name)
-    except FederationExecutionDoesNotExist as exc:
+    except (FederationExecutionDoesNotExist, FederationExecutionDoesNotExist2025) as exc:
         destroy_missing = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected destroy of missing federation to raise FederationExecutionDoesNotExist")

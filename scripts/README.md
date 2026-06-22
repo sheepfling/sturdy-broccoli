@@ -169,9 +169,10 @@ These are reference families, not parallel front doors.
 
 ### Evidence and Analysis
 
-- `run_two_federate_suite.py`: composite two-federate artifact packet through the repo-level workspace wrapper, including vendor launcher injection when vendor packages are installed
+- `run_two_federate_suite.py`: composite two-federate artifact packet through the repo-level workspace wrapper, including vendor launcher injection when vendor packages are installed plus the trial-safe time-window future-exclusion and restore-state proofs
 - `run_target_radar_backend_matrix.py`: target/radar backend diagnostic packet
 - `run_target_radar_proof.py`: target/radar proof packet
+- `run_spec2025_finish_line.py`: checked-in IEEE 1516.1-2025 finish-line, verification-matrix, and route-parity artifact refresh
 - `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
 - `generate_compliance_artifacts.py`: compliance and requirements packet
 - `update_rti_options_matrix.py`: generated backend-alias section for `docs/rti_options_and_test_matrix.md`

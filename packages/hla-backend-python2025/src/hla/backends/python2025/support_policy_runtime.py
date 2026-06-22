@@ -84,7 +84,12 @@ def get_automatic_resign_directive(backend: Any) -> ResignAction:
 
 def set_automatic_resign_directive(backend: Any, value: ResignAction) -> None:
     try:
-        backend._automatic_resign_directive = value if isinstance(value, ResignAction) else ResignAction(value)
+        if isinstance(value, ResignAction):
+            backend._automatic_resign_directive = value
+        elif hasattr(value, "name"):
+            backend._automatic_resign_directive = ResignAction[getattr(value, "name")]
+        else:
+            backend._automatic_resign_directive = ResignAction(value)
     except Exception as exc:
         raise RTIinternalError(f"setAutomaticResignDirective requires a ResignAction value; got {value!r}") from exc
 

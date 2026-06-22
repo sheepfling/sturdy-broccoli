@@ -143,6 +143,8 @@ def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
         "negotiated_ownership",
         "save_restore",
         "ddm",
+        "time_window_future_exclusion",
+        "time_window_restore_state",
     ]
     lane_map = {scenario: index for index, scenario in enumerate(scenarios)}
     lane_height = 64
@@ -170,6 +172,8 @@ def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
         "negotiated_ownership": "Negotiated ownership",
         "save_restore": "Save / restore",
         "ddm": "DDM region filter",
+        "time_window_future_exclusion": "Time window future exclusion",
+        "time_window_restore_state": "Time window restore state",
     }
     event_nodes: list[str] = []
     for row in timeline_rows:

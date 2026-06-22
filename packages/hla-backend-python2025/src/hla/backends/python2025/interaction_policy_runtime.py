@@ -70,6 +70,9 @@ def interaction_transportation_for(rti: Any, interaction_class_name: str) -> Any
 def coerce_order_type(order_type: Any) -> OrderType:
     if isinstance(order_type, OrderType):
         return order_type
+    member_name = getattr(order_type, "name", None)
+    if isinstance(member_name, str) and member_name in OrderType.__members__:
+        return OrderType[member_name]
     try:
         return OrderType(order_type)
     except Exception as exc:

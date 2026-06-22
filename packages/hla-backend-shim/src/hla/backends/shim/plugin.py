@@ -11,14 +11,14 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="shim",
         aliases=(),
-        family="shim",
+        family="compatibility-wrapper-2025",
         supports=("rti1516_2025",),
         description="Legacy compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation.",
         create_backend=create_shim_backend,
         discover=lambda: RTIBackendDiscovery(
             name="shim",
             aliases=(),
-            family="shim",
+            family="compatibility-wrapper-2025",
             supports=("rti1516_2025",),
             description="Legacy compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation.",
             available=True,

@@ -15,8 +15,32 @@ from hla.rti1516e.exceptions import (
     RestoreInProgress,
     SaveInProgress,
 )
+from hla.rti1516_2025.exceptions import (
+    AttributeNotDefined as AttributeNotDefined2025,
+    InvalidAttributeHandle as InvalidAttributeHandle2025,
+    AttributeNotOwned as AttributeNotOwned2025,
+    InvalidInteractionClassHandle as InvalidInteractionClassHandle2025,
+    InvalidTransportationTypeHandle as InvalidTransportationType2025,
+    ObjectInstanceNotKnown as ObjectInstanceNotKnown2025,
+    RestoreInProgress as RestoreInProgress2025,
+    SaveInProgress as SaveInProgress2025,
+)
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    return {_handle_value(key): value for key, value in left.items()} == {
+        _handle_value(key): value for key, value in right.items()
+    }
 
 
 @dataclass(frozen=True)
@@ -95,10 +119,16 @@ def run_transportation_type_scenario(
     assert confirm_interaction is not None
     assert report_interaction is not None
 
-    assert confirm_attribute.args == (object_instance, {attribute}, transport)
-    assert report_attribute.args == (object_instance, attribute, transport)
-    assert confirm_interaction.args == (interaction, transport)
-    assert report_interaction.args[1:] == (interaction, transport)
+    assert _same_handle_value(confirm_attribute.args[0], object_instance)
+    assert {_handle_value(item) for item in confirm_attribute.args[1]} == {_handle_value(attribute)}
+    assert _same_handle_value(confirm_attribute.args[2], transport)
+    assert _same_handle_value(report_attribute.args[0], object_instance)
+    assert _same_handle_value(report_attribute.args[1], attribute)
+    assert _same_handle_value(report_attribute.args[2], transport)
+    assert _same_handle_value(confirm_interaction.args[0], interaction)
+    assert _same_handle_value(confirm_interaction.args[1], transport)
+    assert _same_handle_value(report_interaction.args[1], interaction)
+    assert _same_handle_value(report_interaction.args[2], transport)
 
     return {
         "owner_handle": owner_handle,
@@ -185,14 +215,20 @@ def run_transportation_type_restore_persistence_scenario(
     pre_restore_interaction = observer_federate.last_callback("receiveInteraction")
     assert len(pre_restore_reflects) == 2
     assert pre_restore_interaction is not None
-    reflected_by_transport = {record.args[4]: record.args[1] for record in pre_restore_reflects}
-    assert reflected_by_transport[reliable_transport] == {observer_reliable_attribute: config.reliable_attribute_payload}
-    assert reflected_by_transport[best_effort_transport] == {observer_best_effort_attribute: config.best_effort_attribute_payload}
-    assert pre_restore_interaction.args[0] == observer_interaction
-    assert pre_restore_interaction.args[1] == {observer_parameter: config.interaction_payload}
+    reflected_by_transport = {_handle_value(record.args[4]): record.args[1] for record in pre_restore_reflects}
+    assert _same_handle_map_values(
+        reflected_by_transport[_handle_value(reliable_transport)],
+        {observer_reliable_attribute: config.reliable_attribute_payload},
+    )
+    assert _same_handle_map_values(
+        reflected_by_transport[_handle_value(best_effort_transport)],
+        {observer_best_effort_attribute: config.best_effort_attribute_payload},
+    )
+    assert _same_handle_value(pre_restore_interaction.args[0], observer_interaction)
+    assert _same_handle_map_values(pre_restore_interaction.args[1], {observer_parameter: config.interaction_payload})
     assert pre_restore_interaction.args[2] == config.interaction_tag
     assert pre_restore_interaction.args[3] is OrderType.RECEIVE
-    assert pre_restore_interaction.args[4] == best_effort_transport
+    assert _same_handle_value(pre_restore_interaction.args[4], best_effort_transport)
 
     owner_rti.request_federation_save(config.save_name)
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
@@ -238,11 +274,12 @@ def run_transportation_type_restore_persistence_scenario(
     post_restore_attribute_reports = owner_federate.callbacks_named("reportAttributeTransportationType")
     post_restore_interaction_report = owner_federate.last_callback("reportInteractionTransportationType")
     assert len(post_restore_attribute_reports) >= 2
-    reported_attribute_transports = {record.args[1]: record.args[2] for record in post_restore_attribute_reports}
-    assert reported_attribute_transports[reliable_attribute] == reliable_transport
-    assert reported_attribute_transports[best_effort_attribute] == best_effort_transport
+    reported_attribute_transports = {_handle_value(record.args[1]): record.args[2] for record in post_restore_attribute_reports}
+    assert _same_handle_value(reported_attribute_transports[_handle_value(reliable_attribute)], reliable_transport)
+    assert _same_handle_value(reported_attribute_transports[_handle_value(best_effort_attribute)], best_effort_transport)
     assert post_restore_interaction_report is not None
-    assert post_restore_interaction_report.args[1:] == (interaction, best_effort_transport)
+    assert _same_handle_value(post_restore_interaction_report.args[1], interaction)
+    assert _same_handle_value(post_restore_interaction_report.args[2], best_effort_transport)
 
     owner_rti.update_attribute_values(
         object_instance,
@@ -262,11 +299,17 @@ def run_transportation_type_restore_persistence_scenario(
     post_restore_reflects = observer_federate.callbacks_named("reflectAttributeValues")
     post_restore_interaction = observer_federate.last_callback("receiveInteraction")
     assert len(post_restore_reflects) == 2
-    post_restore_by_transport = {record.args[4]: record.args[1] for record in post_restore_reflects}
-    assert post_restore_by_transport[reliable_transport] == {observer_reliable_attribute: config.reliable_attribute_payload}
-    assert post_restore_by_transport[best_effort_transport] == {observer_best_effort_attribute: config.best_effort_attribute_payload}
+    post_restore_by_transport = {_handle_value(record.args[4]): record.args[1] for record in post_restore_reflects}
+    assert _same_handle_map_values(
+        post_restore_by_transport[_handle_value(reliable_transport)],
+        {observer_reliable_attribute: config.reliable_attribute_payload},
+    )
+    assert _same_handle_map_values(
+        post_restore_by_transport[_handle_value(best_effort_transport)],
+        {observer_best_effort_attribute: config.best_effort_attribute_payload},
+    )
     assert post_restore_interaction is not None
-    assert post_restore_interaction.args[4] == best_effort_transport
+    assert _same_handle_value(post_restore_interaction.args[4], best_effort_transport)
 
     return {
         "owner_handle": owner_handle,
@@ -331,23 +374,23 @@ def run_transportation_type_rejection_scenario(
     owner_federate.clear()
     observer_federate.clear()
 
-    with _expect_exception(ObjectInstanceNotKnown):
+    with _expect_exception(ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         owner_rti.request_attribute_transportation_type_change(invalid_object_instance, {attribute}, reliable_transport)
-    with _expect_exception(AttributeNotDefined):
+    with _expect_exception(AttributeNotDefined, AttributeNotDefined2025, InvalidAttributeHandle2025):
         owner_rti.request_attribute_transportation_type_change(object_instance, {invalid_attribute}, reliable_transport)
-    with _expect_exception(InvalidTransportationType):
+    with _expect_exception(InvalidTransportationType, InvalidTransportationType2025):
         owner_rti.request_attribute_transportation_type_change(object_instance, {attribute}, invalid_transport)
-    with _expect_exception(AttributeNotOwned):
+    with _expect_exception(AttributeNotOwned, AttributeNotOwned2025):
         observer_rti.request_attribute_transportation_type_change(object_instance, {observer_attribute}, reliable_transport)
-    with _expect_exception(ObjectInstanceNotKnown):
+    with _expect_exception(ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         owner_rti.query_attribute_transportation_type(invalid_object_instance, attribute)
-    with _expect_exception(AttributeNotDefined):
+    with _expect_exception(AttributeNotDefined, AttributeNotDefined2025, InvalidAttributeHandle2025):
         owner_rti.query_attribute_transportation_type(object_instance, invalid_attribute)
-    with _expect_exception(InvalidInteractionClassHandle):
+    with _expect_exception(InvalidInteractionClassHandle, InvalidInteractionClassHandle2025):
         owner_rti.request_interaction_transportation_type_change(invalid_interaction, reliable_transport)
-    with _expect_exception(InvalidTransportationType):
+    with _expect_exception(InvalidTransportationType, InvalidTransportationType2025):
         owner_rti.request_interaction_transportation_type_change(interaction, invalid_transport)
-    with _expect_exception(InvalidInteractionClassHandle):
+    with _expect_exception(InvalidInteractionClassHandle, InvalidInteractionClassHandle2025):
         owner_rti.query_interaction_transportation_type(invalid_interaction)
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
 
@@ -359,13 +402,13 @@ def run_transportation_type_rejection_scenario(
 
     owner_rti.request_federation_save(config.save_name)
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
-    with _expect_exception(SaveInProgress):
+    with _expect_exception(SaveInProgress, SaveInProgress2025):
         owner_rti.request_attribute_transportation_type_change(object_instance, {attribute}, reliable_transport)
-    with _expect_exception(SaveInProgress):
+    with _expect_exception(SaveInProgress, SaveInProgress2025):
         owner_rti.query_attribute_transportation_type(object_instance, attribute)
-    with _expect_exception(SaveInProgress):
+    with _expect_exception(SaveInProgress, SaveInProgress2025):
         owner_rti.request_interaction_transportation_type_change(interaction, reliable_transport)
-    with _expect_exception(SaveInProgress):
+    with _expect_exception(SaveInProgress, SaveInProgress2025):
         owner_rti.query_interaction_transportation_type(interaction)
 
     owner_rti.federate_save_begun()
@@ -376,13 +419,13 @@ def run_transportation_type_rejection_scenario(
 
     owner_rti.request_federation_restore(config.save_name)
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
-    with _expect_exception(RestoreInProgress):
+    with _expect_exception(RestoreInProgress, RestoreInProgress2025):
         owner_rti.request_attribute_transportation_type_change(object_instance, {attribute}, reliable_transport)
-    with _expect_exception(RestoreInProgress):
+    with _expect_exception(RestoreInProgress, RestoreInProgress2025):
         owner_rti.query_attribute_transportation_type(object_instance, attribute)
-    with _expect_exception(RestoreInProgress):
+    with _expect_exception(RestoreInProgress, RestoreInProgress2025):
         owner_rti.request_interaction_transportation_type_change(interaction, reliable_transport)
-    with _expect_exception(RestoreInProgress):
+    with _expect_exception(RestoreInProgress, RestoreInProgress2025):
         owner_rti.query_interaction_transportation_type(interaction)
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
 
@@ -406,7 +449,7 @@ def run_transportation_type_rejection_scenario(
 
 
 class _expect_exception:
-    def __init__(self, expected: type[BaseException]) -> None:
+    def __init__(self, *expected: type[BaseException]) -> None:
         self.expected = expected
 
     def __enter__(self) -> None:
@@ -414,8 +457,9 @@ class _expect_exception:
 
     def __exit__(self, exc_type: type[BaseException] | None, exc: BaseException | None, _tb: Any) -> bool:
         if exc_type is None:
-            raise AssertionError(f"Expected {self.expected.__name__} to be raised")
-        if not issubclass(exc_type, self.expected):
+            expected_names = ", ".join(exc.__name__ for exc in self.expected)
+            raise AssertionError(f"Expected one of {expected_names} to be raised")
+        if not any(issubclass(exc_type, candidate) for candidate in self.expected):
             return False
         return True
 

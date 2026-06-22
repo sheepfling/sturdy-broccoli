@@ -18,6 +18,9 @@ That command:
 - runs the composite two-federate suite
 - writes artifacts under `analysis/two_federate_suite/`
 - exercises the pair-based scenario flow used by the verification packet
+- includes the trial-safe two-federate 2025 time-window `future-exclusion`
+  and `restore-state` proofs alongside the exchange, ownership,
+  save/restore, DDM, and Target/Radar paths
 - delegates into the shared runner at
   `packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py`
 
@@ -55,6 +58,8 @@ This is the best entry point when you want to:
 - explain how the repo exercises two federates together
 - point someone at the first runnable artifact-producing example
 - show where the generated report and CSV/SVG artifacts land
+- exercise the smallest reusable time-window proofs that can also be replayed
+  against constrained vendor routes such as the current Pitch two-federate lane
 
 For IEEE 1516.1-2025 work, remember that the scenario may run over the main full
 `python2025` lane or bounded hosted route variants, but `hla-backend-python2025`

@@ -121,3 +121,26 @@ def test_tools_test_surface_run_python_routes_2025_dry_run_writes_summary_artifa
     assert all(step["status"] == "planned" for step in payload["steps"])
     assert (ROOT / payload["artifacts"]["json"]).is_file()
     assert (ROOT / payload["artifacts"]["markdown"]).is_file()
+
+
+def test_tools_test_surface_run_matrix_dry_run_writes_summary_artifacts() -> None:
+    result = subprocess.run(
+        ["bash", "tools/test-surface", "run", "matrix", "--dry-run", "--json"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["lane"] == "matrix"
+    assert payload["status"] == "passed"
+    assert payload["dry_run"] is True
+    assert payload["steps"][0]["argv"] == ["./tools/compliance", "generate"]
+    assert payload["steps"][1]["argv"] == ["python3", "scripts/run_spec2025_finish_line.py"]
+    assert payload["steps"][2]["argv"] == ["./tools/compliance", "discover", "--show-backlog"]
+    assert payload["steps"][3]["argv"] == ["./tools/section8-gate"]
+    assert all(step["status"] == "planned" for step in payload["steps"])
+    assert (ROOT / payload["artifacts"]["json"]).is_file()
+    assert (ROOT / payload["artifacts"]["markdown"]).is_file()

@@ -14,6 +14,10 @@ from hla.verification.scenario_ownership import (
     run_negotiated_attribute_ownership_scenario,
 )
 from hla.verification.scenario_sync import run_synchronization_scenario
+from hla.verification.scenario_target_radar_time import (
+    run_target_radar_time_window_future_exclusion_scenario,
+    run_target_radar_time_window_restore_state_scenario,
+)
 from hla.verification.two_federate_suite_configs import (
     _exchange_config,
     _negotiated_config,
@@ -43,6 +47,8 @@ from hla.verification.two_federate_suite_writers import (
 from .two_federate_suite_profiles import RuntimeProfileLauncher, build_profile_artifacts
 from .two_federate_target_radar import (
     build_two_federate_target_radar_ddm_config,
+    build_two_federate_target_radar_future_exclusion_config,
+    build_two_federate_target_radar_restore_state_config,
     build_two_federate_target_radar_summary,
 )
 from .two_federate_target_radar_artifacts import (
@@ -62,6 +68,8 @@ _SUITE_HOOKS = TwoFederateSuiteHooks(
     negotiated_config_factory=_negotiated_config,
     save_restore_config_factory=_save_restore_config,
     ddm_config_factory=_ddm_config,
+    future_exclusion_config_factory=build_two_federate_target_radar_future_exclusion_config,
+    restore_state_config_factory=build_two_federate_target_radar_restore_state_config,
     run_exchange_scenario=run_two_federate_exchange_scenario,
     assert_exchange_history=assert_two_federate_exchange_callback_history,
     run_sync_scenario=run_synchronization_scenario,
@@ -69,6 +77,8 @@ _SUITE_HOOKS = TwoFederateSuiteHooks(
     run_negotiated_scenario=run_negotiated_attribute_ownership_scenario,
     run_save_restore_scenario=run_suite_save_restore_scenario,
     run_ddm_scenario=run_suite_ddm_scenario,
+    run_future_exclusion_scenario=run_target_radar_time_window_future_exclusion_scenario,
+    run_restore_state_scenario=run_target_radar_time_window_restore_state_scenario,
     extension_name="target_radar",
     extension_summary_factory=build_two_federate_target_radar_summary,
 )
@@ -115,6 +125,8 @@ def run_two_federate_suite(
         "negotiated_ownership": primary_summary["negotiated_ownership"],
         "save_restore": primary_summary["save_restore"],
         "ddm": primary_summary["ddm"],
+        "time_window_future_exclusion": primary_summary["time_window_future_exclusion"],
+        "time_window_restore_state": primary_summary["time_window_restore_state"],
         "target_radar": primary_summary["target_radar"],
         "callback_rows": primary_summary["callback_rows"],
         "timeline_rows": primary_summary["timeline_rows"],

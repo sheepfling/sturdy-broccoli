@@ -134,11 +134,11 @@ def test_clause6_service_conformance_evidence_prefers_shared_harness_scenarios()
         ),
         ("RTIambassador", "requestAttributeValueUpdate"): (
             "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
-            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         ),
         ("RTIambassador", "queryAttributeTransportationType"): (
             "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         ),
         ("FederateAmbassador", "discoverObjectInstance"): (
             "packages/hla-verification/src/hla.verification/scenario_discovery_class.py::run_discovery_class_scenario",
@@ -146,7 +146,7 @@ def test_clause6_service_conformance_evidence_prefers_shared_harness_scenarios()
         ),
         ("FederateAmbassador", "reportAttributeTransportationType"): (
             "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
-            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         ),
     }
 

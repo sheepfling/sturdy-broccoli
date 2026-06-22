@@ -9,6 +9,17 @@ from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import InvalidLogicalTime, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
 from hla.rti1516e.datatypes import MessageRetractionReturn
 from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516_2025.exceptions import (
+    InvalidLogicalTime as InvalidLogicalTime2025,
+    TimeConstrainedAlreadyEnabled as TimeConstrainedAlreadyEnabled2025,
+    TimeRegulationAlreadyEnabled as TimeRegulationAlreadyEnabled2025,
+)
+
+
+def _is_message_retraction_return(value: Any) -> bool:
+    if isinstance(value, MessageRetractionReturn):
+        return True
+    return type(value).__name__ == "MessageRetractionReturn" and hasattr(value, "handle")
 
 
 def vendor_smoke_fom_path() -> str:
@@ -225,7 +236,7 @@ def run_section8_early_timestamp_send_case(
                 config.first_tag,
                 zero_time,
             )
-        except InvalidLogicalTime as exc:
+        except (InvalidLogicalTime, InvalidLogicalTime2025) as exc:
             update_error = exc
 
         interaction_error = None
@@ -236,7 +247,7 @@ def run_section8_early_timestamp_send_case(
                 config.second_tag,
                 zero_time,
             )
-        except InvalidLogicalTime as exc:
+        except (InvalidLogicalTime, InvalidLogicalTime2025) as exc:
             interaction_error = exc
 
         return {
@@ -394,7 +405,7 @@ def run_section8_available_and_retraction_case(
             config.retracted_tag,
             config.second_timestamp,
         )
-        assert isinstance(retraction, MessageRetractionReturn)
+        assert _is_message_retraction_return(retraction)
         publisher.retract(retraction.handle)
 
         publisher.time_advance_request(config.sender_advance_time)
@@ -583,7 +594,7 @@ def run_section8_request_retraction_case(
             config.first_tag,
             config.first_timestamp,
         )
-        assert isinstance(sent, MessageRetractionReturn)
+        assert _is_message_retraction_return(sent)
 
         publisher.time_advance_request(config.sender_advance_time)
         drain_callbacks(publisher, subscriber)
@@ -634,13 +645,13 @@ def run_section8_duplicate_enable_rejection_case(
         regulation_error = None
         try:
             publisher.enable_time_regulation(config.lookahead)
-        except TimeRegulationAlreadyEnabled as exc:
+        except (TimeRegulationAlreadyEnabled, TimeRegulationAlreadyEnabled2025) as exc:
             regulation_error = exc
 
         constrained_error = None
         try:
             subscriber.enable_time_constrained()
-        except TimeConstrainedAlreadyEnabled as exc:
+        except (TimeConstrainedAlreadyEnabled, TimeConstrainedAlreadyEnabled2025) as exc:
             constrained_error = exc
 
         drain_callbacks(publisher, subscriber)

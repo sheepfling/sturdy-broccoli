@@ -16,8 +16,16 @@ If you only need the shortest on-ramp:
 5. use `./tools/python verify-main-2025` as the normal direct `python2025` proof lane
 6. read [`networked_rti_python.md`](networked_rti_python.md) only if you need the bounded hosted 2025 route or its parity/hygiene lane
 7. use `./tools/python verify-routes-2025` when you need the bounded hosted `python-2025-fedpro-grpc` hygiene lane
-8. read [`verification/time_model_compliance.md`](verification/time_model_compliance.md) when the question is time, lookahead, GALT/LITS, or save/restore window proof
-9. read [`package_layout.md`](package_layout.md) if you need the package hierarchy first
+8. run `python3 scripts/run_spec2025_finish_line.py` when you need to refresh the checked-in 2025 finish-line and route-parity artifacts after proof-lane changes
+9. read [`verification/time_model_compliance.md`](verification/time_model_compliance.md) when the question is time, lookahead, GALT/LITS, or save/restore window proof
+10. read [`package_layout.md`](package_layout.md) if you need the package hierarchy first
+
+For 2025 work, keep the ownership rule simple:
+
+- `hla-backend-python2025` is the implementation lane
+- `hla-backend-shim` is wrapper-only compatibility code
+- `verify-main-2025` is the default proof path
+- `verify-routes-2025` is the hosted-route extension over that same runtime
 
 ## Start Here
 
@@ -27,7 +35,9 @@ If you only need the shortest on-ramp:
 - [python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python2025` RTI lane
 - [networked_rti_python.md](networked_rti_python.md): bounded hosted `python-2025-fedpro-grpc` route over the main `python2025` lane, with concrete entrypoints and usage shape
 - [../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`
+- [../scripts/run_spec2025_finish_line.py](../scripts/run_spec2025_finish_line.py): regenerate the checked-in 2025 finish-line and route-parity evidence bundle
 - [verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, GALT/LITS, and radar-window proof front door for the primary 2025 Python RTI lane
+- [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [language_shim_routes.md](language_shim_routes.md): Java/C++ standard-surface binding routes and evidence contract
 - [java_toolchain.md](java_toolchain.md): Java discovery, required tools, and Java shim artifact inventory

@@ -10,14 +10,14 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="python2025",
         aliases=("python-2025", "python-2025-backend"),
-        family="inmemory-2025",
+        family="python-rti-2025",
         supports=("rti1516_2025",),
         description="Primary Python 2025 RTI implementation package.",
         create_backend=create_python2025_backend,
         discover=lambda: RTIBackendDiscovery(
             name="python2025",
             aliases=("python-2025", "python-2025-backend"),
-            family="inmemory-2025",
+            family="python-rti-2025",
             supports=("rti1516_2025",),
             description="Primary Python 2025 RTI implementation package.",
             available=True,

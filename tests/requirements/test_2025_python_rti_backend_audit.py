@@ -197,14 +197,14 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
         ("hla-backend-cpp-shim", "cpp-shim"),
         ("hla-backend-cpp-shim", "standard/cpp"),
         ("hla-backend-cpp-shim", "intake/cpp"),
-        ("hla-backend-python2025", "inmemory-2025"),
+        ("hla-backend-python2025", "python-rti-2025"),
     }
     assert backend_scan["dedicated_python_2025_backend_candidates"] == [
         {
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
             "name": "python2025",
-            "family": "inmemory-2025",
+            "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }
     ]
@@ -219,12 +219,12 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert promotion_split["ready_for_current_lane_promotion_as_working_surface"] is True
     assert promotion_split["ready_for_permanent_no-split_decision"] is False
     evidence_runs = {run["name"]: run for run in promotion_split["current_evidence_runs"]}
-    assert evidence_runs["python2025-split-package-surface"]["result"] == "3 passed in 0.02s"
-    assert "dedicated hla-backend-python2025 package surface" in evidence_runs["python2025-split-package-surface"]["scope"]
-    assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "22 passed"
+    assert evidence_runs["python2025-split-package-surface"]["result"] == "71 passed in 0.67s"
+    assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python2025-split-package-surface"]["scope"]
+    assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
     assert "explicit no-backflow proof" in evidence_runs["python2025-import-boundary-guardrails"]["scope"]
-    assert evidence_runs["combined-2025-verification-slice"]["result"] == "467 passed in 78.98s"
-    assert evidence_runs["hosted-2025-fedpro-transport-suite"]["result"] == "168 passed in 38.01s"
+    assert evidence_runs["combined-2025-verification-slice"]["result"] == "27 passed in 39.54s"
+    assert evidence_runs["hosted-2025-fedpro-transport-suite"]["result"] == "251 passed in 57.24s"
     assert "strict local FOM/MIM resolution" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert "directed TSO stale-queue cleanup" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert milestone_audit["audit_status"] == "bounded-python-rti-milestones"
@@ -299,8 +299,14 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert closeout["ready_for_slice_closeout"] is True
     assert closeout["ready_for_full_completion_claim"] is False
     assert "FI per-service runtime traceability" in closeout["current_assessment"]
+    assert "outside the already-green primary python2025 runtime lane" in closeout["current_assessment"]
     assert any(
         "row-level requirement-by-requirement disposition audit across all 2025 rows" in blocker
+        for blocker in closeout["conformance_blockers"]
+    )
+    assert any(
+        "requirement-closeout limit rather than evidence that the main python2025 runtime lane is behaviorally incomplete"
+        in blocker
         for blocker in closeout["conformance_blockers"]
     )
     assert any(
@@ -309,6 +315,11 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     )
     assert any(
         "hosted FedPro route is verified as a runtime slice" in blocker
+        for blocker in closeout["conformance_blockers"]
+    )
+    assert any(
+        "hosted/cross-binding proof limit rather than evidence that the direct python2025 runtime lane lacks those semantics"
+        in blocker
         for blocker in closeout["conformance_blockers"]
     )
     assert hosted_shared["audit_status"] == "hosted-shared-fedpro-scenarios-accounted-for"
@@ -365,6 +376,13 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "the main full python 2025 rti implementation now runs from `hla-backend-python2025`" in normalized_audit_text_lower
     assert "`hla-backend-shim` is retained as a legacy compatibility wrapper" in normalized_audit_text_lower
     assert "the repo does have a working python 2025 rti lane" in normalized_audit_text_lower
+    assert "the public shell now fronts extracted runtime/state/surface modules" in normalized_audit_text_lower
+    assert "`backend_factory_runtime.py`" in normalized_audit_text_lower
+    assert "`runtime_state.py`" in normalized_audit_text_lower
+    assert "`federation_management_runtime.py`" in normalized_audit_text_lower
+    assert "`time_management_runtime.py`" in normalized_audit_text_lower
+    assert "`support_services_runtime.py`" in normalized_audit_text_lower
+    assert "`*_surface_mixin.py`" in normalized_audit_text_lower
     assert "the operator-facing 2025 proof contract should now be read as a named proof-family contract for the main `hla-backend-python2025` lane" in normalized_audit_text_lower
     assert "package-boundary and runtime-identity guards that keep `python2025` as the owned rti lane and `shim` as wrapper-only" in normalized_audit_text_lower
     assert "federation, object, and ddm runtime proofs across lifecycle, listing, exchange, region gating, scope relevance, and directed routing" in normalized_audit_text_lower
@@ -390,7 +408,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "future or reopened row needs a positive test" in normalized_audit_text_lower
     assert "negative unsupported-boundary test" in normalized_audit_text_lower
     assert "hosted fedpro is still a bounded runtime slice" in normalized_audit_text_lower
-    assert "168 passed in 38.01s" in normalized_audit_text_lower
+    assert "251 passed in 57.24s" in normalized_audit_text_lower
     assert "strict local fom/mim resolution" in normalized_audit_text_lower
     assert "path now executes through a package-owned `hla-fom-target-radar` compatibility adapter" in normalized_audit_text_lower
     assert "readme-advertised `python examples/target_radar_simulation.py --backend python2025 --steps 5` path now executes" in normalized_audit_text_lower
@@ -516,8 +534,8 @@ def test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_s
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_keeps_shim_named_spec_tests_wrapper_only() -> None:
-    spec_test_path = ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py"
+def test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests() -> None:
+    spec_test_path = ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py"
     spec_test_text = spec_test_path.read_text(encoding="utf-8")
     normalized_spec_text = " ".join(spec_test_text.split()).lower()
     shim_named_tests = sorted(
@@ -527,12 +545,26 @@ def test_2025_python_rti_backend_audit_keeps_shim_named_spec_tests_wrapper_only(
     )
 
     assert "main executable 2025 spec suite for the primary python2025 runtime lane" in normalized_spec_text
-    assert "the filename is historical" in normalized_spec_text
     assert "the substantive runtime under test is ``hla-backend-python2025`` / ``hla.backends.python2025``" in normalized_spec_text
     assert "explicit shim coverage in this module is limited to wrapper-specific compatibility behavior and re-export consumption checks" in normalized_spec_text
-    assert shim_named_tests == [
-        "test_2025_shim_declares_all_bundled_mim_manager_command_leaves_as_routed",
-    ]
+    assert shim_named_tests == []
+
+
+@pytest.mark.requirements(
+    "HLA2025-MIL-001",
+    "HLA2025-MIL-002",
+    "HLA2025-MIL-003",
+)
+def test_2025_python_rti_backend_audit_keeps_main_validation_suite_free_of_shim_named_tests() -> None:
+    validation_test_path = ROOT / "tests" / "test_rti1516_2025_validation.py"
+    validation_test_text = validation_test_path.read_text(encoding="utf-8")
+    shim_named_tests = sorted(
+        name
+        for name in re.findall(r"^def (test_2025_[A-Za-z0-9_]+)\(", validation_test_text, re.M)
+        if name.startswith("test_2025_shim_")
+    )
+
+    assert shim_named_tests == []
 
 
 @pytest.mark.requirements(
@@ -542,7 +574,7 @@ def test_2025_python_rti_backend_audit_keeps_shim_named_spec_tests_wrapper_only(
 )
 def test_2025_python_rti_backend_audit_prevents_fake_dual_provider_tests_with_hardcoded_runtime_selection() -> None:
     audited_paths = (
-        ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py",
+        ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py",
         ROOT / "tests" / "test_python_api_spec.py",
         ROOT / "tests" / "test_hla_factory_composition.py",
         ROOT / "tests" / "test_rti1516_2025_encoding_auth_contexts.py",
@@ -596,7 +628,7 @@ def test_2025_python_rti_backend_audit_prevents_fake_dual_provider_tests_with_ha
     "HLA2025-MIL-006",
 )
 def test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards() -> None:
-    spec_test_path = ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py"
+    spec_test_path = ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py"
     spec_test_text = spec_test_path.read_text(encoding="utf-8")
     negative_oracle_tests = sorted(
         name
@@ -751,7 +783,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     wrapper_discovery = wrapper_plugin.discover()
 
     assert runtime_plugin.name == "python2025"
-    assert runtime_plugin.family == "inmemory-2025"
+    assert runtime_plugin.family == "python-rti-2025"
     assert runtime_plugin.supports == ("rti1516_2025",)
     assert runtime_plugin.aliases == ("python-2025", "python-2025-backend")
     assert runtime_plugin.description == "Primary Python 2025 RTI implementation package."
@@ -760,7 +792,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     runtime_discovery = runtime_plugin.discover()
     assert isinstance(runtime_discovery, RTIBackendDiscovery)
     assert runtime_discovery.name == "python2025"
-    assert runtime_discovery.family == "inmemory-2025"
+    assert runtime_discovery.family == "python-rti-2025"
     assert runtime_discovery.supports == ("rti1516_2025",)
     assert runtime_discovery.available is True
     assert runtime_discovery.info.kind == "python/2025"
@@ -768,7 +800,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     assert runtime_discovery.info.details["counts_as_python_2025_rti"] is True
 
     assert wrapper_plugin.name == "shim"
-    assert wrapper_plugin.family == "shim"
+    assert wrapper_plugin.family == "compatibility-wrapper-2025"
     assert wrapper_plugin.supports == ("rti1516_2025",)
     assert wrapper_plugin.aliases == ()
     assert "Legacy compatibility-wrapper alias" in wrapper_plugin.description
@@ -777,7 +809,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     assert wrapper_plugin.create_backend is not runtime_plugin.create_backend
     assert isinstance(wrapper_discovery, RTIBackendDiscovery)
     assert wrapper_discovery.name == "shim"
-    assert wrapper_discovery.family == "shim"
+    assert wrapper_discovery.family == "compatibility-wrapper-2025"
     assert wrapper_discovery.supports == ("rti1516_2025",)
     assert wrapper_discovery.available is True
     assert wrapper_discovery.info.kind == "shim/2025"
@@ -850,6 +882,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     capability_doc = (ROOT / "docs" / "backend_capability_matrix.md").read_text(encoding="utf-8")
     factory_map_doc = (ROOT / "docs" / "rti_factory_reading_map.md").read_text(encoding="utf-8")
     python_rti_map_doc = (ROOT / "docs" / "python_rti_reading_map.md").read_text(encoding="utf-8")
+    requirements_index_doc = (ROOT / "docs" / "requirements" / "ieee-1516-2025" / "README.md").read_text(encoding="utf-8")
     docs_index = (ROOT / "docs" / "README.md").read_text(encoding="utf-8")
     first_run_doc = (ROOT / "docs" / "first_run.md").read_text(encoding="utf-8")
     tests_readme = (ROOT / "tests" / "README.md").read_text(encoding="utf-8")
@@ -896,6 +929,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     normalized_capability = " ".join(capability_doc.split()).lower()
     normalized_factory_map = " ".join(factory_map_doc.split()).lower()
     normalized_python_rti_map = " ".join(python_rti_map_doc.split()).lower()
+    normalized_requirements_index = " ".join(requirements_index_doc.split()).lower()
     normalized_docs_index = " ".join(docs_index.split()).lower()
     normalized_first_run = " ".join(first_run_doc.split()).lower()
     normalized_tests_readme = " ".join(tests_readme.split()).lower()
@@ -917,8 +951,10 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     normalized_packages = " ".join(packages_readme.split()).lower()
 
     assert "the main full runtime now executes from `hla-backend-python2025`" in normalized_backend
+    assert 'use `backend="python2025"`' in normalized_backend
     assert "preserving legacy shim import paths" in normalized_backend
     assert "carrying only thin compatibility indirection while the executable runtime stays in `hla-backend-python2025`" in normalized_backend
+    assert "support services, callbacks, omt handling, and binding and hosted routes" in normalized_backend
     assert "partial-delivery retraction against lagging subscribers" in normalized_backend
     assert "disconnected-target retraction cleanup" in normalized_backend
     assert "post-delivery plain retraction fanout" in normalized_backend
@@ -929,6 +965,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "restore recovery of in-flight ownership negotiations" in normalized_backend
     assert "cross-federate owner-visibility state" in normalized_backend
     assert "the direct in-process 2025 suite now explicitly proves partial-delivery tso retraction semantics on the main `python2025` lane" in normalized_backend
+    assert 'main 2025 runtime selection should use `backend="python2025"`' in normalized_python_rti_map
+    assert 'the legacy `shim` spelling is intentionally rejected on the public factory surface' in normalized_factory_map
     assert "retracted, and withheld from a lagging subscriber that later advances to the same timestamp" in normalized_backend
     assert "the hosted fedpro route now replays that partial-delivery retraction invariant too" in normalized_backend
     assert "retraction callbacks are dropped for a delivered target that disconnects before the publisher retracts the interaction" in normalized_backend
@@ -976,7 +1014,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
 
     assert "| python rti 2025 |" in normalized_route_inventory_routes
     assert "main full `rti1516_2025` implementation lane in `hla-backend-python2025`" in normalized_route_inventory_routes
-    assert "`test_rti1516_2025_spec_and_shim.py` is a historical filename for the main in-process `python2025` proof suite" in normalized_route_inventory_routes
+    assert "`test_rti1516_2025_python2025_runtime.py` is the main in-process `python2025` proof suite" in normalized_route_inventory_routes
     assert "`hla-backend-shim` remains compatibility-wrapper/import-level support rather than a separate rti" in normalized_route_inventory_routes
     assert "| python rti 2025 hosted |" in normalized_route_inventory_routes
     assert "`start_2025_grpc_server(...)`, `grpctransport(..., schema=\"rti1516_2025\")`, `create_rti_ambassador(\"python2025\", transport={\"kind\": \"grpc\", ...})`" in normalized_route_inventory_routes
@@ -1018,7 +1056,12 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`lookahead-processing-window-certified`" in normalized_time_model
     assert "the same proof ladder is replayed over the hosted `python-2025-fedpro-grpc` route" in normalized_time_model
     assert "matching negative-oracle tests reject premature closure, mismatched lits boundaries, premature output, reversed consumer order, cross-window contamination, closed-window mutation, and dirty post-restore replay" in normalized_time_model
-    assert "historical filename; direct in-process `python2025` time-management services plus the target/radar time-window proof ladder and negative-oracle guards" in normalized_time_model
+    assert "direct in-process `python2025` time-management services plus the target/radar time-window proof ladder and negative-oracle guards" in normalized_time_model
+    assert "`hla.backends.python2025.time_management_runtime`" in normalized_time_model
+    assert "`hla.backends.python2025.federation_time_surface_mixin`" in normalized_time_model
+    assert "`hla.backends.python2025.runtime_state`" in normalized_time_model
+    assert "the current 2025 time claim is not just an abstract route claim" in normalized_time_model
+    assert "anchored to the extracted `hla-backend-python2025` runtime modules" in normalized_time_model
     assert "for pitch specifically, the current trial-safe candidate is the two-federate `time-window-future-exclusion` route" in normalized_time_model
 
     assert "`hla-backend-python2025` is the main full python-owned ieee 1516.1-2025 rti implementation package" in normalized_architecture
@@ -1033,11 +1076,11 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
 
     assert '`hla.rti1516_2025.create_rti_ambassador("python2025")`' in normalized_options_matrix
     assert "| python rti 2025 | in-process python rti implemented in python for ieee 1516.1-2025 | `python2025`, `python-2025`, `python-2025-backend` | main executable 2025 python rti lane in this repo |" in normalized_options_matrix
-    assert "### python 2025" in normalized_options_matrix
+    assert "### python rti 2025" in normalized_options_matrix
     assert "| python rti 2025 | `python2025`, `python-2025`, `python-2025-backend` |" in normalized_options_matrix
     assert "| python rti 2025 | none | none | yes | yes | yes | yes | yes | no |" in normalized_options_matrix
     assert "### python rti 2025" in normalized_options_matrix
-    assert "[test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)" in normalized_options_matrix
+    assert "[test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)" in normalized_options_matrix
 
     assert "this page is 2010-specific. for the current ieee 1516.1-2025 python rti lane, do not treat this file as the main conformance plan." in normalized_verification_plan
     assert "[`../python_rti_backend.md`](../python_rti_backend.md)" in normalized_verification_plan
@@ -1055,15 +1098,16 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)" in normalized_conformance_matrix
 
     assert "| `python-main-2025` | `./tools/python verify-main-2025` | primary `python2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/ddm runtime proofs, explicit support/ownership/mom runtime proofs, the explicit target/radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and omt evidence |" in normalized_test_surface
-    assert "| `python-routes-2025` | `./tools/python verify-routes-2025` | bounded `python2025` plus hosted fedpro 2025 route checks, explicit hosted federation/object/ddm runtime proofs, explicit hosted support/ownership/mom runtime proofs, explicit hosted target/radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and mom proofs, route-parity artifacts, and hosted example checks |" in normalized_test_surface
+    assert "| `python-routes-2025` | `./tools/python verify-routes-2025` | bounded `python2025` plus hosted fedpro 2025 route checks, explicit hosted federation/object/ddm runtime proofs, explicit hosted support/ownership/mom runtime proofs, explicit hosted target/radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and mom proofs, the checked-in 2025 finish-line bundle, and hosted example checks |" in normalized_test_surface
+    assert "| `matrix` | `./tools/test-surface run matrix` | regenerate compliance artifacts, refresh the checked-in 2025 finish-line bundle, and rerun matrix gates |" in normalized_test_surface
     assert "use `./tools/python verify-main-2025` as the normal main-implementation lane when you change:" in normalized_test_surface
-    assert "it is the shortest operator path that combines the direct `python2025` runtime slices, the package/runtime boundary guardrails that keep `shim` wrapper-only, and the dedicated omt evidence surface" in normalized_test_surface
+    assert "it is the shortest operator path that combines the direct `python2025` runtime slices, the package/runtime boundary guardrails that keep `shim` wrapper-only, the requirement-facing bounded proof-note registry, and the dedicated omt evidence surface" in normalized_test_surface
     assert "support-service handle-factory and decode-helper behavior without routing through the compatibility wrapper" in normalized_test_surface
     assert "snake-case alias acceptance on the direct `python2025` runtime surface" in normalized_test_surface
     assert "`disablecallbacks`, `enablecallbacks`, `evokecallback`, and `evokemultiplecallbacks`" in normalized_test_surface
     assert "for the 2025 lane specifically, use `./tools/python verify-routes-2025` as the normal route-level hygiene lane for the main `python2025` rti plus the bounded `python-2025-fedpro-grpc` route" in normalized_test_surface
     assert "that lane covers the hosted 2025 transport suite, explicit in-process `python2025` time-window, save/restore, ownership, callback, support-service, and mom proof selectors" in normalized_test_surface
-    assert "the checked-in 2025 route-parity ledger, regeneration of the generated 2025 route-parity artifacts, and the readme-advertised `python2025` target/radar example path" in normalized_test_surface
+    assert "the checked-in 2025 route-parity ledger, the 2025 requirements-registry/bounded-proof-note surface, regeneration of the checked-in 2025 finish-line bundle (including the route-parity artifacts), and the readme-advertised `python2025` target/radar example path" in normalized_test_surface
     assert "[`python_rti_backend.md`](python_rti_backend.md)" in normalized_test_surface
     assert "[`verification/time_model_compliance.md`](verification/time_model_compliance.md)" in normalized_test_surface
     assert "[`plans/spec2025_route_parity_matrix.md`](plans/spec2025_route_parity_matrix.md)" in normalized_test_surface
@@ -1126,7 +1170,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "the hosted 2025 grpc route is a bounded route variant rather than a separate rti family" in normalized_local_verification_commands
     assert "./tools/python verify-main-2025" in normalized_local_verification_commands
     assert "is the regular main-surface lane for the current `python2025` backend claim" in normalized_local_verification_commands
-    assert "it runs the direct in-process runtime proof selectors, the package/runtime boundary guardrails that keep `shim` compatibility-only, plus the dedicated omt validation/parsing evidence surface" in normalized_local_verification_commands
+    assert "it runs the direct in-process runtime proof selectors, the package/runtime boundary guardrails that keep `shim` compatibility-only, the 2025 requirements-registry and bounded proof-note surface, plus the dedicated omt validation/parsing evidence surface" in normalized_local_verification_commands
     assert "the explicit raw `python2025` proofs for support-service handle-factory/decode behavior, snake-case direct-surface aliases, and callback-control services on `hla-backend-python2025` itself" in normalized_local_verification_commands
     assert "it also names the target/radar time-window ladder explicitly" in normalized_local_verification_commands
     assert "integrated lookahead-processing-window gauntlet" in normalized_local_verification_commands
@@ -1143,6 +1187,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "./tools/python verify-routes-2025" in normalized_local_verification_commands
     assert "the in-process target/radar time-window proof ladder" in normalized_local_verification_commands
     assert "direct `python2025` save/restore, ownership, callback, support-service, or mom proofs" in normalized_local_verification_commands
+    assert "the 2025 requirements-registry and bounded proof-note surface" in normalized_local_verification_commands
     assert "it also names the hosted target/radar time-window family explicitly" in normalized_local_verification_commands
     assert "factory-hosted and shared fedpro future-exclusion, output-delivery, consumer-order, integrated-gauntlet, receive-order-poison, restore-output, and pipeline-restore scenario routes" in normalized_local_verification_commands
     assert "it now also names the hosted save/restore family explicitly" in normalized_local_verification_commands
@@ -1172,6 +1217,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[docs/python_rti_reading_map.md](python_rti_reading_map.md)" in normalized_documentation_hierarchy
     assert "`./tools/python verify-main-2025`: normal direct `python2025` proof lane for the main implementation surface" in normalized_documentation_hierarchy
     assert "[docs/verification/time_model_compliance.md](verification/time_model_compliance.md)" in normalized_documentation_hierarchy
+    assert "[docs/requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md)" in normalized_documentation_hierarchy
     assert "`./tools/python verify-routes-2025`: bounded hosted `python-2025-fedpro-grpc` hygiene lane over that same runtime" in normalized_documentation_hierarchy
     assert "[docs/plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)" in normalized_documentation_hierarchy
     assert "[docs/plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)" in normalized_documentation_hierarchy
@@ -1203,7 +1249,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`python2025` is a first-class operator-facing runtime family in this repo" in normalized_capability
     assert "`hla-backend-shim` remains only as compatibility-wrapper/import-level code around `python2025`" in normalized_capability
     assert "`python-2025-fedpro-grpc` is the bounded hosted route over the same `hla-backend-python2025` runtime lane" in normalized_capability
-    assert "[test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)" in capability_doc
+    assert "[test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)" in capability_doc
     assert "[test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)" in capability_doc
     assert "[test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)" in capability_doc
     assert "[test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py)" in capability_doc
@@ -1214,7 +1260,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`" in normalized_factory_map
     assert "`python2025` is the main full executable backend lane for `rti1516_2025`" in normalized_factory_map
     assert "`hla.backends.shim` is import-level compatibility code over that runtime rather than the implementation owner" in normalized_factory_map
-    assert "`tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main in-process `python2025` proof suite)" in normalized_factory_map
+    assert "`tests/test_rti1516_2025_python2025_runtime.py` (main in-process `python2025` proof suite)" in normalized_factory_map
     assert "proof first and only then inspect the wrapper alias" in normalized_factory_map
     assert "should expect to land on the `hla-backend-python2025` lane by default" in normalized_factory_map
     assert "the main `python2025` factory path now does accept hosted 2025 creation through `transport=...`" in normalized_factory_map
@@ -1226,14 +1272,14 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[../packages/hla-backend-python2025/readme.md]" in normalized_python_rti_map
     assert "`hla-backend-python2025` is the main full 2025 python rti implementation lane" in normalized_python_rti_map
     assert "`hla-backend-shim` is a wrapper-only compatibility alias over that runtime" in normalized_python_rti_map
-    assert "item 7 has a historical filename" in normalized_python_rti_map
-    assert "read it as the main in-process executable proof suite for `hla-backend-python2025`" in normalized_python_rti_map
-    assert "historical filename; main in-process `python2025` runtime suite" in normalized_python_rti_map
-    assert "`tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main `python2025` proof suite)" in normalized_python_rti_map
+    assert "item 7 is the main in-process executable proof suite" in normalized_python_rti_map
+    assert "item 7 is the main in-process executable proof suite for `hla-backend-python2025`" in normalized_python_rti_map
+    assert "main in-process `python2025` runtime suite" in normalized_python_rti_map
+    assert "`tests/test_rti1516_2025_python2025_runtime.py` (main `python2025` proof suite)" in normalized_python_rti_map
     assert "use the shim readme only when you are checking legacy provider spelling" in normalized_python_rti_map
     assert "`./tools/python verify-main-2025` for the normal direct `python2025` main-surface proof lane" in normalized_python_rti_map
     assert "`./tools/python verify-routes-2025` when you also need the bounded hosted `python-2025-fedpro-grpc` hygiene lane" in normalized_python_rti_map
-    assert "`verification/time_model_compliance.md` and `tests/test_rti1516_2025_spec_and_shim.py` as the main proof front doors" in normalized_python_rti_map
+    assert "`verification/time_model_compliance.md` and `tests/test_rti1516_2025_python2025_runtime.py` as the main proof front doors" in normalized_python_rti_map
     assert "start in [../packages/hla-backend-python2025/src/hla/backends/python2025/backend.py]" in normalized_python_rti_map
     assert "wrapper-only compatibility behavior" in normalized_python_rti_map
     assert "run `./tools/python verify-main-2025` as the default proof command after changes in that path" in normalized_python_rti_map
@@ -1249,7 +1295,16 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python2025` rti lane" in normalized_docs_index
     assert "[../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`" in normalized_docs_index
     assert "[verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, galt/lits, and radar-window proof front door for the primary 2025 python rti lane" in normalized_docs_index
+    assert "[requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane" in normalized_docs_index
     assert "java/c++ standard-surface binding routes and evidence contract" in normalized_docs_index
+    assert "the main requirement-backed semantics now live across package-owned modules such as:" in normalized_requirements_index
+    assert "`backend_factory_runtime.py`" in requirements_index_doc
+    assert "`runtime_state.py`" in requirements_index_doc
+    assert "`federation_management_runtime.py`" in requirements_index_doc
+    assert "`time_management_runtime.py`" in requirements_index_doc
+    assert "`support_services_runtime.py`" in requirements_index_doc
+    assert "`*_surface_mixin.py`" in requirements_index_doc
+    assert "that is the implementation lane this requirement index is describing" in normalized_requirements_index
 
     assert "this page is the 2010 pure-python bootstrap path" in normalized_first_run
     assert "it is not the main entry point for the ieee 1516.1-2025 runtime lane" in normalized_first_run
@@ -1281,6 +1336,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "./tools/python verify-main-2025" in normalized_tools_readme
     assert "including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python2025` surface" in normalized_tools_readme
     assert "./tools/python verify-routes-2025" in normalized_tools_readme
+    assert "python3 scripts/run_spec2025_finish_line.py" in normalized_tools_readme
+    assert "regenerate the checked-in 2025 finish-line and route-parity evidence bundle after proof-lane changes" in normalized_tools_readme
     assert "for 2025 runtime ownership and proof status behind those commands, read:" in normalized_tools_readme
     assert "docs/python_rti_backend.md" in normalized_tools_readme
     assert "docs/python_rti_reading_map.md" in normalized_tools_readme
@@ -1290,6 +1347,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`hla-backend-shim` remains wrapper-only compatibility code" in normalized_scripts_readme
     assert "hosted 2025 fedpro routes remain bounded route variants rather than separate rti families" in normalized_scripts_readme
     assert "when a script or wrapper touches the 2025 runtime lane, interpret that work through these surfaces first:" in normalized_scripts_readme
+    assert "`run_spec2025_finish_line.py`: checked-in ieee 1516.1-2025 finish-line, verification-matrix, and route-parity artifact refresh" in normalized_scripts_readme
     assert "[../docs/python_rti_backend.md](../docs/python_rti_backend.md)" in normalized_scripts_readme
     assert "[../docs/python_rti_reading_map.md](../docs/python_rti_reading_map.md)" in normalized_scripts_readme
     assert "[../docs/verification/time_model_compliance.md](../docs/verification/time_model_compliance.md)" in normalized_scripts_readme
@@ -1317,7 +1375,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`hla-backend-python2025`: main full executable python rti backend for ieee 1516.1-2025" in normalized_package_layout
     assert "`hla-backend-shim`: wrapper-only compatibility alias over `hla-backend-python2025`" in normalized_package_layout
     assert "`hla-backend-python2025` | backend | `hla-rti1516-2025`, `hla-backend-common`, `hla-rti-core` | shim backflow, vendor, transport, leaf packages |" in normalized_package_layout
-    assert "`hla-backend-shim` | compatibility-wrapper | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python2025` | ownership of core 2025 runtime semantics, vendor, transport, leaf packages |" in normalized_package_layout
+    assert "`hla-backend-shim` | compatibility-wrapper | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |" in normalized_package_layout
     assert "`hla-fom-target-radar` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-rti-core` | concrete backend, vendor, transport packages |" in normalized_package_layout
 
     assert "`packages/hla-rti1516-2025/src/hla/rti1516_2025/`: ieee 1516.1-2025 api scaffold." in normalized_workspace_layout
@@ -1347,10 +1405,17 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
 
     assert "main full python rti backend package for ieee 1516.1-2025" in normalized_python2025_readme
     assert "this package now owns the main full python 2025 rti runtime" in normalized_python2025_readme
+    assert "public `hla.backends.python2025.backend` shell now fronts a split package layout" in normalized_python2025_readme
+    assert "`backend_factory_runtime.py`" in python2025_readme
+    assert "`runtime_state.py`" in python2025_readme
+    assert "`federation_management_runtime.py`" in python2025_readme
+    assert "`time_management_runtime.py`" in python2025_readme
+    assert "`*_surface_mixin.py`" in python2025_readme
     assert "`hla-backend-shim` package remains as a compatibility wrapper" in normalized_python2025_readme
     assert "must not delegate back to `hla.backends.shim.backend.create_shim_backend`" in normalized_python2025_readme
     assert "the architectural split that matters is already in place: `hla-backend-python2025` is the real 2025 rti runtime owner" in normalized_shim_readme
     assert "kept only for test-backed legacy import compatibility" in normalized_shim_readme
+    assert "the other `hla.backends.shim.*` modules outside the package root: they are forwarders, not implementation owners" in normalized_shim_readme
     assert "future work here is boundary cleanup, not deciding whether a dedicated python 2025 backend should exist" in normalized_shim_readme
     assert 'description = "main full python rti backend package for hla 1516.1-2025"' in normalized_python2025_pyproject
     assert 'backend_names = ["python2025"]' in normalized_python2025_pyproject
@@ -1363,6 +1428,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "only the `shim2025*` names represent the wrapper-only lane" in normalized_shim_docs_readme
     assert "test-backed legacy compatibility surface" in normalized_shim_docs_readme
     assert "the real python 2025 rti backend already lives in `hla-backend-python2025`; this package is the wrapper-only compatibility lane" in normalized_shim_docs_readme
+    assert "the other `hla.backends.shim.*` helper modules are intentionally thin forwarders into `hla.backends.python2025.*`" in normalized_shim_docs_readme
     assert "future work is about keeping that wrapper narrow, not about deciding whether a dedicated 2025 backend should exist" in normalized_shim_docs_readme
     assert "later be split into a narrower shim plus a dedicated 2025 backend" not in normalized_shim_docs_readme
     assert "future dedicated 2025 rti backend becomes the better design" not in normalized_backend
@@ -1386,8 +1452,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "narrow or extract more later if" in normalized_backend
     assert "not to create the real backend from scratch; that part is already done in `hla-backend-python2025`" in normalized_backend
     assert "stop using shim language for the primary 2025 runtime lane" in normalized_backend
-    assert "`tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main in-process python2025 proof suite)" in normalized_backend
-    assert "despite the historical filename, this is the main executable in-process proof suite for `hla-backend-python2025`" in normalized_backend
+    assert "`tests/test_rti1516_2025_python2025_runtime.py` (main in-process python2025 proof suite)" in normalized_backend
+    assert "this is the main executable in-process proof suite for `hla-backend-python2025`" in normalized_backend
     assert "`examples/target_radar_simulation.py`" in normalized_backend
     assert "`tests/scenarios/test_target_radar_scenario.py`" in normalized_backend
     assert "`tests/test_fom_target_radar_split_package.py`" in normalized_backend
@@ -1481,8 +1547,9 @@ def test_2025_python_rti_backend_audit_keeps_finish_line_documents_off_stale_shi
         assert "implementation concentration in hla-backend-shim/backend.py remains material" not in text
         assert "create a dedicated rti1516_2025 python backend plugin and make the backend scan detect it" not in text
         assert "the dedicated backend is still absent" not in text
-        assert "hla-backend-python2025 implementation package" in text
-        assert "implementation concentration in hla-backend-python2025/backend.py remains material" in text
+        assert "main full python 2025 rti implementation now runs from hla-backend-python2025" in text
+        assert "the public hla-backend-python2025/backend.py shell is now thin" in text
+        assert "extracted runtime/state/surface split still needs continued discipline" in text
 
     legacy_finish_line = " ".join(
         (ROOT / "docs" / "plans" / "2025_requirements_finish_line.md").read_text(encoding="utf-8").split()
@@ -1542,11 +1609,31 @@ def test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_
     assert all(shim_backend_path not in row["evidence"] for row in implemented_slices)
 
     fi_rows = snapshot["fi_service_proof_audit"]["rows"]
-    assert any(runtime_backend_path in row["evidence_artifacts"] for row in fi_rows)
+    assert all(runtime_backend_path not in row["evidence_artifacts"] for row in fi_rows)
+    assert any(
+        "packages/hla-backend-python2025/src/hla/backends/python2025/federation_management_runtime.py"
+        in row["evidence_artifacts"]
+        for row in fi_rows
+    )
+    assert any(
+        "packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py"
+        in row["evidence_artifacts"]
+        for row in fi_rows
+    )
     assert all(shim_backend_path not in row["evidence_artifacts"] for row in fi_rows)
 
     delta_rows = snapshot["delta_requirement_proof_audit"]["rows"]
-    assert any(runtime_backend_path in row["evidence_artifacts"] for row in delta_rows)
+    assert all(runtime_backend_path not in row["evidence_artifacts"] for row in delta_rows)
+    assert any(
+        "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py"
+        in row["evidence_artifacts"]
+        for row in delta_rows
+    )
+    assert any(
+        "packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py"
+        in row["evidence_artifacts"]
+        for row in delta_rows
+    )
     assert all(shim_backend_path not in row["evidence_artifacts"] for row in delta_rows)
 
 
@@ -1571,7 +1658,7 @@ def test_2025_python_rti_backend_audit_keeps_raw_primary_runtime_evidence_on_pyt
     "HLA2025-MIL-003",
 )
 def test_2025_python_rti_backend_audit_keeps_named_raw_python2025_support_and_callback_proofs() -> None:
-    spec_test_path = ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py"
+    spec_test_path = ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py"
     audit_path = ROOT / "docs" / "plans" / "2025_python_rti_backend_audit.md"
     spec_text = spec_test_path.read_text(encoding="utf-8")
     normalized_audit_text = " ".join(audit_path.read_text(encoding="utf-8").split()).lower()
@@ -1663,7 +1750,7 @@ def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_mapped_to_decla
     "HLA2025-MIL-003",
 )
 def test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs() -> None:
-    spec_test_path = ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py"
+    spec_test_path = ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py"
     spec_text = spec_test_path.read_text(encoding="utf-8")
     tree = ast.parse(spec_text)
 
@@ -1709,7 +1796,7 @@ def test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_
     "HLA2025-MIL-003",
 )
 def test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test() -> None:
-    spec_test_path = ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py"
+    spec_test_path = ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py"
     spec_text = spec_test_path.read_text(encoding="utf-8")
     defined_test_names = set(re.findall(r"^def (test_2025_[A-Za-z0-9_]+)\(", spec_text, re.M))
 
@@ -1730,7 +1817,7 @@ def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_out_of_repo_run
         for path in shim_dir.glob("*.py")
         if path.name not in {"__init__.py", "backend.py", "plugin.py"}
     }
-    allowed_import_path = ROOT / "tests" / "test_rti1516_2025_spec_and_shim.py"
+    allowed_import_path = ROOT / "tests" / "test_rti1516_2025_python2025_runtime.py"
     unexpected_locations: list[tuple[str, str]] = []
 
     for path in ROOT.rglob("*.py"):

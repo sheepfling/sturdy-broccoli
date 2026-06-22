@@ -70,6 +70,11 @@ It is not documented as a generic "remote Python RTI" abstraction. It is the
 current transport-hosted FedPro route over the main full `python2025` Python RTI
 lane.
 
+In other words, the hosted 2025 route is evidence over the primary
+`hla-backend-python2025` runtime. It is not a separate 2025 implementation
+owner, and it is not a reason to describe the wrapper package as the runtime
+lane.
+
 The relevant pieces are:
 
 - `packages/hla-backend-python2025` for the main executable 2025 Python RTI lane
@@ -157,9 +162,10 @@ Those lanes are split by ownership:
   Python example paths.
 - `./tools/python verify-routes-2025` runs the bounded hosted 2025 FedPro
   transport suite, direct `python2025` time-window, save/restore, ownership,
-  callback, support-service, and MOM proof selectors, the 2025 route-parity ledger
-  checks, regenerates the 2025 route-parity artifacts, and reruns the
-  `python2025` Target/Radar example path.
+  callback, support-service, and MOM proof selectors, the 2025 route-parity
+  ledger checks, refreshes the checked-in 2025 finish-line bundle (including
+  the route-parity artifacts), and reruns the `python2025` Target/Radar
+  example path.
 
 Treat it as regular hygiene after changes to:
 

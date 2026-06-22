@@ -6,8 +6,31 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
+from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
+
+
+def _factory_make_interval(factory: Any, value: float) -> Any:
+    method = getattr(factory, "make_interval", None)
+    if callable(method):
+        return method(value)
+    return factory.makeInterval(value)
+
+
+def _factory_make_time(factory: Any, value: float) -> Any:
+    method = getattr(factory, "make_time", None)
+    if callable(method):
+        return method(value)
+    return factory.makeTime(value)
 
 
 @dataclass(frozen=True)
@@ -54,7 +77,7 @@ def run_timed_delete_scenario(
 
     owner_rti.publish_object_class_attributes(object_class, {owner_attr})
     observer_rti.subscribe_object_class_attributes(observer_class, {observer_attr})
-    owner_rti.enable_time_regulation(time_factory.make_interval(1.0))
+    owner_rti.enable_time_regulation(_factory_make_interval(time_factory, 1.0))
     observer_rti.enable_time_constrained()
     drain_callbacks_pair(owner_rti, observer_rti, loops=24)
 
@@ -65,16 +88,16 @@ def run_timed_delete_scenario(
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert _same_handle_value(observer_rti.get_object_instance_handle(config.object_instance_name), object_instance)
     observer_federate.clear()
 
-    delete_time = time_factory.make_time(1.0)
-    advance_time = time_factory.make_time(2.0)
+    delete_time = _factory_make_time(time_factory, 1.0)
+    advance_time = _factory_make_time(time_factory, 2.0)
     owner_rti.delete_object_instance(object_instance, config.delete_tag, delete_time)
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
     remove_before_grant = observer_federate.last_callback("removeObjectInstance")
     assert remove_before_grant is None
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert _same_handle_value(observer_rti.get_object_instance_handle(config.object_instance_name), object_instance)
 
     owner_rti.time_advance_request(advance_time)
     observer_rti.next_message_request_available(advance_time)
@@ -84,20 +107,20 @@ def run_timed_delete_scenario(
 
     remove_after_grant = observer_federate.last_callback("removeObjectInstance")
     assert remove_after_grant is not None
-    assert remove_after_grant.args[0] == object_instance
+    assert _same_handle_value(remove_after_grant.args[0], object_instance)
     assert remove_after_grant.args[1] == config.delete_tag
 
     removed_from_catalog = False
     try:
         observer_rti.get_object_instance_handle(config.object_instance_name)
-    except ObjectInstanceNotKnown:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         removed_from_catalog = True
     assert removed_from_catalog
 
     removed_known_class = False
     try:
         observer_rti.get_known_object_class_handle(object_instance)
-    except ObjectInstanceNotKnown:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         removed_known_class = True
     assert removed_known_class
 

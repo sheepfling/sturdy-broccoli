@@ -41,6 +41,22 @@ The implementation is split across the time-management modules:
   enforces the public service preconditions, including regulation/constrained
   state, lookahead validity, and outstanding request checks.
 
+For the primary 2025 lane, the live implementation path is explicitly package
+split too:
+
+- [`hla.backends.python2025.time_management_runtime`](../../packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py)
+  carries the Python 2025 time-service, grant, lookahead, GALT/LITS, and
+  queued-TSO runtime behavior
+- [`hla.backends.python2025.federation_time_surface_mixin`](../../packages/hla-backend-python2025/src/hla/backends/python2025/federation_time_surface_mixin.py)
+  exposes the public 2025 ambassador-facing time surface over that runtime
+- [`hla.backends.python2025.runtime_state`](../../packages/hla-backend-python2025/src/hla/backends/python2025/runtime_state.py)
+  owns the saved/restored logical-time, lookahead, and queued-callback state
+  that the 2025 proof ladder depends on
+
+That matters because the current 2025 time claim is not just an abstract route
+claim. It is anchored to the extracted `hla-backend-python2025` runtime
+modules, not to a shim-owned path and not only to the older 2010 backend code.
+
 The behavior is intended to be straightforward:
 
 1. enabling time regulation records the lookahead and exposes the time-regulation-enabled callback
@@ -195,10 +211,9 @@ What it proves today is narrower and more honest:
 
 The main 2025 runtime evidence is:
 
-- [`../../tests/test_rti1516_2025_spec_and_shim.py`](../../tests/test_rti1516_2025_spec_and_shim.py)
-  - historical filename; direct in-process `python2025` time-management
-    services plus the Target/Radar time-window proof ladder and
-    negative-oracle guards
+- [`../../tests/test_rti1516_2025_python2025_runtime.py`](../../tests/test_rti1516_2025_python2025_runtime.py)
+  - direct in-process `python2025` time-management services plus the
+    Target/Radar time-window proof ladder and negative-oracle guards
 - [`../../tests/scenarios/test_python_route_parity.py`](../../tests/scenarios/test_python_route_parity.py)
   - route-level replay of the proof ladder over the in-process and hosted 2025
     Python routes

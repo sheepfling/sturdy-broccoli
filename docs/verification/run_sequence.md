@@ -40,7 +40,8 @@ What each stage means:
 - lint / type annotations: scoped static typing plus import discipline
 - unit tests: the normal pytest suite
 - integration smoke: CERTI/Pitch runtime smoke coverage
-- integration tests: composite two-federate artifact generation
+- integration tests: composite two-federate artifact generation, now including
+  the trial-safe time-window future-exclusion and restore-state proof legs
 - compliance matrices: Section 8 compliance artifact generation
 - full backend matrixed compliance: the broad vendor/runtime smoke matrix
 - other evidence-producing checks: the target/radar matrix over the core trio and the proof packet

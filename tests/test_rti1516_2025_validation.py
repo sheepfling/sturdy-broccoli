@@ -280,6 +280,67 @@ def test_2025_parser_preserves_reference_datatypes_and_value_required_metadata(t
     assert reparsed_entity.attribute_value_required == {"EntityId": "true", "OptionalLabel": "false"}
 
 
+@pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-MOD-010", "HLA2025-FR-003", "HLA2025-FR-004")
+def test_2025_validation_allows_standard_mim_hla_attribute_and_parameter_names(tmp_path: Path) -> None:
+    from hla.rti1516_2025.validation import validate_fom_modules
+    from hla.rti1516e.fom import FOMResolver
+
+    source = tmp_path / "ddm-mim-probe.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>DDM MIM Probe</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-22</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Probe fixture merged with standard MIM.</description>
+    <poc><pocName>Test</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+          <dimension>HLAdefaultRoutingSpace</dimension>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <dimension>HLAdefaultRoutingSpace</dimension>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    modules = FOMResolver(require_local_parse=True).resolve_many((str(source), "HLAstandardMIM.xml"))
+    assert validate_fom_modules(modules) == []
+
+
 @pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-006")
 def test_2025_validation_rejects_invalid_value_required_metadata(tmp_path: Path) -> None:
     from hla.rti1516_2025.validation import validate_fom_module
@@ -1730,7 +1791,7 @@ def test_validate_hla_name_allows_standard_mim_dimension_names(name: str) -> Non
 
 
 @pytest.mark.requirements("HLA2025-FI-008", "HLA2025-OMT-001", "HLA2025-OMT-006")
-def test_2025_shim_rejects_fom_with_invalid_hla_user_defined_names(tmp_path: Path) -> None:
+def test_2025_python2025_rejects_fom_with_invalid_hla_user_defined_names(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.exceptions import InvalidFOM
     from hla.rti1516_2025.factory import create_hla_factory

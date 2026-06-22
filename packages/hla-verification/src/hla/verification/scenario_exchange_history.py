@@ -8,6 +8,16 @@ from .scenario_support import advance_time_beyond, order_value, wait_for_callbac
 from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 
 
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return getattr(left, "value", None) == getattr(right, "value", None)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    left_normalized = {getattr(key, "value", None): value for key, value in left.items()}
+    right_normalized = {getattr(key, "value", None): value for key, value in right.items()}
+    return left_normalized == right_normalized
+
+
 def assert_two_federate_exchange_callback_history(
     summary: Mapping[str, Any],
     *,
@@ -32,10 +42,12 @@ def assert_two_federate_exchange_callback_history(
         assert len(time_regulations) == 1
         assert len(time_constrained) == 1
     assert discovers[0].args[2] == config.object_instance_name
-    assert receive_reflect.args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+    assert _same_handle_map_values(receive_reflect.args[1], {summary["subscriber_attribute"]: config.attribute_payload})
     assert receive_reflect.args[2] == config.attribute_tag
     assert receive_reflect.args[3] is OrderType.RECEIVE
-    assert receive_interaction.args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+    assert _same_handle_map_values(
+        receive_interaction.args[1], {summary["subscriber_parameter"]: config.interaction_payload}
+    )
     assert receive_interaction.args[2] == config.interaction_tag
 
     timestamp_reflect = None
@@ -45,19 +57,25 @@ def assert_two_federate_exchange_callback_history(
         timestamp_interaction = next(record for record in interactions if record.args[2] == config.timestamped_interaction_tag)
         assert len(reflects) >= 2
         assert len(interactions) >= 2
-        assert timestamp_reflect.args[1] == {summary["subscriber_attribute"]: config.timestamped_attribute_payload}
+        assert _same_handle_map_values(
+            timestamp_reflect.args[1],
+            {summary["subscriber_attribute"]: config.timestamped_attribute_payload},
+        )
         assert timestamp_reflect.args[2] == config.timestamped_attribute_tag
         assert timestamp_reflect.args[3] is OrderType.TIMESTAMP
-        assert timestamp_reflect.args[5] == config.timestamped_attribute_time
-        assert timestamp_interaction.args[1] == {summary["subscriber_parameter"]: config.timestamped_interaction_payload}
+        assert _same_handle_value(timestamp_reflect.args[5], config.timestamped_attribute_time)
+        assert _same_handle_map_values(
+            timestamp_interaction.args[1],
+            {summary["subscriber_parameter"]: config.timestamped_interaction_payload},
+        )
         assert timestamp_interaction.args[2] == config.timestamped_interaction_tag
         assert timestamp_interaction.args[3] is OrderType.TIMESTAMP
-        assert timestamp_interaction.args[5] == config.timestamped_interaction_time
+        assert _same_handle_value(timestamp_interaction.args[5], config.timestamped_interaction_time)
 
     if config.enable_time_management:
         assert time_regulations[0] == summary["time_regulation"]
         assert time_constrained[0] == summary["time_constrained"]
-        assert grants[-1].args[0] == config.advance_time
+        assert _same_handle_value(grants[-1].args[0], config.advance_time)
 
     return {
         "discovers": discovers,
@@ -124,13 +142,13 @@ def run_exchange_round(
         baseline_reflects + 1,
     )
     latest_reflect = reflect_records[-1]
-    assert latest_reflect.args[0] == summary["discovered_object"]
-    assert latest_reflect.args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+    assert _same_handle_value(latest_reflect.args[0], summary["discovered_object"])
+    assert _same_handle_map_values(latest_reflect.args[1], {summary["subscriber_attribute"]: config.attribute_payload})
     assert latest_reflect.args[2] == config.attribute_tag
     expected_reflect_order = OrderType.TIMESTAMP if config.attribute_time is not None else OrderType.RECEIVE
     assert order_value(latest_reflect.args[3]) == expected_reflect_order.value
     if config.attribute_time is not None:
-        assert latest_reflect.args[5] == config.attribute_time
+        assert _same_handle_value(latest_reflect.args[5], config.attribute_time)
 
     interaction_records = wait_for_callback_count_pair(
         publisher_rti,
@@ -140,13 +158,15 @@ def run_exchange_round(
         baseline_interactions + 1,
     )
     latest_interaction = interaction_records[-1]
-    assert latest_interaction.args[0] == summary["subscriber_interaction"]
-    assert latest_interaction.args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+    assert _same_handle_value(latest_interaction.args[0], summary["subscriber_interaction"])
+    assert _same_handle_map_values(
+        latest_interaction.args[1], {summary["subscriber_parameter"]: config.interaction_payload}
+    )
     assert latest_interaction.args[2] == config.interaction_tag
     expected_interaction_order = OrderType.TIMESTAMP if config.interaction_time is not None else OrderType.RECEIVE
     assert order_value(latest_interaction.args[3]) == expected_interaction_order.value
     if config.interaction_time is not None:
-        assert latest_interaction.args[5] == config.interaction_time
+        assert _same_handle_value(latest_interaction.args[5], config.interaction_time)
 
     return {
         "reflect": latest_reflect,

@@ -19,6 +19,15 @@ from hla.rti1516e.exceptions import (
     SaveNotInitiated,
     SaveNotInProgress,
 )
+from hla.rti1516_2025.exceptions import (
+    FederateNotExecutionMember as FederateNotExecutionMember2025,
+    NotConnected as NotConnected2025,
+    RestoreInProgress as RestoreInProgress2025,
+    RestoreNotRequested as RestoreNotRequested2025,
+    RestoreNotInProgress as RestoreNotInProgress2025,
+    SaveInProgress as SaveInProgress2025,
+    SaveNotInitiated as SaveNotInitiated2025,
+)
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 
 from .scenario_support import (
@@ -42,15 +51,30 @@ class SaveRestoreScenarioConfig:
 
 
 def _save_statuses(record: Any) -> dict[Any, SaveStatus]:
-    return {pair.federate_handle: pair.save_status for pair in record.args[0]}
+    return {int(getattr(pair.federate_handle, "value", pair.federate_handle)): pair.save_status for pair in record.args[0]}
 
 
 def _restore_statuses(record: Any) -> dict[Any, RestoreStatus]:
-    return {pair.pre_restore_handle: pair.restore_status for pair in record.args[0]}
+    return {int(getattr(pair.pre_restore_handle, "value", pair.pre_restore_handle)): pair.restore_status for pair in record.args[0]}
 
 
 def _time_value(value: Any) -> float:
     return float(getattr(value, "value", value))
+
+
+def _handle_key(value: Any) -> int:
+    return int(getattr(value, "value", value))
+
+
+def _factory_make_time(factory: Any, value: Any) -> Any:
+    scalar = _time_value(value)
+    make_time = getattr(factory, "make_time", None)
+    if callable(make_time):
+        return make_time(scalar)
+    makeTime = getattr(factory, "makeTime", None)
+    if callable(makeTime):
+        return makeTime(scalar)
+    raise AttributeError(f"Unsupported logical time factory: {factory!r}")
 
 
 def _encode_vec3(x: float, y: float, z: float) -> bytes:
@@ -1185,8 +1209,8 @@ def run_save_restore_scenario(
     )
     save_status_pending = save_status_records[-1]
     pending_save = _save_statuses(save_status_pending)
-    assert pending_save[leader_handle] is not SaveStatus.NO_SAVE_IN_PROGRESS
-    assert pending_save[wing_handle] is not SaveStatus.NO_SAVE_IN_PROGRESS
+    assert pending_save[_handle_key(leader_handle)].name != "NO_SAVE_IN_PROGRESS"
+    assert pending_save[_handle_key(wing_handle)].name != "NO_SAVE_IN_PROGRESS"
 
     leader_rti.federate_save_begun()
     wing_rti.federate_save_begun()
@@ -1208,7 +1232,7 @@ def run_save_restore_scenario(
     )
     save_status_cleared = save_status_cleared_records[-1]
     cleared_save = _save_statuses(save_status_cleared)
-    assert all(status is SaveStatus.NO_SAVE_IN_PROGRESS for status in cleared_save.values())
+    assert all(status.name == "NO_SAVE_IN_PROGRESS" for status in cleared_save.values())
 
     leader_rti.request_federation_restore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
@@ -1247,8 +1271,8 @@ def run_save_restore_scenario(
     )
     restore_status_pending = restore_status_records[-1]
     pending_restore = _restore_statuses(restore_status_pending)
-    assert pending_restore[leader_handle] is not RestoreStatus.NO_RESTORE_IN_PROGRESS
-    assert pending_restore[wing_handle] is not RestoreStatus.NO_RESTORE_IN_PROGRESS
+    assert pending_restore[_handle_key(leader_handle)].name != "NO_RESTORE_IN_PROGRESS"
+    assert pending_restore[_handle_key(wing_handle)].name != "NO_RESTORE_IN_PROGRESS"
 
     leader_rti.federate_restore_complete()
     wing_rti.federate_restore_complete()
@@ -1268,7 +1292,7 @@ def run_save_restore_scenario(
     )
     restore_status_cleared = restore_status_cleared_records[-1]
     cleared_restore = _restore_statuses(restore_status_cleared)
-    assert all(status is RestoreStatus.NO_RESTORE_IN_PROGRESS for status in cleared_restore.values())
+    assert all(status.name == "NO_RESTORE_IN_PROGRESS" for status in cleared_restore.values())
 
     return {
         "leader_handle": leader_handle,
@@ -1310,10 +1334,10 @@ def run_scheduled_save_restore_time_state_scenario(
     wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
     leader_factory = leader_rti.get_time_factory()
     wing_factory = wing_rti.get_time_factory()
-    expected_save_time_leader = leader_factory.make_time(_time_value(save_time))
-    expected_save_time_wing = wing_factory.make_time(_time_value(save_time))
-    expected_post_save_time_leader = leader_factory.make_time(_time_value(post_save_time))
-    expected_post_save_time_wing = wing_factory.make_time(_time_value(post_save_time))
+    expected_save_time_leader = _factory_make_time(leader_factory, save_time)
+    expected_save_time_wing = _factory_make_time(wing_factory, save_time)
+    expected_post_save_time_leader = _factory_make_time(leader_factory, post_save_time)
+    expected_post_save_time_wing = _factory_make_time(wing_factory, post_save_time)
 
     leader_rti.enable_time_constrained()
     wing_rti.enable_time_constrained()
@@ -2020,7 +2044,7 @@ def run_save_request_precondition_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.request_federation_save(config.save_name)
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise NotConnected before connect")
@@ -2028,7 +2052,7 @@ def run_save_request_precondition_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.request_federation_save(config.save_name)
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise FederateNotExecutionMember before join")
@@ -2049,7 +2073,7 @@ def run_save_request_precondition_scenario(
 
     try:
         wing_rti.request_federation_save(f"{config.save_name}-DUP")
-    except SaveInProgress as exc:
+    except (SaveInProgress, SaveInProgress2025) as exc:
         save_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise SaveInProgress during save")
@@ -2070,7 +2094,7 @@ def run_save_request_precondition_scenario(
 
     try:
         wing_rti.request_federation_save(f"{config.save_name}-RESTORE-BLOCK")
-    except RestoreInProgress as exc:
+    except (RestoreInProgress, RestoreInProgress2025) as exc:
         restore_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise RestoreInProgress during restore")
@@ -2155,8 +2179,8 @@ def run_save_failure_scenario(
     )
     save_status_cleared = status_records[-1]
     cleared = _save_statuses(save_status_cleared)
-    assert cleared[leader_handle] is SaveStatus.NO_SAVE_IN_PROGRESS
-    assert cleared[wing_handle] is SaveStatus.NO_SAVE_IN_PROGRESS
+    assert cleared[_handle_key(leader_handle)].name == "NO_SAVE_IN_PROGRESS"
+    assert cleared[_handle_key(wing_handle)].name == "NO_SAVE_IN_PROGRESS"
 
     return {
         "leader_handle": leader_handle,
@@ -2204,8 +2228,8 @@ def run_restore_request_failure_scenario(
     )
     restore_status_cleared = status_records[-1]
     cleared = _restore_statuses(restore_status_cleared)
-    assert cleared[leader_handle] is RestoreStatus.NO_RESTORE_IN_PROGRESS
-    assert cleared[wing_handle] is RestoreStatus.NO_RESTORE_IN_PROGRESS
+    assert cleared[_handle_key(leader_handle)].name == "NO_RESTORE_IN_PROGRESS"
+    assert cleared[_handle_key(wing_handle)].name == "NO_RESTORE_IN_PROGRESS"
 
     return {
         "leader_handle": leader_handle,
@@ -2272,8 +2296,8 @@ def run_restore_failure_scenario(
     )
     restore_status_cleared = status_records[-1]
     cleared = _restore_statuses(restore_status_cleared)
-    assert cleared[leader_handle] is RestoreStatus.NO_RESTORE_IN_PROGRESS
-    assert cleared[wing_handle] is RestoreStatus.NO_RESTORE_IN_PROGRESS
+    assert cleared[_handle_key(leader_handle)].name == "NO_RESTORE_IN_PROGRESS"
+    assert cleared[_handle_key(wing_handle)].name == "NO_RESTORE_IN_PROGRESS"
 
     return {
         "leader_handle": leader_handle,
@@ -2332,8 +2356,8 @@ def run_save_abort_scenario(
     )
     save_status_cleared = status_records[-1]
     cleared = _save_statuses(save_status_cleared)
-    assert cleared[leader_handle] is SaveStatus.NO_SAVE_IN_PROGRESS
-    assert cleared[wing_handle] is SaveStatus.NO_SAVE_IN_PROGRESS
+    assert cleared[_handle_key(leader_handle)].name == "NO_SAVE_IN_PROGRESS"
+    assert cleared[_handle_key(wing_handle)].name == "NO_SAVE_IN_PROGRESS"
 
     return {
         "leader_handle": leader_handle,
@@ -2402,8 +2426,8 @@ def run_restore_abort_scenario(
     )
     restore_status_cleared = status_records[-1]
     cleared = _restore_statuses(restore_status_cleared)
-    assert cleared[leader_handle] is RestoreStatus.NO_RESTORE_IN_PROGRESS
-    assert cleared[wing_handle] is RestoreStatus.NO_RESTORE_IN_PROGRESS
+    assert cleared[_handle_key(leader_handle)].name == "NO_RESTORE_IN_PROGRESS"
+    assert cleared[_handle_key(wing_handle)].name == "NO_RESTORE_IN_PROGRESS"
 
     return {
         "leader_handle": leader_handle,
@@ -2427,7 +2451,7 @@ def run_restore_abort_exception_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.abort_federation_restore()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_restore to raise NotConnected before connect")
@@ -2435,7 +2459,7 @@ def run_restore_abort_exception_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.abort_federation_restore()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_restore to raise FederateNotExecutionMember before join")
@@ -2462,7 +2486,7 @@ def run_restore_abort_exception_scenario(
 
     try:
         leader_rti.abort_federation_restore()
-    except RestoreNotInProgress as exc:
+    except (RestoreNotInProgress, RestoreNotInProgress2025) as exc:
         restore_not_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_restore to raise RestoreNotInProgress before restore starts")
@@ -2487,7 +2511,7 @@ def run_save_status_exception_scenario(
 ) -> dict[str, Any]:
     try:
         rti.query_federation_save_status()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected query_federation_save_status to raise NotConnected before connect")
@@ -2495,7 +2519,7 @@ def run_save_status_exception_scenario(
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
         rti.query_federation_save_status()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected query_federation_save_status to raise FederateNotExecutionMember before join")
@@ -2515,7 +2539,7 @@ def run_restore_status_exception_scenario(
 ) -> dict[str, Any]:
     try:
         rti.query_federation_restore_status()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected query_federation_restore_status to raise NotConnected before connect")
@@ -2523,7 +2547,7 @@ def run_restore_status_exception_scenario(
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
         rti.query_federation_restore_status()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected query_federation_restore_status to raise FederateNotExecutionMember before join")
@@ -2546,7 +2570,7 @@ def run_restore_request_precondition_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.request_federation_restore(config.save_name)
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise NotConnected before connect")
@@ -2554,7 +2578,7 @@ def run_restore_request_precondition_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.request_federation_restore(config.save_name)
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise FederateNotExecutionMember before join")
@@ -2575,7 +2599,7 @@ def run_restore_request_precondition_scenario(
 
     try:
         wing_rti.request_federation_restore(config.save_name)
-    except SaveInProgress as exc:
+    except (SaveInProgress, SaveInProgress2025) as exc:
         save_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise SaveInProgress during save")
@@ -2596,7 +2620,7 @@ def run_restore_request_precondition_scenario(
 
     try:
         wing_rti.request_federation_restore(config.save_name)
-    except RestoreInProgress as exc:
+    except (RestoreInProgress, RestoreInProgress2025) as exc:
         restore_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise RestoreInProgress during restore")
@@ -2645,21 +2669,21 @@ def run_save_participant_exception_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.federate_save_begun()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         begun_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_begun to raise NotConnected before connect")
 
     try:
         leader_rti.federate_save_complete()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_complete to raise NotConnected before connect")
 
     try:
         leader_rti.federate_save_not_complete()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_not_complete to raise NotConnected before connect")
@@ -2667,21 +2691,21 @@ def run_save_participant_exception_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.federate_save_begun()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         begun_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_begun to raise FederateNotExecutionMember before join")
 
     try:
         leader_rti.federate_save_complete()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_complete to raise FederateNotExecutionMember before join")
 
     try:
         leader_rti.federate_save_not_complete()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_not_complete to raise FederateNotExecutionMember before join")
@@ -2697,21 +2721,21 @@ def run_save_participant_exception_scenario(
 
     try:
         leader_rti.federate_save_begun()
-    except SaveNotInitiated as exc:
+    except (SaveNotInitiated, SaveNotInitiated2025) as exc:
         begun_not_initiated = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_begun to raise SaveNotInitiated without an active save")
 
     try:
         leader_rti.federate_save_complete()
-    except SaveNotInitiated as exc:
+    except (SaveNotInitiated, SaveNotInitiated2025) as exc:
         complete_not_initiated = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_complete to raise SaveNotInitiated without an active save")
 
     try:
         leader_rti.federate_save_not_complete()
-    except SaveNotInitiated as exc:
+    except (SaveNotInitiated, SaveNotInitiated2025) as exc:
         not_complete_not_initiated = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_not_complete to raise SaveNotInitiated without an active save")
@@ -2757,7 +2781,7 @@ def run_abort_save_exception_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.abort_federation_save()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_save to raise NotConnected before connect")
@@ -2765,7 +2789,7 @@ def run_abort_save_exception_scenario(
     leader_rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.abort_federation_save()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_save to raise FederateNotExecutionMember before join")
@@ -2788,14 +2812,14 @@ def run_restore_participant_exception_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.federate_restore_complete()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_complete to raise NotConnected before connect")
 
     try:
         leader_rti.federate_restore_not_complete()
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_not_complete to raise NotConnected before connect")
@@ -2803,14 +2827,14 @@ def run_restore_participant_exception_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.federate_restore_complete()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_complete to raise FederateNotExecutionMember before join")
 
     try:
         leader_rti.federate_restore_not_complete()
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_not_complete to raise FederateNotExecutionMember before join")
@@ -2826,14 +2850,14 @@ def run_restore_participant_exception_scenario(
 
     try:
         leader_rti.federate_restore_complete()
-    except RestoreNotRequested as exc:
+    except (RestoreNotRequested, RestoreNotRequested2025) as exc:
         complete_not_requested = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_complete to raise RestoreNotRequested without an active restore")
 
     try:
         leader_rti.federate_restore_not_complete()
-    except RestoreNotRequested as exc:
+    except (RestoreNotRequested, RestoreNotRequested2025) as exc:
         not_complete_not_requested = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_not_complete to raise RestoreNotRequested without an active restore")

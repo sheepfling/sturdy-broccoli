@@ -50,6 +50,7 @@ Shortest common paths:
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - run bounded hosted 2025 Python/FedPro route checks: `./tools/python verify-routes-2025`
+- regenerate the checked-in 2025 finish-line and route-parity evidence bundle after proof-lane changes: `python3 scripts/run_spec2025_finish_line.py`
 - check whether hosted Python gRPC is runnable here: `./tools/python verify-routes-preflight`
 - inspect the language-shim route matrix: `./tools/shim-routes matrix --editions 2010,2025 --routes all`
 - inspect the Java toolchain inventory: `./tools/shim-routes java doctor`

@@ -97,7 +97,7 @@ def test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane() -> No
     registered = {row.name: row for row in discover_runtime_backends(spec="2025")}
     probed = {row.name: row for row in discover_runtime_backends(spec="2025", probe=True)}
 
-    assert registered["python2025"].family == "inmemory-2025"
+    assert registered["python2025"].family == "python-rti-2025"
     assert registered["python2025"].aliases == _PYTHON2025_PROVIDER_ALIASES[1:]
     assert registered["python2025"].supports == ("rti1516_2025",)
     assert registered["python2025"].description == "Primary Python 2025 RTI implementation package."

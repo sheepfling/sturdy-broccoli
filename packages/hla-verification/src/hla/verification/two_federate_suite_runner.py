@@ -17,6 +17,8 @@ class TwoFederateSuiteHooks:
     negotiated_config_factory: Callable[[], Any]
     save_restore_config_factory: Callable[[], Mapping[str, Any]]
     ddm_config_factory: Callable[[], Mapping[str, Any]]
+    future_exclusion_config_factory: Callable[[], Any]
+    restore_state_config_factory: Callable[[], Any]
     run_exchange_scenario: Callable[..., Any]
     assert_exchange_history: Callable[..., Any]
     run_sync_scenario: Callable[..., Any]
@@ -24,6 +26,8 @@ class TwoFederateSuiteHooks:
     run_negotiated_scenario: Callable[..., Any]
     run_save_restore_scenario: Callable[..., Any]
     run_ddm_scenario: Callable[..., Any]
+    run_future_exclusion_scenario: Callable[..., Any]
+    run_restore_state_scenario: Callable[..., Any]
     extension_name: str | None = None
     extension_summary_factory: Callable[..., Mapping[str, Any]] | None = None
 
@@ -108,6 +112,28 @@ def run_two_federate_suite_for_pair_factory(
     )
     _cleanup_pair(ddm_sender, ddm_receiver, federation_name=ddm_config["federation_name"])
 
+    future_exclusion_config = hooks.future_exclusion_config_factory()
+    future_slow, future_radar, future_slow_fed, future_radar_fed = pair_factory("time_window_future_exclusion", timeline)
+    future_exclusion_summary = hooks.run_future_exclusion_scenario(
+        future_slow,
+        future_radar,
+        config=future_exclusion_config,
+        slow_federate=future_slow_fed,
+        radar_federate=future_radar_fed,
+    )
+    _cleanup_pair(future_slow, future_radar, federation_name=future_exclusion_config.federation_name)
+
+    restore_state_config = hooks.restore_state_config_factory()
+    restore_truth, restore_radar, restore_truth_fed, restore_radar_fed = pair_factory("time_window_restore_state", timeline)
+    restore_state_summary = hooks.run_restore_state_scenario(
+        restore_truth,
+        restore_radar,
+        config=restore_state_config,
+        truth_federate=restore_truth_fed,
+        radar_federate=restore_radar_fed,
+    )
+    _cleanup_pair(restore_truth, restore_radar, federation_name=restore_state_config.federation_name)
+
     extension_summary: Mapping[str, Any] | None = None
     if hooks.extension_summary_factory is not None:
         extension_summary = hooks.extension_summary_factory(target_radar_steps=extension_steps)
@@ -155,6 +181,20 @@ def run_two_federate_suite_for_pair_factory(
             "artifacts": ["typed summary", "callback timeline"],
             "key_outcome": "region-filtered timestamped delivery",
         },
+        {
+            "scenario": "time_window_future_exclusion",
+            "backend": "python/in-memory",
+            "callbacks": len(future_slow_fed.records) + len(future_radar_fed.records),
+            "artifacts": ["typed summary", "callback timeline", "oracle summary"],
+            "key_outcome": "window closure blocked until future input is excluded",
+        },
+        {
+            "scenario": "time_window_restore_state",
+            "backend": "python/in-memory",
+            "callbacks": len(restore_truth_fed.records) + len(restore_radar_fed.records),
+            "artifacts": ["typed summary", "callback timeline", "oracle summary"],
+            "key_outcome": "open and closed window state restores across save/restore checkpoints",
+        },
     ]
     if extension_summary is not None:
         scenario_rows.append(dict(extension_summary["scenario_row"]))
@@ -172,6 +212,10 @@ def run_two_federate_suite_for_pair_factory(
         + _callback_rows("right", save_sub_fed.records, scenario="save_restore")
         + _callback_rows("sender", ddm_sender_fed.records, scenario="ddm")
         + _callback_rows("receiver", ddm_receiver_fed.records, scenario="ddm")
+        + _callback_rows("slow", future_slow_fed.records, scenario="time_window_future_exclusion")
+        + _callback_rows("radar", future_radar_fed.records, scenario="time_window_future_exclusion")
+        + _callback_rows("truth", restore_truth_fed.records, scenario="time_window_restore_state")
+        + _callback_rows("radar", restore_radar_fed.records, scenario="time_window_restore_state")
     )
 
     fom_modules = {"vendor_smoke": str(exchange_config.fom_modules[0])}
@@ -223,6 +267,22 @@ def run_two_federate_suite_for_pair_factory(
             "receiver_callback_count": len(ddm_receiver_fed.records),
             "sender_callbacks": _jsonable(ddm_sender_fed.records),
             "receiver_callbacks": _jsonable(ddm_receiver_fed.records),
+        },
+        "time_window_future_exclusion": {
+            "config": _jsonable(future_exclusion_config),
+            "summary": _jsonable(future_exclusion_summary),
+            "slow_callback_count": len(future_slow_fed.records),
+            "radar_callback_count": len(future_radar_fed.records),
+            "slow_callbacks": _jsonable(future_slow_fed.records),
+            "radar_callbacks": _jsonable(future_radar_fed.records),
+        },
+        "time_window_restore_state": {
+            "config": _jsonable(restore_state_config),
+            "summary": _jsonable(restore_state_summary),
+            "truth_callback_count": len(restore_truth_fed.records),
+            "radar_callback_count": len(restore_radar_fed.records),
+            "truth_callbacks": _jsonable(restore_truth_fed.records),
+            "radar_callbacks": _jsonable(restore_radar_fed.records),
         },
         "callback_rows": callback_rows,
         "timeline_rows": [_jsonable(event) for event in timeline.events],

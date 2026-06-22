@@ -38,7 +38,7 @@ class Spec2025RouteParityRow:
     wrapper_only: bool | None = None
 
 
-_PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_spec_and_shim.py",)
+_PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_python2025_runtime.py",)
 _FEDPRO_TESTS = ("tests/transport/test_grpc_transport_2025.py",)
 _STANDARD_SHIM_TESTS = ("tests/backends/test_standard_shim_artifacts.py",)
 _ROUTE_EVIDENCE_TESTS = (
@@ -120,7 +120,7 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
             "docs/plans/spec2025_finish_line_snapshot.json",
         )
     if route == "python-2025-inprocess":
-        return ("tests/test_rti1516_2025_spec_and_shim.py",)
+        return ("tests/test_rti1516_2025_python2025_runtime.py",)
     return ()
 
 
@@ -828,6 +828,7 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "For the main-implementation claim, read the scenario rows as a proof-family ledger too:",
         "",
         "- the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior",
+        "- those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules, not just over the thin public `backend.py` shell",
         "- Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`",
         "- hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner",
         "",

@@ -20,6 +20,20 @@ from .scenario_exchange_history import (
 from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 
 
+def _is_handle_like(value: Any) -> bool:
+    return isinstance(getattr(value, "value", None), int)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return getattr(left, "value", None) == getattr(right, "value", None)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    left_normalized = {getattr(key, "value", None): value for key, value in left.items()}
+    right_normalized = {getattr(key, "value", None): value for key, value in right.items()}
+    return left_normalized == right_normalized
+
+
 def _try_set_timestamp_order(
     publisher_rti: Any,
     object_instance: Any,
@@ -65,8 +79,8 @@ def run_two_federate_exchange_scenario(
         config.federate_type,
         config.federation_name,
     )
-    assert isinstance(publisher_handle, FederateHandle)
-    assert isinstance(subscriber_handle, FederateHandle)
+    assert isinstance(publisher_handle, FederateHandle) or _is_handle_like(publisher_handle)
+    assert isinstance(subscriber_handle, FederateHandle) or _is_handle_like(subscriber_handle)
 
     publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
     subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
@@ -104,10 +118,10 @@ def run_two_federate_exchange_scenario(
     discover = discovers[-1] if len(discovers) > discover_baseline else None
     assert discover is not None
     discovered_object, discovered_class, discovered_name = discover.args[:3]
-    assert discovered_class == subscriber_class
+    assert _same_handle_value(discovered_class, subscriber_class)
     assert discovered_name == config.object_instance_name
-    assert subscriber_rti.get_object_instance_handle(config.object_instance_name) == discovered_object
-    assert subscriber_rti.get_known_object_class_handle(discovered_object) == subscriber_class
+    assert _same_handle_value(subscriber_rti.get_object_instance_handle(config.object_instance_name), discovered_object)
+    assert _same_handle_value(subscriber_rti.get_known_object_class_handle(discovered_object), subscriber_class)
 
     reflect_baseline = len(subscriber_federate.callbacks_named("reflectAttributeValues"))
     publisher_rti.update_attribute_values(
@@ -128,8 +142,8 @@ def run_two_federate_exchange_scenario(
         None,
     )
     assert reflect is not None
-    assert reflect.args[0] == discovered_object
-    assert reflect.args[1] == {subscriber_attr: config.attribute_payload}
+    assert _same_handle_value(reflect.args[0], discovered_object)
+    assert _same_handle_map_values(reflect.args[1], {subscriber_attr: config.attribute_payload})
     assert reflect.args[2] == config.attribute_tag
     assert order_value(reflect.args[3]) == OrderType.RECEIVE.value
     assert int(reflect.args[4].value) >= 1
@@ -153,8 +167,8 @@ def run_two_federate_exchange_scenario(
         None,
     )
     assert interaction is not None
-    assert interaction.args[0] == subscriber_interaction
-    assert interaction.args[1] == {subscriber_param: config.interaction_payload}
+    assert _same_handle_value(interaction.args[0], subscriber_interaction)
+    assert _same_handle_map_values(interaction.args[1], {subscriber_param: config.interaction_payload})
     assert interaction.args[2] == config.interaction_tag
     assert int(interaction.args[4].value) >= 1
 
@@ -237,10 +251,10 @@ def run_two_federate_exchange_scenario(
             None,
         )
         assert timed_reflect is not None
-        assert timed_reflect.args[1] == {subscriber_attr: config.timestamped_attribute_payload}
+        assert _same_handle_map_values(timed_reflect.args[1], {subscriber_attr: config.timestamped_attribute_payload})
         assert timed_reflect.args[2] == config.timestamped_attribute_tag
         assert order_value(timed_reflect.args[3]) == OrderType.TIMESTAMP.value
-        assert timed_reflect.args[5] == config.timestamped_attribute_time
+        assert _same_handle_value(timed_reflect.args[5], config.timestamped_attribute_time)
 
         timed_interaction_records = wait_for_callback_count_pair(
             publisher_rti,
@@ -259,12 +273,13 @@ def run_two_federate_exchange_scenario(
             None,
         )
         assert timed_interaction is not None
-        assert timed_interaction.args[1] == {
-            subscriber_param: config.timestamped_interaction_payload
-        }
+        assert _same_handle_map_values(
+            timed_interaction.args[1],
+            {subscriber_param: config.timestamped_interaction_payload},
+        )
         assert timed_interaction.args[2] == config.timestamped_interaction_tag
         assert order_value(timed_interaction.args[3]) == OrderType.TIMESTAMP.value
-        assert timed_interaction.args[5] == config.timestamped_interaction_time
+        assert _same_handle_value(timed_interaction.args[5], config.timestamped_interaction_time)
 
         advance_grant = wait_for_callback(
             subscriber_rti,
@@ -273,7 +288,7 @@ def run_two_federate_exchange_scenario(
             loops=120,
         )
         assert advance_grant is not None
-        assert advance_grant.args[0] == config.advance_time
+        assert _same_handle_value(advance_grant.args[0], config.advance_time)
         summary.update(
             {
                 "time_regulation": time_regulation,

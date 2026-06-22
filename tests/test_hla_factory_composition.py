@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import uuid
+
 import pytest
 
 _PROVIDER_ROUTES = ("python2025",)
@@ -132,6 +134,42 @@ def test_2025_version_local_factory_rejects_legacy_shim_provider_name() -> None:
 
     with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_rti_ambassador(backend="shim")
+
+
+@pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-FM-008")
+def test_2025_direct_runtime_accepts_semantically_equivalent_2010_resign_action() -> None:
+    from hla.backends.common import RecordingFederateAmbassador
+    from hla.rti1516_2025 import CallbackModel
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.rti1516e.enums import ResignAction as ResignAction2010
+
+    federation_name = f"python2025-resign-normalization-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="python2025")
+
+    try:
+        rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+        rti.createFederationExecution(
+            federationName=federation_name,
+            fomModules=scenario_fom_paths("message-test"),
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        rti.joinFederationExecution(
+            federateName="NormalizationFederate",
+            federateType="NormalizationFederate",
+            federationName=federation_name,
+        )
+
+        rti.resignFederationExecution(ResignAction2010.NO_ACTION)
+    finally:
+        try:
+            rti.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        try:
+            rti.disconnect()
+        except Exception:
+            pass
 
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-BND-003")

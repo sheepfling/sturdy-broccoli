@@ -20,15 +20,15 @@ If you only need the shortest practical route, read these in order:
 4. [../packages/hla-backend-python2025/README.md](../packages/hla-backend-python2025/README.md)
 5. [plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)
 6. [verification/time_model_compliance.md](verification/time_model_compliance.md)
-7. [../tests/test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)
+7. [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
 8. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
 
 That sequence gets you from architecture to the current 2025 runtime proof with
 minimal detours.
 
-Item 7 has a historical filename. Read it as the main in-process executable
-proof suite for `hla-backend-python2025`, with only limited wrapper-specific
-compatibility coverage.
+Item 7 is the main in-process executable proof suite for
+`hla-backend-python2025`, with only limited wrapper-specific compatibility
+coverage.
 
 Use the shim README only when you are checking legacy provider spelling,
 wrapper-only imports, or compatibility-surface behavior.
@@ -73,6 +73,8 @@ Important distinction:
 - `hla-backend-inmemory` is the 2010 backend implementation lane
 - `hla-backend-python2025` is the main full 2025 Python RTI implementation lane
 - `hla-backend-shim` is a wrapper-only compatibility alias over that runtime
+- main 2025 runtime selection should use `backend="python2025"`, not
+  `backend="shim"`
 
 ## 2025 Runtime Proof Surface
 
@@ -87,8 +89,8 @@ are:
   generated finish-line and blocker snapshot
 - [../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py](../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py):
   source of truth for the finish-line snapshot
-- [../tests/test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py):
-  historical filename; main in-process `python2025` runtime suite
+- [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py):
+  main in-process `python2025` runtime suite
 - [../tests/transport/test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py):
   hosted 2025 FedPro route coverage
 - [../packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py](../packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py):
@@ -102,7 +104,7 @@ Use that set when the question is:
 
 For time-management, lookahead, and save/restore-window questions, treat
 `verification/time_model_compliance.md` and
-`tests/test_rti1516_2025_spec_and_shim.py` as the main proof front doors before
+`tests/test_rti1516_2025_python2025_runtime.py` as the main proof front doors before
 looking at any wrapper-only compatibility surface.
 
 ## Editing By Concern
@@ -115,6 +117,12 @@ If you are changing runtime semantics for the 2025 lane:
 
 - start in
   [../packages/hla-backend-python2025/src/hla/backends/python2025/backend.py](../packages/hla-backend-python2025/src/hla/backends/python2025/backend.py)
+- then follow the extracted runtime modules under
+  `packages/hla-backend-python2025/src/hla/backends/python2025/`, especially
+  `backend_factory_runtime.py`, `runtime_state.py`,
+  `federation_management_runtime.py`, `time_management_runtime.py`, and the
+  `*_surface_mixin.py` files when the issue is no longer concentrated in the
+  thin `backend.py` shell
 
 If you are changing shared scenario proof:
 
@@ -128,10 +136,13 @@ If you are changing hosted 2025 transport behavior:
 
 For a 2025 runtime bug:
 
-1. `tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main `python2025` proof suite)
+1. `tests/test_rti1516_2025_python2025_runtime.py` (main `python2025` proof suite)
 2. `packages/hla-backend-python2025/src/hla/backends/python2025/backend.py`
-3. `packages/hla-backend-shim/src/hla/backends/shim/backend.py` when the issue is wrapper-only compatibility behavior
-4. `packages/hla-rti1516-2025/src/hla/rti1516_2025/*`
+3. `packages/hla-backend-python2025/src/hla/backends/python2025/*_runtime.py`,
+   `*_surface_mixin.py`, and `runtime_state.py` when the behavior has already
+   been split out of the thin backend shell
+4. `packages/hla-backend-shim/src/hla/backends/shim/backend.py` when the issue is wrapper-only compatibility behavior
+5. `packages/hla-rti1516-2025/src/hla/rti1516_2025/*`
 
 Run `./tools/python verify-main-2025` as the default proof command after
 changes in that path.
@@ -147,9 +158,11 @@ the bounded hosted `python-2025-fedpro-grpc` route.
 
 For a time-management or lookahead question:
 
-1. `tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main `python2025` proof suite)
+1. `tests/test_rti1516_2025_python2025_runtime.py` (main `python2025` proof suite)
 2. `packages/hla-verification/src/hla/verification/scenario_target_radar_time.py`
-3. `packages/hla-backend-python2025/src/hla/backends/python2025/backend.py`
+3. `packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py`
+4. `packages/hla-backend-python2025/src/hla/backends/python2025/federation_time_surface_mixin.py`
+5. `packages/hla-backend-python2025/src/hla/backends/python2025/runtime_state.py`
 
 ## Read Next
 

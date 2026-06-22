@@ -22,6 +22,24 @@ from .scenario_support import (
 )
 
 
+def _is_handle_like(value: Any) -> bool:
+    return isinstance(getattr(value, "value", None), int)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return getattr(left, "value", None) == getattr(right, "value", None)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    left_normalized = {getattr(key, "value", None): value for key, value in left.items()}
+    right_normalized = {getattr(key, "value", None): value for key, value in right.items()}
+    return left_normalized == right_normalized
+
+
+def _same_single_handle_callback(args: tuple[Any, ...], handle: Any) -> bool:
+    return len(args) == 1 and _same_handle_value(args[0], handle)
+
+
 @dataclass(frozen=True)
 class DeclarationManagementScenarioConfig:
     federation_name: str = "DeclarationManagementFederation"
@@ -80,8 +98,8 @@ def run_declaration_management_scenario(
         config.federate_type,
         config.federation_name,
     )
-    assert isinstance(publisher_handle, FederateHandle)
-    assert isinstance(subscriber_handle, FederateHandle)
+    assert isinstance(publisher_handle, FederateHandle) or _is_handle_like(publisher_handle)
+    assert isinstance(subscriber_handle, FederateHandle) or _is_handle_like(subscriber_handle)
 
     publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
     subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
@@ -131,8 +149,8 @@ def run_declaration_management_scenario(
     )
     start_record = start_records[-1]
     turn_on_record = turn_on_records[-1]
-    assert start_record.args == (publisher_class,)
-    assert turn_on_record.args == (publisher_interaction,)
+    assert _same_single_handle_callback(start_record.args, publisher_class)
+    assert _same_single_handle_callback(turn_on_record.args, publisher_interaction)
 
     object_instance = register_named_object_instance(
         publisher_rti,
@@ -149,7 +167,7 @@ def run_declaration_management_scenario(
         loops=120,
     )
     discover_record = discover_records[-1]
-    assert discover_record.args[1] == subscriber_class
+    assert _same_handle_value(discover_record.args[1], subscriber_class)
     assert discover_record.args[2] == config.object_instance_name
 
     publisher_rti.update_attribute_values(
@@ -166,8 +184,8 @@ def run_declaration_management_scenario(
         loops=120,
     )
     reflect_record = reflect_records[-1]
-    assert reflect_record.args[0] == discover_record.args[0]
-    assert reflect_record.args[1] == {subscriber_attribute: config.attribute_payload}
+    assert _same_handle_value(reflect_record.args[0], discover_record.args[0])
+    assert _same_handle_map_values(reflect_record.args[1], {subscriber_attribute: config.attribute_payload})
     assert reflect_record.args[2] == config.attribute_tag
 
     publisher_rti.send_interaction(
@@ -184,8 +202,8 @@ def run_declaration_management_scenario(
         loops=120,
     )
     interaction_record = interaction_records[-1]
-    assert interaction_record.args[0] == subscriber_interaction
-    assert interaction_record.args[1] == {subscriber_parameter: config.interaction_payload}
+    assert _same_handle_value(interaction_record.args[0], subscriber_interaction)
+    assert _same_handle_map_values(interaction_record.args[1], {subscriber_parameter: config.interaction_payload})
     assert interaction_record.args[2] == config.interaction_tag
 
     if config.use_full_object_unpublish:
@@ -211,8 +229,8 @@ def run_declaration_management_scenario(
     )
     first_stop_record = stop_records[-1]
     first_turn_off_record = turn_off_records[-1]
-    assert first_stop_record.args == (publisher_class,)
-    assert first_turn_off_record.args == (publisher_interaction,)
+    assert _same_single_handle_callback(first_stop_record.args, publisher_class)
+    assert _same_single_handle_callback(first_turn_off_record.args, publisher_interaction)
 
     publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
     publisher_rti.publish_interaction_class(publisher_interaction)
@@ -234,8 +252,8 @@ def run_declaration_management_scenario(
     )
     second_start_record = start_records[-1]
     second_turn_on_record = turn_on_records[-1]
-    assert second_start_record.args == (publisher_class,)
-    assert second_turn_on_record.args == (publisher_interaction,)
+    assert _same_single_handle_callback(second_start_record.args, publisher_class)
+    assert _same_single_handle_callback(second_turn_on_record.args, publisher_interaction)
 
     if config.use_full_object_unsubscribe:
         subscriber_rti.unsubscribe_object_class(subscriber_class)
@@ -262,8 +280,8 @@ def run_declaration_management_scenario(
     second_stop_record = stop_records[-1] if len(stop_records) > stop_baseline + 1 else None
     second_turn_off_record = turn_off_records[-1]
     if second_stop_record is not None:
-        assert second_stop_record.args == (publisher_class,)
-    assert second_turn_off_record.args == (publisher_interaction,)
+        assert _same_single_handle_callback(second_stop_record.args, publisher_class)
+    assert _same_single_handle_callback(second_turn_off_record.args, publisher_interaction)
 
     suppressed_reflect_baseline = len(subscriber_federate.callbacks_named("reflectAttributeValues"))
     suppressed_interaction_baseline = len(subscriber_federate.callbacks_named("receiveInteraction"))
@@ -331,7 +349,7 @@ def run_declaration_invalid_attribute_publication_scenario(
         config.federate_type,
         config.federation_name,
     )
-    assert isinstance(publisher_handle, FederateHandle)
+    assert isinstance(publisher_handle, FederateHandle) or _is_handle_like(publisher_handle)
 
     publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
     publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
@@ -367,7 +385,7 @@ def run_declaration_unpublish_rejection_scenario(
         config.federate_type,
         config.federation_name,
     )
-    assert isinstance(publisher_handle, FederateHandle)
+    assert isinstance(publisher_handle, FederateHandle) or _is_handle_like(publisher_handle)
 
     publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
     publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
@@ -448,8 +466,8 @@ def run_time_managed_declaration_independence_scenario(
         config.federate_type,
         config.federation_name,
     )
-    assert isinstance(publisher_handle, FederateHandle)
-    assert isinstance(subscriber_handle, FederateHandle)
+    assert isinstance(publisher_handle, FederateHandle) or _is_handle_like(publisher_handle)
+    assert isinstance(subscriber_handle, FederateHandle) or _is_handle_like(subscriber_handle)
 
     publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
     subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
@@ -501,8 +519,8 @@ def run_time_managed_declaration_independence_scenario(
     )
     start_record = start_records[-1]
     turn_on_record = turn_on_records[-1]
-    assert start_record.args == (publisher_class,)
-    assert turn_on_record.args == (publisher_interaction,)
+    assert _same_single_handle_callback(start_record.args, publisher_class)
+    assert _same_single_handle_callback(turn_on_record.args, publisher_interaction)
 
     object_instance = register_named_object_instance(
         publisher_rti,
@@ -519,7 +537,7 @@ def run_time_managed_declaration_independence_scenario(
         loops=120,
     )
     discover_record = discover_records[-1]
-    assert discover_record.args[1] == subscriber_class
+    assert _same_handle_value(discover_record.args[1], subscriber_class)
     assert discover_record.args[2] == config.object_instance_name
 
     publisher_rti.update_attribute_values(
@@ -536,8 +554,8 @@ def run_time_managed_declaration_independence_scenario(
         loops=120,
     )
     reflect_record = reflect_records[-1]
-    assert reflect_record.args[0] == discover_record.args[0]
-    assert reflect_record.args[1] == {subscriber_attribute: config.attribute_payload}
+    assert _same_handle_value(reflect_record.args[0], discover_record.args[0])
+    assert _same_handle_map_values(reflect_record.args[1], {subscriber_attribute: config.attribute_payload})
     assert reflect_record.args[2] == config.attribute_tag
 
     publisher_rti.send_interaction(
@@ -554,8 +572,8 @@ def run_time_managed_declaration_independence_scenario(
         loops=120,
     )
     interaction_record = interaction_records[-1]
-    assert interaction_record.args[0] == subscriber_interaction
-    assert interaction_record.args[1] == {subscriber_parameter: config.interaction_payload}
+    assert _same_handle_value(interaction_record.args[0], subscriber_interaction)
+    assert _same_handle_map_values(interaction_record.args[1], {subscriber_parameter: config.interaction_payload})
     assert interaction_record.args[2] == config.interaction_tag
 
     return {

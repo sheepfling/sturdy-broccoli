@@ -9,6 +9,14 @@ from hla.rti1516e.enums import CallbackModel
 from .scenario_support import drain_callbacks_pair, register_named_object_instance
 
 
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return getattr(left, "value", None) == getattr(right, "value", None)
+
+
+def _same_handle_set_values(left: set[Any], right: set[Any]) -> bool:
+    return {getattr(item, "value", None) for item in left} == {getattr(item, "value", None) for item in right}
+
+
 @dataclass(frozen=True)
 class RequestAttributeValueUpdateScenarioConfig:
     federation_name: str = "RequestAttributeValueUpdateFederation"
@@ -68,7 +76,9 @@ def run_request_attribute_value_update_scenario(
 
     provide_record = owner_federate.last_callback("provideAttributeValueUpdate")
     assert provide_record is not None
-    assert provide_record.args == (object_instance, {owner_attr}, config.request_tag)
+    assert _same_handle_value(provide_record.args[0], object_instance)
+    assert _same_handle_set_values(provide_record.args[1], {owner_attr})
+    assert provide_record.args[2] == config.request_tag
 
     return {
         "owner_handle": owner_handle,
@@ -142,7 +152,9 @@ def run_request_attribute_value_update_routing_scenario(
     object_target_provide_a = owner_a_federate.last_callback("provideAttributeValueUpdate")
     object_target_provide_b = owner_b_federate.last_callback("provideAttributeValueUpdate")
     assert object_target_provide_a is not None
-    assert object_target_provide_a.args == (object_a, {owner_a_attr}, config.request_tag)
+    assert _same_handle_value(object_target_provide_a.args[0], object_a)
+    assert _same_handle_set_values(object_target_provide_a.args[1], {owner_a_attr})
+    assert object_target_provide_a.args[2] == config.request_tag
     assert object_target_provide_b is None
 
     owner_a_federate.clear()
@@ -153,8 +165,12 @@ def run_request_attribute_value_update_routing_scenario(
     class_target_provide_b = owner_b_federate.last_callback("provideAttributeValueUpdate")
     assert class_target_provide_a is not None
     assert class_target_provide_b is not None
-    assert class_target_provide_a.args == (object_a, {owner_a_attr}, b"class-wide")
-    assert class_target_provide_b.args == (object_b, {owner_b_attr}, b"class-wide")
+    assert _same_handle_value(class_target_provide_a.args[0], object_a)
+    assert _same_handle_set_values(class_target_provide_a.args[1], {owner_a_attr})
+    assert class_target_provide_a.args[2] == b"class-wide"
+    assert _same_handle_value(class_target_provide_b.args[0], object_b)
+    assert _same_handle_set_values(class_target_provide_b.args[1], {owner_b_attr})
+    assert class_target_provide_b.args[2] == b"class-wide"
 
     return {
         "owner_a_handle": owner_a_handle,

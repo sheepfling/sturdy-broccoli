@@ -9,6 +9,7 @@ from hla.rti1516_2025.enums import OrderType
 from hla.rti1516_2025.exceptions import (
     AttributeNotOwned,
     DeletePrivilegeNotHeld,
+    InvalidObjectInstanceHandle,
     ObjectClassNotPublished,
     ObjectInstanceNameInUse,
     ObjectInstanceNotKnown,
@@ -214,9 +215,11 @@ def request_attribute_value_update(
     attributes: Any,
     user_supplied_tag: bytes,
 ) -> None:
-    if isinstance(object_class_or_instance, ObjectInstanceHandle):
+    try:
         request_instance_attribute_value_update(rti, object_class_or_instance, attributes, user_supplied_tag)
         return
+    except InvalidObjectInstanceHandle:
+        pass
     object_class_name = rti._object_class_name(object_class_or_instance)
     attribute_names = rti._attribute_names_from_handles(object_class_name, attributes)
     attribute_handles = {
@@ -240,6 +243,10 @@ def request_instance_attribute_value_update(
     attributes: Any,
     user_supplied_tag: bytes,
 ) -> None:
+    if not isinstance(object_instance, ObjectInstanceHandle):
+        object_instance_value = getattr(object_instance, "value", None)
+        if type(object_instance).__name__ == "ObjectInstanceHandle" and isinstance(object_instance_value, int):
+            object_instance = ObjectInstanceHandle(object_instance_value)
     record = rti._object_instance_record_known(object_instance)
     attribute_names = rti._attribute_names_from_handles(record.object_class_name, attributes)
     attribute_handles = {

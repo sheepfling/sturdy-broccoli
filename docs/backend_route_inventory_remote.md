@@ -16,8 +16,12 @@ Important distinctions:
 - `Python RTI over grpc/rest` refers to the older hosted route over the 2010
   Python in-memory backend
 - `Python 2025 FedPro hosted route over grpc` refers to the bounded typed
-  transport route over the main full `hla-backend-python2025` runtime lane, with
-  `hla-backend-shim` retained only as compatibility-wrapper/import-level code
+  transport route over the main full `hla-backend-python2025` runtime lane
+- `hla-backend-shim` retained only as compatibility-wrapper/import-level code
+- the implementation owner for 2025 remote work is `python2025` /
+  `hla-backend-python2025`
+- `hla-backend-shim` is retained only as compatibility-wrapper/import-level
+  code and should not be described as the hosted runtime lane
 - the operator-facing hosted 2025 lane is `python2025`; do not describe
   legacy wrapper aliases as the hosted runtime owner, and do
   not use wrapper naming as the canonical route name for 2025
@@ -43,4 +47,5 @@ Route anchors:
 
 Use this page when you want the transport-hosted route story and the current
 distinction between the 2010 hosted Python lane and the bounded hosted 2025
-FedPro lane.
+FedPro lane. For 2025, read that lane as hosted evidence over the primary
+`hla-backend-python2025` RTI, not as a separate runtime family.

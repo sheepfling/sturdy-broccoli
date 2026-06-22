@@ -4326,11 +4326,11 @@ def test_verification_asset_bundle_includes_future_exclusion_time_order_slice() 
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order" in row["evidence"]
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline" in row["evidence"]
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison" in row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary" in row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close" in row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order" in row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination" in row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation" in row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary" in row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close" in row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order" in row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination" in row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation" in row["evidence"]
 
 
 def test_verification_asset_bundle_includes_time_window_save_restore_ladder() -> None:
@@ -4345,17 +4345,17 @@ def test_verification_asset_bundle_includes_time_window_save_restore_ladder() ->
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state" in local_state_row["evidence"]
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output" in local_state_row["evidence"]
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore" in local_state_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak" in local_state_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore" in local_state_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay" in local_state_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak" in local_state_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore" in local_state_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay" in local_state_row["evidence"]
 
     transient_row = rows["REQ-SAVE-RESTORE-TRANSIENT-STATE-001"]
     assert "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_output_scenario" in transient_row["evidence"]
     assert "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario" in transient_row["evidence"]
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output" in transient_row["evidence"]
     assert "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore" in transient_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore" in transient_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay" in transient_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore" in transient_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay" in transient_row["evidence"]
 
 
 def test_verification_asset_bundle_includes_save_restore_routing_state_rollback() -> None:
@@ -4366,7 +4366,7 @@ def test_verification_asset_bundle_includes_save_restore_routing_state_rollback(
     routing_row = rows["REQ-SAVE-RESTORE-ROUTING-STATE-001"]
     assert "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_plain_object_subscriber_routing_scenario" in routing_row["evidence"]
     assert "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_plain_interaction_subscriber_routing_scenario" in routing_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing" in routing_row["evidence"]
-    assert "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing" in routing_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing" in routing_row["evidence"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing" in routing_row["evidence"]
     assert "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema" in routing_row["evidence"]
     assert "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_interaction_subscriber_routing_over_fedpro_schema" in routing_row["evidence"]

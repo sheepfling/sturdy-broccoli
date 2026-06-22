@@ -17,6 +17,14 @@ The intended reading order for a new contributor is:
 3. environment and package map
 4. deeper backend or verification reference
 
+For IEEE 1516.1-2025 specifically, read that flow with one explicit ownership
+boundary in mind:
+
+- `hla-backend-python2025` is the main executable RTI lane
+- `hla-backend-shim` is only the compatibility wrapper around that lane
+- direct `python2025` proof comes first
+- hosted FedPro proof is a bounded extension over the same runtime
+
 ### Start Here
 
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
@@ -56,7 +64,9 @@ surfaces are:
 - [docs/python_rti_reading_map.md](python_rti_reading_map.md): shortest path for editing the main `python2025` RTI lane
 - `./tools/python verify-main-2025`: normal direct `python2025` proof lane for the main implementation surface
 - [docs/verification/time_model_compliance.md](verification/time_model_compliance.md): current GALT/LITS/lookahead proof ladder for the 2025 lane
+- [docs/requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): requirement index and bounded proof-note map for the 2025 runtime/support/binding evidence surface
 - `./tools/python verify-routes-2025`: bounded hosted `python-2025-fedpro-grpc` hygiene lane over that same runtime
+- `python3 scripts/run_spec2025_finish_line.py`: regenerate the checked-in 2025 finish-line snapshot, verification matrix, and route-parity artifacts after proof-lane changes
 - [docs/plans/spec2025_finish_line.md](plans/spec2025_finish_line.md): generated 2025 finish-line evidence snapshot
 - [docs/plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md): generated route-parity evidence for the main 2025 RTI lane
 

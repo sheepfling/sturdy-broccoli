@@ -12,11 +12,16 @@ def test_two_federate_suite_artifacts_are_generated(tmp_path):
     summary = json.loads(paths.summary_json.read_text())
     assert summary["suite_name"] == "two-federate-suite"
     assert summary["primary_profile"] == "python"
-    assert len(summary["scenario_rows"]) == 7
+    assert len(summary["scenario_rows"]) == 9
     assert len(summary["profiles"]) >= 4
     assert summary["profiles"][0]["profile"] == "python"
     assert len(summary["target_radar"]["track_reports"]) == 3
     assert summary["exchange"]["history"]["timestamp_interaction"]["method_name"] == "receiveInteraction"
+    assert summary["time_window_future_exclusion"]["summary"]["certification_target"] == "time-window-future-exclusion"
+    assert summary["time_window_restore_state"]["summary"]["certification_target"] == "time-window-save-restore-window-state"
+    scenario_ids = {row["scenario"] for row in summary["scenario_rows"]}
+    assert "time_window_future_exclusion" in scenario_ids
+    assert "time_window_restore_state" in scenario_ids
 
     with paths.track_reports_csv.open() as handle:
         track_rows = list(csv.DictReader(handle))
@@ -34,6 +39,8 @@ def test_two_federate_suite_artifacts_are_generated(tmp_path):
     assert "Two-Federate Suite" in report_text
     assert "## Profiles" in report_text
     assert "target_radar" in report_text
+    assert "time_window_future_exclusion" in report_text
+    assert "time_window_restore_state" in report_text
 
     svg_text = paths.summary_svg.read_text()
     assert "<svg" in svg_text
@@ -42,3 +49,5 @@ def test_two_federate_suite_artifacts_are_generated(tmp_path):
     timeline_text = paths.timeline_svg.read_text()
     assert "<svg" in timeline_text
     assert "Callback Timeline" in timeline_text
+    assert "Time window future exclusion" in timeline_text
+    assert "Time window restore state" in timeline_text

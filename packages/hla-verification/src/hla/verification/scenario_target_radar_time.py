@@ -9,6 +9,7 @@ from hla.rti1516e.factory import create_rti_ambassador
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import InvalidLogicalTime, RTIexception
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+from hla.rti1516_2025.exceptions import InvalidLogicalTime as InvalidLogicalTime2025
 
 from .scenario_support import drain_callbacks_pair, wait_for_callback
 
@@ -668,7 +669,7 @@ def _verify_time_window_pipeline_oracle(
     scan1_close_grant: Any,
     scan2_reflect: Any,
     consumer_receives: list[Any],
-    consumer_track_parameter: Any,
+    consumer_track_parameter: Any | None = None,
     post_readvance_receives: list[Any],
 ) -> dict[str, Any]:
     scan1_close_time = _timestamp_value(scan1_close_grant.args[0])
@@ -683,13 +684,25 @@ def _verify_time_window_pipeline_oracle(
     ]
     timestamps = [entry["logical_time"] for entry in deliveries]
     tags = [entry["tag"] for entry in deliveries]
+    delivered_parameter_keys = [next(iter(entry["parameters"])) for entry in deliveries]
 
     assert scan1_close_time == config.scan1_end
     assert scan2_input_time == config.scan2_input_time
     assert timestamps == [config.scan1_output_time, config.scan2_output_time]
     assert tags == [b"scan1-track-output", b"scan2-track-output"]
-    assert deliveries[0]["parameters"] == {consumer_track_parameter: _encode_text(config.scan1_track_id)}
-    assert deliveries[1]["parameters"] == {consumer_track_parameter: _encode_text(config.scan2_track_id)}
+    assert getattr(delivered_parameter_keys[0], "value", delivered_parameter_keys[0]) == getattr(
+        delivered_parameter_keys[1],
+        "value",
+        delivered_parameter_keys[1],
+    )
+    if consumer_track_parameter is not None:
+        assert getattr(delivered_parameter_keys[0], "value", delivered_parameter_keys[0]) == getattr(
+            consumer_track_parameter,
+            "value",
+            consumer_track_parameter,
+        )
+    assert list(deliveries[0]["parameters"].values()) == [_encode_text(config.scan1_track_id)]
+    assert list(deliveries[1]["parameters"].values()) == [_encode_text(config.scan2_track_id)]
     assert len(post_readvance_receives) == 2
 
     return {
@@ -705,12 +718,10 @@ def _verify_time_window_pipeline_oracle(
             "scan2_input_collected_while_scan1_output_pending": scan2_input_time < config.scan1_output_time,
             "scan1_output_precedes_scan2_output": timestamps == [config.scan1_output_time, config.scan2_output_time],
             "no_cross_window_contamination": True,
-            "scan_outputs_tied_to_their_own_window_inputs": deliveries[0]["parameters"] == {
-                consumer_track_parameter: _encode_text(config.scan1_track_id)
-            }
-            and deliveries[1]["parameters"] == {
-                consumer_track_parameter: _encode_text(config.scan2_track_id)
-            },
+            "scan_outputs_tied_to_their_own_window_inputs": list(deliveries[0]["parameters"].values()) == [
+                _encode_text(config.scan1_track_id)
+            ]
+            and list(deliveries[1]["parameters"].values()) == [_encode_text(config.scan2_track_id)],
             "no_duplicate_pipeline_replay_after_readvance": len(post_readvance_receives) == 2,
         },
     }
@@ -727,7 +738,7 @@ def _verify_time_window_pipeline_restore_oracle(
     restored_consumer_receives: list[Any],
     post_restore_scan2_reflects: list[Any],
     post_restore_duplicate_receives: list[Any],
-    consumer_track_parameter: Any,
+    consumer_track_parameter: Any | None = None,
 ) -> dict[str, Any]:
     saved_radar_time_value = _timestamp_value(saved_radar_time)
     saved_consumer_time_value = _timestamp_value(saved_consumer_time)
@@ -736,6 +747,7 @@ def _verify_time_window_pipeline_restore_oracle(
     dirty_tags = [record.args[2] for record in dirty_consumer_receives]
     restored_tags = [record.args[2] for record in restored_consumer_receives]
     restored_payloads = [record.args[1] for record in restored_consumer_receives]
+    restored_payload_keys = [next(iter(payload)) for payload in restored_payloads]
 
     assert saved_radar_time_value == config.scan2_input_time
     assert saved_consumer_time_value == config.scan1_end
@@ -743,10 +755,19 @@ def _verify_time_window_pipeline_restore_oracle(
     assert restored_consumer_time_value == config.scan1_end
     assert dirty_tags == [b"dirty-scan1-track-output", b"dirty-scan2-track-output"]
     assert restored_tags == [b"restored-scan1-track-output", b"restored-scan2-track-output"]
-    assert restored_payloads == [
-        {consumer_track_parameter: _encode_text(config.restored_scan1_track_id)},
-        {consumer_track_parameter: _encode_text(config.restored_scan2_track_id)},
-    ]
+    assert getattr(restored_payload_keys[0], "value", restored_payload_keys[0]) == getattr(
+        restored_payload_keys[1],
+        "value",
+        restored_payload_keys[1],
+    )
+    if consumer_track_parameter is not None:
+        assert getattr(restored_payload_keys[0], "value", restored_payload_keys[0]) == getattr(
+            consumer_track_parameter,
+            "value",
+            consumer_track_parameter,
+        )
+    assert list(restored_payloads[0].values()) == [_encode_text(config.restored_scan1_track_id)]
+    assert list(restored_payloads[1].values()) == [_encode_text(config.restored_scan2_track_id)]
     assert post_restore_scan2_reflects == []
     assert len(post_restore_duplicate_receives) == 2
 
@@ -766,10 +787,10 @@ def _verify_time_window_pipeline_restore_oracle(
             "dirty_pipeline_outputs_do_not_replay": b"dirty-scan1-track-output" not in restored_tags
             and b"dirty-scan2-track-output" not in restored_tags,
             "scan2_collected_state_restored_without_reflection_replay": post_restore_scan2_reflects == [],
-            "restored_outputs_match_saved_window_inputs": restored_payloads == [
-                {consumer_track_parameter: _encode_text(config.restored_scan1_track_id)},
-                {consumer_track_parameter: _encode_text(config.restored_scan2_track_id)},
-            ],
+            "restored_outputs_match_saved_window_inputs": list(restored_payloads[0].values()) == [
+                _encode_text(config.restored_scan1_track_id)
+            ]
+            and list(restored_payloads[1].values()) == [_encode_text(config.restored_scan2_track_id)],
             "no_duplicate_restored_pipeline_outputs_after_readvance": len(post_restore_duplicate_receives) == 2,
         },
     }
@@ -852,7 +873,7 @@ def _verify_time_window_consumer_order_oracle(
     *,
     config: "TargetRadarConsumerOrderConfig",
     consumer_receives: list[Any],
-    consumer_track_parameter: Any,
+    consumer_track_parameter: Any | None = None,
     post_readvance_receives: list[Any],
 ) -> dict[str, Any]:
     delivered = [
@@ -865,11 +886,23 @@ def _verify_time_window_consumer_order_oracle(
     ]
     timestamps = [entry["logical_time"] for entry in delivered]
     tags = [entry["tag"] for entry in delivered]
+    delivered_parameter_keys = [next(iter(entry["parameters"])) for entry in delivered]
 
     assert timestamps == [config.competing_event_time, config.radar_output_time]
     assert tags == [b"other-track-output", b"radar-track-output"]
-    assert delivered[0]["parameters"] == {consumer_track_parameter: _encode_text(config.competing_track_id)}
-    assert delivered[1]["parameters"] == {consumer_track_parameter: _encode_text(config.radar_output_track_id)}
+    assert getattr(delivered_parameter_keys[0], "value", delivered_parameter_keys[0]) == getattr(
+        delivered_parameter_keys[1],
+        "value",
+        delivered_parameter_keys[1],
+    )
+    if consumer_track_parameter is not None:
+        assert getattr(delivered_parameter_keys[0], "value", delivered_parameter_keys[0]) == getattr(
+            consumer_track_parameter,
+            "value",
+            consumer_track_parameter,
+        )
+    assert list(delivered[0]["parameters"].values()) == [_encode_text(config.competing_track_id)]
+    assert list(delivered[1]["parameters"].values()) == [_encode_text(config.radar_output_track_id)]
     assert len(post_readvance_receives) == 2
 
     return {
@@ -881,12 +914,10 @@ def _verify_time_window_consumer_order_oracle(
             "consumer_delivery_timestamps_sorted": timestamps == sorted(timestamps),
             "competing_event_arrives_before_radar_output": tags == [b"other-track-output", b"radar-track-output"],
             "radar_output_timestamp_not_before_window_end": config.radar_output_time >= config.scan_window_end,
-            "consumer_payloads_match_competing_and_radar_sources": delivered[0]["parameters"] == {
-                consumer_track_parameter: _encode_text(config.competing_track_id)
-            }
-            and delivered[1]["parameters"] == {
-                consumer_track_parameter: _encode_text(config.radar_output_track_id)
-            },
+            "consumer_payloads_match_competing_and_radar_sources": list(delivered[0]["parameters"].values()) == [
+                _encode_text(config.competing_track_id)
+            ]
+            and list(delivered[1]["parameters"].values()) == [_encode_text(config.radar_output_track_id)],
             "no_duplicate_consumer_replay_after_readvance": len(post_readvance_receives) == 2,
         },
     }
@@ -1045,8 +1076,8 @@ def run_target_radar_time_window_restore_state_scenario(
     restored_open_state = _snapshot_window_state(window_state)
     open_restored_truth_time = truth_rti.query_logical_time()
     open_restored_radar_time = radar_rti.query_logical_time()
-    assert open_restored_truth_time == HLAinteger64Time(config.first_input_time)
-    assert open_restored_radar_time == HLAinteger64Time(config.first_input_time)
+    assert _timestamp_value(open_restored_truth_time) == config.first_input_time
+    assert _timestamp_value(open_restored_radar_time) == config.first_input_time
 
     truth_rti.update_attribute_values(
         target_object,
@@ -1100,8 +1131,8 @@ def run_target_radar_time_window_restore_state_scenario(
     restored_closed_state = _snapshot_window_state(window_state)
     closed_restored_truth_time = truth_rti.query_logical_time()
     closed_restored_radar_time = radar_rti.query_logical_time()
-    assert closed_restored_truth_time == HLAinteger64Time(config.scan_window_end)
-    assert closed_restored_radar_time == HLAinteger64Time(config.scan_window_end)
+    assert _timestamp_value(closed_restored_truth_time) == config.scan_window_end
+    assert _timestamp_value(closed_restored_radar_time) == config.scan_window_end
 
     truth_rti.time_advance_request(HLAinteger64Time(config.post_close_resume_time))
     radar_rti.next_message_request(HLAinteger64Time(config.post_close_resume_time))
@@ -1228,7 +1259,7 @@ def run_target_radar_time_window_restore_output_scenario(
     consumer_rti.next_message_request(HLAinteger64Time(config.scan_window_end))
     drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
     saved_consumer_time = consumer_rti.query_logical_time()
-    assert saved_consumer_time == HLAinteger64Time(config.scan_window_end)
+    assert _timestamp_value(saved_consumer_time) == config.scan_window_end
 
     def _complete_save() -> tuple[Any, Any, Any]:
         truth_federate.clear()
@@ -1307,9 +1338,9 @@ def run_target_radar_time_window_restore_output_scenario(
     restored_truth_time = truth_rti.query_logical_time()
     restored_radar_time = radar_rti.query_logical_time()
     restored_consumer_time = consumer_rti.query_logical_time()
-    assert restored_truth_time == HLAinteger64Time(config.scan_window_end)
-    assert restored_radar_time == HLAinteger64Time(config.scan_window_end)
-    assert restored_consumer_time == HLAinteger64Time(config.scan_window_end)
+    assert _timestamp_value(restored_truth_time) == config.scan_window_end
+    assert _timestamp_value(restored_radar_time) == config.scan_window_end
+    assert _timestamp_value(restored_consumer_time) == config.scan_window_end
 
     consumer_federate.clear()
     consumer_rti.next_message_request(HLAinteger64Time(config.resume_time))
@@ -1598,8 +1629,20 @@ def run_target_radar_time_window_pipeline_scenario(
 
     consumer_receives = consumer_federate.callbacks_named("receiveInteraction")
     assert len(consumer_receives) == 2
-    assert consumer_receives[0].args[1] == {handles["consumer_track_id"]: _encode_text(config.scan1_track_id)}
-    assert consumer_receives[1].args[1] == {handles["consumer_track_id"]: _encode_text(config.scan2_track_id)}
+    first_consumer_parameter = next(iter(consumer_receives[0].args[1]))
+    second_consumer_parameter = next(iter(consumer_receives[1].args[1]))
+    assert getattr(first_consumer_parameter, "value", first_consumer_parameter) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert getattr(second_consumer_parameter, "value", second_consumer_parameter) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert list(consumer_receives[0].args[1].values()) == [_encode_text(config.scan1_track_id)]
+    assert list(consumer_receives[1].args[1].values()) == [_encode_text(config.scan2_track_id)]
 
     consumer_rti.next_message_request(HLAinteger64Time(config.duplicate_check_resume_time))
     truth_rti.time_advance_request(HLAinteger64Time(config.duplicate_check_resume_time))
@@ -1613,7 +1656,6 @@ def run_target_radar_time_window_pipeline_scenario(
         scan1_close_grant=scan1_close_grant,
         scan2_reflect=scan2_reflect,
         consumer_receives=consumer_receives,
-        consumer_track_parameter=handles["consumer_track_id"],
         post_readvance_receives=post_readvance_receives,
     )
 
@@ -1701,7 +1743,7 @@ def run_target_radar_time_window_pipeline_restore_scenario(
     consumer_rti.next_message_request(HLAinteger64Time(config.scan1_end))
     drain_callbacks_pair(truth_rti, radar_rti, consumer_rti, loops=64)
     saved_consumer_time = consumer_rti.query_logical_time()
-    assert saved_consumer_time == HLAinteger64Time(config.scan1_end)
+    assert _timestamp_value(saved_consumer_time) == config.scan1_end
 
     truth_rti.update_attribute_values(
         target_object,
@@ -1719,7 +1761,7 @@ def run_target_radar_time_window_pipeline_restore_scenario(
     assert scan2_reflect.args[2] == b"scan2-input"
     assert scan2_grant.args[0] == HLAinteger64Time(config.scan2_input_time)
     saved_radar_time = radar_rti.query_logical_time()
-    assert saved_radar_time == HLAinteger64Time(config.scan2_input_time)
+    assert _timestamp_value(saved_radar_time) == config.scan2_input_time
 
     def _complete_save() -> tuple[Any, Any, Any]:
         truth_federate.clear()
@@ -1814,8 +1856,8 @@ def run_target_radar_time_window_pipeline_restore_scenario(
     restored_truth_time = truth_rti.query_logical_time()
     restored_radar_time = radar_rti.query_logical_time()
     restored_consumer_time = consumer_rti.query_logical_time()
-    assert restored_radar_time == HLAinteger64Time(config.scan2_input_time)
-    assert restored_consumer_time == HLAinteger64Time(config.scan1_end)
+    assert _timestamp_value(restored_radar_time) == config.scan2_input_time
+    assert _timestamp_value(restored_consumer_time) == config.scan1_end
 
     consumer_federate.clear()
     consumer_rti.next_message_request(HLAinteger64Time(config.consumer_resume_time))
@@ -1850,6 +1892,20 @@ def run_target_radar_time_window_pipeline_restore_scenario(
         b"restored-scan1-track-output",
         b"restored-scan2-track-output",
     ]
+    restored_payloads = [record.args[1] for record in restored_consumer_receives]
+    restored_payload_keys = [next(iter(payload)) for payload in restored_payloads]
+    assert getattr(restored_payload_keys[0], "value", restored_payload_keys[0]) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert getattr(restored_payload_keys[1], "value", restored_payload_keys[1]) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert list(restored_payloads[0].values()) == [_encode_text(config.restored_scan1_track_id)]
+    assert list(restored_payloads[1].values()) == [_encode_text(config.restored_scan2_track_id)]
 
     consumer_rti.next_message_request(HLAinteger64Time(config.duplicate_check_resume_time))
     truth_rti.time_advance_request(HLAinteger64Time(config.duplicate_check_resume_time))
@@ -1868,7 +1924,6 @@ def run_target_radar_time_window_pipeline_restore_scenario(
         restored_consumer_receives=restored_consumer_receives,
         post_restore_scan2_reflects=post_restore_scan2_reflects,
         post_restore_duplicate_receives=post_restore_duplicate_receives,
-        consumer_track_parameter=handles["consumer_track_id"],
     )
 
     return {
@@ -2027,9 +2082,15 @@ def run_target_radar_time_window_output_delivery_scenario(
     consumer_receives = consumer_federate.callbacks_named("receiveInteraction")
     assert len(consumer_receives) == 1
     consumer_receive = consumer_receives[-1]
+    consumer_parameter = next(iter(consumer_receive.args[1]))
     assert consumer_receive.args[2] == b"radar-track-output"
     assert consumer_receive.args[5] == HLAinteger64Time(config.radar_output_time)
-    assert consumer_receive.args[1] == {handles["consumer_track_id"]: _encode_text(config.output_track_id)}
+    assert getattr(consumer_parameter, "value", consumer_parameter) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert list(consumer_receive.args[1].values()) == [_encode_text(config.output_track_id)]
 
     consumer_rti.next_message_request(HLAinteger64Time(config.duplicate_check_resume_time))
     truth_rti.time_advance_request(HLAinteger64Time(config.duplicate_check_resume_time))
@@ -2044,7 +2105,7 @@ def run_target_radar_time_window_output_delivery_scenario(
         second_receive=second_receive,
         window_close_grant=window_close_grant,
         consumer_receive=consumer_receive,
-        consumer_parameter=handles["consumer_track_id"],
+        consumer_parameter=consumer_parameter,
         post_delivery_receives=post_delivery_receives,
     )
 
@@ -2161,8 +2222,20 @@ def run_target_radar_time_window_consumer_order_scenario(
 
     consumer_receives = consumer_federate.callbacks_named("receiveInteraction")
     assert len(consumer_receives) == 2
-    assert consumer_receives[0].args[1] == {handles["consumer_track_id"]: _encode_text(config.competing_track_id)}
-    assert consumer_receives[1].args[1] == {handles["consumer_track_id"]: _encode_text(config.radar_output_track_id)}
+    first_consumer_parameter = next(iter(consumer_receives[0].args[1]))
+    second_consumer_parameter = next(iter(consumer_receives[1].args[1]))
+    assert getattr(first_consumer_parameter, "value", first_consumer_parameter) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert getattr(second_consumer_parameter, "value", second_consumer_parameter) == getattr(
+        handles["consumer_track_id"],
+        "value",
+        handles["consumer_track_id"],
+    )
+    assert list(consumer_receives[0].args[1].values()) == [_encode_text(config.competing_track_id)]
+    assert list(consumer_receives[1].args[1].values()) == [_encode_text(config.radar_output_track_id)]
 
     consumer_rti.next_message_request(HLAinteger64Time(config.duplicate_check_resume_time))
     truth_rti.time_advance_request(HLAinteger64Time(config.duplicate_check_resume_time))
@@ -2175,7 +2248,6 @@ def run_target_radar_time_window_consumer_order_scenario(
     oracle_report = _verify_time_window_consumer_order_oracle(
         config=config,
         consumer_receives=consumer_receives,
-        consumer_track_parameter=handles["consumer_track_id"],
         post_readvance_receives=post_readvance_receives,
     )
 
@@ -2318,7 +2390,7 @@ def run_target_radar_time_window_core_scenario(
                 f"late-{illegal_time}".encode("ascii"),
                 HLAinteger64Time(illegal_time),
             )
-        except InvalidLogicalTime:
+        except (InvalidLogicalTime, InvalidLogicalTime2025):
             late_rejections.append(illegal_time)
         else:  # pragma: no cover - scenario contract
             raise AssertionError(f"Expected Illegal late timestamp {illegal_time} to be rejected")
@@ -2468,7 +2540,7 @@ def run_target_radar_time_window_future_exclusion_scenario(
             b"late-track-109",
             HLAinteger64Time(config.illegal_late_time),
         )
-    except InvalidLogicalTime:
+    except (InvalidLogicalTime, InvalidLogicalTime2025):
         late_send_rejected = True
 
     radar_federate.clear()

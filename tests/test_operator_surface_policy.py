@@ -178,6 +178,35 @@ def test_target_radar_tool_usage_keeps_python2025_primary_and_shim_wrapper_only(
     assert "`hla-backend-shim` remains compatibility-wrapper/import-level code around that same runtime" in normalized
 
 
+def test_tools_python_2025_lanes_reference_python2025_runtime_suite_not_deleted_shim_named_file() -> None:
+    text = _read(ROOT / "tools" / "python")
+
+    assert "tests/test_rti1516_2025_python2025_runtime.py" in text
+    assert "tests/test_rti1516_2025_spec_and_shim.py" not in text
+
+
+def test_operator_docs_keep_verify_main_and_routes_2025_on_python2025_main_lane() -> None:
+    commands_text = _primary_text(ROOT / "docs" / "local_verification_commands.md")
+    tools_text = _primary_text(ROOT / "tools" / "README.md")
+    normalized_commands = " ".join(commands_text.split()).lower()
+    normalized_tools = " ".join(tools_text.split()).lower()
+
+    assert "./tools/python verify-main-2025" in commands_text
+    assert "./tools/python verify-routes-2025" in commands_text
+    assert "./tools/python verify-main-2025" in tools_text
+    assert "./tools/python verify-routes-2025" in tools_text
+    assert "interpre these commands through the audited `hla-backend-python2025` runtime".replace("interpre", "interpret") in normalized_commands
+    assert "`hla-backend-shim` is only compatibility-wrapper/import-compatibility code" in normalized_commands
+    assert "the hosted 2025 grpc route is a bounded route variant rather than a separate rti family" in normalized_commands
+    assert "`./tools/python verify-main-2025` is the default proof path for the real 2025 python rti" in normalized_commands
+    assert "`./tools/python verify-routes-2025` extends that proof across the hosted fedpro route" in normalized_commands
+    assert "shim checks are guardrails around the main lane, not a parallel implementation lane" in normalized_commands
+    assert "`hla-backend-python2025` as the main runtime lane" in tools_text
+    assert "`hla-backend-shim` remains only as compatibility-wrapper/import-compatibility code" in normalized_tools
+    assert "run the primary 2025 python rti main-surface lane" in normalized_tools
+    assert "run bounded hosted 2025 python/fedpro route checks" in normalized_tools
+
+
 def test_vendor_parity_doc_uses_tools_surface() -> None:
     text = _primary_text(ROOT / "docs" / "vendor_parity_artifacts.md")
     assert "./tools/vendor-parity" in text

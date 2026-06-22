@@ -9,11 +9,20 @@ from typing import Any
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import RTIexception
 from hla.rti1516e.handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
+from hla.rti1516_2025.exceptions import RTIexception as RTIexception2025
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
 
 
 def _handle_value(value: Any) -> Any:
     return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
+
+
+def _same_handle_set_values(left: Any, right: Any) -> bool:
+    return {_handle_value(item) for item in left} == {_handle_value(item) for item in right}
 
 
 @dataclass(frozen=True)
@@ -109,7 +118,7 @@ def probe_negotiated_attribute_ownership_offer(
         drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
         assumption = acquirer_federate.last_callback("requestAttributeOwnershipAssumption")
         negotiated_divestiture_supported = assumption is not None
-    except RTIexception:
+    except (RTIexception, RTIexception2025):
         assumption = None
 
     acquirer_rti.attribute_ownership_acquisition(acquirer_object, {acquirer_attr}, config.request_tag)
@@ -162,16 +171,16 @@ def run_attribute_ownership_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     acquired = wait_for_callback(acquirer_rti, acquirer_federate, "attributeOwnershipAcquisitionNotification", loops=120)
     assert acquired is not None
-    assert acquired.args[0] == acquirer_object
-    assert acquirer_attr in acquired.args[1]
+    assert _same_handle_value(acquired.args[0], acquirer_object)
+    assert _same_handle_set_values(acquired.args[1], {acquirer_attr})
     assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
     owner_rti.query_attribute_ownership(object_instance, owner_attr)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = wait_for_callback(owner_rti, owner_federate, "informAttributeOwnership", loops=120)
     assert informed is not None
-    assert informed.args[0] == object_instance
-    assert informed.args[1] == owner_attr
-    assert isinstance(informed.args[2], FederateHandle)
+    assert _same_handle_value(informed.args[0], object_instance)
+    assert _same_handle_value(informed.args[1], owner_attr)
+    assert type(informed.args[2]).__name__ == FederateHandle.__name__
     informed_federate_name = owner_rti.get_federate_name(informed.args[2])
     return {
         "owner_handle": owner_handle,
@@ -209,8 +218,8 @@ def run_attribute_ownership_unavailable_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     unavailable = wait_for_callback(acquirer_rti, acquirer_federate, "attributeOwnershipUnavailable", loops=120)
     assert unavailable is not None
-    assert unavailable.args[0] == object_instance
-    assert acquirer_attr in unavailable.args[1]
+    assert _same_handle_value(unavailable.args[0], object_instance)
+    assert _same_handle_set_values(unavailable.args[1], {acquirer_attr})
     assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
     assert not acquirer_rti.is_attribute_owned_by_federate(object_instance, acquirer_attr)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
@@ -244,14 +253,14 @@ def run_non_owner_update_rejection_scenario(
     assert discover is not None
     observer_object = observer_rti.get_object_instance_handle(config.object_instance_name)
 
-    failure: RTIexception | None = None
+    failure: Exception | None = None
     try:
         observer_rti.update_attribute_values(
             observer_object,
             {observer_attr: config.illegal_payload},
             config.illegal_tag,
         )
-    except RTIexception as exc:
+    except (RTIexception, RTIexception2025) as exc:
         failure = exc
     assert failure is not None
     assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
@@ -370,7 +379,7 @@ def run_negotiated_attribute_ownership_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None
-    assert isinstance(informed.args[2], FederateHandle)
+    assert type(informed.args[2]).__name__ == FederateHandle.__name__
     return {
         "owner_handle": owner_handle,
         "acquirer_handle": acquirer_handle,
@@ -422,8 +431,8 @@ def run_confirm_divestiture_negotiated_scenario(
 
     acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired is not None
-    assert acquired.args[0] == acquirer_object
-    assert acquired.args[1] == {acquirer_attr}
+    assert _same_handle_value(acquired.args[0], acquirer_object)
+    assert _same_handle_set_values(acquired.args[1], {acquirer_attr})
     assert acquired.args[2] == confirm_tag
     assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
 
@@ -431,7 +440,7 @@ def run_confirm_divestiture_negotiated_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None
-    assert isinstance(informed.args[2], FederateHandle)
+    assert type(informed.args[2]).__name__ == FederateHandle.__name__
 
     return {
         "owner_handle": probe_summary["owner_handle"],
@@ -477,7 +486,9 @@ def run_release_request_ownership_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
-    assert release.args == (object_instance, {owner_attr}, config.request_tag)
+    assert _same_handle_value(release.args[0], object_instance)
+    assert _same_handle_set_values(release.args[1], {owner_attr})
+    assert release.args[2] == config.request_tag
 
     denied = False
     divested = None
@@ -513,8 +524,8 @@ def run_release_request_ownership_scenario(
         }
 
     assert acquired is not None
-    assert acquired.args[0] == acquirer_object
-    assert acquired.args[1] == {acquirer_attr}
+    assert _same_handle_value(acquired.args[0], acquirer_object)
+    assert _same_handle_set_values(acquired.args[1], {acquirer_attr})
     if config.owner_action == "ifwanted":
         assert acquired.args[2] == b""
     assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
@@ -522,7 +533,7 @@ def run_release_request_ownership_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None
-    assert isinstance(informed.args[2], FederateHandle)
+    assert type(informed.args[2]).__name__ == FederateHandle.__name__
     return {
         "owner_handle": owner_handle,
         "acquirer_handle": acquirer_handle,

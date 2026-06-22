@@ -6,11 +6,29 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import AttributeNotOwned
-from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
+from hla.rti1516_2025.exceptions import AttributeNotOwned as AttributeNotOwned2025
 from hla.rti1516e.datatypes import RangeBounds
 from hla.rti1516e.datatypes import AttributeRegionAssociation
 
 from .scenario_support import drain_callbacks_pair
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
+
+
+def _same_handle_set_values(left: Any, right: Any) -> bool:
+    return {_handle_value(item) for item in left} == {_handle_value(item) for item in right}
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    return {_handle_value(key): value for key, value in left.items()} == {
+        _handle_value(key): value for key, value in right.items()
+    }
 
 
 @dataclass(frozen=True)
@@ -90,12 +108,12 @@ def run_object_scope_relevance_scenario(
     observer_rti.enable_attribute_scope_advisory_switch()
     observer_rti.subscribe_object_class_attributes_with_regions(
         observer_class,
-        [AttributeRegionAssociation(AttributeHandleSet({observer_attribute}), RegionHandleSet({observer_region}))],
+        [AttributeRegionAssociation({observer_attribute}, {observer_region})],
     )
 
     object_instance = owner_rti.register_object_instance_with_regions(
         owner_class,
-        [AttributeRegionAssociation(AttributeHandleSet({owner_attribute}), RegionHandleSet({owner_region}))],
+        [AttributeRegionAssociation({owner_attribute}, {owner_region})],
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=24)
@@ -108,23 +126,23 @@ def run_object_scope_relevance_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     initial_in_scope = observer_federate.last_callback("attributesInScope")
     assert initial_in_scope is not None
-    assert initial_in_scope.args[0] == object_instance
-    assert initial_in_scope.args[1] == {observer_attribute}
+    assert _same_handle_value(initial_in_scope.args[0], object_instance)
+    assert _same_handle_set_values(initial_in_scope.args[1], {observer_attribute})
 
     observer_federate.clear()
     owner_rti.update_attribute_values(object_instance, {owner_attribute: config.in_scope_payload}, b"\x00\x00\x00\x00")
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     initial_reflection = observer_federate.last_callback("reflectAttributeValues")
     assert initial_reflection is not None
-    assert initial_reflection.args[1] == {observer_attribute: config.in_scope_payload}
+    assert _same_handle_map_values(initial_reflection.args[1], {observer_attribute: config.in_scope_payload})
 
     observer_rti.set_range_bounds(observer_region, observer_dimension, config.out_of_scope_bounds)
     observer_rti.commit_region_modifications({observer_region})
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     out_of_scope = observer_federate.last_callback("attributesOutOfScope")
     assert out_of_scope is not None
-    assert out_of_scope.args[0] == object_instance
-    assert out_of_scope.args[1] == {observer_attribute}
+    assert _same_handle_value(out_of_scope.args[0], object_instance)
+    assert _same_handle_set_values(out_of_scope.args[1], {observer_attribute})
     observer_federate.clear()
     owner_rti.update_attribute_values(object_instance, {owner_attribute: config.out_of_scope_payload}, b"\x00\x00\x00\x00")
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
@@ -143,13 +161,13 @@ def run_object_scope_relevance_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     reacquired_in_scope = observer_federate.last_callback("attributesInScope")
     assert reacquired_in_scope is not None
-    assert reacquired_in_scope.args[0] == object_instance
-    assert reacquired_in_scope.args[1] == {observer_attribute}
+    assert _same_handle_value(reacquired_in_scope.args[0], object_instance)
+    assert _same_handle_set_values(reacquired_in_scope.args[1], {observer_attribute})
 
     owner_not_owned = False
     try:
         owner_rti.update_attribute_values(object_instance, {owner_attribute: b"stale-owner"}, b"\x00\x00\x00\x00")
-    except AttributeNotOwned:
+    except (AttributeNotOwned, AttributeNotOwned2025):
         owner_not_owned = True
     assert owner_not_owned
 
@@ -162,7 +180,7 @@ def run_object_scope_relevance_scenario(
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     acquired_reflection = observer_federate.last_callback("reflectAttributeValues")
     assert acquired_reflection is not None
-    assert acquired_reflection.args[1] == {observer_attribute: config.acquired_payload}
+    assert _same_handle_map_values(acquired_reflection.args[1], {observer_attribute: config.acquired_payload})
 
     return {
         "owner_handle": owner_handle,

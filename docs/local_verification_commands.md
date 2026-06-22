@@ -9,6 +9,7 @@ These are the commands captured in the latest local verification note.
 ./tools/python verify-routes-preflight
 ./tools/python verify-routes
 ./tools/python verify-routes-2025
+python3 scripts/run_spec2025_finish_line.py
 ./tools/lint
 ./tools/test
 ./tools/python verify
@@ -25,16 +26,26 @@ python3 -m pytest -q tests/runtime/test_real_rti.py
 
 Use this page when you want the exact local commands, not the broader status.
 
-For the primary 2025 Python RTI lane, interpret these commands through the audited
-`hla-backend-python2025` runtime. `hla-backend-shim` is only
+For the primary 2025 Python RTI lane, interpret these commands through the
+audited `hla-backend-python2025` runtime. `hla-backend-shim` is only
 compatibility-wrapper/import-compatibility code, and the hosted 2025 gRPC route
 is a bounded route variant rather than a separate RTI family.
+
+Use this operator rule consistently:
+
+- `./tools/python verify-main-2025` is the default proof path for the real
+  2025 Python RTI
+- `./tools/python verify-routes-2025` extends that proof across the hosted
+  FedPro route
+- shim checks are guardrails around the main lane, not a parallel
+  implementation lane
 
 `./tools/python verify-main-2025` is the regular main-surface lane for the
 current `python2025` backend claim. It runs the direct in-process runtime proof
 selectors, the package/runtime boundary guardrails that keep `shim`
-compatibility-only, plus the dedicated OMT validation/parsing evidence
-surface, without mixing that claim into hosted-route hygiene.
+compatibility-only, the 2025 requirements-registry and bounded proof-note
+surface, plus the dedicated OMT validation/parsing evidence surface, without
+mixing that claim into hosted-route hygiene.
 
 That main-surface lane also includes the explicit raw `python2025` proofs for
 support-service handle-factory/decode behavior, snake-case direct-surface
@@ -75,7 +86,8 @@ Python RTI surface. Run it after changes to `hla.backends.inmemory`,
 it after changes to 2025 transport-hosted client/server wiring, hosted-route
 examples, the in-process Target/Radar time-window proof ladder, direct
 `python2025` save/restore, ownership, callback, support-service, or MOM
-proofs, the 2025 route-parity ledger, or other route-level behavior that must
+proofs, the checked-in 2025 finish-line bundle, the 2025 route-parity ledger,
+the 2025 requirements-registry and bounded proof-note surface, or other route-level behavior that must
 stay aligned between the direct `python2025` lane and the hosted FedPro route.
 It also names the hosted Target/Radar time-window family explicitly through the
 factory-hosted and shared FedPro future-exclusion, output-delivery,
@@ -95,6 +107,11 @@ shared FedPro lifecycle/listing routes, hosted object exchange and name
 reservation, hosted region/DDM lifecycle and declaration gating, hosted
 object-scope relevance, and hosted directed-routing checks before the full
 transport suite runs.
+
+`python3 scripts/run_spec2025_finish_line.py` is the explicit manual refresh
+entrypoint for the checked-in 2025 evidence bundle. Use it when you want to
+rebuild the finish-line snapshot, verification matrix, and route-parity
+artifacts without rerunning the full `verify-routes-2025` hosted lane.
 
 For 2025 runtime ownership and proof status behind those commands, use:
 

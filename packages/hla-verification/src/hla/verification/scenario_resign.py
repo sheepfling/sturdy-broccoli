@@ -13,8 +13,24 @@ from hla.rti1516e.exceptions import (
     ObjectInstanceNotKnown,
     OwnershipAcquisitionPending,
 )
+from hla.rti1516_2025.exceptions import (
+    FederateNotExecutionMember as FederateNotExecutionMember2025,
+    FederateOwnsAttributes as FederateOwnsAttributes2025,
+    InvalidResignAction as InvalidResignAction2025,
+    NotConnected as NotConnected2025,
+    ObjectInstanceNotKnown as ObjectInstanceNotKnown2025,
+    OwnershipAcquisitionPending as OwnershipAcquisitionPending2025,
+)
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
+
+
+def _payload_value_by_handle(payload: dict[Any, bytes], expected_handle: Any) -> bytes | None:
+    expected_value = getattr(expected_handle, "value", None)
+    for handle, value in payload.items():
+        if getattr(handle, "value", None) == expected_value:
+            return value
+    return None
 
 
 @dataclass(frozen=True)
@@ -40,7 +56,7 @@ def run_resign_precondition_scenario(
 ) -> dict[str, Any]:
     try:
         leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
-    except NotConnected as exc:
+    except (NotConnected, NotConnected2025) as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to raise NotConnected before connect")
@@ -48,7 +64,7 @@ def run_resign_precondition_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
         leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
-    except FederateNotExecutionMember as exc:
+    except (FederateNotExecutionMember, FederateNotExecutionMember2025) as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to raise FederateNotExecutionMember before join")
@@ -75,14 +91,14 @@ def run_resign_precondition_scenario(
 
     try:
         leader_rti.resign_federation_execution("bogus")
-    except InvalidResignAction as exc:
+    except (InvalidResignAction, InvalidResignAction2025) as exc:
         invalid_action = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to reject an invalid resign action")
 
     try:
         leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
-    except FederateOwnsAttributes as exc:
+    except (FederateOwnsAttributes, FederateOwnsAttributes2025) as exc:
         owns_attributes = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to reject owned attributes without divest/delete")
@@ -91,7 +107,7 @@ def run_resign_precondition_scenario(
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     try:
         wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
-    except OwnershipAcquisitionPending as exc:
+    except (OwnershipAcquisitionPending, OwnershipAcquisitionPending2025) as exc:
         acquisition_pending = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to reject pending ownership acquisition")
@@ -170,7 +186,7 @@ def run_resign_mom_cleanup_scenario(
     wing_before = wait_for_callback(leader_rti, leader_federate, "reflectAttributeValues", loops=120)
     assert wing_before is not None
     assert wing_before.args[0] == wing_mom_object
-    assert wing_before.args[1][federate_name] == config.wing_name.encode()
+    assert _payload_value_by_handle(wing_before.args[1], federate_name) == config.wing_name.encode()
 
     wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
@@ -180,12 +196,11 @@ def run_resign_mom_cleanup_scenario(
     federation_after = wait_for_callback(leader_rti, leader_federate, "reflectAttributeValues", loops=120)
     assert federation_after is not None
     assert federation_after.args[0] != wing_mom_object
-    assert federation_members in federation_after.args[1]
-    assert federation_after.args[1][federation_members] == config.leader_name.encode()
+    assert _payload_value_by_handle(federation_after.args[1], federation_members) == config.leader_name.encode()
 
     try:
         leader_rti.request_attribute_value_update(wing_mom_object, {federate_name}, b"wing-after-resign")
-    except ObjectInstanceNotKnown as exc:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025) as exc:
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resigned MOM federate object to become unknown to observer updates")
@@ -253,7 +268,7 @@ def run_disconnect_mom_cleanup_scenario(
     leader_before = wait_for_callback(wing_rti, wing_federate, "reflectAttributeValues", loops=120)
     assert leader_before is not None
     assert leader_before.args[0] == leader_mom_object
-    assert leader_before.args[1][federate_name] == config.leader_name.encode()
+    assert _payload_value_by_handle(leader_before.args[1], federate_name) == config.leader_name.encode()
 
     leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
     leader_rti.disconnect()
@@ -266,12 +281,11 @@ def run_disconnect_mom_cleanup_scenario(
     federation_after = wait_for_callback(wing_rti, wing_federate, "reflectAttributeValues", loops=120)
     assert federation_after is not None
     assert federation_after.args[0] != leader_mom_object
-    assert federation_members in federation_after.args[1]
-    assert federation_after.args[1][federation_members] == config.wing_name.encode()
+    assert _payload_value_by_handle(federation_after.args[1], federation_members) == config.wing_name.encode()
 
     try:
         wing_rti.request_attribute_value_update(leader_mom_object, {federate_name}, b"leader-after-disconnect")
-    except ObjectInstanceNotKnown as exc:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025) as exc:
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected disconnected federate MOM object to become unknown to observer updates")

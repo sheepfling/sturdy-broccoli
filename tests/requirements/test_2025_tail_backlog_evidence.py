@@ -28,6 +28,264 @@ def _json_rows(path: Path) -> list[dict[str, object]]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
+PYTHON2025_BACKEND_PACKAGE_PATH = "packages/hla-backend-python2025/src/hla/backends/python2025/"
+SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
+CALLBACK_BINDING_DELTA_DOC = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
+BINDING_HOSTED_BOUNDARY_DOC = "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
+OMT_XS_ANY_DOC = "docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md"
+SUPPORT_SERVICES_DOC = "docs/requirements/ieee-1516-2025/support_services_bounded_proof.md"
+TIME_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/time_management_bounded_proof.md"
+FEDERATION_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/federation_management_bounded_proof.md"
+DECLARATION_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/declaration_management_bounded_proof.md"
+OBJECT_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/object_management_bounded_proof.md"
+OWNERSHIP_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/ownership_management_bounded_proof.md"
+DDM_MANAGEMENT_DOC = "docs/requirements/ieee-1516-2025/ddm_bounded_proof.md"
+DELTA_UMBRELLA_IDS = {
+    "HLA2025-FI-CB-001",
+    "HLA2025-FI-CB-002",
+    "HLA2025-FI-CB-003",
+    "HLA2025-FI-CB-004",
+    "HLA2025-FI-CB-005",
+    "HLA2025-FI-CB-006",
+    "HLA2025-FI-CB-007",
+    "HLA2025-FI-CB-008",
+    "HLA2025-FI-CFG-001",
+    "HLA2025-FI-AUTH-001",
+    "HLA2025-BIND-FEDPRO-001",
+    "HLA2025-BIND-JAVA-CPP-001",
+}
+
+
+@pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-002", "HLA2025-TRACE-001")
+def test_harmonization_packets_keep_covered_runtime_evidence_on_python2025_lane() -> None:
+    review_rows = _csv_rows(HARMONIZATION_REVIEW_QUEUE)
+    disposition_rows = _csv_rows(HARMONIZATION_DISPOSITION_CSV)
+    disposition_json_rows = _json_rows(HARMONIZATION_DISPOSITION_JSON)
+
+    for rows in (review_rows, disposition_rows):
+        covered_rows = [row for row in rows if row.get("harmonization_disposition") == "covered"]
+        assert covered_rows
+        assert any(PYTHON2025_BACKEND_PACKAGE_PATH in row.get("suggested_repo_evidence_path", "") for row in covered_rows)
+        assert all(SHIM_BACKEND_EVIDENCE_PATH not in row.get("suggested_repo_evidence_path", "") for row in covered_rows)
+
+    covered_json_rows = [row for row in disposition_json_rows if row.get("harmonization_disposition") == "covered"]
+    assert covered_json_rows
+    assert any(PYTHON2025_BACKEND_PACKAGE_PATH in str(row.get("suggested_repo_evidence_path", "")) for row in covered_json_rows)
+    assert all(SHIM_BACKEND_EVIDENCE_PATH not in str(row.get("suggested_repo_evidence_path", "")) for row in covered_json_rows)
+
+
+@pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")
+def test_harmonization_packets_repoint_delta_umbrella_rows_to_real_callback_binding_evidence() -> None:
+    placeholder_prefix = "tests/hla2025/fi/deltas/"
+
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [row for row in rows if row.get("id") in DELTA_UMBRELLA_IDS]
+        assert len(matched) == len(DELTA_UMBRELLA_IDS)
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert CALLBACK_BINDING_DELTA_DOC in evidence
+            assert placeholder_prefix not in evidence
+
+
+@pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")
+def test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-OMT-COMP-")
+            and "xs:any" in str(row.get("service_or_check", ""))
+        ]
+        assert len(matched) == 45
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert OMT_XS_ANY_DOC in evidence
+            assert "tests/test_rti1516_2025_validation.py" in evidence
+            assert "packages/hla-rti1516e/src/hla/rti1516e/fom.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_support_service_rows_on_bounded_support_service_evidence() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and str(row.get("service_group", "")) == "Support services"
+        ]
+        assert len(matched) == 59
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert SUPPORT_SERVICES_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+            assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
+def test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes() -> None:
+    text = (ROOT / BINDING_HOSTED_BOUNDARY_DOC).read_text(encoding="utf-8")
+
+    assert "HLA2025-BND-001" in text
+    assert "HLA2025-BND-002" in text
+    assert "HLA2025-BND-003" in text
+    assert "not an independent Java RTI" in text
+    assert "not an independent C++ RTI" in text
+    assert "not a second RTI implementation lane" in text
+    assert "hla-backend-python2025" in text
+    assert "hla-backend-shim" in text
+    assert "tests/requirements/test_2025_route_parity_matrix.py" in text
+    assert "tests/backends/test_standard_shim_artifacts.py" in text
+    assert "tests/transport/test_grpc_transport_2025.py" in text
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_time_management_rows_on_time_management_proof_note() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and 101 <= int(str(row.get("id", "")).split("-")[-1]) <= 125
+        ]
+        assert len(matched) == 25
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert TIME_MANAGEMENT_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+            assert "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_federation_management_rows_on_federation_management_proof_note() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and 1 <= int(str(row.get("id", "")).split("-")[-1]) <= 34
+        ]
+        assert len(matched) == 34
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert FEDERATION_MANAGEMENT_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+            assert "tests/scenarios/test_federation_management_backend_matrix.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_declaration_management_rows_on_declaration_management_proof_note() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and 35 <= int(str(row.get("id", "")).split("-")[-1]) <= 50
+        ]
+        assert len(matched) == 16
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert DECLARATION_MANAGEMENT_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_object_management_rows_on_object_management_proof_note() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and 51 <= int(str(row.get("id", "")).split("-")[-1]) <= 82
+        ]
+        assert len(matched) == 32
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert OBJECT_MANAGEMENT_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_ownership_management_rows_on_ownership_management_proof_note() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and 83 <= int(str(row.get("id", "")).split("-")[-1]) <= 100
+        ]
+        assert len(matched) == 18
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert OWNERSHIP_MANAGEMENT_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/scenarios/test_ownership_management_backend_matrix.py" in evidence
+            assert "tests/backends/test_python_backend_object_ownership_extended.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+
+
+@pytest.mark.requirements("HLA2025-REQ-001")
+def test_harmonization_packets_keep_ddm_rows_on_ddm_proof_note() -> None:
+    for rows in (
+        _csv_rows(HARMONIZATION_REVIEW_QUEUE),
+        _csv_rows(HARMONIZATION_DISPOSITION_CSV),
+        _json_rows(HARMONIZATION_DISPOSITION_JSON),
+    ):
+        matched = [
+            row
+            for row in rows
+            if str(row.get("id", "")).startswith("HLA2025-FI-SVC-")
+            and 126 <= int(str(row.get("id", "")).split("-")[-1]) <= 137
+        ]
+        assert len(matched) == 12
+        for row in matched:
+            evidence = str(row.get("suggested_repo_evidence_path", ""))
+            assert DDM_MANAGEMENT_DOC in evidence
+            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/backends/test_python_backend_time_ddm_extended.py" in evidence
+            assert "tests/scenarios/test_ddm_backend_matrix.py" in evidence
+            assert "tests/transport/test_grpc_transport_2025.py" in evidence
+
+
 @pytest.mark.requirements("HLA2025-BLG-001",
     "HLA2025-REQ-001",
     "HLA2025-OMT-SU-001",

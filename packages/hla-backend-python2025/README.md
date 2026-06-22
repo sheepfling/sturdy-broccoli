@@ -7,6 +7,21 @@ semantics execute from `hla.backends.python2025`, and the legacy
 `hla-backend-shim` package remains as a compatibility wrapper for older route
 and provider names.
 
+The runtime is no longer one monolithic backend module. The public
+`hla.backends.python2025.backend` shell now fronts a split package layout with
+focused runtime/state/surface modules such as:
+
+- `backend_factory_runtime.py`
+- `runtime_state.py`
+- `federation_management_runtime.py`
+- `time_management_runtime.py`
+- `support_services_runtime.py`
+- `*_surface_mixin.py`
+
+That split is intentional: new executable RTI semantics should keep landing in
+the main `hla-backend-python2025` lane, while the public shell stays a stable
+front door and the shim package stays wrapper-only.
+
 Current status:
 
 - discoverable as backend `python2025`

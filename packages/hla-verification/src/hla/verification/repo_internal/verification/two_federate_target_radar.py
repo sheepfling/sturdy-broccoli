@@ -7,6 +7,10 @@ from typing import Any
 from hla.rti1516e.time import HLAfloat64Time
 from hla.rti1516e.datatypes import RangeBounds
 from hla.foms.target_radar._internal import run_target_radar_scenario, target_radar_fom_path
+from hla.verification.scenario_target_radar_time import (
+    TargetRadarFutureExclusionConfig,
+    TargetRadarWindowRestoreConfig,
+)
 
 
 def build_two_federate_target_radar_summary(*, target_radar_steps: int = 4) -> dict[str, Any]:
@@ -49,7 +53,23 @@ def build_two_federate_target_radar_ddm_config() -> dict[str, Any]:
     }
 
 
+def build_two_federate_target_radar_future_exclusion_config() -> TargetRadarFutureExclusionConfig:
+    return TargetRadarFutureExclusionConfig(
+        federation_name="TwoFederateSuiteTimeWindowFutureExclusion",
+        fom_modules=(target_radar_fom_path(),),
+    )
+
+
+def build_two_federate_target_radar_restore_state_config() -> TargetRadarWindowRestoreConfig:
+    return TargetRadarWindowRestoreConfig(
+        federation_name="TwoFederateSuiteTimeWindowRestoreState",
+        fom_modules=(target_radar_fom_path(),),
+    )
+
+
 __all__ = [
     "build_two_federate_target_radar_ddm_config",
+    "build_two_federate_target_radar_future_exclusion_config",
+    "build_two_federate_target_radar_restore_state_config",
     "build_two_federate_target_radar_summary",
 ]

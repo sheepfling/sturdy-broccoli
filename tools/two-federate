@@ -15,6 +15,9 @@ Canonical two-federate artifact flow:
   ./tools/two-federate --output-dir analysis/my_two_federate_suite
 
 This is the human-facing wrapper over `scripts/run_two_federate_suite.py`.
+The suite includes exchange, sync, ownership, save/restore, DDM, the
+Target/Radar flow, and the two-federate 2025 time-window future-exclusion and
+restore-state proofs.
 EOF
 }
 

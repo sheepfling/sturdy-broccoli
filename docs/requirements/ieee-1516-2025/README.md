@@ -27,6 +27,16 @@ Source anchors for modal terms:
 - `federate_interface.md`: Federate Interface service, conformance, callback, FDD, exception, and time requirements.
 - `omt.md`: OMT/FOM naming, DIF, component, identification, conformance, and merge requirements.
 - `traceability_matrix.md`: initial requirement-to-project-lane and language-shim route scenario mapping.
+- `federation_management_bounded_proof.md`: bounded requirement-facing proof note for federation lifecycle, synchronization, and save/restore control families over the main `python2025` lane plus hosted replay.
+- `declaration_management_bounded_proof.md`: bounded requirement-facing proof note for publication, subscription, advisory, and name-reservation families.
+- `object_management_bounded_proof.md`: bounded requirement-facing proof note for object registration, updates, interactions, routing, and delete/remove families.
+- `ownership_management_bounded_proof.md`: bounded requirement-facing proof note for divestiture, acquisition, release, query, and resign-time ownership policies.
+- `ddm_bounded_proof.md`: bounded requirement-facing proof note for region lifecycle, overlap routing, declaration gating, and passive/DDM cleanup families.
+- `support_services_bounded_proof.md`: bounded requirement-facing proof note for support-service traceability, handle/name lookup, callback-control, and switch/control inquiry families.
+- `time_management_bounded_proof.md`: bounded requirement-facing proof note for time-mode control, grants, GALT/LITS/lookahead observability, and Target/Radar window proofs.
+- `binding_and_hosted_route_boundaries.md`: bounded requirement-facing note for Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime.
+- `callback_binding_deltas.md`: bounded requirement-facing note for callback/configuration/binding delta rows.
+- `omt_xs_any_extension_tolerance.md`: bounded requirement-facing note for OMT `xs:any` extension preservation and schema-tolerant round-trip behavior.
 - `executable_tests/`: imported v3 executable-test backlog with 1117 candidate test rows.
 - `encoding_auth_work_packet/`: imported encoding/auth requirements, vectors, schemas, smoke FOM, and contract-test skeletons.
 - `../../../requirements/2025/depth/`: imported 691-row requirement-depth expansion used as a harmonization candidate for FI service, SOM/FOM service usage, OMT component/schema, validator-negative, framework, binding/configuration, and retired/replacement rows.
@@ -50,11 +60,39 @@ Allowed project evidence vocabulary:
 | `full-interface-surface-complete` | All joined-federate services and RTI-initiated callbacks are present in surface accounting. |
 | `full-interface-behavior-complete` | All joined-federate services and RTI-initiated callbacks are behavior-tested. |
 
-## Next Technical Lane
+## Current Technical Lane
 
-The next high-value implementation lane is FOM/OMT validation. It connects all
-three documents:
+The current high-value implementation lane is deeper runtime-proof expansion
+over the promoted `python2025` RTI surface. The repo has already moved past the
+initial FOM/OMT validation bootstrapping stage and now uses this directory as a
+requirement-facing evidence map for:
+
+- federation, object, ownership, DDM, save/restore, MOM, support-service, and
+  time-management bounded proof notes over `hla-backend-python2025`
+- the route-parity and hosted FedPro evidence that replays those runtime
+  families without turning the hosted route into a separate RTI owner
+- explicit bounded-extension, legacy-only, and wrapper-only shim boundaries so
+  the main 2025 Python RTI claim stays narrow enough to defend
+
+For code ownership, read those proof notes against the extracted
+`hla-backend-python2025` runtime layout rather than against the thin public
+shell alone. The main requirement-backed semantics now live across package-owned
+modules such as:
+
+- `backend_factory_runtime.py`
+- `runtime_state.py`
+- `federation_management_runtime.py`
+- `time_management_runtime.py`
+- `support_services_runtime.py`
+- `*_surface_mixin.py`
+
+That is the implementation lane this requirement index is describing.
+
+FOM/OMT validation still matters inside that lane:
 
 - Framework Rule 1 requires a FOM.
 - The Federate Interface requires RTI handling, merging, and rejection of FOM modules.
 - The OMT defines valid object model naming, content, validation, and merge behavior.
+
+But it is now one proof family inside the broader 2025 runtime-evidence closeout
+rather than the next missing implementation frontier by itself.

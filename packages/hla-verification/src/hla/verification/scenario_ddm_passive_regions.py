@@ -5,10 +5,23 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
-from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
 from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
 
 from .scenario_support import drain_callbacks_pair
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    return {_handle_value(key): value for key, value in left.items()} == {
+        _handle_value(key): value for key, value in right.items()
+    }
 
 
 @dataclass(frozen=True)
@@ -74,10 +87,8 @@ def run_ddm_passive_region_subscription_scenario(
     publisher_rti.commit_region_modifications({publisher_region})
     subscriber_rti.commit_region_modifications({subscriber_region})
 
-    update_pairs = [AttributeRegionAssociation(AttributeHandleSet({publisher_attribute}), RegionHandleSet({publisher_region}))]
-    subscription_pairs = [
-        AttributeRegionAssociation(AttributeHandleSet({subscriber_attribute}), RegionHandleSet({subscriber_region}))
-    ]
+    update_pairs = [AttributeRegionAssociation({publisher_attribute}, {publisher_region})]
+    subscription_pairs = [AttributeRegionAssociation({subscriber_attribute}, {subscriber_region})]
 
     subscriber_rti.subscribe_object_class_attributes_passively_with_regions(subscriber_class, subscription_pairs)
     publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
@@ -89,7 +100,7 @@ def run_ddm_passive_region_subscription_scenario(
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
     discovery = subscriber_federate.last_callback("discoverObjectInstance")
     assert discovery is not None
-    assert discovery.args[0] == object_instance
+    assert _same_handle_value(discovery.args[0], object_instance)
 
     publisher_rti.publish_interaction_class(publisher_interaction)
     subscriber_rti.subscribe_interaction_class_passively_with_regions(subscriber_interaction, {subscriber_region})
@@ -104,8 +115,8 @@ def run_ddm_passive_region_subscription_scenario(
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
     received = subscriber_federate.last_callback("receiveInteraction")
     assert received is not None
-    assert received.args[0] == subscriber_interaction
-    assert received.args[1] == {subscriber_parameter: config.interaction_payload}
+    assert _same_handle_value(received.args[0], subscriber_interaction)
+    assert _same_handle_map_values(received.args[1], {subscriber_parameter: config.interaction_payload})
     assert publisher_federate.last_callback("provideAttributeValueUpdate") is None
 
     subscriber_rti.unsubscribe_object_class_attributes_with_regions(subscriber_class, subscription_pairs)

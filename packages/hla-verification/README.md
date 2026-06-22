@@ -10,6 +10,8 @@ This package now owns generic two-federate packet mechanics such as:
 - JSON normalization and callback-row shaping
 - suite packet path types
 - generic markdown/SVG/CSV writer helpers
+- reusable two-federate time-window future-exclusion and restore-state proof
+  routing for the composite suite
 
 It intentionally does not own concrete backend runtime policy or example/FOM
 logic. Target/Radar-specific artifact wording and vendor profile policy remain

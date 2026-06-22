@@ -49,6 +49,21 @@ So the practical 2025 story is:
 - the important architectural question is whether the remaining shim-facing
   compatibility surface can keep shrinking without obscuring runtime proof
 
+The implementation layout matters here too. The current 2025 lane is not just
+`hla-backend-python2025/backend.py` pretending to be a package. The public
+shell now fronts extracted runtime/state/surface modules such as:
+
+- `backend_factory_runtime.py`
+- `runtime_state.py`
+- `federation_management_runtime.py`
+- `time_management_runtime.py`
+- `support_services_runtime.py`
+- `*_surface_mixin.py`
+
+That split is part of the evidence story: core RTI semantics now land in the
+main `hla-backend-python2025` package-owned runtime modules, while
+`hla-backend-shim` keeps only compatibility-wrapper and forwarder concerns.
+
 ## Audit Snapshot
 
 - Main 2025 RTI package: `hla-backend-python2025`
@@ -57,8 +72,8 @@ So the practical 2025 story is:
 - Python 2025 route count: `2`
 - Hosted Python 2025 route: `python-2025-fedpro-grpc`
 - Non-Python binding lanes kept segregated: `2`
-- Recent combined 2025 verification slice: `467 passed in 78.98s`
-- Recent hosted 2025 FedPro transport suite: `168 passed in 38.01s`
+- Recent combined 2025 verification slice: `27 passed in 39.54s`
+- Recent hosted 2025 FedPro transport suite: `251 passed in 57.24s`
 - Shared hosted FedPro scenarios represented: `36 / 36`
 - Trial Pitch-safe time-window routes: `2`
 
@@ -83,7 +98,7 @@ executable RTI surface across:
 
 The direct in-process proof is important here, not just the hosted route:
 
-- `tests/test_rti1516_2025_spec_and_shim.py` now includes direct
+- `tests/test_rti1516_2025_python2025_runtime.py` now includes direct
   `create_rti_ambassador(backend="python2025")` proof for support-service
   handle factories and decode helpers without routing through the compatibility
   wrapper
@@ -95,7 +110,7 @@ The direct in-process proof is important here, not just the hosted route:
   `evokeMultipleCallbacks` execute against `hla-backend-python2025` itself and
   release queued discovery/reflection callbacks only after callback delivery is
   re-enabled
-- `tests/test_rti1516_2025_spec_and_shim.py` now includes an explicit
+- `tests/test_rti1516_2025_python2025_runtime.py` now includes an explicit
   partial-delivery TSO retraction proof on the main `python2025` lane
 - that route verifies one constrained subscriber can receive a timestamped
   interaction, the publisher can retract it, and a lagging subscriber later
@@ -190,7 +205,7 @@ Primary evidence anchors:
 - [../tests/test_python2025_split_package.py](../../tests/test_python2025_split_package.py)
 - [../tests/test_package_import_isolation.py](../../tests/test_package_import_isolation.py)
 - [../tests/test_root_facade_policy.py](../../tests/test_root_facade_policy.py)
-- [../tests/test_rti1516_2025_spec_and_shim.py](../../tests/test_rti1516_2025_spec_and_shim.py)
+- [../tests/test_rti1516_2025_python2025_runtime.py](../../tests/test_rti1516_2025_python2025_runtime.py)
 - [../tests/transport/test_grpc_transport_2025.py](../../tests/transport/test_grpc_transport_2025.py)
 - [../tests/requirements/test_2025_finish_line_snapshot.py](../../tests/requirements/test_2025_finish_line_snapshot.py)
 - [../tests/requirements/test_2025_route_parity_matrix.py](../../tests/requirements/test_2025_route_parity_matrix.py)
@@ -232,13 +247,13 @@ working Python RTI surface, the strongest bounded claim is now:
 Recent evidence run already recorded in this worktree:
 
 - dedicated `hla-backend-python2025` split-package surface:
-  `3 passed in 0.02s`
+  `71 passed in 0.67s`
 - python2025 import-boundary guardrails:
-  `22 passed`
+  `163 passed in 40.34s`
 - combined 2025 verification slice:
-  `467 passed in 78.98s`
+  `27 passed in 39.54s`
 - full hosted 2025 FedPro transport suite:
-  `168 passed in 38.01s`
+  `251 passed in 57.24s`
 
 Hosted shared-scenario coverage audit:
 

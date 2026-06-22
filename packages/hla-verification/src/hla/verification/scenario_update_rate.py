@@ -8,6 +8,36 @@ from hla.rti1516e.enums import CallbackModel
 
 from .scenario_support import drain_callbacks_pair
 
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    return {_handle_value(key): value for key, value in left.items()} == {
+        _handle_value(key): value for key, value in right.items()
+    }
+
+
+def _factory_make_interval(factory: Any, value: float) -> Any:
+    maker = getattr(factory, "make_interval", None)
+    if callable(maker):
+        return maker(value)
+    maker = getattr(factory, "makeInterval", None)
+    if callable(maker):
+        return maker(value)
+    raise AttributeError("Logical time factory does not expose make_interval/makeInterval")
+
+
+def _factory_make_time(factory: Any, value: float) -> Any:
+    maker = getattr(factory, "make_time", None)
+    if callable(maker):
+        return maker(value)
+    maker = getattr(factory, "makeTime", None)
+    if callable(maker):
+        return maker(value)
+    raise AttributeError("Logical time factory does not expose make_time/makeTime")
+
 UPDATE_RATE_FOM_XML = """<?xml version="1.0" encoding="utf-8"?>
 <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
   <modelIdentification>
@@ -95,9 +125,9 @@ def run_update_rate_scenario(
     subscriber_rti.subscribe_object_class_attributes(
         subscriber_class,
         {subscriber_attribute},
-        config.update_rate_designator,
+        update_rate_designator=config.update_rate_designator,
     )
-    publisher_rti.enable_time_regulation(time_factory.make_interval(0.1))
+    publisher_rti.enable_time_regulation(_factory_make_interval(time_factory, 0.1))
     subscriber_rti.enable_time_constrained()
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
@@ -109,30 +139,37 @@ def run_update_rate_scenario(
         object_instance,
         {attribute: b"t1"},
         b"tag1",
-        time_factory.make_time(config.timestamp_1),
+        _factory_make_time(time_factory, config.timestamp_1),
     )
     publisher_rti.update_attribute_values(
         object_instance,
         {attribute: b"t12"},
         b"tag12",
-        time_factory.make_time(config.timestamp_2),
+        _factory_make_time(time_factory, config.timestamp_2),
     )
     publisher_rti.update_attribute_values(
         object_instance,
         {attribute: b"t16"},
         b"tag16",
-        time_factory.make_time(config.timestamp_3),
+        _factory_make_time(time_factory, config.timestamp_3),
     )
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
-    publisher_rti.time_advance_request(time_factory.make_time(config.advance_time))
-    subscriber_rti.next_message_request_available(time_factory.make_time(config.advance_time))
+    publisher_rti.time_advance_request(_factory_make_time(time_factory, config.advance_time))
+    subscriber_rti.next_message_request_available(_factory_make_time(time_factory, config.advance_time))
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
-    subscriber_rti.next_message_request_available(time_factory.make_time(config.advance_time))
+    subscriber_rti.next_message_request_available(_factory_make_time(time_factory, config.advance_time))
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
     reflections = subscriber_federate.callbacks_named("reflectAttributeValues")
-    values = [record.args[1][subscriber_attribute] for record in reflections]
+    values = []
+    for record in reflections:
+        if _same_handle_map_values(record.args[1], {subscriber_attribute: b"t1"}):
+            values.append(b"t1")
+        elif _same_handle_map_values(record.args[1], {subscriber_attribute: b"t16"}):
+            values.append(b"t16")
+        else:
+            raise AssertionError(f"Unexpected reflected attribute payload map: {record.args[1]!r}")
     assert values == [b"t1", b"t16"]
     assert subscriber_rti.get_update_rate_value(config.update_rate_designator) == 2.0
 

@@ -8,8 +8,29 @@ from typing import Any, Callable
 from hla.rti1516e import mom as hla_mom
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
+from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 
 from .scenario_support import drain_callbacks, drain_callbacks_pair, register_named_object_instance, wait_for_callback
+
+
+def _payload_value_by_handle(payload: dict[Any, bytes], expected_handle: Any) -> bytes | None:
+    expected_value = getattr(expected_handle, "value", None)
+    for handle, value in payload.items():
+        if getattr(handle, "value", None) == expected_value:
+            return value
+    return None
+
+
+def _encoded_logical_time_bytes(value: Any) -> bytes:
+    if hasattr(value, "value") and isinstance(getattr(value, "value"), int):
+        return int(getattr(value, "value")).to_bytes(8, byteorder="big", signed=True)
+    encode = getattr(value, "encode", None)
+    if callable(encode):
+        try:
+            return encode()
+        except TypeError:
+            pass
+    raise TypeError(f"Unable to encode logical time payload for {value!r}")
 
 
 @dataclass(frozen=True)
@@ -101,21 +122,21 @@ def run_lost_federate_mom_scenario(
 
     loss_record = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
     assert loss_record is not None
-    assert loss_record.args[0] == lost_report
-    assert loss_record.args[1][report_federate] == victim_handle.encode()
-    assert hla_mom.decode_text(loss_record.args[1][report_federate_name]) == config.victim_name
-    assert loss_record.args[1][report_timestamp] == victim_time_before_loss.encode()
-    assert hla_mom.decode_text(loss_record.args[1][report_fault]) == config.fault_description
+    assert getattr(loss_record.args[0], "value", None) == getattr(lost_report, "value", None)
+    assert _payload_value_by_handle(loss_record.args[1], report_federate) == victim_handle.encode()
+    assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_federate_name)) == config.victim_name
+    assert _payload_value_by_handle(loss_record.args[1], report_timestamp) == _encoded_logical_time_bytes(victim_time_before_loss)
+    assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_fault)) == config.fault_description
 
     removal = wait_for_callback(observer_rti, observer_federate, "removeObjectInstance", loops=120)
     assert removal is not None
     assert removal.args[0] == observed_object_instance
     assert removal.args[1] == b"lost"
-    assert removal.args[3].producing_federate == victim_handle
+    assert getattr(removal.args[3].producing_federate, "value", None) == getattr(victim_handle, "value", None)
 
     try:
         observer_rti.request_attribute_value_update(observed_object_instance, {observer_attribute}, b"post-loss")
-    except ObjectInstanceNotKnown as exc:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025) as exc:
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected lost federate object to be removed under DELETE_OBJECTS automatic resign")
@@ -191,11 +212,11 @@ def run_external_lost_federate_observer_scenario(
 
         loss_record = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=320)
         assert loss_record is not None, victim_session.describe()
-        assert loss_record.args[0] == lost_report
-        assert loss_record.args[1][report_federate] == victim_session.victim_handle_bytes
-        assert hla_mom.decode_text(loss_record.args[1][report_federate_name]) == victim_session.victim_name
-        assert loss_record.args[1][report_timestamp] == victim_session.victim_time_bytes
-        assert hla_mom.decode_text(loss_record.args[1][report_fault]) == config.fault_description
+        assert getattr(loss_record.args[0], "value", None) == getattr(lost_report, "value", None)
+        assert _payload_value_by_handle(loss_record.args[1], report_federate) == victim_session.victim_handle_bytes
+        assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_federate_name)) == victim_session.victim_name
+        assert _payload_value_by_handle(loss_record.args[1], report_timestamp) == victim_session.victim_time_bytes
+        assert hla_mom.decode_text(_payload_value_by_handle(loss_record.args[1], report_fault)) == config.fault_description
 
         removal = wait_for_callback(observer_rti, observer_federate, "removeObjectInstance", loops=320)
         assert removal is not None, victim_session.describe()
@@ -204,7 +225,7 @@ def run_external_lost_federate_observer_scenario(
 
         try:
             observer_rti.request_attribute_value_update(object_instance, {observer_attribute}, b"post-loss")
-        except ObjectInstanceNotKnown as exc:
+        except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025) as exc:
             object_instance_not_known = exc
         else:  # pragma: no cover - scenario contract
             raise AssertionError("Expected lost federate object to be removed under DELETE_OBJECTS automatic resign")

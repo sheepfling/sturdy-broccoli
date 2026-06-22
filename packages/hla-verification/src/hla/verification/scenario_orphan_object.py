@@ -6,8 +6,17 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
+from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown as ObjectInstanceNotKnown2025
 
 from .scenario_support import drain_callbacks_pair, register_named_object_instance
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
 
 
 @dataclass(frozen=True)
@@ -66,13 +75,13 @@ def run_orphan_object_lifecycle_scenario(
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert _same_handle_value(observer_rti.get_object_instance_handle(config.object_instance_name), object_instance)
     observer_federate.clear()
 
     owner_rti.unconditional_attribute_ownership_divestiture(object_instance, {owner_attr})
     assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr) is False
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
-    assert observer_rti.get_known_object_class_handle(object_instance) == observer_class
+    assert _same_handle_value(observer_rti.get_object_instance_handle(config.object_instance_name), object_instance)
+    assert _same_handle_value(observer_rti.get_known_object_class_handle(object_instance), observer_class)
 
     late_handle = late_rti.join_federation_execution(config.late_name, config.federate_type, config.federation_name)
     late_class = late_rti.get_object_class_handle(config.object_class_name)
@@ -82,15 +91,15 @@ def run_orphan_object_lifecycle_scenario(
 
     late_discovery = late_federate.last_callback("discoverObjectInstance")
     assert late_discovery is not None
-    assert late_discovery.args[0] == object_instance
-    assert late_rti.get_object_instance_handle(config.object_instance_name) == object_instance
-    assert late_rti.get_known_object_class_handle(object_instance) == late_class
+    assert _same_handle_value(late_discovery.args[0], object_instance)
+    assert _same_handle_value(late_rti.get_object_instance_handle(config.object_instance_name), object_instance)
+    assert _same_handle_value(late_rti.get_known_object_class_handle(object_instance), late_class)
 
     observer_rti.local_delete_object_instance(object_instance)
     observer_removed_local_knowledge = False
     try:
         observer_rti.get_object_instance_handle(config.object_instance_name)
-    except ObjectInstanceNotKnown:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         observer_removed_local_knowledge = True
     assert observer_removed_local_knowledge
 
@@ -101,13 +110,13 @@ def run_orphan_object_lifecycle_scenario(
     late_remove = late_federate.last_callback("removeObjectInstance")
     assert observer_remove is None
     assert late_remove is not None
-    assert late_remove.args[0] == object_instance
+    assert _same_handle_value(late_remove.args[0], object_instance)
     assert late_remove.args[1] == config.delete_tag
 
     late_removed_global_knowledge = False
     try:
         late_rti.get_object_instance_handle(config.object_instance_name)
-    except ObjectInstanceNotKnown:
+    except (ObjectInstanceNotKnown, ObjectInstanceNotKnown2025):
         late_removed_global_knowledge = True
     assert late_removed_global_knowledge
 

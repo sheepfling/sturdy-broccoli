@@ -302,7 +302,13 @@ def join_federation_execution(backend: Any, *args: Any, **kwargs: Any) -> Federa
 
 def resign_federation_execution(backend: Any, resign_action: ResignAction) -> None:
     if not isinstance(resign_action, ResignAction):
-        raise InvalidResignAction(str(resign_action))
+        try:
+            if hasattr(resign_action, "name"):
+                resign_action = ResignAction[getattr(resign_action, "name")]
+            else:
+                resign_action = ResignAction(resign_action)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise InvalidResignAction(str(resign_action)) from exc
     if resign_action is ResignAction.NO_ACTION:
         if backend._resigning_federate_has_pending_acquisitions():
             raise OwnershipAcquisitionPending("Cannot resign with pending ownership acquisition using NO_ACTION")

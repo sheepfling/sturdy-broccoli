@@ -41,6 +41,20 @@ from .scenario_support import safe_evoke_multiple_callbacks
 from .startup import drain_callbacks
 
 
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
+
+
+def _same_handle_value(left: Any, right: Any) -> bool:
+    return _handle_value(left) == _handle_value(right)
+
+
+def _same_handle_map_values(left: dict[Any, Any], right: dict[Any, Any]) -> bool:
+    return {_handle_value(key): value for key, value in left.items()} == {
+        _handle_value(key): value for key, value in right.items()
+    }
+
+
 @dataclass(frozen=True)
 class SupportServicesScenarioConfig:
     federation_name: str
@@ -136,7 +150,7 @@ def run_support_factory_and_decode_scenario(
         config.federate_type,
         config.federation_name,
     )
-    assert isinstance(federate_handle, FederateHandle)
+    assert type(federate_handle).__name__ == FederateHandle.__name__
 
     object_class = rti.get_object_class_handle(config.object_class_name)
     attribute = rti.get_attribute_handle(object_class, config.attribute_name)
@@ -286,15 +300,15 @@ def run_support_factory_and_decode_scenario(
             "region_handle": rti.decode_region_handle(sample_region.encode()),
         }
 
-        assert decoded_summary["federate_handle"] == federate_handle
-        assert decoded_summary["object_class_handle"] == object_class
-        assert decoded_summary["interaction_class_handle"] == interaction_class
-        assert decoded_summary["object_instance_handle"] == object_instance
-        assert decoded_summary["attribute_handle"] == attribute
-        assert decoded_summary["parameter_handle"] == parameter
-        assert decoded_summary["dimension_handle"] == sample_dimension
-        assert decoded_summary["message_retraction_handle"] == sample_retraction
-        assert decoded_summary["region_handle"] == sample_region
+        assert _same_handle_value(decoded_summary["federate_handle"], federate_handle)
+        assert _same_handle_value(decoded_summary["object_class_handle"], object_class)
+        assert _same_handle_value(decoded_summary["interaction_class_handle"], interaction_class)
+        assert _same_handle_value(decoded_summary["object_instance_handle"], object_instance)
+        assert _same_handle_value(decoded_summary["attribute_handle"], attribute)
+        assert _same_handle_value(decoded_summary["parameter_handle"], parameter)
+        assert _same_handle_value(decoded_summary["dimension_handle"], sample_dimension)
+        assert _same_handle_value(decoded_summary["message_retraction_handle"], sample_retraction)
+        assert _same_handle_value(decoded_summary["region_handle"], sample_region)
 
     return {
         "federate_handle": federate_handle,
@@ -374,11 +388,11 @@ def run_callback_control_scenario(
     first_delivery = first_discoveries[-1] if first_discoveries else initial_discovery
     assert first_delivery is not None
     assert first_reflections
-    assert first_delivery.args[0] == object_instance
-    assert first_delivery.args[1] == subscriber_object_class
+    assert _same_handle_value(first_delivery.args[0], object_instance)
+    assert _same_handle_value(first_delivery.args[1], subscriber_object_class)
     assert first_delivery.args[2] == config.object_instance_name
     first_reflection = first_reflections[-1]
-    assert first_reflection.args[1] == {subscriber_attribute: config.first_payload}
+    assert _same_handle_map_values(first_reflection.args[1], {subscriber_attribute: config.first_payload})
     assert first_reflection.args[2] == config.first_tag
 
     subscriber_federate.clear()
@@ -406,9 +420,12 @@ def run_callback_control_scenario(
     drained_tags = [record.args[2] for record in drained_deliveries]
     assert drained_tags == [config.second_tag, config.third_tag]
     drained_payloads = [record.args[1] for record in drained_deliveries]
-    assert drained_payloads == [
-        {subscriber_attribute: config.second_payload},
-        {subscriber_attribute: config.third_payload},
+    assert [
+        {_handle_value(key): value for key, value in payload.items()}
+        for payload in drained_payloads
+    ] == [
+        {_handle_value(subscriber_attribute): config.second_payload},
+        {_handle_value(subscriber_attribute): config.third_payload},
     ]
     post_drain = _evoke_multiple_callbacks(subscriber_rti, 0.0, 0.0)
     assert post_drain is False

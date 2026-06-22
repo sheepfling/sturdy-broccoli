@@ -7,7 +7,8 @@ Key owned surfaces:
 - `hla.verification.scenario_*`: shared scenario bodies used by
   backend wrapper tests and compliance artifacts.
 - `hla.verification.two_federate_suite_*`: reusable suite pairing,
-  summary, timeline, and writer helpers.
+  summary, timeline, writer helpers, and the composite suite's
+  two-federate time-window future-exclusion/restore-state routing.
 - `hla.verification.section8_matrix`: shared Clause 8 time
   management scenario cases.
 - `tests/test_verification_harness_split_package.py`: split-package guard
