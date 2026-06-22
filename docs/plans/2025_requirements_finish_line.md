@@ -843,7 +843,7 @@ OMT schema-constraint families:
 
 - Focus: attributeOwnershipAcquisitionIfAvailable, unavailable callbacks, acquisition cancellation, and cancel-confirmation flows
 - Direct test count: 3
-- Hosted test count: 2
+- Hosted test count: 3
 
 ### ownership/query-visibility-and-resign-policies
 
@@ -965,7 +965,7 @@ OMT schema-constraint families:
 - 2025-ownership-proof-families/divestiture-and-confirmation-flows: direct=4, hosted=4, route-backed=True
 - 2025-ownership-proof-families/release-and-if-wanted-flows: direct=3, hosted=3, route-backed=True
 - 2025-ownership-proof-families/acquisition-assumption-and-notification: direct=3, hosted=3, route-backed=True
-- 2025-ownership-proof-families/acquisition-availability-and-cancellation: direct=3, hosted=2, route-backed=True
+- 2025-ownership-proof-families/acquisition-availability-and-cancellation: direct=3, hosted=3, route-backed=True
 - 2025-ownership-proof-families/query-visibility-and-resign-policies: direct=3, hosted=3, route-backed=True
 - 2025-ownership-proof-families/rollback-and-restore-state: direct=4, hosted=4, route-backed=True
 - 2025-directed-interaction-boundary/base-routing-and-callback-delivery: direct=2, hosted=2, route-backed=True
@@ -984,10 +984,10 @@ OMT schema-constraint families:
 
 - Audit status: wrapper-boundary-family-asymmetry-captured
 - Family count: 22
-- Balanced families: 21
-- Direct-heavier families: 1
+- Balanced families: 22
+- Direct-heavier families: 0
 - Hosted-heavier families: 0
-- Assessment: The main current-package pressure families are route-backed across the current Python lanes, but they are not perfectly symmetric. The remaining parity work is now clearer: close hosted-heavier and direct-heavier family imbalances rather than inventing new top-level proof areas.
+- Assessment: The main current-package pressure families are route-backed across the current Python lanes and are now symmetric at the named proof-family level. The remaining work is no longer family-count parity; it is deeper behavioral expansion, stronger evidence quality, and architectural judgment about how far the repo should continue decomposing runtime semantics away from the remaining compatibility-wrapper seam.
 - Next parity boundary: Use the hosted-heavier and direct-heavier family rows as the next executable parity worklist for the current 2025 lane.
 
 - 2025-save-restore-lifecycle/lifecycle-control: balance=balanced, direct=9, hosted=9, delta=0
@@ -998,7 +998,7 @@ OMT schema-constraint families:
 - 2025-ownership-proof-families/divestiture-and-confirmation-flows: balance=balanced, direct=4, hosted=4, delta=0
 - 2025-ownership-proof-families/release-and-if-wanted-flows: balance=balanced, direct=3, hosted=3, delta=0
 - 2025-ownership-proof-families/acquisition-assumption-and-notification: balance=balanced, direct=3, hosted=3, delta=0
-- 2025-ownership-proof-families/acquisition-availability-and-cancellation: balance=direct-heavier, direct=3, hosted=2, delta=1
+- 2025-ownership-proof-families/acquisition-availability-and-cancellation: balance=balanced, direct=3, hosted=3, delta=0
 - 2025-ownership-proof-families/query-visibility-and-resign-policies: balance=balanced, direct=3, hosted=3, delta=0
 - 2025-ownership-proof-families/rollback-and-restore-state: balance=balanced, direct=4, hosted=4, delta=0
 - 2025-directed-interaction-boundary/base-routing-and-callback-delivery: balance=balanced, direct=2, hosted=2, delta=0
@@ -1259,7 +1259,7 @@ Shim responsibilities after extraction:
 Runtime semantics migration worklist:
 
 - 2025-save-restore-lifecycle: 5 proof families, direct=29, hosted=29, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py
-- 2025-ownership-proof-families: 6 proof families, direct=20, hosted=19, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py
+- 2025-ownership-proof-families: 6 proof families, direct=20, hosted=20, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py
 - 2025-directed-interaction-boundary: 5 proof families, direct=12, hosted=12, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py
 - 2025-ddm-default-attribute-policy: 6 proof families, direct=14, hosted=14, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py
 

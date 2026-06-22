@@ -2092,6 +2092,90 @@ def test_2025_factory_hosted_python2025_route_runs_direct_ownership_slice() -> N
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow() -> None:
+    from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
+
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"factory-hosted-python2025-direct-negotiated-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        acquirer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner_federate = _FedProOwnershipRecordingFederateAmbassador()
+        acquirer_federate = _FedProOwnershipRecordingFederateAmbassador()
+        config = NegotiatedOwnershipScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=(_fedpro_fom_path("Support2025.xml"),),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="HostedOwner",
+            acquirer_name="HostedAcquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"hosted-direct-negotiated-{uuid.uuid4().hex[:8]}",
+            assumption_tag=b"offer-tag",
+            request_tag=b"request-tag",
+            cancel_tag=b"cancel-tag",
+        )
+
+        summary = run_negotiated_attribute_ownership_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=owner_federate,
+            acquirer_federate=acquirer_federate,
+        )
+
+        assert owner.backend_info.details["provider"] == "python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+        assert owner.backend_info.details["wrapper_only"] is False
+        assert acquirer.backend_info.details["provider"] == "python2025"
+        assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
+        assert acquirer.backend_info.details["wrapper_only"] is False
+        assert summary["release"].args[2] == config.cancel_tag
+        assert summary["cancellation"].args == (
+            summary["release_acquirer_object_instance"],
+            {summary["acquirer_attribute"]},
+        )
+        assert summary["divested"] == {summary["owner_attribute"]}
+        assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
+        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+        assert summary["acquired"].args[2] == b""
+        assert summary["informed"].args[0] == summary["release_object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+    finally:
+        if acquirer is not None:
+            try:
+                acquirer.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if acquirer is not None:
+            _close_rti_ambassador(acquirer)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-023",
     "HLA2025-FI-SVC-032",

@@ -5096,6 +5096,7 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_unavailable_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow",
             ],
         },
         {

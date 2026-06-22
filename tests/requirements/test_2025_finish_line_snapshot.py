@@ -2037,13 +2037,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "hosted_test_count": 3,
             "route_backed_across_current_python_lanes": True,
         },
-        {
-            "slice_id": "2025-ownership-proof-families",
-            "family": "acquisition-availability-and-cancellation",
-            "direct_test_count": 3,
-            "hosted_test_count": 2,
-            "route_backed_across_current_python_lanes": True,
-        },
+            {
+                "slice_id": "2025-ownership-proof-families",
+                "family": "acquisition-availability-and-cancellation",
+                "direct_test_count": 3,
+                "hosted_test_count": 3,
+                "route_backed_across_current_python_lanes": True,
+            },
         {
             "slice_id": "2025-ownership-proof-families",
             "family": "query-visibility-and-resign-policies",
@@ -2065,8 +2065,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert asymmetry_audit["audit_status"] == "wrapper-boundary-family-asymmetry-captured"
     assert asymmetry_audit["family_count"] == 22
     assert asymmetry_audit["by_balance"] == {
-        "balanced": 21,
-        "direct-heavier": 1,
+        "balanced": 22,
     }
     assert asymmetry_audit["families"][:5] == [
         {
@@ -2115,21 +2114,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "count_delta": 0,
         },
     ]
-    assert {
-        "slice_id": "2025-ownership-proof-families",
-        "family": "acquisition-availability-and-cancellation",
-        "direct_test_count": 3,
-        "hosted_test_count": 2,
-        "route_backed_across_current_python_lanes": True,
-        "balance": "direct-heavier",
-        "count_delta": 1,
-    } in asymmetry_audit["families"]
-    assert "are not perfectly symmetric" in asymmetry_audit["current_assessment"]
-    assert "close hosted-heavier and direct-heavier family imbalances" in asymmetry_audit["current_assessment"]
-    assert "rather than inventing new top-level proof areas" in asymmetry_audit["current_assessment"]
+    assert all(family["balance"] == "balanced" for family in asymmetry_audit["families"])
+    assert "are now symmetric at the named proof-family level" in asymmetry_audit["current_assessment"]
+    assert "remaining work is no longer family-count parity" in asymmetry_audit["current_assessment"]
+    assert "deeper behavioral expansion, stronger evidence quality, and architectural judgment" in asymmetry_audit["current_assessment"]
     assert "current-package pressure families" in asymmetry_audit["current_assessment"]
     assert "remain wrapper-fronted" not in asymmetry_audit["current_assessment"]
-    assert "remaining parity work is now clearer" in asymmetry_audit["current_assessment"]
+    assert "remaining compatibility-wrapper seam" in asymmetry_audit["current_assessment"]
     coherence_audit = snapshot["current_lane_coherence_audit"]
     assert coherence_audit["audit_status"] == "current-lane-coherence-captured"
     assert coherence_audit["coherence_claim"] == "bounded-working-RTI-surface"
@@ -2536,7 +2527,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
                 "rollback-and-restore-state",
             ],
             "direct_test_count": 20,
-            "hosted_test_count": 19,
+            "hosted_test_count": 20,
             "route_backed": True,
             "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
         },
@@ -3542,8 +3533,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Family count: 22" in markdown
     assert "All families route-backed across current Python lanes: True" in markdown
     assert "Wrapper-Boundary Family Asymmetry Audit" in markdown
-    assert "Balanced families: 21" in markdown
-    assert "Direct-heavier families: 1" in markdown
+    assert "Balanced families: 22" in markdown
+    assert "Direct-heavier families: 0" in markdown
     assert "Hosted-heavier families: 0" in markdown
     assert "Current Lane Coherence Audit" in markdown
     assert "Ready for current-lane coherent working-surface claim: True" in markdown

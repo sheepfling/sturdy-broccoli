@@ -2326,7 +2326,7 @@
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
         "direct_test_count": 20,
-        "hosted_test_count": 19,
+        "hosted_test_count": 20,
         "proof_families": [
           "divestiture-and-confirmation-flows",
           "release-and-if-wanted-flows",
@@ -17239,7 +17239,8 @@
         "focus": "attributeOwnershipAcquisitionIfAvailable, unavailable callbacks, acquisition cancellation, and cancel-confirmation flows",
         "hosted_tests": [
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_unavailable_scenario_over_fedpro_route",
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema"
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+          "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow"
         ]
       },
       {
@@ -19027,7 +19028,7 @@
         "requirement_id": "HLA2025-BND-002"
       },
       {
-        "pytest_anchor_count": 230,
+        "pytest_anchor_count": 231,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes",
@@ -19055,6 +19056,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_local_delete_restore_slice",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_mom_object_and_ownership_service_slice",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_slice",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_object_exchange_slice",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_ownership_slice",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_restore_control_negative_slice",
@@ -21271,7 +21273,7 @@
         "requirement_id": "HLA2025-FI-SVC-122"
       },
       {
-        "pytest_anchor_count": 14,
+        "pytest_anchor_count": 15,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
@@ -21281,6 +21283,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_section8_order_override_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_restores_lookahead_and_redelivers_presave_queued_tso",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_distinguishes_galt_from_lits_after_lookahead_change_with_queued_tso_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_reports_lits_from_queued_tso_for_target_federate_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso_over_fedpro_schema",
@@ -21291,7 +21294,7 @@
         "requirement_id": "HLA2025-FI-SVC-123"
       },
       {
-        "pytest_anchor_count": 11,
+        "pytest_anchor_count": 12,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
@@ -21301,6 +21304,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_section8_order_override_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_confirm_divestiture_negotiated_scenario_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_attribute_ownership_scenario_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_release_request_ownership_scenario_over_fedpro_route"
@@ -21308,7 +21312,7 @@
         "requirement_id": "HLA2025-FI-SVC-124"
       },
       {
-        "pytest_anchor_count": 12,
+        "pytest_anchor_count": 13,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_targets",
@@ -21317,6 +21321,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_slice",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_timestamped_delivery_and_retraction_slice",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_retraction_callbacks_for_disconnected_delivered_targets_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_retracts_partially_delivered_tso_without_releasing_lagging_targets_over_fedpro_schema",
@@ -21326,7 +21331,7 @@
         "requirement_id": "HLA2025-FI-SVC-125"
       },
       {
-        "pytest_anchor_count": 16,
+        "pytest_anchor_count": 17,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
@@ -21341,6 +21346,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_flow",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_queued_ddm_tso_reflect_for_disconnected_target_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_attribute_ownership_scenario_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_release_request_ownership_scenario_over_fedpro_route"
@@ -29166,10 +29172,9 @@
   "shim_pressure_family_asymmetry_audit": {
     "audit_status": "wrapper-boundary-family-asymmetry-captured",
     "by_balance": {
-      "balanced": 21,
-      "direct-heavier": 1
+      "balanced": 22
     },
-    "current_assessment": "The main current-package pressure families are route-backed across the current Python lanes, but they are not perfectly symmetric. The remaining parity work is now clearer: close hosted-heavier and direct-heavier family imbalances rather than inventing new top-level proof areas.",
+    "current_assessment": "The main current-package pressure families are route-backed across the current Python lanes and are now symmetric at the named proof-family level. The remaining work is no longer family-count parity; it is deeper behavioral expansion, stronger evidence quality, and architectural judgment about how far the repo should continue decomposing runtime semantics away from the remaining compatibility-wrapper seam.",
     "families": [
       {
         "balance": "balanced",
@@ -29244,11 +29249,11 @@
         "slice_id": "2025-ownership-proof-families"
       },
       {
-        "balance": "direct-heavier",
-        "count_delta": 1,
+        "balance": "balanced",
+        "count_delta": 0,
         "direct_test_count": 3,
         "family": "acquisition-availability-and-cancellation",
-        "hosted_test_count": 2,
+        "hosted_test_count": 3,
         "route_backed_across_current_python_lanes": true,
         "slice_id": "2025-ownership-proof-families"
       },
@@ -29437,7 +29442,7 @@
       {
         "direct_test_count": 3,
         "family": "acquisition-availability-and-cancellation",
-        "hosted_test_count": 2,
+        "hosted_test_count": 3,
         "route_backed_across_current_python_lanes": true,
         "slice_id": "2025-ownership-proof-families"
       },
@@ -31276,10 +31281,9 @@
   "wrapper_boundary_family_asymmetry_audit": {
     "audit_status": "wrapper-boundary-family-asymmetry-captured",
     "by_balance": {
-      "balanced": 21,
-      "direct-heavier": 1
+      "balanced": 22
     },
-    "current_assessment": "The main current-package pressure families are route-backed across the current Python lanes, but they are not perfectly symmetric. The remaining parity work is now clearer: close hosted-heavier and direct-heavier family imbalances rather than inventing new top-level proof areas.",
+    "current_assessment": "The main current-package pressure families are route-backed across the current Python lanes and are now symmetric at the named proof-family level. The remaining work is no longer family-count parity; it is deeper behavioral expansion, stronger evidence quality, and architectural judgment about how far the repo should continue decomposing runtime semantics away from the remaining compatibility-wrapper seam.",
     "families": [
       {
         "balance": "balanced",
@@ -31354,11 +31358,11 @@
         "slice_id": "2025-ownership-proof-families"
       },
       {
-        "balance": "direct-heavier",
-        "count_delta": 1,
+        "balance": "balanced",
+        "count_delta": 0,
         "direct_test_count": 3,
         "family": "acquisition-availability-and-cancellation",
-        "hosted_test_count": 2,
+        "hosted_test_count": 3,
         "route_backed_across_current_python_lanes": true,
         "slice_id": "2025-ownership-proof-families"
       },
@@ -31547,7 +31551,7 @@
       {
         "direct_test_count": 3,
         "family": "acquisition-availability-and-cancellation",
-        "hosted_test_count": 2,
+        "hosted_test_count": 3,
         "route_backed_across_current_python_lanes": true,
         "slice_id": "2025-ownership-proof-families"
       },
