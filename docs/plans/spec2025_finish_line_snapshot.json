@@ -7850,7 +7850,7 @@
   "hosted_fedpro_bounded_proof_audit": {
     "all_rows_parity_covered": true,
     "audit_status": "hosted-fedpro-bounded-proof-captured",
-    "current_assessment": "The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.",
+    "current_assessment": "The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, per-scenario transport-plus-parity test anchors, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.",
     "doc_exists": true,
     "doc_narrative_ready": true,
     "doc_path": "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md",
@@ -7866,8 +7866,15 @@
     ],
     "identity_ready": true,
     "ready_for_hosted_fedpro_bounded_proof_claim": true,
+    "required_evidence_tests": [
+      "tests/transport/test_grpc_transport_2025.py",
+      "tests/scenarios/test_python_route_parity.py"
+    ],
     "residual_boundary": "This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted FedPro lane into full remote-RTI semantics or exhaustive cross-binding conformance.",
     "route": "python-2025-fedpro-grpc",
+    "rows_missing_identity_note": [],
+    "rows_missing_required_evidence_tests": {},
+    "rows_missing_transport_seam_note": [],
     "scenario_count": 8,
     "scenarios": [
       "ddm",
@@ -19107,6 +19114,7 @@
       {
         "boundary": "This is scenario-suite evidence, not a universal claim for every possible FOM composition.",
         "evidence_tests": [
+          "tests/scenarios/test_python_route_parity.py",
           "tests/transport/test_grpc_transport_2025.py"
         ],
         "milestone_id": "example_fom_scenarios",
@@ -19143,6 +19151,7 @@
       {
         "boundary": "Routing proof remains bounded to the hosted transport/runtime slice.",
         "evidence_tests": [
+          "tests/scenarios/test_python_route_parity.py",
           "tests/transport/test_grpc_transport_2025.py"
         ],
         "milestone_id": "messaging_and_routing",
@@ -22560,9 +22569,10 @@
         "requirement_id": "HLA2025-FR-002"
       },
       {
-        "pytest_anchor_count": 21,
+        "pytest_anchor_count": 22,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
@@ -22587,9 +22597,10 @@
         "requirement_id": "HLA2025-FR-003"
       },
       {
-        "pytest_anchor_count": 19,
+        "pytest_anchor_count": 20,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
@@ -26426,7 +26437,7 @@
         "requirement_id": "HLA2025-OMT-SU-196"
       },
       {
-        "pytest_anchor_count": 42,
+        "pytest_anchor_count": 43,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_imported_packets.py::test_imported_executable_test_backlog_is_tracked_in_registry",
@@ -26460,6 +26471,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_object_management_bounded_proof_markdown_keeps_service_family_traceability_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_ownership_management_bounded_proof_markdown_keeps_service_family_traceability_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_support_services_bounded_proof_markdown_keeps_python_lane_and_bounded_route_claim_explicit",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_version_local_factory_defaults_to_python2025_provider",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_version_local_factory_uses_same_composition_layer",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_hla_factory_registry_composes_2025_helpers_without_ambassador_ownership",
@@ -26791,7 +26803,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers object attribute subscribe-with-rate and passive subscribe-with-rate aliases, object attribute, interaction class, and directed interaction region-overlap filtering with conveyed region evidence plus DDM-driven attributesInScope/attributesOutOfScope transitions, region subscribe/unsubscribe, associate/unassociate, and delete-region cleanup. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -26922,7 +26935,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls plus real shared federation listing plus real listFederationExecutions/listFederationExecutionMembers callback flow, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of direct federation listing and member-report callbacks through the hosted 2025 ambassador surface, shared join-precondition rejection for not-connected, missing-federation, duplicate-name, already-joined, save-in-progress, and restore-in-progress cases, shared resign-precondition rejection for not-connected, not-joined, invalid-action, owned-attribute, and pending-acquisition cases, shared multi-participation across primary and secondary federations, shared resign/disconnect MOM cleanup, shared lost-federate MOM reporting plus automatic object cleanup, shared single-module and multi-module federation FOM visibility plus incompatible-join FOM integrity rejection, explicit single-FOM and createFederationExecutionWithMIM transport-command routing, MIM-data alias normalization, missing-federation member notices, and federateResigned callback delivery. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -27066,7 +27080,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route emits MOM service-invocation report callbacks, reports MIM data for HLArequestMIMdata, reports FOM module data for HLArequestFOMmoduleData, reports object publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object instance information and object-instance counts, reports activity counts for updates/reflections/interactions, reports synchronization points/status, proves direct synchronization registration/announce/achieved/federation-synchronized callbacks, proves explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM federation-management save/restore service interactions plus MOM time-management service interactions through the direct 2025 ambassador surface, proves requestRetraction callback delivery after delivered timestamp-order receipt, round-trips 2025 switch services, emits HLAreportMOMexception for failed routed MOM actions, and routes all hosted MOM manager adjust/service command leaves with representative state and callback effects. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -27202,7 +27217,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers passive object and interaction subscribe aliases, universal directed subscribe alias, object discovery, attribute reflection, interaction receipt, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of direct object discovery, reflection, and interaction receipt through the hosted 2025 ambassador surface, directed interaction receipt, time-managed declaration independence, selective directed set unsubscribe/unpublish, invalid attribute-publication rejection, post-unpublish object/interaction send rejection, and timestamped variants. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -27335,7 +27351,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers unavailable acquisition, basic divest/acquire/query callbacks, non-owner update rejection, negotiated divestiture, confirm-divestiture completion, release requests, release denial, acquisition cancellation, divestiture-if-wanted, RTI-owned MOM attribute ownership query callbacks, and cancel-negotiated-offer callbacks, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the smoke save/restore ownership rollback gauntlet plus owned-attribute reacquisition rejection, non-owner divestiture rejection, unowned query callbacks, fresh acquisition notification, informed-owner query callbacks, restored in-flight ownership negotiation state, and restored cross-federate owner-visibility callbacks through the direct 2025 ambassador surface; save/restore recovery of in-flight ownership negotiation state and restored cross-federate owner-visibility callbacks are also exercised over the hosted FedPro route; resign-time divest/delete/cancel ownership policies are exercised over the FedPro route. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -27471,7 +27488,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, status callbacks, success/failure callbacks, abort callbacks, restore precondition/failure/abort plus restore participant/status exception control flow, post-resign callback silence for departed federates, object registry rollback, logical-time rollback, time/switch-control rollback, plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, local-delete object-known-state recovery, transportation-type restore persistence, queued-TSO redelivery after restore, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the package-owned restore-state, restore-output-resume, and pipeline-resume scenario adapter paths, and bounded radar-window state rollback. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -27610,7 +27628,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route over the primary Python 2025 RTI implementation covers FOM handle/name round trips, dimension/range, transportation/order, update-rate, normalization, logical-time query, callback-delivery enable/disable control with queued reflection release plus reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks, single and multiple object-instance name reservation/release callback flow, turnUpdatesOn/turnUpdatesOff advisory callback flow for object-class subscriptions, direct attribute and interaction transportation change/query callback flow, automatic resign directive get/set, and 2025 switch get/set plus read-only switch inquiry services. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -27949,7 +27968,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers object attribute subscribe-with-rate and passive subscribe-with-rate aliases, object attribute, interaction class, and directed interaction region-overlap filtering with conveyed region evidence plus DDM-driven attributesInScope/attributesOutOfScope transitions, region subscribe/unsubscribe, associate/unassociate, and delete-region cleanup. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -28080,7 +28100,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls plus real shared federation listing plus real listFederationExecutions/listFederationExecutionMembers callback flow, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of direct federation listing and member-report callbacks through the hosted 2025 ambassador surface, shared join-precondition rejection for not-connected, missing-federation, duplicate-name, already-joined, save-in-progress, and restore-in-progress cases, shared resign-precondition rejection for not-connected, not-joined, invalid-action, owned-attribute, and pending-acquisition cases, shared multi-participation across primary and secondary federations, shared resign/disconnect MOM cleanup, shared lost-federate MOM reporting plus automatic object cleanup, shared single-module and multi-module federation FOM visibility plus incompatible-join FOM integrity rejection, explicit single-FOM and createFederationExecutionWithMIM transport-command routing, MIM-data alias normalization, missing-federation member notices, and federateResigned callback delivery. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -28224,7 +28245,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route emits MOM service-invocation report callbacks, reports MIM data for HLArequestMIMdata, reports FOM module data for HLArequestFOMmoduleData, reports object publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object instance information and object-instance counts, reports activity counts for updates/reflections/interactions, reports synchronization points/status, proves direct synchronization registration/announce/achieved/federation-synchronized callbacks, proves explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM federation-management save/restore service interactions plus MOM time-management service interactions through the direct 2025 ambassador surface, proves requestRetraction callback delivery after delivered timestamp-order receipt, round-trips 2025 switch services, emits HLAreportMOMexception for failed routed MOM actions, and routes all hosted MOM manager adjust/service command leaves with representative state and callback effects. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -28360,7 +28382,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers passive object and interaction subscribe aliases, universal directed subscribe alias, object discovery, attribute reflection, interaction receipt, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of direct object discovery, reflection, and interaction receipt through the hosted 2025 ambassador surface, directed interaction receipt, time-managed declaration independence, selective directed set unsubscribe/unpublish, invalid attribute-publication rejection, post-unpublish object/interaction send rejection, and timestamped variants. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -28493,7 +28516,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers unavailable acquisition, basic divest/acquire/query callbacks, non-owner update rejection, negotiated divestiture, confirm-divestiture completion, release requests, release denial, acquisition cancellation, divestiture-if-wanted, RTI-owned MOM attribute ownership query callbacks, and cancel-negotiated-offer callbacks, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the smoke save/restore ownership rollback gauntlet plus owned-attribute reacquisition rejection, non-owner divestiture rejection, unowned query callbacks, fresh acquisition notification, informed-owner query callbacks, restored in-flight ownership negotiation state, and restored cross-federate owner-visibility callbacks through the direct 2025 ambassador surface; save/restore recovery of in-flight ownership negotiation state and restored cross-federate owner-visibility callbacks are also exercised over the hosted FedPro route; resign-time divest/delete/cancel ownership policies are exercised over the FedPro route. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -28629,7 +28653,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, status callbacks, success/failure callbacks, abort callbacks, restore precondition/failure/abort plus restore participant/status exception control flow, post-resign callback silence for departed federates, object registry rollback, logical-time rollback, time/switch-control rollback, plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, local-delete object-known-state recovery, transportation-type restore persistence, queued-TSO redelivery after restore, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the package-owned restore-state, restore-output-resume, and pipeline-resume scenario adapter paths, and bounded radar-window state rollback. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",
@@ -28768,7 +28793,8 @@
         ],
         "evidence_scope": "scenario-parity",
         "evidence_tests": [
-          "tests/transport/test_grpc_transport_2025.py"
+          "tests/transport/test_grpc_transport_2025.py",
+          "tests/scenarios/test_python_route_parity.py"
         ],
         "implementation_lane": "hla-backend-python2025",
         "notes": "Hosted FedPro 2025 route over the primary Python 2025 RTI implementation covers FOM handle/name round trips, dimension/range, transportation/order, update-rate, normalization, logical-time query, callback-delivery enable/disable control with queued reflection release plus reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks, single and multiple object-instance name reservation/release callback flow, turnUpdatesOn/turnUpdatesOff advisory callback flow for object-class subscriptions, direct attribute and interaction transportation change/query callback flow, automatic resign directive get/set, and 2025 switch get/set plus read-only switch inquiry services. Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with counts_as_python_2025_rti=true and wrapper_only=false where those fields apply. Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than evidence that the main 2025 Python RTI lane lacks the underlying semantics.",

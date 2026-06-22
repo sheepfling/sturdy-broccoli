@@ -245,7 +245,7 @@ Binding boundary rows by role:
 - Identity ready: True
 - Doc narrative ready: True
 - Ready for hosted FedPro bounded proof claim: True
-- Assessment: The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.
+- Assessment: The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, per-scenario transport-plus-parity test anchors, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.
 - Residual boundary: This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted FedPro lane into full remote-RTI semantics or exhaustive cross-binding conformance.
 
 Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management

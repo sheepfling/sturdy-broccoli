@@ -124,6 +124,15 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
     return ()
 
 
+def _normalized_evidence_tests(route: str, evidence_tests: tuple[str, ...]) -> tuple[str, ...]:
+    normalized = list(evidence_tests)
+    if route == "python-2025-fedpro-grpc":
+        for test_path in _PYTHON_ROUTE_PARITY_TESTS:
+            if test_path not in normalized:
+                normalized.append(test_path)
+    return tuple(normalized)
+
+
 def _row(
     scenario: str,
     route: str,
@@ -141,7 +150,7 @@ def _row(
         route=route,
         status=status,
         requirements=requirements,
-        evidence_tests=evidence_tests,
+        evidence_tests=_normalized_evidence_tests(route, evidence_tests),
         notes=_normalized_notes(route, notes),
         evidence_scope=_evidence_scope(scenario, route, status),
         evidence_artifacts=_evidence_artifacts(scenario, route, status),

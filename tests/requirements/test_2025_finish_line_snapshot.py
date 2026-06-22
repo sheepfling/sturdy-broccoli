@@ -1471,11 +1471,18 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "time_management",
     ]
     assert hosted_fedpro_audit["expected_scenarios"] == hosted_fedpro_audit["scenarios"]
+    assert hosted_fedpro_audit["required_evidence_tests"] == [
+        "tests/transport/test_grpc_transport_2025.py",
+        "tests/scenarios/test_python_route_parity.py",
+    ]
     assert hosted_fedpro_audit["all_rows_parity_covered"] is True
     assert hosted_fedpro_audit["identity_ready"] is True
+    assert hosted_fedpro_audit["rows_missing_required_evidence_tests"] == {}
+    assert hosted_fedpro_audit["rows_missing_identity_note"] == []
+    assert hosted_fedpro_audit["rows_missing_transport_seam_note"] == []
     assert hosted_fedpro_audit["doc_narrative_ready"] is True
     assert hosted_fedpro_audit["ready_for_hosted_fedpro_bounded_proof_claim"] is True
-    assert "requirement-facing proof note tied to the eight tracked hosted scenario families" in hosted_fedpro_audit["current_assessment"]
+    assert "per-scenario transport-plus-parity test anchors" in hosted_fedpro_audit["current_assessment"]
     assert "does not promote the hosted FedPro lane into full remote-RTI semantics" in hosted_fedpro_audit["residual_boundary"]
     standard_binding_audit = snapshot["standard_binding_runtime_capability_audit"]
     assert standard_binding_audit["audit_status"] == "standard-binding-runtime-capability-captured"

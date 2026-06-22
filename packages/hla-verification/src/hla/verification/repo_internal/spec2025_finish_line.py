@@ -3631,6 +3631,10 @@ def _build_hosted_fedpro_bounded_proof_audit(
         "support_services",
         "time_management",
     ]
+    required_evidence_tests = [
+        "tests/transport/test_grpc_transport_2025.py",
+        "tests/scenarios/test_python_route_parity.py",
+    ]
     all_rows_parity_covered = all(row["status"] == "parity-covered" for row in hosted_rows)
     identity_ready = all(
         row["runtime_provider"] == "python2025"
@@ -3638,6 +3642,27 @@ def _build_hosted_fedpro_bounded_proof_audit(
         and row["counts_as_python_2025_rti"] is True
         and row["wrapper_only"] is False
         for row in hosted_rows
+    )
+    rows_missing_required_evidence_tests = {
+        row["scenario"]: [
+            test_path for test_path in required_evidence_tests if test_path not in row["evidence_tests"]
+        ]
+        for row in hosted_rows
+    }
+    rows_missing_required_evidence_tests = {
+        scenario: missing_paths
+        for scenario, missing_paths in rows_missing_required_evidence_tests.items()
+        if missing_paths
+    }
+    rows_missing_identity_note = sorted(
+        row["scenario"]
+        for row in hosted_rows
+        if "primary 2025 Python RTI implementation lane" not in row["notes"]
+    )
+    rows_missing_transport_seam_note = sorted(
+        row["scenario"]
+        for row in hosted_rows
+        if "transport-seam evidence over hla-backend-python2025" not in row["notes"]
     )
     doc_checks = [
         "`python-2025-fedpro-grpc`" in doc_text,
@@ -3657,8 +3682,12 @@ def _build_hosted_fedpro_bounded_proof_audit(
         "scenario_count": len(hosted_rows),
         "scenarios": [row["scenario"] for row in hosted_rows],
         "expected_scenarios": expected_scenarios,
+        "required_evidence_tests": required_evidence_tests,
         "all_rows_parity_covered": all_rows_parity_covered,
         "identity_ready": identity_ready,
+        "rows_missing_required_evidence_tests": rows_missing_required_evidence_tests,
+        "rows_missing_identity_note": rows_missing_identity_note,
+        "rows_missing_transport_seam_note": rows_missing_transport_seam_note,
         "doc_narrative_ready": all(doc_checks),
         "ready_for_hosted_fedpro_bounded_proof_claim": (
             doc_path.exists()
@@ -3666,13 +3695,16 @@ def _build_hosted_fedpro_bounded_proof_audit(
             and [row["scenario"] for row in hosted_rows] == expected_scenarios
             and all_rows_parity_covered
             and identity_ready
+            and not rows_missing_required_evidence_tests
+            and not rows_missing_identity_note
+            and not rows_missing_transport_seam_note
             and all(doc_checks)
         ),
         "current_assessment": (
             "The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It "
             "now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit "
-            "python2025 runtime identity, and an auditable statement that the route is a bounded transport/runtime "
-            "slice over hla-backend-python2025."
+            "python2025 runtime identity, per-scenario transport-plus-parity test anchors, and an auditable "
+            "statement that the route is a bounded transport/runtime slice over hla-backend-python2025."
         ),
         "residual_boundary": (
             "This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted "
