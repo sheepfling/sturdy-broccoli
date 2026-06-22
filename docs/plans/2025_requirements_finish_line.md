@@ -193,6 +193,25 @@ Retired rows by service group:
 - Federate Interface legacy API: 11 rows (HLA2025-FI-RET-001, HLA2025-FI-RET-002, HLA2025-FI-RET-003, HLA2025-FI-RET-004, HLA2025-FI-RET-005, HLA2025-FI-RET-006, HLA2025-FI-RET-007, HLA2025-FI-RET-008, HLA2025-FI-RET-009, HLA2025-FI-RET-010, HLA2025-FI-RET-011)
 - OMT legacy schema: 13 rows (HLA2025-OMT-RET-001, HLA2025-OMT-RET-002, HLA2025-OMT-RET-003, HLA2025-OMT-RET-004, HLA2025-OMT-RET-005, HLA2025-OMT-RET-006, HLA2025-OMT-RET-007, HLA2025-OMT-RET-008, HLA2025-OMT-RET-009, HLA2025-OMT-RET-010, HLA2025-OMT-RET-011, HLA2025-OMT-RET-012, HLA2025-OMT-RET-013)
 
+## Binding Boundary Mapping Audit
+
+- Audit status: binding-boundary-mapping-captured
+- Doc path: docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md
+- Row count: 3
+- Doc exists: True
+- Rows with doc anchor: 3
+- Rows mentioned in doc: 3
+- Boundary narrative ready: True
+- Ready for binding boundary mapping claim: True
+- Assessment: The binding and hosted boundary rows are no longer only counted as bounded blockers in the finish-line bundle. They now have an explicit boundary note that enumerates all three rows and states that hla-backend-python2025 is the main 2025 Python RTI lane while the Java/C++ bindings and hosted FedPro route remain bounded wrapper or transport evidence over that same runtime.
+- Residual boundary: This audit makes the binding and hosted boundary mapping explicit and reviewable. It does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance or the hosted FedPro row into a second full RTI implementation lane.
+
+Binding boundary rows by role:
+
+- java-binding: 1 rows (HLA2025-BND-001)
+- cpp-binding: 1 rows (HLA2025-BND-002)
+- hosted-fedpro: 1 rows (HLA2025-BND-003)
+
 Requirement-by-requirement area closure:
 
 - fi_service_catalog: covered=196

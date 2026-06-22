@@ -1,4 +1,29 @@
 {
+  "binding_boundary_mapping_audit": {
+    "audit_status": "binding-boundary-mapping-captured",
+    "boundary_narrative_ready": true,
+    "by_boundary_role": {
+      "cpp-binding": [
+        "HLA2025-BND-002"
+      ],
+      "hosted-fedpro": [
+        "HLA2025-BND-003"
+      ],
+      "java-binding": [
+        "HLA2025-BND-001"
+      ]
+    },
+    "current_assessment": "The binding and hosted boundary rows are no longer only counted as bounded blockers in the finish-line bundle. They now have an explicit boundary note that enumerates all three rows and states that hla-backend-python2025 is the main 2025 Python RTI lane while the Java/C++ bindings and hosted FedPro route remain bounded wrapper or transport evidence over that same runtime.",
+    "doc_exists": true,
+    "doc_path": "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md",
+    "ready_for_binding_boundary_mapping_claim": true,
+    "residual_boundary": "This audit makes the binding and hosted boundary mapping explicit and reviewable. It does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance or the hosted FedPro row into a second full RTI implementation lane.",
+    "row_count": 3,
+    "rows_mentioned_in_doc_count": 3,
+    "rows_missing_doc_anchor": [],
+    "rows_missing_from_doc": [],
+    "rows_with_doc_anchor_count": 3
+  },
   "binding_requirement_proof_audit": {
     "current_assessment": "All three binding rows now have explicit slice and route-parity proof records, but Java/C++ remain artifact/runtime-capability bounded and FedPro remains a hosted runtime slice rather than full conformance. Those remaining limits are adapter or transport seam evidence boundaries over the main hla-backend-python2025 runtime, not alternate ownership lanes for core 2025 RTI semantics.",
     "fully_traceable_requirement_count": 3,

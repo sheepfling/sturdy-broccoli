@@ -3375,6 +3375,69 @@ def _build_python2025_proof_lane_audit(project_root: Path) -> dict[str, Any]:
     }
 
 
+def _build_binding_boundary_mapping_audit(
+    project_root: Path,
+    completion_backlog_rows: list[Mapping[str, str]],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    requirement_ids = ("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
+    row_labels = {
+        "HLA2025-BND-001": "java-binding",
+        "HLA2025-BND-002": "cpp-binding",
+        "HLA2025-BND-003": "hosted-fedpro",
+    }
+    rows = [row for row in completion_backlog_rows if row["id"] in requirement_ids]
+    rows.sort(key=lambda row: row["id"])
+    rows_mentioned_in_doc = [row["id"] for row in rows if row["id"] in doc_text]
+    rows_with_doc_anchor = list(rows_mentioned_in_doc)
+    rows_missing_doc_anchor = sorted({row["id"] for row in rows} - set(rows_with_doc_anchor))
+    rows_missing_from_doc = sorted({row["id"] for row in rows} - set(rows_mentioned_in_doc))
+    by_boundary_role = {
+        row_labels[requirement_id]: [requirement_id]
+        for requirement_id in requirement_ids
+    }
+    narrative_checks = [
+        "main 2025" in doc_text and "RTI implementation lane is `hla-backend-python2025`" in doc_text,
+        "`hla-backend-shim` remains a compatibility wrapper" in doc_text
+        or "`hla-backend-shim` remains a compatibility wrapper and is not a runtime owner" in doc_text,
+        "not an independent Java RTI" in doc_text,
+        "not an independent C++ RTI" in doc_text,
+        "not a second RTI implementation lane" in doc_text,
+    ]
+    return {
+        "audit_status": "binding-boundary-mapping-captured",
+        "doc_path": doc_rel,
+        "row_count": len(rows),
+        "doc_exists": doc_path.exists(),
+        "rows_with_doc_anchor_count": len(rows_with_doc_anchor),
+        "rows_missing_doc_anchor": rows_missing_doc_anchor,
+        "rows_mentioned_in_doc_count": len(rows_mentioned_in_doc),
+        "rows_missing_from_doc": rows_missing_from_doc,
+        "boundary_narrative_ready": all(narrative_checks),
+        "by_boundary_role": by_boundary_role,
+        "ready_for_binding_boundary_mapping_claim": (
+            doc_path.exists()
+            and len(rows) == len(requirement_ids)
+            and not rows_missing_doc_anchor
+            and not rows_missing_from_doc
+            and all(narrative_checks)
+        ),
+        "current_assessment": (
+            "The binding and hosted boundary rows are no longer only counted as bounded blockers in the finish-line "
+            "bundle. They now have an explicit boundary note that enumerates all three rows and states that "
+            "hla-backend-python2025 is the main 2025 Python RTI lane while the Java/C++ bindings and hosted FedPro "
+            "route remain bounded wrapper or transport evidence over that same runtime."
+        ),
+        "residual_boundary": (
+            "This audit makes the binding and hosted boundary mapping explicit and reviewable. It does not promote "
+            "the Java/C++ rows into exhaustive cross-binding behavior conformance or the hosted FedPro row into a "
+            "second full RTI implementation lane."
+        ),
+    }
+
+
 def _build_promotion_split_audit(
     closeout_readiness: Mapping[str, Any],
     claim_audit: Mapping[str, Any],
@@ -7103,6 +7166,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         harmonization_rows,
     )
+    binding_boundary_mapping_audit = _build_binding_boundary_mapping_audit(
+        project_root,
+        completion_rows,
+    )
     duplicate_umbrella_mapping_audit = _build_duplicate_umbrella_mapping_audit(
         project_root,
         harmonization_rows,
@@ -7191,6 +7258,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "python_rti_milestone_audit": python_rti_milestone_audit,
         "requirement_by_requirement_audit": requirement_by_requirement_audit,
         "retired_legacy_mapping_audit": retired_legacy_mapping_audit,
+        "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
         "duplicate_umbrella_mapping_audit": duplicate_umbrella_mapping_audit,
         "completion_claim_audit": completion_claim_audit,
         "supported_boundary_statement": supported_boundary_statement,
@@ -7255,6 +7323,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     milestone_audit = snapshot["python_rti_milestone_audit"]
     requirement_by_requirement_audit = snapshot["requirement_by_requirement_audit"]
     retired_legacy_mapping_audit = snapshot["retired_legacy_mapping_audit"]
+    binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
     duplicate_umbrella_mapping_audit = snapshot["duplicate_umbrella_mapping_audit"]
     claim_audit = snapshot["completion_claim_audit"]
     supported_boundary = snapshot["supported_boundary_statement"]
@@ -7507,6 +7576,28 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     )
     for service_group, row_ids in retired_legacy_mapping_audit["by_service_group"].items():
         lines.append(f"- {service_group}: {len(row_ids)} rows ({', '.join(row_ids)})")
+    lines.extend(
+        [
+            "",
+            "## Binding Boundary Mapping Audit",
+            "",
+            f"- Audit status: {binding_boundary_mapping_audit['audit_status']}",
+            f"- Doc path: {binding_boundary_mapping_audit['doc_path']}",
+            f"- Row count: {binding_boundary_mapping_audit['row_count']}",
+            f"- Doc exists: {binding_boundary_mapping_audit['doc_exists']}",
+            f"- Rows with doc anchor: {binding_boundary_mapping_audit['rows_with_doc_anchor_count']}",
+            f"- Rows mentioned in doc: {binding_boundary_mapping_audit['rows_mentioned_in_doc_count']}",
+            f"- Boundary narrative ready: {binding_boundary_mapping_audit['boundary_narrative_ready']}",
+            f"- Ready for binding boundary mapping claim: {binding_boundary_mapping_audit['ready_for_binding_boundary_mapping_claim']}",
+            f"- Assessment: {binding_boundary_mapping_audit['current_assessment']}",
+            f"- Residual boundary: {binding_boundary_mapping_audit['residual_boundary']}",
+            "",
+            "Binding boundary rows by role:",
+            "",
+        ]
+    )
+    for boundary_role, row_ids in binding_boundary_mapping_audit["by_boundary_role"].items():
+        lines.append(f"- {boundary_role}: {len(row_ids)} rows ({', '.join(row_ids)})")
     lines.extend(
         [
             "",

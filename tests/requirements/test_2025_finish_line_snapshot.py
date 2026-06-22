@@ -1330,6 +1330,24 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert retired_mapping_audit["ready_for_retired_legacy_mapping_claim"] is True
     assert "explicit mapping note that enumerates every retired row" in retired_mapping_audit["current_assessment"]
     assert "does not convert those legacy-only rows into active 2025 support obligations" in retired_mapping_audit["residual_boundary"]
+    binding_boundary_audit = snapshot["binding_boundary_mapping_audit"]
+    assert binding_boundary_audit["audit_status"] == "binding-boundary-mapping-captured"
+    assert binding_boundary_audit["doc_path"] == "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
+    assert binding_boundary_audit["row_count"] == 3
+    assert binding_boundary_audit["doc_exists"] is True
+    assert binding_boundary_audit["rows_with_doc_anchor_count"] == 3
+    assert binding_boundary_audit["rows_missing_doc_anchor"] == []
+    assert binding_boundary_audit["rows_mentioned_in_doc_count"] == 3
+    assert binding_boundary_audit["rows_missing_from_doc"] == []
+    assert binding_boundary_audit["boundary_narrative_ready"] is True
+    assert binding_boundary_audit["by_boundary_role"] == {
+        "java-binding": ["HLA2025-BND-001"],
+        "cpp-binding": ["HLA2025-BND-002"],
+        "hosted-fedpro": ["HLA2025-BND-003"],
+    }
+    assert binding_boundary_audit["ready_for_binding_boundary_mapping_claim"] is True
+    assert "explicit boundary note that enumerates all three rows" in binding_boundary_audit["current_assessment"]
+    assert "does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance" in binding_boundary_audit["residual_boundary"]
     boundary_statement = snapshot["supported_boundary_statement"]
     assert boundary_statement["statement_status"] == "supported-boundary-statement"
     assert boundary_statement["ready"] is True
