@@ -2713,7 +2713,7 @@ def test_dedicated_python2025_backend_is_discoverable_and_executable() -> None:
     assert python2025_rti.backend_info.details["provider"] == "python2025"
     assert python2025_rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
 
-    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+    with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_rti_ambassador(spec="2025", backend="shim")
 
 
@@ -3144,7 +3144,7 @@ def test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_h
     "HLA2025-FI-SVC-124",
     "HLA2025-FI-SVC-125",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -3288,7 +3288,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_example_target_radar_scenario_end_to_end(backend_name: str) -> None:
     from hla.foms.target_radar._internal import Vec3, run_target_radar_scenario, target_radar_fom_path
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3321,7 +3321,7 @@ def test_2025_provider_runs_example_target_radar_scenario_end_to_end(backend_nam
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_lifecycle_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_scenario
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -3348,7 +3348,7 @@ def test_2025_provider_runs_federation_lifecycle_scenario_end_to_end(backend_nam
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-OMT-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_scenario
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -3376,7 +3376,7 @@ def test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end(back
 
 
 @pytest.mark.requirements("HLA2025-FI-003", "HLA2025-OM-001", "HLA2025-SUP-001")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_basic_backend_neutral_smoke_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import run_basic_federate_scenario
@@ -3397,7 +3397,7 @@ def test_2025_provider_runs_basic_backend_neutral_smoke_scenario_via_compat_adap
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-003")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_negative_scenario
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -3431,7 +3431,7 @@ def test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end(ba
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_listing_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_listing_scenario
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -3457,7 +3457,7 @@ def test_2025_provider_runs_federation_listing_scenario_end_to_end(backend_name:
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-008")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_multi_participation_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_multi_participation_scenario
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -3501,7 +3501,7 @@ def test_2025_provider_runs_multi_participation_scenario_end_to_end(backend_name
     "HLA2025-FI-002",
     "HLA2025-OMT-007",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_fom_integrity_negative_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_fom_integrity_negative_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3541,7 +3541,7 @@ def test_2025_provider_runs_fom_integrity_negative_scenario_end_to_end(backend_n
     "HLA2025-FI-008",
     "HLA2025-OMT-007",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_fom_module_visibility_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_fom_module_visibility_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3572,7 +3572,7 @@ def test_2025_provider_runs_fom_module_visibility_scenario_end_to_end(backend_na
     "HLA2025-FI-008",
     "HLA2025-OMT-007",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_multi_module_fom_visibility_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_multi_module_fom_visibility_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3608,7 +3608,7 @@ def test_2025_provider_runs_multi_module_fom_visibility_scenario_end_to_end(back
     "HLA2025-FI-SVC-006",
     "HLA2025-FI-SVC-007",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_join_precondition_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import JoinScenarioConfig, run_join_precondition_scenario
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -3655,7 +3655,7 @@ def test_2025_provider_runs_join_precondition_scenario_end_to_end(backend_name: 
     "HLA2025-FI-SVC-015",
     "HLA2025-FI-SVC-016",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_resign_precondition_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import ResignScenarioConfig, run_resign_precondition_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3696,7 +3696,7 @@ def test_2025_provider_runs_resign_precondition_scenario_end_to_end(tmp_path: Pa
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import ResignScenarioConfig, run_resign_mom_cleanup_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3730,7 +3730,7 @@ def test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end(tmp_path: Pat
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -3766,7 +3766,7 @@ def test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-003", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import LostFederateScenarioConfig, run_lost_federate_mom_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3803,7 +3803,7 @@ def test_2025_provider_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-003", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_external_lost_federate_observer_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516e.enums import CallbackModel
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -3873,7 +3873,7 @@ def test_2025_provider_runs_external_lost_federate_observer_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-017")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -3916,7 +3916,7 @@ def test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-018")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -3966,7 +3966,7 @@ def test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_declaration_management_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -4025,7 +4025,7 @@ def test_2025_provider_runs_declaration_management_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-019")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_update_rate_scenario_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
@@ -4062,7 +4062,7 @@ def test_2025_provider_runs_update_rate_scenario_via_compat_adapter(tmp_path: Pa
     "HLA2025-FI-SVC-104",
     "HLA2025-FI-SVC-105",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_two_federate_exchange_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -4129,7 +4129,7 @@ def test_2025_provider_runs_two_federate_exchange_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-104",
     "HLA2025-FI-SVC-105",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_exchange_round_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
@@ -4228,7 +4228,7 @@ def test_2025_provider_runs_exchange_round_via_compat_adapter(tmp_path: Path, ba
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-021")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -4269,7 +4269,7 @@ def test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_e
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-022", "HLA2025-FI-SVC-023")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -4314,7 +4314,7 @@ def test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-024", "HLA2025-MIL-004")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -4372,7 +4372,7 @@ def test_2025_provider_runs_time_managed_declaration_independence_scenario_end_t
     "HLA2025-FI-SVC-101",
     "HLA2025-FI-SVC-112",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_state_services_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4409,7 +4409,7 @@ def test_2025_provider_runs_section8_state_services_via_compat_adapter(
     "HLA2025-FI-SVC-101",
     "HLA2025-FI-SVC-122",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_blocks_early_timestamped_send_via_section8_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4449,7 +4449,7 @@ def test_2025_provider_blocks_early_timestamped_send_via_section8_compat_adapter
     "HLA2025-FI-SVC-112",
     "HLA2025-FI-SVC-113",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_time_bound_queries_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4491,7 +4491,7 @@ def test_2025_provider_runs_section8_time_bound_queries_via_compat_adapter(
     "HLA2025-FI-SVC-112",
     "HLA2025-FI-SVC-113",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_ordering_and_queries_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4540,7 +4540,7 @@ def test_2025_provider_runs_section8_ordering_and_queries_via_compat_adapter(
     "HLA2025-FI-SVC-108",
     "HLA2025-FI-SVC-110",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_available_and_flush_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4578,7 +4578,7 @@ def test_2025_provider_runs_section8_available_and_flush_via_compat_adapter(
     "HLA2025-FI-SVC-121",
     "HLA2025-FI-SVC-122",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_request_retraction_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4617,7 +4617,7 @@ def test_2025_provider_runs_section8_request_retraction_via_compat_adapter(
     "HLA2025-FI-SVC-101",
     "HLA2025-FI-SVC-102",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_duplicate_enable_rejection_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4655,7 +4655,7 @@ def test_2025_provider_runs_section8_duplicate_enable_rejection_via_compat_adapt
     "HLA2025-FI-SVC-111",
     "HLA2025-FI-SVC-112",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_tar_galt_boundary_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4691,7 +4691,7 @@ def test_2025_provider_runs_section8_tar_galt_boundary_via_compat_adapter(
     "HLA2025-FI-SVC-108",
     "HLA2025-FI-SVC-121",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_available_and_retraction_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4728,7 +4728,7 @@ def test_2025_provider_runs_section8_available_and_retraction_via_compat_adapter
     "HLA2025-FI-SVC-123",
     "HLA2025-FI-SVC-124",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_2025_provider_runs_section8_order_override_via_compat_adapter(
     backend_name: str, time_factory_name: str
@@ -4763,7 +4763,7 @@ def test_2025_provider_runs_section8_order_override_via_compat_adapter(
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -4830,7 +4830,7 @@ def test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-025")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_discovery_class_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import DiscoveryClassScenarioConfig, run_discovery_class_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -4883,7 +4883,7 @@ def test_2025_provider_runs_discovery_class_scenario_end_to_end(tmp_path: Path, 
     "HLA2025-FI-SVC-137",
     "HLA2025-FI-SVC-138",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516e.datatypes import RangeBounds
@@ -4941,7 +4941,7 @@ def test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter(b
     "HLA2025-FI-SVC-016",
     "HLA2025-FI-SVC-017",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516e.time import HLAfloat64Time
@@ -4981,7 +4981,7 @@ def test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-026")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_local_delete_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import LocalDeleteScenarioConfig, run_local_delete_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5030,7 +5030,7 @@ def test_2025_provider_runs_local_delete_scenario_end_to_end(tmp_path: Path, bac
     "HLA2025-SS-006",
     "HLA2025-FI-001",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5090,7 +5090,7 @@ def test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end(ba
     "HLA2025-FI-SVC-156",
     "HLA2025-FI-001",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -5404,7 +5404,7 @@ def test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_
     "HLA2025-SS-006",
     "HLA2025-FI-001",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_support_factory_and_decode_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SupportServicesScenarioConfig, run_support_factory_and_decode_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5504,7 +5504,7 @@ def test_2025_provider_runs_support_factory_and_decode_scenario_via_compat_adapt
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_round_trips_automatic_resign_directive_support_service(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5546,7 +5546,7 @@ def test_2025_provider_round_trips_automatic_resign_directive_support_service(ba
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import NameReservationScenarioConfig, run_name_reservation_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5580,6 +5580,66 @@ def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(backend
     assert summary["rival_multiple_reserved"].args == (set(config.multiple_names),)
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-MIL-001")
+def test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import NameReservationScenarioConfig, run_name_reservation_scenario
+    from hla.rti1516_2025.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-direct-name-reservation-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    rival = create_rti_ambassador(backend="python2025")
+    owner_federate = _CompatRecordingFederateAmbassador()
+    rival_federate = _CompatRecordingFederateAmbassador()
+    config = NameReservationScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        reserved_name=f"DirectReserved-{uuid.uuid4().hex[:8]}",
+        multiple_names=(f"DirectReservedA-{uuid.uuid4().hex[:6]}", f"DirectReservedB-{uuid.uuid4().hex[:6]}"),
+    )
+
+    try:
+        summary = run_name_reservation_scenario(
+            owner,
+            rival,
+            config=config,
+            owner_federate=owner_federate,
+            rival_federate=rival_federate,
+        )
+
+        assert owner.backend_info.details["provider"] == "python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+        assert rival.backend_info.details["provider"] == "python2025"
+        assert rival.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rival.backend_info.details["counts_as_python_2025_rti"] is True
+
+        assert summary["owner_handle"] is not None
+        assert summary["rival_handle"] is not None
+        assert summary["owner_reserved"].args == (config.reserved_name,)
+        assert summary["rival_reserved_failed"].args == (config.reserved_name,)
+        assert summary["rival_reserved"].args == (config.reserved_name,)
+        assert summary["owner_multiple_reserved"].args == (set(config.multiple_names),)
+        assert summary["rival_multiple_reserved_failed"].args == (set(config.multiple_names),)
+        assert summary["rival_multiple_reserved"].args == (set(config.multiple_names),)
+    finally:
+        for rti, action in ((rival, ResignAction.NO_ACTION), (owner, ResignAction.NO_ACTION)):
+            try:
+                rti.resign_federation_execution(action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (rival, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements(
     "HLA2025-NEW-005",
     "HLA2025-SS-001",
@@ -5588,7 +5648,7 @@ def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(backend
     "HLA2025-FI-001",
     "HLA2025-FI-003",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_callback_control_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import CallbackControlScenarioConfig, run_callback_control_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5674,7 +5734,7 @@ def test_2025_provider_runs_callback_control_scenario_via_compat_adapter(backend
     "HLA2025-FI-SVC-031",
     "HLA2025-FI-SVC-032",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_restore_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5744,7 +5804,7 @@ def test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_ada
     "HLA2025-FI-SVC-026",
     "HLA2025-FI-SVC-027",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_restore_queued_callback_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5790,7 +5850,7 @@ def test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_ada
     "HLA2025-MIL-004",
     "HLA2025-MIL-005",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -5842,7 +5902,7 @@ def test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compa
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-021",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_failure_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_failure_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5885,7 +5945,7 @@ def test_2025_provider_runs_save_failure_scenario_via_compat_adapter(backend_nam
     "HLA2025-FI-SVC-025",
     "HLA2025-FI-SVC-029",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_request_failure_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_request_failure_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5928,7 +5988,7 @@ def test_2025_provider_runs_restore_request_failure_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-026",
     "HLA2025-FI-SVC-029",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_failure_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_failure_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5974,7 +6034,7 @@ def test_2025_provider_runs_restore_failure_scenario_via_compat_adapter(backend_
     "HLA2025-FI-SVC-027",
     "HLA2025-FI-SVC-029",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_abort_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_abort_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6021,7 +6081,7 @@ def test_2025_provider_runs_save_abort_scenario_via_compat_adapter(backend_name:
     "HLA2025-FI-SVC-028",
     "HLA2025-FI-SVC-029",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_abort_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6063,7 +6123,7 @@ def test_2025_provider_runs_restore_abort_scenario_via_compat_adapter(backend_na
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_request_precondition_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_request_precondition_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6098,7 +6158,7 @@ def test_2025_provider_runs_restore_request_precondition_scenario_via_compat_ada
     "HLA2025-FI-SVC-025",
     "HLA2025-FI-SVC-026",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_participant_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_participant_exception_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6134,7 +6194,7 @@ def test_2025_provider_runs_restore_participant_exception_scenario_via_compat_ad
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_participant_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_participant_exception_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6173,7 +6233,7 @@ def test_2025_provider_runs_save_participant_exception_scenario_via_compat_adapt
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_abort_save_exception_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6193,7 +6253,7 @@ def test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter(bac
     "HLA2025-FI-SVC-025",
     "HLA2025-FI-SVC-026",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_abort_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_exception_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6226,7 +6286,7 @@ def test_2025_provider_runs_restore_abort_exception_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_status_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_save_status_exception_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6245,7 +6305,7 @@ def test_2025_provider_runs_save_status_exception_scenario_via_compat_adapter(ba
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_status_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_restore_status_exception_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6264,7 +6324,7 @@ def test_2025_provider_runs_restore_status_exception_scenario_via_compat_adapter
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_request_precondition_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_request_precondition_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6307,7 +6367,7 @@ def test_2025_provider_runs_save_request_precondition_scenario_via_compat_adapte
     "HLA2025-MIL-004",
     "HLA2025-MIL-005",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_federate_local_state_scenario
     from hla.verification.scenario_support import drain_callbacks_pair, order_value, wait_for_callback
@@ -6436,7 +6496,7 @@ def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_ada
     "HLA2025-FI-SVC-087",
     "HLA2025-FI-SVC-090",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_object_state_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6486,7 +6546,7 @@ def test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter(bac
     "HLA2025-FI-SVC-084",
     "HLA2025-FI-SVC-085",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -6526,7 +6586,7 @@ def test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_
     "HLA2025-FI-SVC-083",
     "HLA2025-FI-SVC-086",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_non_owner_update_rejection_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import NonOwnerUpdateScenarioConfig, run_non_owner_update_rejection_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6566,7 +6626,7 @@ def test_2025_provider_runs_non_owner_update_rejection_scenario_via_compat_adapt
     "HLA2025-FI-SVC-126",
     "HLA2025-FI-SVC-127",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import ReleaseRequestOwnershipScenarioConfig, run_release_request_ownership_scenario
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -6616,7 +6676,7 @@ def test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapte
     "HLA2025-FI-SVC-125",
     "HLA2025-FI-SVC-126",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -6669,8 +6729,16 @@ def test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_a
     assert summary["divested"] == {summary["owner_attribute"]}
     assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
     assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
-    assert summary["informed"].args[0] == summary["release_object_instance"]
-    assert summary["informed"].args[1] == summary["owner_attribute"]
+    assert getattr(summary["informed"].args[0], "value", summary["informed"].args[0]) == getattr(
+        summary["release_object_instance"],
+        "value",
+        summary["release_object_instance"],
+    )
+    assert getattr(summary["informed"].args[1], "value", summary["informed"].args[1]) == getattr(
+        summary["owner_attribute"],
+        "value",
+        summary["owner_attribute"],
+    )
     assert acquirer.is_attribute_owned_by_federate(summary["release_acquirer_object_instance"], summary["acquirer_attribute"]) is True
     assert owner.is_attribute_owned_by_federate(summary["release_object_instance"], summary["owner_attribute"]) is False
 
@@ -6679,7 +6747,7 @@ def test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_a
     "HLA2025-FI-SVC-123",
     "HLA2025-FI-SVC-124",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -6733,7 +6801,7 @@ def test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_a
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-025",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -6774,7 +6842,7 @@ def test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_comp
     "HLA2025-FI-SVC-025",
     "HLA2025-SS-043",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_treats_callback_enablement_as_runtime_policy_not_saved_state_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -6882,7 +6950,7 @@ def test_2025_provider_runs_attribute_ownership_query_callback_scenario_via_comp
     "HLA2025-FR-004",
     "HLA2025-FI-001",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_callback_control_route_with_object_reflection_end_to_end(
     backend_name: str,
 ) -> None:
@@ -6974,7 +7042,7 @@ def test_2025_provider_runs_callback_control_route_with_object_reflection_end_to
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-FI-SVC-121", "HLA2025-FI-SVC-122")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_attribute_ownership_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -7017,7 +7085,7 @@ def test_2025_provider_runs_attribute_ownership_scenario_end_to_end(backend_name
     "HLA2025-FI-SVC-125",
     "HLA2025-FI-SVC-126",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -7125,12 +7193,89 @@ def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
+
+    federation_name = f"python2025-direct-negotiated-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    acquirer = create_rti_ambassador(backend="python2025")
+    owner_federate = _OwnershipCompatRecordingFederateAmbassador()
+    acquirer_federate = _OwnershipCompatRecordingFederateAmbassador()
+    config = NegotiatedOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="NegotiatedOwnershipFederate",
+        object_class_name="HLAobjectRoot.Proto2025.MessageTest.TestSuite",
+        attribute_name="SuiteId",
+        object_instance_name=f"direct-negotiated-suite-{uuid.uuid4().hex[:8]}",
+        assumption_tag=b"offer-tag",
+        request_tag=b"request-tag",
+        cancel_tag=b"cancel-tag",
+    )
+
+    summary = run_negotiated_attribute_ownership_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=owner_federate,
+        acquirer_federate=acquirer_federate,
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert acquirer.backend_info.details["provider"] == "python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["release"].args[2] == config.cancel_tag
+    assert getattr(summary["cancellation"].args[0], "value", summary["cancellation"].args[0]) == getattr(
+        summary["release_acquirer_object_instance"],
+        "value",
+        summary["release_acquirer_object_instance"],
+    )
+    assert {
+        getattr(attribute, "value", attribute) for attribute in summary["cancellation"].args[1]
+    } == {getattr(summary["acquirer_attribute"], "value", summary["acquirer_attribute"])}
+    assert summary["divested"] == {summary["owner_attribute"]}
+    assert getattr(summary["acquired"].args[0], "value", summary["acquired"].args[0]) == getattr(
+        summary["release_acquirer_object_instance"],
+        "value",
+        summary["release_acquirer_object_instance"],
+    )
+    assert {
+        getattr(attribute, "value", attribute) for attribute in summary["acquired"].args[1]
+    } == {getattr(summary["acquirer_attribute"], "value", summary["acquirer_attribute"])}
+    assert summary["acquired"].args[2] == b""
+    assert getattr(summary["informed"].args[0], "value", summary["informed"].args[0]) == getattr(
+        summary["release_object_instance"],
+        "value",
+        summary["release_object_instance"],
+    )
+    assert getattr(summary["informed"].args[1], "value", summary["informed"].args[1]) == getattr(
+        summary["owner_attribute"],
+        "value",
+        summary["owner_attribute"],
+    )
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-065",
     "HLA2025-FI-SVC-066",
     "HLA2025-FI-SVC-067",
     "HLA2025-FI-SVC-068",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_transportation_type_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -7191,7 +7336,7 @@ def test_2025_provider_runs_transportation_type_scenario_via_compat_adapter(back
     "HLA2025-FI-SVC-069",
     "HLA2025-FI-SVC-070",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -7241,7 +7386,7 @@ def test_2025_provider_runs_transportation_type_restore_persistence_scenario_via
     "HLA2025-FI-SVC-067",
     "HLA2025-FI-SVC-068",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
@@ -7280,7 +7425,7 @@ def test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_ad
     "HLA2025-FI-SVC-069",
     "HLA2025-FI-SVC-070",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7465,7 +7610,7 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     "HLA2025-FI-SVC-135",
     "HLA2025-FI-SVC-136",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7521,7 +7666,7 @@ def test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adap
     "HLA2025-FI-SVC-135",
     "HLA2025-FI-SVC-136",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7579,7 +7724,7 @@ def test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-137",
     "HLA2025-FI-SVC-138",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7630,7 +7775,7 @@ def test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_
     "HLA2025-FI-SVC-121",
     "HLA2025-FI-SVC-126",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7702,7 +7847,7 @@ def test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-008",
     "HLA2025-FI-SVC-118",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_orphan_object_lifecycle_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7775,7 +7920,7 @@ def test_2025_provider_runs_orphan_object_lifecycle_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-007",
     "HLA2025-FI-SVC-008",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -7844,7 +7989,7 @@ def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(
     "HLA2025-FI-001",
     "HLA2025-FI-SVC-111",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_timed_delete_scenario_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516e.enums import ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -7902,7 +8047,7 @@ def test_2025_provider_runs_timed_delete_scenario_via_compat_adapter(tmp_path: P
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_synchronization_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -7940,7 +8085,7 @@ def test_2025_provider_runs_synchronization_scenario_end_to_end(backend_name: st
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-010")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_synchronization_registration_failure_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516e.enums import SynchronizationPointFailureReason
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -7979,7 +8124,7 @@ def test_2025_provider_runs_synchronization_registration_failure_scenario_end_to
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-011")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -8021,7 +8166,7 @@ def test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-012")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_late_join_synchronization_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -8065,7 +8210,7 @@ def test_2025_provider_runs_late_join_synchronization_scenario_end_to_end(backen
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-013")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516_2025.foms import scenario_fom_paths
@@ -8112,7 +8257,7 @@ def test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end(
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarTimeWindowConfig, run_target_radar_time_window_gauntlet_scenario
@@ -8183,7 +8328,7 @@ def test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end(backend_n
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarFutureExclusionConfig, run_target_radar_time_window_future_exclusion_scenario
@@ -8624,7 +8769,7 @@ def test_2025_receive_order_poison_oracle_rejects_closed_window_mutation() -> No
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarOutputDeliveryConfig, run_target_radar_time_window_output_delivery_scenario
@@ -8670,7 +8815,7 @@ def test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end(back
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarConsumerOrderConfig, run_target_radar_time_window_consumer_order_scenario
@@ -8721,7 +8866,7 @@ def test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end(backe
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_pipeline_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarPipelineConfig, run_target_radar_time_window_pipeline_scenario
@@ -8772,7 +8917,7 @@ def test_2025_provider_runs_time_window_pipeline_scenario_end_to_end(backend_nam
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarPipelineRestoreConfig, run_target_radar_time_window_pipeline_restore_scenario
@@ -8832,7 +8977,7 @@ def test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end(bac
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.rti1516e.enums import OrderType
@@ -8879,7 +9024,7 @@ def test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_restore_state_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarWindowRestoreConfig, run_target_radar_time_window_restore_state_scenario
@@ -8928,7 +9073,7 @@ def test_2025_provider_runs_time_window_restore_state_scenario_end_to_end(backen
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_restore_output_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarWindowRestoreOutputConfig, run_target_radar_time_window_restore_output_scenario
@@ -8976,7 +9121,7 @@ def test_2025_provider_runs_time_window_restore_output_scenario_end_to_end(backe
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_core_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
     from hla.verification import TargetRadarTimeWindowConfig, run_target_radar_time_window_core_scenario
@@ -9050,7 +9195,7 @@ def test_2025_provider_runs_time_window_core_scenario_end_to_end(backend_name: s
     "HLA2025-FI-SVC-043",
     "HLA2025-FI-SVC-044",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_passive_and_universal_subscription_aliases_match_active_exchange(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -9190,7 +9335,7 @@ def test_2025_provider_passive_and_universal_subscription_aliases_match_active_e
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-FI-SVC-001", "HLA2025-FI-SVC-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_is_first_green_runtime_path(backend_name: str) -> None:
     from hla.rti import create_rti_ambassador
     from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel
@@ -9216,7 +9361,7 @@ def test_2025_provider_is_first_green_runtime_path(backend_name: str) -> None:
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-003")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_connection_lost_callback_tears_down_connection(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NotConnected
@@ -9303,7 +9448,7 @@ def test_2025_compat_records_update_advisory_callback_shape() -> None:
     "HLA2025-FI-SVC-195",
     "HLA2025-FI-SVC-196",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_enable_disable_callbacks_controls_evoked_delivery(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -9418,7 +9563,7 @@ def test_2025_provider_enable_disable_callbacks_controls_evoked_delivery(
     "HLA2025-FI-SVC-033",
     "HLA2025-FI-SVC-034",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown, RestoreNotRequested, SaveInProgress, SaveNotInitiated
@@ -9560,7 +9705,7 @@ def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, ba
     "HLA2025-FI-SVC-023",
     "HLA2025-FI-SVC-032",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -9795,7 +9940,7 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
     "HLA2025-FI-SVC-090",
     "HLA2025-FI-SVC-097",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10080,6 +10225,178 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-097",
+)
+def test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility(
+    tmp_path: Path,
+) -> None:
+    from hla.rti1516_2025.factory import create_hla_factory
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    fom = tmp_path / "OwnershipPrimaryFactory2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Ownership Primary Factory 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-21</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused owner visibility restore fixture for the primary 2025 factory path.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    factory = create_hla_factory()
+    owner_callbacks = Recording2025FederateAmbassador()
+    acquirer_callbacks = Recording2025FederateAmbassador()
+    owner = factory.create_rti_ambassador()
+    acquirer = factory.create_rti_ambassador()
+
+    for rti in (owner, acquirer):
+        assert rti.backend_info.details["provider"] == "python2025"
+        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+    federation_name = f"primary-factory-2025-owner-visibility-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-PRIMARY-OWNER-VIS"
+
+    try:
+        owner.connect(owner_callbacks, CallbackModel.HLA_EVOKED)
+        acquirer.connect(acquirer_callbacks, CallbackModel.HLA_EVOKED)
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+        owner_handle = owner.joinFederationExecution("Owner", "Controller", federation_name)
+        acquirer_handle = acquirer.joinFederationExecution("Acquirer", "Observer", federation_name)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(object_class, "Position")
+        acquirer_class = acquirer.getObjectClassHandle("HLAobjectRoot.Target")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_class, "Position")
+        object_instance = owner.registerObjectInstance(object_class, "PrimaryFactoryOwnerVisibilityTarget-1")
+
+        owner.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"offer")
+        assert acquirer_callbacks.last_callback("requestAttributeOwnershipAssumption") == (
+            object_instance,
+            {acquirer_attribute},
+            b"offer",
+        )
+
+        acquirer.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, b"acquire")
+        assert owner_callbacks.last_callback("requestDivestitureConfirmation") == (
+            object_instance,
+            {owner_attribute},
+            b"acquire",
+        )
+
+        owner.confirmDivestiture(object_instance, {owner_attribute}, b"confirm")
+        assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"confirm",
+        )
+
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        acquirer.queryAttributeOwnership(object_instance, {acquirer_attribute})
+        assert owner_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+        assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {acquirer_attribute},
+            acquirer_handle,
+        )
+        assert owner_handle != acquirer_handle
+
+        owner.requestFederationSave(save_label)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert acquirer_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        for rti in (owner, acquirer):
+            rti.federateSaveBegun()
+        for rti in (owner, acquirer):
+            rti.federateSaveComplete()
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert acquirer_callbacks.last_callback("federationSaved") == ()
+
+        acquirer.unconditionalAttributeOwnershipDivestiture(object_instance, {acquirer_attribute}, b"dirty-divest")
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        assert owner_callbacks.last_callback("attributeIsNotOwned") == (object_instance, {owner_attribute})
+
+        owner.requestFederationRestore(save_label)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert acquirer_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") == (save_label, "Owner", owner_handle)
+        assert acquirer_callbacks.last_callback("initiateFederateRestore") == (save_label, "Acquirer", acquirer_handle)
+        for rti in (owner, acquirer):
+            rti.federateRestoreComplete()
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert acquirer_callbacks.last_callback("federationRestored") == ()
+
+        owner_callbacks.callbacks.clear()
+        acquirer_callbacks.callbacks.clear()
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        acquirer.queryAttributeOwnership(object_instance, {acquirer_attribute})
+        assert owner_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+        assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {acquirer_attribute},
+            acquirer_handle,
+        )
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is False
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is True
+    finally:
+        for rti in (acquirer, owner):
+            try:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (acquirer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
     "HLA2025-NEW-001",
     "HLA2025-FR-003",
     "HLA2025-FR-004",
@@ -10091,7 +10408,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
     "HLA2025-FI-SVC-063",
     "HLA2025-FI-SVC-064",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_directed_interactions_to_object_class_subscribers(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10213,7 +10530,7 @@ def test_2025_provider_routes_directed_interactions_to_object_class_subscribers(
     "HLA2025-FI-SVC-064",
     "HLA2025-BND-003",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_directed_interactions_only_to_subscribers(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10368,7 +10685,7 @@ def test_2025_provider_routes_directed_interactions_only_to_subscribers(
     "HLA2025-FR-010",
     "HLA2025-FI-SVC-112",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_queues_timestamped_directed_interactions_until_time_advance(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10512,7 +10829,7 @@ def test_2025_provider_queues_timestamped_directed_interactions_until_time_advan
     "HLA2025-FI-SVC-045",
     "HLA2025-FI-SVC-046",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_filters_directed_interactions_by_ddm_region_overlap(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10649,7 +10966,7 @@ def test_2025_provider_filters_directed_interactions_by_ddm_region_overlap(
     "HLA2025-FI-SVC-129",
     "HLA2025-BND-003",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10840,7 +11157,7 @@ def test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subs
     "HLA2025-FI-SVC-129",
     "HLA2025-BND-003",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -10990,7 +11307,7 @@ def test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_deliver
     "HLA2025-FI-SVC-116",
     "HLA2025-FI-SVC-117",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_delivers_and_retracts_timestamped_directed_interactions_for_all_subscribers(
     tmp_path: Path,
     backend_name: str,
@@ -11177,7 +11494,7 @@ def test_2025_provider_delivers_and_retracts_timestamped_directed_interactions_f
     "HLA2025-FI-SVC-116",
     "HLA2025-FI-SVC-117",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_drops_queued_directed_tso_for_departed_target(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -11309,7 +11626,7 @@ def test_2025_provider_drops_queued_directed_tso_for_departed_target(
     "HLA2025-FI-SVC-045",
     "HLA2025-FI-SVC-046",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -11457,7 +11774,7 @@ def test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_se
 
 
 @pytest.mark.requirements("HLA2025-BND-003")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_preserves_other_federate_directed_publication_after_unpublish(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -11585,7 +11902,7 @@ def test_2025_provider_preserves_other_federate_directed_publication_after_unpub
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-051", "HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_supports_single_object_instance_name_reservation_callback_and_release(
     backend_name: str,
 ) -> None:
@@ -11670,7 +11987,7 @@ def test_2025_provider_supports_single_object_instance_name_reservation_callback
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-055", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_supports_multiple_object_instance_name_reservation_and_release(
     backend_name: str,
 ) -> None:
@@ -11783,7 +12100,7 @@ def test_2025_provider_supports_multiple_object_instance_name_reservation_and_re
     "HLA2025-FI-SVC-124",
     "HLA2025-FI-SVC-157",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -11908,7 +12225,7 @@ def test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_po
     "HLA2025-FI-SVC-130",
     "HLA2025-FI-SVC-132",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_filters_object_reflections_by_ddm_region_overlap(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -12045,7 +12362,7 @@ def test_2025_provider_filters_object_reflections_by_ddm_region_overlap(
     "HLA2025-FI-SVC-135",
     "HLA2025-FI-SVC-136",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_filters_interactions_by_ddm_region_overlap(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -12154,7 +12471,7 @@ def test_2025_provider_filters_interactions_by_ddm_region_overlap(
     subscriber.disconnect()
 
 
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -12346,7 +12663,7 @@ def test_2025_provider_preserves_direct_callback_context_for_timed_region_delive
     "HLA2025-FI-SVC-135",
     "HLA2025-FI-SVC-136",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -12533,7 +12850,7 @@ def test_2025_provider_passive_ddm_region_subscription_aliases_match_active_regi
     "HLA2025-FI-SVC-081",
     "HLA2025-FI-SVC-082",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_object_management_and_support_callbacks(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -12665,7 +12982,7 @@ def test_2025_provider_object_management_and_support_callbacks(
     "HLA2025-FI-SVC-093",
     "HLA2025-FI-SVC-100",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_applies_resign_time_ownership_policies(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NoAcquisitionPending, ObjectInstanceNotKnown
@@ -12800,7 +13117,7 @@ def test_2025_provider_applies_resign_time_ownership_policies(tmp_path: Path, ba
     "HLA2025-FI-SVC-091",
     "HLA2025-FI-SVC-092",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -12936,7 +13253,7 @@ def test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callb
     "HLA2025-FI-SVC-098",
     "HLA2025-FI-SVC-099",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -13070,7 +13387,7 @@ def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
 
 
 @pytest.mark.requirements("HLA2025-NEW-007", "HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_serializes_mom_service_reports_without_overclaiming_conformance(
     backend_name: str,
 ) -> None:
@@ -13225,7 +13542,7 @@ def test_2025_shim_declares_all_bundled_mim_manager_command_leaves_as_routed() -
     "HLA2025-FI-SVC-016",
     "HLA2025-FI-SVC-017",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_synchronization_point_reports_through_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -13301,7 +13618,7 @@ def test_2025_provider_routes_mom_synchronization_point_reports_through_interact
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interactions(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -13450,7 +13767,7 @@ def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interaction
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_adjust_interactions_for_reporting_switches(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -13525,7 +13842,7 @@ def test_2025_provider_routes_mom_adjust_interactions_for_reporting_switches(bac
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_set_switches_adjust_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -13596,7 +13913,7 @@ def test_2025_provider_routes_mom_set_switches_adjust_interactions(backend_name:
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FR-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_timing_and_attribute_state_adjust_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import ObjectClassNotPublished
@@ -13694,7 +14011,7 @@ def test_2025_provider_routes_mom_timing_and_attribute_state_adjust_interactions
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resign_controls(
     backend_name: str,
 ) -> None:
@@ -13800,7 +14117,7 @@ def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resig
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_rejects_invalid_mom_control_spellings_with_exception_reports(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
@@ -13876,7 +14193,7 @@ def test_2025_provider_rejects_invalid_mom_control_spellings_with_exception_repo
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_rejects_invalid_mom_boolean_spellings_with_exception_reports(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
@@ -13943,7 +14260,7 @@ def test_2025_provider_rejects_invalid_mom_boolean_spellings_with_exception_repo
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_mom_federate_publication_subscription_and_object_information(
     backend_name: str,
 ) -> None:
@@ -14080,7 +14397,7 @@ def test_2025_provider_reports_mom_federate_publication_subscription_and_object_
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_mom_federate_activity_counts(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -14203,7 +14520,7 @@ def test_2025_provider_reports_mom_federate_activity_counts(backend_name: str) -
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_declaration_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished, ObjectClassNotPublished
@@ -14340,7 +14657,7 @@ def test_2025_provider_routes_mom_declaration_service_interactions(backend_name:
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_federation_management_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -14457,7 +14774,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
     "HLA2025-FI-SVC-115",
     "HLA2025-FI-SVC-119",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_time_management_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
@@ -14538,7 +14855,7 @@ def test_2025_provider_routes_mom_time_management_service_interactions(backend_n
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FR-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_object_and_ownership_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
@@ -14684,7 +15001,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_mom_service_failures_as_mom_exception_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
@@ -14735,7 +15052,7 @@ def test_2025_provider_reports_mom_service_failures_as_mom_exception_interaction
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-171", "HLA2025-NEW-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_exception_reporting_switch_to_callback_delivery_targets(
     backend_name: str,
 ) -> None:
@@ -14820,7 +15137,7 @@ def test_2025_provider_routes_mom_exception_reporting_switch_to_callback_deliver
 
 
 @pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-SVC-005", "HLA2025-FI-SVC-006", "HLA2025-FI-SVC-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_rejects_duplicate_federation_and_federate_names(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -14884,7 +15201,7 @@ def test_2025_provider_rejects_duplicate_federation_and_federate_names(backend_n
     "HLA2025-FI-SVC-011",
     "HLA2025-FI-SVC-012",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_federate_resigned_callback_with_reason_context(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -14926,7 +15243,7 @@ def test_2025_provider_reports_federate_resigned_callback_with_reason_context(ba
     "HLA2025-FI-SVC-168",
     "HLA2025-FI-SVC-169",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, ServiceGroup
     from hla.rti1516_2025.exceptions import (
@@ -15010,7 +15327,7 @@ def test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family(
     "HLA2025-FI-SVC-191",
     "HLA2025-FI-SVC-192",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_supports_explicit_switch_inquiry_and_control_model(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
@@ -15096,7 +15413,7 @@ def test_2025_provider_supports_explicit_switch_inquiry_and_control_model(backen
     "HLA2025-FI-SVC-009",
     "HLA2025-FI-SVC-010",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_federation_executions_and_members(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -15153,7 +15470,7 @@ def test_2025_provider_reports_federation_executions_and_members(backend_name: s
 
 
 @pytest.mark.requirements("HLA2025-MOD-001", "HLA2025-MOD-009", "HLA2025-FI-005", "HLA2025-FI-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_validates_callback_model_and_credentials_at_connect(backend_name: str) -> None:
     from hla.rti1516_2025.auth import HLAplainTextPassword
     from hla.rti1516_2025.datatypes import Credentials
@@ -15177,7 +15494,7 @@ def test_2025_provider_validates_callback_model_and_credentials_at_connect(backe
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-FI-009")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_requires_valid_fom_modules_and_default_logical_time(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.exceptions import CouldNotCreateLogicalTimeFactory, InvalidFOM
@@ -15216,7 +15533,7 @@ def test_2025_provider_requires_valid_fom_modules_and_default_logical_time(backe
 
 
 @pytest.mark.requirements("HLA2025-MOD-003", "HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-OMT-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -15284,7 +15601,7 @@ def test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined
 
 
 @pytest.mark.requirements("HLA2025-MOD-002", "HLA2025-MOD-003", "HLA2025-FI-008", "HLA2025-OMT-007")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_distinguishes_fom_mim_open_read_invalid_and_merge_errors(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -15395,7 +15712,7 @@ def test_2025_provider_distinguishes_fom_mim_open_read_invalid_and_merge_errors(
     "HLA2025-FI-SVC-121",
     "HLA2025-FI-SVC-122",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_queues_timestamped_messages_and_supports_retraction(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -15523,7 +15840,7 @@ def test_2025_provider_queues_timestamped_messages_and_supports_retraction(
     "HLA2025-FI-SVC-121",
     "HLA2025-FI-SVC-125",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_retracts_partially_delivered_tso_without_releasing_lagging_targets(
     tmp_path: Path,
     backend_name: str,
@@ -15675,7 +15992,7 @@ def test_2025_provider_retracts_partially_delivered_tso_without_releasing_laggin
     "HLA2025-FI-SVC-116",
     "HLA2025-FI-SVC-117",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers(
     tmp_path: Path,
     backend_name: str,
@@ -15840,7 +16157,7 @@ def test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers(
     "HLA2025-FI-SVC-121",
     "HLA2025-FI-SVC-125",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_targets(
     tmp_path: Path,
     backend_name: str,
@@ -16005,7 +16322,7 @@ def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_tar
     "HLA2025-FI-SVC-119",
     "HLA2025-FI-SVC-120",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import LogicalTimeAlreadyPassed, TimeRegulationIsNotEnabled
@@ -16083,7 +16400,7 @@ def test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_blocks_window_closure_until_future_inputs_are_excluded(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import InvalidLogicalTime
@@ -16206,7 +16523,7 @@ def test_2025_provider_blocks_window_closure_until_future_inputs_are_excluded(ba
     "HLA2025-FI-SVC-123",
     "HLA2025-BND-003",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -16399,7 +16716,7 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-023", "HLA2025-FI-SVC-032")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_time_and_switch_control_state(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
@@ -16497,7 +16814,7 @@ def test_2025_provider_restore_recovers_time_and_switch_control_state(backend_na
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-023", "HLA2025-FI-SVC-032")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_transport_and_order_policy_state(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -16696,7 +17013,7 @@ def test_2025_provider_restore_recovers_transport_and_order_policy_state(
     "HLA2025-FI-SVC-193",
     "HLA2025-FI-SVC-194",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_callback_delivery_policy(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -16834,7 +17151,7 @@ def test_2025_provider_restore_recovers_callback_delivery_policy(
     "HLA2025-FI-SVC-023",
     "HLA2025-FI-SVC-032",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_plain_object_subscriber_routing(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -16898,7 +17215,7 @@ def test_2025_provider_restore_recovers_plain_object_subscriber_routing(
     "HLA2025-FI-SVC-116",
     "HLA2025-FI-SVC-117",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -17030,7 +17347,7 @@ def test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target(
     "HLA2025-FI-SVC-060",
     "HLA2025-FI-SVC-134",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_plain_interaction_subscriber_routing(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -17096,7 +17413,7 @@ def test_2025_provider_restore_recovers_plain_interaction_subscriber_routing(
     "HLA2025-FI-SVC-090",
     "HLA2025-FI-SVC-097",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_inflight_ownership_state(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -17254,7 +17571,7 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
     "HLA2025-FI-SVC-090",
     "HLA2025-FI-SVC-097",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restores_cross_federate_attribute_owner_visibility(
     tmp_path: Path, backend_name: str
 ) -> None:
@@ -17410,7 +17727,7 @@ def test_2025_provider_restores_cross_federate_attribute_owner_visibility(
     "HLA2025-FI-SVC-064",
     "HLA2025-FI-SVC-129",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_directed_ddm_subscriber_routing(
     backend_name: str,
 ) -> None:
@@ -17474,7 +17791,7 @@ def test_2025_provider_restore_recovers_directed_ddm_subscriber_routing(
     "HLA2025-FI-SVC-061",
     "HLA2025-FI-SVC-062",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_recovers_locally_deleted_object_known_state(
     tmp_path: Path,
     backend_name: str,
@@ -17615,7 +17932,7 @@ def test_2025_provider_restore_recovers_locally_deleted_object_known_state(
     "HLA2025-FI-SVC-116",
     "HLA2025-FI-SVC-117",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing(
     backend_name: str,
 ) -> None:
@@ -17677,7 +17994,7 @@ def test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_rest
     "HLA2025-FI-SVC-062",
     "HLA2025-FI-SVC-121",
 )
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing(
     tmp_path: Path,
     backend_name: str,
@@ -17911,7 +18228,7 @@ def test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_rest
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_proves_time_window_core_progression(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InvalidLogicalTime
@@ -18080,7 +18397,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_ignores_receive_order_poison_after_window_close(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -18204,7 +18521,7 @@ def test_2025_provider_ignores_receive_order_poison_after_window_close(backend_n
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_delivers_post_closure_timestamped_output_to_consumer(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -18321,7 +18638,7 @@ def test_2025_provider_delivers_post_closure_timestamped_output_to_consumer(back
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_preserves_consumer_timestamp_order_between_competing_output_and_radar_output(
     backend_name: str,
 ) -> None:
@@ -18439,7 +18756,7 @@ def test_2025_provider_preserves_consumer_timestamp_order_between_competing_outp
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_keeps_two_scan_pipeline_outputs_separated(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -18556,7 +18873,7 @@ def test_2025_provider_keeps_two_scan_pipeline_outputs_separated(backend_name: s
             except Exception:
                 pass
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -18767,7 +19084,7 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay(
     backend_name: str,
 ) -> None:
@@ -18939,7 +19256,7 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
-@pytest.mark.parametrize("backend_name", ("python2025", "shim"))
+@pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
     backend_name: str,
 ) -> None:
@@ -19156,5 +19473,5 @@ def test_2010_and_2025_backend_selection_do_not_cross_wire() -> None:
     with pytest.raises(ValueError, match="does not support HLA spec 'rti1516_2025'"):
         create_rti_ambassador(spec="2025", backend="inmemory")
 
-    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+    with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_rti_ambassador(spec="rti1516e", backend="shim")

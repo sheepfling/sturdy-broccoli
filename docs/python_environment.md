@@ -7,8 +7,8 @@ examples, tests, or backend tools.
 
 This page covers the shared Python bootstrap contract for both editions. For
 the current IEEE 1516.1-2025 runtime lane, the main executable backend remains
-`hla-backend-python2025`, while `shim` stays only as a compatibility-wrapper
-provider name.
+`hla-backend-python2025`, while `hla-backend-shim` stays only as
+compatibility-wrapper/import-compatibility code.
 
 ## What You Need First
 
@@ -181,7 +181,7 @@ If those commands work, the base environment is healthy.
 For IEEE 1516.1-2025 specifically:
 
 - `python2025` is the main in-process RTI lane
-- `shim` is a compatibility-wrapper alias over that runtime
+- `hla-backend-shim` is compatibility-wrapper/import-compatibility code over that runtime
 - the hosted gRPC path is a bounded route variant, not a separate RTI family
 
 ## Hosted Python gRPC Authorization

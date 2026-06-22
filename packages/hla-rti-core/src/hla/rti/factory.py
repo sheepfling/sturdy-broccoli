@@ -384,7 +384,7 @@ class HlaFactory:
     def create_authentication_context(self, config: Any = None, *, transport: str = "inproc") -> AuthenticationContext:
         mode = _auth_config_value(config, "mode", "NoAuth")
         supports_standard = self.spec.name == "rti1516_2025"
-        supports_custom_credentials = supports_standard and self.provider in {"python2025", "shim"}
+        supports_custom_credentials = supports_standard and self.provider == "python2025"
         supported_custom_credential_types = tuple(_auth_config_value(config, "supported_custom_credential_types", ()))
         if mode != "NoAuth" and not supports_standard:
             raise ValueError("Standard credentials are unsupported for the 1516e-2010 profile")
@@ -422,8 +422,8 @@ class HlaFactory:
         authorizer_provider = None
         authorizer_mode = _auth_config_value(config, "authorizer_mode", None)
         if authorizer_mode is not None:
-            if not (supports_standard and self.provider in {"python2025", "shim"}):
-                raise ValueError("Authorizer providers are available only for 2025 Python RTI providers")
+            if not (supports_standard and self.provider == "python2025"):
+                raise ValueError("Authorizer providers are available only for the 2025 python2025 RTI provider")
             if authorizer_mode != "Fake":
                 raise ValueError(f"Unsupported authorizer mode: {authorizer_mode!r}")
             allowed_federations = _auth_config_value(config, "allowed_federations", None)

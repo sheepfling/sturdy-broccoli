@@ -19,8 +19,8 @@ This is the human-facing wrapper over the target/radar backend matrix and proof
 artifact generators under `scripts/`.
 
 For IEEE 1516.1-2025, use `python2025` as the primary Python RTI lane.
-The `shim` backend names remain compatibility-wrapper aliases over that same
-runtime and are not a separate RTI family.
+`hla-backend-shim` remains compatibility-wrapper/import-level code around that
+same runtime and is not a separate RTI family.
 EOF
 }
 

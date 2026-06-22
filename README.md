@@ -98,8 +98,9 @@ If you want the shortest runnable IEEE 1516.1-2025 path on the main Python
 python examples/target_radar_simulation.py --backend python2025 --steps 5
 ```
 
-Treat `python2025` as the real 2025 runtime lane here. The `shim` backend name
-remains only a compatibility-wrapper alias over that runtime.
+Treat `python2025` as the real 2025 runtime lane here. `hla-backend-shim`
+remains only as compatibility-wrapper/import-compatibility code around that
+runtime.
 
 For the routine 2025 proof lanes behind that runtime:
 
@@ -187,7 +188,7 @@ The repo is intended to make it easy to:
 For the 2025 lane specifically:
 
 - `hla-backend-python2025` is the main full executable Python RTI implementation lane
-- `hla-backend-shim` is a compatibility-wrapper alias over that runtime, not a separate RTI family
+- `hla-backend-shim` is a compatibility-wrapper package over that runtime, not a separate RTI family
 - Java and C++ 2025 binding routes are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs
 
 ## Example Federates
@@ -226,7 +227,6 @@ Current backend names include:
 
 - `python`, `in-memory`, `python-in-memory`
 - `python2025`, `python-2025`, `python-2025-backend`
-- `shim`
 - `jpype`, `py4j`
 - `pitch-jpype`, `pitch-py4j`
 - `certi`, `certi-jpype`, `certi-py4j`
@@ -237,7 +237,7 @@ The important part is that these are not all the same level of maturity:
 
 - `python` is the strongest local reference path
 - `python2025` is the main Python RTI implementation lane for IEEE 1516.1-2025
-- `shim` is only a compatibility-wrapper provider name over `python2025`
+- `hla.backends.shim` is compatibility-wrapper/import-compatibility code over `python2025`, not a public backend selection lane
 - the Java shims are repo verification backends, not part of the public runtime surface
 - `java-standard-*` and `cpp-standard-*` route names are reserved for future
   language-shim artifacts that compile against the matching official Java/C++

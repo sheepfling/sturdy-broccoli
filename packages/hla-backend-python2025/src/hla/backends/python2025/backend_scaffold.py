@@ -40,8 +40,7 @@ class Python2025BackendScaffold(RTIBackend):
     def create_rti_ambassador(self) -> Any:
         raise BackendUnavailableError(
             "backend_scaffold.py is a historical artifact only; "
-            "use backend='python2025' for the main 2025 Python RTI implementation "
-            "or backend='shim' only when testing the legacy compatibility-wrapper alias."
+            "use backend='python2025' for the main 2025 Python RTI implementation."
         )
 
 

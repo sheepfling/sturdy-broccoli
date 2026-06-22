@@ -129,7 +129,7 @@ def test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_
 def test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name() -> None:
     from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
 
-    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+    with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_runtime_rti_ambassador(spec="2025", backend="shim")
 
 
@@ -155,7 +155,7 @@ def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python202
 def test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_legacy_shim_provider() -> None:
     from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
 
-    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+    with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_runtime_rti_ambassador(
             spec="2025",
             backend="shim",

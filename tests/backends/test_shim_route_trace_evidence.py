@@ -11,17 +11,24 @@ def _load(route: str) -> dict[str, object]:
     return json.loads((TRACE_DIR / f"{route}.json").read_text(encoding="utf-8"))
 
 
-def _assert_route_selected_uses_python2025_main_lane(evidence: dict[str, object], route: str) -> None:
+def _assert_route_selected_uses_python2025_main_lane(
+    evidence: dict[str, object],
+    route: str,
+    *,
+    standard_backed: bool | None,
+    counts_as_python_2025_rti: bool,
+    wrapper_only: bool | None,
+) -> None:
     route_selected = evidence["trace"][0]  # type: ignore[index]
 
     assert route_selected["event"] == "routeSelected"
     assert route_selected["backend"] == route
     assert route_selected["spec"] == "rti1516_2025"
-    assert route_selected["standardBacked"] is True
+    assert route_selected["standardBacked"] is standard_backed
     assert route_selected["runtimeProvider"] == "python2025"
     assert route_selected["implementationLane"] == "hla-backend-python2025"
-    assert route_selected["countsAsPython2025Rti"] is False
-    assert route_selected["wrapperOnly"] is False
+    assert route_selected["countsAsPython2025Rti"] is counts_as_python_2025_rti
+    assert route_selected["wrapperOnly"] is wrapper_only
 
 
 def test__route_trace_summary_lists_mvp_scope() -> None:
@@ -60,7 +67,13 @@ def test__2025_traces_cover_lifecycle_core() -> None:
         assert evidence["scenario"] == "lifecycle-core"
         assert evidence["status"] == "lifecycle-green"
         assert {"HLA2025-FR-004", "HLA2025-FI-005", "HLA2025-FI-006"} <= set(evidence["requirements_exercised"])
-        _assert_route_selected_uses_python2025_main_lane(evidence, route)
+        _assert_route_selected_uses_python2025_main_lane(
+            evidence,
+            route,
+            standard_backed=True,
+            counts_as_python_2025_rti=False,
+            wrapper_only=False,
+        )
         assert events == [
             "routeSelected",
             "getHLAversion",
@@ -78,7 +91,7 @@ def test__2025_traces_cover_lifecycle_core() -> None:
 def test__2025_time_management_trace_exercises_selected_logical_time_runtime() -> None:
     from hla.verification.shim_route_evidence import run_2025_time_management_trace
 
-    evidence = run_2025_time_management_trace("shim")
+    evidence = run_2025_time_management_trace()
     events = [event["event"] for event in evidence["trace"]]
 
     assert evidence["edition"] == "2025"
@@ -86,6 +99,13 @@ def test__2025_time_management_trace_exercises_selected_logical_time_runtime() -
     assert evidence["status"] == "trace-green"
     assert {"HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006"} <= set(
         evidence["requirements_exercised"]
+    )
+    _assert_route_selected_uses_python2025_main_lane(
+        evidence,
+        "python2025",
+        standard_backed=None,
+        counts_as_python_2025_rti=True,
+        wrapper_only=None,
     )
     assert events == [
         "routeSelected",

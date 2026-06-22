@@ -67,7 +67,6 @@ Example:
 |---|---|---|---|
 | Python RTI 2010 | in-process reference RTI implemented in Python for IEEE 1516.1-2010 | `python` | strongest reference path for local 2010 semantics and clause work |
 | Python RTI 2025 | in-process Python RTI implemented in Python for IEEE 1516.1-2025 | `python2025`, `python-2025`, `python-2025-backend` | main executable 2025 Python RTI lane in this repo |
-| 2025 wrapper alias | compatibility-wrapper alias over the main Python 2025 RTI lane | `shim` | wrapper-only compatibility surface, not a separate RTI family |
 | Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
 | CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
 | Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
@@ -196,11 +195,6 @@ These are only useful when you provide a Java RTI configuration explicitly.
 - `java-shim-py4j`
 - `shim-py4j`
 
-### Spec Shim
-
-- `shim`
-- `shim`
-
 <!-- GENERATED_BACKEND_ALIASES_END -->
 
 ## Recommended Operational View
@@ -211,7 +205,6 @@ Use this simpler classification in practice:
 |---|---|
 | Python reference RTI 2010 | `python` |
 | Python RTI 2025 | `python2025`, `python-2025`, `python-2025-backend` |
-| Python RTI 2025 wrapper alias | `shim` |
 | Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
 | Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
 | Real Pitch | `pitch-jpype`, `pitch-py4j` |
@@ -227,7 +220,6 @@ This is the practical matrix to use when deciding what to run.
 |---|---|---|---:|---:|---:|---:|---:|---:|
 | Python RTI 2010 | none | none | yes | yes | yes | yes | yes | no |
 | Python RTI 2025 | none | none | yes | yes | yes | yes | yes | no |
-| Python RTI 2025 wrapper alias | none | none | yes | yes | yes | yes | yes | no |
 | Java shim | JPype | none | yes | partial | yes | yes | partial | no |
 | Java shim | Py4J | none | yes | partial | yes | yes | partial | no |
 | CERTI | native | subprocess-line | yes | partial | yes | yes | partial | yes |

@@ -733,6 +733,19 @@ def summarize_spec2025_route_parity(rows: tuple[Spec2025RouteParityRow, ...] = S
         "routes": ROUTE_IDS_2025,
         "scenario_count": len({row.scenario for row in rows}),
         "row_count": len(rows),
+        "primary_runtime_lane": {
+            "runtime_provider": "python2025",
+            "implementation_lane": "hla-backend-python2025",
+            "counts_as_python_2025_rti": True,
+            "wrapper_only": False,
+        },
+        "compatibility_wrapper_lane": {
+            "backend_package": "hla-backend-shim",
+            "status": "compatibility-maintained",
+            "role": "compatibility-wrapper",
+            "counts_as_python_2025_rti": False,
+            "delegates_runtime_semantics_to": "hla-backend-python2025",
+        },
         "by_status": by_status,
         "by_route": by_route,
         "rows": [
@@ -808,6 +821,7 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "For the primary 2025 Python RTI claim, read the route identities narrowly:",
         "",
         "- `python-2025-inprocess` and `python-2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`.",
+        "- `hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`; it is not a route runtime owner.",
         "- Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations.",
         "- Hosted FedPro rows are transport-seam evidence over that same runtime, not a separate 2025 implementation family.",
         "",

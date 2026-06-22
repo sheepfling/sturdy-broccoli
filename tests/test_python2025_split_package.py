@@ -158,9 +158,9 @@ def test_split_python2025_packages_publish_primary_runtime_and_wrapper_metadata(
     ]
     assert "entry-points" not in shim_pyproject["project"]
     assert shim_pyproject["tool"]["hla"]["package"] == {
-        "status": "transition-wrapper",
+        "status": "compatibility-maintained",
         "role": "compatibility-wrapper",
-        "backend_names": ["shim"],
+        "backend_names": [],
         "backend_aliases": [],
         "source_roots": ["packages/hla-backend-shim/src/hla/backends/shim"],
     }

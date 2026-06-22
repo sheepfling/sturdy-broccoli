@@ -10,8 +10,14 @@ It covers both Python RTI implementation lanes:
 It also keeps the architectural boundary explicit:
 
 - `hla-backend-python2025` is the main `rti1516_2025` implementation lane
-- `hla-backend-shim` is only a compatibility-wrapper alias over that lane
+- `hla-backend-shim` is only a compatibility-wrapper package over that lane
 - Java/C++ binding routes are route surfaces, not separate Python RTIs
+
+For shim compatibility specifically, treat `hla.backends.shim.runtime_aliases`
+as the explicit runtime-alias hatch. The other `hla.backends.shim.*` helper
+modules are retained only as thin legacy forwarders into
+`hla.backends.python2025.*`, not as the preferred import surface for new
+runtime code.
 
 Use it when you need to answer:
 

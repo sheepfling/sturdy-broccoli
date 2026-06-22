@@ -8,9 +8,9 @@ This page answers two questions:
 Start with the base Python environment first. Then add only what you need.
 
 For IEEE 1516.1-2025 specifically, treat `hla-backend-python2025` as the main
-runtime lane after bootstrap. The legacy `shim` provider name remains only a
-compatibility-wrapper alias, and the hosted FedPro route remains a bounded
-route variant rather than a separate RTI family.
+runtime lane after bootstrap. `hla-backend-shim` remains only as a
+compatibility-wrapper/import-compatibility package, and the hosted FedPro
+route remains a bounded route variant rather than a separate RTI family.
 
 ## Install Order
 

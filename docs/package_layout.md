@@ -75,7 +75,7 @@ backend-neutral ambassador surface.
 
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/`: canonical pure in-memory RTI backend implementation package.
 - `packages/hla-backend-python2025/src/hla/backends/python2025/`: main full Python-owned IEEE 1516.1-2025 RTI implementation package.
-- `packages/hla-backend-shim/src/hla/backends/shim/`: legacy compatibility-wrapper package that delegates runtime semantics to `hla-backend-python2025`.
+- `packages/hla-backend-shim/src/hla/backends/shim/`: maintained compatibility-wrapper package that delegates runtime semantics to `hla-backend-python2025`.
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py`, `engine.py`, `reporting.py`: shared backend state, handle registry, and service-report support.
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/federation.py`, `federation_lifecycle.py`, `federation_sync.py`: federation lifecycle and synchronization services.
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/object.py`, `object_delivery.py`: object update/delete, interaction delivery, and transport callbacks.

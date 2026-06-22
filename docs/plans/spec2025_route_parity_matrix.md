@@ -5,6 +5,7 @@ This matrix is not a conformance claim. It records which 2025 scenarios have exe
 For the primary 2025 Python RTI claim, read the route identities narrowly:
 
 - `python-2025-inprocess` and `python-2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`.
+- `hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`; it is not a route runtime owner.
 - Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations.
 - Hosted FedPro rows are transport-seam evidence over that same runtime, not a separate 2025 implementation family.
 

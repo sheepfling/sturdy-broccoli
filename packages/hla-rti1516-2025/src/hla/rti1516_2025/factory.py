@@ -16,6 +16,8 @@ def create_rti_ambassador(backend: str = "python2025", **options: Any):
 def create_hla_factory(provider: str = "python2025", **options: Any):
     """Create a composed IEEE 1516.1-2025 factory for one provider route."""
 
+    if provider.strip().lower().replace("_", "-") == "shim":
+        raise ValueError("Unknown RTI provider: 'shim'")
     return _HlaFactoryRegistry.get("rti1516_2025", provider=provider, **options)
 
 

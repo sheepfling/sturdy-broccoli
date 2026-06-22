@@ -1317,6 +1317,18 @@ class Python2025RTIAmbassador:
         self._require_no_save_or_restore("releaseMultipleObjectInstanceNames")
         release_multiple_object_instance_names(self, objectInstanceNames)
 
+    def reserve_multiple_object_instance_name(self, object_instance_names: Any) -> None:
+        self.reserveMultipleObjectInstanceNames(object_instance_names)
+
+    def release_multiple_object_instance_name(self, object_instance_names: Any) -> None:
+        self.releaseMultipleObjectInstanceNames(object_instance_names)
+
+    def reserve_multiple_object_instance_names(self, object_instance_names: Any) -> None:
+        self.reserveMultipleObjectInstanceNames(object_instance_names)
+
+    def release_multiple_object_instance_names(self, object_instance_names: Any) -> None:
+        self.releaseMultipleObjectInstanceNames(object_instance_names)
+
     def momReportPeriodSecondsSnapshot(self) -> float | None:  # noqa: N802
         self._record("momReportPeriodSecondsSnapshot")
         self._require_joined("momReportPeriodSecondsSnapshot")
@@ -1495,6 +1507,14 @@ class Python2025RTIAmbassador:
         self._record("queryAttributeOwnership", objectInstance, attributes)
         self._require_joined("queryAttributeOwnership")
         query_attribute_ownership(self, objectInstance, attributes)
+
+    def query_attribute_ownership(self, object_instance: Any, attributes: Any) -> None:
+        normalized_attributes = attributes
+        try:
+            iter(attributes)
+        except TypeError:
+            normalized_attributes = {attributes}
+        self.queryAttributeOwnership(object_instance, normalized_attributes)
 
     def isAttributeOwnedByFederate(self, objectInstance: Any, attribute: Any) -> bool:  # noqa: N802
         self._record("isAttributeOwnedByFederate", objectInstance, attribute)

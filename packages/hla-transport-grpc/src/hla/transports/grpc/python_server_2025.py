@@ -3828,12 +3828,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 break
         requested_publications = self.handle_published_object_attributes.get(requested_handle, {})
         publication_items = [
-            (object_class, ",".join(sorted(attributes, key=int)))
+            (
+                object_class,
+                ",".join(sorted(attributes, key=int)),
+                ",".join(f"{object_class}:{attribute}" for attribute in sorted(attributes, key=int)),
+            )
             for object_class, attributes in sorted(requested_publications.items(), key=lambda item: int(item[0]))
             if attributes
         ]
-        object_classes = ",".join(object_class for object_class, _attributes in publication_items)
-        attribute_lists = ";".join(attributes for _object_class, attributes in publication_items)
+        object_classes = ",".join(object_class for object_class, _attributes, _composite_attributes in publication_items)
+        attribute_lists = ";".join(
+            composite_attributes for _object_class, _attributes, composite_attributes in publication_items
+        )
         self._queue_mom_report(
             report_class,
             {
@@ -3861,12 +3867,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 break
         requested_subscriptions = self.handle_subscribed_object_attributes.get(requested_handle, {})
         subscription_items = [
-            (object_class, ",".join(sorted(attributes, key=int)))
+            (
+                object_class,
+                ",".join(sorted(attributes, key=int)),
+                ",".join(f"{object_class}:{attribute}" for attribute in sorted(attributes, key=int)),
+            )
             for object_class, attributes in sorted(requested_subscriptions.items(), key=lambda item: int(item[0]))
             if attributes
         ]
-        object_classes = ",".join(object_class for object_class, _attributes in subscription_items)
-        attribute_lists = ";".join(attributes for _object_class, attributes in subscription_items)
+        object_classes = ",".join(object_class for object_class, _attributes, _composite_attributes in subscription_items)
+        attribute_lists = ";".join(
+            composite_attributes for _object_class, _attributes, composite_attributes in subscription_items
+        )
         self._queue_mom_report(
             report_class,
             {

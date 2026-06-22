@@ -25,7 +25,7 @@ Conformance blockers:
 - The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass.
 - Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually.
 - Java and C++ standard-route evidence remains artifact-gated/runtime-capability evidence, not a full cross-binding behavior-conformance pass.
-- The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full MOM action/request conformance.
+- The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full cross-binding conformance.
 - OMT component coverage includes foreign xs:any extension payload preservation, but arbitrary third-party extension execution semantics remain out of scope.
 - Legacy-only rows remain explicit exclusions, so overall completion cannot be promoted to an unconditional 2025 conformance claim.
 
@@ -199,7 +199,7 @@ Full-claim blockers:
 - All milestone parity-covered: True
 - Assessment: The route clears the tracked milestone gates as a bounded Python 2025 working surface.
 
-- Best-attempt Python RTI 2025 working surface: bounded-working-slice (Hosted FedPro Python 2025 is a best-attempt bounded working surface across the tracked runtime scenario set, with broad hosted replay across lifecycle, object, time, save/restore, support-service, and callback scenarios, not a full RTI semantics or MOM action-request conformance claim.)
+- Best-attempt Python RTI 2025 working surface: bounded-working-slice (Hosted FedPro Python 2025 is a best-attempt bounded working surface across the tracked runtime scenario set, with broad hosted replay across lifecycle, object, time, save/restore, support-service, and callback scenarios, not a full RTI semantics or exhaustive cross-binding conformance claim.)
 - Tracked example and FOM-backed scenario execution: covered-scenario-slice (The hosted FedPro route executes the tracked FOM-backed runtime scenarios used by the current object, MOM, and save/restore route tests.)
 - Message exchange and routing: covered-routing-slice (The hosted FedPro route sends, receives, discovers, reflects, directs, and DDM-filters the tracked message flows over the typed transport surface.)
 - Time synchronization and advance flow: covered-time-advance-slice (The hosted FedPro route exercises regulation/constrained enablement, async delivery control, advance/grant flow, queued TSO delivery, retraction, restore rollback of logical time, and restore recovery of saved lookahead plus time/switch control state.)
@@ -208,7 +208,7 @@ Full-claim blockers:
 
 - Covered rows include bounded supported-scope evidence, including OMT xs:any extension payload preservation without arbitrary third-party extension execution semantics.
 - Java and C++ binding rows remain artifact/runtime-capability evidence rather than exhaustive behavior-conformance proof.
-- The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics/MOM action-request conformance pass.
+- The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics or exhaustive cross-binding conformance pass.
 - Duplicate/umbrella rows remain normalization aids rather than direct one-row conformance assertions.
 
 ## Supported Boundary Statement
@@ -229,7 +229,7 @@ Explicit boundaries:
 - Foreign OMT xs:any extension payloads are preserved for XML round-trip but not interpreted as repo-native runtime semantics.
 - Retired or legacy-only rows remain excluded from the supported 2025 working surface.
 - Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof over the main python2025 runtime rather than full behavior-conformance proof.
-- FedPro remains a hosted runtime slice rather than a full RTI semantics/MOM action-request conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.
+- FedPro remains a hosted runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.
 
 ## Implementation Concentration Audit
 
@@ -261,30 +261,30 @@ Top evidence anchors:
 
 - Audit status: python2025-source-responsibility-captured
 - Source path: packages/hla-backend-python2025/src/hla/backends/python2025/backend.py
-- Source line count: 3265
+- Source line count: 3285
 - Extracted runtime helper modules: 35
 - Extracted runtime helper lines: 7247
 - Runtime ambassador class: Python2025RTIAmbassador
-- Runtime ambassador line count: 2522
-- Runtime ambassador methods: 374
-- Runtime ambassador method lines: 2096
+- Runtime ambassador line count: 2542
+- Runtime ambassador methods: 379
+- Runtime ambassador method lines: 2111
 - Shim wrapper ambassador class: Shim2025RTIAmbassador
 - Shim wrapper ambassador line count: 2
 - Responsibility families: 11
-- Largest family: object-attribute-runtime (446 lines)
+- Largest family: object-attribute-runtime (454 lines)
 - Assessment: The live Python 2025 RTI source is still centered on a large implementation class, but that class now lives in hla-backend-python2025 while hla-backend-shim has been reduced to a compatibility wrapper. Route-backed save/restore state-copy semantics, directed-interaction target selection, time-management state/query wrappers, update-rate helpers, attribute delivery policy helpers, declaration-management and object-name reservation helpers, interaction declaration/delivery helpers, object-region and attribute-policy helpers, MOM decoding helpers, MOM manager routing/report helpers, object-model lookup helpers, object-instance lifecycle/update helpers, attribute-scope advisory helpers, and object-reflection delivery helpers are now measurable under the python2025 runtime package.
 - Extraction use: Use these families as the source ownership baseline while continuing to shrink hla-backend-shim toward wrapper-only responsibilities; new runtime movement should reduce compatibility-surface pressure without weakening direct or hosted route evidence.
 
 Python 2025 source responsibility families:
 
-- object-attribute-runtime: 71 methods, 446 lines; sample=getObjectClassHandle, getObjectClassName, getAttributeHandle, getAttributeName, publishObjectClassAttributes, unpublishObjectClass, unpublishObjectClassAttributes, subscribeObjectClassAttributes
+- object-attribute-runtime: 75 methods, 454 lines; sample=getObjectClassHandle, getObjectClassName, getAttributeHandle, getAttributeName, publishObjectClassAttributes, unpublishObjectClass, unpublishObjectClassAttributes, subscribeObjectClassAttributes
 - mom-and-switch-services: 67 methods, 352 lines; sample=serializeMOMServiceReport, momReportPeriodSecondsSnapshot, getObjectClassRelevanceAdvisorySwitch, setObjectClassRelevanceAdvisorySwitch, getAttributeRelevanceAdvisorySwitch, setAttributeRelevanceAdvisorySwitch, getAttributeScopeAdvisorySwitch, setAttributeScopeAdvisorySwitch
 - federation-management-runtime: 38 methods, 259 lines; sample=connected, joined, connect, disconnect, force_connection_lost, forceFederateLoss, force_federate_loss, createFederationExecution
 - time-management-runtime: 37 methods, 241 lines; sample=enableTimeRegulation, disableTimeRegulation, enableTimeConstrained, disableTimeConstrained, timeAdvanceRequest, timeAdvanceRequestAvailable, queryGALT, queryLogicalTime
 - interaction-routing-runtime: 52 methods, 217 lines; sample=getInteractionClassHandle, getInteractionClassName, getParameterHandle, getParameterName, publishInteractionClass, unpublishInteractionClass, subscribeInteractionClass, subscribeInteractionClassPassively
 - ddm-region-runtime: 41 methods, 154 lines; sample=subscribeInteractionClassWithRegions, subscribeInteractionClassPassivelyWithRegions, unsubscribeInteractionClassWithRegions, getDimensionHandle, getDimensionName, getDimensionUpperBound, getAvailableDimensionsForObjectClass, getAvailableDimensionsForInteractionClass
 - fom-catalog-and-handle-support: 12 methods, 113 lines; sample=_other_member_handles, _extract_fom_sources, _extract_mim_source, _extract_additional_fom_modules, _normalize_module_sources, _coerce_interval, _resolve_fom_modules, _merge_fom_modules
-- ownership-runtime: 14 methods, 94 lines; sample=unconditionalAttributeOwnershipDivestiture, negotiatedAttributeOwnershipDivestiture, confirmDivestiture, attributeOwnershipAcquisition, attributeOwnershipAcquisitionIfAvailable, attributeOwnershipReleaseDenied, attributeOwnershipDivestitureIfWanted, cancelNegotiatedAttributeOwnershipDivestiture
+- ownership-runtime: 15 methods, 101 lines; sample=unconditionalAttributeOwnershipDivestiture, negotiatedAttributeOwnershipDivestiture, confirmDivestiture, attributeOwnershipAcquisition, attributeOwnershipAcquisitionIfAvailable, attributeOwnershipReleaseDenied, attributeOwnershipDivestitureIfWanted, cancelNegotiatedAttributeOwnershipDivestiture
 - misc-support: 12 methods, 87 lines; sample=__init__, nextMessageRequest, nextMessageRequestAvailable, flushQueueRequest, serviceReportRecordsSnapshot, normalizeServiceGroup, getHLAversion, close
 - callback-delivery-and-control: 16 methods, 78 lines; sample=forceConnectionLost, evokeCallback, evokeMultipleCallbacks, enableCallbacks, disableCallbacks, enableAsynchronousDelivery, disableAsynchronousDelivery, _deliver_callback
 - save-restore-runtime: 14 methods, 55 lines; sample=requestFederationSave, _start_federation_save, _process_scheduled_save, federateSaveBegun, federateSaveComplete, federateSaveNotComplete, abortFederationSave, queryFederationSaveStatus
@@ -473,7 +473,7 @@ OMT schema-constraint families:
 ### save-restore/ownership-rollback
 
 - Focus: ownership gauntlets, inflight acquisition/divestiture state, and owner-visibility rollback
-- Direct test count: 3
+- Direct test count: 4
 - Hosted test count: 4
 
 ### save-restore/time-window-and-time-state-rollback
@@ -481,6 +481,353 @@ OMT schema-constraint families:
 - Focus: lookahead, queued TSO, time/switch state, open/closed window state, output resume, and pipeline resume
 - Direct test count: 5
 - Hosted test count: 5
+
+
+## Federation-Management Decomposition Audit
+
+- Audit status: federation-management-decomposition-captured
+- Slice id: 2025-federation-management-proof-families
+- Slice ids: 2025-lifecycle-and-members, 2025-connection-lifecycle-services, 2025-connect-and-federation-catalog-services, 2025-federate-membership-and-resign-services, 2025-synchronization-point-services, 2025-save-restore-lifecycle
+- Requirement count: 40
+- Proof families: 6
+- Direct-backed families: 6
+- Hosted-backed families: 6
+- Assessment: Federation-management proof is no longer just one broad strong-slice claim. Its current evidence separates into connect/create/catalog control, join or membership reporting, resign or disconnect cleanup, synchronization barriers, save/restore lifecycle control, and save/restore participant recovery families, with direct and hosted anchors across every family.
+- Next split boundary: If this area needs further tightening, split it first by these federation-management proof families before attempting clause-by-clause completion claims across connect, join, resign, sync, and save/restore services.
+
+### federation-management/connect-create-destroy-and-catalog-control
+
+- Focus: connect or disconnect state, create or destroy federation control, federation listing, duplicate-create rejection, and FOM-validation or callback-model connect preconditions
+- Direct test count: 7
+- Hosted test count: 6
+
+### federation-management/join-membership-and-name-preconditions
+
+- Focus: join preconditions, federation-execution member reporting, multi-participation visibility, and federate-name uniqueness or joined-state constraints
+- Direct test count: 4
+- Hosted test count: 4
+
+### federation-management/resign-disconnect-loss-and-member-cleanup
+
+- Focus: resign and disconnect preconditions, federation member cleanup after resign or loss, connectionLost teardown, and federateResigned callback or MOM cleanup behavior
+- Direct test count: 7
+- Hosted test count: 7
+
+### federation-management/synchronization-barriers-and-targeted-callbacks
+
+- Focus: sync-point registration, announce or achieved flow, federationSynchronized completion, failure cases, late joiners, multiple sync points, and targeted sync callback routing
+- Direct test count: 6
+- Hosted test count: 7
+
+### federation-management/save-restore-lifecycle-control
+
+- Focus: request or initiate, status, fail, abort, and completion control flow for federation save or restore across direct and hosted ambassadors
+- Direct test count: 5
+- Hosted test count: 7
+
+### federation-management/save-restore-participant-recovery-and-branching
+
+- Focus: multi-federate participant tracking, restore after disconnect, example FOM rollback branching, and recovery of saved participant state rather than dirty future state
+- Direct test count: 2
+- Hosted test count: 5
+
+
+## Callback Decomposition Audit
+
+- Audit status: callback-decomposition-captured
+- Slice id: 2025-callback-proof-families
+- Slice ids: 2025-callback-context-object-delivery, 2025-callback-context-interaction-delivery, 2025-connection-lifecycle-services, 2025-connect-and-federation-catalog-services, 2025-federate-membership-and-resign-services, 2025-synchronization-point-services, 2025-object-delete-remove-flows, 2025-object-attribute-update-request-callbacks, 2025-object-scope-advisory-callbacks, 2025-object-update-rate-advisory-callbacks, 2025-object-attribute-transport-callbacks, 2025-object-interaction-transport-callbacks, 2025-single-name-reservation-services, 2025-multi-name-reservation-services, 2025-save-restore-lifecycle, 2025-fedpro-hosted-runtime-core, 2025-fedpro-hosted-runtime-extended-state
+- Requirement count: 66
+- Proof families: 8
+- Direct-backed families: 8
+- Hosted-backed families: 8
+- Assessment: Callback proof is no longer just a flat ledger plus one route-backed count. Its current evidence separates into declaration advisories, federation sync/save-restore/reporting, object delivery, advisory or name-reservation callbacks, supplemental callback context, ownership callbacks, time or retraction callbacks, and callback-control hygiene families, with direct and hosted anchors across every family.
+- Next split boundary: If this area needs further tightening, split it first by these callback proof families before attempting callback-by-callback signature or ordering claims beyond the current Python lanes.
+
+### callbacks/declaration-relevance-and-interest-advisories
+
+- Focus: start or stop registration plus turnInteractionsOn/off callback delivery across declaration and time-managed declaration flows
+- Direct test count: 3
+- Hosted test count: 2
+
+### callbacks/federation-sync-save-restore-and-reporting
+
+- Focus: synchronization registration and announce flow, federationSynchronized completion, save/restore lifecycle callbacks, connectionLost teardown, and federation execution reporting
+- Direct test count: 5
+- Hosted test count: 5
+
+### callbacks/object-discovery-delivery-and-removal
+
+- Focus: discoverObjectInstance, reflectAttributeValues, receiveInteraction, provideAttributeValueUpdate, and removeObjectInstance delivery across plain, timed, restore, and requester-only routing paths
+- Direct test count: 3
+- Hosted test count: 4
+
+### callbacks/object-advisory-transport-and-name-reservation-callbacks
+
+- Focus: scope advisories, update-rate advisories, transport change/query callbacks, and single or multiple object-instance name reservation callback flows
+- Direct test count: 4
+- Hosted test count: 4
+
+### callbacks/supplemental-context-and-region-introspection
+
+- Focus: callback-context preservation for producing-federate and sent-region metadata on direct and hosted callback delivery surfaces
+- Direct test count: 1
+- Hosted test count: 2
+
+### callbacks/ownership-negotiation-and-query-callbacks
+
+- Focus: ownership assumption, release, divestiture confirmation, acquisition notification, unavailable/query callbacks, and restore recovery of inflight ownership state
+- Direct test count: 3
+- Hosted test count: 3
+
+### callbacks/time-grant-regulation-and-retraction
+
+- Focus: time regulation/time constrained enable callbacks, timeAdvanceGrant progression, and requestRetraction delivery across direct and hosted time-window or queued-TSO flows
+- Direct test count: 3
+- Hosted test count: 4
+
+### callbacks/callback-control-and-backlog-hygiene
+
+- Focus: disableCallbacks or enableCallbacks queue control, evokeCallback ordering, and reconnect-safe stale-backlog cleanup on the hosted seam
+- Direct test count: 2
+- Hosted test count: 4
+
+
+## Time-Management Decomposition Audit
+
+- Audit status: time-management-decomposition-captured
+- Slice id: 2025-time-management-proof-families
+- Slice ids: 2025-time-mode-enable-disable, 2025-time-advance-request-modes, 2025-time-grant-and-async-delivery, 2025-time-query-and-lookahead-control, 2025-time-queries-retraction-and-order, 2025-lookahead-window-proofs, 2025-save-restore-lifecycle
+- Requirement count: 48
+- Proof families: 5
+- Direct-backed families: 5
+- Hosted-backed families: 5
+- Assessment: Time-management proof is no longer just one bounded query/window bucket. Its current evidence separates into factory/mode/request primitives, GALT/LITS and lookahead observability, timestamped delivery and retraction ordering, the Target/Radar lookahead-window proof ladder, and save/restore rollback of time, lookahead, and window state, with direct and hosted anchors across every family.
+- Next split boundary: If this area needs further tightening, split it first by these time-management proof families before attempting per-service completion claims across regulation, advance requests, timestamped delivery, queries, and save/restore time-state semantics.
+
+### time-management/factory-mode-enable-and-request-primitives
+
+- Focus: logical-time factory selection, regulation/constrained enablement, advance-request modes, MOM time-management control routing, and typed flush-queue request handling
+- Direct test count: 3
+- Hosted test count: 4
+
+### time-management/galt-lits-query-and-lookahead-observability
+
+- Focus: queryLogicalTime, queryGALT, queryLITS, queryLookahead, modifyLookahead, and visible divergence or convergence of GALT/LITS under queued traffic and live lookahead changes
+- Direct test count: 3
+- Hosted test count: 4
+
+### time-management/timestamped-delivery-retraction-and-ordering
+
+- Focus: queued timestamped delivery, requestRetraction fanout or suppression, lagging-subscriber behavior, and receive-order versus timestamp-order handling across direct and hosted routes
+- Direct test count: 4
+- Hosted test count: 4
+
+### time-management/lookahead-window-proof-ladder
+
+- Focus: Target/Radar safe-window closure, future-message exclusion, output delivery, consumer ordering, pipeline overlap, receive-order poison rejection, and the integrated lookahead-processing-window gauntlet
+- Direct test count: 7
+- Hosted test count: 7
+
+### time-management/save-restore-time-state-and-lookahead-rollback
+
+- Focus: saved logical-time, lookahead, switch-control, queued-TSO, and open or closed window state rollback, including restore resumption without dirty post-save replay
+- Direct test count: 6
+- Hosted test count: 6
+
+
+## Binding-Route Decomposition Audit
+
+- Audit status: binding-route-decomposition-captured
+- Slice id: 2025-binding-route-proof-families
+- Slice ids: 2025-java-binding-source-trace, 2025-cpp-binding-source-trace, 2025-standard-route-runtime-capability, 2025-fedpro-typed-transport-surface, 2025-fedpro-hosted-runtime-core, 2025-fedpro-hosted-runtime-extended-state
+- Requirement count: 16
+- Proof families: 6
+- Route-group coverage count: 16
+- Assessment: Binding and hosted-route proof is no longer just one bounded route bucket. Its current evidence now separates into named binding and hosted-route families: Java intake/source traces, C++ intake/source traces, artifact-gated standard runtime-capability traces, the typed FedPro schema surface, the hosted FedPro runtime slices, and the cross-route scenario parity ledger, while keeping the distinction between bounded adapter evidence and the main python2025 runtime owner explicit.
+- Next split boundary: If this area needs further tightening, split it first by these route families before attempting any stronger behavior-equivalence or hosted-conformance claim.
+
+### binding-routes/java-binding-source-and-intake-evidence
+
+- Focus: Java package inventory, source trace, intake manifests, and the distinction between Java wrapper surfaces and the main python2025 runtime owner
+- Evidence test count: 2
+- Route groups: java-standard-2025-jpype, java-standard-2025-py4j
+
+### binding-routes/cpp-binding-source-and-intake-evidence
+
+- Focus: C++ namespace/source trace, intake evidence, and wrapper-surface separation from the main python2025 runtime lane
+- Evidence test count: 2
+- Route groups: cpp-standard-2025-pybind, cpp-standard-2025-grpc
+
+### binding-routes/standard-java-cpp-runtime-capability-traces
+
+- Focus: artifact-gated standard-route lifecycle, object, ownership, time, MOM, DDM, support-service, and save/restore capability traces executed over the primary python2025 runtime lane
+- Evidence test count: 3
+- Route groups: java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
+
+### binding-routes/fedpro-typed-transport-and-schema-surface
+
+- Focus: typed RTI request oneofs, typed callback oneofs, schema-tagged client selection, federation-list plus create-with-MIM transport commands, and executable FedPro transport-schema proof
+- Evidence test count: 3
+- Route groups: python-2025-fedpro-grpc
+
+### binding-routes/fedpro-hosted-runtime-core-and-extended-state
+
+- Focus: hosted 2025 runtime lifecycle, object, ownership, time, save/restore, callback, MOM, support-service, and example-FOM replay over create_rti_ambassador('python2025', transport=...)
+- Evidence test count: 3
+- Route groups: python-2025-fedpro-grpc
+
+### binding-routes/cross-route-scenario-parity-ledger
+
+- Focus: the explicit parity ledger across federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, and support_services for all current 2025 routes
+- Evidence test count: 3
+- Route groups: python-2025-inprocess, python-2025-fedpro-grpc, java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
+
+
+## Support-Services Decomposition Audit
+
+- Audit status: support-services-decomposition-captured
+- Slice id: 2025-support-services-proof-families
+- Slice ids: 2025-switch-set-get-model, 2025-single-name-reservation-services, 2025-multi-name-reservation-services, 2025-support-federate-and-object-identity-lookups, 2025-support-attribute-interaction-catalog-lookups, 2025-support-policy-update-and-transport-lookups, 2025-support-interaction-dimension-and-range-lookups, 2025-support-handle-normalization-and-region-introspection, 2025-support-advisory-and-reporting-state-inquiries, 2025-support-runtime-policy-state-inquiries, 2025-support-advisory-and-reporting-state-controls, 2025-support-runtime-policy-state-controls
+- Requirement count: 59
+- Proof families: 5
+- Direct-backed families: 5
+- Hosted-backed families: 5
+- Assessment: Support-service proof is no longer just one large ledger summary. Its current evidence separates into name reservation and release flows, identity/catalog normalization lookups, transport or range lookups, the 2025 switch inquiry/control model, and factory/decode plus hosted support-seam families, with direct and hosted anchors across every family.
+- Next split boundary: If this area needs further tightening, split it first by these support-service proof families before attempting clause-by-clause completion claims across lookup, inquiry, control, reservation, and decode surfaces.
+
+### support-services/name-reservation-and-release-flows
+
+- Focus: single and multi-name reservation success or failure callbacks, release flows, handoff behavior, and save or join preconditions around reservation state
+- Direct test count: 3
+- Hosted test count: 4
+
+### support-services/identity-catalog-and-handle-normalization-lookups
+
+- Focus: federate, object, interaction, parameter, and service-group lookup or normalization flows across joined runtime state and loaded catalog metadata
+- Direct test count: 2
+- Hosted test count: 3
+
+### support-services/transport-order-update-dimension-and-range-lookups
+
+- Focus: transportation, order type, update-rate, dimension, and range-bound lookups plus requester-only transport query callback routing
+- Direct test count: 4
+- Hosted test count: 4
+
+### support-services/switch-inquiry-and-control-model
+
+- Focus: 2025 set/get support switch model for advisory, reporting, and runtime policy state, including automatic resign, with validation of switch-control inputs
+- Direct test count: 2
+- Hosted test count: 2
+
+### support-services/factory-decode-and-hosted-support-seam
+
+- Focus: support handle factories, decode helpers, hosted direct support route execution, callback-backlog control around support seams, and preservation of support surfaces across transport
+- Direct test count: 3
+- Hosted test count: 6
+
+
+## Object-Management Decomposition Audit
+
+- Audit status: object-management-decomposition-captured
+- Slice id: 2025-object-management-proof-families
+- Slice ids: 2025-basic-object-exchange, 2025-declaration-publication-services, 2025-declaration-subscription-services, 2025-declaration-relevance-advisory-callbacks, 2025-object-delete-remove-flows, 2025-object-attribute-update-request-callbacks, 2025-object-scope-advisory-callbacks, 2025-object-update-rate-advisory-callbacks, 2025-object-attribute-transport-callbacks, 2025-object-interaction-transport-callbacks, 2025-directed-interaction-boundary, 2025-ddm-default-attribute-policy
+- Requirement count: 67
+- Proof families: 7
+- Direct-backed families: 7
+- Hosted-backed families: 7
+- Assessment: Object-management proof is no longer just one broad strong-slice claim. Its current evidence separates into declaration/exchange gating, deletion and local-known-state lifecycle, attribute-value-update routing, advisory/update-rate callbacks, transportation policy callbacks, object-region scope routing, and directed or directed-DDM routing families, with direct and hosted anchors across every family.
+- Next split boundary: If this area needs further tightening, split it first by these object-management proof families before attempting clause-by-clause completion claims for object, declaration, directed-routing, and DDM services.
+
+### object-management/declaration-and-basic-exchange-gating
+
+- Focus: publish and subscribe control, discovery metadata/class visibility, plain object exchange, and declaration gating or rejection paths
+- Direct test count: 7
+- Hosted test count: 9
+
+### object-management/deletion-and-local-known-state-lifecycle
+
+- Focus: local delete, timed delete, orphan and remove flows, subscriber known-state rollback, and stale remove cleanup
+- Direct test count: 6
+- Hosted test count: 7
+
+### object-management/attribute-value-update-request-routing
+
+- Focus: instance and class-wide requestAttributeValueUpdate callbacks, owner-only routing, and disconnected-owner suppression
+- Direct test count: 3
+- Hosted test count: 5
+
+### object-management/advisory-and-update-rate-callbacks
+
+- Focus: turnUpdatesOn/off advisories, object-scope in-scope or out-of-scope transitions, update-rate routing, and rate alias parity
+- Direct test count: 3
+- Hosted test count: 4
+
+### object-management/transportation-query-and-policy-state
+
+- Focus: attribute and interaction transportation change confirmation, requester-only query/report callbacks, rejection paths, and restore persistence
+- Direct test count: 6
+- Hosted test count: 5
+
+### object-management/object-region-scope-and-passive-alias-routing
+
+- Focus: DDM object-region routing, attributesInScope and attributesOutOfScope advisories, passive region aliases, and DDM cleanup
+- Direct test count: 6
+- Hosted test count: 7
+
+### object-management/directed-and-directed-ddm-interaction-routing
+
+- Focus: directed interaction delivery, timestamped directed routing and retraction, selective directed publication or subscription isolation, and directed DDM overlap routing
+- Direct test count: 6
+- Hosted test count: 6
+
+
+## Ownership Decomposition Audit
+
+- Audit status: ownership-decomposition-captured
+- Slice ids: 2025-ownership-divestiture-confirmation-flows, 2025-ownership-release-and-if-wanted-flows, 2025-ownership-acquisition-assumption-flows, 2025-ownership-acquisition-availability-cancellation-flows, 2025-ownership-query-and-resign-policies, 2025-save-restore-lifecycle
+- Requirement count: 18
+- Proof families: 6
+- Direct-backed families: 6
+- Hosted-backed families: 6
+- Assessment: Ownership proof is no longer just a broad strong-slice claim. Its current evidence separates into divestiture/confirmation, release/if-wanted, acquisition/assumption, availability/cancellation, query/resign-policy, and rollback/restore families, with direct and hosted anchors across every family.
+- Next split boundary: If this area needs further tightening, split it first by these ownership proof families before attempting a clause-by-clause ownership conformance audit.
+
+### ownership/divestiture-and-confirmation-flows
+
+- Focus: unconditional and negotiated divestiture, requestDivestitureConfirmation, confirmDivestiture, and cancel-negotiated-offer handling
+- Direct test count: 4
+- Hosted test count: 4
+
+### ownership/release-and-if-wanted-flows
+
+- Focus: requestAttributeOwnershipRelease, attributeOwnershipReleaseDenied, and divestiture-if-wanted transfer behavior
+- Direct test count: 3
+- Hosted test count: 3
+
+### ownership/acquisition-assumption-and-notification
+
+- Focus: requestAttributeOwnershipAssumption, explicit acquisition requests, and ownership acquisition notification delivery
+- Direct test count: 3
+- Hosted test count: 3
+
+### ownership/acquisition-availability-and-cancellation
+
+- Focus: attributeOwnershipAcquisitionIfAvailable, unavailable callbacks, acquisition cancellation, and cancel-confirmation flows
+- Direct test count: 4
+- Hosted test count: 4
+
+### ownership/query-visibility-and-resign-policies
+
+- Focus: queryAttributeOwnership, attributeIsOwnedByRTI and attributeIsNotOwned callback outcomes, isAttributeOwnedByFederate, and resign-time ownership policy behavior
+- Direct test count: 3
+- Hosted test count: 3
+
+### ownership/rollback-and-restore-state
+
+- Focus: save/restore ownership gauntlets, inflight acquisition or divestiture state, and cross-federate owner-visibility rollback
+- Direct test count: 4
+- Hosted test count: 4
 
 
 ## Directed Interaction Decomposition Audit
@@ -573,20 +920,26 @@ OMT schema-constraint families:
 - Hosted test count: 2
 
 
-## Shim Pressure Family Route-Backing Audit
+## Wrapper-Boundary Family Route-Backing Audit
 
-- Audit status: shim-pressure-family-route-backing-captured
-- Family count: 16
-- Fully route-backed family count: 16
+- Audit status: wrapper-boundary-family-route-backing-captured
+- Family count: 22
+- Fully route-backed family count: 22
 - All families route-backed across current Python lanes: True
-- Assessment: The decomposed current-package pressure families are not in-process-only claims. Every currently named family across save/restore, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof, which strengthens the current-lane working-RTI claim.
+- Assessment: The decomposed current-package pressure families are not in-process-only claims. Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof, which strengthens the current-lane working-RTI claim.
 - Residual boundary: This still does not prove full cross-binding conformance or full requirement-by-requirement closure; it proves that the main current-package pressure families are executable across the current Python 2025 lanes.
 
 - 2025-save-restore-lifecycle/lifecycle-control: direct=9, hosted=9, route-backed=True
 - 2025-save-restore-lifecycle/shared-scenario-rollback: direct=4, hosted=4, route-backed=True
 - 2025-save-restore-lifecycle/routing-policy-rollback: direct=7, hosted=7, route-backed=True
-- 2025-save-restore-lifecycle/ownership-rollback: direct=3, hosted=4, route-backed=True
+- 2025-save-restore-lifecycle/ownership-rollback: direct=4, hosted=4, route-backed=True
 - 2025-save-restore-lifecycle/time-window-and-time-state-rollback: direct=5, hosted=5, route-backed=True
+- 2025-ownership-proof-families/divestiture-and-confirmation-flows: direct=4, hosted=4, route-backed=True
+- 2025-ownership-proof-families/release-and-if-wanted-flows: direct=3, hosted=3, route-backed=True
+- 2025-ownership-proof-families/acquisition-assumption-and-notification: direct=3, hosted=3, route-backed=True
+- 2025-ownership-proof-families/acquisition-availability-and-cancellation: direct=4, hosted=4, route-backed=True
+- 2025-ownership-proof-families/query-visibility-and-resign-policies: direct=3, hosted=3, route-backed=True
+- 2025-ownership-proof-families/rollback-and-restore-state: direct=4, hosted=4, route-backed=True
 - 2025-directed-interaction-boundary/base-routing-and-callback-delivery: direct=2, hosted=2, route-backed=True
 - 2025-directed-interaction-boundary/timestamped-delivery-and-retraction: direct=3, hosted=3, route-backed=True
 - 2025-directed-interaction-boundary/ddm-overlap-filtering: direct=3, hosted=3, route-backed=True
@@ -599,21 +952,27 @@ OMT schema-constraint families:
 - 2025-ddm-default-attribute-policy/passive-alias-and-compat-scenarios: direct=5, hosted=5, route-backed=True
 - 2025-ddm-default-attribute-policy/ddm-restore-and-disconnect-cleanup: direct=2, hosted=2, route-backed=True
 
-## Shim Pressure Family Asymmetry Audit
+## Wrapper-Boundary Family Asymmetry Audit
 
-- Audit status: shim-pressure-family-asymmetry-captured
-- Family count: 16
-- Balanced families: 15
+- Audit status: wrapper-boundary-family-asymmetry-captured
+- Family count: 22
+- Balanced families: 22
 - Direct-heavier families: 0
-- Hosted-heavier families: 1
-- Assessment: The main current-package pressure families are route-backed across the current Python lanes, but they are not perfectly symmetric. The remaining parity work is now clearer: close hosted-heavier and direct-heavier family imbalances rather than inventing new top-level proof areas.
+- Hosted-heavier families: 0
+- Assessment: The main current-package pressure families are route-backed across the current Python lanes and are now symmetric at the named proof-family level. The remaining work is no longer family-count parity; it is deeper behavioral expansion, stronger evidence quality, and architectural judgment about how far the repo should continue decomposing runtime semantics away from the remaining compatibility-wrapper seam.
 - Next parity boundary: Use the hosted-heavier and direct-heavier family rows as the next executable parity worklist for the current 2025 lane.
 
 - 2025-save-restore-lifecycle/lifecycle-control: balance=balanced, direct=9, hosted=9, delta=0
 - 2025-save-restore-lifecycle/shared-scenario-rollback: balance=balanced, direct=4, hosted=4, delta=0
 - 2025-save-restore-lifecycle/routing-policy-rollback: balance=balanced, direct=7, hosted=7, delta=0
-- 2025-save-restore-lifecycle/ownership-rollback: balance=hosted-heavier, direct=3, hosted=4, delta=-1
+- 2025-save-restore-lifecycle/ownership-rollback: balance=balanced, direct=4, hosted=4, delta=0
 - 2025-save-restore-lifecycle/time-window-and-time-state-rollback: balance=balanced, direct=5, hosted=5, delta=0
+- 2025-ownership-proof-families/divestiture-and-confirmation-flows: balance=balanced, direct=4, hosted=4, delta=0
+- 2025-ownership-proof-families/release-and-if-wanted-flows: balance=balanced, direct=3, hosted=3, delta=0
+- 2025-ownership-proof-families/acquisition-assumption-and-notification: balance=balanced, direct=3, hosted=3, delta=0
+- 2025-ownership-proof-families/acquisition-availability-and-cancellation: balance=balanced, direct=4, hosted=4, delta=0
+- 2025-ownership-proof-families/query-visibility-and-resign-policies: balance=balanced, direct=3, hosted=3, delta=0
+- 2025-ownership-proof-families/rollback-and-restore-state: balance=balanced, direct=4, hosted=4, delta=0
 - 2025-directed-interaction-boundary/base-routing-and-callback-delivery: balance=balanced, direct=2, hosted=2, delta=0
 - 2025-directed-interaction-boundary/timestamped-delivery-and-retraction: balance=balanced, direct=3, hosted=3, delta=0
 - 2025-directed-interaction-boundary/ddm-overlap-filtering: balance=balanced, direct=3, hosted=3, delta=0
@@ -633,7 +992,7 @@ OMT schema-constraint families:
 - Ready for current-lane coherent working-surface claim: True
 - Ready for permanent no-split architecture claim: False
 - Major pressure slice count: 3
-- Runtime backend concentration is material: True
+- Python2025 backend concentration is material: True
 - All pressure families route-backed across current Python lanes: True
 - Assessment: The primary 2025 Python RTI lane now has a defensible coherence story: its main current-package pressure slices are identified, decomposed into named proof families, and all of those families are executable across the current Python 2025 lanes. That is strong evidence for a coherent bounded working RTI surface even though the lane is still materially concentrated in the hla-backend-python2025 implementation package.
 
@@ -656,7 +1015,7 @@ Non-claims:
 - This is not a full requirement-by-requirement IEEE 1516.1-2025 conformance claim.
 - This is not a permanent no-split architecture decision.
 - This does not upgrade Java or C++ bindings into exhaustive behavior-conformance lanes.
-- This does not turn the hosted FedPro route into a full RTI semantics or MOM action/request conformance pass.
+- This does not turn the hosted FedPro route into a full RTI semantics or exhaustive cross-binding conformance pass.
 
 ## Implementation Lane Audit
 
@@ -665,6 +1024,10 @@ Non-claims:
 - Primary 2025 RTI role: main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)
 - Current 2025 plugin family: inmemory-2025
 - Current 2025 spec support: rti1516_2025
+- Compatibility wrapper package: hla-backend-shim
+- Compatibility wrapper status: compatibility-maintained
+- Compatibility wrapper role: compatibility-wrapper
+- Compatibility wrapper delegates runtime semantics to: hla-backend-python2025
 - Reference 2010 backend package: hla-backend-inmemory
 - Reference 2010 role: 2010 pure Python RTI backend
 - Backend packages discovered: 6
@@ -695,7 +1058,6 @@ Discovered 2025-capable backend plugin records:
 - cpp-2025-sdk-pybind (intake/cpp): hla-backend-cpp-shim supports rti1516_2025
 - cpp-2025-sdk-grpc (intake/cpp): hla-backend-cpp-shim supports rti1516_2025
 - python2025 (inmemory-2025): hla-backend-python2025 supports rti1516_2025
-- shim (shim): hla-backend-shim supports rti1516_2025
 
 Python 2025 route variants:
 
@@ -725,17 +1087,17 @@ Hosted factory boundary evidence:
 - Audit status: factory-boundary-explicit
 - Supported hosted creation surface: start_2025_grpc_server(...) plus GrpcTransport(..., schema='rti1516_2025') plus create_rti_ambassador(backend='python2025'|'python-2025'|'python-2025-backend', transport={'kind': 'grpc', ...})
 - Unsupported factory surfaces: create_rti_ambassador(backend='shim', transport=...)
-- Policy: The primary python2025 backend path and its supported runtime aliases now accept transport=... and create the hosted FedPro 2025 ambassador over the main hla-backend-python2025 lane, while the explicit wrapper-only shim alias spellings still reject hosted ownership and other backend-specific factory transport routing. The same factory-hosted python2025 path now also runs a direct federation listing/member-report slice, the package-owned Target/Radar future-exclusion, output-delivery, consumer-order, and integrated lookahead-processing-window gauntlet time-window proofs, restore-state, restore-output-resume, and pipeline-resume save/restore proofs, a direct restore-control negative slice, a direct local-delete restore slice, a direct plain-callback restore cleanup slice, a direct timed-remove restore cleanup slice, a direct plain-object restore routing slice, a direct plain-interaction restore routing slice, a direct directed-DDM restore routing slice, a direct restore time/switch-control slice, and a direct restore lookahead/queued-TSO slice, direct MOM federation-management and time-management service interactions, a direct MOM request/report slice, a direct MOM object/ownership service slice, a direct support-service slice, the shared support factory/decode scenario, a direct object-exchange slice, a direct timestamped delivery/retraction slice, a direct directed-interaction slice, a direct callback-backlog disconnect/rejoin slice, and a direct ownership slice instead of stopping at ambassador-construction evidence.
+- Policy: The primary python2025 backend path and its supported runtime aliases now accept transport=... and create the hosted FedPro 2025 ambassador over the main hla-backend-python2025 lane, while the legacy shim provider spelling is no longer part of the supported public backend-selection surface and therefore rejects hosted ownership and other backend-specific factory transport routing. The same factory-hosted python2025 path now also runs a direct federation listing/member-report slice, the package-owned Target/Radar future-exclusion, output-delivery, consumer-order, and integrated lookahead-processing-window gauntlet time-window proofs, restore-state, restore-output-resume, and pipeline-resume save/restore proofs, a direct restore-control negative slice, a direct local-delete restore slice, a direct plain-callback restore cleanup slice, a direct timed-remove restore cleanup slice, a direct plain-object restore routing slice, a direct plain-interaction restore routing slice, a direct directed-DDM restore routing slice, a direct restore time/switch-control slice, and a direct restore lookahead/queued-TSO slice, direct MOM federation-management and time-management service interactions, a direct MOM request/report slice, a direct MOM object/ownership service slice, a direct support-service slice, the shared support factory/decode scenario, a direct object-exchange slice, a direct timestamped delivery/retraction slice, a direct directed-interaction slice, a direct callback-backlog disconnect/rejoin slice, and a direct ownership slice instead of stopping at ambassador-construction evidence.
 
 Hosted factory boundary evidence tests:
 
-- tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane_and_shim_as_wrapper
+- tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane
 - tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_primary_identity
-- tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_keeps_shim_aliases_wrapper_only
+- tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name
 - tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python2025_aliases
-- tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_shim_aliases
+- tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_legacy_shim_provider
 - tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane
-- tests/test_hla_factory_composition.py::test_2025_wrapper_factory_rejects_fake_hosted_transport_creation
+- tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name
 - tests/transport/test_grpc_transport_2025.py::test_2025_factory_transport_route_creates_hosted_python2025_ambassador
 - tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice
 - tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_restore_control_negative_slice
@@ -769,7 +1131,6 @@ Hosted factory boundary evidence tests:
 - tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario
 - tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario
 - tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_unknown_backend_specific_options
-- tests/test_hla_factory_composition.py::test_2025_wrapper_factory_rejects_unknown_backend_specific_options
 - tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation
 - tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer
 - tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary
@@ -781,9 +1142,9 @@ Package-owned shared scenario evidence:
 - Shared route: target-radar-shared-scenario
 - Example entrypoint: python examples/target_radar_simulation.py --backend python2025 --steps 5
 - Adapter class: hla.foms.target_radar._internal.target_radar_2025_adapter.TargetRadar2025RTIAdapter
-- Supported backend names: python2025, python-2025, python-2025-backend, shim
-- Claim: The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, where one package-owned compatibility adapter wraps both the primary python2025 backend lane and the wrapper-only shim alias without moving implementation ownership back into hla-backend-shim.
-- Assessment: The README-advertised Target/Radar python2025 example path is now executable under package-owned 2025 adapter coverage, and the shim route is evidenced only as a wrapper-only alias over the same hla-backend-python2025 implementation lane rather than as a separate RTI family. The same package-owned adapter also now proves that the factory-hosted python2025 FedPro route can execute the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers.
+- Supported backend names: python2025, python-2025, python-2025-backend
+- Claim: The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, where one package-owned compatibility adapter wraps the primary python2025 backend lane without moving implementation ownership back into hla-backend-shim.
+- Assessment: The README-advertised Target/Radar python2025 example path is now executable under package-owned 2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers.
 
 Package-owned shared scenario runtime reports:
 
@@ -836,8 +1197,8 @@ Time-window vendor parity routes:
 - Recommended current action: promote-python2025-as-live-lane-and-keep-shim-wrapper-narrowing-map
 - Future backend package target: hla-backend-python2025
 - Future backend plugin family: inmemory-2025
-- Runtime semantics to extract first: 3
-- Route-backed runtime semantics: 3
+- Runtime semantics to extract first: 4
+- Route-backed runtime semantics: 4
 - All candidate runtime semantics route-backed: True
 - Assessment: The extraction cutover is materially underway: hla-backend-python2025 now owns the live backend, hla-backend-shim remains as a compatibility wrapper, and the repo still has a concrete migration map for continuing to narrow wrapper responsibilities while preserving the direct and hosted proof families.
 
@@ -869,7 +1230,8 @@ Shim responsibilities after extraction:
 
 Runtime semantics migration worklist:
 
-- 2025-save-restore-lifecycle: 5 proof families, direct=28, hosted=29, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py
+- 2025-save-restore-lifecycle: 5 proof families, direct=29, hosted=29, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py
+- 2025-ownership-proof-families: 6 proof families, direct=21, hosted=21, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py
 - 2025-directed-interaction-boundary: 5 proof families, direct=12, hosted=12, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py
 - 2025-ddm-default-attribute-policy: 6 proof families, direct=14, hosted=14, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py
 
@@ -882,7 +1244,7 @@ Pre-extraction gates:
 ## Extraction Impact Audit
 
 - Audit status: extraction-impact-map-captured
-- Candidate slices: 3
+- Candidate slices: 4
 - All candidate slices have source-family maps: True
 - All candidate slices route-backed: True
 - Largest current source baseline: 2025-ddm-default-attribute-policy
@@ -891,9 +1253,10 @@ Pre-extraction gates:
 
 Extraction impact rows:
 
-- 2025-save-restore-lifecycle: source families=4, baseline=468 lines/81 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py; save-restore-runtime=55 lines/14 methods, time-management-runtime=241 lines/37 methods, ownership-runtime=94 lines/14 methods, callback-delivery-and-control=78 lines/16 methods
+- 2025-save-restore-lifecycle: source families=4, baseline=475 lines/82 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py; save-restore-runtime=55 lines/14 methods, time-management-runtime=241 lines/37 methods, ownership-runtime=101 lines/15 methods, callback-delivery-and-control=78 lines/16 methods
+- 2025-ownership-proof-families: source families=3, baseline=234 lines/45 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py; ownership-runtime=101 lines/15 methods, save-restore-runtime=55 lines/14 methods, callback-delivery-and-control=78 lines/16 methods
 - 2025-directed-interaction-boundary: source families=3, baseline=449 lines/109 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py; interaction-routing-runtime=217 lines/52 methods, ddm-region-runtime=154 lines/41 methods, callback-delivery-and-control=78 lines/16 methods
-- 2025-ddm-default-attribute-policy: source families=4, baseline=895 lines/180 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py; ddm-region-runtime=154 lines/41 methods, object-attribute-runtime=446 lines/71 methods, interaction-routing-runtime=217 lines/52 methods, callback-delivery-and-control=78 lines/16 methods
+- 2025-ddm-default-attribute-policy: source families=4, baseline=903 lines/184 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py; ddm-region-runtime=154 lines/41 methods, object-attribute-runtime=454 lines/75 methods, interaction-routing-runtime=217 lines/52 methods, callback-delivery-and-control=78 lines/16 methods
 
 ## Promotion Vs Split Audit
 
@@ -927,7 +1290,7 @@ Permanent-decision blockers:
 
 - The repo now has a row-level requirement-by-requirement audit, but it is still a bounded disposition audit rather than an all-covered 2025 conformance pass.
 - Several implemented slices still aggregate multiple requirements under bounded supported-scope language.
-- Hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or MOM action/request conformance pass.
+- Hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass.
 - Java and C++ bindings remain artifact/runtime-capability bounded rather than exhaustive behavior-conformance proof.
 
 ## Objective Audit
@@ -940,114 +1303,130 @@ Permanent-decision blockers:
 
 ### Federation Management
 
-- Evidence level: strong-slice
+- Evidence level: decomposed-strong-slice
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: federation_lifecycle, save_restore
-- Assessment: Connection, federation catalog control, membership reporting/resign, synchronization barriers, and save/restore behavior are exercised directly through the current Python 2025 RTI and the hosted FedPro route, with parity scenarios recorded across all tracked routes.
+- Assessment: Connection, federation catalog control, membership reporting and resign handling, synchronization barriers, and save or restore behavior are exercised directly through the current Python 2025 RTI and the hosted FedPro route, and the finish-line now separates that proof into named families instead of leaving it as one large bucket: connect/create/catalog control, join or membership reporting, resign or disconnect cleanup, synchronization barriers, save/restore lifecycle control, and save/restore participant recovery.
 
 - Evidence basis: route_summary.scenario_count=2
 - Evidence basis: route_summary.row_count=12
 - Evidence basis: route_summary.routes_with_full_parity=6
-- Residual blocker: The evidence is still slice-oriented rather than service-by-service proof.
+- Evidence basis: federation_management_decomposition.slice_id=2025-federation-management-proof-families
+- Evidence basis: federation_management_decomposition.proof_family_count=6
+- Residual blocker: The finish-line now decomposes federation-management proof families, but it still stops short of clause-by-clause service closure.
 - Residual blocker: Standard Java and C++ route coverage remains scenario parity/runtime capability evidence, not exhaustive behavior conformance.
 
 ### Object Management
 
-- Evidence level: strong-slice
+- Evidence level: decomposed-strong-slice
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: object_exchange, ownership, ddm
-- Assessment: The current repo proves a coherent object-management surface: object and interaction exchange, directed interactions, ownership transfer/query callbacks, DDM overlap filtering, transportation policy changes, and object deletion flows all execute end to end. Hosted FedPro replay now also covers rollback-sensitive object state including plain and directed routing restore, stale timed-remove cleanup, and restored local-known-state after local delete, plus hosted shared scenario replay for name reservation, request-attribute-value-update routing, and object-scope relevance over the main python2025 runtime.
+- Assessment: The current repo proves a coherent object-management surface and the finish-line now separates that proof into named families instead of leaving it as one large bucket: declaration and exchange gating, delete/local-known-state lifecycle, attribute-value-update routing, advisory/update-rate callbacks, transportation policy callbacks, object-region scope routing, and directed or directed-DDM routing. Hosted FedPro replay now also covers rollback-sensitive object state including plain and directed routing restore, stale timed-remove cleanup, and restored local-known-state after local delete, plus hosted shared scenario replay for request-attribute-value-update routing and object-scope relevance over the main python2025 runtime.
 
 - Evidence basis: route_summary.scenario_count=3
 - Evidence basis: route_summary.row_count=18
 - Evidence basis: route_summary.scenarios=ddm,object_exchange,ownership
-- Residual blocker: Requirement aggregation still hides per-service completion detail inside supported-scope slices.
+- Evidence basis: object_management_decomposition.slice_id=2025-object-management-proof-families
+- Evidence basis: object_management_decomposition.proof_family_count=7
+- Residual blocker: The finish-line now decomposes object-management proof families, but it still stops short of clause-by-clause service closure.
 - Residual blocker: FedPro coverage is a hosted runtime slice and does not yet constitute full RTI semantics proof.
 
 ### Time Management
 
-- Evidence level: query-and-window-proof-backed
+- Evidence level: decomposed-query-and-window-proof-backed
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: time_management, save_restore
-- Assessment: Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, the Target/Radar lookahead-window proof ladder, and matching negative-oracle guards across the current Python 2025 lanes.
+- Assessment: Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, the Target/Radar lookahead-window proof ladder, matching negative-oracle guards across the current Python 2025 lanes, and named runtime proof families instead of one flat bounded time bucket.
 
 - Evidence basis: python_rti_milestone_audit bounded time rows=python-2025-fedpro-grpc:bounded-lookahead-evidence,python-2025-fedpro-grpc:bounded-query-evidence,python-2025-inprocess:bounded-lookahead-evidence,python-2025-inprocess:bounded-query-evidence
 - Evidence basis: time_window_vendor_parity_audit.audit_status=time-window-vendor-parity-captured
 - Evidence basis: time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion
-- Residual blocker: The closeout still aggregates multiple time services into bounded slices instead of final per-requirement proof.
+- Evidence basis: time_management_decomposition.slice_id=2025-time-management-proof-families
+- Evidence basis: time_management_decomposition.proof_family_count=5
+- Residual blocker: The closeout now separates time proof into named runtime families, but it still stops short of final per-requirement time-service proof.
 - Residual blocker: Cross-binding runtime evidence is narrower than the Python in-process and hosted FedPro slices.
 
 ### Support Services
 
-- Evidence level: per-service-runtime-traceable
+- Evidence level: decomposed-per-service-runtime-traceable
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: support_services
-- Assessment: Handle lookup, dimension bounds, default policy control, normalization and switch inquiry/set flows are exercised through the Python runtime and are represented across tracked binding routes. The finish-line now also carries an explicit support-service ledger via the RTIambassador conformance matrix, giving the Python lanes per-service runtime traceability plus complete actionable negative-path coverage. Hosted FedPro support-service replay now also proves reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect.
+- Assessment: Handle lookup, dimension bounds, default policy control, normalization and switch inquiry/set flows are exercised through the Python runtime and are represented across tracked binding routes. The finish-line now also carries an explicit support-service ledger via the RTIambassador conformance matrix, and it now separates that proof into named families instead of leaving it as one ledger-only summary: reservation/release flows, lookup and normalization surfaces, transport or dimension lookups, the 2025 switch model, and factory/decode plus hosted support seams. That gives the Python lanes per-service runtime traceability plus complete actionable negative-path coverage. Hosted FedPro support-service replay now also proves reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect.
 
 - Evidence basis: support_service_proof_audit.ready_for_support_service_traceability_claim=true
 - Evidence basis: support_service_proof_audit.focused_executable_row_count=62
 - Evidence basis: support_service_proof_audit.complete_negative_path_row_count=61
-- Residual blocker: The support-service ledger now reaches per-service runtime traceability and complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.
+- Evidence basis: support_services_decomposition.slice_id=2025-support-services-proof-families
+- Evidence basis: support_services_decomposition.proof_family_count=5
+- Residual blocker: The finish-line now decomposes support-service proof families and reaches per-service runtime traceability plus complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.
 - Residual blocker: Java and C++ proof remains capability-oriented rather than a full standard-route behavior pass, and the hosted FedPro route remains a bounded runtime slice rather than a full support-service conformance route.
 
 ### Ownership Management
 
-- Evidence level: strong-slice
+- Evidence level: decomposed-strong-slice
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: ownership, save_restore
-- Assessment: Ownership acquisition, divestiture, release negotiation, query callbacks, resign-time policies, and rollback-sensitive ownership state are all exercised directly through the current Python 2025 RTI and through shared backend-matrix scenarios. Hosted FedPro replay now also proves restored in-flight ownership negotiation state plus restored cross-federate owner-visibility queries.
+- Assessment: Ownership acquisition, divestiture, release negotiation, query callbacks, resign-time policies, and rollback-sensitive ownership state are all exercised directly through the current Python 2025 RTI and through shared backend-matrix scenarios. Hosted FedPro replay now also proves restored in-flight ownership negotiation state plus restored cross-federate owner-visibility queries, and the finish-line now separates that proof into named ownership families instead of leaving it as one opaque bucket.
 
 - Evidence basis: route_summary.scenario_count=2
 - Evidence basis: route_summary.row_count=12
 - Evidence basis: route_summary.scenarios=ownership,save_restore
-- Residual blocker: The closeout still groups ownership proof into bounded runtime slices rather than a final clause-by-clause ownership audit.
+- Evidence basis: ownership_decomposition.slice_id=2025-ownership-proof-families
+- Evidence basis: ownership_decomposition.proof_family_count=6
+- Residual blocker: The closeout now separates ownership proof into named runtime families, but it still stops short of a final clause-by-clause ownership audit.
 - Residual blocker: Hosted route parity remains scenario-backed runtime evidence, not a full vendor-equivalent ownership conformance pass.
 
 ### Callbacks
 
-- Evidence level: callback-ledger-route-backed
+- Evidence level: decomposed-callback-ledger-route-backed
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: federation_lifecycle, object_exchange, ownership, time_management, save_restore, mom, support_services
-- Assessment: Callback delivery is broad and executable across lifecycle, object, ownership, DDM, time, MOM, and support-service flows, including hosted FedPro callback decoding, reconnect-safe callback backlog cleanup across disconnect/reconnect, and direct Python ambassador behavior. The finish-line now also carries an explicit callback-by-callback ledger via the FederateAmbassador conformance matrix, and that ledger is fully route-backed across the current Python 2025 lanes.
+- Assessment: Callback delivery is broad and executable across lifecycle, object, ownership, DDM, time, MOM, and support-service flows, including hosted FedPro callback decoding, reconnect-safe callback backlog cleanup across disconnect/reconnect, and direct Python ambassador behavior. The finish-line now also carries an explicit callback-by-callback ledger via the FederateAmbassador conformance matrix, that ledger is fully route-backed across the current Python 2025 lanes, and the finish-line now separates callback proof into named runtime families instead of leaving it as a flat ledger.
 
 - Evidence basis: callback_proof_audit.ready_for_callback_by_callback_working_surface_claim=true
 - Evidence basis: callback_route_parity_audit.ready_for_full_python_lane_callback_route_parity_claim=true
 - Evidence basis: callback_route_parity_audit.hosted_or_route_backed_callback_count=55
-- Residual blocker: The callback ledger still stops short of exhaustive cross-binding callback signature/ordering equivalence proof.
+- Evidence basis: callback_decomposition.slice_id=2025-callback-proof-families
+- Evidence basis: callback_decomposition.proof_family_count=8
+- Residual blocker: The callback proof is now decomposed into named runtime families, but it still stops short of exhaustive cross-binding callback signature/ordering equivalence proof.
 - Residual blocker: Binding-route callback parity is tracked at the scenario level, not as exhaustive callback signature/ordering proof.
 
 ### OMT Handling
 
-- Evidence level: bounded-slice
+- Evidence level: decomposed-bounded-slice
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: none
-- Assessment: The OMT path is well-instrumented for parser/serializer/schema handling, metadata round-trips, association metadata, and foreign xs:any extension tolerance with extension payload preservation round-trip evidence. Arbitrary third-party extension semantics remain outside the repo-native runtime claim.
+- Assessment: The OMT path is well-instrumented for parser/serializer/schema handling, metadata round-trips, association metadata, and foreign xs:any extension tolerance with extension payload preservation round-trip evidence. The finish-line now also separates that bounded OMT proof into named decomposition audits for the extended supported subset, service-utilization crosschecks, xs:any extension tolerance, and schema-constraint validation instead of leaving it as one flat parser/validator bucket. Arbitrary third-party extension semantics remain outside the repo-native runtime claim.
 
 - Evidence basis: omt_requirement_proof_audit.ready_for_omt_traceability_claim=true
 - Evidence basis: omt_requirement_proof_audit.row_count=454
 - Evidence basis: omt_requirement_proof_audit.by_proof_status=supported-subset-traceable:454
-- Residual blocker: Foreign xs:any extension payloads are preserved as XML payloads but not interpreted as repo-native HLA metadata.
-- Residual blocker: Parser/serializer support remains a bounded OMT working surface rather than exhaustive third-party extension execution semantics.
+- Evidence basis: omt_decomposition.slice_ids=2025-service-utilization-crosscheck,2025-omt-extended-supported-subset,2025-omt-xs-any-extension-tolerance,2025-omt-schema-constraint-validation
+- Evidence basis: omt_decomposition.family_counts=service-utilization:10,extended-subset:5,xs-any:5,schema-constraint:4
+- Residual blocker: The OMT proof is now decomposed into named subset and validator families, but foreign xs:any extension payloads are still preserved as XML payloads rather than interpreted as repo-native HLA metadata.
+- Residual blocker: Parser/serializer support remains a decomposed bounded OMT working surface rather than exhaustive third-party extension execution semantics.
 
 ### Binding Routes
 
-- Evidence level: bounded-slice
+- Evidence level: decomposed-bounded-slice
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, support_services
-- Assessment: Every tracked 2025 route now has explicit scenario parity rows, and the Python in-process plus hosted FedPro routes provide substantive runtime proof for the working surface.
+- Assessment: Every tracked 2025 route now has explicit scenario parity rows, and the Python in-process plus hosted FedPro routes provide substantive runtime proof for the working surface. The finish-line now also separates route evidence into named binding and hosted-route families instead of one flat bounded bucket.
 
 - Evidence basis: route_summary.scenario_count=8
 - Evidence basis: route_summary.row_count=48
 - Evidence basis: route_summary.routes_with_full_parity=6
-- Residual blocker: Java and C++ routes are still backed by artifact/runtime-capability traces rather than exhaustive behavior equivalence proof.
+- Evidence basis: binding_route_decomposition.slice_id=2025-binding-route-proof-families
+- Evidence basis: binding_route_decomposition.proof_family_count=6
+- Residual blocker: The route evidence is now decomposed into named families, but Java and C++ routes are still backed by artifact/runtime-capability traces rather than exhaustive behavior equivalence proof.
 - Residual blocker: The hosted FedPro route remains a bounded working slice, not a full RTI conformance route.
 
 

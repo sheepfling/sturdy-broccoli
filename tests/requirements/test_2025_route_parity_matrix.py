@@ -437,6 +437,19 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][PARITY_COVERED] > 0
     assert summary["by_status"][PARTIAL] == 0
     assert summary["by_status"][MISSING] == 0
+    assert summary["primary_runtime_lane"] == {
+        "runtime_provider": "python2025",
+        "implementation_lane": "hla-backend-python2025",
+        "counts_as_python_2025_rti": True,
+        "wrapper_only": False,
+    }
+    assert summary["compatibility_wrapper_lane"] == {
+        "backend_package": "hla-backend-shim",
+        "status": "compatibility-maintained",
+        "role": "compatibility-wrapper",
+        "counts_as_python_2025_rti": False,
+        "delegates_runtime_semantics_to": "hla-backend-python2025",
+    }
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 8
     assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 8
 
@@ -455,6 +468,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
     assert "# IEEE 1516-2025 Route Parity Matrix" in md_text
     assert "This matrix is not a conformance claim" in md_text
+    assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`" in md_text
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime" in md_text
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in md_text
@@ -481,6 +495,7 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
     assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
 
     assert "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
+    assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`" in md_text
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime" in md_text
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in md_text

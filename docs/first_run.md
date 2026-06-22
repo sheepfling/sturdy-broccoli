@@ -63,7 +63,7 @@ For the primary 2025 Python RTI lane, switch next to:
 The 2025 runtime story is intentionally separate:
 
 - `python2025` is the main IEEE 1516.1-2025 RTI lane
-- `shim` is only a compatibility-wrapper provider name over that runtime
+- `hla-backend-shim` is only a compatibility-wrapper/import-compatibility package over that runtime
 
 ## What Not To Do First
 

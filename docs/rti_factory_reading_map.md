@@ -39,7 +39,6 @@ Plugin registration entrypoints live in:
 
 - [../packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py](../packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py)
 - [../packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py](../packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py)
-- [../packages/hla-backend-shim/src/hla/backends/shim/plugin.py](../packages/hla-backend-shim/src/hla/backends/shim/plugin.py)
 
 ## What To Read By Question
 
@@ -54,14 +53,9 @@ If you want to know how the 2025 backend is selected:
 1. `packages/hla-rti1516-2025/src/hla/rti1516_2025/factory.py`
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
 3. `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`
-4. `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`
-
-Read the shim plugin fourth on purpose: the factory's main 2025 selection story
-is the default `python2025` lane, while the explicit `shim` spelling is only a
-wrapper-only compatibility alias over that runtime.
 
 If you want to know why `python2025` is the selected 2025 provider today and
-why `shim` is now wrapper-only:
+why `hla.backends.shim` is now compatibility-only:
 
 1. [python_rti_backend.md](python_rti_backend.md)
 2. [../packages/hla-backend-python2025/README.md](../packages/hla-backend-python2025/README.md)
@@ -74,16 +68,15 @@ Today the repo's practical Python RTI selection story is:
 
 - `inmemory` is the real pure-Python backend for `rti1516e`
 - `python2025` is the main full executable backend lane for `rti1516_2025`
-- `shim` is an explicit compatibility-wrapper alias over that runtime rather than the implementation owner
+- `hla.backends.shim` is import-level compatibility code over that runtime rather than the implementation owner
 - hosted routes such as the 2025 FedPro gRPC path are route variants layered
   over the selected backend/factory surface, not independent RTI families
 
 So if you create a 2025 RTI ambassador through the current factory stack, you
 should expect to land on the `hla-backend-python2025` lane by default. The
-explicit `backend="shim"` spelling is wrapper-only. The main `python2025`
-factory path now does accept hosted 2025 creation through `transport=...`,
-while the explicit `shim` alias still rejects hosted ownership and remains a
-wrapper-only opt-in. The same hosted FedPro route can therefore be reached
+legacy shim provider spelling is no longer part of the supported public
+factory surface. The main `python2025` factory path now does accept hosted
+2025 creation through `transport=...`. The same hosted FedPro route can therefore be reached
 either through the explicit FedPro server plus typed `GrpcTransport` surface
 or through `create_rti_ambassador(backend="python2025", transport=...)`.
 
@@ -93,7 +86,6 @@ proof first and only then inspect the wrapper alias:
 1. `tests/test_hla_factory_composition.py`
 2. `tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main in-process `python2025` proof suite)
 3. `tests/requirements/test_2025_finish_line_snapshot.py`
-4. `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`
 
 In practice, `./tools/python verify-main-2025` is the normal proof command for
 that direct factory-selection path, while `./tools/python verify-routes-2025`

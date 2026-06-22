@@ -4,9 +4,9 @@
 Default backend is the dependency-free Python in-memory RTI.
 
 For IEEE 1516.1-2025, treat ``python2025`` as the main full Python RTI
-implementation lane. The legacy ``hla.backends.shim`` package remains only as
-an import-level compatibility surface over that same runtime and is not a
-separate RTI family.
+implementation lane. Legacy ``hla.backends.shim`` imports remain
+compatibility-wrapper code around that same runtime and do not define a
+separate RTI family or public backend-selection lane.
 
 Java backends need a vendor RTI jar/process plus a FOM module that defines the
 names used by the scenario.
@@ -32,8 +32,7 @@ _BACKEND_CHOICES = [
     "py4j",
 ]
 _BACKEND_HELP = (
-    "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI. "
-    "The legacy hla.backends.shim package remains import-level compatibility code only."
+    "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI."
 )
 _PACKAGED_FOM_BACKENDS = {
     "python2025",

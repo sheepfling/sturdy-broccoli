@@ -125,9 +125,12 @@ def test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-003")
 def test_2025_version_local_factory_rejects_legacy_shim_provider_name() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.factory import create_hla_factory, create_rti_ambassador
 
-    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+    with pytest.raises(ValueError, match="Unknown RTI provider: 'shim'"):
+        create_hla_factory(provider="shim")
+
+    with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_rti_ambassador(backend="shim")
 
 
@@ -161,5 +164,5 @@ def test_hla_factory_rejects_mismatched_spec_provider_combinations() -> None:
     with pytest.raises(ValueError, match="does not support HLA spec 'rti1516_2025'"):
         HlaFactoryRegistry.get("2025", provider="inmemory")
 
-    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+    with pytest.raises(ValueError, match="Unknown RTI provider: 'shim'"):
         HlaFactoryRegistry.get("rti1516e", provider="shim")

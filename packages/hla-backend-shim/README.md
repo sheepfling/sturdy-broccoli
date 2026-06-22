@@ -15,6 +15,11 @@ explicit module path `hla.backends.shim.runtime_aliases`, where
 `Python2025Backend`, `Python2025RTIAmbassador`, and
 `create_python2025_backend` still point through to the real runtime lane.
 
+The remaining helper modules under `hla.backends.shim.*` are deliberately
+thin compatibility forwarders into `hla.backends.python2025.*`. They are kept
+only for test-backed legacy import compatibility and should not be treated as
+the preferred surface for new runtime work or new internal imports.
+
 It is not a 2010 backend and it is not a vendor adapter. The architectural
 split that matters is already in place: `hla-backend-python2025` is the real
 2025 RTI runtime owner, and `hla-backend-shim` stays narrow and

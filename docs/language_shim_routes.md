@@ -9,9 +9,9 @@ implementation, vendor runtime, conformance claim, or compatibility promise.
 A route should only be described as standard-backed when its artifact compiles
 against the official API bundle for that language and edition.
 
-## Standard Shim Artifacts
+## Standard Binding Artifacts
 
-The language-shim route work currently tracks four standard API shim artifacts:
+The language-route work currently tracks four standard API binding artifacts:
 
 | Artifact | Standard surface | Official input | Python routes |
 | --- | --- | --- | --- |
@@ -31,8 +31,8 @@ For the 2025 lane specifically:
   `cpp-standard-2025-pybind`, and `cpp-standard-2025-grpc` are binding routes,
   not separate RTIs
 - those routes execute over the primary `hla-backend-python2025` runtime lane
-- `hla-backend-shim` remains only a compatibility-wrapper alias where older
-  provider names or wrapper-shaped entry points still exist
+- `hla-backend-shim` remains only a compatibility-wrapper package where older
+  import paths or wrapper-shaped entry points still exist
 
 `java-standard-2010-jpype` and `java-standard-2010-py4j` are real plugin
 routes, but they are unavailable until `./tools/shim-routes build
@@ -40,7 +40,7 @@ java-standard-2010` produces the official-API-backed jar.
 
 ## Completion Contract
 
-A shim is complete only when:
+A language binding route is complete only when:
 
 1. It compiles against the official standard API bundle.
 2. It exports the standard RTI factory/loading mechanism for that language.

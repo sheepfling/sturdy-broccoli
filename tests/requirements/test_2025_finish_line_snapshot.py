@@ -1342,6 +1342,120 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "turnUpdatesOnForObjectInstance",
     ]
     assert callback_route_parity_audit["sample_callback_helper_only_rows"] == []
+    callback_decomposition_audit = snapshot["callback_decomposition_audit"]
+    assert callback_decomposition_audit["audit_status"] == "callback-decomposition-captured"
+    assert callback_decomposition_audit["slice_id"] == "2025-callback-proof-families"
+    assert callback_decomposition_audit["slice_ids"] == [
+        "2025-callback-context-object-delivery",
+        "2025-callback-context-interaction-delivery",
+        "2025-connection-lifecycle-services",
+        "2025-connect-and-federation-catalog-services",
+        "2025-federate-membership-and-resign-services",
+        "2025-synchronization-point-services",
+        "2025-object-delete-remove-flows",
+        "2025-object-attribute-update-request-callbacks",
+        "2025-object-scope-advisory-callbacks",
+        "2025-object-update-rate-advisory-callbacks",
+        "2025-object-attribute-transport-callbacks",
+        "2025-object-interaction-transport-callbacks",
+        "2025-single-name-reservation-services",
+        "2025-multi-name-reservation-services",
+        "2025-save-restore-lifecycle",
+        "2025-fedpro-hosted-runtime-core",
+        "2025-fedpro-hosted-runtime-extended-state",
+    ]
+    assert callback_decomposition_audit["requirement_count"] == 66
+    assert callback_decomposition_audit["proof_family_count"] == 8
+    assert callback_decomposition_audit["direct_family_count"] == 8
+    assert callback_decomposition_audit["hosted_family_count"] == 8
+    assert [family["family"] for family in callback_decomposition_audit["proof_families"]] == [
+        "declaration-relevance-and-interest-advisories",
+        "federation-sync-save-restore-and-reporting",
+        "object-discovery-delivery-and-removal",
+        "object-advisory-transport-and-name-reservation-callbacks",
+        "supplemental-context-and-region-introspection",
+        "ownership-negotiation-and-query-callbacks",
+        "time-grant-regulation-and-retraction",
+        "callback-control-and-backlog-hygiene",
+    ]
+    assert "no longer just a flat ledger plus one route-backed count" in callback_decomposition_audit["current_assessment"]
+    assert "declaration advisories, federation sync/save-restore/reporting" in callback_decomposition_audit["current_assessment"]
+    assert callback_decomposition_audit["proof_families"][0]["hosted_tests"][-1].endswith(
+        "test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
+    )
+    assert callback_decomposition_audit["proof_families"][4]["direct_tests"] == [
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
+    ]
+    assert callback_decomposition_audit["proof_families"][-1]["hosted_tests"][-1].endswith(
+        "test_2025_factory_hosted_python2025_route_clears_stale_plain_callbacks_and_preserves_post_restore_routing"
+    )
+    time_management_decomposition_audit = snapshot["time_management_decomposition_audit"]
+    assert time_management_decomposition_audit["audit_status"] == "time-management-decomposition-captured"
+    assert time_management_decomposition_audit["slice_id"] == "2025-time-management-proof-families"
+    assert time_management_decomposition_audit["slice_ids"] == [
+        "2025-time-mode-enable-disable",
+        "2025-time-advance-request-modes",
+        "2025-time-grant-and-async-delivery",
+        "2025-time-query-and-lookahead-control",
+        "2025-time-queries-retraction-and-order",
+        "2025-lookahead-window-proofs",
+        "2025-save-restore-lifecycle",
+    ]
+    assert time_management_decomposition_audit["requirement_count"] == 48
+    assert time_management_decomposition_audit["proof_family_count"] == 5
+    assert time_management_decomposition_audit["direct_family_count"] == 5
+    assert time_management_decomposition_audit["hosted_family_count"] == 5
+    assert [family["family"] for family in time_management_decomposition_audit["proof_families"]] == [
+        "factory-mode-enable-and-request-primitives",
+        "galt-lits-query-and-lookahead-observability",
+        "timestamped-delivery-retraction-and-ordering",
+        "lookahead-window-proof-ladder",
+        "save-restore-time-state-and-lookahead-rollback",
+    ]
+    assert "no longer just one bounded query/window bucket" in time_management_decomposition_audit["current_assessment"]
+    assert "GALT/LITS and lookahead observability" in time_management_decomposition_audit["current_assessment"]
+    assert time_management_decomposition_audit["proof_families"][0]["hosted_tests"][-1].endswith(
+        "test_2025_factory_hosted_python2025_route_runs_mom_time_management_service_interactions"
+    )
+    assert time_management_decomposition_audit["proof_families"][3]["direct_tests"][-1].endswith(
+        "test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end"
+    )
+    assert time_management_decomposition_audit["proof_families"][-1]["hosted_tests"][-1].endswith(
+        "test_2025_transport_server_treats_callback_delivery_as_runtime_policy_not_saved_state_over_fedpro_route"
+    )
+    binding_route_decomposition_audit = snapshot["binding_route_decomposition_audit"]
+    assert binding_route_decomposition_audit["audit_status"] == "binding-route-decomposition-captured"
+    assert binding_route_decomposition_audit["slice_id"] == "2025-binding-route-proof-families"
+    assert binding_route_decomposition_audit["slice_ids"] == [
+        "2025-java-binding-source-trace",
+        "2025-cpp-binding-source-trace",
+        "2025-standard-route-runtime-capability",
+        "2025-fedpro-typed-transport-surface",
+        "2025-fedpro-hosted-runtime-core",
+        "2025-fedpro-hosted-runtime-extended-state",
+    ]
+    assert binding_route_decomposition_audit["requirement_count"] == 16
+    assert binding_route_decomposition_audit["proof_family_count"] == 6
+    assert binding_route_decomposition_audit["route_group_coverage_count"] == 16
+    assert [family["family"] for family in binding_route_decomposition_audit["proof_families"]] == [
+        "java-binding-source-and-intake-evidence",
+        "cpp-binding-source-and-intake-evidence",
+        "standard-java-cpp-runtime-capability-traces",
+        "fedpro-typed-transport-and-schema-surface",
+        "fedpro-hosted-runtime-core-and-extended-state",
+        "cross-route-scenario-parity-ledger",
+    ]
+    assert "named binding and hosted-route families" in binding_route_decomposition_audit["current_assessment"]
+    assert "bounded adapter evidence and the main python2025 runtime owner explicit" in binding_route_decomposition_audit["current_assessment"]
+    assert binding_route_decomposition_audit["proof_families"][2]["route_groups"] == [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ]
+    assert binding_route_decomposition_audit["proof_families"][4]["evidence_tests"][0] == (
+        "tests/transport/test_grpc_transport_2025.py"
+    )
     support_service_audit = snapshot["support_service_proof_audit"]
     assert support_service_audit["row_count"] == 62
     assert support_service_audit["focused_executable_row_count"] == 62
@@ -1468,8 +1582,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert shim_families["ddm-region-runtime"]["line_count"] >= 146
     assert shim_families["save-restore-runtime"]["method_count"] == 14
     assert shim_families["save-restore-runtime"]["line_count"] == 55
-    assert shim_families["ownership-runtime"]["method_count"] == 14
-    assert shim_families["ownership-runtime"]["line_count"] == 94
+    assert shim_families["ownership-runtime"]["method_count"] == 15
+    assert shim_families["ownership-runtime"]["line_count"] == 101
     assert shim_families["time-management-runtime"]["method_count"] >= 36
     assert shim_families["time-management-runtime"]["line_count"] >= 237
     assert shim_families["misc-support"]["method_count"] >= 12
@@ -1616,6 +1730,162 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_runs_transportation_type_restore_persistence_scenario_over_fedpro_route"
     )
     assert "lifecycle control, shared rollback scenarios, routing/policy rollback, ownership rollback" in save_restore_audit["current_assessment"]
+    federation_management_audit = snapshot["federation_management_decomposition_audit"]
+    assert federation_management_audit["audit_status"] == "federation-management-decomposition-captured"
+    assert federation_management_audit["slice_id"] == "2025-federation-management-proof-families"
+    assert federation_management_audit["slice_ids"] == [
+        "2025-lifecycle-and-members",
+        "2025-connection-lifecycle-services",
+        "2025-connect-and-federation-catalog-services",
+        "2025-federate-membership-and-resign-services",
+        "2025-synchronization-point-services",
+        "2025-save-restore-lifecycle",
+    ]
+    assert federation_management_audit["requirement_count"] == 40
+    assert federation_management_audit["proof_family_count"] == 6
+    assert federation_management_audit["direct_family_count"] == 6
+    assert federation_management_audit["hosted_family_count"] == 6
+    assert [family["family"] for family in federation_management_audit["proof_families"]] == [
+        "connect-create-destroy-and-catalog-control",
+        "join-membership-and-name-preconditions",
+        "resign-disconnect-loss-and-member-cleanup",
+        "synchronization-barriers-and-targeted-callbacks",
+        "save-restore-lifecycle-control",
+        "save-restore-participant-recovery-and-branching",
+    ]
+    assert federation_management_audit["proof_families"][0]["direct_tests"][-1].endswith(
+        "test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined"
+    )
+    assert federation_management_audit["proof_families"][2]["hosted_tests"][4].endswith(
+        "test_2025_transport_server_keeps_other_federates_joined_after_disconnect_and_resign_over_fedpro_schema"
+    )
+    assert federation_management_audit["proof_families"][3]["hosted_tests"][-1].endswith(
+        "test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema"
+    )
+    assert federation_management_audit["proof_families"][5]["hosted_tests"][1].endswith(
+        "test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema"
+    )
+    assert "connect/create/catalog control, join or membership reporting" in federation_management_audit["current_assessment"]
+    support_services_audit = snapshot["support_services_decomposition_audit"]
+    assert support_services_audit["audit_status"] == "support-services-decomposition-captured"
+    assert support_services_audit["slice_id"] == "2025-support-services-proof-families"
+    assert support_services_audit["slice_ids"] == [
+        "2025-switch-set-get-model",
+        "2025-single-name-reservation-services",
+        "2025-multi-name-reservation-services",
+        "2025-support-federate-and-object-identity-lookups",
+        "2025-support-attribute-interaction-catalog-lookups",
+        "2025-support-policy-update-and-transport-lookups",
+        "2025-support-interaction-dimension-and-range-lookups",
+        "2025-support-handle-normalization-and-region-introspection",
+        "2025-support-advisory-and-reporting-state-inquiries",
+        "2025-support-runtime-policy-state-inquiries",
+        "2025-support-advisory-and-reporting-state-controls",
+        "2025-support-runtime-policy-state-controls",
+    ]
+    assert support_services_audit["requirement_count"] == 59
+    assert support_services_audit["proof_family_count"] == 5
+    assert support_services_audit["direct_family_count"] == 5
+    assert support_services_audit["hosted_family_count"] == 5
+    assert [family["family"] for family in support_services_audit["proof_families"]] == [
+        "name-reservation-and-release-flows",
+        "identity-catalog-and-handle-normalization-lookups",
+        "transport-order-update-dimension-and-range-lookups",
+        "switch-inquiry-and-control-model",
+        "factory-decode-and-hosted-support-seam",
+    ]
+    assert support_services_audit["proof_families"][0]["hosted_tests"][2].endswith(
+        "test_2025_transport_server_runs_shared_name_reservation_scenario_over_fedpro_route"
+    )
+    assert support_services_audit["proof_families"][1]["direct_tests"][1].endswith(
+        "test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values"
+    )
+    assert support_services_audit["proof_families"][3]["direct_tests"][0].endswith(
+        "test_2025_provider_supports_explicit_switch_inquiry_and_control_model"
+    )
+    assert support_services_audit["proof_families"][4]["hosted_tests"][-1].endswith(
+        "test_2025_transport_server_drains_multiple_callbacks_in_order_over_fedpro_schema"
+    )
+    assert "name reservation and release flows, identity/catalog normalization lookups" in support_services_audit["current_assessment"]
+    object_management_audit = snapshot["object_management_decomposition_audit"]
+    assert object_management_audit["audit_status"] == "object-management-decomposition-captured"
+    assert object_management_audit["slice_id"] == "2025-object-management-proof-families"
+    assert object_management_audit["slice_ids"] == [
+        "2025-basic-object-exchange",
+        "2025-declaration-publication-services",
+        "2025-declaration-subscription-services",
+        "2025-declaration-relevance-advisory-callbacks",
+        "2025-object-delete-remove-flows",
+        "2025-object-attribute-update-request-callbacks",
+        "2025-object-scope-advisory-callbacks",
+        "2025-object-update-rate-advisory-callbacks",
+        "2025-object-attribute-transport-callbacks",
+        "2025-object-interaction-transport-callbacks",
+        "2025-directed-interaction-boundary",
+        "2025-ddm-default-attribute-policy",
+    ]
+    assert object_management_audit["requirement_count"] == 67
+    assert object_management_audit["proof_family_count"] == 7
+    assert object_management_audit["direct_family_count"] == 7
+    assert object_management_audit["hosted_family_count"] == 7
+    assert [family["family"] for family in object_management_audit["proof_families"]] == [
+        "declaration-and-basic-exchange-gating",
+        "deletion-and-local-known-state-lifecycle",
+        "attribute-value-update-request-routing",
+        "advisory-and-update-rate-callbacks",
+        "transportation-query-and-policy-state",
+        "object-region-scope-and-passive-alias-routing",
+        "directed-and-directed-ddm-interaction-routing",
+    ]
+    assert object_management_audit["proof_families"][0]["direct_tests"][-1].endswith(
+        "test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter"
+    )
+    assert object_management_audit["proof_families"][1]["hosted_tests"][4].endswith(
+        "test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing_over_fedpro_schema"
+    )
+    assert object_management_audit["proof_families"][4]["direct_tests"][3].endswith(
+        "test_2025_provider_restores_transportation_type_state_via_compat_adapter"
+    )
+    assert object_management_audit["proof_families"][6]["hosted_tests"][1].endswith(
+        "test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_slice"
+    )
+    assert "declaration/exchange gating, deletion and local-known-state lifecycle" in object_management_audit["current_assessment"]
+    ownership_audit = snapshot["ownership_decomposition_audit"]
+    assert ownership_audit["audit_status"] == "ownership-decomposition-captured"
+    assert ownership_audit["slice_id"] == "2025-ownership-proof-families"
+    assert ownership_audit["slice_ids"] == [
+        "2025-ownership-divestiture-confirmation-flows",
+        "2025-ownership-release-and-if-wanted-flows",
+        "2025-ownership-acquisition-assumption-flows",
+        "2025-ownership-acquisition-availability-cancellation-flows",
+        "2025-ownership-query-and-resign-policies",
+        "2025-save-restore-lifecycle",
+    ]
+    assert ownership_audit["requirement_count"] == 18
+    assert ownership_audit["proof_family_count"] == 6
+    assert ownership_audit["direct_family_count"] == 6
+    assert ownership_audit["hosted_family_count"] == 6
+    assert [family["family"] for family in ownership_audit["proof_families"]] == [
+        "divestiture-and-confirmation-flows",
+        "release-and-if-wanted-flows",
+        "acquisition-assumption-and-notification",
+        "acquisition-availability-and-cancellation",
+        "query-visibility-and-resign-policies",
+        "rollback-and-restore-state",
+    ]
+    assert ownership_audit["proof_families"][0]["direct_tests"][1].endswith(
+        "test_2025_provider_runs_negotiated_ownership_divestiture_scenario_via_compat_adapter"
+    )
+    assert ownership_audit["proof_families"][1]["hosted_tests"][2].endswith(
+        "test_2025_transport_server_runs_divestiture_if_wanted_ownership_scenario_over_fedpro_route"
+    )
+    assert ownership_audit["proof_families"][2]["hosted_tests"][2].endswith(
+        "test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_observable_runtime_effects_over_fedpro_schema"
+    )
+    assert ownership_audit["proof_families"][5]["direct_tests"][-1].endswith(
+        "test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility"
+    )
+    assert "divestiture/confirmation, release/if-wanted, acquisition/assumption" in ownership_audit["current_assessment"]
     directed_audit = snapshot["directed_interaction_decomposition_audit"]
     assert directed_audit["audit_status"] == "directed-interaction-decomposition-captured"
     assert directed_audit["slice_id"] == "2025-directed-interaction-boundary"
@@ -1660,10 +1930,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema"
     )
     assert "lookup/default-policy control, object-region routing and scope advisories" in ddm_audit["current_assessment"]
-    route_backing_audit = snapshot["shim_pressure_family_route_backing_audit"]
-    assert route_backing_audit["audit_status"] == "shim-pressure-family-route-backing-captured"
-    assert route_backing_audit["family_count"] == 16
-    assert route_backing_audit["fully_route_backed_family_count"] == 16
+    route_backing_audit = snapshot["wrapper_boundary_family_route_backing_audit"]
+    assert snapshot["shim_pressure_family_route_backing_audit"] == route_backing_audit
+    assert route_backing_audit["audit_status"] == "wrapper-boundary-family-route-backing-captured"
+    assert route_backing_audit["family_count"] == 22
+    assert route_backing_audit["fully_route_backed_family_count"] == 22
     assert route_backing_audit["all_families_route_backed_across_current_python_lanes"] is True
     assert route_backing_audit["families"][:4] == [
         {
@@ -1690,18 +1961,62 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {
             "slice_id": "2025-save-restore-lifecycle",
             "family": "ownership-rollback",
-            "direct_test_count": 3,
+            "direct_test_count": 4,
             "hosted_test_count": 4,
             "route_backed_across_current_python_lanes": True,
         },
     ]
-    assert "Every currently named family across save/restore, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof" in route_backing_audit["current_assessment"]
-    asymmetry_audit = snapshot["shim_pressure_family_asymmetry_audit"]
-    assert asymmetry_audit["audit_status"] == "shim-pressure-family-asymmetry-captured"
-    assert asymmetry_audit["family_count"] == 16
+    assert route_backing_audit["families"][5:11] == [
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "family": "divestiture-and-confirmation-flows",
+            "direct_test_count": 4,
+            "hosted_test_count": 4,
+            "route_backed_across_current_python_lanes": True,
+        },
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "family": "release-and-if-wanted-flows",
+            "direct_test_count": 3,
+            "hosted_test_count": 3,
+            "route_backed_across_current_python_lanes": True,
+        },
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "family": "acquisition-assumption-and-notification",
+            "direct_test_count": 3,
+            "hosted_test_count": 3,
+            "route_backed_across_current_python_lanes": True,
+        },
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "family": "acquisition-availability-and-cancellation",
+            "direct_test_count": 4,
+            "hosted_test_count": 4,
+            "route_backed_across_current_python_lanes": True,
+        },
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "family": "query-visibility-and-resign-policies",
+            "direct_test_count": 3,
+            "hosted_test_count": 3,
+            "route_backed_across_current_python_lanes": True,
+        },
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "family": "rollback-and-restore-state",
+            "direct_test_count": 4,
+            "hosted_test_count": 4,
+            "route_backed_across_current_python_lanes": True,
+        },
+    ]
+    assert "Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof" in route_backing_audit["current_assessment"]
+    asymmetry_audit = snapshot["wrapper_boundary_family_asymmetry_audit"]
+    assert snapshot["shim_pressure_family_asymmetry_audit"] == asymmetry_audit
+    assert asymmetry_audit["audit_status"] == "wrapper-boundary-family-asymmetry-captured"
+    assert asymmetry_audit["family_count"] == 22
     assert asymmetry_audit["by_balance"] == {
-        "balanced": 15,
-        "hosted-heavier": 1,
+        "balanced": 22,
     }
     assert asymmetry_audit["families"][:5] == [
         {
@@ -1734,11 +2049,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {
             "slice_id": "2025-save-restore-lifecycle",
             "family": "ownership-rollback",
-            "direct_test_count": 3,
+            "direct_test_count": 4,
             "hosted_test_count": 4,
             "route_backed_across_current_python_lanes": True,
-            "balance": "hosted-heavier",
-            "count_delta": -1,
+            "balance": "balanced",
+            "count_delta": 0,
         },
         {
             "slice_id": "2025-save-restore-lifecycle",
@@ -1750,11 +2065,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "count_delta": 0,
         },
     ]
-    assert "not perfectly symmetric" in asymmetry_audit["current_assessment"]
-    assert "close hosted-heavier and direct-heavier family imbalances" in asymmetry_audit["current_assessment"]
+    assert "are now symmetric at the named proof-family level" in asymmetry_audit["current_assessment"]
+    assert "deeper behavioral expansion, stronger evidence quality, and architectural judgment" in asymmetry_audit["current_assessment"]
     assert "current-package pressure families" in asymmetry_audit["current_assessment"]
     assert "remain wrapper-fronted" not in asymmetry_audit["current_assessment"]
-    assert "inventing new top-level proof areas" in asymmetry_audit["current_assessment"]
+    assert "remaining compatibility-wrapper seam" in asymmetry_audit["current_assessment"]
     coherence_audit = snapshot["current_lane_coherence_audit"]
     assert coherence_audit["audit_status"] == "current-lane-coherence-captured"
     assert coherence_audit["coherence_claim"] == "bounded-working-RTI-surface"
@@ -1766,6 +2081,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "2025-directed-interaction-boundary",
         "2025-save-restore-lifecycle",
     ]
+    assert coherence_audit["python2025_backend_concentration_is_material"] is True
     assert coherence_audit["shim_backend_concentration_is_material"] is True
     assert coherence_audit["all_pressure_families_route_backed_across_current_python_lanes"] is True
     assert "defensible coherence story" in coherence_audit["current_assessment"]
@@ -1793,6 +2109,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "supports": ["rti1516_2025"],
         "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
         "spec_package": "hla-rti1516-2025",
+    }
+    assert implementation_lane_audit["compatibility_wrapper_lane"] == {
+        "backend_package": "hla-backend-shim",
+        "status": "compatibility-maintained",
+        "role": "compatibility-wrapper",
+        "counts_as_python_2025_rti": False,
+        "delegates_runtime_semantics_to": "hla-backend-python2025",
     }
     assert implementation_lane_audit["reference_2010_lane"] == {
         "backend_package": "hla-backend-inmemory",
@@ -2014,8 +2337,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "docs/verification/verification_plan.md",
         "docs/backend_route_inventory.md",
         "docs/backend_route_inventory_remote.md",
+        "packages/hla-backend-python2025/pyproject.toml",
         "packages/hla-backend-python2025/README.md",
         "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+        "packages/hla-backend-shim/pyproject.toml",
         "packages/hla-backend-shim/README.md",
         "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
         "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
@@ -2091,8 +2416,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "the dedicated python2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
         "backend plugin discovery reports hla-backend-python2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
     ]
-    assert extraction_audit["runtime_semantics_to_extract_first_count"] == 3
-    assert extraction_audit["route_backed_runtime_semantics_count"] == 3
+    assert extraction_audit["runtime_semantics_to_extract_first_count"] == 4
+    assert extraction_audit["route_backed_runtime_semantics_count"] == 4
     assert extraction_audit["all_candidate_runtime_semantics_route_backed"] is True
     migrated_runtime_modules = extraction_audit["migrated_runtime_modules"]
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_scope_runtime.py" in migrated_runtime_modules
@@ -2133,10 +2458,26 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
                 "ownership-rollback",
                 "time-window-and-time-state-rollback",
             ],
-            "direct_test_count": 28,
+            "direct_test_count": 29,
             "hosted_test_count": 29,
             "route_backed": True,
             "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
+        },
+        {
+            "slice_id": "2025-ownership-proof-families",
+            "proof_family_count": 6,
+            "proof_families": [
+                "divestiture-and-confirmation-flows",
+                "release-and-if-wanted-flows",
+                "acquisition-assumption-and-notification",
+                "acquisition-availability-and-cancellation",
+                "query-visibility-and-resign-policies",
+                "rollback-and-restore-state",
+            ],
+            "direct_test_count": 21,
+            "hosted_test_count": 21,
+            "route_backed": True,
+            "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
         },
         {
             "slice_id": "2025-directed-interaction-boundary",
@@ -2173,8 +2514,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_audit["pressure_signal"] == {
         "runtime_backend_slice_share": 0.553,
         "semantic_concentration_is_material": True,
-        "pressure_family_count": 16,
-        "fully_route_backed_pressure_family_count": 16,
+        "pressure_family_count": 22,
+        "fully_route_backed_pressure_family_count": 22,
     }
     assert "The extraction cutover is materially underway" in extraction_audit["current_assessment"]
     assert "hla-backend-python2025 now owns the live backend" in extraction_audit["current_assessment"]
@@ -2183,7 +2524,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_audit["pre_extraction_gates"][0] == "keep the dedicated rti1516_2025 Python backend plugin discoverable and keep the backend scan detecting it"
     extraction_impact_audit = snapshot["extraction_impact_audit"]
     assert extraction_impact_audit["audit_status"] == "extraction-impact-map-captured"
-    assert extraction_impact_audit["slice_count"] == 3
+    assert extraction_impact_audit["slice_count"] == 4
     assert extraction_impact_audit["all_candidate_slices_have_source_family_map"] is True
     assert extraction_impact_audit["all_candidate_slices_route_backed"] is True
     assert extraction_impact_audit["largest_current_source_baseline"] == "2025-ddm-default-attribute-policy"
@@ -2198,6 +2539,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "save-restore-runtime",
         "time-management-runtime",
         "ownership-runtime",
+        "callback-delivery-and-control",
+    ]
+    assert impact_rows["2025-ownership-proof-families"]["source_family_count"] == 3
+    assert impact_rows["2025-ownership-proof-families"]["current_source_line_baseline"] >= 227
+    assert impact_rows["2025-ownership-proof-families"]["current_source_method_baseline"] >= 44
+    assert [family["family"] for family in impact_rows["2025-ownership-proof-families"]["source_families"]] == [
+        "ownership-runtime",
+        "save-restore-runtime",
         "callback-delivery-and-control",
     ]
     assert impact_rows["2025-directed-interaction-boundary"]["source_family_count"] == 3
@@ -2267,7 +2616,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert all(row["route_summary"]["by_status"].get("missing", 0) == 0 for row in route_backed_dimensions)
     assert all(row["route_summary"]["by_status"].get("partial", 0) == 0 for row in route_backed_dimensions)
 
-    assert dimensions["federation_management"]["evidence_level"] == "strong-slice"
+    assert dimensions["federation_management"]["evidence_level"] == "decomposed-strong-slice"
     assert dimensions["federation_management"]["bounded_working_surface_ready"] is True
     assert "2025-connect-and-federation-catalog-services" in dimensions["federation_management"]["implemented_slice_ids"]
     assert "2025-federate-membership-and-resign-services" in dimensions["federation_management"]["implemented_slice_ids"]
@@ -2279,13 +2628,20 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "route_summary.scenario_count=2",
         "route_summary.row_count=12",
         "route_summary.routes_with_full_parity=6",
+        "federation_management_decomposition.slice_id=2025-federation-management-proof-families",
+        "federation_management_decomposition.proof_family_count=6",
     ]
+    assert "finish-line now separates that proof into named families" in dimensions["federation_management"]["current_assessment"]
+    assert "connect/create/catalog control, join or membership reporting" in dimensions["federation_management"]["current_assessment"]
+    assert dimensions["object_management"]["evidence_level"] == "decomposed-strong-slice"
     assert dimensions["object_management"]["route_summary"]["by_status"]["parity-covered"] == 18
     assert dimensions["object_management"]["route_summary"]["scenario_count"] == 3
     assert dimensions["object_management"]["evidence_basis"] == [
         "route_summary.scenario_count=3",
         "route_summary.row_count=18",
         "route_summary.scenarios=ddm,object_exchange,ownership",
+        "object_management_decomposition.slice_id=2025-object-management-proof-families",
+        "object_management_decomposition.proof_family_count=7",
     ]
     assert "2025-declaration-publication-services" in dimensions["object_management"]["implemented_slice_ids"]
     assert "2025-declaration-subscription-services" in dimensions["object_management"]["implemented_slice_ids"]
@@ -2294,10 +2650,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "2025-object-attribute-update-request-callbacks" in dimensions["object_management"]["implemented_slice_ids"]
     assert "2025-object-attribute-transport-callbacks" in dimensions["object_management"]["implemented_slice_ids"]
     assert "2025-object-interaction-transport-callbacks" in dimensions["object_management"]["implemented_slice_ids"]
+    assert "finish-line now separates that proof into named families" in dimensions["object_management"]["current_assessment"]
+    assert "declaration and exchange gating, delete/local-known-state lifecycle" in dimensions["object_management"]["current_assessment"]
     assert "Hosted FedPro replay now also covers rollback-sensitive object state" in dimensions["object_management"]["current_assessment"]
     assert "stale timed-remove cleanup" in dimensions["object_management"]["current_assessment"]
     assert "restored local-known-state after local delete" in dimensions["object_management"]["current_assessment"]
-    assert dimensions["ownership_management"]["evidence_level"] == "strong-slice"
+    assert dimensions["ownership_management"]["evidence_level"] == "decomposed-strong-slice"
     assert "2025-ownership-divestiture-confirmation-flows" in dimensions["ownership_management"]["implemented_slice_ids"]
     assert "2025-ownership-release-and-if-wanted-flows" in dimensions["ownership_management"]["implemented_slice_ids"]
     assert "2025-ownership-acquisition-assumption-flows" in dimensions["ownership_management"]["implemented_slice_ids"]
@@ -2308,14 +2666,19 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "route_summary.scenario_count=2",
         "route_summary.row_count=12",
         "route_summary.scenarios=ownership,save_restore",
+        "ownership_decomposition.slice_id=2025-ownership-proof-families",
+        "ownership_decomposition.proof_family_count=6",
     ]
+    assert "finish-line now separates that proof into named ownership families" in dimensions["ownership_management"]["current_assessment"]
     assert dimensions["time_management"]["route_summary"]["by_status"]["parity-covered"] == 12
     assert "tests/test_rti1516_2025_spec_and_shim.py" in dimensions["time_management"]["evidence_tests"]
-    assert dimensions["time_management"]["evidence_level"] == "query-and-window-proof-backed"
+    assert dimensions["time_management"]["evidence_level"] == "decomposed-query-and-window-proof-backed"
     assert dimensions["time_management"]["evidence_basis"] == [
         "python_rti_milestone_audit bounded time rows=python-2025-fedpro-grpc:bounded-lookahead-evidence,python-2025-fedpro-grpc:bounded-query-evidence,python-2025-inprocess:bounded-lookahead-evidence,python-2025-inprocess:bounded-query-evidence",
         "time_window_vendor_parity_audit.audit_status=time-window-vendor-parity-captured",
         "time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion",
+        "time_management_decomposition.slice_id=2025-time-management-proof-families",
+        "time_management_decomposition.proof_family_count=5",
     ]
     assert "2025-time-mode-enable-disable" in dimensions["time_management"]["implemented_slice_ids"]
     assert "2025-time-advance-request-modes" in dimensions["time_management"]["implemented_slice_ids"]
@@ -2323,6 +2686,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "2025-time-query-and-lookahead-control" in dimensions["time_management"]["implemented_slice_ids"]
     assert "Target/Radar lookahead-window proof ladder" in dimensions["time_management"]["current_assessment"]
     assert "negative-oracle guards" in dimensions["time_management"]["current_assessment"]
+    assert "named runtime proof families instead of one flat bounded time bucket" in dimensions["time_management"]["current_assessment"]
+    assert "The closeout now separates time proof into named runtime families" in dimensions["time_management"]["residual_blockers"][0]
     assert dimensions["support_services"]["route_summary"]["by_status"]["parity-covered"] == 6
     assert "2025-support-federate-and-object-identity-lookups" in dimensions["support_services"]["implemented_slice_ids"]
     assert "2025-support-attribute-interaction-catalog-lookups" in dimensions["support_services"]["implemented_slice_ids"]
@@ -2334,29 +2699,39 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "2025-support-advisory-and-reporting-state-controls" in dimensions["support_services"]["implemented_slice_ids"]
     assert "2025-support-runtime-policy-state-controls" in dimensions["support_services"]["implemented_slice_ids"]
     assert "2025-standard-route-runtime-capability" in dimensions["support_services"]["implemented_slice_ids"]
-    assert dimensions["support_services"]["evidence_level"] == "per-service-runtime-traceable"
+    assert dimensions["support_services"]["evidence_level"] == "decomposed-per-service-runtime-traceable"
     assert dimensions["omt_handling"]["evidence_basis"] == [
         "omt_requirement_proof_audit.ready_for_omt_traceability_claim=true",
         "omt_requirement_proof_audit.row_count=454",
         "omt_requirement_proof_audit.by_proof_status=supported-subset-traceable:454",
+        "omt_decomposition.slice_ids=2025-service-utilization-crosscheck,2025-omt-extended-supported-subset,2025-omt-xs-any-extension-tolerance,2025-omt-schema-constraint-validation",
+        "omt_decomposition.family_counts=service-utilization:10,extended-subset:5,xs-any:5,schema-constraint:4",
     ]
     assert dimensions["binding_routes"]["evidence_basis"] == [
         "route_summary.scenario_count=8",
         "route_summary.row_count=48",
         "route_summary.routes_with_full_parity=6",
+        "binding_route_decomposition.slice_id=2025-binding-route-proof-families",
+        "binding_route_decomposition.proof_family_count=6",
     ]
     assert dimensions["support_services"]["evidence_basis"] == [
         "support_service_proof_audit.ready_for_support_service_traceability_claim=true",
         "support_service_proof_audit.focused_executable_row_count=62",
         "support_service_proof_audit.complete_negative_path_row_count=61",
+        "support_services_decomposition.slice_id=2025-support-services-proof-families",
+        "support_services_decomposition.proof_family_count=5",
     ]
-    assert "per-service runtime traceability and complete actionable negative-path coverage inside the Python routes" in dimensions["support_services"]["residual_blockers"][0]
+    assert "it now separates that proof into named families" in dimensions["support_services"]["current_assessment"]
+    assert "reservation/release flows, lookup and normalization surfaces" in dimensions["support_services"]["current_assessment"]
+    assert "per-service runtime traceability plus complete actionable negative-path coverage inside the Python routes" in dimensions["support_services"]["residual_blockers"][0]
     assert "hosted FedPro route remains a bounded runtime slice rather than a full support-service conformance route" in dimensions["support_services"]["residual_blockers"][1]
-    assert dimensions["callbacks"]["evidence_level"] == "callback-ledger-route-backed"
+    assert dimensions["callbacks"]["evidence_level"] == "decomposed-callback-ledger-route-backed"
     assert dimensions["callbacks"]["evidence_basis"] == [
         "callback_proof_audit.ready_for_callback_by_callback_working_surface_claim=true",
         "callback_route_parity_audit.ready_for_full_python_lane_callback_route_parity_claim=true",
         "callback_route_parity_audit.hosted_or_route_backed_callback_count=55",
+        "callback_decomposition.slice_id=2025-callback-proof-families",
+        "callback_decomposition.proof_family_count=8",
     ]
     assert tuple(dimensions["callbacks"]["route_scenarios"]) == (
         "federation_lifecycle",
@@ -2369,26 +2744,33 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     )
     assert dimensions["callbacks"]["route_summary"]["by_status"]["parity-covered"] == 42
     assert "fully route-backed across the current Python 2025 lanes" in dimensions["callbacks"]["current_assessment"]
+    assert "named runtime families instead of leaving it as a flat ledger" in dimensions["callbacks"]["current_assessment"]
     assert "2025-fedpro-hosted-runtime-core" in dimensions["callbacks"]["implemented_slice_ids"]
     assert "2025-fedpro-hosted-runtime-extended-state" in dimensions["callbacks"]["implemented_slice_ids"]
+    assert "The callback proof is now decomposed into named runtime families" in dimensions["callbacks"]["residual_blockers"][0]
+    assert "Binding-route callback parity is tracked at the scenario level" in dimensions["callbacks"]["residual_blockers"][1]
     assert "Hosted FedPro replay now also proves restored in-flight ownership negotiation state" in dimensions["ownership_management"]["current_assessment"]
     assert "restored cross-federate owner-visibility queries" in dimensions["ownership_management"]["current_assessment"]
     assert dimensions["omt_handling"]["route_summary"]["row_count"] == 0
     assert tuple(dimensions["omt_handling"]["route_scenarios"]) == ()
     assert dimensions["omt_handling"]["bounded_working_surface_ready"] is True
     assert "extension payload preservation" in dimensions["omt_handling"]["current_assessment"]
-    assert dimensions["omt_handling"]["evidence_level"] == "bounded-slice"
+    assert "named decomposition audits for the extended supported subset" in dimensions["omt_handling"]["current_assessment"]
+    assert dimensions["omt_handling"]["evidence_level"] == "decomposed-bounded-slice"
+    assert "The OMT proof is now decomposed into named subset and validator families" in dimensions["omt_handling"]["residual_blockers"][0]
     assert "2025-omt-schema-constraint-validation" in dimensions["omt_handling"]["implemented_slice_ids"]
     assert "2025-omt-xs-any-extension-tolerance" in dimensions["omt_handling"]["implemented_slice_ids"]
     assert dimensions["binding_routes"]["route_summary"]["by_status"]["parity-covered"] == 48
-    assert dimensions["binding_routes"]["evidence_level"] == "bounded-slice"
+    assert dimensions["binding_routes"]["evidence_level"] == "decomposed-bounded-slice"
     assert dimensions["binding_routes"]["bounded_working_surface_ready"] is True
     assert dimensions["binding_routes"]["ready_for_full_claim"] is False
     assert "2025-standard-route-runtime-capability" in dimensions["binding_routes"]["implemented_slice_ids"]
     assert "2025-fedpro-typed-transport-surface" in dimensions["binding_routes"]["implemented_slice_ids"]
     assert "2025-fedpro-hosted-runtime-core" in dimensions["binding_routes"]["implemented_slice_ids"]
     assert "2025-fedpro-hosted-runtime-extended-state" in dimensions["binding_routes"]["implemented_slice_ids"]
+    assert "named binding and hosted-route families instead of one flat bounded bucket" in dimensions["binding_routes"]["current_assessment"]
     assert any("artifact/runtime-capability" in blocker or "artifact/runtime" in blocker for blocker in dimensions["binding_routes"]["residual_blockers"])
+    assert "The route evidence is now decomposed into named families" in dimensions["binding_routes"]["residual_blockers"][0]
     assert any(
         "hosted FedPro route remains a bounded working slice" in blocker
         for blocker in dimensions["binding_routes"]["residual_blockers"]
@@ -2635,7 +3017,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "save/restore lifecycle callbacks including timed initiateFederateSave" in slices["2025-fedpro-hosted-runtime-extended-state"]["supported_scope"]
     assert "MOM service-invocation report callbacks over FedPro" in slices["2025-fedpro-hosted-runtime-extended-state"]["supported_scope"]
     assert "synchronization point/status MOM reports over FedPro" in slices["2025-fedpro-hosted-runtime-extended-state"]["supported_scope"]
-    assert "Full MOM action/request routing" in slices["2025-fedpro-hosted-runtime-extended-state"]["supported_scope"]
+    assert "targeted transport/ownership/time save-restore manager actions" in slices["2025-fedpro-hosted-runtime-extended-state"]["supported_scope"]
     assert "full RTI semantics remain outside this slice" in slices["2025-fedpro-hosted-runtime-extended-state"]["supported_scope"]
     assert slices["2025-basic-object-exchange"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-057" in slices["2025-basic-object-exchange"]["requirements"]
@@ -3026,32 +3408,74 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Slice id: 2025-save-restore-lifecycle" in markdown
     assert "Proof families: 5" in markdown
     assert "save-restore/time-window-and-time-state-rollback" in markdown
+    assert "Federation-Management Decomposition Audit" in markdown
+    assert "Slice id: 2025-federation-management-proof-families" in markdown
+    assert "Proof families: 6" in markdown
+    assert "federation-management/connect-create-destroy-and-catalog-control" in markdown
+    assert "federation-management/save-restore-participant-recovery-and-branching" in markdown
+    assert "Callback Decomposition Audit" in markdown
+    assert "Slice id: 2025-callback-proof-families" in markdown
+    assert "Proof families: 8" in markdown
+    assert "callbacks/declaration-relevance-and-interest-advisories" in markdown
+    assert "callbacks/callback-control-and-backlog-hygiene" in markdown
+    assert "Time-Management Decomposition Audit" in markdown
+    assert "Slice id: 2025-time-management-proof-families" in markdown
+    assert "Proof families: 5" in markdown
+    assert "time-management/factory-mode-enable-and-request-primitives" in markdown
+    assert "time-management/save-restore-time-state-and-lookahead-rollback" in markdown
+    assert "Binding-Route Decomposition Audit" in markdown
+    assert "Slice id: 2025-binding-route-proof-families" in markdown
+    assert "Proof families: 6" in markdown
+    assert "binding-routes/java-binding-source-and-intake-evidence" in markdown
+    assert "binding-routes/cross-route-scenario-parity-ledger" in markdown
+    assert "Support-Services Decomposition Audit" in markdown
+    assert "Slice id: 2025-support-services-proof-families" in markdown
+    assert "Proof families: 5" in markdown
+    assert "support-services/name-reservation-and-release-flows" in markdown
+    assert "support-services/factory-decode-and-hosted-support-seam" in markdown
+    assert "Object-Management Decomposition Audit" in markdown
+    assert "Slice id: 2025-object-management-proof-families" in markdown
+    assert "Proof families: 7" in markdown
+    assert "object-management/declaration-and-basic-exchange-gating" in markdown
+    assert "object-management/object-region-scope-and-passive-alias-routing" in markdown
     assert "Directed Interaction Decomposition Audit" in markdown
     assert "Slice id: 2025-directed-interaction-boundary" in markdown
     assert "directed-interaction/ddm-overlap-filtering" in markdown
     assert "DDM Default-Policy Decomposition Audit" in markdown
     assert "Slice id: 2025-ddm-default-attribute-policy" in markdown
     assert "ddm-default-policy/object-region-routing-and-scope-advisories" in markdown
-    assert "Shim Pressure Family Route-Backing Audit" in markdown
-    assert "Family count: 16" in markdown
+    assert "Wrapper-Boundary Family Route-Backing Audit" in markdown
+    assert "Family count: 22" in markdown
     assert "All families route-backed across current Python lanes: True" in markdown
-    assert "Shim Pressure Family Asymmetry Audit" in markdown
-    assert "Balanced families: 15" in markdown
+    assert "Wrapper-Boundary Family Asymmetry Audit" in markdown
+    assert "Balanced families: 22" in markdown
     assert "Direct-heavier families: 0" in markdown
-    assert "Hosted-heavier families: 1" in markdown
+    assert "Hosted-heavier families: 0" in markdown
     assert "Current Lane Coherence Audit" in markdown
     assert "Ready for current-lane coherent working-surface claim: True" in markdown
     assert "Major pressure slice count: 3" in markdown
+    assert "Python2025 backend concentration is material: True" in markdown
     assert "Current Lane Working-Surface Statement" in markdown
     assert "Status: current-lane-working-surface-statement" in markdown
     assert "Ready: True" in markdown
     assert "Evidence basis: route_summary.scenario_count=2" in markdown
+    assert "federation_management_decomposition.slice_id=2025-federation-management-proof-families" in markdown
+    assert "object_management_decomposition.slice_id=2025-object-management-proof-families" in markdown
     assert "Evidence basis: route_summary.scenarios=ddm,object_exchange,ownership" in markdown
     assert "Evidence basis: route_summary.scenarios=ownership,save_restore" in markdown
+    assert "ownership_decomposition.slice_id=2025-ownership-proof-families" in markdown
+    assert "time_management_decomposition.slice_id=2025-time-management-proof-families" in markdown
     assert "Evidence basis: omt_requirement_proof_audit.ready_for_omt_traceability_claim=true" in markdown
     assert "Evidence basis: route_summary.scenario_count=8" in markdown
+    assert "support_services_decomposition.slice_id=2025-support-services-proof-families" in markdown
+    assert "callback_decomposition.slice_id=2025-callback-proof-families" in markdown
+    assert "binding_route_decomposition.slice_id=2025-binding-route-proof-families" in markdown
     assert "Implementation Lane Audit" in markdown
     assert "Current 2025 backend package: hla-backend-python2025" in markdown
+    assert "Compatibility wrapper package: hla-backend-shim" in markdown
+    assert "Compatibility wrapper status: compatibility-maintained" in markdown
+    assert "Compatibility wrapper role: compatibility-wrapper" in markdown
+    assert "Compatibility wrapper delegates runtime semantics to: hla-backend-python2025" in markdown
     assert "Reference 2010 backend package: hla-backend-inmemory" in markdown
     assert "Backend packages discovered: 6" in markdown
     assert "Dedicated 2025 candidates cleanly separated: True" in markdown
@@ -3068,7 +3492,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Extraction Readiness Audit" in markdown
     assert "Future backend package target: hla-backend-python2025" in markdown
     assert "Runtime semantics to extract first: 3" in markdown
-    assert "2025-save-restore-lifecycle: 5 proof families, direct=28, hosted=29, route-backed=True" in markdown
+    assert "2025-save-restore-lifecycle: 5 proof families, direct=29, hosted=29, route-backed=True" in markdown
     assert "standard-route adaptation and compatibility aliases" in markdown
     assert "keep the dedicated rti1516_2025 Python backend plugin discoverable and keep the backend scan detecting it" in markdown
     assert "Extraction package contract:" in markdown
@@ -3432,8 +3856,10 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "docs/verification/verification_plan.md",
         "docs/backend_route_inventory.md",
         "docs/backend_route_inventory_remote.md",
+        "packages/hla-backend-python2025/pyproject.toml",
         "packages/hla-backend-python2025/README.md",
         "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+        "packages/hla-backend-shim/pyproject.toml",
         "packages/hla-backend-shim/README.md",
         "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
         "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
@@ -3464,7 +3890,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         in markdown
     )
     assert "test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane" in markdown
-    assert "test_2025_wrapper_factory_rejects_fake_hosted_transport_creation" in markdown
+    assert "test_2025_version_local_factory_rejects_legacy_shim_provider_name" in markdown
     assert "Direct ambassador: python2025-rti / python/2025 / python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True" in markdown
     assert "Hosted client: python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro" in markdown
     assert "test_2025_transport_server_reports_python2025_main_lane_identity" in markdown

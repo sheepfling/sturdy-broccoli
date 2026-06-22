@@ -14,7 +14,7 @@ Those routes are related, but they are not identical claims.
 - the 2010 route is the familiar hosted form of the pure Python in-memory RTI
 - the 2025 route is a typed FedPro transport-hosted slice over the current
   `hla-backend-python2025` implementation lane, with `hla-backend-shim`
-  retained only as a compatibility-wrapper alias
+  retained only as compatibility-wrapper/import-compatibility code
 
 If you need the architecture and evidence posture for that 2025 lane, read
 [`python_rti_backend.md`](python_rti_backend.md) and
@@ -73,7 +73,7 @@ lane.
 The relevant pieces are:
 
 - `packages/hla-backend-python2025` for the main executable 2025 Python RTI lane
-- `packages/hla-backend-shim` for the legacy compatibility-wrapper alias
+- `packages/hla-backend-shim` for the legacy compatibility-wrapper package
 - `hla.transports.grpc.python_server_2025.start_2025_grpc_server(...)` for the
   hosted server helper
 - `GrpcTransport(GrpcTransportConfig(..., schema="rti1516_2025"))` for the
@@ -88,9 +88,10 @@ describe one runtime lane rather than separate ownership paths.
 Keep the ownership wording strict here:
 
 - use `python2025` when naming the hosted 2025 route
-- treat `shim` as a compatibility-wrapper alias, not as the hosted runtime lane
-- do not describe `create_rti_ambassador("shim", transport=...)` as the main
-  2025 operator path
+- treat `hla.backends.shim` as compatibility-wrapper code, not as the hosted
+  runtime lane
+- do not describe historical `shim`-named compatibility paths as the main 2025
+  operator path
 - do not refer to the primary 2025 runtime lane itself as a shim
 
 Minimal server shape:

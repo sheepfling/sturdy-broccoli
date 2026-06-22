@@ -12,7 +12,7 @@ from hla.rti1516_2025.exceptions import ConnectionFailed, InvalidCredentials, Un
 from hla.rti1516_2025.foms import FomTypeRepository, encoding_smoke_fom_path
 from hla.rti1516e.fom import FOMResolver
 
-_PROVIDER_ROUTES = ("python2025", "shim")
+_PROVIDER_ROUTES = ("python2025",)
 
 @pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-004")
 @pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
@@ -100,14 +100,6 @@ def test_encoding_registry_resolves_required_builtin_codecs_and_rejects_unknowns
         ("python2025", "HLAunsignedInteger64BE", 18446744073709551615, "ffffffffffffffff"),
         ("python2025", "HLAfloat32BE", 1.0, "3f800000"),
         ("python2025", "HLAfloat64BE", -2.5, "c004000000000000"),
-        ("shim", "HLAinteger16BE", -32768, "8000"),
-        ("shim", "HLAinteger16LE", 1, "0100"),
-        ("shim", "HLAinteger32BE", 2147483647, "7fffffff"),
-        ("shim", "HLAinteger32LE", -1, "ffffffff"),
-        ("shim", "HLAinteger64BE", 1, "0000000000000001"),
-        ("shim", "HLAunsignedInteger64BE", 18446744073709551615, "ffffffffffffffff"),
-        ("shim", "HLAfloat32BE", 1.0, "3f800000"),
-        ("shim", "HLAfloat64BE", -2.5, "c004000000000000"),
     ],
 )
 def test_primitive_codecs_match_imported_golden_vectors(
@@ -127,7 +119,7 @@ def test_primitive_codecs_match_imported_golden_vectors(
 
 
 @pytest.mark.requirements("HLA2025-FI-003")
-@pytest.mark.parametrize("provider", ("python2025", "shim"))
+@pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_auth_context_supports_2025_credentials_and_rejects_2010_standard_credentials(provider: str) -> None:
     factory_2025 = HlaFactoryRegistry.get("2025", provider=provider)
     password_auth = factory_2025.create_authentication_context(
@@ -146,7 +138,7 @@ def test_auth_context_supports_2025_credentials_and_rejects_2010_standard_creden
 
 
 @pytest.mark.requirements("AUTH-002", "AUTH-003", "AUTH-005")
-@pytest.mark.parametrize("provider", ("python2025", "shim"))
+@pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_auth_context_supports_custom_typed_bytes_and_rejects_empty_password(provider: str) -> None:
     factory = HlaFactoryRegistry.get("2025", provider=provider)
     custom_auth = factory.create_authentication_context(
@@ -164,7 +156,7 @@ def test_auth_context_supports_custom_typed_bytes_and_rejects_empty_password(pro
 
 
 @pytest.mark.requirements("AUTH-007", "AUTH-009", "AUTH-010")
-@pytest.mark.parametrize("provider", ("python2025", "shim"))
+@pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_fake_authorizer_produces_distinct_decision_codes_for_2025_python_rti_providers(provider: str) -> None:
     factory = HlaFactoryRegistry.get("2025", provider=provider)
 
@@ -214,7 +206,7 @@ def test_fake_authorizer_produces_distinct_decision_codes_for_2025_python_rti_pr
 
 @pytest.mark.requirements("AUTH-009", "AUTH-010")
 def test_authorizer_and_custom_credentials_are_provider_gated() -> None:
-    for provider in ("python2025", "shim"):
+    for provider in _PROVIDER_ROUTES:
         factory_2025 = HlaFactoryRegistry.get("2025", provider=provider)
         with pytest.raises(InvalidCredentials, match="not advertised"):
             factory_2025.create_authentication_context(
@@ -227,7 +219,7 @@ def test_authorizer_and_custom_credentials_are_provider_gated() -> None:
             )
 
     factory_2010 = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
-    with pytest.raises(ValueError, match="2025 Python RTI providers"):
+    with pytest.raises(ValueError, match="2025 python2025 RTI provider"):
         factory_2010.create_authentication_context({"mode": "NoAuth", "authorizer_mode": "Fake"})
 
 
@@ -238,9 +230,6 @@ def test_authorizer_and_custom_credentials_are_provider_gated() -> None:
         ("python2025", {"mode": "PlainTextPassword", "password": "bad", "authorizer_mode": "Fake"}, InvalidCredentials),
         ("python2025", {"mode": "NoAuth", "authorizer_mode": "Fake", "allow_rti": False}, Unauthorized),
         ("python2025", {"mode": "NoAuth", "authorizer_mode": "Fake", "fail_mode": "error"}, ConnectionFailed),
-        ("shim", {"mode": "PlainTextPassword", "password": "bad", "authorizer_mode": "Fake"}, InvalidCredentials),
-        ("shim", {"mode": "NoAuth", "authorizer_mode": "Fake", "allow_rti": False}, Unauthorized),
-        ("shim", {"mode": "NoAuth", "authorizer_mode": "Fake", "fail_mode": "error"}, ConnectionFailed),
     ],
 )
 def test_runtime_connect_maps_authorizer_failures_before_federation_lifecycle(
@@ -257,7 +246,7 @@ def test_runtime_connect_maps_authorizer_failures_before_federation_lifecycle(
 
 
 @pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-005")
-@pytest.mark.parametrize("provider", ("python2025", "shim"))
+@pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_invalid_credentials_fail_before_rti_connection(provider: str) -> None:
     runtime = HlaFactoryRegistry.get("2025", provider=provider).create_runtime_context(
         auth_config={"mode": "PlainTextPassword", "password": "bad"}
@@ -269,7 +258,7 @@ def test_invalid_credentials_fail_before_rti_connection(provider: str) -> None:
 
 
 @pytest.mark.requirements("AUTH-001", "AUTH-005", "ENC-001")
-@pytest.mark.parametrize("provider", ("python2025", "shim"))
+@pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_runtime_context_writes_redacted_encoding_auth_evidence(tmp_path, provider: str) -> None:
     runtime = HlaFactoryRegistry.get("2025", provider=provider).create_runtime_context(
         auth_config={"mode": "PlainTextPassword", "password": "secret-value"},
@@ -292,7 +281,7 @@ def test_runtime_context_writes_redacted_encoding_auth_evidence(tmp_path, provid
 
 
 @pytest.mark.requirements("HLA2025-OMT-005", "HLA2025-OMT-006")
-@pytest.mark.parametrize("provider", ("python2025", "shim"))
+@pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_runtime_context_writes_strict_fom_validation_evidence(tmp_path, provider: str) -> None:
     from hla.rti1516_2025.foms import scenario_fom_paths
 
@@ -311,6 +300,12 @@ def test_runtime_context_writes_strict_fom_validation_evidence(tmp_path, provide
     assert '"validation_issues": []' in fom_report
     assert '"fom": {' in runtime_report
     assert f'"provider": "{provider}"' in runtime_report
+
+
+@pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-FI-003", "HLA2025-FI-004")
+def test_2025_encoding_auth_factory_surface_rejects_legacy_shim_provider() -> None:
+    with pytest.raises(ValueError, match="Unknown RTI provider: 'shim'"):
+        HlaFactoryRegistry.get("2025", provider="shim")
 
 
 @pytest.mark.requirements("AUTH-004", "HLA2025-REQ-001", "HLA2025-REQ-002")

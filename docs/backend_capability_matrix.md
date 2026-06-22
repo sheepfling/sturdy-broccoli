@@ -27,7 +27,7 @@ For the current 2025 implementation posture, use:
 
 Those pages record the bounded working-surface evidence for the current
 `hla-backend-python2025` 2025 lane, with `hla-backend-shim` retained only as a
-compatibility-wrapper alias, and the explicit promotion-versus-split decision
+compatibility-wrapper package, and the explicit promotion-versus-split decision
 criteria.
 
 Use this file to answer:
@@ -45,7 +45,7 @@ for clause-level status.
 The repo now treats the 2025 Python RTI as a primary implementation lane:
 
 - `hla-backend-python2025` for the main executable `rti1516_2025` backend
-- `hla-backend-shim` for the legacy compatibility-wrapper alias
+- `hla-backend-shim` for legacy compatibility-wrapper/import-level support
 - `python-2025-inprocess` for the direct runtime proof lane
 - `python-2025-fedpro-grpc` for the hosted FedPro route variant
 
@@ -74,7 +74,6 @@ Legend:
 |---|---|---:|---:|---:|---:|
 | `python` | yes | yes | yes | yes | no |
 | `python2025` | yes | yes | yes | yes | no |
-| `shim` (2025 wrapper alias) | yes | yes | yes | yes | no |
 | `python-2025-fedpro-grpc` | yes | yes | yes | yes | no |
 | `java-shim-jpype` | yes | partial | yes | yes | no |
 | `java-shim-py4j` | yes | partial | yes | yes | no |
@@ -122,9 +121,9 @@ Primary anchors:
 - `python2025` is a first-class operator-facing runtime family in this repo,
   not a provisional alias. Use it as the primary IEEE 1516.1-2025 Python RTI
   lane.
-- `shim` remains only a compatibility-wrapper alias over `python2025`; it is
-  represented in the matrix because operators may still encounter the name,
-  not because it is a separate 2025 RTI family.
+- `hla-backend-shim` remains only as compatibility-wrapper/import-level code
+  around `python2025`; it is not a separate 2025 RTI family or public runtime
+  lane.
 - `python-2025-fedpro-grpc` is the bounded hosted route over the same
   `hla-backend-python2025` runtime lane. Treat its green status as hosted
   transport-seam proof over the main 2025 RTI, not as evidence of a distinct

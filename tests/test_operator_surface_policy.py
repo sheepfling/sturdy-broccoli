@@ -175,7 +175,7 @@ def test_target_radar_tool_usage_keeps_python2025_primary_and_shim_wrapper_only(
 
     assert "./tools/target-radar proof --backend python2025 --proof-backend python2025" in text
     assert "for ieee 1516.1-2025, use `python2025` as the primary python rti lane." in normalized
-    assert "the `shim` backend names remain compatibility-wrapper aliases over that same runtime" in normalized
+    assert "`hla-backend-shim` remains compatibility-wrapper/import-level code around that same runtime" in normalized
 
 
 def test_vendor_parity_doc_uses_tools_surface() -> None:

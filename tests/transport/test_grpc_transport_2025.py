@@ -2755,7 +2755,12 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
         )
         for report_name in report_names:
@@ -2768,6 +2773,9 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
                 values.update({controller.getParameterHandle(request, key): value for key, value in extra.items()})
             controller.sendInteraction(request, values, f"hosted-mom-{name}".encode("ascii"))
             _drain_hosted_2025_callbacks(controller, target, observer, loops=32)
+
+        def scalar_payload(report, parameter_name: str) -> bytes:  # noqa: ANN001
+            return report[1][observer.getParameterHandle(report[0], parameter_name)]
 
         send_request("HLArequestPublications")
         object_publication = _last_2025_received_interaction_by_name(
@@ -2784,8 +2792,8 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
         assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAobjectClass")] == str(
             object_class.value
         ).encode("ascii")
-        assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAattributeList")] == str(
-            attribute.value
+        assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAattributeList")] == (
+            f"{object_class.value}:{attribute.value}"
         ).encode("ascii")
 
         interaction_publication = _last_2025_received_interaction_by_name(
@@ -2811,8 +2819,8 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
             object_class.value
         ).encode("ascii")
         assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAactive")] == b"HLAtrue"
-        assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAattributeList")] == str(
-            attribute.value
+        assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAattributeList")] == (
+            f"{object_class.value}:{attribute.value}"
         ).encode("ascii")
 
         interaction_subscription = _last_2025_received_interaction_by_name(
@@ -2840,6 +2848,33 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
             object_class.value
         ).encode("ascii")
 
+        send_request("HLArequestObjectInstancesThatCanBeDeleted")
+        deletable = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+        )
+        assert deletable is not None
+        assert scalar_payload(deletable, "HLAobjectInstanceCounts") == b"1"
+
+        send_request("HLArequestObjectInstancesUpdated")
+        updated = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+        )
+        assert updated is not None
+        assert scalar_payload(updated, "HLAobjectInstanceCounts") == b"1"
+
+        send_request("HLArequestObjectInstancesReflected")
+        reflected = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+        )
+        assert reflected is not None
+        assert scalar_payload(reflected, "HLAobjectInstanceCounts") == b"1"
+
         send_request("HLArequestUpdatesSent")
         updates_sent = _last_2025_received_interaction_by_name(
             observer_callbacks,
@@ -2847,7 +2882,25 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
         )
         assert updates_sent is not None
-        assert updates_sent[1][observer.getParameterHandle(updates_sent[0], "HLAupdatesSent")] == b"1"
+        assert scalar_payload(updates_sent, "HLAupdatesSent") == b"1"
+
+        send_request("HLArequestReflectionsReceived")
+        reflections_received = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+        )
+        assert reflections_received is not None
+        assert scalar_payload(reflections_received, "HLAreflectionsReceived") == b"1"
+
+        send_request("HLArequestInteractionsSent")
+        interactions_sent = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+        )
+        assert interactions_sent is not None
+        assert scalar_payload(interactions_sent, "HLAinteractionsSent") == b"1"
 
         send_request("HLArequestInteractionsReceived")
         interactions_received = _last_2025_received_interaction_by_name(
@@ -2856,9 +2909,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
         )
         assert interactions_received is not None
-        assert interactions_received[1][
-            observer.getParameterHandle(interactions_received[0], "HLAinteractionsReceived")
-        ] == b"1"
+        assert scalar_payload(interactions_received, "HLAinteractionsReceived") == b"1"
     finally:
         if observer is not None:
             try:
@@ -17822,7 +17873,7 @@ def test_2025_transport_server_restores_cross_federate_attribute_owner_visibilit
         assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
         assert acquirer.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
 
-        assert owner.request(
+        assert acquirer.request(
             TransportRequest(command="UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE", fields=(object_instance, attribute))
         ).fields == ()
         assert owner.request(TransportRequest(command="QUERY_ATTRIBUTE_OWNERSHIP", fields=(object_instance, attribute))).fields == ()
@@ -25152,7 +25203,7 @@ def test_2025_transport_server_routes_mom_manager_service_actions_over_fedpro_sc
         assert server.servicer.default_attribute_order[(object_instance, attribute)] == datatypes_pb2.TIMESTAMP
 
         callback_kinds = []
-        for _ in range(8):
+        for _ in range(12):
             fields = transport.request(TransportRequest(command="EVOKE")).fields
             if len(fields) > 1:
                 callback_kinds.append(fields[1])
@@ -26156,6 +26207,13 @@ def test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_obs
         assert bystander.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "REPORT_ATTRIBUTE_TRANSPORTATION_TYPE")
         assert owner.request(TransportRequest(command="EVOKE")).fields == (
             "1",
+            "CONFIRM_ATTRIBUTE_TRANSPORTATION_TYPE_CHANGE",
+            object_instance,
+            attribute,
+            "2",
+        )
+        assert owner.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
             "REPORT_ATTRIBUTE_TRANSPORTATION_TYPE",
             object_instance,
             attribute,
@@ -26181,6 +26239,12 @@ def test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_obs
         ).fields == ()
         assert requester.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "REPORT_INTERACTION_TRANSPORTATION_TYPE")
         assert bystander.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "REPORT_INTERACTION_TRANSPORTATION_TYPE")
+        assert owner.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "CONFIRM_INTERACTION_TRANSPORTATION_TYPE_CHANGE",
+            interaction_class,
+            "2",
+        )
         assert owner.request(TransportRequest(command="EVOKE")).fields == (
             "1",
             "REPORT_INTERACTION_TRANSPORTATION_TYPE",

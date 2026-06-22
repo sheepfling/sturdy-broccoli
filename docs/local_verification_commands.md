@@ -26,9 +26,9 @@ python3 -m pytest -q tests/runtime/test_real_rti.py
 Use this page when you want the exact local commands, not the broader status.
 
 For the primary 2025 Python RTI lane, interpret these commands through the audited
-`hla-backend-python2025` runtime. The legacy `shim` provider name is only a
-compatibility-wrapper alias, and the hosted 2025 gRPC route is a bounded route
-variant rather than a separate RTI family.
+`hla-backend-python2025` runtime. `hla-backend-shim` is only
+compatibility-wrapper/import-compatibility code, and the hosted 2025 gRPC route
+is a bounded route variant rather than a separate RTI family.
 
 `./tools/python verify-main-2025` is the regular main-surface lane for the
 current `python2025` backend claim. It runs the direct in-process runtime proof

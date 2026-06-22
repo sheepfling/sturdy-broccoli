@@ -856,9 +856,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "state, restored callback-delivery enablement, restored plain and directed DDM subscriber routing, "
             "restored in-flight ownership and owner-visibility state, restored attribute/interaction "
             "transportation and order policy state, MOM service-invocation report callbacks over FedPro, object "
-            "publication/subscription/object-instance-information/activity-count reports, and synchronization "
-            "point/status MOM reports over FedPro. Full MOM action/request routing and full RTI semantics remain "
-            "outside this slice. This is a hosted runtime extended-state slice, not a full FedPro RTI conformance claim."
+            "publication/subscription/object-instance-information/activity-count reports, synchronization "
+            "point/status MOM reports, targeted transport/ownership/time save-restore manager actions, and MOM "
+            "exception routing over FedPro. Full RTI semantics remain outside this slice. This is a hosted runtime "
+            "extended-state slice, not a full FedPro RTI conformance claim."
         ),
     },
     {
@@ -1051,8 +1052,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 runtime proof now isolates object-scope advisory callbacks: DDM-driven "
             "attributesInScope and attributesOutOfScope transitions, out-of-scope reflection suppression, "
-            "re-entry into scope, and post-transfer ownership-safe update behavior execute across the shim "
-            "and the hosted FedPro route with requirement-traceable object-attribute scope changes."
+            "re-entry into scope, and post-transfer ownership-safe update behavior execute across the live "
+            "python2025 runtime lane and the hosted FedPro route with requirement-traceable object-attribute "
+            "scope changes."
         ),
     },
     {
@@ -1828,7 +1830,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
     {
         "id": "federation_management",
         "name": "Federation Management",
-        "evidence_level": "strong-slice",
+        "evidence_level": "decomposed-strong-slice",
         "implemented_slice_ids": (
             "2025-lifecycle-and-members",
             "2025-connection-lifecycle-services",
@@ -1841,19 +1843,21 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         ),
         "route_scenarios": ("federation_lifecycle", "save_restore"),
         "current_assessment": (
-            "Connection, federation catalog control, membership reporting/resign, synchronization barriers, and "
-            "save/restore behavior are exercised directly through the current Python 2025 RTI and the hosted FedPro "
-            "route, with parity scenarios recorded across all tracked routes."
+            "Connection, federation catalog control, membership reporting and resign handling, synchronization barriers, "
+            "and save or restore behavior are exercised directly through the current Python 2025 RTI and the hosted "
+            "FedPro route, and the finish-line now separates that proof into named families instead of leaving it as "
+            "one large bucket: connect/create/catalog control, join or membership reporting, resign or disconnect cleanup, "
+            "synchronization barriers, save/restore lifecycle control, and save/restore participant recovery."
         ),
         "residual_blockers": (
-            "The evidence is still slice-oriented rather than service-by-service proof.",
+            "The finish-line now decomposes federation-management proof families, but it still stops short of clause-by-clause service closure.",
             "Standard Java and C++ route coverage remains scenario parity/runtime capability evidence, not exhaustive behavior conformance.",
         ),
     },
     {
         "id": "object_management",
         "name": "Object Management",
-        "evidence_level": "strong-slice",
+        "evidence_level": "decomposed-strong-slice",
         "implemented_slice_ids": (
             "2025-basic-object-exchange",
             "2025-declaration-publication-services",
@@ -1872,23 +1876,23 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         ),
         "route_scenarios": ("object_exchange", "ownership", "ddm"),
         "current_assessment": (
-            "The current repo proves a coherent object-management surface: object and interaction exchange, "
-            "directed interactions, ownership transfer/query callbacks, DDM overlap filtering, transportation "
-            "policy changes, and object deletion flows all execute end to end. Hosted FedPro replay now also "
-            "covers rollback-sensitive object state including plain and directed routing restore, stale timed-remove "
-            "cleanup, and restored local-known-state after local delete, plus hosted shared scenario replay for "
-            "name reservation, request-attribute-value-update routing, and object-scope relevance over the main "
-            "python2025 runtime."
+            "The current repo proves a coherent object-management surface and the finish-line now separates that proof "
+            "into named families instead of leaving it as one large bucket: declaration and exchange gating, delete/local-known-state "
+            "lifecycle, attribute-value-update routing, advisory/update-rate callbacks, transportation policy callbacks, "
+            "object-region scope routing, and directed or directed-DDM routing. Hosted FedPro replay now also covers "
+            "rollback-sensitive object state including plain and directed routing restore, stale timed-remove cleanup, "
+            "and restored local-known-state after local delete, plus hosted shared scenario replay for request-attribute-value-update "
+            "routing and object-scope relevance over the main python2025 runtime."
         ),
         "residual_blockers": (
-            "Requirement aggregation still hides per-service completion detail inside supported-scope slices.",
+            "The finish-line now decomposes object-management proof families, but it still stops short of clause-by-clause service closure.",
             "FedPro coverage is a hosted runtime slice and does not yet constitute full RTI semantics proof.",
         ),
     },
     {
         "id": "time_management",
         "name": "Time Management",
-        "evidence_level": "query-and-window-proof-backed",
+        "evidence_level": "decomposed-query-and-window-proof-backed",
         "implemented_slice_ids": (
             "2025-time-mode-enable-disable",
             "2025-time-advance-request-modes",
@@ -1905,18 +1909,18 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, "
             "lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed "
             "by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, "
-            "the Target/Radar lookahead-window proof ladder, and matching negative-oracle guards across the "
-            "current Python 2025 lanes."
+            "the Target/Radar lookahead-window proof ladder, matching negative-oracle guards across the "
+            "current Python 2025 lanes, and named runtime proof families instead of one flat bounded time bucket."
         ),
         "residual_blockers": (
-            "The closeout still aggregates multiple time services into bounded slices instead of final per-requirement proof.",
+            "The closeout now separates time proof into named runtime families, but it still stops short of final per-requirement time-service proof.",
             "Cross-binding runtime evidence is narrower than the Python in-process and hosted FedPro slices.",
         ),
     },
     {
         "id": "support_services",
         "name": "Support Services",
-        "evidence_level": "per-service-runtime-traceable",
+        "evidence_level": "decomposed-per-service-runtime-traceable",
         "implemented_slice_ids": (
             "2025-switch-set-get-model",
             "2025-single-name-reservation-services",
@@ -1940,19 +1944,22 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "Handle lookup, dimension bounds, default policy control, normalization and switch inquiry/set flows "
             "are exercised through the Python runtime and are represented across tracked binding routes. The "
             "finish-line now also carries an explicit support-service ledger via the RTIambassador conformance "
-            "matrix, giving the Python lanes per-service runtime traceability plus complete actionable "
-            "negative-path coverage. Hosted FedPro support-service replay now also proves reconnect-safe "
-            "discard of a disconnected peer's disabled callback backlog before later reconnect."
+            "matrix, and it now separates that proof into named families instead of leaving it as one ledger-only "
+            "summary: reservation/release flows, lookup and normalization surfaces, transport or dimension lookups, "
+            "the 2025 switch model, and factory/decode plus hosted support seams. That gives the Python lanes "
+            "per-service runtime traceability plus complete actionable negative-path coverage. Hosted FedPro "
+            "support-service replay now also proves reconnect-safe discard of a disconnected peer's disabled "
+            "callback backlog before later reconnect."
         ),
         "residual_blockers": (
-            "The support-service ledger now reaches per-service runtime traceability and complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.",
+            "The finish-line now decomposes support-service proof families and reaches per-service runtime traceability plus complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.",
             "Java and C++ proof remains capability-oriented rather than a full standard-route behavior pass, and the hosted FedPro route remains a bounded runtime slice rather than a full support-service conformance route.",
         ),
     },
     {
         "id": "ownership_management",
         "name": "Ownership Management",
-        "evidence_level": "strong-slice",
+        "evidence_level": "decomposed-strong-slice",
         "implemented_slice_ids": (
             "2025-ownership-divestiture-confirmation-flows",
             "2025-ownership-release-and-if-wanted-flows",
@@ -1967,17 +1974,18 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "Ownership acquisition, divestiture, release negotiation, query callbacks, resign-time policies, "
             "and rollback-sensitive ownership state are all exercised directly through the current Python 2025 RTI and "
             "through shared backend-matrix scenarios. Hosted FedPro replay now also proves restored in-flight "
-            "ownership negotiation state plus restored cross-federate owner-visibility queries."
+            "ownership negotiation state plus restored cross-federate owner-visibility queries, and the "
+            "finish-line now separates that proof into named ownership families instead of leaving it as one opaque bucket."
         ),
         "residual_blockers": (
-            "The closeout still groups ownership proof into bounded runtime slices rather than a final clause-by-clause ownership audit.",
+            "The closeout now separates ownership proof into named runtime families, but it still stops short of a final clause-by-clause ownership audit.",
             "Hosted route parity remains scenario-backed runtime evidence, not a full vendor-equivalent ownership conformance pass.",
         ),
     },
     {
         "id": "callbacks",
         "name": "Callbacks",
-        "evidence_level": "callback-ledger-route-backed",
+        "evidence_level": "decomposed-callback-ledger-route-backed",
         "implemented_slice_ids": (
             "2025-callback-context-object-delivery",
             "2025-callback-context-interaction-delivery",
@@ -2011,17 +2019,18 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "support-service flows, including hosted FedPro callback decoding, reconnect-safe callback backlog "
             "cleanup across disconnect/reconnect, and direct Python ambassador behavior. "
             "The finish-line now also carries an explicit callback-by-callback ledger via the FederateAmbassador "
-            "conformance matrix, and that ledger is fully route-backed across the current Python 2025 lanes."
+            "conformance matrix, that ledger is fully route-backed across the current Python 2025 lanes, and the "
+            "finish-line now separates callback proof into named runtime families instead of leaving it as a flat ledger."
         ),
         "residual_blockers": (
-            "The callback ledger still stops short of exhaustive cross-binding callback signature/ordering equivalence proof.",
+            "The callback proof is now decomposed into named runtime families, but it still stops short of exhaustive cross-binding callback signature/ordering equivalence proof.",
             "Binding-route callback parity is tracked at the scenario level, not as exhaustive callback signature/ordering proof.",
         ),
     },
     {
         "id": "omt_handling",
         "name": "OMT Handling",
-        "evidence_level": "bounded-slice",
+        "evidence_level": "decomposed-bounded-slice",
         "implemented_slice_ids": (
             "2025-fom-validation",
             "2025-omt-reference-value-required",
@@ -2038,17 +2047,20 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "current_assessment": (
             "The OMT path is well-instrumented for parser/serializer/schema handling, metadata round-trips, "
             "association metadata, and foreign xs:any extension tolerance with extension payload preservation "
-            "round-trip evidence. Arbitrary third-party extension semantics remain outside the repo-native runtime claim."
+            "round-trip evidence. The finish-line now also separates that bounded OMT proof into named decomposition "
+            "audits for the extended supported subset, service-utilization crosschecks, xs:any extension tolerance, "
+            "and schema-constraint validation instead of leaving it as one flat parser/validator bucket. Arbitrary "
+            "third-party extension semantics remain outside the repo-native runtime claim."
         ),
         "residual_blockers": (
-            "Foreign xs:any extension payloads are preserved as XML payloads but not interpreted as repo-native HLA metadata.",
-            "Parser/serializer support remains a bounded OMT working surface rather than exhaustive third-party extension execution semantics.",
+            "The OMT proof is now decomposed into named subset and validator families, but foreign xs:any extension payloads are still preserved as XML payloads rather than interpreted as repo-native HLA metadata.",
+            "Parser/serializer support remains a decomposed bounded OMT working surface rather than exhaustive third-party extension execution semantics.",
         ),
     },
     {
         "id": "binding_routes",
         "name": "Binding Routes",
-        "evidence_level": "bounded-slice",
+        "evidence_level": "decomposed-bounded-slice",
         "implemented_slice_ids": (
             "2025-java-binding-source-trace",
             "2025-cpp-binding-source-trace",
@@ -2069,10 +2081,11 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         ),
         "current_assessment": (
             "Every tracked 2025 route now has explicit scenario parity rows, and the Python in-process plus hosted "
-            "FedPro routes provide substantive runtime proof for the working surface."
+            "FedPro routes provide substantive runtime proof for the working surface. The finish-line now also "
+            "separates route evidence into named binding and hosted-route families instead of one flat bounded bucket."
         ),
         "residual_blockers": (
-            "Java and C++ routes are still backed by artifact/runtime-capability traces rather than exhaustive behavior equivalence proof.",
+            "The route evidence is now decomposed into named families, but Java and C++ routes are still backed by artifact/runtime-capability traces rather than exhaustive behavior equivalence proof.",
             "The hosted FedPro route remains a bounded working slice, not a full RTI conformance route.",
         ),
     },
@@ -2414,6 +2427,416 @@ def _build_callback_route_parity_audit(callback_proof_audit: Mapping[str, Any]) 
     }
 
 
+def _build_callback_decomposition_audit() -> dict[str, Any]:
+    slice_ids = [
+        "2025-callback-context-object-delivery",
+        "2025-callback-context-interaction-delivery",
+        "2025-connection-lifecycle-services",
+        "2025-connect-and-federation-catalog-services",
+        "2025-federate-membership-and-resign-services",
+        "2025-synchronization-point-services",
+        "2025-object-delete-remove-flows",
+        "2025-object-attribute-update-request-callbacks",
+        "2025-object-scope-advisory-callbacks",
+        "2025-object-update-rate-advisory-callbacks",
+        "2025-object-attribute-transport-callbacks",
+        "2025-object-interaction-transport-callbacks",
+        "2025-single-name-reservation-services",
+        "2025-multi-name-reservation-services",
+        "2025-save-restore-lifecycle",
+        "2025-fedpro-hosted-runtime-core",
+        "2025-fedpro-hosted-runtime-extended-state",
+    ]
+    requirement_count = len(
+        {
+            requirement
+            for slice_row in IMPLEMENTED_EVIDENCE_SLICES
+            if slice_row["id"] in slice_ids
+            for requirement in slice_row["requirements"]
+        }
+    )
+    proof_families = [
+        {
+            "family": "declaration-relevance-and-interest-advisories",
+            "focus": "start or stop registration plus turnInteractionsOn/off callback delivery across declaration and time-managed declaration flows",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
+            ],
+        },
+        {
+            "family": "federation-sync-save-restore-and-reporting",
+            "focus": "synchronization registration and announce flow, federationSynchronized completion, save/restore lifecycle callbacks, connectionLost teardown, and federation execution reporting",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_save_restore_lifecycle",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_connection_lost_callback_tears_down_connection",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_reports_federation_executions_and_members",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_save_restore_completion_callbacks_only_to_reporting_federate_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_federation_reporting_callbacks_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "object-discovery-delivery-and-removal",
+            "focus": "discoverObjectInstance, reflectAttributeValues, receiveInteraction, provideAttributeValueUpdate, and removeObjectInstance delivery across plain, timed, restore, and requester-only routing paths",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_local_delete_known_state_and_routes_post_restore_reflection",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_discovery_and_remove_only_to_subscriber_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_value_update_requests_only_to_owner_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "object-advisory-transport-and-name-reservation-callbacks",
+            "focus": "scope advisories, update-rate advisories, transport change/query callbacks, and single or multiple object-instance name reservation callback flows",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_object_scope_relevance_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "supplemental-context-and-region-introspection",
+            "focus": "callback-context preservation for producing-federate and sent-region metadata on direct and hosted callback delivery surfaces",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "ownership-negotiation-and-query-callbacks",
+            "focus": "ownership assumption, release, divestiture confirmation, acquisition notification, unavailable/query callbacks, and restore recovery of inflight ownership state",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_inflight_ownership_state",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "time-grant-regulation-and-retraction",
+            "focus": "time regulation/time constrained enable callbacks, timeAdvanceGrant progression, and requestRetraction delivery across direct and hosted time-window or queued-TSO flows",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_request_retraction_callback_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
+            ],
+        },
+        {
+            "family": "callback-control-and-backlog-hygiene",
+            "focus": "disableCallbacks or enableCallbacks queue control, evokeCallback ordering, and reconnect-safe stale-backlog cleanup on the hosted seam",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_raw_callback_control_flow_without_wrapper_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drains_multiple_callbacks_in_order_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_disconnected_peer_callback_backlog_before_reconnect_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_clears_stale_plain_callbacks_and_preserves_post_restore_routing",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "callback-decomposition-captured",
+        "slice_id": "2025-callback-proof-families",
+        "slice_ids": slice_ids,
+        "requirement_count": requirement_count,
+        "proof_family_count": len(proof_families),
+        "direct_family_count": sum(1 for family in proof_families if family["direct_tests"]),
+        "hosted_family_count": sum(1 for family in proof_families if family["hosted_tests"]),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Callback proof is no longer just a flat ledger plus one route-backed count. Its current evidence separates "
+            "into declaration advisories, federation sync/save-restore/reporting, object delivery, advisory or name-reservation "
+            "callbacks, supplemental callback context, ownership callbacks, time or retraction callbacks, and callback-control "
+            "hygiene families, with direct and hosted anchors across every family."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these callback proof families before attempting "
+            "callback-by-callback signature or ordering claims beyond the current Python lanes."
+        ),
+    }
+
+
+def _build_time_management_decomposition_audit() -> dict[str, Any]:
+    slice_ids = [
+        "2025-time-mode-enable-disable",
+        "2025-time-advance-request-modes",
+        "2025-time-grant-and-async-delivery",
+        "2025-time-query-and-lookahead-control",
+        "2025-time-queries-retraction-and-order",
+        "2025-lookahead-window-proofs",
+        "2025-save-restore-lifecycle",
+    ]
+    requirement_count = len(
+        {
+            requirement
+            for slice_row in IMPLEMENTED_EVIDENCE_SLICES
+            if slice_row["id"] in slice_ids
+            for requirement in slice_row["requirements"]
+        }
+    )
+    proof_families = [
+        {
+            "family": "factory-mode-enable-and-request-primitives",
+            "focus": "logical-time factory selection, regulation/constrained enablement, advance-request modes, MOM time-management control routing, and typed flush-queue request handling",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_requires_valid_fom_modules_and_default_logical_time",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_section8_time_bound_queries_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_mom_time_management_service_interactions",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_time_management_services_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_control_actions_to_named_federate_runtime_effects_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_mom_time_management_service_interactions",
+            ],
+        },
+        {
+            "family": "galt-lits-query-and-lookahead-observability",
+            "focus": "queryLogicalTime, queryGALT, queryLITS, queryLookahead, modifyLookahead, and visible divergence or convergence of GALT/LITS under queued traffic and live lookahead changes",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_lookahead_and_galt_per_federate_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_distinguishes_galt_from_lits_after_lookahead_change_with_queued_tso_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
+            ],
+        },
+        {
+            "family": "timestamped-delivery-retraction-and-ordering",
+            "focus": "queued timestamped delivery, requestRetraction fanout or suppression, lagging-subscriber behavior, and receive-order versus timestamp-order handling across direct and hosted routes",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_targets",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_section8_request_retraction_via_compat_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_fans_out_post_delivery_retraction_to_all_subscribers_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_retraction_callbacks_for_disconnected_delivered_targets_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_request_retraction_callback_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "lookahead-window-proof-ladder",
+            "focus": "Target/Radar safe-window closure, future-message exclusion, output delivery, consumer ordering, pipeline overlap, receive-order poison rejection, and the integrated lookahead-processing-window gauntlet",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_core_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_pipeline_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_delivers_post_closure_timestamped_output_to_consumer_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_preserves_consumer_timestamp_order_between_competing_output_and_radar_output_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_replays_time_window_proof_ladder_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_time_window_gauntlet",
+            ],
+        },
+        {
+            "family": "save-restore-time-state-and-lookahead-rollback",
+            "focus": "saved logical-time, lookahead, switch-control, queued-TSO, and open or closed window state rollback, including restore resumption without dirty post-save replay",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_restore_state_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_restore_output_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_scheduled_save_restore_time_state_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_time_and_switch_control_state_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_per_federate_time_state_and_flush_grant_targeting_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restores_open_and_closed_time_window_state_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_treats_callback_delivery_as_runtime_policy_not_saved_state_over_fedpro_route",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "time-management-decomposition-captured",
+        "slice_id": "2025-time-management-proof-families",
+        "slice_ids": slice_ids,
+        "requirement_count": requirement_count,
+        "proof_family_count": len(proof_families),
+        "direct_family_count": sum(1 for family in proof_families if family["direct_tests"]),
+        "hosted_family_count": sum(1 for family in proof_families if family["hosted_tests"]),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Time-management proof is no longer just one bounded query/window bucket. Its current evidence separates "
+            "into factory/mode/request primitives, GALT/LITS and lookahead observability, timestamped delivery and "
+            "retraction ordering, the Target/Radar lookahead-window proof ladder, and save/restore rollback of time, "
+            "lookahead, and window state, with direct and hosted anchors across every family."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these time-management proof families before "
+            "attempting per-service completion claims across regulation, advance requests, timestamped delivery, "
+            "queries, and save/restore time-state semantics."
+        ),
+    }
+
+
+def _build_binding_route_decomposition_audit() -> dict[str, Any]:
+    slice_ids = [
+        "2025-java-binding-source-trace",
+        "2025-cpp-binding-source-trace",
+        "2025-standard-route-runtime-capability",
+        "2025-fedpro-typed-transport-surface",
+        "2025-fedpro-hosted-runtime-core",
+        "2025-fedpro-hosted-runtime-extended-state",
+    ]
+    requirement_count = len(
+        {
+            requirement
+            for slice_row in IMPLEMENTED_EVIDENCE_SLICES
+            if slice_row["id"] in slice_ids
+            for requirement in slice_row["requirements"]
+        }
+    )
+    proof_families = [
+        {
+            "family": "java-binding-source-and-intake-evidence",
+            "focus": "Java package inventory, source trace, intake manifests, and the distinction between Java wrapper surfaces and the main python2025 runtime owner",
+            "evidence_tests": [
+                "tests/requirements/test_2025_tail_backlog_evidence.py",
+                "tests/requirements/test_2025_python_rti_backend_audit.py",
+            ],
+            "route_groups": ["java-standard-2025-jpype", "java-standard-2025-py4j"],
+        },
+        {
+            "family": "cpp-binding-source-and-intake-evidence",
+            "focus": "C++ namespace/source trace, intake evidence, and wrapper-surface separation from the main python2025 runtime lane",
+            "evidence_tests": [
+                "tests/requirements/test_2025_tail_backlog_evidence.py",
+                "tests/requirements/test_2025_python_rti_backend_audit.py",
+            ],
+            "route_groups": ["cpp-standard-2025-pybind", "cpp-standard-2025-grpc"],
+        },
+        {
+            "family": "standard-java-cpp-runtime-capability-traces",
+            "focus": "artifact-gated standard-route lifecycle, object, ownership, time, MOM, DDM, support-service, and save/restore capability traces executed over the primary python2025 runtime lane",
+            "evidence_tests": [
+                "tests/backends/test_standard_shim_artifacts.py",
+                "tests/backends/test_shim_route_trace_evidence.py",
+                "tests/requirements/test_2025_route_parity_matrix.py",
+            ],
+            "route_groups": [
+                "java-standard-2025-jpype",
+                "java-standard-2025-py4j",
+                "cpp-standard-2025-pybind",
+                "cpp-standard-2025-grpc",
+            ],
+        },
+        {
+            "family": "fedpro-typed-transport-and-schema-surface",
+            "focus": "typed RTI request oneofs, typed callback oneofs, schema-tagged client selection, federation-list plus create-with-MIM transport commands, and executable FedPro transport-schema proof",
+            "evidence_tests": [
+                "tests/transport/test_grpc_transport_2025.py",
+                "tests/requirements/test_2025_tail_backlog_evidence.py",
+                "tests/requirements/test_2025_route_parity_matrix.py",
+            ],
+            "route_groups": ["python-2025-fedpro-grpc"],
+        },
+        {
+            "family": "fedpro-hosted-runtime-core-and-extended-state",
+            "focus": "hosted 2025 runtime lifecycle, object, ownership, time, save/restore, callback, MOM, support-service, and example-FOM replay over create_rti_ambassador('python2025', transport=...)",
+            "evidence_tests": [
+                "tests/transport/test_grpc_transport_2025.py",
+                "tests/requirements/test_2025_python_rti_backend_audit.py",
+                "tests/requirements/test_2025_route_parity_matrix.py",
+            ],
+            "route_groups": ["python-2025-fedpro-grpc"],
+        },
+        {
+            "family": "cross-route-scenario-parity-ledger",
+            "focus": "the explicit parity ledger across federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, and support_services for all current 2025 routes",
+            "evidence_tests": [
+                "tests/requirements/test_2025_route_parity_matrix.py",
+                "tests/requirements/test_2025_finish_line_snapshot.py",
+                "scripts/run_spec2025_route_parity_matrix.py",
+            ],
+            "route_groups": [
+                "python-2025-inprocess",
+                "python-2025-fedpro-grpc",
+                "java-standard-2025-jpype",
+                "java-standard-2025-py4j",
+                "cpp-standard-2025-pybind",
+                "cpp-standard-2025-grpc",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "binding-route-decomposition-captured",
+        "slice_id": "2025-binding-route-proof-families",
+        "slice_ids": slice_ids,
+        "requirement_count": requirement_count,
+        "proof_family_count": len(proof_families),
+        "route_group_coverage_count": sum(len(family["route_groups"]) for family in proof_families),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Binding and hosted-route proof is no longer just one bounded route bucket. Its current evidence now "
+            "separates into named binding and hosted-route families: Java intake/source traces, C++ intake/source "
+            "traces, artifact-gated standard runtime-capability traces, the typed FedPro schema surface, the hosted "
+            "FedPro runtime slices, and the cross-route scenario parity ledger, while keeping the distinction "
+            "between bounded adapter evidence and the main python2025 runtime owner explicit."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these route families before attempting any "
+            "stronger behavior-equivalence or hosted-conformance claim."
+        ),
+    }
+
+
 def _build_support_service_proof_audit() -> dict[str, Any]:
     support_rows = [
         row
@@ -2511,7 +2934,7 @@ def _build_completion_claim_audit(
         "full_claim_blockers": [
             "Covered rows include bounded supported-scope evidence, including OMT xs:any extension payload preservation without arbitrary third-party extension execution semantics.",
             "Java and C++ binding rows remain artifact/runtime-capability evidence rather than exhaustive behavior-conformance proof.",
-            "The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics/MOM action-request conformance pass.",
+            "The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics or exhaustive cross-binding conformance pass.",
             "Duplicate/umbrella rows remain normalization aids rather than direct one-row conformance assertions.",
         ],
     }
@@ -2602,7 +3025,7 @@ def _build_supported_boundary_statement(
             "Foreign OMT xs:any extension payloads are preserved for XML round-trip but not interpreted as repo-native runtime semantics.",
             "Retired or legacy-only rows remain excluded from the supported 2025 working surface.",
             "Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof over the main python2025 runtime rather than full behavior-conformance proof.",
-            "FedPro remains a hosted runtime slice rather than a full RTI semantics/MOM action-request conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.",
+            "FedPro remains a hosted runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.",
         ],
         "evidence_summary": {
             "bounded_ready_dimensions": objective_audit["bounded_ready_dimension_count"],
@@ -2735,7 +3158,7 @@ def _build_promotion_split_audit(
         "permanent_decision_blockers": [
             "The repo now has a row-level requirement-by-requirement audit, but it is still a bounded disposition audit rather than an all-covered 2025 conformance pass.",
             "Several implemented slices still aggregate multiple requirements under bounded supported-scope language.",
-            "Hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or MOM action/request conformance pass.",
+            "Hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass.",
             "Java and C++ bindings remain artifact/runtime-capability bounded rather than exhaustive behavior-conformance proof.",
         ],
         "current_assessment": (
@@ -2885,6 +3308,13 @@ def _build_implementation_lane_audit(
             "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
             "spec_package": "hla-rti1516-2025",
         },
+        "compatibility_wrapper_lane": {
+            "backend_package": "hla-backend-shim",
+            "status": "compatibility-maintained",
+            "role": "compatibility-wrapper",
+            "counts_as_python_2025_rti": False,
+            "delegates_runtime_semantics_to": "hla-backend-python2025",
+        },
         "reference_2010_lane": {
             "backend_package": "hla-backend-inmemory",
             "plugin_family": "inmemory",
@@ -2980,13 +3410,13 @@ def _build_implementation_lane_audit(
                 "stopping at ambassador-construction evidence."
             ),
             "evidence_tests": [
-                "tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane_and_shim_as_wrapper",
+                "tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane",
                 "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_primary_identity",
-                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_keeps_shim_aliases_wrapper_only",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name",
                 "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python2025_aliases",
-                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_shim_aliases",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_legacy_shim_provider",
                 "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
-                "tests/test_hla_factory_composition.py::test_2025_wrapper_factory_rejects_fake_hosted_transport_creation",
+                "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_transport_route_creates_hosted_python2025_ambassador",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_restore_control_negative_slice",
@@ -3020,7 +3450,6 @@ def _build_implementation_lane_audit(
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario",
                 "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_unknown_backend_specific_options",
-                "tests/test_hla_factory_composition.py::test_2025_wrapper_factory_rejects_unknown_backend_specific_options",
                 "tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation",
                 "tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer",
                 "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
@@ -3122,8 +3551,10 @@ def _build_implementation_lane_audit(
             "docs/verification/verification_plan.md",
             "docs/backend_route_inventory.md",
             "docs/backend_route_inventory_remote.md",
+            "packages/hla-backend-python2025/pyproject.toml",
             "packages/hla-backend-python2025/README.md",
             "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "packages/hla-backend-shim/pyproject.toml",
             "packages/hla-backend-shim/README.md",
             "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
             "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
@@ -3903,6 +4334,7 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
                 "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
                 "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_inflight_ownership_state",
                 "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema",
@@ -3947,6 +4379,586 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these proof families before extracting save/restore "
             "runtime semantics into a dedicated 2025 backend."
+        ),
+    }
+
+
+def _build_federation_management_decomposition_audit() -> dict[str, Any]:
+    slice_ids = [
+        "2025-lifecycle-and-members",
+        "2025-connection-lifecycle-services",
+        "2025-connect-and-federation-catalog-services",
+        "2025-federate-membership-and-resign-services",
+        "2025-synchronization-point-services",
+        "2025-save-restore-lifecycle",
+    ]
+    requirement_count = len(
+        {
+            requirement
+            for slice_row in IMPLEMENTED_EVIDENCE_SLICES
+            if slice_row["id"] in slice_ids
+            for requirement in slice_row["requirements"]
+        }
+    )
+    proof_families = [
+        {
+            "family": "connect-create-destroy-and-catalog-control",
+            "focus": "connect or disconnect state, create or destroy federation control, federation listing, duplicate-create rejection, and FOM-validation or callback-model connect preconditions",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_lifecycle_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_listing_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_validates_callback_model_and_credentials_at_connect",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_rejects_duplicate_federation_and_federate_names",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_with_mim_create_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_listing_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_federation_reporting_callbacks_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "join-membership-and-name-preconditions",
+            "focus": "join preconditions, federation-execution member reporting, multi-participation visibility, and federate-name uniqueness or joined-state constraints",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_multi_participation_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_join_precondition_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_reports_federation_executions_and_members",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_rejects_duplicate_federation_and_federate_names",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_multi_participation_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_keeps_decode_support_helpers_available_while_joined_identity_queries_stop_after_resign_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "resign-disconnect-loss-and-member-cleanup",
+            "focus": "resign and disconnect preconditions, federation member cleanup after resign or loss, connectionLost teardown, and federateResigned callback or MOM cleanup behavior",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_lost_federate_mom_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_connection_lost_callback_tears_down_connection",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_reports_federate_resigned_callback_with_reason_context",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_mom_cleanup_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_disconnect_mom_cleanup_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_resigned_federate_callback_silence_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_keeps_other_federates_joined_after_disconnect_and_resign_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_removes_mom_resigned_federate_from_delivery_state_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_applies_mom_resign_policy_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "synchronization-barriers-and-targeted-callbacks",
+            "focus": "sync-point registration, announce or achieved flow, federationSynchronized completion, failure cases, late joiners, multiple sync points, and targeted sync callback routing",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_synchronization_registration_failure_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_late_join_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_synchronization_scenario_via_runner_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_synchronization_registration_failure_scenario_via_runner_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_failed_federate_synchronization_scenario_via_runner_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_late_join_synchronization_scenario_via_runner_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_multiple_synchronization_points_scenario_via_runner_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "save-restore-lifecycle-control",
+            "focus": "request or initiate, status, fail, abort, and completion control flow for federation save or restore across direct and hosted ambassadors",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_save_restore_lifecycle",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_queued_callback_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_scheduled_save_restore_time_state_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_restore_control_negative_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_save_restore_completion_callbacks_only_to_reporting_federate_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "save-restore-participant-recovery-and-branching",
+            "focus": "multi-federate participant tracking, restore after disconnect, example FOM rollback branching, and recovery of saved participant state rather than dirty future state",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_example_fom_save_restore_gauntlet",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_example_fom_save_restore_gauntlet_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_smoke_fom_save_restore_ownership_gauntlet",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "federation-management-decomposition-captured",
+        "slice_id": "2025-federation-management-proof-families",
+        "slice_ids": slice_ids,
+        "requirement_count": requirement_count,
+        "proof_family_count": len(proof_families),
+        "direct_family_count": sum(1 for family in proof_families if family["direct_tests"]),
+        "hosted_family_count": sum(1 for family in proof_families if family["hosted_tests"]),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Federation-management proof is no longer just one broad strong-slice claim. Its current evidence separates "
+            "into connect/create/catalog control, join or membership reporting, resign or disconnect cleanup, "
+            "synchronization barriers, save/restore lifecycle control, and save/restore participant recovery families, "
+            "with direct and hosted anchors across every family."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these federation-management proof families before "
+            "attempting clause-by-clause completion claims across connect, join, resign, sync, and save/restore services."
+        ),
+    }
+
+
+def _build_support_services_decomposition_audit() -> dict[str, Any]:
+    slice_ids = [
+        "2025-switch-set-get-model",
+        "2025-single-name-reservation-services",
+        "2025-multi-name-reservation-services",
+        "2025-support-federate-and-object-identity-lookups",
+        "2025-support-attribute-interaction-catalog-lookups",
+        "2025-support-policy-update-and-transport-lookups",
+        "2025-support-interaction-dimension-and-range-lookups",
+        "2025-support-handle-normalization-and-region-introspection",
+        "2025-support-advisory-and-reporting-state-inquiries",
+        "2025-support-runtime-policy-state-inquiries",
+        "2025-support-advisory-and-reporting-state-controls",
+        "2025-support-runtime-policy-state-controls",
+    ]
+    requirement_count = len(
+        {
+            requirement
+            for slice_row in IMPLEMENTED_EVIDENCE_SLICES
+            if slice_row["id"] in slice_ids
+            for requirement in slice_row["requirements"]
+        }
+    )
+    proof_families = [
+        {
+            "family": "name-reservation-and-release-flows",
+            "focus": "single and multi-name reservation success or failure callbacks, release flows, handoff behavior, and save or join preconditions around reservation state",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_supports_single_object_instance_name_reservation_callback_and_release",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_name_reservation_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice",
+            ],
+        },
+        {
+            "family": "identity-catalog-and-handle-normalization-lookups",
+            "focus": "federate, object, interaction, parameter, and service-group lookup or normalization flows across joined runtime state and loaded catalog metadata",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_round_trips_support_services_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_rejects_invalid_support_lookup_values_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_keeps_decode_support_helpers_available_while_joined_identity_queries_stop_after_resign_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "transport-order-update-dimension-and-range-lookups",
+            "focus": "transportation, order type, update-rate, dimension, and range-bound lookups plus requester-only transport query callback routing",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_round_trips_support_services_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_rejects_invalid_support_lookup_values_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_management_support_callbacks_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "switch-inquiry-and-control-model",
+            "focus": "2025 set/get support switch model for advisory, reporting, and runtime policy state, including automatic resign, with validation of switch-control inputs",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_supports_explicit_switch_inquiry_and_control_model",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_round_trips_automatic_resign_directive_support_service",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_round_trips_support_services_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "factory-decode-and-hosted-support-seam",
+            "focus": "support handle factories, decode helpers, hosted direct support route execution, callback-backlog control around support seams, and preservation of support surfaces across transport",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_support_factory_and_decode_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_callback_control_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_shared_support_factory_and_decode_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_disconnected_peer_callback_backlog_before_reconnect_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drains_multiple_callbacks_in_order_over_fedpro_schema",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "support-services-decomposition-captured",
+        "slice_id": "2025-support-services-proof-families",
+        "slice_ids": slice_ids,
+        "requirement_count": requirement_count,
+        "proof_family_count": len(proof_families),
+        "direct_family_count": sum(1 for family in proof_families if family["direct_tests"]),
+        "hosted_family_count": sum(1 for family in proof_families if family["hosted_tests"]),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Support-service proof is no longer just one large ledger summary. Its current evidence separates into "
+            "name reservation and release flows, identity/catalog normalization lookups, transport or range lookups, "
+            "the 2025 switch inquiry/control model, and factory/decode plus hosted support-seam families, with direct "
+            "and hosted anchors across every family."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these support-service proof families before "
+            "attempting clause-by-clause completion claims across lookup, inquiry, control, reservation, and decode surfaces."
+        ),
+    }
+
+
+def _build_object_management_decomposition_audit() -> dict[str, Any]:
+    slice_ids = [
+        "2025-basic-object-exchange",
+        "2025-declaration-publication-services",
+        "2025-declaration-subscription-services",
+        "2025-declaration-relevance-advisory-callbacks",
+        "2025-object-delete-remove-flows",
+        "2025-object-attribute-update-request-callbacks",
+        "2025-object-scope-advisory-callbacks",
+        "2025-object-update-rate-advisory-callbacks",
+        "2025-object-attribute-transport-callbacks",
+        "2025-object-interaction-transport-callbacks",
+        "2025-directed-interaction-boundary",
+        "2025-ddm-default-attribute-policy",
+    ]
+    requirement_count = len(
+        {
+            requirement
+            for slice_row in IMPLEMENTED_EVIDENCE_SLICES
+            if slice_row["id"] in slice_ids
+            for requirement in slice_row["requirements"]
+        }
+    )
+    proof_families = [
+        {
+            "family": "declaration-and-basic-exchange-gating",
+            "focus": "publish and subscribe control, discovery metadata/class visibility, plain object exchange, and declaration gating or rejection paths",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_discovery_class_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_discovery_and_remove_only_to_subscriber_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_reflect_and_interaction_only_to_subscriber_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_object_exchange_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_invalid_attribute_publication_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_object_subscription_with_rate_aliases_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "deletion-and-local-known-state-lifecycle",
+            "focus": "local delete, timed delete, orphan and remove flows, subscriber known-state rollback, and stale remove cleanup",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_local_delete_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_orphan_object_lifecycle_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_timed_delete_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_locally_deleted_object_known_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_deletes_objects_and_queues_timed_removes_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_local_delete_restore_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_local_delete_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_locally_deleted_object_known_state_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_delete_remove_only_to_discovered_observers_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_local_delete_to_requester_local_known_state_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "attribute-value-update-request-routing",
+            "focus": "instance and class-wide requestAttributeValueUpdate callbacks, owner-only routing, and disconnected-owner suppression",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_to_end",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_object_management_and_support_callbacks",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_management_support_callbacks_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_value_update_requests_only_to_owner_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_attribute_value_update_requests_for_disconnected_owner_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_routing_scenario_over_fedpro_route",
+            ],
+        },
+        {
+            "family": "advisory-and-update-rate-callbacks",
+            "focus": "turnUpdatesOn/off advisories, object-scope in-scope or out-of-scope transitions, update-rate routing, and rate alias parity",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_update_rate_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_passive_and_universal_subscription_aliases_match_active_exchange",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_update_rate_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_object_scope_relevance_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_object_subscription_with_rate_aliases_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "transportation-query-and-policy-state",
+            "focus": "attribute and interaction transportation change confirmation, requester-only query/report callbacks, rejection paths, and restore persistence",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_transportation_type_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_transportation_type_state_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_transportation_type_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_transportation_type_restore_persistence_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_transportation_type_rejection_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "object-region-scope-and-passive-alias-routing",
+            "focus": "DDM object-region routing, attributesInScope and attributesOutOfScope advisories, passive region aliases, and DDM cleanup",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_ddm_declaration_gating_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_ddm_passive_region_subscription_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_passive_ddm_region_subscription_aliases_match_active_region_delivery_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_object_scope_relevance_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_queued_ddm_tso_reflect_for_disconnected_target_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "directed-and-directed-ddm-interaction-routing",
+            "focus": "directed interaction delivery, timestamped directed routing and retraction, selective directed publication or subscription isolation, and directed DDM overlap routing",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_queues_timestamped_directed_interactions_until_time_advance",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_queues_timestamped_directed_interactions_and_retracts_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_directed_with_set_unsubscribe_and_unpublish_are_selective",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_directed_ddm_interactions_only_to_overlapping_subscribers_over_fedpro_schema",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "object-management-decomposition-captured",
+        "slice_id": "2025-object-management-proof-families",
+        "slice_ids": slice_ids,
+        "requirement_count": requirement_count,
+        "proof_family_count": len(proof_families),
+        "direct_family_count": sum(1 for family in proof_families if family["direct_tests"]),
+        "hosted_family_count": sum(1 for family in proof_families if family["hosted_tests"]),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Object-management proof is no longer just one broad strong-slice claim. Its current evidence separates "
+            "into declaration/exchange gating, deletion and local-known-state lifecycle, attribute-value-update "
+            "routing, advisory/update-rate callbacks, transportation policy callbacks, object-region scope routing, "
+            "and directed or directed-DDM routing families, with direct and hosted anchors across every family."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these object-management proof families before "
+            "attempting clause-by-clause completion claims for object, declaration, directed-routing, and DDM services."
+        ),
+    }
+
+
+def _build_ownership_decomposition_audit() -> dict[str, Any]:
+    proof_families = [
+        {
+            "family": "divestiture-and-confirmation-flows",
+            "focus": "unconditional and negotiated divestiture, requestDivestitureConfirmation, confirmDivestiture, and cancel-negotiated-offer handling",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_negotiated_ownership_divestiture_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_rejects_non_owner_ownership_divestiture_requests",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_rejects_cancel_negotiated_divestiture_without_offer",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_basic_ownership_divest_acquire_query_flow_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_divestiture_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_rejects_non_owner_ownership_divestiture_requests_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_rejects_cancel_negotiated_divestiture_without_offer_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "release-and-if-wanted-flows",
+            "focus": "requestAttributeOwnershipRelease, attributeOwnershipReleaseDenied, and divestiture-if-wanted transfer behavior",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_release_denied_ownership_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_release_request_ownership_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_release_denied_ownership_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_divestiture_if_wanted_ownership_scenario_over_fedpro_route",
+            ],
+        },
+        {
+            "family": "acquisition-assumption-and-notification",
+            "focus": "requestAttributeOwnershipAssumption, explicit acquisition requests, and ownership acquisition notification delivery",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_attribute_ownership_assumption_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_mom_transport_and_ownership_service_actions",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_basic_ownership_divest_acquire_query_flow_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_assumption_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_observable_runtime_effects_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "acquisition-availability-and-cancellation",
+            "focus": "attributeOwnershipAcquisitionIfAvailable, unavailable callbacks, acquisition cancellation, and cancel-confirmation flows",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_cancel_attribute_ownership_acquisition_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_cancel_negotiated_ownership_divestiture_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_ownership_if_available_scenario_via_compat_adapter",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_unavailable_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_cancel_attribute_ownership_acquisition_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_cancel_negotiated_ownership_divestiture_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_ownership_if_available_scenario_over_fedpro_route",
+            ],
+        },
+        {
+            "family": "query-visibility-and-resign-policies",
+            "focus": "queryAttributeOwnership, attributeIsOwnedByRTI and attributeIsNotOwned callback outcomes, isAttributeOwnedByFederate, and resign-time ownership policy behavior",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_applies_resign_time_ownership_policies",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_mom_transport_and_ownership_service_actions",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_basic_ownership_divest_acquire_query_flow_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_observable_runtime_effects_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_supports_multiple_resign_actions_and_reports_remaining_object_state_over_fedpro_schema",
+            ],
+        },
+        {
+            "family": "rollback-and-restore-state",
+            "focus": "save/restore ownership gauntlets, inflight acquisition or divestiture state, and cross-federate owner-visibility rollback",
+            "direct_tests": [
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_inflight_ownership_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
+            ],
+            "hosted_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restores_cross_federate_attribute_owner_visibility_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_smoke_fom_save_restore_ownership_gauntlet",
+            ],
+        },
+    ]
+    return {
+        "audit_status": "ownership-decomposition-captured",
+        "slice_id": "2025-ownership-proof-families",
+        "slice_ids": [
+            "2025-ownership-divestiture-confirmation-flows",
+            "2025-ownership-release-and-if-wanted-flows",
+            "2025-ownership-acquisition-assumption-flows",
+            "2025-ownership-acquisition-availability-cancellation-flows",
+            "2025-ownership-query-and-resign-policies",
+            "2025-save-restore-lifecycle",
+        ],
+        "requirement_count": 18,
+        "proof_family_count": len(proof_families),
+        "direct_family_count": sum(1 for family in proof_families if family["direct_tests"]),
+        "hosted_family_count": sum(1 for family in proof_families if family["hosted_tests"]),
+        "proof_families": proof_families,
+        "current_assessment": (
+            "Ownership proof is no longer just a broad strong-slice claim. Its current evidence separates into "
+            "divestiture/confirmation, release/if-wanted, acquisition/assumption, availability/cancellation, "
+            "query/resign-policy, and rollback/restore families, with direct and hosted anchors across every family."
+        ),
+        "next_split_boundary": (
+            "If this area needs further tightening, split it first by these ownership proof families before attempting "
+            "a clause-by-clause ownership conformance audit."
         ),
     }
 
@@ -4140,6 +5152,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
 def _build_shim_pressure_family_route_backing_audit() -> dict[str, Any]:
     audits = (
         _build_save_restore_decomposition_audit(),
+        _build_ownership_decomposition_audit(),
         _build_directed_interaction_decomposition_audit(),
         _build_ddm_default_policy_decomposition_audit(),
     )
@@ -4160,15 +5173,15 @@ def _build_shim_pressure_family_route_backing_audit() -> dict[str, Any]:
 
     fully_route_backed = [family for family in families if family["route_backed_across_current_python_lanes"]]
     return {
-        "audit_status": "shim-pressure-family-route-backing-captured",
+        "audit_status": "wrapper-boundary-family-route-backing-captured",
         "family_count": len(families),
         "fully_route_backed_family_count": len(fully_route_backed),
         "all_families_route_backed_across_current_python_lanes": len(fully_route_backed) == len(families),
         "families": families,
         "current_assessment": (
             "The decomposed current-package pressure families are not in-process-only claims. Every currently named family "
-            "across save/restore, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted "
-            "FedPro proof, which strengthens the current-lane working-RTI claim."
+            "across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python2025 proof "
+            "and hosted FedPro proof, which strengthens the current-lane working-RTI claim."
         ),
         "residual_boundary": (
             "This still does not prove full cross-binding conformance or full requirement-by-requirement closure; it "
@@ -4206,7 +5219,7 @@ def _build_shim_pressure_family_asymmetry_audit() -> dict[str, Any]:
             "family imbalances rather than inventing new top-level proof areas."
         )
     return {
-        "audit_status": "shim-pressure-family-asymmetry-captured",
+        "audit_status": "wrapper-boundary-family-asymmetry-captured",
         "family_count": len(families),
         "by_balance": by_balance,
         "families": families,
@@ -4238,6 +5251,9 @@ def _build_current_lane_coherence_audit(
         "ready_for_permanent_no-split_architecture_claim": False,
         "major_pressure_slice_count": len(major_pressure_slice_ids),
         "major_pressure_slices": sorted(major_pressure_slice_ids),
+        "python2025_backend_concentration_is_material": implementation_concentration_audit[
+            "semantic_concentration_is_material"
+        ],
         "shim_backend_concentration_is_material": implementation_concentration_audit["semantic_concentration_is_material"],
         "all_pressure_families_route_backed_across_current_python_lanes": shim_pressure_family_route_backing_audit[
             "all_families_route_backed_across_current_python_lanes"
@@ -4261,15 +5277,23 @@ def _build_extraction_readiness_audit(
     implementation_lane_audit: Mapping[str, Any],
     implementation_concentration_audit: Mapping[str, Any],
     save_restore_decomposition_audit: Mapping[str, Any],
+    ownership_decomposition_audit: Mapping[str, Any],
     directed_interaction_decomposition_audit: Mapping[str, Any],
     ddm_default_policy_decomposition_audit: Mapping[str, Any],
     shim_pressure_family_route_backing_audit: Mapping[str, Any],
 ) -> dict[str, Any]:
     runtime_audits = (
         save_restore_decomposition_audit,
+        ownership_decomposition_audit,
         directed_interaction_decomposition_audit,
         ddm_default_policy_decomposition_audit,
     )
+    candidate_runtime_modules = {
+        "2025-save-restore-lifecycle": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
+        "2025-ownership-proof-families": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
+        "2025-directed-interaction-boundary": "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py",
+        "2025-ddm-default-attribute-policy": "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py",
+    }
     migration_worklist: list[dict[str, Any]] = []
     for audit in runtime_audits:
         family_names = [family["family"] for family in audit["proof_families"]]
@@ -4283,7 +5307,7 @@ def _build_extraction_readiness_audit(
                 "direct_test_count": direct_test_count,
                 "hosted_test_count": hosted_test_count,
                 "route_backed": all(family["direct_tests"] and family["hosted_tests"] for family in audit["proof_families"]),
-                "candidate_runtime_module": f"packages/hla-backend-python2025/src/hla/backends/python2025/{audit['slice_id'].removeprefix('2025-').replace('-', '_')}.py",
+                "candidate_runtime_module": candidate_runtime_modules[audit["slice_id"]],
             }
         )
     python2025_runtime_dir = Path.cwd() / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
@@ -4421,6 +5445,11 @@ def _build_extraction_impact_audit(
             "ownership-runtime",
             "callback-delivery-and-control",
         ),
+        "2025-ownership-proof-families": (
+            "ownership-runtime",
+            "save-restore-runtime",
+            "callback-delivery-and-control",
+        ),
         "2025-directed-interaction-boundary": (
             "interaction-routing-runtime",
             "ddm-region-runtime",
@@ -4506,7 +5535,7 @@ def _build_current_lane_working_surface_statement(
             "This is not a full requirement-by-requirement IEEE 1516.1-2025 conformance claim.",
             "This is not a permanent no-split architecture decision.",
             "This does not upgrade Java or C++ bindings into exhaustive behavior-conformance lanes.",
-            "This does not turn the hosted FedPro route into a full RTI semantics or MOM action/request conformance pass.",
+            "This does not turn the hosted FedPro route into a full RTI semantics or exhaustive cross-binding conformance pass.",
         ],
         "current_assessment": (
             "The repo now has a single explicit statement for the primary 2025 Python RTI lane: promote it as the bounded "
@@ -4570,30 +5599,40 @@ def _objective_dimension_evidence_basis(
             f"route_summary.scenario_count={route_summary['scenario_count']}",
             f"route_summary.row_count={route_summary['row_count']}",
             f"route_summary.routes_with_full_parity={len(route_summary['routes_with_full_parity'])}",
+            "federation_management_decomposition.slice_id=2025-federation-management-proof-families",
+            "federation_management_decomposition.proof_family_count=6",
         ]
     if dimension_id == "object_management":
         return [
             f"route_summary.scenario_count={route_summary['scenario_count']}",
             f"route_summary.row_count={route_summary['row_count']}",
             "route_summary.scenarios=ddm,object_exchange,ownership",
+            "object_management_decomposition.slice_id=2025-object-management-proof-families",
+            "object_management_decomposition.proof_family_count=7",
         ]
     if dimension_id == "ownership_management":
         return [
             f"route_summary.scenario_count={route_summary['scenario_count']}",
             f"route_summary.row_count={route_summary['row_count']}",
             "route_summary.scenarios=ownership,save_restore",
+            "ownership_decomposition.slice_id=2025-ownership-proof-families",
+            "ownership_decomposition.proof_family_count=6",
         ]
     if dimension_id == "support_services":
         return [
             "support_service_proof_audit.ready_for_support_service_traceability_claim=true",
             "support_service_proof_audit.focused_executable_row_count=62",
             "support_service_proof_audit.complete_negative_path_row_count=61",
+            "support_services_decomposition.slice_id=2025-support-services-proof-families",
+            "support_services_decomposition.proof_family_count=5",
         ]
     if dimension_id == "callbacks":
         return [
             "callback_proof_audit.ready_for_callback_by_callback_working_surface_claim=true",
             "callback_route_parity_audit.ready_for_full_python_lane_callback_route_parity_claim=true",
             "callback_route_parity_audit.hosted_or_route_backed_callback_count=55",
+            "callback_decomposition.slice_id=2025-callback-proof-families",
+            "callback_decomposition.proof_family_count=8",
         ]
     if dimension_id == "time_management":
         milestone_rows = list(python_rti_milestone_audit["rows"])
@@ -4610,18 +5649,24 @@ def _objective_dimension_evidence_basis(
             f"python_rti_milestone_audit bounded time rows={bounded_time_statuses}",
             f"time_window_vendor_parity_audit.audit_status={time_window_vendor_parity_audit['audit_status']}",
             "time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion",
+            "time_management_decomposition.slice_id=2025-time-management-proof-families",
+            "time_management_decomposition.proof_family_count=5",
         ]
     if dimension_id == "omt_handling":
         return [
             f"omt_requirement_proof_audit.ready_for_omt_traceability_claim={str(omt_requirement_proof_audit['ready_for_omt_traceability_claim']).lower()}",
             f"omt_requirement_proof_audit.row_count={omt_requirement_proof_audit['row_count']}",
             "omt_requirement_proof_audit.by_proof_status=supported-subset-traceable:454",
+            "omt_decomposition.slice_ids=2025-service-utilization-crosscheck,2025-omt-extended-supported-subset,2025-omt-xs-any-extension-tolerance,2025-omt-schema-constraint-validation",
+            "omt_decomposition.family_counts=service-utilization:10,extended-subset:5,xs-any:5,schema-constraint:4",
         ]
     if dimension_id == "binding_routes":
         return [
             f"route_summary.scenario_count={route_summary['scenario_count']}",
             f"route_summary.row_count={route_summary['row_count']}",
             f"route_summary.routes_with_full_parity={len(route_summary['routes_with_full_parity'])}",
+            "binding_route_decomposition.slice_id=2025-binding-route-proof-families",
+            "binding_route_decomposition.proof_family_count=6",
         ]
     return []
 
@@ -4655,10 +5700,15 @@ def _build_objective_dimension_audit(
         bounded_ready = (
             dimension["evidence_level"] in {
                 "strong-slice",
+                "decomposed-strong-slice",
                 "bounded-slice",
+                "decomposed-bounded-slice",
                 "per-service-runtime-traceable",
+                "decomposed-per-service-runtime-traceable",
                 "callback-ledger-route-backed",
+                "decomposed-callback-ledger-route-backed",
                 "query-and-window-proof-backed",
+                "decomposed-query-and-window-proof-backed",
             }
             and route_summary["by_status"].get("partial", 0) == 0
             and route_summary["by_status"].get("missing", 0) == 0
@@ -4745,7 +5795,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 "python-2025-fedpro-grpc": (
                     "Hosted FedPro Python 2025 is a best-attempt bounded working surface across the tracked runtime "
                     "scenario set, with broad hosted replay across lifecycle, object, time, save/restore, support-service, "
-                    "and callback scenarios, not a full RTI semantics or MOM action-request conformance claim."
+                    "and callback scenarios, not a full RTI semantics or exhaustive cross-binding conformance claim."
                 ),
             },
             "boundary_by_route": {
@@ -5287,7 +6337,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass.",
         "Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually.",
         "Java and C++ standard-route evidence remains artifact-gated/runtime-capability evidence, not a full cross-binding behavior-conformance pass.",
-        "The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full MOM action/request conformance.",
+        "The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full cross-binding conformance.",
         "OMT component coverage includes foreign xs:any extension payload preservation, but arbitrary third-party extension execution semantics remain out of scope.",
         "Legacy-only rows remain explicit exclusions, so overall completion cannot be promoted to an unconditional 2025 conformance claim.",
     ]
@@ -5336,10 +6386,19 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     omt_xs_any_extension_decomposition_audit = _build_omt_xs_any_extension_decomposition_audit()
     omt_schema_constraint_decomposition_audit = _build_omt_schema_constraint_decomposition_audit()
     save_restore_decomposition_audit = _build_save_restore_decomposition_audit()
+    federation_management_decomposition_audit = _build_federation_management_decomposition_audit()
+    callback_decomposition_audit = _build_callback_decomposition_audit()
+    time_management_decomposition_audit = _build_time_management_decomposition_audit()
+    binding_route_decomposition_audit = _build_binding_route_decomposition_audit()
+    support_services_decomposition_audit = _build_support_services_decomposition_audit()
+    object_management_decomposition_audit = _build_object_management_decomposition_audit()
+    ownership_decomposition_audit = _build_ownership_decomposition_audit()
     directed_interaction_decomposition_audit = _build_directed_interaction_decomposition_audit()
     ddm_default_policy_decomposition_audit = _build_ddm_default_policy_decomposition_audit()
     shim_pressure_family_route_backing_audit = _build_shim_pressure_family_route_backing_audit()
     shim_pressure_family_asymmetry_audit = _build_shim_pressure_family_asymmetry_audit()
+    wrapper_boundary_family_route_backing_audit = shim_pressure_family_route_backing_audit
+    wrapper_boundary_family_asymmetry_audit = shim_pressure_family_asymmetry_audit
     closeout_readiness = {
         "implemented_slice_count": len(_implemented_slices()),
         "high_priority_open_count": len(high_priority_open),
@@ -5407,6 +6466,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         implementation_lane_audit,
         implementation_concentration_audit,
         save_restore_decomposition_audit,
+        ownership_decomposition_audit,
         directed_interaction_decomposition_audit,
         ddm_default_policy_decomposition_audit,
         shim_pressure_family_route_backing_audit,
@@ -5468,10 +6528,19 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "omt_xs_any_extension_decomposition_audit": omt_xs_any_extension_decomposition_audit,
         "omt_schema_constraint_decomposition_audit": omt_schema_constraint_decomposition_audit,
         "save_restore_decomposition_audit": save_restore_decomposition_audit,
+        "federation_management_decomposition_audit": federation_management_decomposition_audit,
+        "callback_decomposition_audit": callback_decomposition_audit,
+        "time_management_decomposition_audit": time_management_decomposition_audit,
+        "binding_route_decomposition_audit": binding_route_decomposition_audit,
+        "support_services_decomposition_audit": support_services_decomposition_audit,
+        "object_management_decomposition_audit": object_management_decomposition_audit,
+        "ownership_decomposition_audit": ownership_decomposition_audit,
         "directed_interaction_decomposition_audit": directed_interaction_decomposition_audit,
         "ddm_default_policy_decomposition_audit": ddm_default_policy_decomposition_audit,
         "shim_pressure_family_route_backing_audit": shim_pressure_family_route_backing_audit,
         "shim_pressure_family_asymmetry_audit": shim_pressure_family_asymmetry_audit,
+        "wrapper_boundary_family_route_backing_audit": wrapper_boundary_family_route_backing_audit,
+        "wrapper_boundary_family_asymmetry_audit": wrapper_boundary_family_asymmetry_audit,
         "current_lane_coherence_audit": current_lane_coherence_audit,
         "current_lane_working_surface_statement": current_lane_working_surface_statement,
         "implementation_lane_audit": implementation_lane_audit,
@@ -5517,6 +6586,13 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     omt_xs_any_extension_decomposition_audit = snapshot["omt_xs_any_extension_decomposition_audit"]
     omt_schema_constraint_decomposition_audit = snapshot["omt_schema_constraint_decomposition_audit"]
     save_restore_decomposition_audit = snapshot["save_restore_decomposition_audit"]
+    federation_management_decomposition_audit = snapshot["federation_management_decomposition_audit"]
+    callback_decomposition_audit = snapshot["callback_decomposition_audit"]
+    time_management_decomposition_audit = snapshot["time_management_decomposition_audit"]
+    binding_route_decomposition_audit = snapshot["binding_route_decomposition_audit"]
+    support_services_decomposition_audit = snapshot["support_services_decomposition_audit"]
+    object_management_decomposition_audit = snapshot["object_management_decomposition_audit"]
+    ownership_decomposition_audit = snapshot["ownership_decomposition_audit"]
     directed_interaction_decomposition_audit = snapshot["directed_interaction_decomposition_audit"]
     ddm_default_policy_decomposition_audit = snapshot["ddm_default_policy_decomposition_audit"]
     shim_pressure_family_route_backing_audit = snapshot["shim_pressure_family_route_backing_audit"]
@@ -5997,6 +7073,200 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     lines.extend(
         [
             "",
+            "## Federation-Management Decomposition Audit",
+            "",
+            f"- Audit status: {federation_management_decomposition_audit['audit_status']}",
+            f"- Slice id: {federation_management_decomposition_audit['slice_id']}",
+            f"- Slice ids: {', '.join(federation_management_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {federation_management_decomposition_audit['requirement_count']}",
+            f"- Proof families: {federation_management_decomposition_audit['proof_family_count']}",
+            f"- Direct-backed families: {federation_management_decomposition_audit['direct_family_count']}",
+            f"- Hosted-backed families: {federation_management_decomposition_audit['hosted_family_count']}",
+            f"- Assessment: {federation_management_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {federation_management_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in federation_management_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### federation-management/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Direct test count: {len(family['direct_tests'])}",
+                f"- Hosted test count: {len(family['hosted_tests'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Callback Decomposition Audit",
+            "",
+            f"- Audit status: {callback_decomposition_audit['audit_status']}",
+            f"- Slice id: {callback_decomposition_audit['slice_id']}",
+            f"- Slice ids: {', '.join(callback_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {callback_decomposition_audit['requirement_count']}",
+            f"- Proof families: {callback_decomposition_audit['proof_family_count']}",
+            f"- Direct-backed families: {callback_decomposition_audit['direct_family_count']}",
+            f"- Hosted-backed families: {callback_decomposition_audit['hosted_family_count']}",
+            f"- Assessment: {callback_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {callback_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in callback_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### callbacks/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Direct test count: {len(family['direct_tests'])}",
+                f"- Hosted test count: {len(family['hosted_tests'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Time-Management Decomposition Audit",
+            "",
+            f"- Audit status: {time_management_decomposition_audit['audit_status']}",
+            f"- Slice id: {time_management_decomposition_audit['slice_id']}",
+            f"- Slice ids: {', '.join(time_management_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {time_management_decomposition_audit['requirement_count']}",
+            f"- Proof families: {time_management_decomposition_audit['proof_family_count']}",
+            f"- Direct-backed families: {time_management_decomposition_audit['direct_family_count']}",
+            f"- Hosted-backed families: {time_management_decomposition_audit['hosted_family_count']}",
+            f"- Assessment: {time_management_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {time_management_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in time_management_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### time-management/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Direct test count: {len(family['direct_tests'])}",
+                f"- Hosted test count: {len(family['hosted_tests'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Binding-Route Decomposition Audit",
+            "",
+            f"- Audit status: {binding_route_decomposition_audit['audit_status']}",
+            f"- Slice id: {binding_route_decomposition_audit['slice_id']}",
+            f"- Slice ids: {', '.join(binding_route_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {binding_route_decomposition_audit['requirement_count']}",
+            f"- Proof families: {binding_route_decomposition_audit['proof_family_count']}",
+            f"- Route-group coverage count: {binding_route_decomposition_audit['route_group_coverage_count']}",
+            f"- Assessment: {binding_route_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {binding_route_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in binding_route_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### binding-routes/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Evidence test count: {len(family['evidence_tests'])}",
+                f"- Route groups: {', '.join(family['route_groups'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Support-Services Decomposition Audit",
+            "",
+            f"- Audit status: {support_services_decomposition_audit['audit_status']}",
+            f"- Slice id: {support_services_decomposition_audit['slice_id']}",
+            f"- Slice ids: {', '.join(support_services_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {support_services_decomposition_audit['requirement_count']}",
+            f"- Proof families: {support_services_decomposition_audit['proof_family_count']}",
+            f"- Direct-backed families: {support_services_decomposition_audit['direct_family_count']}",
+            f"- Hosted-backed families: {support_services_decomposition_audit['hosted_family_count']}",
+            f"- Assessment: {support_services_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {support_services_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in support_services_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### support-services/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Direct test count: {len(family['direct_tests'])}",
+                f"- Hosted test count: {len(family['hosted_tests'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Object-Management Decomposition Audit",
+            "",
+            f"- Audit status: {object_management_decomposition_audit['audit_status']}",
+            f"- Slice id: {object_management_decomposition_audit['slice_id']}",
+            f"- Slice ids: {', '.join(object_management_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {object_management_decomposition_audit['requirement_count']}",
+            f"- Proof families: {object_management_decomposition_audit['proof_family_count']}",
+            f"- Direct-backed families: {object_management_decomposition_audit['direct_family_count']}",
+            f"- Hosted-backed families: {object_management_decomposition_audit['hosted_family_count']}",
+            f"- Assessment: {object_management_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {object_management_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in object_management_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### object-management/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Direct test count: {len(family['direct_tests'])}",
+                f"- Hosted test count: {len(family['hosted_tests'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Ownership Decomposition Audit",
+            "",
+            f"- Audit status: {ownership_decomposition_audit['audit_status']}",
+            f"- Slice ids: {', '.join(ownership_decomposition_audit['slice_ids'])}",
+            f"- Requirement count: {ownership_decomposition_audit['requirement_count']}",
+            f"- Proof families: {ownership_decomposition_audit['proof_family_count']}",
+            f"- Direct-backed families: {ownership_decomposition_audit['direct_family_count']}",
+            f"- Hosted-backed families: {ownership_decomposition_audit['hosted_family_count']}",
+            f"- Assessment: {ownership_decomposition_audit['current_assessment']}",
+            f"- Next split boundary: {ownership_decomposition_audit['next_split_boundary']}",
+            "",
+        ]
+    )
+    for family in ownership_decomposition_audit["proof_families"]:
+        lines.extend(
+            [
+                f"### ownership/{family['family']}",
+                "",
+                f"- Focus: {family['focus']}",
+                f"- Direct test count: {len(family['direct_tests'])}",
+                f"- Hosted test count: {len(family['hosted_tests'])}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "",
             "## Directed Interaction Decomposition Audit",
             "",
             f"- Audit status: {directed_interaction_decomposition_audit['audit_status']}",
@@ -6051,7 +7321,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     lines.extend(
         [
             "",
-            "## Shim Pressure Family Route-Backing Audit",
+            "## Wrapper-Boundary Family Route-Backing Audit",
             "",
             f"- Audit status: {shim_pressure_family_route_backing_audit['audit_status']}",
             f"- Family count: {shim_pressure_family_route_backing_audit['family_count']}",
@@ -6071,7 +7341,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     lines.extend(
         [
             "",
-            "## Shim Pressure Family Asymmetry Audit",
+            "## Wrapper-Boundary Family Asymmetry Audit",
             "",
             f"- Audit status: {shim_pressure_family_asymmetry_audit['audit_status']}",
             f"- Family count: {shim_pressure_family_asymmetry_audit['family_count']}",
@@ -6098,7 +7368,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Ready for current-lane coherent working-surface claim: {current_lane_coherence_audit['ready_for_current_lane_coherent_working_surface_claim']}",
             f"- Ready for permanent no-split architecture claim: {current_lane_coherence_audit['ready_for_permanent_no-split_architecture_claim']}",
             f"- Major pressure slice count: {current_lane_coherence_audit['major_pressure_slice_count']}",
-            f"- Runtime backend concentration is material: {current_lane_coherence_audit['shim_backend_concentration_is_material']}",
+            f"- Python2025 backend concentration is material: {current_lane_coherence_audit['python2025_backend_concentration_is_material']}",
             f"- All pressure families route-backed across current Python lanes: {current_lane_coherence_audit['all_pressure_families_route_backed_across_current_python_lanes']}",
             f"- Assessment: {current_lane_coherence_audit['current_assessment']}",
             "",
@@ -6134,6 +7404,10 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Primary 2025 RTI role: {implementation_lane_audit['current_2025_lane']['role']}",
             f"- Current 2025 plugin family: {implementation_lane_audit['current_2025_lane']['plugin_family']}",
             f"- Current 2025 spec support: {', '.join(implementation_lane_audit['current_2025_lane']['supports'])}",
+            f"- Compatibility wrapper package: {implementation_lane_audit['compatibility_wrapper_lane']['backend_package']}",
+            f"- Compatibility wrapper status: {implementation_lane_audit['compatibility_wrapper_lane']['status']}",
+            f"- Compatibility wrapper role: {implementation_lane_audit['compatibility_wrapper_lane']['role']}",
+            f"- Compatibility wrapper delegates runtime semantics to: {implementation_lane_audit['compatibility_wrapper_lane']['delegates_runtime_semantics_to']}",
             f"- Reference 2010 backend package: {implementation_lane_audit['reference_2010_lane']['backend_package']}",
             f"- Reference 2010 role: {implementation_lane_audit['reference_2010_lane']['role']}",
             f"- Backend packages discovered: {implementation_lane_audit['backend_package_scan']['backend_package_count']}",

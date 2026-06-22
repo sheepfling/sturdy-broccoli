@@ -45,7 +45,7 @@ EXPECTED_PACKAGES = {
         ),
         "implementation-moved",
     ),
-    "hla-backend-shim": PackageExpectation("compatibility-wrapper", frozenset({"shim"}), "transition-wrapper"),
+    "hla-backend-shim": PackageExpectation("compatibility-wrapper", frozenset(), "compatibility-maintained"),
     "hla-backend-certi": PackageExpectation(
         "rti-backend",
         frozenset({"certi"}),
@@ -905,7 +905,7 @@ def test_package_split_pyprojects_have_expected_boundaries():
         assert split["status"] == expected.get("status", "migration-scaffold")
         assert split["role"] == expected["role"]
         assert split["source_roots"]
-        if split["status"] in {"transition-wrapper"}:
+        if split["status"] in {"transition-wrapper", "compatibility-maintained"}:
             assert (PACKAGES / package_name / "MIGRATION.md").exists()
 
         entry_points = data.get("project", {}).get("entry-points", {}).get("hla.rti_backends", {})
@@ -949,10 +949,10 @@ def test_2025_backend_package_readmes_match_promoted_runtime_split() -> None:
 
     assert "owns the main full Python 2025 RTI runtime" in python2025_readme
     assert "promoted Python-owned 2025 RTI implementation lane" in python2025_readme
-    assert "legacy compatibility-wrapper backend name" in shim_readme
+    assert "legacy compatibility-wrapper package" in shim_readme
     assert "main full Python 2025" in shim_readme
     assert "`hla-backend-python2025`" in shim_readme
-    assert "retains the `shim` provider name" in shim_readme
+    assert "retains import-level wrapper-facing normalization" in shim_readme
 
 
 def test_2025_grpc_transport_docs_keep_fedpro_route_boundary_explicit() -> None:
@@ -975,9 +975,9 @@ def test_networked_python_guide_keeps_2025_backend_and_wrapper_roles_explicit() 
     normalized_guide = " ".join(guide.split())
 
     assert "`hla-backend-python2025` implementation lane" in guide
-    assert "`hla-backend-shim` retained only as a compatibility-wrapper alias" in normalized_guide
-    assert "`packages/hla-backend-python2025` for the main executable 2025 backend lane" in guide
-    assert "`packages/hla-backend-shim` for the legacy compatibility-wrapper alias" in guide
+    assert "`hla-backend-shim` retained only as compatibility-wrapper/import-compatibility code" in normalized_guide
+    assert "`packages/hla-backend-python2025` for the main executable 2025 Python RTI lane" in guide
+    assert "`packages/hla-backend-shim` for the legacy compatibility-wrapper package" in guide
 
 
 def test_non_spec_split_packages_build_from_their_own_src_roots() -> None:

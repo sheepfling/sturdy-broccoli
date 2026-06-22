@@ -42,22 +42,21 @@ def test_target_radar_runs_on_python_rti():
     assert result.track_reports[-1].range_m > result.track_reports[0].range_m
 
 
-def test_target_radar_example_keeps_python2025_as_primary_2025_lane_and_shim_as_wrapper_alias() -> None:
+def test_target_radar_example_keeps_python2025_as_primary_2025_lane_and_shim_as_wrapper_package() -> None:
     module = _load_target_radar_example_module()
 
     assert module.__doc__ is not None
     normalized_doc = " ".join(module.__doc__.split()).lower()
     assert "treat ``python2025`` as the main full python rti implementation lane" in normalized_doc
-    assert "``shim`` spellings remain available only as compatibility-wrapper aliases" in normalized_doc
+    assert "legacy ``hla.backends.shim`` imports remain compatibility-wrapper code around that same runtime" in normalized_doc
     assert module._BACKEND_HELP == (
-        "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI. "
-        "The 'shim' names are compatibility-wrapper aliases over that same runtime."
+        "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI."
     )
 
 
 @pytest.mark.parametrize(
     ("backend_name", "expected_backend_kind"),
-    [("python2025", "python/2025"), ("shim", "shim/2025")],
+    [("python2025", "python/2025")],
 )
 def test_target_radar_example_supports_2025_backends(backend_name: str, expected_backend_kind: str, capsys) -> None:
     module = _load_target_radar_example_module()
