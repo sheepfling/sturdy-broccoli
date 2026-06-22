@@ -1659,8 +1659,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {"slice_id": "2025-save-restore-lifecycle", "requirement_count": 20, "runtime_backend_backed": True},
         {"slice_id": "2025-directed-interaction-boundary", "requirement_count": 11, "runtime_backend_backed": True},
     ]
-    assert "ddm-default-attribute-policy, save-restore-lifecycle, and directed-interaction-boundary" in aggregation_audit["current_assessment"]
-    assert "runtime-heavy" in aggregation_audit["current_assessment"]
+    assert "DDM/default-policy slice now has an explicit requirement-family map" in aggregation_audit["current_assessment"]
+    assert "save-restore-lifecycle and directed-interaction-boundary" in aggregation_audit["current_assessment"]
     service_utilization_audit = snapshot["service_utilization_decomposition_audit"]
     assert service_utilization_audit["audit_status"] == "service-utilization-decomposition-captured"
     assert service_utilization_audit["slice_id"] == "2025-service-utilization-crosscheck"
@@ -4157,3 +4157,50 @@ def plugin() -> RTIBackendPlugin:
             "target": "hla.backends.shim.backend.create_shim_backend",
         }
     ]
+
+
+def test_2025_ddm_default_policy_requirement_family_audit_maps_all_rows() -> None:
+    snapshot = build_spec2025_finish_line_snapshot(ROOT)
+
+    audit = snapshot["ddm_default_policy_requirement_family_audit"]
+
+    assert audit["audit_status"] == "ddm-default-policy-requirement-family-map-captured"
+    assert audit["slice_id"] == "2025-ddm-default-attribute-policy"
+    assert audit["requirement_count"] == 23
+    assert audit["family_count"] == 6
+    assert audit["all_ddm_rows_family_mapped"] is True
+    assert audit["unmapped_requirement_ids"] == []
+    assert audit["unexpected_requirement_ids"] == []
+    families = {family["family"]: family for family in audit["families"]}
+    assert families["lookup-and-default-policy-control"]["requirement_ids"] == [
+        "HLA2025-NEW-004",
+        "HLA2025-FI-SVC-076",
+        "HLA2025-FI-SVC-124",
+        "HLA2025-FI-SVC-157",
+        "HLA2025-FI-SVC-159",
+        "HLA2025-FI-SVC-160",
+        "HLA2025-FI-SVC-161",
+        "HLA2025-FI-SVC-164",
+    ]
+    assert families["object-region-routing-and-scope-advisories"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-126",
+        "HLA2025-FI-SVC-127",
+        "HLA2025-FI-SVC-128",
+        "HLA2025-FI-SVC-129",
+        "HLA2025-FI-SVC-130",
+        "HLA2025-FI-SVC-131",
+        "HLA2025-FI-SVC-132",
+        "HLA2025-FI-SVC-133",
+        "HLA2025-FI-SVC-137",
+    ]
+    assert families["interaction-region-routing"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-134",
+        "HLA2025-FI-SVC-135",
+        "HLA2025-FI-SVC-136",
+    ]
+    assert families["directed-ddm-routing"]["requirement_ids"] == ["HLA2025-MOD-007"]
+    assert families["passive-alias-and-compat-scenarios"]["requirement_ids"] == ["HLA2025-FI-005"]
+    assert families["ddm-restore-and-disconnect-cleanup"]["requirement_ids"] == ["HLA2025-FI-001"]
+    assert all(family["all_requirements_in_slice"] is True for family in audit["families"])
+    assert "explicit requirement-family map" in audit["current_assessment"]
+    assert "standalone implemented-evidence slice" in audit["residual_boundary"]

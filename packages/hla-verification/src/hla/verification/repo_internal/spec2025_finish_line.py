@@ -4170,10 +4170,10 @@ def _build_slice_aggregation_pressure_audit() -> dict[str, Any]:
         "largest_runtime_backed_aggregated_slices": aggregated_ge10_runtime[:10],
         "current_assessment": (
             "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a "
-            "lot of requirement mass. The main current-package pressure points are the runtime-heavy "
-            "ddm-default-attribute-policy, "
-            "save-restore-lifecycle, and directed-interaction-boundary slices, which are credible next decomposition "
-            "targets if the repo needs tighter requirement-level proof or a cleaner backend seam."
+            "lot of requirement mass. The runtime-heavy DDM/default-policy slice now has an explicit "
+            "requirement-family map, so the main current-package pressure points are save-restore-lifecycle and "
+            "directed-interaction-boundary, with DDM still a credible next target if the repo wants leaf-level "
+            "implemented slices rather than one larger family-mapped aggregate."
         ),
         "next_decomposition_boundary": (
             "If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or "
@@ -5340,6 +5340,110 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these DDM/default-policy proof families before "
             "moving region-routing semantics into a dedicated 2025 backend."
+        ),
+    }
+
+
+def _build_ddm_default_policy_requirement_family_audit() -> dict[str, Any]:
+    slice_requirement_ids = {
+        "HLA2025-MOD-007",
+        "HLA2025-NEW-004",
+        "HLA2025-FI-001",
+        "HLA2025-FI-005",
+        "HLA2025-FI-SVC-159",
+        "HLA2025-FI-SVC-160",
+        "HLA2025-FI-SVC-161",
+        "HLA2025-FI-SVC-164",
+        "HLA2025-FI-SVC-128",
+        "HLA2025-FI-SVC-129",
+        "HLA2025-FI-SVC-126",
+        "HLA2025-FI-SVC-127",
+        "HLA2025-FI-SVC-130",
+        "HLA2025-FI-SVC-131",
+        "HLA2025-FI-SVC-132",
+        "HLA2025-FI-SVC-133",
+        "HLA2025-FI-SVC-134",
+        "HLA2025-FI-SVC-135",
+        "HLA2025-FI-SVC-136",
+        "HLA2025-FI-SVC-137",
+        "HLA2025-FI-SVC-076",
+        "HLA2025-FI-SVC-124",
+        "HLA2025-FI-SVC-157",
+    }
+    families = [
+        {
+            "family": "lookup-and-default-policy-control",
+            "requirement_ids": [
+                "HLA2025-NEW-004",
+                "HLA2025-FI-SVC-076",
+                "HLA2025-FI-SVC-124",
+                "HLA2025-FI-SVC-157",
+                "HLA2025-FI-SVC-159",
+                "HLA2025-FI-SVC-160",
+                "HLA2025-FI-SVC-161",
+                "HLA2025-FI-SVC-164",
+            ],
+        },
+        {
+            "family": "object-region-routing-and-scope-advisories",
+            "requirement_ids": [
+                "HLA2025-FI-SVC-126",
+                "HLA2025-FI-SVC-127",
+                "HLA2025-FI-SVC-128",
+                "HLA2025-FI-SVC-129",
+                "HLA2025-FI-SVC-130",
+                "HLA2025-FI-SVC-131",
+                "HLA2025-FI-SVC-132",
+                "HLA2025-FI-SVC-133",
+                "HLA2025-FI-SVC-137",
+            ],
+        },
+        {
+            "family": "interaction-region-routing",
+            "requirement_ids": [
+                "HLA2025-FI-SVC-134",
+                "HLA2025-FI-SVC-135",
+                "HLA2025-FI-SVC-136",
+            ],
+        },
+        {
+            "family": "directed-ddm-routing",
+            "requirement_ids": ["HLA2025-MOD-007"],
+        },
+        {
+            "family": "passive-alias-and-compat-scenarios",
+            "requirement_ids": ["HLA2025-FI-005"],
+        },
+        {
+            "family": "ddm-restore-and-disconnect-cleanup",
+            "requirement_ids": ["HLA2025-FI-001"],
+        },
+    ]
+    mapped_requirement_ids = {
+        requirement_id
+        for family in families
+        for requirement_id in family["requirement_ids"]
+    }
+    for family in families:
+        family["requirement_count"] = len(family["requirement_ids"])
+        family["all_requirements_in_slice"] = set(family["requirement_ids"]) <= slice_requirement_ids
+    return {
+        "audit_status": "ddm-default-policy-requirement-family-map-captured",
+        "slice_id": "2025-ddm-default-attribute-policy",
+        "requirement_count": len(slice_requirement_ids),
+        "family_count": len(families),
+        "all_ddm_rows_family_mapped": mapped_requirement_ids == slice_requirement_ids,
+        "unmapped_requirement_ids": sorted(slice_requirement_ids - mapped_requirement_ids),
+        "unexpected_requirement_ids": sorted(mapped_requirement_ids - slice_requirement_ids),
+        "families": families,
+        "current_assessment": (
+            "The largest runtime-backed DDM/default-policy aggregate is now backed by an explicit requirement-family map "
+            "instead of only one flat slice-level claim. That makes the lookup/default-policy, region-routing, "
+            "directed-DDM, passive-alias, and restore/disconnect cleanup boundaries auditable requirement-by-requirement."
+        ),
+        "residual_boundary": (
+            "This is still a requirement-family map over one larger runtime slice, not a promise that every DDM/default-policy "
+            "requirement now has its own standalone implemented-evidence slice."
         ),
     }
 
@@ -6603,6 +6707,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     ownership_decomposition_audit = _build_ownership_decomposition_audit()
     directed_interaction_decomposition_audit = _build_directed_interaction_decomposition_audit()
     ddm_default_policy_decomposition_audit = _build_ddm_default_policy_decomposition_audit()
+    ddm_default_policy_requirement_family_audit = _build_ddm_default_policy_requirement_family_audit()
     shim_pressure_family_route_backing_audit = _build_shim_pressure_family_route_backing_audit()
     shim_pressure_family_asymmetry_audit = _build_shim_pressure_family_asymmetry_audit()
     wrapper_boundary_family_route_backing_audit = shim_pressure_family_route_backing_audit
@@ -6746,6 +6851,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "ownership_decomposition_audit": ownership_decomposition_audit,
         "directed_interaction_decomposition_audit": directed_interaction_decomposition_audit,
         "ddm_default_policy_decomposition_audit": ddm_default_policy_decomposition_audit,
+        "ddm_default_policy_requirement_family_audit": ddm_default_policy_requirement_family_audit,
         "shim_pressure_family_route_backing_audit": shim_pressure_family_route_backing_audit,
         "shim_pressure_family_asymmetry_audit": shim_pressure_family_asymmetry_audit,
         "wrapper_boundary_family_route_backing_audit": wrapper_boundary_family_route_backing_audit,
@@ -6804,6 +6910,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     ownership_decomposition_audit = snapshot["ownership_decomposition_audit"]
     directed_interaction_decomposition_audit = snapshot["directed_interaction_decomposition_audit"]
     ddm_default_policy_decomposition_audit = snapshot["ddm_default_policy_decomposition_audit"]
+    ddm_default_policy_requirement_family_audit = snapshot["ddm_default_policy_requirement_family_audit"]
     shim_pressure_family_route_backing_audit = snapshot["shim_pressure_family_route_backing_audit"]
     shim_pressure_family_asymmetry_audit = snapshot["shim_pressure_family_asymmetry_audit"]
     current_lane_coherence_audit = snapshot["current_lane_coherence_audit"]
@@ -7547,6 +7654,30 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
                 f"- Hosted test count: {len(family['hosted_tests'])}",
                 "",
             ]
+        )
+    lines.extend(
+        [
+            "",
+            "## DDM Default-Policy Requirement-Family Audit",
+            "",
+            f"- Audit status: {ddm_default_policy_requirement_family_audit['audit_status']}",
+            f"- Slice id: {ddm_default_policy_requirement_family_audit['slice_id']}",
+            f"- Requirement count: {ddm_default_policy_requirement_family_audit['requirement_count']}",
+            f"- Family count: {ddm_default_policy_requirement_family_audit['family_count']}",
+            f"- All DDM rows family-mapped: {ddm_default_policy_requirement_family_audit['all_ddm_rows_family_mapped']}",
+            f"- Unmapped requirement ids: {len(ddm_default_policy_requirement_family_audit['unmapped_requirement_ids'])}",
+            f"- Unexpected requirement ids: {len(ddm_default_policy_requirement_family_audit['unexpected_requirement_ids'])}",
+            f"- Assessment: {ddm_default_policy_requirement_family_audit['current_assessment']}",
+            f"- Residual boundary: {ddm_default_policy_requirement_family_audit['residual_boundary']}",
+            "",
+            "DDM default-policy requirement families:",
+            "",
+        ]
+    )
+    for family in ddm_default_policy_requirement_family_audit["families"]:
+        lines.append(
+            f"- {family['family']}: {family['requirement_count']} requirements, "
+            f"in-slice={family['all_requirements_in_slice']}"
         )
     lines.extend(
         [

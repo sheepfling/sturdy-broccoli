@@ -1458,6 +1458,84 @@
     "requirement_count": 23,
     "slice_id": "2025-ddm-default-attribute-policy"
   },
+  "ddm_default_policy_requirement_family_audit": {
+    "all_ddm_rows_family_mapped": true,
+    "audit_status": "ddm-default-policy-requirement-family-map-captured",
+    "current_assessment": "The largest runtime-backed DDM/default-policy aggregate is now backed by an explicit requirement-family map instead of only one flat slice-level claim. That makes the lookup/default-policy, region-routing, directed-DDM, passive-alias, and restore/disconnect cleanup boundaries auditable requirement-by-requirement.",
+    "families": [
+      {
+        "all_requirements_in_slice": true,
+        "family": "lookup-and-default-policy-control",
+        "requirement_count": 8,
+        "requirement_ids": [
+          "HLA2025-NEW-004",
+          "HLA2025-FI-SVC-076",
+          "HLA2025-FI-SVC-124",
+          "HLA2025-FI-SVC-157",
+          "HLA2025-FI-SVC-159",
+          "HLA2025-FI-SVC-160",
+          "HLA2025-FI-SVC-161",
+          "HLA2025-FI-SVC-164"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "object-region-routing-and-scope-advisories",
+        "requirement_count": 9,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-126",
+          "HLA2025-FI-SVC-127",
+          "HLA2025-FI-SVC-128",
+          "HLA2025-FI-SVC-129",
+          "HLA2025-FI-SVC-130",
+          "HLA2025-FI-SVC-131",
+          "HLA2025-FI-SVC-132",
+          "HLA2025-FI-SVC-133",
+          "HLA2025-FI-SVC-137"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "interaction-region-routing",
+        "requirement_count": 3,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-134",
+          "HLA2025-FI-SVC-135",
+          "HLA2025-FI-SVC-136"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "directed-ddm-routing",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-MOD-007"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "passive-alias-and-compat-scenarios",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-FI-005"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "ddm-restore-and-disconnect-cleanup",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-FI-001"
+        ]
+      }
+    ],
+    "family_count": 6,
+    "requirement_count": 23,
+    "residual_boundary": "This is still a requirement-family map over one larger runtime slice, not a promise that every DDM/default-policy requirement now has its own standalone implemented-evidence slice.",
+    "slice_id": "2025-ddm-default-attribute-policy",
+    "unexpected_requirement_ids": [],
+    "unmapped_requirement_ids": []
+  },
   "delta_requirement_proof_audit": {
     "by_category": {
       "modified-existing": 10,
@@ -29548,7 +29626,7 @@
     "aggregated_slice_count_ge_20_requirements": 7,
     "aggregated_slice_count_ge_20_requirements_runtime_backed": 2,
     "audit_status": "slice-aggregation-pressure-captured",
-    "current_assessment": "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The main current-package pressure points are the runtime-heavy ddm-default-attribute-policy, save-restore-lifecycle, and directed-interaction-boundary slices, which are credible next decomposition targets if the repo needs tighter requirement-level proof or a cleaner backend seam.",
+    "current_assessment": "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy slice now has an explicit requirement-family map, so the main current-package pressure points are save-restore-lifecycle and directed-interaction-boundary, with DDM still a credible next target if the repo wants leaf-level implemented slices rather than one larger family-mapped aggregate.",
     "implemented_slice_count": 74,
     "largest_implemented_slices": [
       {

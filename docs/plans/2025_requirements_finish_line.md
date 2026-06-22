@@ -363,7 +363,7 @@ Extracted Python 2025 runtime helper modules:
 - Aggregated slices >=10 requirements and runtime-backed: 3
 - Aggregated slices >=20 requirements: 7
 - Aggregated slices >=20 requirements and runtime-backed: 2
-- Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The main current-package pressure points are the runtime-heavy ddm-default-attribute-policy, save-restore-lifecycle, and directed-interaction-boundary slices, which are credible next decomposition targets if the repo needs tighter requirement-level proof or a cleaner backend seam.
+- Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy slice now has an explicit requirement-family map, so the main current-package pressure points are save-restore-lifecycle and directed-interaction-boundary, with DDM still a credible next target if the repo wants leaf-level implemented slices rather than one larger family-mapped aggregate.
 - Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits before extracting a dedicated 2025 backend.
 
 Largest implemented slices:
@@ -947,6 +947,27 @@ OMT schema-constraint families:
 - Direct test count: 2
 - Hosted test count: 2
 
+
+## DDM Default-Policy Requirement-Family Audit
+
+- Audit status: ddm-default-policy-requirement-family-map-captured
+- Slice id: 2025-ddm-default-attribute-policy
+- Requirement count: 23
+- Family count: 6
+- All DDM rows family-mapped: True
+- Unmapped requirement ids: 0
+- Unexpected requirement ids: 0
+- Assessment: The largest runtime-backed DDM/default-policy aggregate is now backed by an explicit requirement-family map instead of only one flat slice-level claim. That makes the lookup/default-policy, region-routing, directed-DDM, passive-alias, and restore/disconnect cleanup boundaries auditable requirement-by-requirement.
+- Residual boundary: This is still a requirement-family map over one larger runtime slice, not a promise that every DDM/default-policy requirement now has its own standalone implemented-evidence slice.
+
+DDM default-policy requirement families:
+
+- lookup-and-default-policy-control: 8 requirements, in-slice=True
+- object-region-routing-and-scope-advisories: 9 requirements, in-slice=True
+- interaction-region-routing: 3 requirements, in-slice=True
+- directed-ddm-routing: 1 requirements, in-slice=True
+- passive-alias-and-compat-scenarios: 1 requirements, in-slice=True
+- ddm-restore-and-disconnect-cleanup: 1 requirements, in-slice=True
 
 ## Wrapper-Boundary Family Route-Backing Audit
 
