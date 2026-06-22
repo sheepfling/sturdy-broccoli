@@ -226,8 +226,14 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python2025-split-package-surface"]["scope"]
     assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
     assert "explicit no-backflow proof" in evidence_runs["python2025-import-boundary-guardrails"]["scope"]
-    assert evidence_runs["combined-2025-verification-slice"]["result"] == "27 passed in 39.54s"
-    assert evidence_runs["hosted-2025-fedpro-transport-suite"]["result"] == "251 passed in 57.24s"
+    assert (
+        evidence_runs["combined-2025-verification-slice"]["result"]
+        == "targeted finish-line/backend-owner audit slice ran green on current tree"
+    )
+    assert (
+        evidence_runs["hosted-2025-fedpro-transport-suite"]["result"]
+        == "252 passed in current-tree hosted FedPro transport suite"
+    )
     assert "strict local FOM/MIM resolution" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert "directed TSO stale-queue cleanup" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert milestone_audit["audit_status"] == "bounded-python-rti-milestones"
@@ -451,7 +457,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "future or reopened row needs a positive test" in normalized_audit_text_lower
     assert "negative unsupported-boundary test" in normalized_audit_text_lower
     assert "hosted fedpro is still a bounded runtime slice" in normalized_audit_text_lower
-    assert "251 passed in 57.24s" in normalized_audit_text_lower
+    assert "252 passed in current-tree hosted fedpro transport suite" in normalized_audit_text_lower
     assert "strict local fom/mim resolution" in normalized_audit_text_lower
     assert "path now executes through a package-owned `hla-fom-target-radar` compatibility adapter" in normalized_audit_text_lower
     assert "readme-advertised `python examples/target_radar_simulation.py --backend python2025 --steps 5` path now executes" in normalized_audit_text_lower

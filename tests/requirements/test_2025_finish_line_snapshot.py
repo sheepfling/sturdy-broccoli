@@ -1798,9 +1798,15 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python2025-split-package-surface"]["scope"]
     assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
     assert "explicit no-backflow proof" in evidence_runs["python2025-import-boundary-guardrails"]["scope"]
-    assert evidence_runs["combined-2025-verification-slice"]["result"] == "27 passed in 39.54s"
+    assert (
+        evidence_runs["combined-2025-verification-slice"]["result"]
+        == "targeted finish-line/backend-owner audit slice ran green on current tree"
+    )
     assert "finish-line and backend-owner audit pair" in evidence_runs["combined-2025-verification-slice"]["scope"]
-    assert evidence_runs["hosted-2025-fedpro-transport-suite"]["result"] == "251 passed in 57.24s"
+    assert (
+        evidence_runs["hosted-2025-fedpro-transport-suite"]["result"]
+        == "252 passed in current-tree hosted FedPro transport suite"
+    )
     assert "object/ownership/save-restore coverage" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert len(promotion_split_audit["split_triggers"]) == 4
     assert any("obscure or distort core RTI semantics" in item for item in promotion_split_audit["split_triggers"])

@@ -3945,7 +3945,7 @@ def _build_promotion_split_audit(
             },
             {
                 "name": "combined-2025-verification-slice",
-                "result": "27 passed in 39.54s",
+                "result": "targeted finish-line/backend-owner audit slice ran green on current tree",
                 "scope": (
                     "main finish-line and backend-owner audit pair proving current-lane identity, "
                     "requirement ledgers, and supported-boundary closeout evidence"
@@ -3953,7 +3953,7 @@ def _build_promotion_split_audit(
             },
             {
                 "name": "hosted-2025-fedpro-transport-suite",
-                "result": "251 passed in 57.24s",
+                "result": "252 passed in current-tree hosted FedPro transport suite",
                 "scope": (
                     "typed hosted FedPro route including strict local FOM/MIM resolution, create-time error "
                     "taxonomy, object/ownership/save-restore coverage, time-window proof ladder, and "

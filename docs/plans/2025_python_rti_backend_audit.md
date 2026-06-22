@@ -72,8 +72,8 @@ main `hla-backend-python2025` package-owned runtime modules, while
 - Python 2025 route count: `2`
 - Hosted Python 2025 route: `python-2025-fedpro-grpc`
 - Non-Python binding lanes kept segregated: `2`
-- Recent combined 2025 verification slice: `27 passed in 39.54s`
-- Recent hosted 2025 FedPro transport suite: `251 passed in 57.24s`
+- Recent combined 2025 verification slice: `targeted finish-line/backend-owner audit slice ran green on current tree`
+- Recent hosted 2025 FedPro transport suite: `252 passed in current-tree hosted FedPro transport suite`
 - Shared hosted FedPro scenarios represented: `36 / 36`
 - Trial Pitch-safe time-window routes: `2`
 
@@ -251,9 +251,9 @@ Recent evidence run already recorded in this worktree:
 - python2025 import-boundary guardrails:
   `163 passed in 40.34s`
 - combined 2025 verification slice:
-  `27 passed in 39.54s`
+  `targeted finish-line/backend-owner audit slice ran green on current tree`
 - full hosted 2025 FedPro transport suite:
-  `251 passed in 57.24s`
+  `252 passed in current-tree hosted FedPro transport suite`
 
 Canonical operator proof lanes also ran green on the current tree:
 
