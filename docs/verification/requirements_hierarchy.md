@@ -16,6 +16,20 @@ The source-of-truth rows still live in `requirements/*.csv`. The path-stable
 block lives under `requirements/2025/`. This page is the reader-facing index
 that groups them into capability trees.
 
+This page is primarily a 2010 hierarchy view. For the current IEEE 1516.1-2025
+Python RTI lane, do not treat it as the main clause/proof ledger.
+
+Use these 2025 front doors instead:
+
+- [`../python_rti_backend.md`](../python_rti_backend.md)
+- [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md)
+- [`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
+
+Those pages carry the bounded direct/hosted `python2025` executable-behavior
+claim plus the explicit excluded-area map for legacy aliases, Java/C++
+bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows,
+and out-of-scope OMT extension semantics.
+
 ## Verification Features
 
 | L1 capability | L2 feature | L3 requirement scope | Test or proof anchor |

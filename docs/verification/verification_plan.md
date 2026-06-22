@@ -11,9 +11,15 @@ Use these 2025 evidence anchors instead:
 
 - [`../python_rti_backend.md`](../python_rti_backend.md)
 - [`../verification/time_model_compliance.md`](time_model_compliance.md)
+- [`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
 - [`../plans/2025_python_rti_backend_audit.md`](../plans/2025_python_rti_backend_audit.md)
 - [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
 - [`../plans/spec2025_route_parity_matrix.md`](../plans/spec2025_route_parity_matrix.md)
+
+Use that exclusion note when you need the explicit non-claim boundary around
+the bounded 2025 working-surface statement, especially for legacy aliases,
+Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows,
+retired rows, and out-of-scope OMT extension semantics.
 
 ## Goal
 

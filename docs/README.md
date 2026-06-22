@@ -37,6 +37,7 @@ For 2025 work, keep the ownership rule simple:
 - [../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`
 - [../scripts/run_spec2025_finish_line.py](../scripts/run_spec2025_finish_line.py): regenerate the checked-in 2025 finish-line and route-parity evidence bundle
 - [verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, GALT/LITS, and radar-window proof front door for the primary 2025 Python RTI lane
+- [../tools/pitch](../tools/pitch): narrow vendor-runtime operator path when you need the Pitch-safe two-federate `time-window-probe` or `time-window-restore-state-probe` bounded credence routes without widening the main `python2025` claim
 - [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane
 - [requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](requirements/ieee-1516-2025/python2025_direct_bounded_proof.md): direct-lane bounded executable-behavior note for the main `python2025` runtime surface
 - [requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit non-claim map for shim aliases, Java/C++ bindings, hosted-route boundaries, umbrella rows, retired rows, and OMT extension semantics around the main `python2025` lane

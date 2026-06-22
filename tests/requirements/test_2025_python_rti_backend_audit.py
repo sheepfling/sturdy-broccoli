@@ -924,6 +924,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     architecture_doc = (ROOT / "docs" / "architecture.md").read_text(encoding="utf-8")
     options_matrix_doc = (ROOT / "docs" / "rti_options_and_test_matrix.md").read_text(encoding="utf-8")
     verification_plan_doc = (ROOT / "docs" / "verification" / "verification_plan.md").read_text(encoding="utf-8")
+    validation_plan_doc = (ROOT / "docs" / "verification" / "validation_plan.md").read_text(encoding="utf-8")
     conformance_matrix_doc = (ROOT / "docs" / "backend_conformance_matrix.md").read_text(encoding="utf-8")
     test_surface_doc = (ROOT / "docs" / "test_surface.md").read_text(encoding="utf-8")
     top_to_bottom_green_doc = (ROOT / "docs" / "top_to_bottom_green.md").read_text(encoding="utf-8")
@@ -971,6 +972,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     normalized_architecture = " ".join(architecture_doc.split()).lower()
     normalized_options_matrix = " ".join(options_matrix_doc.split()).lower()
     normalized_verification_plan = " ".join(verification_plan_doc.split()).lower()
+    normalized_validation_plan = " ".join(validation_plan_doc.split()).lower()
     normalized_conformance_matrix = " ".join(conformance_matrix_doc.split()).lower()
     normalized_test_surface = " ".join(test_surface_doc.split()).lower()
     normalized_top_to_bottom_green = " ".join(top_to_bottom_green_doc.split()).lower()
@@ -1120,6 +1122,10 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "the current 2025 time claim is not just an abstract route claim" in normalized_time_model
     assert "anchored to the extracted `hla-backend-python2025` runtime modules" in normalized_time_model
     assert "for pitch specifically, the current trial-safe candidate is the two-federate `time-window-future-exclusion` route" in normalized_time_model
+    assert "`./tools/pitch time-window-probe`" in normalized_time_model
+    assert "`./tools/pitch time-window-restore-state-probe`" in normalized_time_model
+    assert "use those only as narrow real-runtime probes for the two-federate closure and restore-state routes" in normalized_time_model
+    assert "they do not turn pitch into the implementation owner for the 2025 lane" in normalized_time_model
 
     assert "`hla-backend-python2025` is the main full python-owned ieee 1516.1-2025 rti implementation package" in normalized_architecture
     assert "`hla-backend-shim` is only an import-level compatibility-wrapper package over that runtime" in normalized_architecture
@@ -1142,9 +1148,26 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "this page is 2010-specific. for the current ieee 1516.1-2025 python rti lane, do not treat this file as the main conformance plan." in normalized_verification_plan
     assert "[`../python_rti_backend.md`](../python_rti_backend.md)" in normalized_verification_plan
     assert "[`../verification/time_model_compliance.md`](time_model_compliance.md)" in normalized_verification_plan
+    assert "[`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_verification_plan
     assert "[`../plans/2025_python_rti_backend_audit.md`](../plans/2025_python_rti_backend_audit.md)" in normalized_verification_plan
     assert "[`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)" in normalized_verification_plan
     assert "[`../plans/spec2025_route_parity_matrix.md`](../plans/spec2025_route_parity_matrix.md)" in normalized_verification_plan
+    assert "explicit non-claim boundary around the bounded 2025 working-surface statement" in normalized_verification_plan
+    assert "legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized_verification_plan
+    assert "this page is 2010-specific. for the current ieee 1516.1-2025 python rti lane, do not treat this file as the main operational proof ledger." in normalized_validation_plan
+    assert "[`../python_rti_backend.md`](../python_rti_backend.md)" in normalized_validation_plan
+    assert "[`../verification/time_model_compliance.md`](time_model_compliance.md)" in normalized_validation_plan
+    assert "[`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_validation_plan
+    assert "[`../plans/2025_python_rti_backend_audit.md`](../plans/2025_python_rti_backend_audit.md)" in normalized_validation_plan
+    assert "[`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)" in normalized_validation_plan
+    assert "explicit non-claim boundary around the bounded 2025 direct and hosted `python2025` validation story" in normalized_validation_plan
+    assert "legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized_validation_plan
+    assert "this page is primarily a 2010 hierarchy view. for the current ieee 1516.1-2025 python rti lane, do not treat it as the main clause/proof ledger." in normalized_requirements_hierarchy
+    assert "[`../python_rti_backend.md`](../python_rti_backend.md)" in normalized_requirements_hierarchy
+    assert "[`../requirements/ieee-1516-2025/readme.md`](../requirements/ieee-1516-2025/readme.md)" in normalized_requirements_hierarchy
+    assert "[`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_requirements_hierarchy
+    assert "bounded direct/hosted `python2025` executable-behavior claim plus the explicit excluded-area map" in normalized_requirements_hierarchy
+    assert "legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized_requirements_hierarchy
 
     assert "this page is 2010-specific. it is not the primary clause/proof ledger for the current ieee 1516.1-2025 python rti lane." in normalized_conformance_matrix
     assert "[python_rti_backend.md](python_rti_backend.md)" in normalized_conformance_matrix
@@ -1167,7 +1190,9 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "the checked-in 2025 route-parity ledger, the 2025 requirements-registry/bounded-proof-note surface, regeneration of the checked-in 2025 finish-line bundle (including the route-parity artifacts), and the readme-advertised `python2025` target/radar example path" in normalized_test_surface
     assert "[`python_rti_backend.md`](python_rti_backend.md)" in normalized_test_surface
     assert "[`verification/time_model_compliance.md`](verification/time_model_compliance.md)" in normalized_test_surface
+    assert "[`requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_test_surface
     assert "[`plans/spec2025_route_parity_matrix.md`](plans/spec2025_route_parity_matrix.md)" in normalized_test_surface
+    assert "operator-facing non-claim map for legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics around the main `python2025` lane" in normalized_test_surface
 
     assert "the pure python 2010 backend runs" in normalized_top_to_bottom_green
     assert "the main full python 2025 rti lane runs from `hla-backend-python2025`" in normalized_top_to_bottom_green
@@ -1186,10 +1211,13 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "it is not the main discovery surface for the current ieee 1516.1-2025 python rti closeout" in normalized_compliance_discovery
     assert "[python_rti_backend.md](python_rti_backend.md)" in normalized_compliance_discovery
     assert "[verification/time_model_compliance.md](verification/time_model_compliance.md)" in normalized_compliance_discovery
+    assert "[requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_compliance_discovery
     assert "[plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)" in normalized_compliance_discovery
     assert "[plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)" in normalized_compliance_discovery
     assert "[plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)" in normalized_compliance_discovery
     assert "for 2025 readers, treat those context sources as bounded reference surfaces, not as the main proof ledger for `hla-backend-python2025`" in normalized_compliance_discovery
+    assert "explicit non-claim boundary around the bounded `python2025` working-surface statement" in normalized_compliance_discovery
+    assert "legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized_compliance_discovery
 
     assert "this page covers the shared python bootstrap contract for both editions" in normalized_python_environment
     assert "the main executable backend remains `hla-backend-python2025`, while `hla-backend-shim` stays only as compatibility-wrapper/import-compatibility code" in normalized_python_environment
@@ -1275,6 +1303,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`./tools/python verify-main-2025`: normal direct `python2025` proof lane for the main implementation surface" in normalized_documentation_hierarchy
     assert "[docs/verification/time_model_compliance.md](verification/time_model_compliance.md)" in normalized_documentation_hierarchy
     assert "[docs/requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md)" in normalized_documentation_hierarchy
+    assert "[docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_documentation_hierarchy
     assert "`./tools/python verify-routes-2025`: bounded hosted `python-2025-fedpro-grpc` hygiene lane over that same runtime" in normalized_documentation_hierarchy
     assert "[docs/plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)" in normalized_documentation_hierarchy
     assert "[docs/plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)" in normalized_documentation_hierarchy
@@ -1282,6 +1311,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "- python rti 2025" in normalized_documentation_hierarchy
     assert "`backend_conformance_matrix.md` and `verification/verification_plan.md` are 2010-specific reference surfaces" in normalized_documentation_hierarchy
     assert "the current `python2025` rti evidence path runs through the 2025 finish-line, route-parity, backend-audit, and time-model documents listed above" in normalized_documentation_hierarchy
+    assert "explicit excluded-area map for legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized_documentation_hierarchy
 
     assert "./tools/python verify-routes-2025" in normalized_vendor_runtime_runner_guide
     assert "hosted-route meaning in this guide:" in normalized_vendor_runtime_runner_guide
@@ -1329,14 +1359,17 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[../packages/hla-backend-python2025/readme.md]" in normalized_python_rti_map
     assert "`hla-backend-python2025` is the main full 2025 python rti implementation lane" in normalized_python_rti_map
     assert "`hla-backend-shim` is a wrapper-only compatibility alias over that runtime" in normalized_python_rti_map
-    assert "item 7 is the main in-process executable proof suite" in normalized_python_rti_map
-    assert "item 7 is the main in-process executable proof suite for `hla-backend-python2025`" in normalized_python_rti_map
+    assert "[requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized_python_rti_map
+    assert "architecture to the current 2025 runtime proof and its explicit non-claim boundary with minimal detours" in normalized_python_rti_map
+    assert "item 8 is the main in-process executable proof suite" in normalized_python_rti_map
+    assert "item 8 is the main in-process executable proof suite for `hla-backend-python2025`" in normalized_python_rti_map
     assert "main in-process `python2025` runtime suite" in normalized_python_rti_map
     assert "`tests/test_rti1516_2025_python2025_runtime.py` (main `python2025` proof suite)" in normalized_python_rti_map
     assert "use the shim readme only when you are checking legacy provider spelling" in normalized_python_rti_map
     assert "`./tools/python verify-main-2025` for the normal direct `python2025` main-surface proof lane" in normalized_python_rti_map
     assert "`./tools/python verify-routes-2025` when you also need the bounded hosted `python-2025-fedpro-grpc` hygiene lane" in normalized_python_rti_map
     assert "`verification/time_model_compliance.md` and `tests/test_rti1516_2025_python2025_runtime.py` as the main proof front doors" in normalized_python_rti_map
+    assert "explicit excluded-area map for legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized_python_rti_map
     assert "start in [../packages/hla-backend-python2025/src/hla/backends/python2025/backend.py]" in normalized_python_rti_map
     assert "wrapper-only compatibility behavior" in normalized_python_rti_map
     assert "run `./tools/python verify-main-2025` as the default proof command after changes in that path" in normalized_python_rti_map
@@ -1356,6 +1389,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "[python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python2025` rti lane" in normalized_docs_index
     assert "[../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`" in normalized_docs_index
     assert "[verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, galt/lits, and radar-window proof front door for the primary 2025 python rti lane" in normalized_docs_index
+    assert "[../tools/pitch](../tools/pitch): narrow vendor-runtime operator path when you need the pitch-safe two-federate `time-window-probe` or `time-window-restore-state-probe` bounded credence routes without widening the main `python2025` claim" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/readme.md](requirements/ieee-1516-2025/readme.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python2025` lane" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)" in normalized_docs_index
     assert "[requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit non-claim map for shim aliases, java/c++ bindings, hosted-route boundaries, umbrella rows, retired rows, and omt extension semantics around the main `python2025` lane" in normalized_docs_index
@@ -1814,6 +1848,27 @@ def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_mapped_to_decla
             helper_path.name,
             observed_modules,
         )
+
+
+@pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-002")
+def test_verification_run_sequence_keeps_pitch_time_window_probe_boundary_explicit() -> None:
+    text = (ROOT / "docs" / "verification" / "run_sequence.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split()).lower()
+
+    assert "the trial-safe time-window future-exclusion and restore-state proof legs" in normalized
+    assert "`./tools/pitch time-window-probe`" in text
+    assert "`./tools/pitch time-window-restore-state-probe`" in text
+    assert "bounded vendor credence for the two-federate 2025 future-exclusion and restore-state routes" in normalized
+    assert "they do not replace the direct `python2025` proof lane or the hosted `python-2025-fedpro-grpc` replay" in normalized
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-MIL-001")
+def test_verification_readme_indexes_2025_exclusion_boundary() -> None:
+    text = (ROOT / "docs" / "verification" / "README.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split()).lower()
+
+    assert "[../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)" in normalized
+    assert "explicit 2025 non-claim map for legacy aliases, java/c++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope omt extension semantics" in normalized
 
 
 @pytest.mark.requirements(

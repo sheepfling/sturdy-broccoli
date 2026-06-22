@@ -20,13 +20,14 @@ If you only need the shortest practical route, read these in order:
 4. [../packages/hla-backend-python2025/README.md](../packages/hla-backend-python2025/README.md)
 5. [plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)
 6. [verification/time_model_compliance.md](verification/time_model_compliance.md)
-7. [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
-8. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
+7. [requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
+8. [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
+9. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
 
-That sequence gets you from architecture to the current 2025 runtime proof with
-minimal detours.
+That sequence gets you from architecture to the current 2025 runtime proof and
+its explicit non-claim boundary with minimal detours.
 
-Item 7 is the main in-process executable proof suite for
+Item 8 is the main in-process executable proof suite for
 `hla-backend-python2025`, with only limited wrapper-specific compatibility
 coverage.
 
@@ -87,6 +88,10 @@ are:
   explicit promotion-versus-extraction audit for the current 2025 lane
 - [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md):
   generated finish-line and blocker snapshot
+- [requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md):
+  explicit excluded-area map for legacy aliases, Java/C++ bindings, hosted
+  transport boundaries, duplicate/umbrella rows, retired rows, and
+  out-of-scope OMT extension semantics
 - [../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py](../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py):
   source of truth for the finish-line snapshot
 - [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py):

@@ -241,6 +241,16 @@ For Pitch specifically, the current trial-safe candidate is the two-federate
 does not replace the broader Python proof for output delivery, consumer order,
 pipeline overlap, or save/restore replay.
 
+The operator entrypoints for that bounded vendor-credence slice are:
+
+- `./tools/pitch time-window-probe`
+- `./tools/pitch time-window-restore-state-probe`
+
+Use those only as narrow real-runtime probes for the two-federate closure and
+restore-state routes. They do not turn Pitch into the implementation owner for
+the 2025 lane, and they do not widen the bounded claim beyond what the direct
+and hosted `hla-backend-python2025` evidence already proves.
+
 ## Where To Look Next
 
 - [`../callback_model_compliance.md`](callback_model_compliance.md): callback delivery boundary

@@ -46,5 +46,15 @@ What each stage means:
 - full backend matrixed compliance: the broad vendor/runtime smoke matrix
 - other evidence-producing checks: the target/radar matrix over the core trio and the proof packet
 
+When you want only the narrow Pitch-safe two-federate vendor probes rather than
+the whole vendor matrix, use:
+
+- `./tools/pitch time-window-probe`
+- `./tools/pitch time-window-restore-state-probe`
+
+Those commands add bounded vendor credence for the two-federate 2025
+future-exclusion and restore-state routes. They do not replace the direct
+`python2025` proof lane or the hosted `python-2025-fedpro-grpc` replay.
+
 Use this page when you want the sequence without chasing individual wrapper
 names.

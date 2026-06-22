@@ -318,6 +318,10 @@ def test_time_management_bounded_proof_markdown_keeps_service_family_traceabilit
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/backends/test_shim_route_trace_evidence.py`" in text
     assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`./tools/pitch time-window-probe`" in text
+    assert "`./tools/pitch time-window-restore-state-probe`" in text
+    assert "useful vendor credence" in normalized
+    assert "do not replace the broader `hla-backend-python2025` proof" in text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

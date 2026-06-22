@@ -92,7 +92,13 @@ Pair it with:
 
 - [`python_rti_backend.md`](python_rti_backend.md)
 - [`verification/time_model_compliance.md`](verification/time_model_compliance.md)
+- [`requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
 - [`plans/spec2025_route_parity_matrix.md`](plans/spec2025_route_parity_matrix.md)
+
+That exclusion note is the operator-facing non-claim map for legacy aliases,
+Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows,
+retired rows, and out-of-scope OMT extension semantics around the main
+`python2025` lane.
 
 If loopback availability is uncertain in the current session, run:
 

@@ -4,6 +4,23 @@ This plan defines the operational-usefulness work for the Python HLA 1516.1-2010
 
 It is intentionally separate from [verification_plan.md](verification_plan.md).
 
+This page is 2010-specific. For the current IEEE 1516.1-2025 Python RTI lane,
+do not treat this file as the main operational proof ledger.
+
+Use these 2025 evidence anchors instead:
+
+- [`../python_rti_backend.md`](../python_rti_backend.md)
+- [`../verification/time_model_compliance.md`](time_model_compliance.md)
+- [`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
+- [`../plans/2025_python_rti_backend_audit.md`](../plans/2025_python_rti_backend_audit.md)
+- [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
+
+Use that exclusion note when you need the explicit non-claim boundary around
+the bounded 2025 direct and hosted `python2025` validation story, especially
+for legacy aliases, Java/C++ bindings, hosted transport boundaries,
+duplicate/umbrella rows, retired rows, and out-of-scope OMT extension
+semantics.
+
 ## Goal
 
 Produce defensible evidence that realistic federations can run correctly on `hla2010`, generate useful outputs, and be diagnosed when they fail.

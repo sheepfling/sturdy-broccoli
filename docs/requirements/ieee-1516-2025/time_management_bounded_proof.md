@@ -37,3 +37,19 @@ exhaustive cross-binding equivalence.
 - The primary runtime owner behind the executable anchors above is
   `hla-backend-python2025`. `hla-backend-shim` is not a runtime owner for
   these time-management rows.
+
+## Vendor-Credence Boundary
+
+- The main executable evidence for these rows remains the direct
+  `python2025` lane plus the hosted `python-2025-fedpro-grpc` replay.
+- For Pitch specifically, the current trial-safe operator probes are:
+  `./tools/pitch time-window-probe` for the two-federate
+  `time-window-future-exclusion` route and
+  `./tools/pitch time-window-restore-state-probe` for the two-federate
+  `time-window-save-restore-window-state` route.
+- Those Pitch probes are useful vendor credence because they reuse the same
+  bounded time-window closure and rollback claims with a vendor runtime small
+  enough to fit the practical two-federate constraint.
+- They do not replace the broader `hla-backend-python2025` proof for
+  output-delivery, consumer-order, pipeline overlap, or save/restore output
+  replay, and they do not upgrade Pitch into the main 2025 Python RTI owner.
