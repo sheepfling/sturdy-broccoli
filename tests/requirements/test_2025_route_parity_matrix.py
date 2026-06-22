@@ -65,7 +65,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "queued TSO delivery" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert "logical time/GALT/LITS/lookahead query evidence" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert "main python2025-backed FedPro route" in rows[("time_management", "python-2025-fedpro-grpc")].notes
-    assert "factory-hosted create_rti_ambassador('python2025', transport=...) execution of the package-owned future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, and restore-state scenario adapter paths" in rows[
+    assert "factory-hosted create_rti_ambassador('python2025', transport=...) execution of the package-owned shared Target/Radar example scenario plus the package-owned future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, and restore-state scenario adapter paths" in rows[
         ("time_management", "python-2025-fedpro-grpc")
     ].notes
     assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in rows[("time_management", "python-2025-fedpro-grpc")].notes

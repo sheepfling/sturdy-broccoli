@@ -13,7 +13,9 @@ import grpc
 import pytest
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.certi.certi.callbacks import dispatch_helper_callback
+from hla.foms.target_radar._internal import run_target_radar_scenario
 from hla.foms.target_radar._internal.target_radar_2025_adapter import TargetRadar2025RTIAdapter
+from hla.foms.target_radar._internal.target_radar_factory import make_target_radar_factory
 from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import (
@@ -8606,6 +8608,29 @@ def test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro
             if rti is not None:
                 _close_rti_ambassador(rti)
         server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_target_radar_shared_scenario() -> None:
+    server = start_2025_grpc_server()
+    try:
+        result = run_target_radar_scenario(
+            make_target_radar_factory(
+                "python2025",
+                backend_options={"transport": {"kind": "grpc", "target": server.target}},
+            ),
+            federation_name=f"factory-hosted-python2025-target-radar-{uuid.uuid4().hex[:8]}",
+            steps=3,
+            fom_modules=["TargetRadarFOMmodule.xml"],
+        )
+    finally:
+        server.close()
+
+    assert result.backend_kinds == ("python/2025", "python/2025")
+    assert len(result.track_reports) == 3
+    assert any(name == "provide_attribute_value_update" for name, _payload in result.target_events)
+    assert [name for name, _payload in result.radar_events].count("track") == 3
+    assert result.track_reports[0].target_name == "Target-1"
 
 
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
