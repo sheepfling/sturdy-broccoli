@@ -17,10 +17,10 @@ Important distinctions:
   Python in-memory backend
 - `Python 2025 FedPro hosted route over grpc` refers to the bounded typed
   transport route over the main full `hla-backend-python2025` runtime lane
-- `hla-backend-shim` retained only as compatibility-wrapper/import-level code
+- `hla-backend-shim` retained only as temporary import-compatibility scaffolding and compatibility-wrapper/import-level code
 - the implementation owner for 2025 remote work is `python2025` /
   `hla-backend-python2025`
-- `hla-backend-shim` is retained only as compatibility-wrapper/import-level
+- `hla-backend-shim` is retained only as temporary import-compatibility scaffolding and compatibility-wrapper/import-level
   code and should not be described as the hosted runtime lane
 - the operator-facing hosted 2025 lane is `python2025`; do not describe
   legacy wrapper aliases as the hosted runtime owner, and do

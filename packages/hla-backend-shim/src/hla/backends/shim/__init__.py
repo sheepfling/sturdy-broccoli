@@ -1,4 +1,4 @@
-"""Package-root exports for the wrapper-only 2025 compatibility lane."""
+"""Package-root exports for the deprecated wrapper-only 2025 compatibility lane."""
 from __future__ import annotations
 
 from .backend import (

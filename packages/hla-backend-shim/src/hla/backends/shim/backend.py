@@ -1,4 +1,4 @@
-"""Compatibility wrapper for the live Python 2025 RTI backend."""
+"""Deprecated compatibility wrapper for the live Python 2025 RTI backend."""
 
 from __future__ import annotations
 

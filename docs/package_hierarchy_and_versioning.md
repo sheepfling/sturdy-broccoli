@@ -55,7 +55,7 @@ hla-rti1516e
 hla-rti1516-2025
 └── hla-rti-core
     ├── hla-backend-python2025
-    ├── hla-backend-shim (compatibility wrapper over hla-backend-python2025)
+    ├── hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python2025)
     ├── hla-bridge-java-common
     ├── hla-backend-cpp-shim
     ├── hla-transport-grpc (bounded FedPro 2025 hosted route)

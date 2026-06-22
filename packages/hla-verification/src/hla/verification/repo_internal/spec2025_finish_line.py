@@ -3896,7 +3896,7 @@ def _build_promotion_split_audit(
         "decision_shape": "promote-current-lane-or-split-later-based-on-evidence",
         "current_lane": {
             "package": "hla-backend-python2025",
-            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
             "spec_package": "hla-rti1516-2025",
         },
         "current_recommendation": "promote-current-lane-as-working-surface-and-keep-split-optional",
@@ -3977,10 +3977,10 @@ def _build_promotion_split_audit(
         ],
         "current_assessment": (
             "Current evidence is strong enough to treat the real Python 2025 RTI implementation now owned by "
-            "hla-backend-python2025, with hla-backend-shim retained as a legacy compatibility wrapper, as the live "
-            "bounded working-surface lane across the main current-package pressure families, while keeping Java and "
-            "C++ shim/binding packages segregated from that claim, but not strong enough to make a permanent "
-            "no-split architectural decision."
+            "hla-backend-python2025, with hla-backend-shim retained only as temporary import-compatibility "
+            "scaffolding and wrapper-only compatibility support, as the live bounded working-surface lane across the "
+            "main current-package pressure families, while keeping Java and C++ shim/binding packages segregated "
+            "from that claim, but not strong enough to make a permanent no-split architectural decision."
         ),
     }
 
@@ -4122,7 +4122,7 @@ def _build_implementation_lane_audit(
             "backend_package": "hla-backend-python2025",
             "plugin_family": "python-rti-2025",
             "supports": ["rti1516_2025"],
-            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
             "spec_package": "hla-rti1516-2025",
         },
         "compatibility_wrapper_lane": {
@@ -4347,15 +4347,17 @@ def _build_implementation_lane_audit(
         "clean_extraction_still_optional": True,
         "current_assessment": (
             "The repo's current 2025 implementation reality is explicit: the main full Python 2025 RTI implementation now "
-            "runs from hla-backend-python2025, hla-backend-shim remains as a compatibility wrapper over that runtime, "
-            "the hosted FedPro route is a route variant over that implementation rather than a separate RTI family, "
-            "the older pure-Python backend remains the 2010-only inmemory lane, and the Java/C++ lanes remain "
-            "segregated as non-Python binding-capability surfaces rather than being mixed into the Python 2025 RTI claim."
+            "runs from hla-backend-python2025, hla-backend-shim remains only as temporary import-compatibility "
+            "scaffolding and wrapper-only compatibility support over that runtime, the hosted FedPro route is a route "
+            "variant over that implementation rather than a separate RTI family, the older pure-Python backend "
+            "remains the 2010-only inmemory lane, and the Java/C++ lanes remain segregated as non-Python "
+            "binding-capability surfaces rather than being mixed into the Python 2025 RTI claim."
         ),
         "extraction_boundary": (
             "Keep using hla-backend-python2025 as the executable Python 2025 RTI surface while continuing to narrow "
-            "hla-backend-shim toward wrapper-only responsibilities; only reopen a deeper extraction question if future "
-            "evidence shows that residual compatibility or route normalization logic is still obscuring core runtime semantics."
+            "hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities; "
+            "only reopen a deeper extraction question if future evidence shows that residual compatibility or route "
+            "normalization logic is still obscuring core runtime semantics."
         ),
         "evidence_anchors": [
             "README.md",
@@ -4822,8 +4824,8 @@ def _build_python2025_source_responsibility_audit(project_root: Path) -> dict[st
         ),
         "extraction_use": (
             "Use these families as the source ownership baseline while continuing to shrink hla-backend-shim toward "
-            "wrapper-only responsibilities; new runtime movement should reduce compatibility-surface pressure without "
-            "weakening direct or hosted route evidence."
+            "temporary import-compatibility scaffolding and wrapper-only responsibilities; new runtime movement "
+            "should reduce compatibility-surface pressure without weakening direct or hosted route evidence."
         ),
     }
 
@@ -6536,7 +6538,8 @@ def _build_extraction_readiness_audit(
             ),
             "package_creation_rule": (
                 "Keep this package as the promoted live backend only while the direct and hosted proof families stay "
-                "green and hla-backend-shim continues narrowing toward compatibility-wrapper responsibilities."
+                "green and hla-backend-shim continues narrowing toward temporary import-compatibility scaffolding and "
+                "wrapper-only responsibilities."
             ),
         },
         "extraction_cutover_invariants": [
@@ -6567,8 +6570,9 @@ def _build_extraction_readiness_audit(
         ],
         "current_assessment": (
             "The extraction cutover is materially underway: hla-backend-python2025 now owns the live backend, "
-            "hla-backend-shim remains as a compatibility wrapper, and the repo still has a concrete migration map for "
-            "continuing to narrow wrapper responsibilities while preserving the direct and hosted proof families."
+            "hla-backend-shim remains only as temporary import-compatibility scaffolding and wrapper-only "
+            "compatibility support, and the repo still has a concrete migration map for continuing to narrow those "
+            "scaffolding responsibilities while preserving the direct and hosted proof families."
             if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
             else "Extraction is still not required for the current bounded working-surface claim, but the repo now has "
             "both a concrete migration map and extracted runtime semantic slices in hla-backend-python2025. "
@@ -6696,10 +6700,11 @@ def _build_current_lane_working_surface_statement(
         ),
         "statement": (
             "The primary 2025 Python RTI lane can be promoted as the repo's coherent bounded working Python RTI surface: "
-            "the main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is a "
-            "legacy compatibility wrapper, its main current-package pressure families are route-backed across the current "
-            "Python lanes and the route-parity matrix now serves as the scenario-family ledger for federation, object, "
-            "ownership, DDM, time, save/restore, MOM, and support-services evidence, "
+            "the main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim "
+            "is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support, its "
+            "main current-package pressure families are route-backed across the current Python lanes and the "
+            "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, "
+            "time, save/restore, MOM, and support-services evidence, "
             "Java and C++ shim/binding packages remain segregated supporting lanes rather than alternate "
             "Python RTIs, and the repo has enough evidence to make that bounded working-surface claim without hiding "
             "legacy-only, bounded-extension, or artifact-gated boundaries."

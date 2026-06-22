@@ -113,7 +113,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert implementation_lane["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
     assert implementation_lane["current_2025_lane"]["role"] == (
         "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with "
-        "hla-backend-shim retained only as a compatibility wrapper)"
+        "hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)"
     )
     assert implementation_lane["compatibility_wrapper_lane"] == {
         "backend_package": "hla-backend-shim",
@@ -428,7 +428,7 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
 
     assert "real executable python 2025 rti surface" in normalized_audit_text_lower
     assert "the main full python 2025 rti implementation now runs from `hla-backend-python2025`" in normalized_audit_text_lower
-    assert "`hla-backend-shim` is retained as a legacy compatibility wrapper" in normalized_audit_text_lower
+    assert "`hla-backend-shim` remains only as temporary import-compatibility scaffolding" in normalized_audit_text_lower
     assert "the repo does have a working python 2025 rti lane" in normalized_audit_text_lower
     assert "the public shell now fronts extracted runtime/state/surface modules" in normalized_audit_text_lower
     assert "`backend_factory_runtime.py`" in normalized_audit_text_lower
@@ -857,7 +857,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     assert wrapper_plugin.family == "compatibility-wrapper-2025"
     assert wrapper_plugin.supports == ("rti1516_2025",)
     assert wrapper_plugin.aliases == ()
-    assert "Legacy compatibility-wrapper alias" in wrapper_plugin.description
+    assert "Deprecated compatibility-wrapper alias" in wrapper_plugin.description
     assert wrapper_plugin.create_backend.__module__ == "hla.backends.python2025.compatibility_wrapper"
     assert wrapper_plugin.create_backend.__name__ == "create_shim_backend"
     assert wrapper_plugin.create_backend is not runtime_plugin.create_backend
@@ -869,7 +869,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     assert wrapper_discovery.info.kind == "shim/2025"
     assert wrapper_discovery.info.details["counts_as_python_2025_rti"] is False
     assert wrapper_discovery.info.details["wrapper_only"] is True
-    assert "compatibility-wrapper alias" in wrapper_discovery.description
+    assert "deprecated compatibility-wrapper alias" in wrapper_discovery.description.lower()
 
 
 @pytest.mark.requirements(
@@ -1078,7 +1078,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "bounded runtime slice, not a separate rti family" in normalized_route_inventory_routes
 
     assert "transport route over the main full `hla-backend-python2025` runtime lane" in normalized_route_inventory_remote
-    assert "`hla-backend-shim` retained only as compatibility-wrapper/import-level code" in normalized_route_inventory_remote
+    assert "`hla-backend-shim` retained only as temporary import-compatibility scaffolding and compatibility-wrapper/import-level code" in normalized_route_inventory_remote
     assert "transport-seam proof over `hla-backend-python2025`" in normalized_route_inventory_remote
     assert "not ownership of separate core rti semantics" in normalized_route_inventory_remote
 
@@ -1090,8 +1090,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
 
     assert "most shim helper modules are intentionally thin re-exports of `hla.backends.python2025.*` runtime modules" in normalized_migration
     assert "the shim package should not regain ownership of core rti semantics" in normalized_migration
-    assert "retained only for explicit legacy import compatibility coverage" in normalized_migration
-    assert "use `hla.backends.shim` only when you need the legacy compatibility-wrapper" in normalized_migration
+    assert "retained only for explicit legacy import compatibility coverage and temporary scaffolding" in normalized_migration
+    assert "use `hla.backends.shim` only when you need the temporary import-compatibility scaffolding or legacy compatibility-wrapper imports" in normalized_migration
 
     assert "java and c++ standard-surface binding routes" in normalized_shim_routes
     assert "those routes execute over the primary `hla-backend-python2025` runtime lane" in normalized_shim_routes
@@ -1220,7 +1220,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "for 2025-specific runtime ownership and proof status, point them instead to:" in normalized_agent_runbook
 
     assert "for the primary 2025 python rti lane, interpret these commands through the audited `hla-backend-python2025` runtime" in normalized_local_verification_commands
-    assert "`hla-backend-shim` is only compatibility-wrapper/import-compatibility code" in normalized_local_verification_commands
+    assert "`hla-backend-shim` is only temporary import-compatibility scaffolding plus compatibility-wrapper/import-compatibility code" in normalized_local_verification_commands
     assert "the hosted 2025 grpc route is a bounded route variant rather than a separate rti family" in normalized_local_verification_commands
     assert "./tools/python verify-main-2025" in normalized_local_verification_commands
     assert "is the regular main-surface lane for the current `python2025` backend claim" in normalized_local_verification_commands
@@ -1295,7 +1295,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "the bounded `python-2025-fedpro-grpc` route passes the same hosted-route identity and parity assertions as the direct `python2025` lane" in normalized_codex_runner_authorization
 
     assert "bounded working-surface evidence for the current `hla-backend-python2025` 2025 lane" in normalized_capability
-    assert "`hla-backend-shim` retained only as a compatibility-wrapper package" in normalized_capability
+    assert "`hla-backend-shim` remains only as compatibility-wrapper/import-level code" in normalized_capability
     assert "| `python2025` | yes | yes | yes | yes | no |" in capability_doc
     assert "| `python-2025-fedpro-grpc` | yes | yes | yes | yes | no |" in capability_doc
     assert "transport-hosted pure-python 2010 rti server, and through the bounded `python-2025-fedpro-grpc` route over `hla-backend-python2025`" in normalized_capability
@@ -1437,7 +1437,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "keep `hla.backends.shim` narrow and wrapper-only; it should not re-own the 2025 runtime" in normalized_workspace_layout
 
     assert "`hla-backend-python2025` is the main full 2025 python rti backend" in normalized_dependency_tree
-    assert "`hla-backend-shim` is the legacy compatibility wrapper that depends on it" in normalized_dependency_tree
+    assert "`hla-backend-shim` is temporary import-compatibility scaffolding plus a legacy compatibility wrapper that depends on it" in normalized_dependency_tree
     assert "`hla-transport-grpc` already carries the bounded 2025 fedpro transport/client/server surface" in normalized_dependency_tree
     assert "| `hla-fom-target-radar` | `hla-rti1516e, hla-rti1516-2025, hla-rti-core` | `-` |" in normalized_dependency_tree
     assert "the operator-facing hosted 2025 lane is `python2025`" in normalized_route_inventory_remote
@@ -1451,7 +1451,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
 
     assert "hla-rti1516-2025 └── hla-rti-core" in normalized_hierarchy
     assert "hla-backend-python2025" in normalized_hierarchy
-    assert "hla-backend-shim (compatibility wrapper over hla-backend-python2025)" in normalized_hierarchy
+    assert "hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python2025)" in normalized_hierarchy
     assert "hla-fom-target-radar" in normalized_hierarchy
     assert "hla-transport-grpc (bounded fedpro 2025 hosted route)" in normalized_hierarchy
     assert "layer 1: `hla-backend-common`, `hla-fom-target-radar`, `hla-rti1516-2025`" in normalized_hierarchy
@@ -1465,25 +1465,27 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`federation_management_runtime.py`" in python2025_readme
     assert "`time_management_runtime.py`" in python2025_readme
     assert "`*_surface_mixin.py`" in python2025_readme
-    assert "`hla-backend-shim` package remains as a compatibility wrapper" in normalized_python2025_readme
+    assert "`hla-backend-shim` package is deprecated compatibility scaffolding for older route and provider names that should be removed after migration" in normalized_python2025_readme
     assert "must not delegate back to `hla.backends.shim.backend.create_shim_backend`" in normalized_python2025_readme
     assert "the architectural split that matters is already in place: `hla-backend-python2025` is the real 2025 rti runtime owner" in normalized_shim_readme
-    assert "kept only for test-backed legacy import compatibility" in normalized_shim_readme
+    assert "kept only as temporary, test-backed import-compatibility scaffolding" in normalized_shim_readme
+    assert "they should be removed once no callers depend on the legacy import paths" in normalized_shim_readme
     assert "the other `hla.backends.shim.*` modules outside the package root: they are forwarders, not implementation owners" in normalized_shim_readme
-    assert "future work here is boundary cleanup, not deciding whether a dedicated python 2025 backend should exist" in normalized_shim_readme
+    assert "future work here is boundary cleanup and removal, not deciding whether a dedicated python 2025 backend should exist" in normalized_shim_readme
     assert 'description = "main full python rti backend package for hla 1516.1-2025"' in normalized_python2025_pyproject
     assert 'backend_names = ["python2025"]' in normalized_python2025_pyproject
     assert 'backend_aliases = ["python-2025", "python-2025-backend"]' in normalized_python2025_pyproject
     assert 'role = "rti-backend"' in normalized_python2025_pyproject
     assert 'status = "implementation-owned"' in normalized_python2025_pyproject
 
-    assert "legacy `hla-backend-shim` package is a compatibility wrapper over the main full python 2025 rti lane" in normalized_shim_docs_readme
+    assert "legacy-named `hla-backend-shim` package is deprecated temporary import-compatibility scaffolding and a compatibility wrapper over the main full python 2025 rti lane" in normalized_shim_docs_readme
     assert "the executable runtime now lives in `hla-backend-python2025`" in normalized_shim_docs_readme
     assert "only the `shim2025*` names represent the wrapper-only lane" in normalized_shim_docs_readme
     assert "test-backed legacy compatibility surface" in normalized_shim_docs_readme
+    assert "deprecated and should be removed after migration" in normalized_shim_docs_readme
     assert "the real python 2025 rti backend already lives in `hla-backend-python2025`; this package is the wrapper-only compatibility lane" in normalized_shim_docs_readme
     assert "the other `hla.backends.shim.*` helper modules are intentionally thin forwarders into `hla.backends.python2025.*`" in normalized_shim_docs_readme
-    assert "future work is about keeping that wrapper narrow, not about deciding whether a dedicated 2025 backend should exist" in normalized_shim_docs_readme
+    assert "future work is about keeping that wrapper narrow, not about deciding whether a dedicated 2025 backend should exist, and the package should be removed after migration" in normalized_shim_docs_readme
     assert "later be split into a narrower shim plus a dedicated 2025 backend" not in normalized_shim_docs_readme
     assert "future dedicated 2025 rti backend becomes the better design" not in normalized_backend
     assert "the dedicated runtime already exists" in normalized_backend
@@ -1571,7 +1573,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "test_2025_transport_server_runs_example_fom_save_restore_gauntlet_over_fedpro_schema" in normalized_tools_python
     assert "test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema" in normalized_tools_python
     assert "test_2025_transport_server_restores_closed_window_output_resume_without_dirty_replay_over_fedpro_schema" in normalized_tools_python
-    assert 'description = "legacy compatibility-wrapper package for the main full python 2025 rti"' in normalized_shim_pyproject
+    assert 'description = "temporary import-compatibility scaffolding package for the main full python 2025 rti"' in normalized_shim_pyproject
     assert 'backend_names = []' in normalized_shim_pyproject
     assert 'backend_aliases = []' in normalized_shim_pyproject
     assert 'role = "compatibility-wrapper"' in normalized_shim_pyproject
@@ -1586,8 +1588,9 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "run 2025 python rti / fedpro hosted-route checks" in normalized_tools_python
 
     assert "`hla-backend-python2025` is the main full python 2025 rti backend" in normalized_packages
-    assert "`hla-backend-shim` is the legacy compatibility-wrapper lane" in normalized_packages
+    assert "`hla-backend-shim` is deprecated temporary import-compatibility scaffolding" in normalized_packages
     assert "helper modules should remain wrapper-only compatibility aliases over `hla.backends.python2025.*`" in normalized_packages
+    assert "should be removed after migration" in normalized_packages
 
 
 @pytest.mark.requirements(
@@ -1614,7 +1617,7 @@ def test_2025_python_rti_backend_audit_keeps_finish_line_documents_off_stale_shi
     legacy_finish_line = " ".join(
         (ROOT / "docs" / "plans" / "2025_requirements_finish_line.md").read_text(encoding="utf-8").split()
     ).lower()
-    assert "hla-backend-shim retained only as a compatibility wrapper" in legacy_finish_line
+    assert "hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in legacy_finish_line
     assert "hosted runtime identity evidence" in legacy_finish_line
     assert "direct ambassador: python2025-rti / python/2025 / python2025 / hla-backend-python2025" in legacy_finish_line
     assert "evidence basis: route_summary.scenario_count=2" in legacy_finish_line

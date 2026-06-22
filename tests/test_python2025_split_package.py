@@ -397,7 +397,7 @@ def test_split_python2025_packages_publish_primary_runtime_and_wrapper_metadata(
     }
 
     assert shim_project["name"] == "hla-backend-shim"
-    assert shim_project["description"] == "Legacy compatibility-wrapper package for the main full Python 2025 RTI"
+    assert shim_project["description"] == "Temporary import-compatibility scaffolding package for the main full Python 2025 RTI"
     assert shim_project["dependencies"] == [
         "hla-backend-python2025==0.13.0",
         "hla-rti-core==0.13.0",
@@ -435,9 +435,9 @@ def test_split_python2025_wrapper_plugin_and_readmes_keep_runtime_wrapper_bounda
     assert runtime_discovery.info.details["counts_as_python_2025_rti"] is True
     assert "wrapper_only" not in runtime_discovery.info.details
 
-    assert wrapper_plugin.description == "Legacy compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation."
+    assert wrapper_plugin.description == "Deprecated compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation; slated for removal."
     assert wrapper_plugin.family == "compatibility-wrapper-2025"
-    assert wrapper_discovery.description == "Legacy compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation."
+    assert wrapper_discovery.description == "Deprecated compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation; slated for removal."
     assert wrapper_discovery.family == "compatibility-wrapper-2025"
     assert type(wrapper_discovery.info).__module__ == "hla.backends.python2025.compatibility_wrapper"
     assert wrapper_discovery.info.details["implementation_lane"] == "hla-backend-python2025"
@@ -453,7 +453,7 @@ def test_split_python2025_wrapper_plugin_and_readmes_keep_runtime_wrapper_bounda
     assert "`*_surface_mixin.py`" in python2025_readme
     assert "must not delegate back to `hla.backends.shim.backend.create_shim_backend`" in normalized_python2025_readme
     assert "promoted Python-owned 2025 RTI implementation lane" in normalized_python2025_readme
-    assert "legacy compatibility-wrapper package" in normalized_shim_readme
+    assert "legacy compatibility-wrapper package and temporary import-compatibility scaffolding" in normalized_shim_readme
     assert "import-level compatibility surface" in normalized_shim_readme or "compatibility-wrapper" in normalized_shim_readme
     assert "the main full Python 2025 RTI implementation executes from `hla-backend-python2025`" in normalized_shim_readme
     assert "package root, the shim-specific surface is only `Shim2025Backend`, `Shim2025RTIAmbassador`, and `create_shim_backend`" in normalized_shim_readme

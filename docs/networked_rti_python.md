@@ -78,7 +78,7 @@ lane.
 The relevant pieces are:
 
 - `packages/hla-backend-python2025` for the main executable 2025 Python RTI lane
-- `packages/hla-backend-shim` for the legacy compatibility-wrapper package
+- `packages/hla-backend-shim` for the temporary import-compatibility scaffolding package
 - `hla.transports.grpc.python_server_2025.start_2025_grpc_server(...)` for the
   hosted server helper
 - `GrpcTransport(GrpcTransportConfig(..., schema="rti1516_2025"))` for the

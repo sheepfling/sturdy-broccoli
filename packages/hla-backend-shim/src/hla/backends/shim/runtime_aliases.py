@@ -1,4 +1,8 @@
-"""Explicit legacy aliases to the main Python 2025 runtime lane."""
+"""Explicit legacy aliases to the main Python 2025 runtime lane.
+
+Deprecated: this module remains only until callers migrate off the shim
+package root.
+"""
 from __future__ import annotations
 
 from hla.backends.python2025.backend import (

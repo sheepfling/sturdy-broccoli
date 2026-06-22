@@ -15,7 +15,7 @@ Regenerate it with:
 - `hla-rti-core` is the cross-version discovery and factory package.
 - `hla-backend-common`, `hla-rti-core`, `hla-transport-common`, and `hla-verification` are the shared support layers.
 - Python and Java backend families are separated; `hla-backend-inmemory` depends on backend-common rather than on Java support packages.
-- `hla-backend-python2025` is the main full 2025 Python RTI backend, and `hla-backend-shim` is the legacy compatibility wrapper that depends on it rather than a peer RTI lane.
+- `hla-backend-python2025` is the main full 2025 Python RTI backend, and `hla-backend-shim` is temporary import-compatibility scaffolding plus a legacy compatibility wrapper that depends on it rather than a peer RTI lane.
 - `hla-transport-grpc` already carries the bounded 2025 FedPro transport/client/server surface alongside the older 2010-hosted route.
 - FOM and verification leaf packages remain 2010-shaped unless they explicitly depend on `hla-rti1516-2025`.
 - current roots detected from metadata: `hla-rti-core, hla-rti1516e`.

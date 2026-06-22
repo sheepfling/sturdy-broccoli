@@ -949,7 +949,7 @@ def test_2025_backend_package_readmes_match_promoted_runtime_split() -> None:
 
     assert "owns the main full Python 2025 RTI runtime" in python2025_readme
     assert "promoted Python-owned 2025 RTI implementation lane" in python2025_readme
-    assert "legacy compatibility-wrapper package" in shim_readme
+    assert "temporary import-compatibility scaffolding" in shim_readme
     assert "main full Python 2025" in shim_readme
     assert "`hla-backend-python2025`" in shim_readme
     assert "retains import-level wrapper-facing normalization" in shim_readme
@@ -977,7 +977,7 @@ def test_networked_python_guide_keeps_2025_backend_and_wrapper_roles_explicit() 
     assert "`hla-backend-python2025` implementation lane" in guide
     assert "`hla-backend-shim` retained only as compatibility-wrapper/import-compatibility code" in normalized_guide
     assert "`packages/hla-backend-python2025` for the main executable 2025 Python RTI lane" in guide
-    assert "`packages/hla-backend-shim` for the legacy compatibility-wrapper package" in guide
+    assert "`packages/hla-backend-shim` for the temporary import-compatibility scaffolding package" in guide
 
 
 def test_non_spec_split_packages_build_from_their_own_src_roots() -> None:

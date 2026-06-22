@@ -46,7 +46,7 @@ hla-rti1516e
 
 hla-rti1516-2025
   <- hla-backend-python2025
-  <- hla-backend-shim (compatibility wrapper over hla-backend-python2025)
+  <- hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python2025)
   <- hla-fom-target-radar
 
 hla-bridge-java-jpype + hla-bridge-java-py4j
@@ -67,10 +67,11 @@ Rules for the split:
 - `hla-backend-python2025` is the main full Python 2025 RTI backend and the
   main full Python 2025 RTI implementation lane. It registers
   `python2025` for `rti1516_2025`.
-- `hla-backend-shim` is the legacy compatibility-wrapper lane. Its helper
-  modules should remain wrapper-only compatibility aliases over
+- `hla-backend-shim` is deprecated temporary import-compatibility scaffolding.
+  Its helper modules should remain wrapper-only compatibility aliases over
   `hla.backends.python2025.*`, without reclaiming public runtime-selection
-  ownership from `hla-backend-python2025`.
+  ownership from `hla-backend-python2025`, and should be removed after
+  migration.
 - the bounded hosted 2025 FedPro route is a route variant over
   `hla-backend-python2025`, not a separate Python RTI family.
 - Java and C++ 2025 binding lanes are supporting adaptation surfaces; they do
