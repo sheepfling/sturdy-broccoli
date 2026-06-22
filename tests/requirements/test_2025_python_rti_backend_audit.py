@@ -1243,7 +1243,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "direct `python2025` save/restore, ownership, callback, support-service, or mom proofs" in normalized_local_verification_commands
     assert "the 2025 requirements-registry and bounded proof-note surface" in normalized_local_verification_commands
     assert "it also names the hosted target/radar time-window family explicitly" in normalized_local_verification_commands
-    assert "factory-hosted and shared fedpro future-exclusion, output-delivery, consumer-order, integrated-gauntlet, receive-order-poison, restore-output, and pipeline-restore scenario routes" in normalized_local_verification_commands
+    assert "factory-hosted and shared fedpro target/radar example, future-exclusion, output-delivery, consumer-order, integrated-gauntlet, receive-order-poison, restore-output, and pipeline-restore scenario routes" in normalized_local_verification_commands
     assert "it now also names the hosted save/restore family explicitly" in normalized_local_verification_commands
     assert "shared fedpro save/restore route, queued-callback and scheduled time-state restore routes" in normalized_local_verification_commands
     assert "example-fom and smoke ownership gauntlets" in normalized_local_verification_commands
@@ -1514,7 +1514,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "target/radar example route as a package-owned shared scenario path" in normalized_backend
     assert "now runs through `hla.foms.target_radar._internal.targetradar2025rtiadapter`" in normalized_backend
     assert "owned by `hla-fom-target-radar` and wraps both `python2025` and the wrapper-only `shim` alias" in normalized_backend
-    assert "the same package-owned adapter now also runs the shared future-exclusion time-window proof and restore-state save/restore proof over the factory-hosted `create_rti_ambassador(\"python2025\", transport=...)` fedpro route" in normalized_backend
+    assert "the same package-owned adapter now also runs the shared target/radar example path plus the shared future-exclusion time-window proof and restore-state save/restore proof over the factory-hosted `create_rti_ambassador(\"python2025\", transport=...)` fedpro route" in normalized_backend
     assert "the factory-hosted `create_rti_ambassador(\"python2025\", transport=...)` route now also proves direct mom federation-management save/restore service interactions" in normalized_backend
     assert "the hosted fedpro 2025 ambassador now accepts camelcase 2025 api entrypoints as aliases over its snake_case transport implementation methods" in normalized_backend
     assert "that same factory-hosted route now also proves a direct support-service slice on the hosted 2025 ambassador surface" in normalized_backend

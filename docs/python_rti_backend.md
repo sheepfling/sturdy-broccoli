@@ -183,9 +183,9 @@ What that currently includes:
   which is owned by `hla-fom-target-radar` and wraps both `python2025` and the
   wrapper-only `shim` alias without moving runtime ownership back into
   `hla-backend-shim`; the same package-owned adapter now also runs the shared
-  future-exclusion time-window proof and restore-state save/restore proof over
-  the factory-hosted `create_rti_ambassador("python2025", transport=...)`
-  FedPro route
+  Target/Radar example path plus the shared future-exclusion time-window proof
+  and restore-state save/restore proof over the factory-hosted
+  `create_rti_ambassador("python2025", transport=...)` FedPro route
 - hosted FedPro route behavior as a bounded runtime slice
 
 Recent 2025 suite state:

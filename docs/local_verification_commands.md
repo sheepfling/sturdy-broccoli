@@ -90,9 +90,10 @@ proofs, the checked-in 2025 finish-line bundle, the 2025 route-parity ledger,
 the 2025 requirements-registry and bounded proof-note surface, or other route-level behavior that must
 stay aligned between the direct `python2025` lane and the hosted FedPro route.
 It also names the hosted Target/Radar time-window family explicitly through the
-factory-hosted and shared FedPro future-exclusion, output-delivery,
-consumer-order, integrated-gauntlet, receive-order-poison, restore-output, and
-pipeline-restore scenario routes before the full transport suite runs.
+factory-hosted and shared FedPro Target/Radar example, future-exclusion,
+output-delivery, consumer-order, integrated-gauntlet, receive-order-poison,
+restore-output, and pipeline-restore scenario routes before the full transport
+suite runs.
 It now also names the hosted save/restore family explicitly through the shared
 FedPro save/restore route, queued-callback and scheduled time-state restore
 routes, lifecycle and per-peer status tracking, the example-FOM and smoke
