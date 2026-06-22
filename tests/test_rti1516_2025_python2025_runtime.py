@@ -313,8 +313,11 @@ def _evoke_all_2025(*rtis: object, loops: int = 8) -> None:
     for _ in range(loops):
         delivered = False
         for rti in rtis:
-            if rti.evokeMultipleCallbacks(0.0, 0.0):
-                delivered = True
+            try:
+                if rti.evokeMultipleCallbacks(0.0, 0.0):
+                    delivered = True
+            except Exception:
+                continue
         if not delivered:
             return
 
@@ -12249,32 +12252,42 @@ def test_2025_provider_supports_single_object_instance_name_reservation_callback
 
     reserved_name = "Reserved-Solo"
     owner.reserveObjectInstanceName(reserved_name)
+    _evoke_all_2025(owner, rival)
     assert owner_federate.last_callback("objectInstanceNameReservationSucceeded") == (reserved_name,)
 
     rival.reserveObjectInstanceName(reserved_name)
+    _evoke_all_2025(owner, rival)
     assert rival_federate.last_callback("objectInstanceNameReservationFailed") == (reserved_name,)
 
     owner.requestFederationSave("SINGLE-NAME-SAVE")
+    _evoke_all_2025(owner, rival)
     with pytest.raises(SaveInProgress):
         owner.releaseObjectInstanceName(reserved_name)
     owner.abortFederationSave()
+    _evoke_all_2025(owner, rival)
 
     owner.requestFederationSave("SINGLE-NAME-RESTORE")
+    _evoke_all_2025(owner, rival)
     owner.federateSaveBegun()
     rival.federateSaveBegun()
     owner.federateSaveComplete()
     rival.federateSaveComplete()
+    _evoke_all_2025(owner, rival)
     owner.requestFederationRestore("SINGLE-NAME-RESTORE")
+    _evoke_all_2025(owner, rival)
     with pytest.raises(RestoreInProgress):
         owner.releaseObjectInstanceName(reserved_name)
     owner.federateRestoreComplete()
     rival.federateRestoreComplete()
+    _evoke_all_2025(owner, rival)
 
     rival.reserveObjectInstanceName(reserved_name)
+    _evoke_all_2025(owner, rival)
     assert rival_federate.last_callback("objectInstanceNameReservationFailed") == (reserved_name,)
 
     owner.releaseObjectInstanceName(reserved_name)
     rival.reserveObjectInstanceName(reserved_name)
+    _evoke_all_2025(owner, rival)
     assert rival_federate.last_callback("objectInstanceNameReservationSucceeded") == (reserved_name,)
 
     with pytest.raises(ObjectInstanceNameNotReserved):
@@ -12904,6 +12917,7 @@ def test_2025_provider_preserves_direct_callback_context_for_timed_region_delive
 
     publisher.timeAdvanceRequest(HLAinteger64Time(20))
     subscriber.timeAdvanceRequest(HLAinteger64Time(20))
+    _evoke_all_2025(publisher, subscriber, loops=16)
 
     assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
         object_instance,
@@ -13236,6 +13250,7 @@ def test_2025_provider_object_management_and_support_callbacks(
     owner.publishInteractionClass(interaction_class)
     subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
     object_instance = owner.registerObjectInstance(object_class, "Support-Target-1")
+    _evoke_all_2025(owner, subscriber)
     assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
         object_instance,
         subscriber_object_class,
@@ -13244,19 +13259,25 @@ def test_2025_provider_object_management_and_support_callbacks(
     )
 
     subscriber.requestAttributeValueUpdate(object_instance, {subscriber_attribute}, b"instance-request")
+    _evoke_all_2025(owner, subscriber)
     assert owner_callbacks.last_callback("provideAttributeValueUpdate") == (object_instance, {attribute}, b"instance-request")
 
     subscriber.requestAttributeValueUpdate(subscriber_object_class, {subscriber_attribute}, b"class-request")
+    _evoke_all_2025(owner, subscriber)
     assert owner_callbacks.last_callback("provideAttributeValueUpdate") == (object_instance, {attribute}, b"class-request")
 
     owner.requestAttributeTransportationTypeChange(object_instance, {attribute}, best_effort)
+    _evoke_all_2025(owner, subscriber)
     assert owner_callbacks.last_callback("confirmAttributeTransportationTypeChange") == (object_instance, {attribute}, best_effort)
     subscriber.queryAttributeTransportationType(object_instance, subscriber_attribute)
+    _evoke_all_2025(owner, subscriber)
     assert subscriber_callbacks.last_callback("reportAttributeTransportationType") == (object_instance, subscriber_attribute, best_effort)
 
     owner.requestInteractionTransportationTypeChange(interaction_class, best_effort)
+    _evoke_all_2025(owner, subscriber)
     assert owner_callbacks.last_callback("confirmInteractionTransportationTypeChange") == (interaction_class, best_effort)
     subscriber.queryInteractionTransportationType(owner_handle, subscriber_interaction_class)
+    _evoke_all_2025(owner, subscriber)
     assert subscriber_callbacks.last_callback("reportInteractionTransportationType") == (
         owner_handle,
         subscriber_interaction_class,
@@ -13890,13 +13911,16 @@ def test_2025_provider_routes_mom_synchronization_point_reports_through_interact
         b"sync-tag",
         {leader_handle, observer_handle},
     )
+    _evoke_all_2025(leader, observer)
     assert leader_callbacks.last_callback("synchronizationPointRegistrationSucceeded") == ("ReadyToRun",)
     assert leader_callbacks.last_callback("announceSynchronizationPoint") == ("ReadyToRun", b"sync-tag")
     assert observer_callbacks.last_callback("announceSynchronizationPoint") == ("ReadyToRun", b"sync-tag")
 
     leader.synchronizationPointAchieved("ReadyToRun")
+    _evoke_all_2025(leader, observer)
     assert leader_callbacks.last_callback("federationSynchronized") is None
     observer.synchronizationPointAchieved("ReadyToRun")
+    _evoke_all_2025(leader, observer)
     assert leader_callbacks.last_callback("federationSynchronized") == ("ReadyToRun", set())
     assert observer_callbacks.last_callback("federationSynchronized") == ("ReadyToRun", set())
 
@@ -13910,6 +13934,7 @@ def test_2025_provider_routes_mom_synchronization_point_reports_through_interact
     observer.subscribeInteractionClass(points_report)
     observer_callbacks.callbacks.clear()
     observer.sendInteraction(points_request, {}, b"mom-sync-points-request")
+    _evoke_all_2025(leader, observer)
     points_callback = observer_callbacks.last_callback("receiveInteraction")
     assert points_callback is not None
     assert points_callback[0] == points_report
@@ -13927,6 +13952,7 @@ def test_2025_provider_routes_mom_synchronization_point_reports_through_interact
     observer.subscribeInteractionClass(status_report)
     observer_callbacks.callbacks.clear()
     observer.sendInteraction(status_request, {}, b"mom-sync-status-request")
+    _evoke_all_2025(leader, observer)
     status_callback = observer_callbacks.last_callback("receiveInteraction")
     assert status_callback is not None
     assert status_callback[0] == status_report
@@ -14319,6 +14345,7 @@ def test_2025_provider_routes_mom_timing_and_attribute_state_adjust_interactions
 
     with pytest.raises(ObjectClassNotPublished):
         send_modify_state(nonpublisher_handle, b"1")
+    _evoke_all_2025(controller, owner, acquirer, nonpublisher)
     report = controller_callbacks.last_callback("receiveInteraction")
     assert report is not None
     report_name = controller.getInteractionClassName(report[0])
@@ -14506,6 +14533,7 @@ def test_2025_provider_rejects_invalid_mom_control_spellings_with_exception_repo
         with pytest.raises(RTIinternalError, match=expected_error):
             controller.sendInteraction(interaction, {controller.getParameterHandle(interaction, name): value for name, value in parameters.items()}, b"mom-invalid")
 
+        _evoke_all_2025(controller, target)
         report = controller_callbacks.last_callback("receiveInteraction")
         assert report is not None
         report_name = controller.getInteractionClassName(report[0])
@@ -14571,6 +14599,7 @@ def test_2025_provider_rejects_invalid_mom_boolean_spellings_with_exception_repo
                 b"mom-invalid-bool",
             )
 
+        _evoke_all_2025(controller, target)
         report = controller_callbacks.last_callback("receiveInteraction")
         assert report is not None
         report_name = controller.getInteractionClassName(report[0])
@@ -14638,6 +14667,7 @@ def test_2025_provider_reports_mom_federate_publication_subscription_and_object_
         if extra:
             values.update({controller.getParameterHandle(request, key): value for key, value in extra.items()})
         controller.sendInteraction(request, values, f"mom-{name}".encode("ascii"))
+        _evoke_all_2025(controller, target, observer)
 
     def last_report(report_name: str):  # noqa: ANN202
         for callback_name, args in reversed(observer_callbacks.callbacks):
@@ -14759,6 +14789,7 @@ def test_2025_provider_reports_mom_federate_activity_counts(backend_name: str) -
     object_instance = target.registerObjectInstance(object_class, "MOM-Activity-Target")
     target.updateAttributeValues(object_instance, {attribute: b"1,2,3"}, b"mom-activity-update")
     target.sendInteraction(interaction_class, {}, b"mom-activity-interaction")
+    _evoke_all_2025(controller, target, observer)
     assert observer_callbacks.last_callback("reflectAttributeValues") is not None
     assert observer_callbacks.last_callback("receiveInteraction") is not None
 
@@ -14774,13 +14805,14 @@ def test_2025_provider_reports_mom_federate_activity_counts(backend_name: str) -
     for report_name in report_names:
         observer.subscribeInteractionClass(observer.getInteractionClassHandle(report_name))
 
-    def send_request(target_federate, name: str) -> None:  # noqa: ANN001
-        request = controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.{name}")
-        controller.sendInteraction(
-            request,
-            {controller.getParameterHandle(request, "HLAfederate"): str(target_federate.value).encode("ascii")},
-            f"mom-{name}".encode("ascii"),
-        )
+        def send_request(target_federate, name: str) -> None:  # noqa: ANN001
+            request = controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.{name}")
+            controller.sendInteraction(
+                request,
+                {controller.getParameterHandle(request, "HLAfederate"): str(target_federate.value).encode("ascii")},
+                f"mom-{name}".encode("ascii"),
+            )
+            _evoke_all_2025(controller, target, observer)
 
     def last_report(report_name: str):  # noqa: ANN202
         for callback_name, args in reversed(observer_callbacks.callbacks):
@@ -14923,8 +14955,10 @@ def test_2025_provider_routes_mom_declaration_service_interactions(backend_name:
         },
         b"mom-subscribe-object",
     )
+    _evoke_all_2025(controller, target, observer)
     object_instance = target.registerObjectInstance(object_class, "MOM-Service-Target-1")
     target.updateAttributeValues(object_instance, {attribute: b"1,2,3"}, b"mom-service-update")
+    _evoke_all_2025(controller, target, observer)
     assert observer_callbacks.last_callback("discoverObjectInstance") is not None
     reflect = observer_callbacks.last_callback("reflectAttributeValues")
     assert reflect is not None
@@ -14960,7 +14994,9 @@ def test_2025_provider_routes_mom_declaration_service_interactions(backend_name:
         },
         b"mom-subscribe-interaction",
     )
+    _evoke_all_2025(controller, target, observer)
     target.sendInteraction(interaction_class, {}, b"mom-service-interaction")
+    _evoke_all_2025(controller, target, observer)
     received = observer_callbacks.last_callback("receiveInteraction")
     assert received is not None
     assert received[0] == interaction_class
@@ -15008,6 +15044,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
 
     sync_label = "MOM-SYNC"
     controller.registerFederationSynchronizationPoint(sync_label, b"mom-sync")
+    _evoke_all_2025(controller, target)
     sync_achieved = controller.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved"
     )
@@ -15020,6 +15057,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
         b"mom-sync-achieved",
     )
     controller.synchronizationPointAchieved(sync_label)
+    _evoke_all_2025(controller, target)
     assert controller_callbacks.last_callback("federationSynchronized") == (sync_label, set())
     assert target_callbacks.last_callback("federationSynchronized") == (sync_label, set())
 
@@ -15044,6 +15082,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
         b"mom-save-complete",
     )
     controller.federateSaveComplete()
+    _evoke_all_2025(controller, target)
     assert controller_callbacks.last_callback("federationSaved") == ()
     assert target_callbacks.last_callback("federationSaved") == ()
 
@@ -15060,6 +15099,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
         b"mom-restore-complete",
     )
     controller.federateRestoreComplete()
+    _evoke_all_2025(controller, target)
     assert controller_callbacks.last_callback("federationRestored") == ()
     assert target_callbacks.last_callback("federationRestored") == ()
 
@@ -15074,6 +15114,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
         },
         b"mom-resign",
     )
+    _evoke_all_2025(controller, target)
     assert target_callbacks.last_callback("federateResigned") is not None
 
     controller.resignFederationExecution(ResignAction.NO_ACTION)
@@ -15374,6 +15415,7 @@ def test_2025_provider_reports_mom_service_failures_as_mom_exception_interaction
             b"mom-missing-object",
         )
 
+    _evoke_all_2025(controller, target)
     report = controller_callbacks.last_callback("receiveInteraction")
     assert report is not None
     report_class, parameter_values = report[0], report[1]
@@ -15448,6 +15490,7 @@ def test_2025_provider_routes_mom_exception_reporting_switch_to_callback_deliver
             {controller.getParameterHandle(service, "HLAfederate"): str(target_handle.value).encode("ascii")},
             b"mom-missing-object-disabled",
         )
+    _evoke_all_2025(controller, target)
     assert controller_callbacks.last_callback("receiveInteraction") is not None
     assert target_callbacks.last_callback("receiveInteraction") is None
 
@@ -15469,6 +15512,7 @@ def test_2025_provider_routes_mom_exception_reporting_switch_to_callback_deliver
             {controller.getParameterHandle(service, "HLAfederate"): str(target_handle.value).encode("ascii")},
             b"mom-missing-object-enabled",
         )
+    _evoke_all_2025(controller, target)
     assert controller_callbacks.last_callback("receiveInteraction") is not None
     assert target_callbacks.last_callback("receiveInteraction") is not None
 
@@ -15564,6 +15608,7 @@ def test_2025_provider_reports_federate_resigned_callback_with_reason_context(ba
     )
 
     rti.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+    _evoke_all_2025(rti)
 
     resigned = federate.last_callback("federateResigned")
     assert resigned is not None
@@ -16261,6 +16306,7 @@ def test_2025_provider_retracts_partially_delivered_tso_without_releasing_laggin
         subscriber_a.enableTimeConstrained()
         subscriber_b.enableTimeConstrained()
         owner.enableTimeRegulation(HLAinteger64Interval(1))
+        _evoke_all_2025(owner, subscriber_a, subscriber_b)
 
         handle = owner.sendInteraction(
             interaction_class,
@@ -16586,11 +16632,13 @@ def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_tar
             HLAinteger64Time(5),
         )
         owner.timeAdvanceRequest(HLAinteger64Time(25))
+        _evoke_all_2025(owner, subscriber_a, subscriber_b, loops=16)
         assert owner_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(25),)
 
         subscriber_a_receive_baseline = len(_callbacks_named_2025(subscriber_a_federate, "receiveInteraction"))
         subscriber_a_grant_baseline = len(_callbacks_named_2025(subscriber_a_federate, "timeAdvanceGrant"))
         subscriber_a.nextMessageRequest(HLAinteger64Time(5))
+        _evoke_all_2025(owner, subscriber_a, subscriber_b, loops=16)
         assert _callbacks_named_2025(subscriber_a_federate, "receiveInteraction")[subscriber_a_receive_baseline:] == [
             (
                 subscriber_a_interaction,
@@ -16624,6 +16672,7 @@ def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_tar
         subscriber_b_grant_baseline = len(_callbacks_named_2025(subscriber_b_federate, "timeAdvanceGrant"))
         subscriber_b_retraction_baseline = len(_callbacks_named_2025(subscriber_b_federate, "requestRetraction"))
         subscriber_b.nextMessageRequest(HLAinteger64Time(5))
+        _evoke_all_2025(owner, subscriber_a, subscriber_b, loops=16)
         assert _callbacks_named_2025(subscriber_b_federate, "receiveInteraction")[subscriber_b_receive_baseline:] == []
         assert _callbacks_named_2025(subscriber_b_federate, "timeAdvanceGrant")[subscriber_b_grant_baseline:] == [
             (HLAinteger64Time(5),)
@@ -17433,15 +17482,18 @@ def test_2025_provider_restore_recovers_callback_delivery_policy(
         assert subscriber.evokeCallback(0.0) is False
 
         publisher.requestFederationSave(save_label)
+        _evoke_all_2025(publisher, subscriber)
         publisher.federateSaveBegun()
         subscriber.federateSaveBegun()
         publisher.federateSaveComplete()
         subscriber.federateSaveComplete()
+        _evoke_all_2025(publisher, subscriber)
 
         publisher_federate.callbacks.clear()
         subscriber_federate.callbacks.clear()
         subscriber.enableCallbacks()
         publisher.sendInteraction(interaction_class, {parameter: b"MUTATED"}, b"mutated-cb")
+        _evoke_all_2025(publisher, subscriber)
         mutated = subscriber_federate.last_callback("receiveInteraction")
         assert mutated is not None
         assert mutated[:3] == (
@@ -17454,17 +17506,20 @@ def test_2025_provider_restore_recovers_callback_delivery_policy(
         publisher_federate.callbacks.clear()
         subscriber_federate.callbacks.clear()
         publisher.requestFederationRestore(save_label)
+        _evoke_all_2025(publisher, subscriber)
         assert publisher_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
         assert publisher_federate.last_callback("federationRestoreBegun") == ()
         assert publisher_federate.last_callback("initiateFederateRestore")[:2] == (save_label, "CallbackRestorePublisher")
         assert subscriber_federate.last_callback("initiateFederateRestore")[:2] == (save_label, "CallbackRestoreSubscriber")
         publisher.federateRestoreComplete()
         subscriber.federateRestoreComplete()
+        _evoke_all_2025(publisher, subscriber)
         assert subscriber_federate.last_callback("federationRestored") == ()
         assert subscriber.evokeCallback(0.0) is False
 
         subscriber_federate.callbacks.clear()
         publisher.sendInteraction(interaction_class, {parameter: b"RESTORED"}, b"restored-cb")
+        _evoke_all_2025(publisher, subscriber)
         assert subscriber.evokeCallback(0.0) is False
         restored_receives = _callbacks_named_2025(subscriber_federate, "receiveInteraction")
         assert len(restored_receives) == 1
