@@ -56,11 +56,18 @@ Example:
   - Python/Java interaction: none
   - transport surface: none
 
+- `hla.rti1516_2025.create_rti_ambassador("python2025")`
+  - RTI runtime: primary Python IEEE 1516.1-2025 RTI implementation
+  - Python/Java interaction: none
+  - transport surface: none
+
 ## RTI Runtime Families
 
 | Runtime family | What it is | Primary backend names | Current status |
 |---|---|---|---|
-| Python RTI | in-process reference RTI implemented in Python | `python` | strongest reference path for local semantics and clause work |
+| Python RTI 2010 | in-process reference RTI implemented in Python for IEEE 1516.1-2010 | `python` | strongest reference path for local 2010 semantics and clause work |
+| Python RTI 2025 | in-process Python RTI implemented in Python for IEEE 1516.1-2025 | `python2025`, `python-2025`, `python-2025-backend` | main executable 2025 Python RTI lane in this repo |
+| 2025 wrapper alias | compatibility-wrapper alias over the main Python 2025 RTI lane | `shim` | wrapper-only compatibility surface, not a separate RTI family |
 | Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
 | CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
 | Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
@@ -119,6 +126,12 @@ This section is generated from `create_backend(...)` by
 - `python`
 - `python-in-memory`
 - `python-inmemory`
+
+### Python 2025
+
+- `python2025`
+- `python-2025`
+- `python-2025-backend`
 
 ### Generic Java Adapter Paths
 
@@ -185,9 +198,7 @@ These are only useful when you provide a Java RTI configuration explicitly.
 
 ### Spec Shim
 
-- `2025-shim`
-- `reference-shim`
-- `rti1516_2025-shim`
+- `shim`
 - `shim`
 
 <!-- GENERATED_BACKEND_ALIASES_END -->
@@ -198,7 +209,9 @@ Use this simpler classification in practice:
 
 | Operational bucket | Backend names |
 |---|---|
-| Python reference RTI | `python` |
+| Python reference RTI 2010 | `python` |
+| Python RTI 2025 | `python2025`, `python-2025`, `python-2025-backend` |
+| Python RTI 2025 wrapper alias | `shim` |
 | Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
 | Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
 | Real Pitch | `pitch-jpype`, `pitch-py4j` |
@@ -212,7 +225,9 @@ This is the practical matrix to use when deciding what to run.
 
 | Backend family | Bridge model | Transport | Exchange | Timed | Sync | Ownership | Negotiated Ownership | Real runtime |
 |---|---|---|---:|---:|---:|---:|---:|---:|
-| Python RTI | none | none | yes | yes | yes | yes | yes | no |
+| Python RTI 2010 | none | none | yes | yes | yes | yes | yes | no |
+| Python RTI 2025 | none | none | yes | yes | yes | yes | yes | no |
+| Python RTI 2025 wrapper alias | none | none | yes | yes | yes | yes | yes | no |
 | Java shim | JPype | none | yes | partial | yes | yes | partial | no |
 | Java shim | Py4J | none | yes | partial | yes | yes | partial | no |
 | CERTI | native | subprocess-line | yes | partial | yes | yes | partial | yes |
@@ -243,9 +258,16 @@ Current CERTI qualifier:
 
 ## Primary Test Files By Option
 
-### Python reference RTI
+### Python reference RTI 2010
 
 - [test_python_backend_support_services.py](../tests/backends/test_python_backend_support_services.py), [test_python_backend_federation_extended.py](../tests/backends/test_python_backend_federation_extended.py), [test_python_backend_object_ownership_extended.py](../tests/backends/test_python_backend_object_ownership_extended.py), [test_python_backend_time_ddm_extended.py](../tests/backends/test_python_backend_time_ddm_extended.py)
+
+### Python RTI 2025
+
+- [test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)
+- [test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)
+- [test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py)
+- [test_python_route_parity.py](../tests/scenarios/test_python_route_parity.py)
 
 ### Java shim bridge proofs
 

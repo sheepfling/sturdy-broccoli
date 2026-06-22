@@ -24488,6 +24488,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -24529,6 +24530,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -24570,6 +24572,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -24611,6 +24614,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -24651,6 +24655,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -24700,6 +24705,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix"
       ],
@@ -24749,6 +24756,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -24798,6 +24807,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_failed_federate_synchronization_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_failed_federate_synchronization_matrix"
       ],
@@ -24848,6 +24859,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -24892,6 +24905,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -24940,6 +24954,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -24987,6 +25003,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25032,6 +25050,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25079,6 +25098,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25125,6 +25146,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25168,6 +25192,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25211,6 +25238,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25259,6 +25287,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25306,6 +25337,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25351,6 +25384,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25390,6 +25424,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25430,6 +25465,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
@@ -25523,6 +25559,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_timed_delete_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix"
@@ -25569,6 +25606,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25613,6 +25652,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25657,6 +25698,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_value_update_requests_only_to_owner_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25698,6 +25740,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25742,6 +25787,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25786,6 +25834,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25830,6 +25881,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25874,6 +25926,9 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25918,6 +25973,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -25962,6 +26019,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26006,6 +26065,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26050,6 +26110,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26094,6 +26156,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26139,6 +26203,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix"
       ],
@@ -26183,7 +26249,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26226,7 +26293,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26269,7 +26337,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26312,7 +26381,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26356,6 +26426,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_unavailable_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26401,6 +26472,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
@@ -26452,6 +26525,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26498,6 +26573,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_clears_offered_ownership_state_when_owner_disconnects_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26546,6 +26623,7 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26594,6 +26672,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -26642,6 +26722,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_clears_offered_ownership_state_when_owner_disconnects_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe"
       ],
       "python_runtime_disposition": "verified",
@@ -26693,6 +26775,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
@@ -26740,6 +26824,8 @@
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
@@ -26837,7 +26923,8 @@
       "pitch_runtime_status": "blocked",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_request_retraction_callback_over_fedpro_schema"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26881,7 +26968,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -26925,7 +27013,8 @@
       "pitch_runtime_status": "yes",
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema"
       ],
       "python_runtime_disposition": "verified",
       "python_runtime_status": "yes",
@@ -30925,7 +31014,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_13-getUpdateRateValue",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -30964,7 +31056,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_14-getUpdateRateValueForAttribute",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31223,7 +31318,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_2-getAutomaticResignDirective",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31306,7 +31404,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_21-getTransportationType",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31433,7 +31534,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_22-getTransportationTypeName",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31714,7 +31818,14 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_28-getDimensionHandleSet",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/factories/test_fom_time_factories.py",
+        "tests/backends/test_python_backend_support_services.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31807,7 +31918,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_3-setAutomaticResignDirective",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31940,7 +32054,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_32-normalizeServiceGroup",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -31979,7 +32096,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_33-enableObjectClassRelevanceAdvisorySwitch",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32018,7 +32138,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_34-disableObjectClassRelevanceAdvisorySwitch",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32057,7 +32180,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_35-enableAttributeRelevanceAdvisorySwitch",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32096,7 +32222,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_36-disableAttributeRelevanceAdvisorySwitch",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32135,7 +32264,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_37-enableAttributeScopeAdvisorySwitch",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32174,7 +32306,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_38-disableAttributeScopeAdvisorySwitch",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32557,7 +32692,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getAttributeHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32597,7 +32736,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getAttributeHandleSetFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32637,7 +32780,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getAttributeHandleValueMapFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32677,7 +32824,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getAttributeSetRegionSetPairListFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32717,7 +32868,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getDimensionHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32757,7 +32912,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getDimensionHandleSetFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32797,7 +32956,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getFederateHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32837,7 +33000,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getFederateHandleSetFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32923,7 +33090,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getInteractionClassHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -32963,7 +33134,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -33003,7 +33178,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getObjectInstanceHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -33043,7 +33222,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getParameterHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -33083,7 +33266,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -33123,7 +33310,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getRegionHandleSetFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -33163,7 +33354,10 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getTimeFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/factories/test_fom_time_factories.py"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -33202,7 +33396,11 @@
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getTransportationTypeHandleFactory",
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "pitch_jpype_runtime_disposition": "not-yet-tested",
       "pitch_py4j_runtime_disposition": "not-yet-tested",
       "pitch_runtime_disposition": "not-yet-tested",
@@ -34577,6 +34775,9 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
@@ -34651,7 +34852,14 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
       ],
@@ -35825,6 +36033,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -35889,6 +36099,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
@@ -36003,6 +36216,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
@@ -36213,6 +36428,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -36262,6 +36478,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -36311,6 +36528,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -36360,6 +36578,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -36572,6 +36791,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -36642,6 +36863,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/verification/test_compliance_slice_v011.py"
@@ -36703,6 +36926,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/verification/test_compliance_slice_v011.py"
@@ -36770,6 +36995,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/verification/test_compliance_slice_v011.py"
@@ -36839,6 +37066,8 @@
         "tests/scenarios/test_ddm_backend_matrix.py",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
@@ -36913,6 +37142,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
@@ -36977,6 +37209,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix",
@@ -37055,6 +37290,8 @@
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_unavailable_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix",
@@ -37133,6 +37370,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_timed_delete_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix"
@@ -37376,7 +37614,11 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -37515,6 +37757,7 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
@@ -37584,6 +37827,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -37696,6 +37940,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -37862,6 +38108,8 @@
       "portico_runtime_disposition": "classification-required",
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -38234,6 +38482,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/verification/test_compliance_slice_v011.py"
@@ -38436,6 +38686,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
@@ -38511,6 +38764,14 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
@@ -38630,6 +38891,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
@@ -38694,6 +38956,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/scenarios/test_startup_sync_fom_java_translation_v09.py::test_strict_fom_lookup_rejects_unknown_names",
         "tests/time/test_mom_mim_and_time_semantics_v010.py::test_mom_fom_module_request_reports_requested_module_payload",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
@@ -38971,6 +39236,13 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
       ],
@@ -39235,6 +39507,14 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix",
@@ -39296,6 +39576,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_timed_delete_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix",
@@ -39471,6 +39752,8 @@
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py::test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -39526,6 +39809,8 @@
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py::test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -39656,6 +39941,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_routing_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_value_update_requests_only_to_owner_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_routing_matrix"
       ],
@@ -39719,6 +40005,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
@@ -39775,6 +40064,9 @@
       "positive_test_refs": [
         "tests/backends/test_python_backend_support_services.py::test_attribute_relevance_combines_publication_subscription_ownership_and_scope",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -39842,6 +40134,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
@@ -40026,6 +40321,9 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -40304,6 +40602,7 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -40594,6 +40893,9 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -40878,6 +41180,7 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_runtime_disposition": "verified",
@@ -41354,7 +41657,14 @@
         "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order"
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
@@ -41458,7 +41768,11 @@
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore"
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
@@ -41524,7 +41838,13 @@
       "pitch_runtime_status": "",
       "portico_runtime_disposition": "not-applicable",
       "positive_test_refs": [
-        "tests/verification/test_compliance_slice_v011.py::test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping"
+        "tests/verification/test_compliance_slice_v011.py::test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
+        "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_post_restore_routing_over_fedpro_schema",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay"
       ],
       "python_runtime_disposition": "not-applicable",
       "python_runtime_status": "",
@@ -41534,6 +41854,44 @@
       "source": "REQ-SAVE-RESTORE-TRANSIENT-STATE-001",
       "status": "implemented-slice",
       "title": "Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state",
+      "vendor_evidence_refs": [],
+      "vendor_notes": "",
+      "vendor_profile_bucket": "",
+      "vendor_profile_notes": "",
+      "vendor_profile_refs": [],
+      "vendor_profile_source": "",
+      "vendor_source": ""
+    },
+    {
+      "artifact_refs": [],
+      "certi_runtime_disposition": "not-applicable",
+      "certi_runtime_status": "",
+      "document": "multi-section",
+      "implementation_refs": [],
+      "kind": "verification-slice",
+      "matrix_id": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "negative_test_refs": [],
+      "pitch_jpype_runtime_disposition": "classification-required",
+      "pitch_py4j_runtime_disposition": "classification-required",
+      "pitch_runtime_disposition": "classification-required",
+      "pitch_runtime_status": "",
+      "portico_runtime_disposition": "not-applicable",
+      "positive_test_refs": [
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing",
+        "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_interaction_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema"
+      ],
+      "python_runtime_disposition": "not-applicable",
+      "python_runtime_status": "",
+      "requirement_id": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "section_ref": "1516-2010 \u00a712.2; 1516.1-2010 \u00a74.24-\u00a74.29; 1516.1-2010 \u00a75; 1516.1-2010 \u00a76",
+      "service_group": "requirement",
+      "source": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "status": "implemented-slice",
+      "title": "Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "",
@@ -42390,7 +42748,7 @@
   "summary": {
     "certi_runtime_disposition_counts": {
       "classification-required": 263,
-      "not-applicable": 231,
+      "not-applicable": 232,
       "not-yet-tested": 281,
       "vendor-divergent": 13,
       "verified": 131
@@ -42407,11 +42765,11 @@
       "omt-area": 20,
       "section-area": 9,
       "service-requirement": 217,
-      "verification-slice": 40
+      "verification-slice": 41
     },
     "pitch_jpype_runtime_disposition_counts": {
       "blocked": 4,
-      "classification-required": 210,
+      "classification-required": 211,
       "not-applicable": 26,
       "not-yet-tested": 91,
       "vendor-divergent": 43,
@@ -42419,7 +42777,7 @@
     },
     "pitch_py4j_runtime_disposition_counts": {
       "blocked": 4,
-      "classification-required": 210,
+      "classification-required": 211,
       "not-applicable": 26,
       "not-yet-tested": 91,
       "vendor-divergent": 43,
@@ -42427,7 +42785,7 @@
     },
     "pitch_runtime_disposition_counts": {
       "blocked": 4,
-      "classification-required": 210,
+      "classification-required": 211,
       "not-applicable": 26,
       "not-yet-tested": 91,
       "vendor-divergent": 43,
@@ -42435,16 +42793,16 @@
     },
     "portico_runtime_disposition_counts": {
       "classification-required": 817,
-      "not-applicable": 102
+      "not-applicable": 103
     },
     "python_runtime_disposition_counts": {
-      "not-applicable": 78,
+      "not-applicable": 79,
       "vendor-divergent": 23,
       "verified": 818
     },
-    "row_count": 919,
+    "row_count": 920,
     "status_counts": {
-      "implemented-slice": 38,
+      "implemented-slice": 39,
       "implemented-smoke": 1,
       "partial": 64,
       "pass": 786,

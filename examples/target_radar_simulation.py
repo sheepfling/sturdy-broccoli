@@ -1,20 +1,50 @@
 #!/usr/bin/env python3
 """Run the backend-neutral Target/Radar HLA scenario.
 
-Default backend is the dependency-free Python in-memory RTI.  Java backends need
-a vendor RTI jar/process plus a FOM module that defines the names used by the
-scenario.
+Default backend is the dependency-free Python in-memory RTI.
+
+For IEEE 1516.1-2025, treat ``python2025`` as the main full Python RTI
+implementation lane. The legacy ``hla.backends.shim`` package remains only as
+an import-level compatibility surface over that same runtime and is not a
+separate RTI family.
+
+Java backends need a vendor RTI jar/process plus a FOM module that defines the
+names used by the scenario.
 """
 from __future__ import annotations
 
 import argparse
 
-from hla.foms.target_radar._internal import make_target_radar_factory, run_target_radar_scenario
+from hla.foms.target_radar._internal import (
+    make_target_radar_factory,
+    run_target_radar_scenario,
+    target_radar_fom_path,
+)
+
+_BACKEND_CHOICES = [
+    "python",
+    "python2025",
+    "python-2025",
+    "python-2025-backend",
+    "java-shim-jpype",
+    "java-shim-py4j",
+    "jpype",
+    "py4j",
+]
+_BACKEND_HELP = (
+    "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI. "
+    "The legacy hla.backends.shim package remains import-level compatibility code only."
+)
+_PACKAGED_FOM_BACKENDS = {
+    "python2025",
+    "python-2025",
+    "python-2025-backend",
+}
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--backend", choices=["python", "java-shim-jpype", "java-shim-py4j", "jpype", "py4j"], default="python")
+    parser.add_argument("--backend", choices=_BACKEND_CHOICES, default="python", help=_BACKEND_HELP)
     parser.add_argument("--steps", type=int, default=5)
     parser.add_argument("--dt", type=float, default=1.0)
     parser.add_argument("--federation-name", default="TargetRadarFederation")
@@ -25,6 +55,9 @@ def main(argv=None) -> int:
     parser.add_argument("--py4j-port", type=int, default=25333)
     parser.add_argument("--py4j-callback-port", type=int, default=0)
     args = parser.parse_args(argv)
+    fom_modules = list(args.fom_module)
+    if not fom_modules and args.backend.strip().lower() in _PACKAGED_FOM_BACKENDS:
+        fom_modules = [target_radar_fom_path()]
 
     result = run_target_radar_scenario(
         make_target_radar_factory(
@@ -38,7 +71,7 @@ def main(argv=None) -> int:
         federation_name=args.federation_name,
         steps=args.steps,
         dt=args.dt,
-        fom_modules=args.fom_module,
+        fom_modules=fom_modules,
     )
 
     print(

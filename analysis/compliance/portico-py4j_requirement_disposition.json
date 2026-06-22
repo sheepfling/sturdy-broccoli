@@ -11970,6 +11970,19 @@
       "document": "multi-section",
       "evidence_refs": [],
       "kind": "verification-slice",
+      "matrix_id": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "notes": "Portico runtime disposition is generated as not-applicable from the shared 2010 requirements matrix.",
+      "requirement_id": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "runtime_disposition": "not-applicable",
+      "runtime_status": "",
+      "section_ref": "1516-2010 \u00a712.2; 1516.1-2010 \u00a74.24-\u00a74.29; 1516.1-2010 \u00a75; 1516.1-2010 \u00a76",
+      "title": "Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations"
+    },
+    {
+      "clause_root": "12",
+      "document": "multi-section",
+      "evidence_refs": [],
+      "kind": "verification-slice",
       "matrix_id": "REQ-SAVE-RESTORE-OBJECT-STATE-001",
       "notes": "Portico runtime disposition is generated as not-applicable from the shared 2010 requirements matrix.",
       "requirement_id": "REQ-SAVE-RESTORE-OBJECT-STATE-001",
@@ -12108,8 +12121,8 @@
         "total": 6
       },
       "multi-section \u00a712": {
-        "not-applicable": 4,
-        "total": 4
+        "not-applicable": 5,
+        "total": 5
       },
       "multi-section \u00a74": {
         "not-applicable": 3,
@@ -12134,9 +12147,9 @@
     },
     "disposition_counts": {
       "classification-required": 817,
-      "not-applicable": 102
+      "not-applicable": 103
     },
-    "row_count": 919,
+    "row_count": 920,
     "source_artifact": "analysis/compliance/portico_requirement_disposition.json"
   }
 }

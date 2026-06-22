@@ -1,14 +1,25 @@
 {
   "edition": "2025",
+  "requirements_exercised": [
+    "HLA2025-REQ-002",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-006"
+  ],
   "route": "java-standard-2025-py4j",
   "scenario": "lifecycle-core",
   "status": "lifecycle-green",
   "trace": [
     {
       "backend": "java-standard-2025-py4j",
+      "countsAsPython2025Rti": false,
       "event": "routeSelected",
+      "implementationLane": "hla-backend-python2025",
+      "runtimeProvider": "python2025",
       "spec": "rti1516_2025",
-      "standardBacked": true
+      "standardBacked": true,
+      "wrapperOnly": false
     },
     {
       "event": "getHLAversion",
@@ -20,12 +31,13 @@
         false,
         false,
         0,
-        "hla-backend-shim accepted the 2025 connection request"
+        "hla-backend-python2025 accepted the 2025 Python RTI connection request"
       ]
     },
     {
       "event": "createFederationExecution",
-      "federation": "ShimRouteMvpJavastandard2025Py4J"
+      "federation": "ShimRouteMvpJavastandard2025Py4J",
+      "fomModule": "TargetRadarFOMmodule.xml"
     },
     {
       "event": "joinFederationExecution",
@@ -51,12 +63,5 @@
     {
       "event": "disconnect"
     }
-  ],
-  "requirements_exercised": [
-    "HLA2025-REQ-002",
-    "HLA2025-FR-004",
-    "HLA2025-FI-001",
-    "HLA2025-FI-005",
-    "HLA2025-FI-006"
   ]
 }

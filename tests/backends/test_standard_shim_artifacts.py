@@ -44,6 +44,19 @@ def _usable_cpp_builder() -> bool:
     return True
 
 
+def _assert_route_selected_uses_python2025_main_lane(evidence: dict[str, Any], backend_name: str) -> None:
+    route_selected = evidence["trace"][0]
+
+    assert route_selected["event"] == "routeSelected"
+    assert route_selected["backend"] == backend_name
+    assert route_selected["spec"] == "rti1516_2025"
+    assert route_selected["standardBacked"] is True
+    assert route_selected["runtimeProvider"] == "python2025"
+    assert route_selected["implementationLane"] == "hla-backend-python2025"
+    assert route_selected["countsAsPython2025Rti"] is False
+    assert route_selected["wrapperOnly"] is False
+
+
 def test_java_standard_2025_build_tool_reads_official_api_surface() -> None:
     module = _load_module(JAVA_2025_BUILD, "shim_routes_build_java_2025_standard_shim_read")
     with module.zipfile.ZipFile(module.API_ZIP) as outer:
@@ -56,6 +69,88 @@ def test_java_standard_2025_build_tool_reads_official_api_surface() -> None:
     assert len(methods) > 100
     assert {"connect", "joinFederationExecution", "timeAdvanceRequest", "getHLAversion"} <= names
     assert "saveFederation" not in module.IMPLEMENTED
+
+
+def test_java_standard_2025_route_uses_python2025_runtime_lane() -> None:
+    from hla.bridges.java.common.java_standard_2025 import JavaStandard2025Backend, discover_java_standard_2025
+    from hla.rti.plugin_api import BackendRequest
+    from hla.rti1516_2025.plugin import plugin as spec_plugin
+
+    discovery = discover_java_standard_2025("jpype")
+    assert discovery.kind == "java/jpype/standard-2025"
+    assert discovery.details["spec"] == "rti1516_2025"
+    assert discovery.details["runtime_provider"] == "python2025"
+    assert discovery.details["implementation_lane"] == "hla-backend-python2025"
+    assert discovery.details["counts_as_python_2025_rti"] is False
+
+    backend = JavaStandard2025Backend(
+        route="jpype",
+        request=BackendRequest(spec=spec_plugin().spec),
+        jar_path=Path("/tmp/java-standard-2025-test.jar"),
+        report={"surface": "official IEEE 1516.1-2025 Java API"},
+    )
+
+    ambassador = backend.create_rti_ambassador()
+
+    assert ambassador.__class__.__name__ == "Python2025RTIAmbassador"
+    assert ambassador.backend_info.kind == "java/jpype/standard-2025"
+    assert ambassador.backend_info.details["spec"] == "rti1516_2025"
+    assert ambassador.backend_info.details["standard_backed"] is True
+    assert ambassador.backend_info.details["runtime_provider"] == "python2025"
+    assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert ambassador.backend_info.details["counts_as_python_2025_rti"] is False
+    assert ambassador.backend_info.details["wrapper_only"] is False
+
+
+def test_cpp_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -> None:
+    from hla.backends.cpp_shim.standard import create_cpp_standard_backend, discover_cpp_standard
+    from hla.rti.plugin_api import BackendRequest
+    from hla.rti1516_2025.plugin import plugin as spec_plugin
+
+    discovery = discover_cpp_standard("pybind", "2025")
+    assert discovery.kind == "cpp/pybind/standard-2025"
+    assert discovery.details["spec"] == "rti1516_2025"
+    assert discovery.details["runtime_provider"] == "python2025"
+    assert discovery.details["implementation_lane"] == "hla-backend-python2025"
+    assert discovery.details["counts_as_python_2025_rti"] is False
+
+    artifact_path = tmp_path / "librti1516_2025_standard_cpp_shim.a"
+    artifact_path.write_text("placeholder", encoding="utf-8")
+
+    backend = create_cpp_standard_backend(
+        "pybind",
+        BackendRequest(
+            spec=spec_plugin().spec,
+            options={
+                "artifact_path": str(artifact_path),
+                "report_path": str(ROOT / "docs/evidence/shim_routes/cpp-standard-2025.json"),
+            },
+        ),
+    )
+
+    ambassador = backend.create_rti_ambassador()
+
+    assert ambassador.__class__.__name__ == "Python2025RTIAmbassador"
+    assert ambassador.backend_info.kind == "cpp/pybind/standard-2025"
+    assert ambassador.backend_info.details["spec"] == "rti1516_2025"
+    assert ambassador.backend_info.details["standard_backed"] is True
+    assert ambassador.backend_info.details["runtime_provider"] == "python2025"
+    assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert ambassador.backend_info.details["counts_as_python_2025_rti"] is False
+    assert ambassador.backend_info.details["wrapper_only"] is False
+
+
+def test_cpp_standard_reports_keep_runtime_wording_off_python_shim_language() -> None:
+    import json
+
+    report_2010 = json.loads((ROOT / "docs/evidence/shim_routes/cpp-standard-2010.json").read_text(encoding="utf-8"))
+    report_2025 = json.loads((ROOT / "docs/evidence/shim_routes/cpp-standard-2025.json").read_text(encoding="utf-8"))
+
+    for report in (report_2010, report_2025):
+        unsupported = report["unsupported_services"]
+        assert unsupported == [
+            "RTIambassador surface is header-backed; service semantics are delegated to the backing Python runtime route for the core scenario subset"
+        ]
 
 
 @pytest.mark.skipif(not _usable_java_2025_builder(), reason="Java 2025 standard shim build requires a usable JDK javac and jar")
@@ -132,6 +227,7 @@ def test_standard_2025_routes_pass_lifecycle_core_when_built(backend_name: str) 
     event_names = [event["event"] for event in evidence["trace"]]
     assert evidence["status"] == "lifecycle-green"
     assert "HLA2025-FI-005" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert event_names == [
         "routeSelected",
         "getHLAversion",
@@ -170,6 +266,7 @@ def test_standard_2025_routes_pass_object_exchange_when_built(backend_name: str)
     assert evidence["status"] == "core-exchange-green"
     assert evidence["scenario"] == "object-exchange"
     assert "HLA2025-FR-003" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -213,6 +310,7 @@ def test_standard_2025_routes_pass_time_management_when_built(backend_name: str)
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "logical-time-runtime"
     assert "HLA2025-FI-009" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -256,6 +354,7 @@ def test_standard_2025_routes_pass_ownership_when_built(backend_name: str) -> No
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "ownership-runtime"
     assert "HLA2025-FR-005" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -303,6 +402,7 @@ def test_standard_2025_routes_pass_ddm_when_built(backend_name: str) -> None:
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "ddm-region-runtime"
     assert "HLA2025-MOD-007" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -350,6 +450,7 @@ def test_standard_2025_routes_pass_support_services_when_built(backend_name: str
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "support-services-runtime"
     assert "HLA2025-FI-001" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -405,6 +506,7 @@ def test_standard_2025_routes_pass_save_restore_when_built(backend_name: str) ->
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "save-restore-runtime"
     assert "HLA2025-FI-005" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -464,6 +566,7 @@ def test_standard_2025_routes_pass_mom_when_built(backend_name: str) -> None:
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "mom-runtime"
     assert "HLA2025-NEW-004" in evidence["requirements_exercised"]
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     assert {
         "routeSelected",
         "connect",
@@ -508,6 +611,7 @@ def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: s
 
     assert evidence["status"] == "trace-green"
     assert evidence["scenario"] == "runtime-capability"
+    _assert_route_selected_uses_python2025_main_lane(evidence, backend_name)
     if "java-standard-2025" in backend_name:
         assert "HLA2025-BND-001" in evidence["requirements_exercised"]
     if "cpp-standard-2025" in backend_name:

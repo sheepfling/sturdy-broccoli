@@ -20,6 +20,33 @@ def test_split_grpc_transport_package_exports_transport_surface():
     assert hasattr(hla.transports.grpc, "FEDPRO2025_PROTO_DESCRIPTOR")
 
 
+def test_split_grpc_transport_package_exposes_2025_server_as_hosted_route_surface():
+    import hla.transports.grpc
+
+    assert hla.transports.grpc.RTI2025GrpcServer.__module__ == "hla.transports.grpc.python_server_2025"
+    assert hla.transports.grpc.RTI2025GrpcServerConfig.__module__ == "hla.transports.grpc.python_server_2025"
+    assert hla.transports.grpc.start_2025_grpc_server.__module__ == "hla.transports.grpc.python_server_2025"
+    assert "start_2025_grpc_server" in hla.transports.grpc.__all__
+    assert "RTI2025GrpcServer" in hla.transports.grpc.__all__
+    assert "RTI2025GrpcServerConfig" in hla.transports.grpc.__all__
+    assert "create_rti_ambassador" not in hla.transports.grpc.__all__
+    assert "create_python2025_backend" not in hla.transports.grpc.__all__
+    assert "python2025" not in hla.transports.grpc.__all__
+    assert "shim" not in hla.transports.grpc.__all__
+
+
+def test_split_grpc_transport_package_keeps_2025_hosted_server_backend_independent():
+    pyproject_text = (ROOT / "packages" / "hla-transport-grpc" / "pyproject.toml").read_text(encoding="utf-8")
+    server_2025_text = (
+        ROOT / "packages" / "hla-transport-grpc" / "src" / "hla" / "transports" / "grpc" / "python_server_2025.py"
+    ).read_text(encoding="utf-8")
+
+    assert "hla-backend-python2025" not in pyproject_text
+    assert "hla-backend-shim" not in pyproject_text
+    assert "hla.backends.python2025" not in server_2025_text
+    assert "hla.backends.shim" not in server_2025_text
+
+
 def test_legacy_grpc_transport_modules_are_removed():
     for module_name in (
         "hla.rti1516e.backends.grpc_transport",

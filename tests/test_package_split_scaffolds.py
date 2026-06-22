@@ -26,6 +26,7 @@ EXPECTED_PACKAGES = {
     "hla-rti1516e": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-rti1516-2025": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"inmemory"}), "implementation-moved"),
+    "hla-backend-python2025": PackageExpectation("rti-backend", frozenset({"python2025"}), "implementation-owned"),
     "hla-backend-cpp-shim": PackageExpectation(
         "rti-backend",
         frozenset(
@@ -44,7 +45,7 @@ EXPECTED_PACKAGES = {
         ),
         "implementation-moved",
     ),
-    "hla-backend-shim": PackageExpectation("rti-backend", frozenset({"shim"}), "implementation-owned"),
+    "hla-backend-shim": PackageExpectation("compatibility-wrapper", frozenset({"shim"}), "transition-wrapper"),
     "hla-backend-certi": PackageExpectation(
         "rti-backend",
         frozenset({"certi"}),
@@ -75,6 +76,7 @@ EXPECTED_PACKAGES = {
 INTERNAL_PACKAGE_VERSION = "0.13.0"
 PACKAGE_PYTHON_REQUIRES = {
     "hla-rti1516-2025": ">=3.11",
+    "hla-backend-python2025": ">=3.11",
     "hla-backend-shim": ">=3.11",
     "hla-backend-cpp-shim": ">=3.10",
 }
@@ -941,6 +943,43 @@ def test_split_packages_publish_standalone_build_metadata() -> None:
         assert project["optional-dependencies"]["test"] == ["pytest"], package_name
 
 
+def test_2025_backend_package_readmes_match_promoted_runtime_split() -> None:
+    python2025_readme = (PACKAGES / "hla-backend-python2025" / "README.md").read_text(encoding="utf-8")
+    shim_readme = (PACKAGES / "hla-backend-shim" / "README.md").read_text(encoding="utf-8")
+
+    assert "owns the main full Python 2025 RTI runtime" in python2025_readme
+    assert "promoted Python-owned 2025 RTI implementation lane" in python2025_readme
+    assert "legacy compatibility-wrapper backend name" in shim_readme
+    assert "main full Python 2025" in shim_readme
+    assert "`hla-backend-python2025`" in shim_readme
+    assert "retains the `shim` provider name" in shim_readme
+
+
+def test_2025_grpc_transport_docs_keep_fedpro_route_boundary_explicit() -> None:
+    package_readme = (PACKAGES / "hla-transport-grpc" / "README.md").read_text(encoding="utf-8")
+    docs_readme = (PACKAGES / "hla-transport-grpc" / "docs" / "README.md").read_text(encoding="utf-8")
+    normalized_package_readme = " ".join(package_readme.split())
+    normalized_docs_readme = " ".join(docs_readme.split())
+
+    assert "FedPro hosted route" in package_readme
+    assert "2025" in package_readme
+    assert "not a separate RTI family" in normalized_package_readme
+    assert "not the main in-process implementation lane" in normalized_package_readme
+    assert "bounded 2025 FedPro hosted route surface" in normalized_docs_readme
+    assert "python_server_2025" in docs_readme
+    assert "bounded runtime evidence" in normalized_docs_readme
+
+
+def test_networked_python_guide_keeps_2025_backend_and_wrapper_roles_explicit() -> None:
+    guide = (ROOT / "docs" / "networked_rti_python.md").read_text(encoding="utf-8")
+    normalized_guide = " ".join(guide.split())
+
+    assert "`hla-backend-python2025` implementation lane" in guide
+    assert "`hla-backend-shim` retained only as a compatibility-wrapper alias" in normalized_guide
+    assert "`packages/hla-backend-python2025` for the main executable 2025 backend lane" in guide
+    assert "`packages/hla-backend-shim` for the legacy compatibility-wrapper alias" in guide
+
+
 def test_non_spec_split_packages_build_from_their_own_src_roots() -> None:
     for package_name in EXPECTED_PACKAGES:
         data = _load_project(package_name)
@@ -958,7 +997,7 @@ def test_backend_scaffolds_depend_on_their_edition_spec_package():
         if expected["role"] in {"core-spec", "runtime-support"}:
             continue
         dependencies = set(_load_project(package_name)["project"].get("dependencies", ()))
-        if package_name == "hla-backend-shim":
+        if package_name in {"hla-backend-python2025", "hla-backend-shim"}:
             assert "hla-rti1516-2025==0.13.0" in dependencies
             assert "hla-rti1516e==0.13.0" not in dependencies
             continue
@@ -1047,6 +1086,7 @@ def test_leaf_packages_depend_only_on_spec_and_shared_runtime_support():
     target_radar_dependencies = set(_load_project("hla-fom-target-radar")["project"].get("dependencies", ()))
     assert target_radar_dependencies == {
         "hla-rti1516e==0.13.0",
+        "hla-rti1516-2025==0.13.0",
         "hla-rti-core==0.13.0",
     }
 

@@ -6,6 +6,15 @@ from importlib import import_module
 from importlib import resources
 from typing import Any
 
+from .target_radar_2025_adapter import TargetRadar2025RTIAdapter
+
+
+_TARGET_RADAR_2025_BACKENDS = {
+    "python2025",
+    "python-2025",
+    "python-2025-backend",
+}
+
 
 def target_radar_fom_path() -> str:
     """Return the packaged target/radar FOM module path."""
@@ -73,7 +82,10 @@ def make_target_radar_factory(
     create_rti_ambassador = import_module("hla.rti").create_rti_ambassador
 
     def factory(_role: str) -> Any:
-        return create_rti_ambassador(normalized, **backend_options)
+        rti = create_rti_ambassador(spec="2025", backend=normalized, **backend_options)
+        if normalized in _TARGET_RADAR_2025_BACKENDS:
+            return TargetRadar2025RTIAdapter(rti)
+        return rti
 
     return factory
 

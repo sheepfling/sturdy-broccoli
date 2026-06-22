@@ -15,6 +15,7 @@ _CALLBACK_BY_SNAKE = {
 }
 
 _EXTRA_CALLBACK_METHOD_NAMES = (
+    "receiveDirectedInteraction",
     "hasProducingFederate",
     "getProducingFederate",
     "hasSentRegions",

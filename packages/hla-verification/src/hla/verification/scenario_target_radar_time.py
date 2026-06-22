@@ -26,7 +26,9 @@ def _timestamp_value(value: Any) -> int:
 
 
 def _time_query_is_valid(query: Any) -> bool:
-    return bool(getattr(query, "time_is_valid", getattr(query, "timeIsValid")))
+    if hasattr(query, "time_is_valid"):
+        return bool(getattr(query, "time_is_valid"))
+    return bool(getattr(query, "timeIsValid"))
 
 
 def _reset_callback_state(*federates: Any) -> None:
@@ -383,14 +385,18 @@ def _verify_time_window_future_exclusion_oracle(
     blocked_grant: Any | None,
     final_grant: Any,
     blocked_galt: Any,
+    blocked_lits: Any,
     cleared_galt: Any,
+    cleared_lits: Any,
     late_send_rejected: bool,
     boundary_receive: Any,
 ) -> dict[str, Any]:
     blocked_grant_time = None if blocked_grant is None else _timestamp_value(blocked_grant.args[0])
     final_grant_time = _timestamp_value(final_grant.args[0])
     blocked_galt_time = _timestamp_value(blocked_galt.time)
+    blocked_lits_time = _timestamp_value(blocked_lits.time)
     cleared_galt_time = _timestamp_value(cleared_galt.time)
+    cleared_lits_time = _timestamp_value(cleared_lits.time)
     boundary_receive_time = _timestamp_value(boundary_receive.args[5])
 
     transitions = [
@@ -433,12 +439,16 @@ def _verify_time_window_future_exclusion_oracle(
     ]
 
     assert _time_query_is_valid(blocked_galt) is True
+    assert _time_query_is_valid(blocked_lits) is True
     assert _time_query_is_valid(cleared_galt) is True
+    assert _time_query_is_valid(cleared_lits) is True
     assert blocked_galt_time == config.slow_initial_time + config.slow_lookahead
+    assert blocked_lits_time == blocked_galt_time
     if blocked_grant_time is not None:
         assert blocked_grant_time == blocked_galt_time
         assert blocked_grant_time < config.scan_window_end
     assert cleared_galt_time == config.scan_window_end
+    assert cleared_lits_time == config.scan_window_end
     assert final_grant_time == config.scan_window_end
     assert late_send_rejected is True
     assert boundary_receive.args[2] == b"boundary-track-110"
@@ -460,7 +470,9 @@ def _verify_time_window_future_exclusion_oracle(
             "blocked_grant_matches_current_galt_or_none": (
                 blocked_grant_time is None or blocked_grant_time == blocked_galt_time
             ),
-            "future_input_exclusion_reaches_window_end": cleared_galt_time == config.scan_window_end,
+            "blocked_lits_matches_blocked_galt": blocked_lits_time == blocked_galt_time,
+            "future_input_exclusion_reaches_window_end_for_galt": cleared_galt_time == config.scan_window_end,
+            "future_input_exclusion_reaches_window_end_for_lits": cleared_lits_time == config.scan_window_end,
             "radar_granted_to_window_end_only_after_future_input_excluded": final_grant_time == config.scan_window_end,
             "late_timestamp_into_closed_window_rejected": late_send_rejected,
             "boundary_timestamp_delivered_after_window_closure": boundary_receive_time == config.legal_boundary_time,
@@ -552,6 +564,9 @@ def _verify_time_window_restore_oracle(
     assert open_restore_time_value == config.first_input_time
     assert closed_restore_time_value == config.scan_window_end
     assert reclosed_grant_time == config.scan_window_end
+    assert restored_open_core == saved_open_core
+    assert restored_closed_core == saved_closed_core
+    assert post_closed_restore_reflects == []
 
     return {
         "certification_target": "time-window-save-restore-window-state",
@@ -2424,9 +2439,11 @@ def run_target_radar_time_window_future_exclusion_scenario(
     assert _time_query_is_valid(blocked_galt) is True
     assert _time_query_is_valid(blocked_lits) is True
 
+    _reset_callback_state(radar_federate)
     radar_rti.time_advance_request_available(HLAinteger64Time(config.scan_window_end))
     drain_callbacks_pair(slow_rti, radar_rti, loops=64)
-    blocked_grant = radar_federate.last_callback("timeAdvanceGrant")
+    blocked_grant = wait_for_callback(radar_rti, radar_federate, "timeAdvanceGrant", loops=1)
+    assert blocked_grant is None
 
     slow_rti.time_advance_request_available(HLAinteger64Time(config.slow_clearance_time))
     drain_callbacks_pair(slow_rti, radar_rti, loops=64)
@@ -2472,7 +2489,9 @@ def run_target_radar_time_window_future_exclusion_scenario(
         blocked_grant=blocked_grant,
         final_grant=final_grant,
         blocked_galt=blocked_galt,
+        blocked_lits=blocked_lits,
         cleared_galt=cleared_galt,
+        cleared_lits=cleared_lits,
         late_send_rejected=late_send_rejected,
         boundary_receive=boundary_receive,
     )

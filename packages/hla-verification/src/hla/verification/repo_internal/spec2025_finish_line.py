@@ -5,16 +5,23 @@ from __future__ import annotations
 import ast
 import csv
 import json
+import re
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
 from hla.verification.repo_internal.conformance import build_service_conformance_matrix, negative_path_status
-from hla.verification.repo_internal.verification.spec2025_route_parity_matrix import ROUTE_IDS_2025, summarize_spec2025_route_parity
+from hla.verification.repo_internal.verification.spec2025_route_parity_matrix import (
+    ROUTE_IDS_2025,
+    summarize_spec2025_route_parity,
+    write_spec2025_route_parity_matrix,
+)
 
 HIGH_PRIORITIES = frozenset({"high", "very-high"})
 CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary", "legacy-only"})
+PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
+SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
 
 IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
@@ -52,10 +59,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route cover connection and membership lifecycle proof: "
+            "Current Python 2025 RTI plus the hosted FedPro route cover connection and membership lifecycle proof: "
             "connect/create/join/resign/destroy/disconnect flows, federation execution listing, federation "
             "execution member listing, missing-federation member notices, joined-set isolation after disconnect, "
             "and federateResigned callback delivery."
@@ -80,7 +87,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 runtime proof now isolates time-mode transitions: selected logical-time factories plus "
             "enable/disable time regulation, timeRegulationEnabled callback delivery, enable/disable time "
-            "constrained, and timeConstrainedEnabled callback delivery through the shim and hosted FedPro route."
+            "constrained, and timeConstrainedEnabled callback delivery through the live Python 2025 RTI lane "
+            "and hosted FedPro route."
         ),
     },
     {
@@ -121,8 +129,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates grant and callback-delivery control: flushQueueGrant and "
-            "timeAdvanceGrant callbacks, plus enable/disable asynchronous delivery queue behavior through the shim "
-            "and hosted FedPro route."
+            "timeAdvanceGrant callbacks, plus enable/disable asynchronous delivery queue behavior through the live "
+            "Python 2025 RTI lane and hosted FedPro route."
         ),
     },
     {
@@ -169,7 +177,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "GALT/LITS/lookahead queries, retract and requestRetraction callback delivery, attribute and "
             "interaction order-type changes, queued timestamped object updates/interactions, timestamp-order "
             "delivery on receiving federate time advance, queued-remove handling, and message retraction before "
-            "delivery across both the shim and hosted FedPro route."
+            "delivery across both the live Python 2025 RTI lane and hosted FedPro route."
         ),
     },
     {
@@ -192,7 +200,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "Python 2025 lookahead proof is separated from the generic time-control slice: the Target/Radar "
             "time-window core and future-exclusion proof ladder, output-delivery and consumer-order proofs, "
             "pipelined scan-window proofs, receive-order poison rejection, and save/restore rollback of bounded "
-            "time-window state all execute directly on the shim and are replayed over the hosted FedPro route. "
+            "time-window state all execute directly on the live Python 2025 RTI lane and are replayed over the "
+            "hosted FedPro route, with matching negative-oracle guards that reject mismatched LITS boundaries, "
+            "premature output, reversed consumer order, cross-window contamination, closed-window mutation, and "
+            "dirty post-restore replay. "
             "Cross-binding parity remains separate backlog work."
         ),
     },
@@ -224,17 +235,18 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route support requestFederationSave and "
+            "Current Python 2025 RTI plus the hosted FedPro route support requestFederationSave and "
             "requestFederationRestore with initiate, begun, complete, abort, and query-status flows; federation "
             "save/restore lifecycle callbacks and status responses; successful federationSaved/federationRestored "
             "completion; missing-label restore failure; federate-reported save/restore failure; save/restore abort "
-            "callbacks; object registry rollback; joined-federate logical-time rollback; compat-adapter replay of "
-            "the shared two-federate save/restore suite; timed initiateFederateSave callback coverage; "
-            "save-request precondition rejection; and bounded save/restore rollback of queued callback, "
-            "time-window, ownership, and routing state."
+            "callbacks; object registry rollback; joined-federate logical-time rollback; plain object/interaction "
+            "subscriber-routing rollback; directed DDM subscriber-routing rollback; direct execution of the shared "
+            "two-federate save/restore suite on the main python2025 runtime plus hosted replay over the FedPro "
+            "route; timed initiateFederateSave callback coverage; save-request precondition rejection; and bounded "
+            "save/restore rollback of queued callback, time-window, ownership, and routing state."
         ),
     },
     {
@@ -254,11 +266,11 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/handles.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate 2025 handle-normalization proof: the "
-            "in-process shim normalizes typed federate, object-class, interaction-class, object-instance, and "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate 2025 handle-normalization proof: the "
+            "in-process python2025 runtime normalizes typed federate, object-class, interaction-class, object-instance, and "
             "service-group values with wrong-family rejection, while the hosted FedPro route round-trips typed "
             "service-group and object-instance normalization requests across the 2025 transport surface."
         ),
@@ -270,10 +282,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route prove the 2025 set/get switch model replaces the old "
+            "Current Python 2025 RTI plus the hosted FedPro route prove the 2025 set/get switch model replaces the old "
             "enable/disable pattern: advisory, reporting, file-reporting, automatic resign, auto-provide, "
             "delay-subscription-evaluation, and related switch state flows are exercised through explicit set/get "
             "services rather than legacy enable/disable calls."
@@ -286,12 +298,12 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/requirements/test_2025_tail_backlog_evidence.py",
             "docs/requirements/ieee-1516-2025/retired_legacy_mapping.md",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Legacy 2010 enable/disable advisory switch spellings are kept out of native 2025 normative coverage "
             "and are treated as retired or replacement-mapped items unless an explicit compatibility mode is added. "
-            "The Python 2025 shim rejects those legacy method spellings as unsupported 2025 services rather than "
+            "The current Python 2025 RTI rejects those legacy method spellings as unsupported 2025 services rather than "
             "quietly aliasing them into native coverage."
         ),
     },
@@ -302,12 +314,12 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate create-time FOM/MIM taxonomy proof. "
-            "The in-process shim distinguishes missing/open, read, invalid, and merge failures across native 2025 "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate create-time FOM/MIM taxonomy proof. "
+            "The in-process python2025 runtime distinguishes missing/open, read, invalid, and merge failures across native 2025 "
             "create and join flows, including destroy-while-joined and explicit HLAstandardMIM designator "
             "rejection. The hosted FedPro route now carries explicit createFederationExecutionWithMIM and "
             "createFederationExecutionWithMIMAndTime handling through the 2025 transport command surface, plus "
@@ -325,7 +337,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 callback proof now isolates object-delivery callback context: the in-process shim emits "
+            "Python 2025 callback proof now isolates object-delivery callback context: the in-process python2025 runtime emits "
             "direct producing-federate, region, time, order, and retraction parameters for "
             "discoverObjectInstance, reflectAttributeValues, and removeObjectInstance callbacks without native "
             "Supplemental*Info helper objects, and the hosted FedPro route preserves the corresponding direct "
@@ -343,7 +355,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 callback proof now isolates interaction-delivery callback context: the in-process shim "
+            "Python 2025 callback proof now isolates interaction-delivery callback context: the in-process python2025 runtime "
             "emits direct producing-federate, region, time, order, and retraction parameters for "
             "receiveInteraction and receiveDirectedInteraction callbacks without native Supplemental*Info helper "
             "objects, and the hosted FedPro route preserves the corresponding direct interaction callback fields "
@@ -371,10 +383,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route support FOM-backed directed interaction publish, "
+            "Current Python 2025 RTI plus the hosted FedPro route support FOM-backed directed interaction publish, "
             "subscribe, unsubscribe, unpublish, and receiveDirectedInteraction callback delivery from a publisher "
             "to object-class directed subscribers. They also queue timestamped directed interactions until "
             "subscriber time advance, deliver timestamp order plus retraction handles on callback receipt, honor "
@@ -421,8 +433,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-OMT-COMP-152",
             "HLA2025-OMT-COMP-190",
             "HLA2025-OMT-COMP-191",
+            "HLA2025-OMT-COMP-192",
             "HLA2025-OMT-COMP-194",
             "HLA2025-OMT-COMP-195",
+            "HLA2025-OMT-COMP-196",
             "HLA2025-OMT-COMP-215",
         ),
         "evidence": (
@@ -433,8 +447,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Shared OMT parser and 2025 serializer round-trip array encodings, attribute valueRequired metadata, "
             "referenceDataTypes containers and child fields, model-identification keywords/name/version/copyright/"
-            "description metadata, simpleData units/resolution/accuracy, 2025 logicalTime/logicalTimeInterval names "
-            "and dataType bindings, and variant-record alternative enumerators."
+            "description metadata, simpleData units/resolution/accuracy, 2025 logicalTime/logicalTimeInterval names, "
+            "dataType bindings, and semantics text, and variant-record alternative enumerators."
         ),
     },
     {
@@ -452,7 +466,14 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-OMT-COMP-163",
             "HLA2025-OMT-COMP-164",
             "HLA2025-OMT-COMP-165",
+            "HLA2025-OMT-COMP-166",
             "HLA2025-OMT-COMP-167",
+            "HLA2025-OMT-COMP-168",
+            "HLA2025-OMT-COMP-169",
+            "HLA2025-OMT-COMP-170",
+            "HLA2025-OMT-COMP-200",
+            "HLA2025-OMT-COMP-201",
+            "HLA2025-OMT-COMP-207",
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
@@ -462,8 +483,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Shared OMT parser preserves the supported 2025 switch container subset "
             "(autoProvide, conveyRegionDesignatorSets, attribute/object/interaction advisories, serviceReporting, "
-            "exceptionReporting, delaySubscriptionEvaluation, automaticResignAction), preserves interaction "
-            "transportation, and the 2025 serializer round-trips those supported fields while filling the "
+            "exceptionReporting, delaySubscriptionEvaluation, nonRegulatedGrant, allowRelaxedDDM, "
+            "advisoriesUseKnownClass, sendServiceReportsToFile, automaticResignAction), preserves interaction "
+            "transportation, preserves transportation reliable/semantics metadata, preserves update-rate "
+            "semantics metadata, and the 2025 serializer round-trips those supported fields while filling the "
             "standard conveyProducingFederate default."
         ),
     },
@@ -474,7 +497,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             f"HLA2025-OMT-COMP-{index:03d}"
             for index in (
                 1, 2, 3, 5, 7, 9, 10, 16, 20, 22, 23, 24, 25, 26, 28, 29, 31, 32, 33, 34, 36, 46,
-                50, 51, 52, 53, 54, 55, 58, 60, 61, 62, 63, 64, 65, 66, 69, 71, 72, 73, 86, 88,
+                50, 51, 52, 53, 54, 55, 58, 60, 61, 62, 63, 64, 65, 66, 69, 71, 72, 73, 83, 86, 88,
                 89, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 103, 104, 105, 108, 116, 117, 118,
                 119, 120, 121, 122, 123, 124, 126, 127, 128, 131, 132, 135, 136, 137, 138, 139,
                 148, 149, 153, 155, 172, 173, 174, 175, 177, 179, 180, 182, 183, 184, 185, 186,
@@ -488,7 +511,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "supported_scope": (
             "Shared OMT parser and 2025 serializer round-trip the supported model-identification scalar and "
-            "reference/POC metadata subset, serviceUtilization, object and interaction names plus supported "
+            "reference/POC/keyword taxonomy metadata subset, serviceUtilization, object and interaction names plus supported "
             "attribute/parameter datatype links, dimension-name lists, logicalTime/logicalTimeInterval containers, "
             "notes, tag tables, synchronization tables, transportation name tables, update-rate name/rate tables, "
             "and the supported basic/simple/enumerated/array/fixed-record/variant-record datatype tables and "
@@ -496,70 +519,156 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
-        "id": "2025-omt-unsupported-component-boundaries",
-        "status": "unsupported-boundary",
+        "id": "2025-omt-dimension-metadata-roundtrip",
+        "status": "implemented-slice",
         "requirements": (
             "HLA2025-OMT-COMP-037",
             "HLA2025-OMT-COMP-038",
-            "HLA2025-OMT-COMP-039",
             "HLA2025-OMT-COMP-040",
+            "HLA2025-OMT-COMP-041",
             "HLA2025-OMT-COMP-042",
             "HLA2025-OMT-COMP-043",
-            "HLA2025-OMT-COMP-048",
-            "HLA2025-OMT-COMP-049",
-            "HLA2025-OMT-COMP-074",
-            "HLA2025-OMT-COMP-079",
-            "HLA2025-OMT-COMP-110",
-            "HLA2025-OMT-COMP-111",
-            "HLA2025-OMT-COMP-112",
-            "HLA2025-OMT-COMP-113",
-            "HLA2025-OMT-COMP-145",
-            "HLA2025-OMT-COMP-147",
-            "HLA2025-OMT-COMP-166",
-            "HLA2025-OMT-COMP-168",
-            "HLA2025-OMT-COMP-169",
-            "HLA2025-OMT-COMP-170",
-            "HLA2025-OMT-COMP-192",
-            "HLA2025-OMT-COMP-193",
-            "HLA2025-OMT-COMP-196",
-            "HLA2025-OMT-COMP-197",
+            "HLA2025-OMT-COMP-044",
         ),
         "evidence": (
             "tests/factories/test_fom_omt_parsing.py",
             "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
         ),
         "supported_scope": (
-            "These OMT component rows remain intentionally bounded: dimension input-data and normalization metadata "
-            "are parsed only as the narrower repo subset and normalization semantics are not executed; "
-            "directedInteraction and object-class dimension associations are not modeled in the shared parser/"
-            "serializer surface; xs:any extension points are not preserved; nonRegulatedGrant, allowRelaxedDDM, "
-            "advisoriesUseKnownClass, and sendServiceReportsToFile are outside the supported switch set; and "
-            "logicalTime/logicalTimeInterval optional semantics and xs:any children are not round-tripped."
+            "Shared OMT parser and serializer preserve top-level dimension declarations, including dataType, "
+            "2025 inputDataTypes, inputDataDescription, upperBound, normalization metadata text, "
+            "outputDataSemantics, value, and semantics, across parse/serialize/parse round-trip. "
+            "This is OMT metadata preservation evidence; it does not claim full runtime execution of DDM "
+            "normalization semantics."
         ),
     },
     {
-        "id": "2025-omt-unmodeled-component-boundaries-expanded",
-        "status": "unsupported-boundary",
-        "requirements": tuple(
-            f"HLA2025-OMT-COMP-{index:03d}"
-            for index in (
-                6, 8, 11, 12, 14, 15, 17, 18, 19, 21, 27, 35, 41, 44, 45, 47, 56, 57, 59, 67, 68,
-                70, 75, 76, 77, 80, 81, 82, 83, 102, 106, 107, 109, 114, 115, 129, 130, 133, 134,
-                154, 156, 171, 176, 178, 181, 189, 198, 200, 201, 202, 204, 207, 208, 210, 219, 222, 224,
-            )
+        "id": "2025-omt-attribute-metadata-roundtrip",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-COMP-011",
+            "HLA2025-OMT-COMP-012",
+            "HLA2025-OMT-COMP-014",
+            "HLA2025-OMT-COMP-015",
+            "HLA2025-OMT-COMP-017",
+            "HLA2025-OMT-COMP-018",
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "tests/factories/test_fom_omt_parsing.py",
             "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
         ),
         "supported_scope": (
-            "These component rows remain intentionally bounded because the shared parser/serializer surface does not "
-            "preserve xs:any extension points, attribute update-condition/ownership/sharing/order/semantics fields, "
-            "object and interaction semantics or region-dimension associations, keyword taxonomy attributes, "
-            "dimension upperBound/value metadata on round-trip, parameter semantics, transportation reliable/"
-            "semantics detail rows, update-rate semantics rows, and other table members that are currently parsed "
-            "only as a narrower subset or are not modeled at all in the repo-native OMT representation."
+            "Shared OMT parser and serializer preserve attribute updateType, updateCondition, ownership, "
+            "sharing, order, and semantics metadata across parse/serialize/parse round-trip. This is OMT "
+            "metadata preservation evidence; it does not claim that those metadata fields independently "
+            "execute runtime ownership or update-policy behavior."
+        ),
+    },
+    {
+        "id": "2025-omt-class-parameter-metadata-roundtrip",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-COMP-074",
+            "HLA2025-OMT-COMP-079",
+            "HLA2025-OMT-COMP-080",
+            "HLA2025-OMT-COMP-109",
+            "HLA2025-OMT-COMP-114",
+            "HLA2025-OMT-COMP-133",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser and serializer preserve object-class sharing/semantics, "
+            "interaction-class sharing/order/semantics, and parameter semantics metadata "
+            "across parse/serialize/parse round-trip. This is OMT metadata preservation evidence; "
+            "it does not claim those metadata fields independently execute runtime declaration, ordering, "
+            "or interaction-policy behavior."
+        ),
+    },
+    {
+        "id": "2025-omt-association-metadata-roundtrip",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-COMP-048",
+            "HLA2025-OMT-COMP-049",
+            "HLA2025-OMT-COMP-075",
+            "HLA2025-OMT-COMP-076",
+            "HLA2025-OMT-COMP-110",
+            "HLA2025-OMT-COMP-111",
+            "HLA2025-OMT-COMP-112",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser and serializer preserve object-class directedInteraction name/sharing "
+            "metadata plus object-class and interaction-class dimension association references across "
+            "parse/serialize/parse round-trip. This is association metadata preservation evidence; it "
+            "does not claim full DDM region-routing semantics or schema extension-point preservation."
+        ),
+    },
+    {
+        "id": "2025-omt-xs-any-extension-tolerance",
+        "status": "implemented-slice",
+        "requirements": (
+            "HLA2025-OMT-COMP-006",
+            "HLA2025-OMT-COMP-008",
+            "HLA2025-OMT-COMP-019",
+            "HLA2025-OMT-COMP-021",
+            "HLA2025-OMT-COMP-027",
+            "HLA2025-OMT-COMP-035",
+            "HLA2025-OMT-COMP-039",
+            "HLA2025-OMT-COMP-045",
+            "HLA2025-OMT-COMP-047",
+            "HLA2025-OMT-COMP-056",
+            "HLA2025-OMT-COMP-057",
+            "HLA2025-OMT-COMP-059",
+            "HLA2025-OMT-COMP-067",
+            "HLA2025-OMT-COMP-068",
+            "HLA2025-OMT-COMP-070",
+            "HLA2025-OMT-COMP-077",
+            "HLA2025-OMT-COMP-081",
+            "HLA2025-OMT-COMP-082",
+            "HLA2025-OMT-COMP-102",
+            "HLA2025-OMT-COMP-106",
+            "HLA2025-OMT-COMP-107",
+            "HLA2025-OMT-COMP-113",
+            "HLA2025-OMT-COMP-115",
+            "HLA2025-OMT-COMP-129",
+            "HLA2025-OMT-COMP-130",
+            "HLA2025-OMT-COMP-134",
+            "HLA2025-OMT-COMP-145",
+            "HLA2025-OMT-COMP-147",
+            "HLA2025-OMT-COMP-154",
+            "HLA2025-OMT-COMP-156",
+            "HLA2025-OMT-COMP-171",
+            "HLA2025-OMT-COMP-176",
+            "HLA2025-OMT-COMP-178",
+            "HLA2025-OMT-COMP-181",
+            "HLA2025-OMT-COMP-189",
+            "HLA2025-OMT-COMP-193",
+            "HLA2025-OMT-COMP-197",
+            "HLA2025-OMT-COMP-198",
+            "HLA2025-OMT-COMP-202",
+            "HLA2025-OMT-COMP-204",
+            "HLA2025-OMT-COMP-208",
+            "HLA2025-OMT-COMP-210",
+            "HLA2025-OMT-COMP-219",
+            "HLA2025-OMT-COMP-222",
+            "HLA2025-OMT-COMP-224",
+        ),
+        "evidence": (
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Shared OMT parser accepts foreign-namespace xs:any extension elements at the remaining 2025 OMT "
+            "extension points, preserves text/attribute/nested XML payloads for serializer round-trip, and isolates "
+            "them as non-native metadata so extension children are not interpreted as standard HLA elements. This "
+            "is extension payload preservation evidence, not a claim to execute arbitrary third-party extension semantics."
         ),
     },
     {
@@ -672,8 +781,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "Artifact-gated 2025 standard Java and C++ routes now share a runtime-capability trace that loads a "
             "2025 FOM, resolves object/attribute/dimension/transport handles, stores default attribute policy, "
             "registers an object, divests and reacquires ownership with 2025 tag callbacks, advances logical time, "
-            "and serializes a MOM service report. C++ artifacts exercise this locally; Java runtime evidence runs "
-            "when the Java 2025 shim jar is built. This is not full Java/C++ behavior conformance or object exchange."
+            "and serializes a MOM service report. These binding routes execute over the primary python2025 runtime "
+            "lane in hla-backend-python2025 while the Java and C++ packages stay wrapper-only adaptation surfaces. "
+            "C++ artifacts exercise this locally; Java runtime evidence runs when the Java 2025 standard-route jar is built. "
+            "This is not full Java/C++ behavior conformance or object exchange."
         ),
     },
     {
@@ -782,10 +893,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route resolve object class, attribute, transportation, and "
+            "Current Python 2025 RTI plus the hosted FedPro route resolve object class, attribute, transportation, and "
             "dimension handles from the loaded FOM/FDD catalog, report available dimensions for object and "
             "interaction classes, return dimension upper bounds, store validated default attribute "
             "transportation/order policy changes, use those defaults when delivering reflectAttributeValues "
@@ -866,10 +977,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route support FOM-backed object instance registration, "
+            "Current Python 2025 RTI plus the hosted FedPro route support FOM-backed object instance registration, "
             "discoverObjectInstance delivery, attribute update publication gating, reflectAttributeValues "
             "delivery, default and per-instance order policy changes for reflected attributes, interaction "
             "publication gating, sendInteraction, interaction order policy changes, and receiveInteraction "
@@ -892,12 +1003,12 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates object deletion flows: FOM-backed deleteObjectInstance and "
             "removeObjectInstance callbacks, delete-with-time behavior, localDeleteObjectInstance validation, and "
-            "post-delete object-known-state handling across the shim and hosted FedPro route."
+            "post-delete object-known-state handling across the live python2025 runtime lane and hosted FedPro route."
         ),
     },
     {
@@ -913,12 +1024,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates attribute-value-update request callbacks: "
             "requestAttributeValueUpdate by object instance and object class, provideAttributeValueUpdate callback "
-            "delivery, and region-scoped requestAttributeValueUpdate callbacks across the shim and hosted FedPro route."
+            "delivery, and region-scoped requestAttributeValueUpdate callbacks across the live python2025 runtime "
+            "lane and hosted FedPro route."
         ),
     },
     {
@@ -934,7 +1046,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates object-scope advisory callbacks: DDM-driven "
@@ -956,7 +1068,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates update-rate advisory callbacks: "
@@ -979,7 +1091,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates attribute transportation services: "
@@ -1002,7 +1114,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
             "Python 2025 runtime proof now isolates interaction transportation services: "
@@ -1018,10 +1130,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support single-name reservation requests, "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support single-name reservation requests, "
             "single-name reservation success and failure callbacks, releaseObjectInstanceName, not-connected and "
             "not-joined preconditions for release, save/restore in-progress blocking, reservation preservation "
             "through save/restore completion, release-driven handoff to a rival federate, and "
@@ -1035,10 +1147,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support reserveMultipleObjectInstanceNames and "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support reserveMultipleObjectInstanceNames and "
             "releaseMultipleObjectInstanceNames with set-wide success/failure callbacks, not-connected and "
             "not-joined preconditions, empty-set validation, save/restore in-progress blocking, reservation "
             "handoff after release, reservation cleanup on join teardown, and reservation preservation through "
@@ -1055,10 +1167,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support orderly disconnect state teardown and "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support orderly disconnect state teardown and "
             "NotConnected preconditions. The shim also exposes a test-harness-only non-orderly connection-loss "
             "injector that delivers the connectionLost callback and tears down the local connection state without "
             "treating orderly disconnect as a fault."
@@ -1077,10 +1189,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route accepts connect requests, creates federation "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route accepts connect requests, creates federation "
             "executions with resolved FOM modules and selected logical-time implementation, lists existing "
             "federation executions, reports federation execution catalogs through callbacks, and destroys "
             "federation executions once they are empty."
@@ -1099,10 +1211,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route isolate federate membership and resign behavior: "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route isolate federate membership and resign behavior: "
             "joinFederationExecution, list/report federation execution members including missing-federation "
             "callbacks, resignFederationExecution with joined-state teardown, and federateResigned callback "
             "delivery with resign context."
@@ -1121,10 +1233,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route isolate synchronization-point barrier behavior: "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route isolate synchronization-point barrier behavior: "
             "register federation synchronization point, confirm registration success and failure, "
             "announceSynchronizationPoint delivery, synchronizationPointAchieved participation, and "
             "federationSynchronized callback flow."
@@ -1145,10 +1257,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route isolate declaration publication control: publish "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route isolate declaration publication control: publish "
             "and unpublish for object class attributes and interaction classes, with published state gating "
             "updateAttributeValues and sendInteraction delivery."
         ),
@@ -1168,10 +1280,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route isolate declaration subscription control: "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route isolate declaration subscription control: "
             "subscribe and unsubscribe for object class attributes and interaction classes, with unsubscribe state "
             "stopping subsequent reflectAttributeValues and receiveInteraction callbacks for the affected target "
             "federate."
@@ -1190,10 +1302,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route isolate declaration relevance and advisory "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route isolate declaration relevance and advisory "
             "callbacks: startRegistrationForObjectClass, stopRegistrationForObjectClass, turnInteractionsOn, and "
             "turnInteractionsOff as publication and subscription state becomes relevant or irrelevant."
         ),
@@ -1217,12 +1329,13 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_support_services_backend_matrix.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support direct federate, object-class, "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support direct federate, object-class, "
             "known-object-class, and object-instance handle/name lookups against joined federation membership "
-            "and the loaded FOM catalog."
+            "and the loaded FOM catalog. Over FedPro, joined-member identity lookup stops after resign while "
+            "decode-oriented object/class/instance catalog lookups remain available across the transport seam."
         ),
     },
     {
@@ -1243,10 +1356,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_support_services_backend_matrix.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support attribute, interaction-class, and "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support attribute, interaction-class, and "
             "parameter handle/name lookups against the loaded FOM catalog."
         ),
     },
@@ -1268,10 +1381,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_support_services_backend_matrix.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support order-type, update-rate, and "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support order-type, update-rate, and "
             "transportation lookups against the loaded FOM catalog and joined object state."
         ),
     },
@@ -1290,10 +1403,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/verification/test_spec_traceability_and_extended_python_rti.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route support interaction available-dimension lookup "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route support interaction available-dimension lookup "
             "and joined-region range-bounds introspection against loaded FOM metadata and region state."
         ),
     },
@@ -1313,10 +1426,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route now isolate support-handle normalization and "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route now isolate support-handle normalization and "
             "region introspection: they normalizes service groups plus object class, interaction class, object "
             "instance, and federate handles with typed-handle validation and wrong-family rejection, and return "
             "dimension handle sets for joined regions."
@@ -1338,10 +1451,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route report advisory and reporting-state inquiry "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route report advisory and reporting-state inquiry "
             "switches for object-class, attribute, scope, and interaction relevance, convey-region-designator-sets, "
             "service reporting, exception reporting, and send-service-reports-to-file."
         ),
@@ -1360,10 +1473,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route report runtime-policy inquiry state for the "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route report runtime-policy inquiry state for the "
             "automatic resign directive, auto-provide, delay-subscription-evaluation, advisories-use-known-class, "
             "allow-relaxed-DDM, and non-regulated-grant switches."
         ),
@@ -1384,10 +1497,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route now isolate advisory/reporting support-service "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route now isolate advisory/reporting support-service "
             "switch control: they set the object-class, attribute, scope, and interaction advisory switches, "
             "convey-region-designator-sets, service reporting, exception reporting, and send-service-reports-to-file "
             "controls with bool validation for switch services."
@@ -1400,10 +1513,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim and the hosted FedPro 2025 route now isolate runtime-policy support-service switch "
+            "Current Python 2025 RTI and the hosted FedPro 2025 route now isolate runtime-policy support-service switch "
             "control for the automatic resign directive with ResignAction validation."
         ),
     },
@@ -1419,18 +1532,18 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
             "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
             "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/RTIambassador_2025.proto",
         ),
         "supported_scope": (
-            "Python 2025 shim supports callback control services for connected federates: disableCallbacks "
+            "Current Python 2025 RTI supports callback control services for connected federates: disableCallbacks "
             "queues local and target federate callbacks, enableCallbacks permits delivery again, evokeCallback "
             "delivers one queued callback, and evokeMultipleCallbacks drains the pending callback queue. The "
             "hosted FedPro 2025 route now carries explicit enableCallbacks/disableCallbacks transport calls and "
             "preserves queued callback delivery boundaries across callback polling. The timing parameters are "
-            "accepted but not used for wall-clock blocking in this in-process shim slice."
+            "accepted but not used for wall-clock blocking in this in-process runtime slice."
         ),
     },
     {
@@ -1451,10 +1564,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate ownership divestiture-confirmation proof: "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate ownership divestiture-confirmation proof: "
             "unconditional divestiture, negotiated ownership offers, requestDivestitureConfirmation, "
             "confirmDivestiture transfer, cancelNegotiatedAttributeOwnershipDivestiture, and 2025 tag/set payload "
             "preservation across these ownership transfer paths."
@@ -1476,10 +1589,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate ownership release proof: "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate ownership release proof: "
             "requestAttributeOwnershipRelease, release-denied callback handling, "
             "divestiture-if-wanted transfer, and 2025 tag/set payload preservation across these "
             "release and transfer paths."
@@ -1501,10 +1614,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate acquisition-assumption proof: "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate acquisition-assumption proof: "
             "requestAttributeOwnershipAssumption, attributeOwnershipAcquisition, ownership acquisition "
             "notification, and 2025 user-supplied tag propagation with set-valued acquisition callback payloads."
         ),
@@ -1526,10 +1639,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate acquisition availability "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate acquisition availability "
             "and cancellation proof: "
             "attributeOwnershipAcquisitionIfAvailable, ownership-unavailable callbacks, "
             "cancelAttributeOwnershipAcquisition, confirmAttributeOwnershipAcquisitionCancellation, and "
@@ -1551,10 +1664,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route now isolate ownership visibility and policy proof: "
+            "Current Python 2025 RTI plus the hosted FedPro route now isolate ownership visibility and policy proof: "
             "queryAttributeOwnership, informAttributeOwnership plus attributeIsNotOwned/attributeIsOwnedByRTI "
             "callback outcomes, isAttributeOwnedByFederate, and resign-time ownership policies for cancel pending "
             "acquisitions, delete owned objects, and divest/transfer owned attributes."
@@ -1568,11 +1681,11 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
             "tests/requirements/test_2025_tail_backlog_evidence.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route serialize structured MOM service report records with "
+            "Current Python 2025 RTI plus the hosted FedPro route serialize structured MOM service report records with "
             "service names, federate and federation context, serial numbers, success/exception fields, JSON-safe "
             "arguments and returned values, active service-reporting switches, source-local record snapshots, and "
             "service-report callback delivery only to joined federates with service reporting enabled."
@@ -1585,11 +1698,11 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 shim plus the hosted FedPro route carry MOM adjust and service actions through the real "
+            "Current Python 2025 RTI plus the hosted FedPro route carry MOM adjust and service actions through the real "
             "runtime paths they control: service/exception reporting adjust interactions, HLAsetSwitches, "
             "HLAsetTiming, and HLAmodifyAttributeState adjust interactions through receiveInteraction callbacks; "
             "declaration-management MOM service actions through normal publish/subscribe service paths; "
@@ -1610,11 +1723,11 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/transport/test_grpc_transport_2025.py",
-            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+            PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
         ),
         "supported_scope": (
-            "Python 2025 shim routes MOM query/report data separately from action routing: MIM data, FOM module "
+            "Current Python 2025 RTI routes MOM query/report data separately from action routing: MIM data, FOM module "
             "data, and synchronization point/status MOM request/report interactions through receiveInteraction "
             "callbacks, plus federate-level FOM module data, publication/subscription, object-instance "
             "information, and activity/count MOM reports through normal publish/subscribe and report delivery "
@@ -1683,6 +1796,34 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     },
 )
 
+
+def _preferred_2025_runtime_backend_path(project_root: Path) -> str:
+    if (project_root / PYTHON2025_BACKEND_EVIDENCE_PATH).exists():
+        return PYTHON2025_BACKEND_EVIDENCE_PATH
+    return SHIM_BACKEND_EVIDENCE_PATH
+
+
+def _normalize_implemented_slice(project_root: Path, evidence_slice: Mapping[str, Any]) -> dict[str, Any]:
+    normalized = dict(evidence_slice)
+    runtime_backend_path = _preferred_2025_runtime_backend_path(project_root)
+    legacy_runtime_paths = {SHIM_BACKEND_EVIDENCE_PATH, PYTHON2025_BACKEND_EVIDENCE_PATH}
+    normalized["evidence"] = tuple(
+        runtime_backend_path if path in legacy_runtime_paths else path
+        for path in evidence_slice.get("evidence", ())
+    )
+    return normalized
+
+
+def _normalized_implemented_evidence_slices(project_root: Path) -> tuple[dict[str, Any], ...]:
+    return tuple(_normalize_implemented_slice(project_root, evidence_slice) for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES)
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[6]
+
+
+def _implemented_slices() -> tuple[dict[str, Any], ...]:
+    return _normalized_implemented_evidence_slices(PROJECT_ROOT)
+
 OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
     {
         "id": "federation_management",
@@ -1701,7 +1842,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "route_scenarios": ("federation_lifecycle", "save_restore"),
         "current_assessment": (
             "Connection, federation catalog control, membership reporting/resign, synchronization barriers, and "
-            "save/restore behavior are exercised directly through the Python 2025 shim and the hosted FedPro "
+            "save/restore behavior are exercised directly through the current Python 2025 RTI and the hosted FedPro "
             "route, with parity scenarios recorded across all tracked routes."
         ),
         "residual_blockers": (
@@ -1733,7 +1874,11 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "current_assessment": (
             "The current repo proves a coherent object-management surface: object and interaction exchange, "
             "directed interactions, ownership transfer/query callbacks, DDM overlap filtering, transportation "
-            "policy changes, and object deletion flows all execute end to end."
+            "policy changes, and object deletion flows all execute end to end. Hosted FedPro replay now also "
+            "covers rollback-sensitive object state including plain and directed routing restore, stale timed-remove "
+            "cleanup, and restored local-known-state after local delete, plus hosted shared scenario replay for "
+            "name reservation, request-attribute-value-update routing, and object-scope relevance over the main "
+            "python2025 runtime."
         ),
         "residual_blockers": (
             "Requirement aggregation still hides per-service completion detail inside supported-scope slices.",
@@ -1743,7 +1888,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
     {
         "id": "time_management",
         "name": "Time Management",
-        "evidence_level": "strong-slice",
+        "evidence_level": "query-and-window-proof-backed",
         "implemented_slice_ids": (
             "2025-time-mode-enable-disable",
             "2025-time-advance-request-modes",
@@ -1759,7 +1904,9 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "current_assessment": (
             "Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, "
             "lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed "
-            "by executable runtime traces."
+            "by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, "
+            "the Target/Radar lookahead-window proof ladder, and matching negative-oracle guards across the "
+            "current Python 2025 lanes."
         ),
         "residual_blockers": (
             "The closeout still aggregates multiple time services into bounded slices instead of final per-requirement proof.",
@@ -1769,7 +1916,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
     {
         "id": "support_services",
         "name": "Support Services",
-        "evidence_level": "strong-slice",
+        "evidence_level": "per-service-runtime-traceable",
         "implemented_slice_ids": (
             "2025-switch-set-get-model",
             "2025-single-name-reservation-services",
@@ -1792,11 +1939,14 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "current_assessment": (
             "Handle lookup, dimension bounds, default policy control, normalization and switch inquiry/set flows "
             "are exercised through the Python runtime and are represented across tracked binding routes. The "
-            "finish-line now also carries an explicit support-service ledger via the RTIambassador conformance matrix."
+            "finish-line now also carries an explicit support-service ledger via the RTIambassador conformance "
+            "matrix, giving the Python lanes per-service runtime traceability plus complete actionable "
+            "negative-path coverage. Hosted FedPro support-service replay now also proves reconnect-safe "
+            "discard of a disconnected peer's disabled callback backlog before later reconnect."
         ),
         "residual_blockers": (
-            "The support-service ledger is executable and negative-path complete inside the Python routes, but it is still aggregated as a bounded slice rather than a final per-service conformance audit.",
-            "Java and C++ proof remains capability-oriented rather than a full standard-route behavior pass.",
+            "The support-service ledger now reaches per-service runtime traceability and complete actionable negative-path coverage inside the Python routes, but it still stops short of exhaustive cross-binding behavior-conformance proof.",
+            "Java and C++ proof remains capability-oriented rather than a full standard-route behavior pass, and the hosted FedPro route remains a bounded runtime slice rather than a full support-service conformance route.",
         ),
     },
     {
@@ -1815,8 +1965,9 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         "route_scenarios": ("ownership", "save_restore"),
         "current_assessment": (
             "Ownership acquisition, divestiture, release negotiation, query callbacks, resign-time policies, "
-            "and rollback-sensitive ownership state are all exercised directly through the Python 2025 shim and "
-            "through shared backend-matrix scenarios."
+            "and rollback-sensitive ownership state are all exercised directly through the current Python 2025 RTI and "
+            "through shared backend-matrix scenarios. Hosted FedPro replay now also proves restored in-flight "
+            "ownership negotiation state plus restored cross-federate owner-visibility queries."
         ),
         "residual_blockers": (
             "The closeout still groups ownership proof into bounded runtime slices rather than a final clause-by-clause ownership audit.",
@@ -1826,7 +1977,7 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
     {
         "id": "callbacks",
         "name": "Callbacks",
-        "evidence_level": "strong-slice",
+        "evidence_level": "callback-ledger-route-backed",
         "implemented_slice_ids": (
             "2025-callback-context-object-delivery",
             "2025-callback-context-interaction-delivery",
@@ -1857,7 +2008,8 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
         ),
         "current_assessment": (
             "Callback delivery is broad and executable across lifecycle, object, ownership, DDM, time, MOM, and "
-            "support-service flows, including hosted FedPro callback decoding and direct Python ambassador behavior. "
+            "support-service flows, including hosted FedPro callback decoding, reconnect-safe callback backlog "
+            "cleanup across disconnect/reconnect, and direct Python ambassador behavior. "
             "The finish-line now also carries an explicit callback-by-callback ledger via the FederateAmbassador "
             "conformance matrix, and that ledger is fully route-backed across the current Python 2025 lanes."
         ),
@@ -1876,19 +2028,21 @@ OBJECTIVE_DIMENSIONS: tuple[Mapping[str, Any], ...] = (
             "2025-omt-component-metadata-roundtrip",
             "2025-omt-switch-and-transport-subset",
             "2025-omt-extended-supported-subset",
+            "2025-omt-dimension-metadata-roundtrip",
             "2025-service-utilization-crosscheck",
             "2025-omt-schema-constraint-validation",
-            "2025-omt-unsupported-component-boundaries",
-            "2025-omt-unmodeled-component-boundaries-expanded",
+            "2025-omt-association-metadata-roundtrip",
+            "2025-omt-xs-any-extension-tolerance",
         ),
         "route_scenarios": (),
         "current_assessment": (
-            "The OMT path is well-instrumented for the supported parser/serializer/schema subset and now explicitly "
-            "records the unsupported boundaries instead of leaving them implicit."
+            "The OMT path is well-instrumented for parser/serializer/schema handling, metadata round-trips, "
+            "association metadata, and foreign xs:any extension tolerance with extension payload preservation "
+            "round-trip evidence. Arbitrary third-party extension semantics remain outside the repo-native runtime claim."
         ),
         "residual_blockers": (
-            "OMT evidence includes explicit unsupported boundaries, so this area cannot be promoted to full 2025 conformance.",
-            "Parser/serializer support is intentionally narrower than the full 2025 schema/component space.",
+            "Foreign xs:any extension payloads are preserved as XML payloads but not interpreted as repo-native HLA metadata.",
+            "Parser/serializer support remains a bounded OMT working surface rather than exhaustive third-party extension execution semantics.",
         ),
     },
     {
@@ -1940,7 +2094,7 @@ FI_SERVICE_FAMILY_RANGES: tuple[tuple[int, int, str], ...] = (
 
 
 def _implemented_slice_index() -> dict[str, Mapping[str, Any]]:
-    return {slice_["id"]: slice_ for slice_ in IMPLEMENTED_EVIDENCE_SLICES}
+    return {slice_["id"]: slice_ for slice_ in _implemented_slices()}
 
 
 def _fi_service_family(requirement_id: str) -> str:
@@ -1956,14 +2110,14 @@ def _build_fi_service_proof_audit() -> dict[str, Any]:
     for requirement_id in sorted(
         {
             requirement_id
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             for requirement_id in evidence_slice.get("requirements", ())
             if requirement_id.startswith("HLA2025-FI-SVC-")
         }
     ):
         supporting_slices = [
             evidence_slice
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             if requirement_id in evidence_slice.get("requirements", ())
         ]
         proof_kind = "multi-slice-runtime" if len(supporting_slices) > 1 else "single-slice-runtime"
@@ -2015,14 +2169,14 @@ def _build_delta_requirement_proof_audit() -> dict[str, Any]:
     for requirement_id in sorted(
         {
             requirement_id
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             for requirement_id in evidence_slice.get("requirements", ())
             if requirement_id.startswith(("HLA2025-MOD-", "HLA2025-NEW-", "HLA2025-RET-"))
         }
     ):
         supporting_slices = [
             evidence_slice
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             if requirement_id in evidence_slice.get("requirements", ())
         ]
         evidence_tests = sorted(
@@ -2075,7 +2229,7 @@ def _build_binding_requirement_proof_audit(route_parity_matrix: Mapping[str, Any
     for requirement_id in ("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003"):
         supporting_slices = [
             evidence_slice
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             if requirement_id in evidence_slice.get("requirements", ())
         ]
         evidence_tests = sorted(
@@ -2110,7 +2264,9 @@ def _build_binding_requirement_proof_audit(route_parity_matrix: Mapping[str, Any
         "ready_for_full_binding_conformance_claim": False,
         "current_assessment": (
             "All three binding rows now have explicit slice and route-parity proof records, but Java/C++ remain "
-            "artifact/runtime-capability bounded and FedPro remains a hosted runtime slice rather than full conformance."
+            "artifact/runtime-capability bounded and FedPro remains a hosted runtime slice rather than full conformance. "
+            "Those remaining limits are adapter or transport seam evidence boundaries over the main "
+            "hla-backend-python2025 runtime, not alternate ownership lanes for core 2025 RTI semantics."
         ),
         "rows": binding_rows,
     }
@@ -2121,14 +2277,14 @@ def _build_omt_requirement_proof_audit() -> dict[str, Any]:
     for requirement_id in sorted(
         {
             requirement_id
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             for requirement_id in evidence_slice.get("requirements", ())
             if requirement_id.startswith(("HLA2025-OMT-", "HLA2025-OMT-COMP-", "HLA2025-OMT-CV-", "HLA2025-OMT-SU-"))
         }
     ):
         supporting_slices = [
             evidence_slice
-            for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES
+            for evidence_slice in _implemented_slices()
             if requirement_id in evidence_slice.get("requirements", ())
         ]
         statuses = {evidence_slice["status"] for evidence_slice in supporting_slices}
@@ -2169,9 +2325,9 @@ def _build_omt_requirement_proof_audit() -> dict[str, Any]:
         "ready_for_omt_traceability_claim": len(omt_rows) == 454,
         "ready_for_full_omt_conformance_claim": False,
         "current_assessment": (
-            "All OMT-related rows are now explicit requirement records, with supported-subset proof separated from "
-            "unsupported-boundary proof. This closes the traceability gap without pretending the unsupported OMT "
-            "boundaries are delivered support."
+            "All OMT-related rows are now explicit requirement records with supported-subset proof, including bounded "
+            "foreign xs:any extension tolerance. This closes the traceability gap without pretending extension "
+            "payloads are preserved as repo-native runtime semantics."
         ),
         "rows": omt_rows,
     }
@@ -2201,7 +2357,8 @@ def _build_callback_proof_audit() -> dict[str, Any]:
         "ready_for_callback_by_callback_working_surface_claim": len(callback_rows) == len(focused_rows),
         "current_assessment": (
             "The repo now has an explicit callback-by-callback ledger through the FederateAmbassador conformance "
-            "matrix, and all 55 callback rows are helper-backed with focused executable evidence. This closes the "
+            "matrix, and all 55 callback rows are helper-backed with focused executable evidence, including "
+            "reconnect-safe callback backlog cleanup across disconnect/reconnect on the hosted FedPro seam. This closes the "
             "callback-ledger gap, but it still does not by itself prove exhaustive cross-binding callback "
             "signature/ordering parity or a full callback conformance claim."
         ),
@@ -2281,7 +2438,9 @@ def _build_support_service_proof_audit() -> dict[str, Any]:
             "The repo now has an explicit support-service ledger through the RTIambassador conformance matrix, and "
             "all 62 support-service rows have focused executable evidence. Negative-path coverage is now complete "
             "for all 61 actionable support-service rows, with the remaining row marked not-applicable because it "
-            "declares no actionable RTI exception surface. Support services are no longer the main blocker; "
+            "declares no actionable RTI exception surface. Hosted FedPro support-service replay now also proves "
+            "reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect. "
+            "Support services are no longer the main blocker; "
             "cross-binding evidence remains weaker than the Python routes."
         ),
         "rows": [
@@ -2346,11 +2505,11 @@ def _build_completion_claim_audit(
         },
         "current_assessment": (
             "The repo can now make a defensible supported-boundary statement: the claimed working surface is backed "
-            "by explicit requirement ledgers, the backlog is closed at the tracked 2025 delta level, and unsupported "
-            "or legacy-only areas are named rather than hidden. This is still short of a full 2025 conformance claim."
+            "by explicit requirement ledgers, the backlog is closed at the tracked 2025 delta level, and legacy-only "
+            "or bounded-extension areas are named rather than hidden. This is still short of a full 2025 conformance claim."
         ),
         "full_claim_blockers": [
-            "Covered rows are mixed with explicit unsupported-boundary and retired/legacy-only rows in the 2025 universe, so the delivered statement must stay bounded.",
+            "Covered rows include bounded supported-scope evidence, including OMT xs:any extension payload preservation without arbitrary third-party extension execution semantics.",
             "Java and C++ binding rows remain artifact/runtime-capability evidence rather than exhaustive behavior-conformance proof.",
             "The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics/MOM action-request conformance pass.",
             "Duplicate/umbrella rows remain normalization aids rather than direct one-row conformance assertions.",
@@ -2406,13 +2565,15 @@ def _build_requirement_by_requirement_audit(
         "current_assessment": (
             "The repo now has an explicit row-level requirement-by-requirement disposition audit across all 691 "
             "tracked 2025 rows: every row is reviewed, dispositioned, and linked either to repo evidence, an "
-            "explicit unsupported boundary, a retired exclusion, or an umbrella normalization role. That closes "
-            "the missing-audit gap without turning the result into an unconditional all-covered conformance pass."
+            "explicit bounded support claim, a retired exclusion, or an umbrella normalization role. That closes "
+            "the missing-audit gap without turning the result into an unconditional all-covered conformance pass, "
+            "and it strengthens the bounded main-implementation claim for hla-backend-python2025 while leaving "
+            "hla-backend-shim in a wrapper-only compatibility role."
         ),
         "full_claim_blockers": [
-            "81 rows are explicit unsupported-boundary decisions rather than delivered support.",
             "24 rows are retired/legacy-only exclusions rather than active 2025 support.",
             "22 rows remain duplicate/umbrella normalization aids rather than one-row conformance assertions.",
+            "OMT xs:any extension-point rows are covered as payload-preserving tolerance, not arbitrary third-party extension execution semantics.",
             "Many covered rows still inherit bounded supported-scope language from slice-level evidence rather than standalone exhaustive clause-by-clause proof.",
         ],
     }
@@ -2429,19 +2590,19 @@ def _build_supported_boundary_statement(
         "statement": (
             "The Python-centered 2025 RTI surface is validated as a bounded working surface across federation "
             "management, object management, time management, support services, callbacks, OMT handling, and "
-            "binding routes, with explicit unsupported, legacy-only, and artifact-gated boundaries recorded in the repo."
+            "binding routes, with explicit legacy-only, bounded-extension, and artifact-gated boundaries recorded in the repo."
         ),
         "supported_scope": [
             "Python 2025 in-process runtime behavior is executable and parity-covered across the tracked scenario set.",
-            "Hosted FedPro 2025 transport behavior is executable as a bounded runtime slice with explicit route parity coverage.",
+            "Hosted FedPro 2025 transport behavior is executable as a bounded runtime slice with explicit route parity coverage, spanning lifecycle, object, time, save/restore, support-service, and callback scenario replay over hla-backend-python2025; its remaining proof burden is transport-seam evidence over hla-backend-python2025 rather than missing core runtime ownership.",
             "FI service requirements are traced across all 196 catalog rows.",
             "Common delta rows, binding rows, and OMT-related rows are all represented by explicit requirement ledgers.",
         ],
         "explicit_boundaries": [
-            "Unsupported OMT component rows remain unsupported-boundary entries rather than delivered support.",
+            "Foreign OMT xs:any extension payloads are preserved for XML round-trip but not interpreted as repo-native runtime semantics.",
             "Retired or legacy-only rows remain excluded from the supported 2025 working surface.",
-            "Java and C++ bindings remain artifact/runtime-capability bounded rather than full behavior-conformance proof.",
-            "FedPro remains a hosted runtime slice rather than a full RTI semantics/MOM action-request conformance pass.",
+            "Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof over the main python2025 runtime rather than full behavior-conformance proof.",
+            "FedPro remains a hosted runtime slice rather than a full RTI semantics/MOM action-request conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.",
         ],
         "evidence_summary": {
             "bounded_ready_dimensions": objective_audit["bounded_ready_dimension_count"],
@@ -2455,6 +2616,44 @@ def _build_supported_boundary_statement(
     }
 
 
+def _build_hosted_shared_scenario_coverage_audit(project_root: Path) -> dict[str, Any]:
+    transport_test = (project_root / "tests" / "transport" / "test_grpc_transport_2025.py").read_text(encoding="utf-8")
+    conformance_evidence = (
+        project_root
+        / "packages"
+        / "hla-verification"
+        / "src"
+        / "hla"
+        / "verification"
+        / "repo_internal"
+        / "conformance_evidence.py"
+    ).read_text(encoding="utf-8")
+    shared_scenarios = sorted(
+        set(
+            re.findall(
+                r"def (test_2025_transport_server_runs_shared_[A-Za-z0-9_]+?_scenario_over_fedpro_route)\(",
+                transport_test,
+            )
+        )
+    )
+    zero_count_shared_scenarios = [name for name in shared_scenarios if conformance_evidence.count(name) == 0]
+    represented_count = len(shared_scenarios) - len(zero_count_shared_scenarios)
+    return {
+        "audit_status": "hosted-shared-fedpro-scenarios-accounted-for",
+        "shared_scenario_count": len(shared_scenarios),
+        "represented_in_conformance_evidence_count": represented_count,
+        "zero_count_shared_scenarios": zero_count_shared_scenarios,
+        "ready_for_full_shared_scenario_representation_claim": not zero_count_shared_scenarios,
+        "current_assessment": (
+            "Every shared hosted FedPro 2025 scenario is now represented in the conformance evidence ledger, so the "
+            "hosted route summary is no longer silently under-counting the main python2025 runtime surface."
+            if not zero_count_shared_scenarios
+            else "Some shared hosted FedPro 2025 scenarios still have zero explicit representation in the conformance "
+            "evidence ledger, so the hosted route summary remains incomplete."
+        ),
+    }
+
+
 def _build_promotion_split_audit(
     closeout_readiness: Mapping[str, Any],
     claim_audit: Mapping[str, Any],
@@ -2464,8 +2663,8 @@ def _build_promotion_split_audit(
     return {
         "decision_shape": "promote-current-lane-or-split-later-based-on-evidence",
         "current_lane": {
-            "package": "hla-backend-shim",
-            "role": "current executable Python 2025 RTI lane",
+            "package": "hla-backend-python2025",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
             "spec_package": "hla-rti1516-2025",
         },
         "current_recommendation": "promote-current-lane-as-working-surface-and-keep-split-optional",
@@ -2478,14 +2677,41 @@ def _build_promotion_split_audit(
         ),
         "ready_for_permanent_no-split_decision": False,
         "promotion_basis": [
-            "The current 2025 lane has green executable runtime coverage in the main in-process suite.",
+            "The primary 2025 Python RTI lane has green executable runtime coverage in the main in-process suite.",
             "Both Python 2025 routes clear the tracked bounded working-surface milestones.",
-            "The repo can make a supported-boundary statement over the current 2025 lane without hiding unsupported areas.",
+            "The extracted hla-backend-python2025 package now has direct split-package proof instead of relying only on legacy shim-facing package evidence.",
+            "The python2025 runtime lane is protected by explicit import-boundary guardrails that forbid runtime backflow into hla.backends.shim modules.",
+            "The repo can make a supported-boundary statement over the primary 2025 Python RTI lane without hiding legacy-only or bounded-extension areas.",
             "Route parity partial and missing counts are both zero for the tracked 2025 matrix.",
             "The callback ledger is fully route-backed across the current Python 2025 lanes, eliminating callback-helper-only gaps in the promotion surface.",
-            "The main shim-backed pressure families across save/restore, directed interaction, and DDM/default-policy are all route-backed across the current Python 2025 lanes.",
+            "The main current-package pressure families across save/restore, directed interaction, and DDM/default-policy are all route-backed across the current Python 2025 lanes.",
         ],
         "current_evidence_runs": [
+            {
+                "name": "target-radar-time-window-proof-ladder",
+                "result": "20 passed, 27 deselected in 3.71s",
+                "scope": (
+                    "route-backed Target/Radar time-window ladder: future-exclusion, output-delivery, "
+                    "consumer-order, pipeline, receive-order poison, save/restore window-state anchors, "
+                    "service-conformance links, and finish-line snapshot checks"
+                ),
+            },
+            {
+                "name": "python2025-split-package-surface",
+                "result": "3 passed in 0.02s",
+                "scope": (
+                    "dedicated hla-backend-python2025 package surface: public exports, plugin descriptor, "
+                    "and backend-request factory path over the standalone 2025 runtime package"
+                ),
+            },
+            {
+                "name": "python2025-import-boundary-guardrails",
+                "result": "22 passed",
+                "scope": (
+                    "package import isolation, root-facade policy, and explicit no-backflow proof that the "
+                    "live python2025 runtime package does not import back through hla.backends.shim.*"
+                ),
+            },
             {
                 "name": "combined-2025-verification-slice",
                 "result": "467 passed in 78.98s",
@@ -2504,7 +2730,7 @@ def _build_promotion_split_audit(
             "Adapter concerns begin to obscure or distort core RTI semantics.",
             "Callback or route normalization grows more complex than the underlying RTI behavior it wraps.",
             "New 2025 behavior is materially harder to implement because shim and RTI state management are too tightly mixed.",
-            "The row-level requirement-by-requirement audit cannot be promoted from bounded disposition evidence to cleaner all-covered runtime proof without separating a narrower shim from a dedicated 2025 backend.",
+            "The row-level requirement-by-requirement audit cannot be promoted from bounded disposition evidence to cleaner all-covered runtime proof without further shrinking wrapper-only compatibility logic around the main python2025 runtime.",
         ],
         "permanent_decision_blockers": [
             "The repo now has a row-level requirement-by-requirement audit, but it is still a bounded disposition audit rather than an all-covered 2025 conformance pass.",
@@ -2513,24 +2739,150 @@ def _build_promotion_split_audit(
             "Java and C++ bindings remain artifact/runtime-capability bounded rather than exhaustive behavior-conformance proof.",
         ],
         "current_assessment": (
-            "Current evidence is strong enough to treat hla-backend-shim as the live Python 2025 RTI lane for bounded "
-            "working-surface claims, including across the main shim-backed pressure families, but not strong enough "
-            "to make a permanent no-split architectural decision."
+            "Current evidence is strong enough to treat the real Python 2025 RTI implementation now owned by "
+            "hla-backend-python2025, with hla-backend-shim retained as a legacy compatibility wrapper, as the live "
+            "bounded working-surface lane across the main current-package pressure families, while keeping Java and "
+            "C++ shim/binding packages segregated from that claim, but not strong enough to make a permanent "
+            "no-split architectural decision."
         ),
     }
 
 
+def _literal_string_sequence(node: ast.AST | None) -> list[str]:
+    if node is None:
+        return []
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return [node.value]
+    if isinstance(node, (ast.Tuple, ast.List)):
+        values: list[str] = []
+        for element in node.elts:
+            if isinstance(element, ast.Constant) and isinstance(element.value, str):
+                values.append(element.value)
+        return values
+    return []
+
+
+def _literal_string(node: ast.AST | None) -> str | None:
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    return None
+
+
+def _scan_for_shim_delegation(project_root: Path, package_name: str) -> list[dict[str, Any]]:
+    package_path = project_root / "packages" / package_name
+    forbidden_module = "hla.backends.shim.backend"
+    forbidden_symbol = "create_shim_backend"
+    violations: list[dict[str, Any]] = []
+
+    for source_path in sorted(package_path.glob("src/**/*.py")):
+        try:
+            tree = ast.parse(source_path.read_text())
+        except (OSError, SyntaxError):
+            continue
+        relative_source_path = str(source_path.relative_to(project_root))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom) and node.module == forbidden_module:
+                imported_symbols = [alias.name for alias in node.names]
+                if forbidden_symbol in imported_symbols or "*" in imported_symbols:
+                    violations.append(
+                        {
+                            "package": package_name,
+                            "path": relative_source_path,
+                            "kind": "forbidden-import",
+                            "target": f"{forbidden_module}.{forbidden_symbol}",
+                        }
+                    )
+            elif isinstance(node, ast.Import):
+                imported_modules = [alias.name for alias in node.names]
+                if forbidden_module in imported_modules:
+                    violations.append(
+                        {
+                            "package": package_name,
+                            "path": relative_source_path,
+                            "kind": "forbidden-module-import",
+                            "target": forbidden_module,
+                        }
+                    )
+
+    return violations
+
+
+def _discover_backend_plugin_records(project_root: Path) -> dict[str, Any]:
+    package_root = project_root / "packages"
+    backend_package_dirs = sorted(path.name for path in package_root.glob("hla-backend-*") if path.is_dir())
+    plugin_records: list[dict[str, Any]] = []
+
+    for package_name in backend_package_dirs:
+        package_path = package_root / package_name
+        for plugin_path in sorted(package_path.glob("src/hla/backends/*/plugin.py")):
+            try:
+                tree = ast.parse(plugin_path.read_text())
+            except (OSError, SyntaxError):
+                continue
+            relative_plugin_path = str(plugin_path.relative_to(project_root))
+            for call in (node for node in ast.walk(tree) if isinstance(node, ast.Call)):
+                function_name = call.func.id if isinstance(call.func, ast.Name) else None
+                if function_name != "RTIBackendPlugin":
+                    continue
+                keyword_by_name = {keyword.arg: keyword.value for keyword in call.keywords if keyword.arg}
+                plugin_name = _literal_string(keyword_by_name.get("name"))
+                family = _literal_string(keyword_by_name.get("family"))
+                supports = _literal_string_sequence(keyword_by_name.get("supports"))
+                if not plugin_name or not family:
+                    continue
+                plugin_records.append(
+                    {
+                        "package": package_name,
+                        "plugin_path": relative_plugin_path,
+                        "name": plugin_name,
+                        "family": family,
+                        "supports": supports,
+                    }
+                )
+
+    python_2025_candidates = [
+        record
+        for record in plugin_records
+        if "rti1516_2025" in record["supports"]
+        and record["family"] not in {"shim", "cpp-shim", "standard/cpp", "intake/cpp"}
+        and record["package"] != "hla-backend-shim"
+    ]
+    legacy_package_delegation_violations = [
+        violation
+        for record in python_2025_candidates
+        for violation in _scan_for_shim_delegation(project_root, record["package"])
+    ]
+
+    return {
+        "backend_package_dirs": backend_package_dirs,
+        "backend_package_count": len(backend_package_dirs),
+        "plugin_records": plugin_records,
+        "rti1516_2025_plugin_records": [
+            record
+            for record in plugin_records
+            if "rti1516_2025" in record["supports"] and record["family"] != "shim"
+        ],
+        "dedicated_python_2025_backend_candidates": python_2025_candidates,
+        "dedicated_python_2025_legacy_package_delegation_violations": legacy_package_delegation_violations,
+        "dedicated_python_2025_candidates_cleanly_separated": not legacy_package_delegation_violations,
+    }
+
+
 def _build_implementation_lane_audit(
+    project_root: Path,
     promotion_split_audit: Mapping[str, Any],
     milestone_audit: Mapping[str, Any],
 ) -> dict[str, Any]:
+    backend_scan = _discover_backend_plugin_records(project_root)
+    dedicated_python_2025_candidates = backend_scan["dedicated_python_2025_backend_candidates"]
+    dedicated_candidate_present = bool(dedicated_python_2025_candidates)
     return {
         "audit_status": "current-lane-architecture-captured",
         "current_2025_lane": {
-            "backend_package": "hla-backend-shim",
-            "plugin_family": "shim",
+            "backend_package": "hla-backend-python2025",
+            "plugin_family": "inmemory-2025",
             "supports": ["rti1516_2025"],
-            "role": "current executable Python 2025 RTI lane",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as a compatibility wrapper)",
             "spec_package": "hla-rti1516-2025",
         },
         "reference_2010_lane": {
@@ -2553,46 +2905,355 @@ def _build_implementation_lane_audit(
                 "all_route_parity_covered": milestone_audit["by_route"]["python-2025-fedpro-grpc"]["all_route_parity_covered"],
             },
         ],
-        "dedicated_2025_backend_package_present": False,
+        "hosted_runtime_identity_evidence": {
+            "audit_status": "direct-server-client-identity-aligned",
+            "route": "python-2025-fedpro-grpc",
+            "claim": (
+                "The hosted 2025 FedPro route is explicitly evidenced as a route variant over "
+                "hla-backend-python2025 rather than a separate shim or RTI family."
+            ),
+            "evidence_tests": [
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_reports_python2025_main_lane_identity",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
+            ],
+            "direct_runtime_report": {
+                "backend_name": "python2025-rti",
+                "backend_kind": "python/2025",
+                "runtime_provider": "python2025",
+                "implementation_lane": "hla-backend-python2025",
+                "counts_as_python_2025_rti": True,
+            },
+            "hosted_server_report": {
+                "runtime_provider": "python2025",
+                "implementation_lane": "hla-backend-python2025",
+                "counts_as_python_2025_rti": True,
+                "wrapper_only": False,
+                "spec": "rti1516_2025",
+                "transport_kind": "grpc",
+            },
+            "hosted_client_report": {
+                "runtime_provider": "python2025",
+                "implementation_lane": "hla-backend-python2025",
+                "counts_as_python_2025_rti": True,
+                "wrapper_only": False,
+                "spec": "rti1516_2025",
+                "transport_kind": "grpc",
+                "route_family": "fedpro",
+            },
+            "current_assessment": (
+                "Hosted-client and hosted-server capability surfaces now agree with the direct 2025 ambassador "
+                "that python-2025-fedpro-grpc is a route variant over the primary python2025 RTI lane in "
+                "hla-backend-python2025 rather than a wrapper-defined implementation family."
+            ),
+        },
+        "hosted_factory_boundary_evidence": {
+            "audit_status": "factory-boundary-explicit",
+            "supported_hosted_creation_surface": (
+                "start_2025_grpc_server(...) plus GrpcTransport(..., schema='rti1516_2025') plus "
+                "create_rti_ambassador(backend='python2025'|'python-2025'|'python-2025-backend', "
+                "transport={'kind': 'grpc', ...})"
+            ),
+            "unsupported_factory_surfaces": [
+                "create_rti_ambassador(backend='shim', transport=...)",
+            ],
+            "current_policy": (
+                "The primary python2025 backend path and its supported runtime aliases now accept transport=... "
+                "and create the hosted FedPro 2025 ambassador over the main hla-backend-python2025 lane, while "
+                "the legacy shim provider spelling is no longer part of the supported public backend-selection "
+                "surface and therefore rejects hosted ownership and other backend-specific factory transport "
+                "routing. "
+                "The same factory-hosted python2025 path now also runs a direct federation listing/member-report "
+                "slice, the package-owned Target/Radar future-exclusion, output-delivery, consumer-order, and "
+                "integrated lookahead-processing-window gauntlet time-window proofs, restore-state, "
+                "restore-output-resume, and pipeline-resume save/restore proofs, a direct restore-control negative "
+                "slice, "
+                "a direct local-delete restore slice, "
+                "a direct plain-callback restore cleanup slice, a direct timed-remove restore cleanup slice, "
+                "a direct plain-object restore routing slice, a direct plain-interaction restore routing slice, "
+                "a direct directed-DDM restore routing slice, a direct restore time/switch-control slice, "
+                "and a direct restore lookahead/queued-TSO slice, "
+                "direct MOM federation-management and time-management service interactions, "
+                "a direct MOM request/report slice, a direct MOM object/ownership service slice, a direct "
+                "support-service slice, the shared support factory/decode scenario, a direct object-exchange slice, "
+                "a direct timestamped delivery/retraction slice, a direct directed-interaction slice, "
+                "a direct callback-backlog disconnect/rejoin slice, and a direct ownership slice instead of "
+                "stopping at ambassador-construction evidence."
+            ),
+            "evidence_tests": [
+                "tests/test_python_api_spec.py::test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane_and_shim_as_wrapper",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_primary_identity",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_keeps_shim_aliases_wrapper_only",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python2025_aliases",
+                "tests/test_python_api_spec.py::test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_shim_aliases",
+                "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
+                "tests/test_hla_factory_composition.py::test_2025_wrapper_factory_rejects_fake_hosted_transport_creation",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_transport_route_creates_hosted_python2025_ambassador",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_restore_control_negative_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_local_delete_restore_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_clears_stale_plain_callbacks_and_preserves_post_restore_routing",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_recovers_plain_object_subscriber_routing_after_restore",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_recovers_plain_interaction_subscriber_routing_after_restore",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_recovers_directed_ddm_subscriber_routing_after_restore",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_recovers_time_and_switch_control_state_after_restore",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_restores_lookahead_and_redelivers_presave_queued_tso",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_mom_federation_management_service_interactions",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_mom_time_management_service_interactions",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_mom_object_and_ownership_service_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_shared_support_factory_and_decode_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_drops_disconnected_callback_backlog_before_reconnect",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_object_exchange_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_timestamped_delivery_and_retraction_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_ownership_slice",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_smoke_fom_save_restore_ownership_gauntlet",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_restores_inflight_ownership_state",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_restores_cross_federate_attribute_owner_visibility",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_time_window_gauntlet",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_state_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario",
+                "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_unknown_backend_specific_options",
+                "tests/test_hla_factory_composition.py::test_2025_wrapper_factory_rejects_unknown_backend_specific_options",
+                "tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation",
+                "tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer",
+                "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
+            ],
+        },
+        "package_owned_shared_scenario_evidence": {
+            "audit_status": "package-owned-target-radar-2025-path-captured",
+            "scenario_package": "hla-fom-target-radar",
+            "shared_route": "target-radar-shared-scenario",
+            "example_entrypoint": "python examples/target_radar_simulation.py --backend python2025 --steps 5",
+            "adapter_class": (
+                "hla.foms.target_radar._internal.target_radar_2025_adapter.TargetRadar2025RTIAdapter"
+            ),
+            "supported_backend_names": [
+                "python2025",
+                "python-2025",
+                "python-2025-backend",
+            ],
+            "python2025_runtime_report": {
+                "backend_kind": "python/2025",
+                "implementation_lane": "hla-backend-python2025",
+                "counts_as_python_2025_rti": True,
+                "wrapper_only": False,
+            },
+            "shim_runtime_report": {
+                "backend_kind": "shim/2025",
+                "implementation_lane": "hla-backend-python2025",
+                "counts_as_python_2025_rti": False,
+                "wrapper_only": True,
+            },
+            "claim": (
+                "The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, "
+                "where one package-owned compatibility adapter wraps the primary python2025 backend lane without "
+                "moving implementation ownership back into hla-backend-shim."
+            ),
+            "current_assessment": (
+                "The README-advertised Target/Radar python2025 example path is now executable under package-owned "
+                "2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, "
+                "and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute "
+                "the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window "
+                "gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back "
+                "to shim-owned semantics or raw transport-only wrappers."
+            ),
+            "evidence_tests": [
+                "tests/scenarios/test_target_radar_scenario.py::test_target_radar_example_supports_2025_backends",
+                "tests/test_fom_target_radar_split_package.py::test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter",
+                "tests/test_fom_target_radar_split_package.py::test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_surface",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_time_window_gauntlet",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_state_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario",
+            ],
+        },
+        "non_python_2025_binding_lanes": [
+            {
+                "backend_package": "hla-bridge-java-common",
+                "family": "standard/java",
+                "role": "Java 2025 binding surface and artifact/intake evidence lane",
+                "counts_as_python_2025_rti": False,
+            },
+            {
+                "backend_package": "hla-backend-cpp-shim",
+                "family": "cpp-shim",
+                "role": "C++ 2025 binding surface and artifact/runtime-capability evidence lane",
+                "counts_as_python_2025_rti": False,
+            },
+        ],
+        "backend_package_scan": backend_scan,
+        "dedicated_2025_backend_package_present": dedicated_candidate_present,
         "ready_for_current_lane_promotion_as_working_surface": promotion_split_audit[
             "ready_for_current_lane_promotion_as_working_surface"
         ],
         "ready_for_permanent_no-split_decision": promotion_split_audit["ready_for_permanent_no-split_decision"],
         "clean_extraction_still_optional": True,
         "current_assessment": (
-            "The repo's current 2025 implementation reality is explicit: hla-backend-shim is the live Python 2025 "
-            "backend lane, the hosted FedPro route is a route variant over that lane rather than a separate RTI "
-            "family, and the older pure-Python backend remains the 2010-only inmemory lane."
+            "The repo's current 2025 implementation reality is explicit: the main full Python 2025 RTI implementation now "
+            "runs from hla-backend-python2025, hla-backend-shim remains as a compatibility wrapper over that runtime, "
+            "the hosted FedPro route is a route variant over that implementation rather than a separate RTI family, "
+            "the older pure-Python backend remains the 2010-only inmemory lane, and the Java/C++ lanes remain "
+            "segregated as non-Python binding-capability surfaces rather than being mixed into the Python 2025 RTI claim."
         ),
         "extraction_boundary": (
-            "Keep using the current lane as the executable Python 2025 RTI surface unless future evidence shows that "
-            "shim adaptation is obscuring core runtime semantics strongly enough to justify extracting a dedicated "
-            "2025 backend beside a narrower shim layer."
+            "Keep using hla-backend-python2025 as the executable Python 2025 RTI surface while continuing to narrow "
+            "hla-backend-shim toward wrapper-only responsibilities; only reopen a deeper extraction question if future "
+            "evidence shows that residual compatibility or route normalization logic is still obscuring core runtime semantics."
         ),
         "evidence_anchors": [
+            "README.md",
+            "docs/architecture.md",
+            "docs/documentation_hierarchy.md",
+            "docs/package_layout.md",
+            "docs/test_surface.md",
+            "docs/workspace_layout.md",
+            "docs/rti_options_and_test_matrix.md",
+            "docs/verification/time_model_compliance.md",
+            "docs/verification/verification_plan.md",
+            "docs/backend_route_inventory.md",
+            "docs/backend_route_inventory_remote.md",
+            "packages/hla-backend-python2025/README.md",
+            "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
             "packages/hla-backend-shim/README.md",
             "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
             "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
-            "docs/backend_route_inventory_remote.md",
+            "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_factory.py",
+            "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_2025_adapter.py",
+            "examples/target_radar_simulation.py",
             "docs/plans/2025_python_rti_backend_audit.md",
             "docs/python_rti_backend.md",
         ],
     }
 
 
+def _build_time_window_vendor_parity_audit() -> dict[str, Any]:
+    route_rows = [
+        {
+            "scenario_id": "time-window-future-exclusion",
+            "federate_count": 2,
+            "trial_pitch_safe": True,
+            "roles": ["SlowRegulatorFederate", "RadarFederate"],
+            "purpose": (
+                "Prove radar window closure stays blocked while another regulating federate can still legally send "
+                "into the closing window, then prove closure becomes legal only after that future input is excluded."
+            ),
+            "python_route_parity_test": (
+                "tests/scenarios/test_python_route_parity.py::"
+                "test_python_route_parity_target_radar_time_window_future_exclusion"
+            ),
+            "pitch_vendor_test": (
+                "tests/vendors/test_pitch_real_backend_matrix.py::"
+                "test_pitch_time_window_future_exclusion_matrix"
+            ),
+            "current_pitch_runtime_boundary": "seat-availability",
+            "current_pitch_runtime_boundary_evidence": (
+                "Pitch managed runtime currently reports no available pRTI federate seats for this two-federate "
+                "future-exclusion proof."
+            ),
+        },
+        {
+            "scenario_id": "time-window-restore-state",
+            "federate_count": 2,
+            "trial_pitch_safe": True,
+            "roles": ["TruthFederate", "RadarFederate"],
+            "purpose": (
+                "Prove that restore reopens or recloses the radar window at the saved point without leaking dirty "
+                "future state across the checkpoint boundary."
+            ),
+            "python_route_parity_test": (
+                "tests/scenarios/test_python_route_parity.py::"
+                "test_python_route_parity_target_radar_time_window_restore_state"
+            ),
+            "pitch_vendor_test": (
+                "tests/vendors/test_pitch_real_backend_matrix.py::"
+                "test_pitch_time_window_restore_state_matrix"
+            ),
+            "current_pitch_runtime_boundary": "seat-availability",
+            "current_pitch_runtime_boundary_evidence": (
+                "Pitch managed runtime currently reports no available pRTI federate seats for this two-federate "
+                "time-window restore proof."
+            ),
+        },
+        {
+            "scenario_id": "time-window-restore-output",
+            "federate_count": 3,
+            "trial_pitch_safe": False,
+            "roles": ["TruthFederate", "RadarFederate", "TrackConsumerFederate"],
+            "purpose": (
+                "Prove restore resumes legal post-window output delivery without duplicate replay to the consumer."
+            ),
+            "python_route_parity_test": (
+                "tests/scenarios/test_python_route_parity.py::"
+                "test_python_route_parity_target_radar_time_window_restore_output"
+            ),
+            "pitch_vendor_test": (
+                "tests/vendors/test_pitch_real_backend_matrix.py::"
+                "test_pitch_time_window_restore_output_matrix"
+            ),
+            "current_pitch_runtime_boundary": "trial-federate-limit-and-seat-availability",
+            "current_pitch_runtime_boundary_evidence": (
+                "Pitch managed runtime currently reports no available pRTI federate seats for this three-federate "
+                "time-window restore-output proof."
+            ),
+        },
+    ]
+    trial_safe_rows = [row for row in route_rows if row["trial_pitch_safe"]]
+    current_trial_candidate = next(row for row in route_rows if row["scenario_id"] == "time-window-future-exclusion")
+    return {
+        "audit_status": "time-window-vendor-parity-captured",
+        "route_count": len(route_rows),
+        "trial_pitch_safe_route_count": len(trial_safe_rows),
+        "trial_pitch_safe_route_ids": [row["scenario_id"] for row in trial_safe_rows],
+        "trial_pitch_unsafe_route_ids": [row["scenario_id"] for row in route_rows if not row["trial_pitch_safe"]],
+        "current_trial_candidate": {
+            "scenario_id": current_trial_candidate["scenario_id"],
+            "federate_count": current_trial_candidate["federate_count"],
+            "pitch_vendor_test": current_trial_candidate["pitch_vendor_test"],
+            "why_selected": (
+                "This is the smallest lookahead-window proof that still exercises future-message exclusion. It keeps "
+                "the topology to two federates, so a successful Pitch run would add meaningful vendor credence "
+                "without depending on the larger multi-federate gauntlet."
+            ),
+        },
+        "routes": route_rows,
+        "current_assessment": (
+            "The Target/Radar time-window ladder now has an explicit vendor-parity shape audit. The future-exclusion "
+            "route is intentionally two-federate-safe and is the right Pitch trial candidate; the current Pitch gap "
+            "is runtime seat availability, not an overgrown scenario topology."
+        ),
+        "residual_boundary": (
+            "A green Pitch result would add vendor credence for the two-federate future-exclusion proof, but it would "
+            "still not replace the broader in-process and hosted Python evidence for output delivery, consumer order, "
+            "pipeline overlap, or save/restore window replay."
+        ),
+    }
+
+
 def _build_implementation_concentration_audit() -> dict[str, Any]:
+    project_root = Path(__file__).resolve().parents[6]
+    runtime_backend_path = _preferred_2025_runtime_backend_path(project_root)
+    implemented_slices = _normalized_implemented_evidence_slices(project_root)
     anchor_counts: Counter[str] = Counter()
-    shim_backend_path = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
     spec_package_prefix = "packages/hla-rti1516-2025/src/"
     transport_prefixes = ("packages/hla-transport-grpc/", "packages/hla-transport-rest/")
-    shim_backend_slice_ids: list[str] = []
+    runtime_backend_slice_ids: list[str] = []
     spec_package_slice_ids: list[str] = []
     transport_slice_ids: list[str] = []
 
-    for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES:
+    for evidence_slice in implemented_slices:
         evidence_paths = set(evidence_slice.get("evidence", ()))
-        if shim_backend_path in evidence_paths:
-            shim_backend_slice_ids.append(evidence_slice["id"])
+        if runtime_backend_path in evidence_paths:
+            runtime_backend_slice_ids.append(evidence_slice["id"])
         if any(path.startswith(spec_package_prefix) for path in evidence_paths):
             spec_package_slice_ids.append(evidence_slice["id"])
         if any(path.startswith(transport_prefixes) for path in evidence_paths):
@@ -2600,48 +3261,267 @@ def _build_implementation_concentration_audit() -> dict[str, Any]:
         for path in evidence_paths:
             anchor_counts[path] += 1
 
-    total_slices = len(IMPLEMENTED_EVIDENCE_SLICES)
-    shim_backend_slice_count = len(shim_backend_slice_ids)
-    shim_backend_share = round(shim_backend_slice_count / total_slices, 3) if total_slices else 0.0
+    total_slices = len(implemented_slices)
+    runtime_backend_slice_count = len(runtime_backend_slice_ids)
+    runtime_backend_share = round(runtime_backend_slice_count / total_slices, 3) if total_slices else 0.0
     spec_package_slice_count = len(spec_package_slice_ids)
     transport_slice_count = len(transport_slice_ids)
 
     return {
         "audit_status": "implementation-concentration-captured",
         "implemented_slice_count": total_slices,
-        "shim_backend_path": shim_backend_path,
-        "shim_backend_slice_count": shim_backend_slice_count,
-        "shim_backend_slice_share": shim_backend_share,
+        "runtime_backend_path": runtime_backend_path,
+        "runtime_backend_slice_count": runtime_backend_slice_count,
+        "runtime_backend_slice_share": runtime_backend_share,
         "spec_package_slice_count": spec_package_slice_count,
         "transport_slice_count": transport_slice_count,
-        "semantic_concentration_is_material": shim_backend_share >= 0.5,
+        "semantic_concentration_is_material": runtime_backend_share >= 0.5,
         "top_evidence_anchors": [
             {"path": path, "slice_count": count}
             for path, count in anchor_counts.most_common(10)
         ],
-        "sample_shim_backend_slice_ids": shim_backend_slice_ids[:12],
+        "sample_runtime_backend_slice_ids": runtime_backend_slice_ids[:12],
         "current_assessment": (
-            "The current 2025 lane is substantively executable, but the implementation proof is materially "
-            "concentrated in hla-backend-shim/backend.py. That concentration does not by itself force a split, "
+            "The primary 2025 Python RTI lane is substantively executable, but the implementation proof is materially "
+            "concentrated in hla-backend-python2025/backend.py. That concentration does not by itself force a split, "
             "because spec-package and transport-layer evidence also exist, but it is a real architectural pressure "
             "signal to monitor as more 2025 behavior lands."
         ),
         "extraction_pressure_boundary": (
-            "A future dedicated 2025 backend becomes more compelling if new runtime semantics keep accumulating "
-            "primarily in the shim backend implementation instead of moving into cleaner reusable runtime modules."
+            "The main python2025 runtime should keep absorbing real RTI semantics, while wrapper-only compatibility "
+            "logic should keep shrinking or moving outward into narrower adapters and reusable runtime modules."
+        ),
+    }
+
+
+def _shim_backend_method_responsibility(method_name: str) -> str:
+    normalized = method_name.lower()
+    if "mom" in normalized or "switch" in normalized:
+        return "mom-and-switch-services"
+    if "save" in normalized or "restore" in normalized:
+        return "save-restore-runtime"
+    if (
+        "time" in normalized
+        or "lookahead" in normalized
+        or "advance" in normalized
+        or "lits" in normalized
+        or "galt" in normalized
+        or "tso" in normalized
+        or "retract" in normalized
+    ):
+        return "time-management-runtime"
+    if "region" in normalized or "ddm" in normalized or "scope" in normalized or "dimension" in normalized or "range" in normalized:
+        return "ddm-region-runtime"
+    if (
+        "ownership" in normalized
+        or "divest" in normalized
+        or "acquisition" in normalized
+        or "acquire" in normalized
+        or "owner" in normalized
+    ):
+        return "ownership-runtime"
+    if (
+        "callback" in normalized
+        or "deliver" in normalized
+        or "evoke" in normalized
+        or "enablecallbacks" in normalized
+        or "disablecallbacks" in normalized
+        or "connectionlost" in normalized
+    ):
+        return "callback-delivery-and-control"
+    if "interaction" in normalized or "parameter" in normalized or "transportation" in normalized or "order" in normalized:
+        return "interaction-routing-runtime"
+    if "object" in normalized or "attribute" in normalized or "discover" in normalized or "update" in normalized or "reflect" in normalized or "instance" in normalized:
+        return "object-attribute-runtime"
+    if (
+        "federation" in normalized
+        or "federate" in normalized
+        or "join" in normalized
+        or "resign" in normalized
+        or "synchronization" in normalized
+        or "connect" in normalized
+        or "credential" in normalized
+    ):
+        return "federation-management-runtime"
+    if (
+        "fom" in normalized
+        or "mim" in normalized
+        or "catalog" in normalized
+        or "module" in normalized
+        or "class" in normalized
+        or "handle" in normalized
+        or "name" in normalized
+        or "resolve" in normalized
+        or "coerce" in normalized
+        or "extract" in normalized
+    ):
+        return "fom-catalog-and-handle-support"
+    return "misc-support"
+
+
+def _build_python2025_source_responsibility_audit(project_root: Path) -> dict[str, Any]:
+    shim_backend_path = project_root / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim" / "backend.py"
+    python2025_backend_path = (
+        project_root / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025" / "backend.py"
+    )
+    python2025_wrapper_path = (
+        project_root
+        / "packages"
+        / "hla-backend-python2025"
+        / "src"
+        / "hla"
+        / "backends"
+        / "python2025"
+        / "compatibility_wrapper.py"
+    )
+    source_backend_path = python2025_backend_path if python2025_backend_path.exists() else shim_backend_path
+    source_text = source_backend_path.read_text(encoding="utf-8")
+    tree = ast.parse(source_text)
+    runtime_ambassador_class = next(
+        (
+            node
+            for node in tree.body
+            if isinstance(node, ast.ClassDef) and node.name == "Python2025RTIAmbassador"
+        ),
+        None,
+    )
+    if runtime_ambassador_class is None:
+        runtime_ambassador_class = next(
+            node
+            for node in tree.body
+            if isinstance(node, ast.ClassDef) and node.name == "Shim2025RTIAmbassador"
+        )
+    shim_wrapper_source_path = python2025_wrapper_path if python2025_wrapper_path.exists() else shim_backend_path
+    shim_wrapper_source_text = shim_wrapper_source_path.read_text(encoding="utf-8")
+    shim_wrapper_tree = ast.parse(shim_wrapper_source_text)
+    shim_wrapper_ambassador_class = next(
+        (
+            node
+            for node in shim_wrapper_tree.body
+            if isinstance(node, ast.ClassDef) and node.name == "Shim2025RTIAmbassador"
+        ),
+        None,
+    )
+    runtime_dir = source_backend_path.parent
+    relative_source_backend_path = str(source_backend_path.relative_to(project_root))
+    family_counts: dict[str, dict[str, Any]] = {}
+    total_method_count = 0
+    total_method_lines = 0
+    for method in (node for node in runtime_ambassador_class.body if isinstance(node, ast.FunctionDef)):
+        family = _shim_backend_method_responsibility(method.name)
+        method_lines = int(method.end_lineno or method.lineno) - int(method.lineno) + 1
+        total_method_count += 1
+        total_method_lines += method_lines
+        row = family_counts.setdefault(
+            family,
+            {
+                "family": family,
+                "method_count": 0,
+                "line_count": 0,
+                "sample_methods": [],
+            },
+        )
+        row["method_count"] += 1
+        row["line_count"] += method_lines
+        if len(row["sample_methods"]) < 8:
+            row["sample_methods"].append(method.name)
+
+    families = sorted(family_counts.values(), key=lambda row: (-row["line_count"], row["family"]))
+    extracted_runtime_modules: list[dict[str, Any]] = []
+    helper_family_by_stem = {
+        "attribute_scope": "object-attribute-runtime",
+        "attribute_policy": "object-attribute-runtime",
+        "callback_runtime": "callback-delivery-and-control",
+        "catalog_runtime": "fom-catalog-and-handle-support",
+        "declaration_management": "object-attribute-runtime",
+        "federation_management": "federation-management-runtime",
+        "ownership_runtime": "ownership-runtime",
+        "save_restore": "save-restore-runtime",
+        "directed_interaction": "interaction-routing-runtime",
+        "interaction_runtime": "interaction-routing-runtime",
+        "mom_codec": "mom-and-switch-services",
+        "mom_runtime": "mom-and-switch-services",
+        "object_instance_runtime": "object-attribute-runtime",
+        "object_model": "object-attribute-runtime",
+        "object_region_runtime": "object-attribute-runtime",
+        "object_reflection": "object-attribute-runtime",
+        "time_management": "time-management-runtime",
+        "support_lookup": "misc-support",
+        "support_policy": "mom-and-switch-services",
+        "update_rate": "object-attribute-runtime",
+    }
+    for helper_path in sorted(runtime_dir.glob("*.py")):
+        if helper_path.name in {"__init__.py", "backend.py", "backend_scaffold.py", "compatibility_wrapper.py", "plugin.py"}:
+            continue
+        helper_text = helper_path.read_text(encoding="utf-8")
+        helper_tree = ast.parse(helper_text)
+        helper_functions = [node for node in helper_tree.body if isinstance(node, ast.FunctionDef)]
+        extracted_runtime_modules.append(
+            {
+                "path": str(helper_path.relative_to(project_root)),
+                "family": helper_family_by_stem.get(helper_path.stem, "misc-support"),
+                "line_count": len(helper_text.splitlines()),
+                "function_count": len(helper_functions),
+                "functions": [function.name for function in helper_functions],
+            }
+        )
+    return {
+        "audit_status": "python2025-source-responsibility-captured",
+        "source_path": relative_source_backend_path,
+        "source_line_count": len(source_text.splitlines()),
+        "extracted_runtime_module_count": len(extracted_runtime_modules),
+        "extracted_runtime_modules": extracted_runtime_modules,
+        "extracted_runtime_module_line_count": sum(module["line_count"] for module in extracted_runtime_modules),
+        "shim_wrapper_path": str(shim_wrapper_source_path.relative_to(project_root)),
+        "shim_wrapper_line_count": len(shim_wrapper_source_text.splitlines()),
+        "ambassador_class": runtime_ambassador_class.name,
+        "ambassador_line_count": int(runtime_ambassador_class.end_lineno or runtime_ambassador_class.lineno) - int(runtime_ambassador_class.lineno) + 1,
+        "ambassador_method_count": total_method_count,
+        "ambassador_method_line_count": total_method_lines,
+        "shim_wrapper_ambassador_class": (
+            shim_wrapper_ambassador_class.name if shim_wrapper_ambassador_class is not None else None
+        ),
+        "shim_wrapper_ambassador_line_count": (
+            int(shim_wrapper_ambassador_class.end_lineno or shim_wrapper_ambassador_class.lineno)
+            - int(shim_wrapper_ambassador_class.lineno)
+            + 1
+            if shim_wrapper_ambassador_class is not None
+            else 0
+        ),
+        "family_count": len(families),
+        "families": families,
+        "largest_family": families[0]["family"] if families else None,
+        "largest_family_line_count": families[0]["line_count"] if families else 0,
+        "current_assessment": (
+            "The live Python 2025 RTI source is still centered on a large implementation class, but that class now "
+            "lives in hla-backend-python2025 while hla-backend-shim has been reduced to a compatibility wrapper. "
+            "Route-backed save/restore state-copy semantics, directed-interaction target selection, time-management "
+            "state/query wrappers, update-rate helpers, attribute delivery policy helpers, declaration-management "
+            "and object-name reservation helpers, interaction declaration/delivery helpers, object-region and "
+            "attribute-policy helpers, MOM decoding helpers, MOM manager routing/report helpers, object-model "
+            "lookup helpers, object-instance lifecycle/update helpers, attribute-scope advisory helpers, and "
+            "object-reflection delivery helpers are now measurable under the python2025 runtime package."
+        ),
+        "extraction_use": (
+            "Use these families as the source ownership baseline while continuing to shrink hla-backend-shim toward "
+            "wrapper-only responsibilities; new runtime movement should reduce compatibility-surface pressure without "
+            "weakening direct or hosted route evidence."
         ),
     }
 
 
 def _build_slice_aggregation_pressure_audit() -> dict[str, Any]:
-    shim_backend_path = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
-    implemented_rows = [row for row in IMPLEMENTED_EVIDENCE_SLICES if row.get("status") == "implemented-slice"]
+    project_root = Path(__file__).resolve().parents[6]
+    runtime_backend_path = _preferred_2025_runtime_backend_path(project_root)
+    implemented_rows = [
+        row for row in _normalized_implemented_evidence_slices(project_root) if row.get("status") == "implemented-slice"
+    ]
     ranked_rows = sorted(
         (
             {
                 "slice_id": row["id"],
                 "requirement_count": len(row.get("requirements", ())),
-                "shim_backend_backed": shim_backend_path in set(row.get("evidence", ())),
+                "runtime_backend_backed": runtime_backend_path in set(row.get("evidence", ())),
             }
             for row in implemented_rows
         ),
@@ -2649,26 +3529,303 @@ def _build_slice_aggregation_pressure_audit() -> dict[str, Any]:
     )
     aggregated_ge10 = [row for row in ranked_rows if row["requirement_count"] >= 10]
     aggregated_ge20 = [row for row in ranked_rows if row["requirement_count"] >= 20]
-    aggregated_ge10_shim = [row for row in aggregated_ge10 if row["shim_backend_backed"]]
-    aggregated_ge20_shim = [row for row in aggregated_ge20 if row["shim_backend_backed"]]
+    aggregated_ge10_runtime = [row for row in aggregated_ge10 if row["runtime_backend_backed"]]
+    aggregated_ge20_runtime = [row for row in aggregated_ge20 if row["runtime_backend_backed"]]
     return {
         "audit_status": "slice-aggregation-pressure-captured",
         "implemented_slice_count": len(implemented_rows),
         "aggregated_slice_count_ge_10_requirements": len(aggregated_ge10),
-        "aggregated_slice_count_ge_10_requirements_shim_backed": len(aggregated_ge10_shim),
+        "aggregated_slice_count_ge_10_requirements_runtime_backed": len(aggregated_ge10_runtime),
         "aggregated_slice_count_ge_20_requirements": len(aggregated_ge20),
-        "aggregated_slice_count_ge_20_requirements_shim_backed": len(aggregated_ge20_shim),
+        "aggregated_slice_count_ge_20_requirements_runtime_backed": len(aggregated_ge20_runtime),
         "largest_implemented_slices": ranked_rows[:10],
-        "largest_shim_backed_aggregated_slices": aggregated_ge10_shim[:10],
+        "largest_runtime_backed_aggregated_slices": aggregated_ge10_runtime[:10],
         "current_assessment": (
             "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a "
-            "lot of requirement mass. The main runtime pressure points are the shim-backed ddm-default-attribute-policy, "
+            "lot of requirement mass. The main current-package pressure points are the runtime-heavy "
+            "ddm-default-attribute-policy, "
             "save-restore-lifecycle, and directed-interaction-boundary slices, which are credible next decomposition "
             "targets if the repo needs tighter requirement-level proof or a cleaner backend seam."
         ),
         "next_decomposition_boundary": (
-            "If deeper proof is needed, start by splitting the largest shim-backed slices into narrower service- or "
+            "If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or "
             "behavior-family audits before extracting a dedicated 2025 backend."
+        ),
+    }
+
+
+def _build_service_utilization_decomposition_audit(fi_service_audit: Mapping[str, Any]) -> dict[str, Any]:
+    rows_by_family: dict[str, list[Mapping[str, Any]]] = {}
+    for row in fi_service_audit["rows"]:
+        rows_by_family.setdefault(str(row["family"]), []).append(row)
+
+    families: list[dict[str, Any]] = []
+    for family, rows in sorted(rows_by_family.items()):
+        sorted_rows = sorted(rows, key=lambda item: int(item["service_number"]))
+        service_numbers = [int(row["service_number"]) for row in sorted_rows]
+        omt_requirement_ids = [f"HLA2025-OMT-SU-{number:03d}" for number in service_numbers]
+        families.append(
+            {
+                "family": family,
+                "service_count": len(sorted_rows),
+                "service_number_min": min(service_numbers),
+                "service_number_max": max(service_numbers),
+                "omt_requirement_ids": omt_requirement_ids,
+                "fi_requirement_ids": [str(row["requirement_id"]) for row in sorted_rows],
+                "supporting_slice_ids": sorted(
+                    {
+                        slice_id
+                        for row in sorted_rows
+                        for slice_id in row.get("supporting_slice_ids", ())
+                    }
+                ),
+                "all_fi_rows_traceable": all(row["proof_status"] == "implemented-slice-traceable" for row in sorted_rows),
+            }
+        )
+
+    return {
+        "audit_status": "service-utilization-decomposition-captured",
+        "slice_id": "2025-service-utilization-crosscheck",
+        "requirement_count": 196,
+        "family_count": len(families),
+        "families": families,
+        "all_service_utilization_rows_family_mapped": sum(row["service_count"] for row in families) == 196,
+        "all_backing_fi_rows_traceable": all(row["all_fi_rows_traceable"] for row in families),
+        "current_assessment": (
+            "The 196-row service-utilization slice is no longer only one broad OMT parser claim. It is decomposed "
+            "by the same Federate Interface service families used by the runtime proof audit, so each OMT service "
+            "usage row has a corresponding FI service row, service number, family, and supporting runtime slice."
+        ),
+        "residual_boundary": (
+            "This proves service-utilization table extraction and alignment with runtime-backed FI service families; "
+            "it does not turn optional SOM/FOM service-usage declarations into independent execution of every service."
+        ),
+    }
+
+
+def _build_omt_extended_subset_decomposition_audit() -> dict[str, Any]:
+    slice_id = "2025-omt-extended-supported-subset"
+    slice_row = _implemented_slice_index()[slice_id]
+    slice_requirement_ids = set(slice_row["requirements"])
+    family_specs = [
+        {
+            "family": "model-identification-and-taxonomy",
+            "focus": "objectModel identity scalars plus reference, POC, and keyword taxonomy metadata",
+            "requirement_numbers": (1, 2, 3, 5, 7, 9, 10, 83),
+        },
+        {
+            "family": "object-attribute-and-class-metadata",
+            "focus": "object class names, attribute datatype links, dimensions, notes, and ownership/routing metadata",
+            "requirement_numbers": (
+                16, 20, 22, 23, 24, 25, 26, 28, 29, 31, 32, 33, 34, 36, 46, 50, 51, 52, 53, 54,
+                55, 58, 60, 61, 62, 63, 64, 65, 66, 69, 71, 72, 73,
+            ),
+        },
+        {
+            "family": "interaction-parameter-and-routing-metadata",
+            "focus": "interaction class names, parameter datatype links, dimensions, transportation/order metadata, and notes",
+            "requirement_numbers": (
+                86, 88, 89, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 103, 104, 105, 108,
+                116, 117, 118, 119, 120, 121, 122, 123, 124, 126, 127, 128, 131, 132, 135,
+                136, 137, 138, 139,
+            ),
+        },
+        {
+            "family": "datatype-table-roundtrip",
+            "focus": "basic, simple, enumerated, array, fixed-record, and variant-record datatype table preservation",
+            "requirement_numbers": (
+                148, 149, 153, 155, 172, 173, 174, 175, 177, 179, 180, 182, 183, 184, 185, 186,
+                187, 188,
+            ),
+        },
+        {
+            "family": "container-reference-and-table-sections",
+            "focus": "top-level table containers for tags, synchronization, transport, update rates, and datatype references",
+            "requirement_numbers": (199, 203, 205, 206, 209, 211, 212, 213, 214, 216, 217, 218, 220, 221, 223),
+        },
+    ]
+
+    families: list[dict[str, Any]] = []
+    mapped_requirement_ids: set[str] = set()
+    for spec in family_specs:
+        requirement_ids = tuple(f"HLA2025-OMT-COMP-{number:03d}" for number in spec["requirement_numbers"])
+        mapped_requirement_ids.update(requirement_ids)
+        families.append(
+            {
+                "family": spec["family"],
+                "focus": spec["focus"],
+                "requirement_count": len(requirement_ids),
+                "requirement_number_min": min(spec["requirement_numbers"]),
+                "requirement_number_max": max(spec["requirement_numbers"]),
+                "requirement_ids": requirement_ids,
+                "all_requirements_in_slice": all(requirement_id in slice_requirement_ids for requirement_id in requirement_ids),
+            }
+        )
+
+    unmapped_requirement_ids = sorted(slice_requirement_ids - mapped_requirement_ids)
+    unexpected_requirement_ids = sorted(mapped_requirement_ids - slice_requirement_ids)
+    return {
+        "audit_status": "omt-extended-subset-decomposition-captured",
+        "slice_id": slice_id,
+        "requirement_count": len(slice_requirement_ids),
+        "family_count": len(families),
+        "families": families,
+        "all_extended_subset_rows_family_mapped": not unmapped_requirement_ids and not unexpected_requirement_ids,
+        "unmapped_requirement_ids": unmapped_requirement_ids,
+        "unexpected_requirement_ids": unexpected_requirement_ids,
+        "evidence": tuple(slice_row["evidence"]),
+        "current_assessment": (
+            "The 110-row OMT extended supported-subset slice is now decomposed into model identity, object/"
+            "attribute metadata, interaction/parameter metadata, datatype tables, and container/table-section "
+            "families. That makes the broad parser/serializer claim auditable by OMT structure instead of leaving "
+            "one opaque requirement bundle."
+        ),
+        "residual_boundary": (
+            "This is still OMT metadata parse/serialize preservation evidence for the supported subset; it does "
+            "not claim execution of arbitrary OMT extension semantics or every possible semantic interpretation "
+            "of preserved table fields."
+        ),
+    }
+
+
+def _build_omt_xs_any_extension_decomposition_audit() -> dict[str, Any]:
+    slice_id = "2025-omt-xs-any-extension-tolerance"
+    slice_row = _implemented_slice_index()[slice_id]
+    slice_requirement_ids = set(slice_row["requirements"])
+    family_specs = [
+        {
+            "family": "object-model-root-and-identity",
+            "focus": "foreign extension points around objectModel identity and model-level descriptive metadata",
+            "requirement_numbers": (6, 8),
+        },
+        {
+            "family": "object-class-and-attribute-extension-points",
+            "focus": "foreign extension points attached to object classes, attributes, update metadata, and associations",
+            "requirement_numbers": (19, 21, 27, 35, 39, 45, 47, 56, 57, 59, 67, 68, 70, 77, 81, 82),
+        },
+        {
+            "family": "interaction-class-and-parameter-extension-points",
+            "focus": "foreign extension points attached to interaction classes, parameters, order metadata, and associations",
+            "requirement_numbers": (102, 106, 107, 113, 115, 129, 130, 134),
+        },
+        {
+            "family": "datatype-and-encoding-extension-points",
+            "focus": "foreign extension points attached to datatype, encoding, array, record, and enumerator structures",
+            "requirement_numbers": (145, 147, 154, 156, 171, 176, 178, 181, 189, 193, 197, 198),
+        },
+        {
+            "family": "container-table-and-reference-extension-points",
+            "focus": "foreign extension points attached to table containers and top-level reference sections",
+            "requirement_numbers": (202, 204, 208, 210, 219, 222, 224),
+        },
+    ]
+
+    families: list[dict[str, Any]] = []
+    mapped_requirement_ids: set[str] = set()
+    for spec in family_specs:
+        requirement_ids = tuple(f"HLA2025-OMT-COMP-{number:03d}" for number in spec["requirement_numbers"])
+        mapped_requirement_ids.update(requirement_ids)
+        families.append(
+            {
+                "family": spec["family"],
+                "focus": spec["focus"],
+                "requirement_count": len(requirement_ids),
+                "requirement_number_min": min(spec["requirement_numbers"]),
+                "requirement_number_max": max(spec["requirement_numbers"]),
+                "requirement_ids": requirement_ids,
+                "all_requirements_in_slice": all(requirement_id in slice_requirement_ids for requirement_id in requirement_ids),
+            }
+        )
+
+    unmapped_requirement_ids = sorted(slice_requirement_ids - mapped_requirement_ids)
+    unexpected_requirement_ids = sorted(mapped_requirement_ids - slice_requirement_ids)
+    return {
+        "audit_status": "omt-xs-any-extension-decomposition-captured",
+        "slice_id": slice_id,
+        "requirement_count": len(slice_requirement_ids),
+        "family_count": len(families),
+        "families": families,
+        "all_xs_any_extension_rows_family_mapped": not unmapped_requirement_ids and not unexpected_requirement_ids,
+        "unmapped_requirement_ids": unmapped_requirement_ids,
+        "unexpected_requirement_ids": unexpected_requirement_ids,
+        "evidence": tuple(slice_row["evidence"]),
+        "current_assessment": (
+            "The 45-row OMT xs:any extension slice is now decomposed by the parent OMT structures where foreign "
+            "extensions may appear. This preserves the stronger payload-preservation claim while keeping the "
+            "extension boundary explicit and auditable."
+        ),
+        "residual_boundary": (
+            "The parser preserves and reserializes foreign XML payloads at these extension points and isolates them "
+            "from native HLA elements; it still does not execute arbitrary third-party extension semantics."
+        ),
+    }
+
+
+def _build_omt_schema_constraint_decomposition_audit() -> dict[str, Any]:
+    slice_id = "2025-omt-schema-constraint-validation"
+    slice_row = _implemented_slice_index()[slice_id]
+    slice_requirement_ids = set(slice_row["requirements"])
+    family_specs = [
+        {
+            "family": "xsd-key-constraints",
+            "focus": "XSD key constraints for dimension datatype, representation, datatype, dimension, and transportation declarations",
+            "requirement_numbers": (1, 3, 5, 7, 9),
+        },
+        {
+            "family": "xsd-keyref-constraints",
+            "focus": "XSD keyref constraints for dimension datatype, representation, datatype, dimension, and transportation references",
+            "requirement_numbers": (2, 4, 6, 8, 10),
+        },
+        {
+            "family": "xsd-unique-constraints",
+            "focus": "XSD unique constraints for object class, attribute, interaction class, and parameter names",
+            "requirement_numbers": (11, 12, 13, 14),
+        },
+        {
+            "family": "enumeration-and-union-domain-constraints",
+            "focus": "strict value-domain checks for 2025 OMT enumerations and union-backed fields",
+            "requirement_numbers": (15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29),
+        },
+    ]
+
+    families: list[dict[str, Any]] = []
+    mapped_requirement_ids: set[str] = set()
+    for spec in family_specs:
+        requirement_ids = tuple(f"HLA2025-OMT-CV-{number:03d}" for number in spec["requirement_numbers"])
+        mapped_requirement_ids.update(requirement_ids)
+        families.append(
+            {
+                "family": spec["family"],
+                "focus": spec["focus"],
+                "requirement_count": len(requirement_ids),
+                "requirement_number_min": min(spec["requirement_numbers"]),
+                "requirement_number_max": max(spec["requirement_numbers"]),
+                "requirement_ids": requirement_ids,
+                "all_requirements_in_slice": all(requirement_id in slice_requirement_ids for requirement_id in requirement_ids),
+            }
+        )
+
+    unmapped_requirement_ids = sorted(slice_requirement_ids - mapped_requirement_ids)
+    unexpected_requirement_ids = sorted(mapped_requirement_ids - slice_requirement_ids)
+    return {
+        "audit_status": "omt-schema-constraint-decomposition-captured",
+        "slice_id": slice_id,
+        "requirement_count": len(slice_requirement_ids),
+        "family_count": len(families),
+        "families": families,
+        "all_schema_constraint_rows_family_mapped": not unmapped_requirement_ids and not unexpected_requirement_ids,
+        "unmapped_requirement_ids": unmapped_requirement_ids,
+        "unexpected_requirement_ids": unexpected_requirement_ids,
+        "evidence": tuple(slice_row["evidence"]),
+        "current_assessment": (
+            "The 29-row OMT validator-negative slice is now decomposed into key, keyref, unique, and "
+            "enumeration/domain validation families. That makes the schema-validation proof auditable as "
+            "negative validator coverage rather than one broad XSD-backed claim."
+        ),
+        "residual_boundary": (
+            "This proves the supported Python validation path reports the imported 2025 schema and value-domain "
+            "negative cases; it does not claim exhaustive third-party schema-validator certification beyond the "
+            "bundled IEEE1516-OMT-2025 subset fixture coverage."
         ),
     }
 
@@ -2679,26 +3836,36 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "lifecycle-control",
             "focus": "save/restore request, initiate, completion, failure, abort, and precondition control flow",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_federation_save_restore_lifecycle",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_save_failure_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_restore_request_failure_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_save_request_precondition_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_federation_save_restore_lifecycle",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_save_failure_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_failure_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_abort_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_request_failure_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_save_request_precondition_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_request_precondition_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_participant_exception_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_status_exception_scenario_via_compat_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_failure_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_abort_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_request_precondition_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_request_precondition_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_participant_exception_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_status_exception_scenario_over_fedpro_route",
             ],
         },
         {
             "family": "shared-scenario-rollback",
             "focus": "shared two-federate save/restore, object-state rollback, and federate-local rollback",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_restore_federate_local_state_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_restore_object_state_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
@@ -2711,16 +3878,18 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "routing-policy-rollback",
             "focus": "callback policy, transport/order policy, object routing, interaction routing, directed routing, and stale queued callback cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_callback_delivery_policy",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_transport_and_order_policy_state",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_plain_object_subscriber_routing",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_plain_interaction_subscriber_routing",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_callback_delivery_policy",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_treats_callback_delivery_as_runtime_policy_not_saved_state_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_transportation_type_restore_persistence_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_interaction_subscriber_routing_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema",
@@ -2731,25 +3900,26 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "ownership-rollback",
             "focus": "ownership gauntlets, inflight acquisition/divestiture state, and owner-visibility rollback",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_smoke_fom_save_restore_ownership_gauntlet",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_inflight_ownership_state",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_inflight_ownership_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restores_cross_federate_attribute_owner_visibility_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_smoke_fom_save_restore_ownership_gauntlet",
             ],
         },
         {
             "family": "time-window-and-time-state-rollback",
             "focus": "lookahead, queued TSO, time/switch state, open/closed window state, output resume, and pipeline resume",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_time_and_switch_control_state",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restores_open_and_closed_time_window_state",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restores_closed_window_output_resume_without_dirty_replay",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restores_pipeline_resume_without_cross_window_replay",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_open_and_closed_time_window_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_closed_window_output_resume_without_dirty_replay",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restores_pipeline_resume_without_cross_window_replay",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso_over_fedpro_schema",
@@ -2771,7 +3941,8 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
         "current_assessment": (
             "The save/restore slice is no longer just one broad working-surface claim. Its current evidence already "
             "separates into lifecycle control, shared rollback scenarios, routing/policy rollback, ownership rollback, "
-            "and time-window/time-state rollback, with both direct and hosted anchors across every family."
+            "and time-window/time-state rollback, with both direct and hosted anchors across every family, including "
+            "restore-failure/abort control flow and restore persistence of transport/order policy metadata."
         ),
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these proof families before extracting save/restore "
@@ -2786,8 +3957,8 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "base-routing-and-callback-delivery",
             "focus": "publish, subscribe, unsubscribe, unpublish, and receiveDirectedInteraction callback delivery",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_routes_directed_interactions_to_object_class_subscribers",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_routes_directed_interactions_only_to_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema",
@@ -2812,9 +3983,9 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "ddm-overlap-filtering",
             "focus": "region-overlap filtering for directed interactions and removal of disconnected directed DDM subscribers",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_filters_directed_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_directed_interactions_by_ddm_region_overlap",
@@ -2838,8 +4009,8 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "restore-routing-and-stale-queue-cleanup",
             "focus": "restore recovers directed DDM subscriber routing and clears stale directed TSO without replaying dirty state",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema",
@@ -2873,7 +4044,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "lookup-and-default-policy-control",
             "focus": "FOM-backed dimension lookup, bounds queries, and default attribute transportation/order policy control",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap",
@@ -2883,7 +4054,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "object-region-routing-and-scope-advisories",
             "focus": "object reflection filtering through region overlap plus attributesInScope/attributesOutOfScope transitions",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_filters_object_reflections_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap",
@@ -2893,8 +4064,8 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "interaction-region-routing",
             "focus": "region-filtered interaction delivery, sent-region callback context, and plain interaction subscriber cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_filters_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_preserves_direct_callback_context_for_timed_region_delivery",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_interactions_by_ddm_region_overlap",
@@ -2905,9 +4076,9 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "directed-ddm-routing",
             "focus": "directed interaction delivery through object update-region and subscribeInteractionClassWithRegions overlap",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_filters_directed_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_directed_interactions_by_ddm_region_overlap",
@@ -2919,11 +4090,11 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "passive-alias-and-compat-scenarios",
             "focus": "passive region subscription aliases and backend-neutral compat DDM scenarios over the same semantics",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_ddm_declaration_gating_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_passive_ddm_region_subscription_aliases_match_active_region_delivery",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_ddm_scenario_over_fedpro_route",
@@ -2937,8 +4108,8 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "ddm-restore-and-disconnect-cleanup",
             "focus": "restore and disconnect cleanup for queued DDM delivery and directed DDM subscriber routing state",
             "direct_tests": [
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_shim_drops_queued_ddm_tso_reflect_for_departed_target",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_queued_ddm_tso_reflect_for_disconnected_target_over_fedpro_schema",
@@ -2995,13 +4166,13 @@ def _build_shim_pressure_family_route_backing_audit() -> dict[str, Any]:
         "all_families_route_backed_across_current_python_lanes": len(fully_route_backed) == len(families),
         "families": families,
         "current_assessment": (
-            "The decomposed shim-backed pressure families are not in-process-only claims. Every currently named family "
-            "across save/restore, directed interaction, and DDM/default-policy has both direct shim proof and hosted "
+            "The decomposed current-package pressure families are not in-process-only claims. Every currently named family "
+            "across save/restore, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted "
             "FedPro proof, which strengthens the current-lane working-RTI claim."
         ),
         "residual_boundary": (
             "This still does not prove full cross-binding conformance or full requirement-by-requirement closure; it "
-            "proves that the main shim-backed pressure families are executable across the current Python 2025 lanes."
+            "proves that the main current-package pressure families are executable across the current Python 2025 lanes."
         ),
     }
 
@@ -3023,14 +4194,14 @@ def _build_shim_pressure_family_asymmetry_audit() -> dict[str, Any]:
     by_balance = dict(sorted(Counter(item["balance"] for item in families).items()))
     if by_balance.get("direct-heavier", 0) == 0 and by_balance.get("hosted-heavier", 0) == 0:
         current_assessment = (
-            "The main shim-backed pressure families are route-backed across the current Python lanes and are now "
+            "The main current-package pressure families are route-backed across the current Python lanes and are now "
             "symmetric at the named proof-family level. The remaining work is no longer family-count parity; it is "
-            "deeper behavioral expansion, stronger evidence quality, and architectural judgment about whether the "
-            "current 2025 lane should remain shim-backed or be extracted into a dedicated backend."
+            "deeper behavioral expansion, stronger evidence quality, and architectural judgment about how far the "
+            "repo should continue decomposing runtime semantics away from the remaining compatibility-wrapper seam."
         )
     else:
         current_assessment = (
-            "The main shim-backed pressure families are route-backed across the current Python lanes, but they are "
+            "The main current-package pressure families are route-backed across the current Python lanes, but they are "
             "not perfectly symmetric. The remaining parity work is now clearer: close hosted-heavier and direct-heavier "
             "family imbalances rather than inventing new top-level proof areas."
         )
@@ -3055,7 +4226,7 @@ def _build_current_lane_coherence_audit(
 ) -> dict[str, Any]:
     major_pressure_slice_ids = {
         item["slice_id"]
-        for item in slice_aggregation_pressure_audit["largest_shim_backed_aggregated_slices"]
+        for item in slice_aggregation_pressure_audit["largest_runtime_backed_aggregated_slices"]
     }
     return {
         "audit_status": "current-lane-coherence-captured",
@@ -3072,17 +4243,240 @@ def _build_current_lane_coherence_audit(
             "all_families_route_backed_across_current_python_lanes"
         ],
         "current_assessment": (
-            "The current 2025 lane now has a defensible coherence story: its main shim-backed pressure slices are "
+            "The primary 2025 Python RTI lane now has a defensible coherence story: its main current-package pressure slices are "
             "identified, decomposed into named proof families, and all of those families are executable across the "
             "current Python 2025 lanes. That is strong evidence for a coherent bounded working RTI surface even "
-            "though the lane is still materially concentrated in the shim backend implementation."
+            "though the lane is still materially concentrated in the hla-backend-python2025 implementation package."
         ),
         "residual_blockers": [
-            "Implementation concentration in hla-backend-shim/backend.py remains material, so coherence is not the same thing as a permanently settled architecture.",
+            "Implementation concentration in hla-backend-python2025/backend.py remains material, so coherence is not the same thing as a permanently settled architecture.",
             "The repo now has a row-level requirement-by-requirement audit, but it still stops at bounded disposition and supported-scope proof rather than an all-covered conformance pass.",
             "Java and C++ bindings remain artifact/runtime-capability bounded rather than exhaustive behavior-conformance proof.",
             "Hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or MOM action/request conformance pass.",
         ],
+    }
+
+
+def _build_extraction_readiness_audit(
+    implementation_lane_audit: Mapping[str, Any],
+    implementation_concentration_audit: Mapping[str, Any],
+    save_restore_decomposition_audit: Mapping[str, Any],
+    directed_interaction_decomposition_audit: Mapping[str, Any],
+    ddm_default_policy_decomposition_audit: Mapping[str, Any],
+    shim_pressure_family_route_backing_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    runtime_audits = (
+        save_restore_decomposition_audit,
+        directed_interaction_decomposition_audit,
+        ddm_default_policy_decomposition_audit,
+    )
+    migration_worklist: list[dict[str, Any]] = []
+    for audit in runtime_audits:
+        family_names = [family["family"] for family in audit["proof_families"]]
+        direct_test_count = sum(len(family["direct_tests"]) for family in audit["proof_families"])
+        hosted_test_count = sum(len(family["hosted_tests"]) for family in audit["proof_families"])
+        migration_worklist.append(
+            {
+                "slice_id": audit["slice_id"],
+                "proof_family_count": audit["proof_family_count"],
+                "proof_families": family_names,
+                "direct_test_count": direct_test_count,
+                "hosted_test_count": hosted_test_count,
+                "route_backed": all(family["direct_tests"] and family["hosted_tests"] for family in audit["proof_families"]),
+                "candidate_runtime_module": f"packages/hla-backend-python2025/src/hla/backends/python2025/{audit['slice_id'].removeprefix('2025-').replace('-', '_')}.py",
+            }
+        )
+    python2025_runtime_dir = Path.cwd() / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    migrated_runtime_modules = []
+    migrated_runtime_module_names = {
+        "attribute_scope_runtime.py",
+        "callback_runtime.py",
+        "catalog_runtime.py",
+        "ddm_default_attribute_policy.py",
+        "declaration_management_runtime.py",
+        "directed_interaction_boundary.py",
+        "federation_management_runtime.py",
+        "interaction_policy_runtime.py",
+        "interaction_runtime.py",
+        "mom_codec.py",
+        "mom_runtime.py",
+        "object_instance_runtime.py",
+        "object_model_runtime.py",
+        "object_reflection_runtime.py",
+        "object_region_runtime.py",
+        "ownership_runtime.py",
+        "save_restore_lifecycle.py",
+        "support_lookup_runtime.py",
+        "support_policy_runtime.py",
+        "support_services_runtime.py",
+        "time_management_runtime.py",
+        "update_rate_runtime.py",
+    }
+    if python2025_runtime_dir.exists():
+        for module_path in sorted(python2025_runtime_dir.glob("*.py")):
+            if module_path.name not in migrated_runtime_module_names:
+                continue
+            migrated_runtime_modules.append(str(module_path.relative_to(Path.cwd())))
+    current_package_state = (
+        "live-runtime-present"
+        if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
+        else
+        "semantic-slices-present"
+        if migrated_runtime_modules
+        else "scaffold-present"
+        if implementation_lane_audit["dedicated_2025_backend_package_present"]
+        else "not-present"
+    )
+
+    return {
+        "audit_status": "extraction-readiness-map-captured",
+        "extraction_needed_now": False,
+        "dedicated_python_2025_backend_present": implementation_lane_audit["dedicated_2025_backend_package_present"],
+        "recommended_current_action": "promote-python2025-as-live-lane-and-keep-shim-wrapper-narrowing-map",
+        "future_backend_package_target": "hla-backend-python2025",
+        "future_backend_plugin_family": "inmemory-2025",
+        "extraction_package_contract": {
+            "current_package_state": current_package_state,
+            "target_distribution": "hla-backend-python2025",
+            "target_import_root": "hla.backends.python2025",
+            "target_plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "target_backend_name": "python2025",
+            "target_plugin_family": "inmemory-2025",
+            "target_supports": ["rti1516_2025"],
+            "must_not_delegate_to": ["hla.backends.shim.backend.create_shim_backend"],
+            "scanner_regression_test": (
+                "tests/requirements/test_2025_finish_line_snapshot.py::"
+                "test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend"
+            ),
+            "package_creation_rule": (
+                "Keep this package as the promoted live backend only while the direct and hosted proof families stay "
+                "green and hla-backend-shim continues narrowing toward compatibility-wrapper responsibilities."
+            ),
+        },
+        "extraction_cutover_invariants": [
+            "python-2025-inprocess and python-2025-fedpro-grpc parity rows remain green for every migrated slice",
+            "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior",
+            "the dedicated python2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
+            "backend plugin discovery reports hla-backend-python2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
+        ],
+        "shim_responsibilities_after_extraction": [
+            "standard-route adaptation and compatibility aliases",
+            "transport-facing normalization that is not core RTI state",
+            "binding/package bridge behavior for standard Java/C++/hosted routes",
+        ],
+        "runtime_semantics_to_extract_first": migration_worklist,
+        "runtime_semantics_to_extract_first_count": len(migration_worklist),
+        "route_backed_runtime_semantics_count": sum(1 for row in migration_worklist if row["route_backed"]),
+        "all_candidate_runtime_semantics_route_backed": all(row["route_backed"] for row in migration_worklist),
+        "migrated_runtime_modules": migrated_runtime_modules,
+        "extraction_trigger_signals": [
+            "new runtime semantics keep accumulating in wrapper-facing compatibility layers instead of the python2025 runtime package",
+            "adapter compatibility logic begins to obscure save/restore, directed interaction, DDM, or time semantics",
+            "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the shim package can provide",
+        ],
+        "pre_extraction_gates": [
+            "keep the dedicated rti1516_2025 Python backend plugin discoverable and keep the backend scan detecting it",
+            "move one decomposed pressure slice at a time while keeping direct and hosted route tests green",
+            "keep hla-backend-shim as a narrower adapter layer instead of deleting the route-normalization seam",
+        ],
+        "current_assessment": (
+            "The extraction cutover is materially underway: hla-backend-python2025 now owns the live backend, "
+            "hla-backend-shim remains as a compatibility wrapper, and the repo still has a concrete migration map for "
+            "continuing to narrow wrapper responsibilities while preserving the direct and hosted proof families."
+            if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
+            else "Extraction is still not required for the current bounded working-surface claim, but the repo now has "
+            "both a concrete migration map and extracted runtime semantic slices in hla-backend-python2025. "
+            "Directed-interaction target-selection, interaction policy/routing, save/restore lifecycle, "
+            "DDM/default-policy, object-region/DDM routing, callback delivery/control, catalog/handle lookup, "
+            "attribute-scope advisories, update-rate policy, ownership acquisition/divestiture flows, MOM "
+            "codec/routing, time-management, support-policy, support-lookup, declaration-management, object-model, "
+            "object-instance lifecycle, object-reflection delivery, and federation-management semantics now live "
+            "in the dedicated package while the live Python 2025 RTI lane consumes them as shared runtime logic, "
+            "and the next meaningful step is to continue moving route-backed semantic slices without breaking the "
+            "direct/hosted proof families."
+        ),
+        "pressure_signal": {
+            "runtime_backend_slice_share": implementation_concentration_audit["runtime_backend_slice_share"],
+            "semantic_concentration_is_material": implementation_concentration_audit["semantic_concentration_is_material"],
+            "pressure_family_count": shim_pressure_family_route_backing_audit["family_count"],
+            "fully_route_backed_pressure_family_count": shim_pressure_family_route_backing_audit[
+                "fully_route_backed_family_count"
+            ],
+        },
+    }
+
+
+def _build_extraction_impact_audit(
+    extraction_readiness_audit: Mapping[str, Any],
+    python2025_source_responsibility_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    family_by_name = {
+        family["family"]: family
+        for family in python2025_source_responsibility_audit["families"]
+    }
+    slice_family_map = {
+        "2025-save-restore-lifecycle": (
+            "save-restore-runtime",
+            "time-management-runtime",
+            "ownership-runtime",
+            "callback-delivery-and-control",
+        ),
+        "2025-directed-interaction-boundary": (
+            "interaction-routing-runtime",
+            "ddm-region-runtime",
+            "callback-delivery-and-control",
+        ),
+        "2025-ddm-default-attribute-policy": (
+            "ddm-region-runtime",
+            "object-attribute-runtime",
+            "interaction-routing-runtime",
+            "callback-delivery-and-control",
+        ),
+    }
+
+    rows: list[dict[str, Any]] = []
+    for item in extraction_readiness_audit["runtime_semantics_to_extract_first"]:
+        source_families: list[dict[str, Any]] = []
+        for family_name in slice_family_map[item["slice_id"]]:
+            family = family_by_name[family_name]
+            source_families.append(
+                {
+                    "family": family_name,
+                    "current_method_count": family["method_count"],
+                    "current_line_count": family["line_count"],
+                }
+            )
+        rows.append(
+            {
+                "slice_id": item["slice_id"],
+                "candidate_runtime_module": item["candidate_runtime_module"],
+                "proof_family_count": item["proof_family_count"],
+                "route_backed": item["route_backed"],
+                "source_families": source_families,
+                "source_family_count": len(source_families),
+                "current_source_line_baseline": sum(family["current_line_count"] for family in source_families),
+                "current_source_method_baseline": sum(family["current_method_count"] for family in source_families),
+            }
+        )
+
+    return {
+        "audit_status": "extraction-impact-map-captured",
+        "slice_count": len(rows),
+        "all_candidate_slices_have_source_family_map": len(rows) == extraction_readiness_audit[
+            "runtime_semantics_to_extract_first_count"
+        ],
+        "all_candidate_slices_route_backed": all(row["route_backed"] for row in rows),
+        "rows": rows,
+        "largest_current_source_baseline": max(rows, key=lambda row: row["current_source_line_baseline"])["slice_id"] if rows else None,
+        "current_assessment": (
+            "The extraction worklist is now tied to measurable current source families. Save/restore, directed "
+            "interaction, and DDM/default-policy migration candidates each identify the remaining adapter pressure "
+            "and runtime line baselines that should keep shrinking around hla-backend-python2025."
+        ),
+        "non_claim": (
+            "This is an impact map, not a migration-complete claim. The dedicated backend is present, but the line "
+            "baselines are intentionally overlapping because some source families support multiple candidate slices."
+        ),
     }
 
 
@@ -3099,10 +4493,14 @@ def _build_current_lane_working_surface_statement(
             and promotion_split_audit["ready_for_current_lane_promotion_as_working_surface"]
         ),
         "statement": (
-            "The current 2025 lane can be promoted as the repo's coherent bounded working Python RTI surface: "
-            "hla-backend-shim is the live Python 2025 RTI lane, its main shim-backed pressure families are "
-            "route-backed across the current Python lanes, and the repo has enough evidence to make that bounded "
-            "working-surface claim without hiding unsupported or legacy-only boundaries."
+            "The primary 2025 Python RTI lane can be promoted as the repo's coherent bounded working Python RTI surface: "
+            "the main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is a "
+            "legacy compatibility wrapper, its main current-package pressure families are route-backed across the current "
+            "Python lanes and the route-parity matrix now serves as the scenario-family ledger for federation, object, "
+            "ownership, DDM, time, save/restore, MOM, and support-services evidence, "
+            "Java and C++ shim/binding packages remain segregated supporting lanes rather than alternate "
+            "Python RTIs, and the repo has enough evidence to make that bounded working-surface claim without hiding "
+            "legacy-only, bounded-extension, or artifact-gated boundaries."
         ),
         "non_claims": [
             "This is not a full requirement-by-requirement IEEE 1516.1-2025 conformance claim.",
@@ -3111,9 +4509,11 @@ def _build_current_lane_working_surface_statement(
             "This does not turn the hosted FedPro route into a full RTI semantics or MOM action/request conformance pass.",
         ],
         "current_assessment": (
-            "The repo now has a single explicit statement for the current 2025 lane: promote it as the bounded "
-            "working Python 2025 RTI surface, keep the architecture seam intact, and continue using the remaining "
-            "requirement-level and cross-binding blockers to decide whether extraction is ever warranted."
+            "The repo now has a single explicit statement for the primary 2025 Python RTI lane: promote it as the bounded "
+            "working Python 2025 RTI surface, treat it as the main full implementation rather than as a mere "
+            "adapter layer, use the route-parity matrix as the scenario-family ledger behind that claim, "
+            "keep the architecture seam intact, and continue using the remaining requirement-level and cross-binding "
+            "blockers to decide whether extraction is ever warranted."
         ),
     }
 
@@ -3154,7 +4554,88 @@ def _route_dimension_summary(
     }
 
 
-def _build_objective_dimension_audit(route_parity_matrix: Mapping[str, Any]) -> dict[str, Any]:
+def _objective_dimension_evidence_basis(
+    dimension_id: str,
+    *,
+    route_summary: Mapping[str, Any],
+    omt_requirement_proof_audit: Mapping[str, Any],
+    support_service_proof_audit: Mapping[str, Any],
+    callback_proof_audit: Mapping[str, Any],
+    callback_route_parity_audit: Mapping[str, Any],
+    python_rti_milestone_audit: Mapping[str, Any],
+    time_window_vendor_parity_audit: Mapping[str, Any],
+) -> list[str]:
+    if dimension_id == "federation_management":
+        return [
+            f"route_summary.scenario_count={route_summary['scenario_count']}",
+            f"route_summary.row_count={route_summary['row_count']}",
+            f"route_summary.routes_with_full_parity={len(route_summary['routes_with_full_parity'])}",
+        ]
+    if dimension_id == "object_management":
+        return [
+            f"route_summary.scenario_count={route_summary['scenario_count']}",
+            f"route_summary.row_count={route_summary['row_count']}",
+            "route_summary.scenarios=ddm,object_exchange,ownership",
+        ]
+    if dimension_id == "ownership_management":
+        return [
+            f"route_summary.scenario_count={route_summary['scenario_count']}",
+            f"route_summary.row_count={route_summary['row_count']}",
+            "route_summary.scenarios=ownership,save_restore",
+        ]
+    if dimension_id == "support_services":
+        return [
+            "support_service_proof_audit.ready_for_support_service_traceability_claim=true",
+            "support_service_proof_audit.focused_executable_row_count=62",
+            "support_service_proof_audit.complete_negative_path_row_count=61",
+        ]
+    if dimension_id == "callbacks":
+        return [
+            "callback_proof_audit.ready_for_callback_by_callback_working_surface_claim=true",
+            "callback_route_parity_audit.ready_for_full_python_lane_callback_route_parity_claim=true",
+            "callback_route_parity_audit.hosted_or_route_backed_callback_count=55",
+        ]
+    if dimension_id == "time_management":
+        milestone_rows = list(python_rti_milestone_audit["rows"])
+        bounded_time_rows = [
+            row
+            for row in milestone_rows
+            if row["route"] in {"python-2025-inprocess", "python-2025-fedpro-grpc"}
+            and row["status"] in {"bounded-query-evidence", "bounded-lookahead-evidence"}
+        ]
+        bounded_time_statuses = ",".join(
+            sorted({f"{row['route']}:{row['status']}" for row in bounded_time_rows})
+        )
+        return [
+            f"python_rti_milestone_audit bounded time rows={bounded_time_statuses}",
+            f"time_window_vendor_parity_audit.audit_status={time_window_vendor_parity_audit['audit_status']}",
+            "time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion",
+        ]
+    if dimension_id == "omt_handling":
+        return [
+            f"omt_requirement_proof_audit.ready_for_omt_traceability_claim={str(omt_requirement_proof_audit['ready_for_omt_traceability_claim']).lower()}",
+            f"omt_requirement_proof_audit.row_count={omt_requirement_proof_audit['row_count']}",
+            "omt_requirement_proof_audit.by_proof_status=supported-subset-traceable:454",
+        ]
+    if dimension_id == "binding_routes":
+        return [
+            f"route_summary.scenario_count={route_summary['scenario_count']}",
+            f"route_summary.row_count={route_summary['row_count']}",
+            f"route_summary.routes_with_full_parity={len(route_summary['routes_with_full_parity'])}",
+        ]
+    return []
+
+
+def _build_objective_dimension_audit(
+    route_parity_matrix: Mapping[str, Any],
+    *,
+    omt_requirement_proof_audit: Mapping[str, Any],
+    support_service_proof_audit: Mapping[str, Any],
+    callback_proof_audit: Mapping[str, Any],
+    callback_route_parity_audit: Mapping[str, Any],
+    python_rti_milestone_audit: Mapping[str, Any],
+    time_window_vendor_parity_audit: Mapping[str, Any],
+) -> dict[str, Any]:
     slice_index = _implemented_slice_index()
     route_rows = list(route_parity_matrix["rows"])
     dimensions: list[dict[str, Any]] = []
@@ -3172,7 +4653,13 @@ def _build_objective_dimension_audit(route_parity_matrix: Mapping[str, Any]) -> 
             }
         )
         bounded_ready = (
-            dimension["evidence_level"] in {"strong-slice", "bounded-slice"}
+            dimension["evidence_level"] in {
+                "strong-slice",
+                "bounded-slice",
+                "per-service-runtime-traceable",
+                "callback-ledger-route-backed",
+                "query-and-window-proof-backed",
+            }
             and route_summary["by_status"].get("partial", 0) == 0
             and route_summary["by_status"].get("missing", 0) == 0
         )
@@ -3183,6 +4670,16 @@ def _build_objective_dimension_audit(route_parity_matrix: Mapping[str, Any]) -> 
                 "id": dimension["id"],
                 "name": dimension["name"],
                 "evidence_level": dimension["evidence_level"],
+                "evidence_basis": _objective_dimension_evidence_basis(
+                    dimension["id"],
+                    route_summary=route_summary,
+                    omt_requirement_proof_audit=omt_requirement_proof_audit,
+                    support_service_proof_audit=support_service_proof_audit,
+                    callback_proof_audit=callback_proof_audit,
+                    callback_route_parity_audit=callback_route_parity_audit,
+                    python_rti_milestone_audit=python_rti_milestone_audit,
+                    time_window_vendor_parity_audit=time_window_vendor_parity_audit,
+                ),
                 "bounded_working_surface_ready": bounded_ready,
                 "ready_for_full_claim": False,
                 "implemented_slice_ids": slice_ids,
@@ -3247,7 +4744,8 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
                 "python-2025-fedpro-grpc": (
                     "Hosted FedPro Python 2025 is a best-attempt bounded working surface across the tracked runtime "
-                    "scenario set, not a full RTI semantics or MOM action-request conformance claim."
+                    "scenario set, with broad hosted replay across lifecycle, object, time, save/restore, support-service, "
+                    "and callback scenarios, not a full RTI semantics or MOM action-request conformance claim."
                 ),
             },
             "boundary_by_route": {
@@ -3375,15 +4873,19 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 "python-2025-inprocess": (
                     "The in-process route has executable GALT/LITS query evidence inside the logical-time slice and "
                     "the Target/Radar future-exclusion proof, with the integrated lookahead-processing-window gauntlet "
-                    "proving the combined closure/output/consumer-order/pipeline ladder on the actual 2025 shim, plus "
-                    "save/restore evidence that dirty lookahead changes are rolled back while a pre-save queued TSO is "
-                    "still redelivered after restore."
+                    "exercising the combined closure/output/consumer-order/pipeline ladder on the actual current Python 2025 RTI lane, plus "
+                    "negative-oracle guards rejecting mismatched LITS boundaries, premature output, reversed consumer "
+                    "order, cross-window contamination, and dirty post-restore replay while save/restore evidence still "
+                    "shows that dirty lookahead changes are rolled back and a pre-save queued TSO is redelivered after "
+                    "restore."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route has executable GALT/LITS query evidence inside the hosted time-management "
                     "slice, including queued-TSO GALT/LITS divergence after a live lookahead change, the hosted "
-                    "Target/Radar proof-ladder replay, restore rollback of dirty lookahead with pre-save queued TSO "
-                    "redelivered after restore, and the Target/Radar future-exclusion proof."
+                    "Target/Radar proof-ladder replay, negative-oracle guards rejecting mismatched LITS boundaries, "
+                    "premature output, reversed consumer order, cross-window contamination, and dirty post-restore "
+                    "replay, restore rollback of dirty lookahead with pre-save queued TSO redelivered after restore, "
+                    "and the Target/Radar future-exclusion proof."
                 ),
             },
             "boundary_by_route": {
@@ -3414,14 +4916,16 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                     "the integrated Target/Radar lookahead-processing-window gauntlet, and the time-window core, "
                     "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
                     "save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, "
-                    "save-restore-output-resume, and save-restore-pipeline-resume proofs."
+                    "save-restore-output-resume, and save-restore-pipeline-resume scenarios together with matching "
+                    "negative-oracle guards."
                 ),
                 "python-2025-fedpro-grpc": (
                     "The hosted FedPro route exercises lookahead queries together with advance/grant, queued "
                     "timestamped delivery, the hosted Target/Radar proof-ladder replay, and the Target/Radar "
                     "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, "
                     "save-restore lookahead rollback with queued-TSO redelivery, "
-                    "save-restore-output-resume, and save-restore-pipeline-resume proofs."
+                    "save-restore-output-resume, and save-restore-pipeline-resume scenarios together with matching "
+                    "negative-oracle guards."
                 ),
             },
             "boundary_by_route": {
@@ -3481,7 +4985,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             "scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. "
             "The time milestones now explicitly include Target/Radar future-exclusion, output-delivery, consumer-order, "
             "pipeline, receive-order poison, save/restore window-state, save/restore output resume, save/restore pipeline "
-            "resume, and time-window proof, "
+            "resume, and time-window proof, paired with negative-oracle rejection guards, "
             "but the last four remain bounded-evidence milestones rather than blanket correctness claims."
         ),
         "rows": rows,
@@ -3675,7 +5179,7 @@ def _priority_rank(row: dict[str, str]) -> tuple[int, str]:
 
 def _evidence_slices_by_requirement() -> dict[str, list[str]]:
     anchors: dict[str, list[str]] = {}
-    for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES:
+    for evidence_slice in _implemented_slices():
         for requirement_id in evidence_slice["requirements"]:
             anchors.setdefault(requirement_id, []).append(str(evidence_slice["id"]))
     return anchors
@@ -3761,7 +5265,6 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     verification_matrix = _build_verification_matrix(completion_with_status, executable_rows)
     requirement_pytest_anchor_audit = _build_requirement_pytest_anchor_audit(project_root)
     route_parity_matrix = summarize_spec2025_route_parity()
-    objective_dimension_audit = _build_objective_dimension_audit(route_parity_matrix)
     fi_service_proof_audit = _build_fi_service_proof_audit()
     delta_requirement_proof_audit = _build_delta_requirement_proof_audit()
     binding_requirement_proof_audit = _build_binding_requirement_proof_audit(route_parity_matrix)
@@ -3781,12 +5284,12 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     route_missing_count = route_parity_matrix["by_status"].get("missing", 0)
     closeout_ready = len(high_priority_open) == 0 and route_partial_count == 0 and route_missing_count == 0
     conformance_blockers = [
-        "The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains unsupported, retired, and umbrella rows rather than an all-covered conformance pass.",
+        "The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass.",
         "Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually.",
         "Java and C++ standard-route evidence remains artifact-gated/runtime-capability evidence, not a full cross-binding behavior-conformance pass.",
         "The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full MOM action/request conformance.",
-        "OMT component and validator coverage still mixes supported-subset proof with explicit unsupported-boundary rows, so those areas are not yet represented as an unconditional requirement-by-requirement conformance pass.",
-        "Unsupported-boundary and legacy-only rows remain explicit exclusions rather than delivered support, so overall completion cannot be promoted to an unconditional 2025 conformance claim.",
+        "OMT component coverage includes foreign xs:any extension payload preservation, but arbitrary third-party extension execution semantics remain out of scope.",
+        "Legacy-only rows remain explicit exclusions, so overall completion cannot be promoted to an unconditional 2025 conformance claim.",
     ]
 
     completion_backlog = {
@@ -3824,6 +5327,46 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         harmonization_rows,
         requirement_coverage_disposition,
     )
+    implemented_evidence_slices = _normalized_implemented_evidence_slices(project_root)
+    implementation_concentration_audit = _build_implementation_concentration_audit()
+    python2025_source_responsibility_audit = _build_python2025_source_responsibility_audit(project_root)
+    slice_aggregation_pressure_audit = _build_slice_aggregation_pressure_audit()
+    service_utilization_decomposition_audit = _build_service_utilization_decomposition_audit(fi_service_proof_audit)
+    omt_extended_subset_decomposition_audit = _build_omt_extended_subset_decomposition_audit()
+    omt_xs_any_extension_decomposition_audit = _build_omt_xs_any_extension_decomposition_audit()
+    omt_schema_constraint_decomposition_audit = _build_omt_schema_constraint_decomposition_audit()
+    save_restore_decomposition_audit = _build_save_restore_decomposition_audit()
+    directed_interaction_decomposition_audit = _build_directed_interaction_decomposition_audit()
+    ddm_default_policy_decomposition_audit = _build_ddm_default_policy_decomposition_audit()
+    shim_pressure_family_route_backing_audit = _build_shim_pressure_family_route_backing_audit()
+    shim_pressure_family_asymmetry_audit = _build_shim_pressure_family_asymmetry_audit()
+    closeout_readiness = {
+        "implemented_slice_count": len(_implemented_slices()),
+        "high_priority_open_count": len(high_priority_open),
+        "route_parity_partial_count": route_partial_count,
+        "route_parity_missing_count": route_missing_count,
+        "ready_for_slice_closeout": closeout_ready,
+        "ready_for_full_completion_claim": False,
+        "current_assessment": (
+            "Executable slice coverage, route parity, FI per-service runtime traceability, and bounded working-RTI "
+            "milestone evidence are in strong shape for the primary 2025 Python RTI lane, and the repo now has a row-level "
+            "requirement-by-requirement disposition audit across the full 2025 universe, but the remaining "
+            "retired, umbrella, cross-binding, bounded-extension, and bounded-route limits still block a complete "
+            "2025 claim even though hla-backend-python2025 is now the repo's main 2025 Python RTI lane and "
+            "hla-backend-shim is treated as a compatibility wrapper."
+        ),
+        "conformance_blockers": conformance_blockers,
+    }
+    time_window_vendor_parity_audit = _build_time_window_vendor_parity_audit()
+    objective_dimension_audit = _build_objective_dimension_audit(
+        route_parity_matrix,
+        omt_requirement_proof_audit=omt_requirement_proof_audit,
+        support_service_proof_audit=support_service_proof_audit,
+        callback_proof_audit=callback_proof_audit,
+        callback_route_parity_audit=callback_route_parity_audit,
+        python_rti_milestone_audit=python_rti_milestone_audit,
+        time_window_vendor_parity_audit=time_window_vendor_parity_audit,
+    )
     completion_claim_audit = _build_completion_claim_audit(
         completion_backlog,
         requirement_coverage_disposition,
@@ -3833,29 +5376,6 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         binding_requirement_proof_audit,
         omt_requirement_proof_audit,
     )
-    implementation_concentration_audit = _build_implementation_concentration_audit()
-    slice_aggregation_pressure_audit = _build_slice_aggregation_pressure_audit()
-    save_restore_decomposition_audit = _build_save_restore_decomposition_audit()
-    directed_interaction_decomposition_audit = _build_directed_interaction_decomposition_audit()
-    ddm_default_policy_decomposition_audit = _build_ddm_default_policy_decomposition_audit()
-    shim_pressure_family_route_backing_audit = _build_shim_pressure_family_route_backing_audit()
-    shim_pressure_family_asymmetry_audit = _build_shim_pressure_family_asymmetry_audit()
-    closeout_readiness = {
-        "implemented_slice_count": len(IMPLEMENTED_EVIDENCE_SLICES),
-        "high_priority_open_count": len(high_priority_open),
-        "route_parity_partial_count": route_partial_count,
-        "route_parity_missing_count": route_missing_count,
-        "ready_for_slice_closeout": closeout_ready,
-        "ready_for_full_completion_claim": False,
-        "current_assessment": (
-            "Executable slice coverage, route parity, FI per-service runtime traceability, and bounded working-RTI "
-            "milestone evidence are in strong shape for the current 2025 lane, and the repo now has a row-level "
-            "requirement-by-requirement disposition audit across the full 2025 universe, but the remaining "
-            "unsupported, umbrella, cross-binding, and bounded-route limits still block a complete 2025 claim or "
-            "a permanent promotion decision over a future shim-versus-dedicated-RTI split."
-        ),
-        "conformance_blockers": conformance_blockers,
-    }
     supported_boundary_statement = _build_supported_boundary_statement(
         completion_claim_audit,
         objective_dimension_audit,
@@ -3879,9 +5399,23 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         promotion_split_audit,
     )
     implementation_lane_audit = _build_implementation_lane_audit(
+        project_root,
         promotion_split_audit,
         python_rti_milestone_audit,
     )
+    extraction_readiness_audit = _build_extraction_readiness_audit(
+        implementation_lane_audit,
+        implementation_concentration_audit,
+        save_restore_decomposition_audit,
+        directed_interaction_decomposition_audit,
+        ddm_default_policy_decomposition_audit,
+        shim_pressure_family_route_backing_audit,
+    )
+    extraction_impact_audit = _build_extraction_impact_audit(
+        extraction_readiness_audit,
+        python2025_source_responsibility_audit,
+    )
+    hosted_shared_scenario_coverage_audit = _build_hosted_shared_scenario_coverage_audit(project_root)
 
     return {
         "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
@@ -3908,7 +5442,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "status": imported_packets["hla-2025-requirement-depth-expansion"]["status"],
         },
         "requirement_coverage_disposition": requirement_coverage_disposition,
-        "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
+        "implemented_evidence_slices": [dict(slice_) for slice_ in implemented_evidence_slices],
         "verification_matrix": verification_matrix,
         "requirement_pytest_anchor_audit": requirement_pytest_anchor_audit,
         "unanchored_requirement_audit": unanchored_requirement_audit,
@@ -3927,7 +5461,12 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "completion_claim_audit": completion_claim_audit,
         "supported_boundary_statement": supported_boundary_statement,
         "implementation_concentration_audit": implementation_concentration_audit,
+        "python2025_source_responsibility_audit": python2025_source_responsibility_audit,
         "slice_aggregation_pressure_audit": slice_aggregation_pressure_audit,
+        "service_utilization_decomposition_audit": service_utilization_decomposition_audit,
+        "omt_extended_subset_decomposition_audit": omt_extended_subset_decomposition_audit,
+        "omt_xs_any_extension_decomposition_audit": omt_xs_any_extension_decomposition_audit,
+        "omt_schema_constraint_decomposition_audit": omt_schema_constraint_decomposition_audit,
         "save_restore_decomposition_audit": save_restore_decomposition_audit,
         "directed_interaction_decomposition_audit": directed_interaction_decomposition_audit,
         "ddm_default_policy_decomposition_audit": ddm_default_policy_decomposition_audit,
@@ -3936,12 +5475,16 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "current_lane_coherence_audit": current_lane_coherence_audit,
         "current_lane_working_surface_statement": current_lane_working_surface_statement,
         "implementation_lane_audit": implementation_lane_audit,
+        "hosted_shared_scenario_coverage_audit": hosted_shared_scenario_coverage_audit,
+        "time_window_vendor_parity_audit": time_window_vendor_parity_audit,
+        "extraction_readiness_audit": extraction_readiness_audit,
+        "extraction_impact_audit": extraction_impact_audit,
         "promotion_split_audit": promotion_split_audit,
         "promotion_vs_split_audit": promotion_split_audit,
         "closeout_readiness": closeout_readiness,
         "finish_rule": (
-            "Each remaining row needs a positive test, a negative unsupported-boundary test, "
-            "or an explicit supported-subset/unsupported-boundary row before it can be counted as closed."
+            "Each future or reopened row needs a positive test, a negative unsupported-boundary test, "
+            "or an explicit supported-subset/unsupported-boundary disposition before it can be counted as closed."
         ),
     }
 
@@ -3967,7 +5510,12 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     claim_audit = snapshot["completion_claim_audit"]
     supported_boundary = snapshot["supported_boundary_statement"]
     implementation_concentration_audit = snapshot["implementation_concentration_audit"]
+    python2025_source_responsibility_audit = snapshot["python2025_source_responsibility_audit"]
     slice_aggregation_pressure_audit = snapshot["slice_aggregation_pressure_audit"]
+    service_utilization_decomposition_audit = snapshot["service_utilization_decomposition_audit"]
+    omt_extended_subset_decomposition_audit = snapshot["omt_extended_subset_decomposition_audit"]
+    omt_xs_any_extension_decomposition_audit = snapshot["omt_xs_any_extension_decomposition_audit"]
+    omt_schema_constraint_decomposition_audit = snapshot["omt_schema_constraint_decomposition_audit"]
     save_restore_decomposition_audit = snapshot["save_restore_decomposition_audit"]
     directed_interaction_decomposition_audit = snapshot["directed_interaction_decomposition_audit"]
     ddm_default_policy_decomposition_audit = snapshot["ddm_default_policy_decomposition_audit"]
@@ -3976,6 +5524,10 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     current_lane_coherence_audit = snapshot["current_lane_coherence_audit"]
     current_lane_working_surface_statement = snapshot["current_lane_working_surface_statement"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
+    hosted_shared_scenario_coverage_audit = snapshot["hosted_shared_scenario_coverage_audit"]
+    time_window_vendor_parity_audit = snapshot["time_window_vendor_parity_audit"]
+    extraction_readiness_audit = snapshot["extraction_readiness_audit"]
+    extraction_impact_audit = snapshot["extraction_impact_audit"]
     promotion_split_audit = snapshot["promotion_split_audit"]
     lines = [
         "# IEEE 1516-2025 Requirements Finish Line",
@@ -4225,9 +5777,9 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             "",
             f"- Audit status: {implementation_concentration_audit['audit_status']}",
             f"- Implemented slices: {implementation_concentration_audit['implemented_slice_count']}",
-            f"- Shim backend implementation path: {implementation_concentration_audit['shim_backend_path']}",
-            f"- Shim backend-backed slices: {implementation_concentration_audit['shim_backend_slice_count']}",
-            f"- Shim backend slice share: {implementation_concentration_audit['shim_backend_slice_share']}",
+            f"- Runtime backend implementation path: {implementation_concentration_audit['runtime_backend_path']}",
+            f"- Runtime backend-backed slices: {implementation_concentration_audit['runtime_backend_slice_count']}",
+            f"- Runtime backend slice share: {implementation_concentration_audit['runtime_backend_slice_share']}",
             f"- 2025 spec-package-backed slices: {implementation_concentration_audit['spec_package_slice_count']}",
             f"- Transport-backed slices: {implementation_concentration_audit['transport_slice_count']}",
             f"- Semantic concentration is material: {implementation_concentration_audit['semantic_concentration_is_material']}",
@@ -4243,14 +5795,58 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     lines.extend(
         [
             "",
+            "## Python 2025 Source Responsibility Audit",
+            "",
+            f"- Audit status: {python2025_source_responsibility_audit['audit_status']}",
+            f"- Source path: {python2025_source_responsibility_audit['source_path']}",
+            f"- Source line count: {python2025_source_responsibility_audit['source_line_count']}",
+            f"- Extracted runtime helper modules: {python2025_source_responsibility_audit['extracted_runtime_module_count']}",
+            f"- Extracted runtime helper lines: {python2025_source_responsibility_audit['extracted_runtime_module_line_count']}",
+            f"- Runtime ambassador class: {python2025_source_responsibility_audit['ambassador_class']}",
+            f"- Runtime ambassador line count: {python2025_source_responsibility_audit['ambassador_line_count']}",
+            f"- Runtime ambassador methods: {python2025_source_responsibility_audit['ambassador_method_count']}",
+            f"- Runtime ambassador method lines: {python2025_source_responsibility_audit['ambassador_method_line_count']}",
+            f"- Shim wrapper ambassador class: {python2025_source_responsibility_audit['shim_wrapper_ambassador_class']}",
+            f"- Shim wrapper ambassador line count: {python2025_source_responsibility_audit['shim_wrapper_ambassador_line_count']}",
+            f"- Responsibility families: {python2025_source_responsibility_audit['family_count']}",
+            f"- Largest family: {python2025_source_responsibility_audit['largest_family']} ({python2025_source_responsibility_audit['largest_family_line_count']} lines)",
+            f"- Assessment: {python2025_source_responsibility_audit['current_assessment']}",
+            f"- Extraction use: {python2025_source_responsibility_audit['extraction_use']}",
+            "",
+            "Python 2025 source responsibility families:",
+            "",
+        ]
+    )
+    for family in python2025_source_responsibility_audit["families"]:
+        sample = ", ".join(family["sample_methods"])
+        lines.append(
+            f"- {family['family']}: {family['method_count']} methods, "
+            f"{family['line_count']} lines; sample={sample}"
+        )
+    if python2025_source_responsibility_audit["extracted_runtime_modules"]:
+        lines.extend(
+            [
+                "",
+                "Extracted Python 2025 runtime helper modules:",
+                "",
+            ]
+        )
+        for module in python2025_source_responsibility_audit["extracted_runtime_modules"]:
+            lines.append(
+                f"- {module['path']}: {module['family']}, {module['function_count']} functions, "
+                f"{module['line_count']} lines; functions={', '.join(module['functions'])}"
+            )
+    lines.extend(
+        [
+            "",
             "## Slice Aggregation Pressure Audit",
             "",
             f"- Audit status: {slice_aggregation_pressure_audit['audit_status']}",
             f"- Implemented slices: {slice_aggregation_pressure_audit['implemented_slice_count']}",
             f"- Aggregated slices >=10 requirements: {slice_aggregation_pressure_audit['aggregated_slice_count_ge_10_requirements']}",
-            f"- Aggregated slices >=10 requirements and shim-backed: {slice_aggregation_pressure_audit['aggregated_slice_count_ge_10_requirements_shim_backed']}",
+            f"- Aggregated slices >=10 requirements and runtime-backed: {slice_aggregation_pressure_audit['aggregated_slice_count_ge_10_requirements_runtime_backed']}",
             f"- Aggregated slices >=20 requirements: {slice_aggregation_pressure_audit['aggregated_slice_count_ge_20_requirements']}",
-            f"- Aggregated slices >=20 requirements and shim-backed: {slice_aggregation_pressure_audit['aggregated_slice_count_ge_20_requirements_shim_backed']}",
+            f"- Aggregated slices >=20 requirements and runtime-backed: {slice_aggregation_pressure_audit['aggregated_slice_count_ge_20_requirements_runtime_backed']}",
             f"- Assessment: {slice_aggregation_pressure_audit['current_assessment']}",
             f"- Next decomposition boundary: {slice_aggregation_pressure_audit['next_decomposition_boundary']}",
             "",
@@ -4261,17 +5857,116 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     for item in slice_aggregation_pressure_audit["largest_implemented_slices"]:
         lines.append(
             f"- {item['slice_id']}: {item['requirement_count']} requirements "
-            f"(shim-backed: {item['shim_backend_backed']})"
+            f"(runtime-backed: {item['runtime_backend_backed']})"
         )
     lines.extend(
         [
             "",
-            "Largest shim-backed aggregated slices:",
+            "Largest runtime-backed aggregated slices:",
             "",
         ]
     )
-    for item in slice_aggregation_pressure_audit["largest_shim_backed_aggregated_slices"]:
+    for item in slice_aggregation_pressure_audit["largest_runtime_backed_aggregated_slices"]:
         lines.append(f"- {item['slice_id']}: {item['requirement_count']} requirements")
+    lines.extend(
+        [
+            "",
+            "## Service Utilization Decomposition Audit",
+            "",
+            f"- Audit status: {service_utilization_decomposition_audit['audit_status']}",
+            f"- Slice id: {service_utilization_decomposition_audit['slice_id']}",
+            f"- Requirement count: {service_utilization_decomposition_audit['requirement_count']}",
+            f"- Family count: {service_utilization_decomposition_audit['family_count']}",
+            f"- All service-utilization rows family-mapped: {service_utilization_decomposition_audit['all_service_utilization_rows_family_mapped']}",
+            f"- All backing FI rows traceable: {service_utilization_decomposition_audit['all_backing_fi_rows_traceable']}",
+            f"- Assessment: {service_utilization_decomposition_audit['current_assessment']}",
+            f"- Residual boundary: {service_utilization_decomposition_audit['residual_boundary']}",
+            "",
+            "Service-utilization families:",
+            "",
+        ]
+    )
+    for family in service_utilization_decomposition_audit["families"]:
+        lines.append(
+            f"- {family['family']}: {family['service_count']} services "
+            f"({family['service_number_min']}..{family['service_number_max']}), "
+            f"traceable={family['all_fi_rows_traceable']}"
+        )
+    lines.extend(
+        [
+            "",
+            "## OMT Extended Subset Decomposition Audit",
+            "",
+            f"- Audit status: {omt_extended_subset_decomposition_audit['audit_status']}",
+            f"- Slice id: {omt_extended_subset_decomposition_audit['slice_id']}",
+            f"- Requirement count: {omt_extended_subset_decomposition_audit['requirement_count']}",
+            f"- Family count: {omt_extended_subset_decomposition_audit['family_count']}",
+            f"- All extended-subset rows family-mapped: {omt_extended_subset_decomposition_audit['all_extended_subset_rows_family_mapped']}",
+            f"- Unmapped requirement ids: {len(omt_extended_subset_decomposition_audit['unmapped_requirement_ids'])}",
+            f"- Unexpected requirement ids: {len(omt_extended_subset_decomposition_audit['unexpected_requirement_ids'])}",
+            f"- Assessment: {omt_extended_subset_decomposition_audit['current_assessment']}",
+            f"- Residual boundary: {omt_extended_subset_decomposition_audit['residual_boundary']}",
+            "",
+            "OMT extended-subset families:",
+            "",
+        ]
+    )
+    for family in omt_extended_subset_decomposition_audit["families"]:
+        lines.append(
+            f"- {family['family']}: {family['requirement_count']} requirements "
+            f"({family['requirement_number_min']}..{family['requirement_number_max']}), "
+            f"in-slice={family['all_requirements_in_slice']}"
+        )
+    lines.extend(
+        [
+            "",
+            "## OMT xs:any Extension Decomposition Audit",
+            "",
+            f"- Audit status: {omt_xs_any_extension_decomposition_audit['audit_status']}",
+            f"- Slice id: {omt_xs_any_extension_decomposition_audit['slice_id']}",
+            f"- Requirement count: {omt_xs_any_extension_decomposition_audit['requirement_count']}",
+            f"- Family count: {omt_xs_any_extension_decomposition_audit['family_count']}",
+            f"- All xs:any extension rows family-mapped: {omt_xs_any_extension_decomposition_audit['all_xs_any_extension_rows_family_mapped']}",
+            f"- Unmapped requirement ids: {len(omt_xs_any_extension_decomposition_audit['unmapped_requirement_ids'])}",
+            f"- Unexpected requirement ids: {len(omt_xs_any_extension_decomposition_audit['unexpected_requirement_ids'])}",
+            f"- Assessment: {omt_xs_any_extension_decomposition_audit['current_assessment']}",
+            f"- Residual boundary: {omt_xs_any_extension_decomposition_audit['residual_boundary']}",
+            "",
+            "OMT xs:any extension families:",
+            "",
+        ]
+    )
+    for family in omt_xs_any_extension_decomposition_audit["families"]:
+        lines.append(
+            f"- {family['family']}: {family['requirement_count']} requirements "
+            f"({family['requirement_number_min']}..{family['requirement_number_max']}), "
+            f"in-slice={family['all_requirements_in_slice']}"
+        )
+    lines.extend(
+        [
+            "",
+            "## OMT Schema Constraint Decomposition Audit",
+            "",
+            f"- Audit status: {omt_schema_constraint_decomposition_audit['audit_status']}",
+            f"- Slice id: {omt_schema_constraint_decomposition_audit['slice_id']}",
+            f"- Requirement count: {omt_schema_constraint_decomposition_audit['requirement_count']}",
+            f"- Family count: {omt_schema_constraint_decomposition_audit['family_count']}",
+            f"- All schema-constraint rows family-mapped: {omt_schema_constraint_decomposition_audit['all_schema_constraint_rows_family_mapped']}",
+            f"- Unmapped requirement ids: {len(omt_schema_constraint_decomposition_audit['unmapped_requirement_ids'])}",
+            f"- Unexpected requirement ids: {len(omt_schema_constraint_decomposition_audit['unexpected_requirement_ids'])}",
+            f"- Assessment: {omt_schema_constraint_decomposition_audit['current_assessment']}",
+            f"- Residual boundary: {omt_schema_constraint_decomposition_audit['residual_boundary']}",
+            "",
+            "OMT schema-constraint families:",
+            "",
+        ]
+    )
+    for family in omt_schema_constraint_decomposition_audit["families"]:
+        lines.append(
+            f"- {family['family']}: {family['requirement_count']} requirements "
+            f"({family['requirement_number_min']}..{family['requirement_number_max']}), "
+            f"in-slice={family['all_requirements_in_slice']}"
+        )
     lines.extend(
         [
             "",
@@ -4403,7 +6098,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Ready for current-lane coherent working-surface claim: {current_lane_coherence_audit['ready_for_current_lane_coherent_working_surface_claim']}",
             f"- Ready for permanent no-split architecture claim: {current_lane_coherence_audit['ready_for_permanent_no-split_architecture_claim']}",
             f"- Major pressure slice count: {current_lane_coherence_audit['major_pressure_slice_count']}",
-            f"- Shim backend concentration is material: {current_lane_coherence_audit['shim_backend_concentration_is_material']}",
+            f"- Runtime backend concentration is material: {current_lane_coherence_audit['shim_backend_concentration_is_material']}",
             f"- All pressure families route-backed across current Python lanes: {current_lane_coherence_audit['all_pressure_families_route_backed_across_current_python_lanes']}",
             f"- Assessment: {current_lane_coherence_audit['current_assessment']}",
             "",
@@ -4436,17 +6131,40 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             "",
             f"- Audit status: {implementation_lane_audit['audit_status']}",
             f"- Current 2025 backend package: {implementation_lane_audit['current_2025_lane']['backend_package']}",
-            f"- Current 2025 role: {implementation_lane_audit['current_2025_lane']['role']}",
+            f"- Primary 2025 RTI role: {implementation_lane_audit['current_2025_lane']['role']}",
             f"- Current 2025 plugin family: {implementation_lane_audit['current_2025_lane']['plugin_family']}",
             f"- Current 2025 spec support: {', '.join(implementation_lane_audit['current_2025_lane']['supports'])}",
             f"- Reference 2010 backend package: {implementation_lane_audit['reference_2010_lane']['backend_package']}",
             f"- Reference 2010 role: {implementation_lane_audit['reference_2010_lane']['role']}",
+            f"- Backend packages discovered: {implementation_lane_audit['backend_package_scan']['backend_package_count']}",
             f"- Dedicated 2025 backend package present: {implementation_lane_audit['dedicated_2025_backend_package_present']}",
+            f"- Dedicated 2025 candidates cleanly separated: {implementation_lane_audit['backend_package_scan']['dedicated_python_2025_candidates_cleanly_separated']}",
+            f"- Dedicated 2025 legacy-package delegation violations: {len(implementation_lane_audit['backend_package_scan']['dedicated_python_2025_legacy_package_delegation_violations'])}",
             f"- Ready for working-surface promotion: {implementation_lane_audit['ready_for_current_lane_promotion_as_working_surface']}",
             f"- Ready for permanent no-split decision: {implementation_lane_audit['ready_for_permanent_no-split_decision']}",
             f"- Clean extraction still optional: {implementation_lane_audit['clean_extraction_still_optional']}",
             f"- Assessment: {implementation_lane_audit['current_assessment']}",
             f"- Extraction boundary: {implementation_lane_audit['extraction_boundary']}",
+            "",
+            "Discovered backend packages:",
+            "",
+        ]
+    )
+    for package_name in implementation_lane_audit["backend_package_scan"]["backend_package_dirs"]:
+        lines.append(f"- {package_name}")
+    lines.extend(
+        [
+            "",
+            "Discovered 2025-capable backend plugin records:",
+            "",
+        ]
+    )
+    for record in implementation_lane_audit["backend_package_scan"]["rti1516_2025_plugin_records"]:
+        lines.append(
+            f"- {record['name']} ({record['family']}): {record['package']} supports {', '.join(record['supports'])}"
+        )
+    lines.extend(
+        [
             "",
             "Python 2025 route variants:",
             "",
@@ -4461,11 +6179,268 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     lines.extend(
         [
             "",
+            "Hosted runtime identity evidence:",
+            "",
+            f"- Audit status: {implementation_lane_audit['hosted_runtime_identity_evidence']['audit_status']}",
+            f"- Route: {implementation_lane_audit['hosted_runtime_identity_evidence']['route']}",
+            f"- Claim: {implementation_lane_audit['hosted_runtime_identity_evidence']['claim']}",
+            f"- Assessment: {implementation_lane_audit['hosted_runtime_identity_evidence']['current_assessment']}",
+            "",
+            "Hosted runtime identity reports:",
+            "",
+        ]
+    )
+    lines.append(
+        "- Direct ambassador: "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['direct_runtime_report']['backend_name']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['direct_runtime_report']['backend_kind']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['direct_runtime_report']['runtime_provider']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['direct_runtime_report']['implementation_lane']} / "
+        f"counts_as_python_2025_rti={implementation_lane_audit['hosted_runtime_identity_evidence']['direct_runtime_report']['counts_as_python_2025_rti']}"
+    )
+    lines.append(
+        "- Hosted server: "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_server_report']['runtime_provider']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_server_report']['implementation_lane']} / "
+        f"counts_as_python_2025_rti={implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_server_report']['counts_as_python_2025_rti']} / "
+        f"wrapper_only={implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_server_report']['wrapper_only']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_server_report']['spec']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_server_report']['transport_kind']}"
+    )
+    lines.append(
+        "- Hosted client: "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['runtime_provider']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['implementation_lane']} / "
+        f"counts_as_python_2025_rti={implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['counts_as_python_2025_rti']} / "
+        f"wrapper_only={implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['wrapper_only']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['spec']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['transport_kind']} / "
+        f"{implementation_lane_audit['hosted_runtime_identity_evidence']['hosted_client_report']['route_family']}"
+    )
+    lines.extend(
+        [
+            "",
+            "Hosted runtime identity evidence tests:",
+            "",
+        ]
+    )
+    for item in implementation_lane_audit["hosted_runtime_identity_evidence"]["evidence_tests"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Hosted factory boundary evidence:",
+            "",
+            f"- Audit status: {implementation_lane_audit['hosted_factory_boundary_evidence']['audit_status']}",
+            (
+                "- Supported hosted creation surface: "
+                f"{implementation_lane_audit['hosted_factory_boundary_evidence']['supported_hosted_creation_surface']}"
+            ),
+            (
+                "- Unsupported factory surfaces: "
+                f"{', '.join(implementation_lane_audit['hosted_factory_boundary_evidence']['unsupported_factory_surfaces'])}"
+            ),
+            f"- Policy: {implementation_lane_audit['hosted_factory_boundary_evidence']['current_policy']}",
+            "",
+            "Hosted factory boundary evidence tests:",
+            "",
+        ]
+    )
+    for item in implementation_lane_audit["hosted_factory_boundary_evidence"]["evidence_tests"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Package-owned shared scenario evidence:",
+            "",
+            f"- Audit status: {implementation_lane_audit['package_owned_shared_scenario_evidence']['audit_status']}",
+            (
+                "- Scenario package: "
+                f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['scenario_package']}"
+            ),
+            f"- Shared route: {implementation_lane_audit['package_owned_shared_scenario_evidence']['shared_route']}",
+            (
+                "- Example entrypoint: "
+                f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['example_entrypoint']}"
+            ),
+            (
+                "- Adapter class: "
+                f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['adapter_class']}"
+            ),
+            (
+                "- Supported backend names: "
+                f"{', '.join(implementation_lane_audit['package_owned_shared_scenario_evidence']['supported_backend_names'])}"
+            ),
+            f"- Claim: {implementation_lane_audit['package_owned_shared_scenario_evidence']['claim']}",
+            f"- Assessment: {implementation_lane_audit['package_owned_shared_scenario_evidence']['current_assessment']}",
+            "",
+            "Package-owned shared scenario runtime reports:",
+            "",
+        ]
+    )
+    lines.append(
+        "- python2025: "
+        f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['python2025_runtime_report']['backend_kind']} / "
+        f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['python2025_runtime_report']['implementation_lane']} / "
+        f"counts_as_python_2025_rti={implementation_lane_audit['package_owned_shared_scenario_evidence']['python2025_runtime_report']['counts_as_python_2025_rti']} / "
+        f"wrapper_only={implementation_lane_audit['package_owned_shared_scenario_evidence']['python2025_runtime_report']['wrapper_only']}"
+    )
+    lines.append(
+        "- shim: "
+        f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['shim_runtime_report']['backend_kind']} / "
+        f"{implementation_lane_audit['package_owned_shared_scenario_evidence']['shim_runtime_report']['implementation_lane']} / "
+        f"counts_as_python_2025_rti={implementation_lane_audit['package_owned_shared_scenario_evidence']['shim_runtime_report']['counts_as_python_2025_rti']} / "
+        f"wrapper_only={implementation_lane_audit['package_owned_shared_scenario_evidence']['shim_runtime_report']['wrapper_only']}"
+    )
+    lines.extend(
+        [
+            "",
+            "Package-owned shared scenario evidence tests:",
+            "",
+        ]
+    )
+    for item in implementation_lane_audit["package_owned_shared_scenario_evidence"]["evidence_tests"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Hosted shared-scenario coverage audit:",
+            "",
+            f"- Audit status: {hosted_shared_scenario_coverage_audit['audit_status']}",
+            f"- Shared hosted FedPro scenarios: {hosted_shared_scenario_coverage_audit['shared_scenario_count']}",
+            (
+                "- Shared hosted scenarios represented in conformance evidence: "
+                f"{hosted_shared_scenario_coverage_audit['represented_in_conformance_evidence_count']}"
+            ),
+            (
+                "- Ready for full shared-scenario representation claim: "
+                f"{hosted_shared_scenario_coverage_audit['ready_for_full_shared_scenario_representation_claim']}"
+            ),
+            f"- Assessment: {hosted_shared_scenario_coverage_audit['current_assessment']}",
+            "",
+            "## Time-Window Vendor Parity Audit",
+            "",
+            f"- Audit status: {time_window_vendor_parity_audit['audit_status']}",
+            f"- Route count: {time_window_vendor_parity_audit['route_count']}",
+            f"- Trial-Pitch-safe route count: {time_window_vendor_parity_audit['trial_pitch_safe_route_count']}",
+            f"- Trial-Pitch-safe routes: {', '.join(time_window_vendor_parity_audit['trial_pitch_safe_route_ids'])}",
+            f"- Trial-Pitch-unsafe routes: {', '.join(time_window_vendor_parity_audit['trial_pitch_unsafe_route_ids'])}",
+            f"- Current trial candidate: {time_window_vendor_parity_audit['current_trial_candidate']['scenario_id']} "
+            f"({time_window_vendor_parity_audit['current_trial_candidate']['federate_count']} federates)",
+            f"- Assessment: {time_window_vendor_parity_audit['current_assessment']}",
+            f"- Residual boundary: {time_window_vendor_parity_audit['residual_boundary']}",
+            "",
+            "Time-window vendor parity routes:",
+            "",
+        ]
+    )
+    for row in time_window_vendor_parity_audit["routes"]:
+        lines.append(
+            f"- {row['scenario_id']}: federates={row['federate_count']}, "
+            f"trial-pitch-safe={row['trial_pitch_safe']}, "
+            f"boundary={row['current_pitch_runtime_boundary']}"
+        )
+    lines.extend(
+        [
+            "",
+            "## Extraction Readiness Audit",
+            "",
+            f"- Audit status: {extraction_readiness_audit['audit_status']}",
+            f"- Extraction needed now: {extraction_readiness_audit['extraction_needed_now']}",
+            f"- Dedicated Python 2025 backend present: {extraction_readiness_audit['dedicated_python_2025_backend_present']}",
+            f"- Recommended current action: {extraction_readiness_audit['recommended_current_action']}",
+            f"- Future backend package target: {extraction_readiness_audit['future_backend_package_target']}",
+            f"- Future backend plugin family: {extraction_readiness_audit['future_backend_plugin_family']}",
+            f"- Runtime semantics to extract first: {extraction_readiness_audit['runtime_semantics_to_extract_first_count']}",
+            f"- Route-backed runtime semantics: {extraction_readiness_audit['route_backed_runtime_semantics_count']}",
+            f"- All candidate runtime semantics route-backed: {extraction_readiness_audit['all_candidate_runtime_semantics_route_backed']}",
+            f"- Assessment: {extraction_readiness_audit['current_assessment']}",
+            "",
+            "Extraction package contract:",
+            "",
+            f"- Current package state: {extraction_readiness_audit['extraction_package_contract']['current_package_state']}",
+            f"- Target distribution: {extraction_readiness_audit['extraction_package_contract']['target_distribution']}",
+            f"- Target import root: {extraction_readiness_audit['extraction_package_contract']['target_import_root']}",
+            f"- Target plugin path: {extraction_readiness_audit['extraction_package_contract']['target_plugin_path']}",
+            f"- Target backend name: {extraction_readiness_audit['extraction_package_contract']['target_backend_name']}",
+            f"- Target plugin family: {extraction_readiness_audit['extraction_package_contract']['target_plugin_family']}",
+            f"- Target supports: {', '.join(extraction_readiness_audit['extraction_package_contract']['target_supports'])}",
+            f"- Must not delegate to: {', '.join(extraction_readiness_audit['extraction_package_contract']['must_not_delegate_to'])}",
+            f"- Scanner regression test: {extraction_readiness_audit['extraction_package_contract']['scanner_regression_test']}",
+            f"- Package creation rule: {extraction_readiness_audit['extraction_package_contract']['package_creation_rule']}",
+            "",
+            "Extraction cutover invariants:",
+            "",
+        ]
+    )
+    for item in extraction_readiness_audit["extraction_cutover_invariants"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Shim responsibilities after extraction:",
+            "",
+        ]
+    )
+    for item in extraction_readiness_audit["shim_responsibilities_after_extraction"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Runtime semantics migration worklist:",
+            "",
+        ]
+    )
+    for item in extraction_readiness_audit["runtime_semantics_to_extract_first"]:
+        lines.append(
+            f"- {item['slice_id']}: {item['proof_family_count']} proof families, "
+            f"direct={item['direct_test_count']}, hosted={item['hosted_test_count']}, "
+            f"route-backed={item['route_backed']}, target={item['candidate_runtime_module']}"
+        )
+    lines.extend(
+        [
+            "",
+            "Pre-extraction gates:",
+            "",
+        ]
+    )
+    for item in extraction_readiness_audit["pre_extraction_gates"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "## Extraction Impact Audit",
+            "",
+            f"- Audit status: {extraction_impact_audit['audit_status']}",
+            f"- Candidate slices: {extraction_impact_audit['slice_count']}",
+            f"- All candidate slices have source-family maps: {extraction_impact_audit['all_candidate_slices_have_source_family_map']}",
+            f"- All candidate slices route-backed: {extraction_impact_audit['all_candidate_slices_route_backed']}",
+            f"- Largest current source baseline: {extraction_impact_audit['largest_current_source_baseline']}",
+            f"- Assessment: {extraction_impact_audit['current_assessment']}",
+            f"- Non-claim: {extraction_impact_audit['non_claim']}",
+            "",
+            "Extraction impact rows:",
+            "",
+        ]
+    )
+    for row in extraction_impact_audit["rows"]:
+        families = ", ".join(
+            f"{family['family']}={family['current_line_count']} lines/{family['current_method_count']} methods"
+            for family in row["source_families"]
+        )
+        lines.append(
+            f"- {row['slice_id']}: source families={row['source_family_count']}, "
+            f"baseline={row['current_source_line_baseline']} lines/{row['current_source_method_baseline']} methods, "
+            f"target={row['candidate_runtime_module']}; {families}"
+        )
+    lines.extend(
+        [
+            "",
             "## Promotion Vs Split Audit",
             "",
             f"- Decision shape: {promotion_split_audit['decision_shape']}",
-            f"- Current lane package: {promotion_split_audit['current_lane']['package']}",
-            f"- Current lane role: {promotion_split_audit['current_lane']['role']}",
+            f"- Primary lane package: {promotion_split_audit['current_lane']['package']}",
+            f"- Primary lane role: {promotion_split_audit['current_lane']['role']}",
             f"- Recommendation: {promotion_split_audit['current_recommendation']}",
             f"- Ready for working-surface promotion: {promotion_split_audit['ready_for_current_lane_promotion_as_working_surface']}",
             f"- Ready for permanent no-split decision: {promotion_split_audit['ready_for_permanent_no-split_decision']}",
@@ -4521,6 +6496,8 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
                 "",
             ]
         )
+        for evidence_basis in dimension.get("evidence_basis", ()):
+            lines.append(f"- Evidence basis: {evidence_basis}")
         for blocker in dimension["residual_blockers"]:
             lines.append(f"- Residual blocker: {blocker}")
         lines.append("")
@@ -4571,10 +6548,12 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
     snapshot = build_spec2025_finish_line_snapshot(project_root)
     json_path = output_dir / "spec2025_finish_line_snapshot.json"
     markdown_path = output_dir / "spec2025_finish_line.md"
+    legacy_markdown_path = output_dir / "2025_requirements_finish_line.md"
     matrix_path = output_dir / "spec2025_verification_matrix.csv"
-    route_matrix_csv_path = output_dir / "spec2025_route_parity_matrix.csv"
     json_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    markdown_path.write_text("\n".join(build_spec2025_finish_line_markdown(project_root)) + "\n", encoding="utf-8")
+    markdown_text = "\n".join(build_spec2025_finish_line_markdown(project_root)) + "\n"
+    markdown_path.write_text(markdown_text, encoding="utf-8")
+    legacy_markdown_path.write_text(markdown_text, encoding="utf-8")
     matrix_rows = snapshot["verification_matrix"]["rows"]
     with matrix_path.open("w", newline="", encoding="utf-8") as handle:
         fieldnames = (
@@ -4600,33 +6579,14 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
                     "executable_tests": ";".join(row["executable_tests"]),
                 }
             )
-    with route_matrix_csv_path.open("w", newline="", encoding="utf-8") as handle:
-        fieldnames = (
-            "scenario",
-            "route",
-            "status",
-            "evidence_scope",
-            "requirements",
-            "evidence_tests",
-            "evidence_artifacts",
-            "notes",
-        )
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in snapshot["route_parity_matrix"]["rows"]:
-            writer.writerow(
-                {
-                    **row,
-                    "requirements": ";".join(row["requirements"]),
-                    "evidence_tests": ";".join(row["evidence_tests"]),
-                    "evidence_artifacts": ";".join(row["evidence_artifacts"]),
-                }
-            )
+    route_matrix_csv_path, route_matrix_markdown_path = write_spec2025_route_parity_matrix(output_dir)
     return {
         "json": json_path,
         "markdown": markdown_path,
+        "legacy_markdown": legacy_markdown_path,
         "verification_matrix": matrix_path,
         "route_parity_matrix": route_matrix_csv_path,
+        "route_parity_markdown": route_matrix_markdown_path,
     }
 
 

@@ -39,12 +39,18 @@ Simplest operator path:
 
 ```bash
 ./tools/python verify
+./tools/python verify-routes-2025
 ./tools/vendor-green matrix
 ```
 
 Quickstart:
 
 - [pitch_docker_quickstart.md](../packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md)
+
+For IEEE 1516.1-2025 specifically, `./tools/python verify-routes-2025` is the
+normal route-level hygiene lane for the direct `python2025` runtime plus the
+bounded hosted `python-2025-fedpro-grpc` route over
+`hla-backend-python2025`.
 
 ### Transport-hosted Python RTI
 

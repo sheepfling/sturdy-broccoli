@@ -59,9 +59,39 @@
       }
     },
     {
+      "id": "python-main-2025",
+      "title": "Python 2025 main-surface lane",
+      "description": "Primary python2025 main-surface verification lane for direct runtime proofs across time, save/restore, ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence.",
+      "owner_command": [
+        "./tools/python",
+        "verify-main-2025"
+      ],
+      "commands": [
+        [
+          "./tools/python",
+          "verify-main-2025"
+        ]
+      ],
+      "docs": [
+        "docs/python_rti_backend.md",
+        "docs/test_surface.md",
+        "docs/local_verification_commands.md",
+        "docs/python_rti_reading_map.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Primary 2025 main-surface lane is pure Python and does not require loopback preflight."
+      }
+    },
+    {
       "id": "python-routes",
       "title": "Hosted Python parity lane",
-      "description": "Direct-versus-hosted Python RTI verification lane for transport-boundary parity, hosted route examples, and loopback preflighted hygiene.",
+      "description": "Direct-versus-hosted 2010 Python RTI verification lane for transport-boundary parity, hosted route examples, and loopback preflighted hygiene.",
       "owner_command": [
         "./tools/python",
         "verify-routes"
@@ -92,6 +122,50 @@
         "checks": [
           {
             "id": "python-routes",
+            "argv": [
+              "./tools/python",
+              "verify-routes-preflight",
+              "--json"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "python-routes-2025",
+      "title": "Hosted Python 2025 route lane",
+      "description": "python2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, transport-route behavior, route-parity artifacts, and the package-owned Target/Radar example path.",
+      "owner_command": [
+        "./tools/python",
+        "verify-routes-2025"
+      ],
+      "commands": [
+        [
+          "./tools/python",
+          "verify-routes-preflight"
+        ],
+        [
+          "./tools/python",
+          "verify-routes-2025"
+        ]
+      ],
+      "docs": [
+        "docs/networked_rti_python.md",
+        "docs/test_surface.md",
+        "docs/local_verification_commands.md",
+        "docs/plans/spec2025_route_parity_matrix.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "aggregate",
+        "policy": "all-ready",
+        "checks": [
+          {
+            "id": "python-routes-2025",
             "argv": [
               "./tools/python",
               "verify-routes-preflight",

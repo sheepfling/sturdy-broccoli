@@ -69,6 +69,7 @@ package.
 ### Backend Families
 
 - `hla-backend-inmemory`
+- `hla-backend-python2025`
 - `hla-backend-shim`
 - `hla-backend-certi`
 - `hla-bridge-java-jpype`
@@ -110,9 +111,12 @@ The approved internal dependency direction is:
 - `hla-rti-core` -> `hla-rti1516e`, `hla-backend-common`, `hla-transport-common`
 - `hla-transport-common` -> `hla-rti1516e`, `hla-backend-common`
 - `hla-verification` -> `hla-rti1516e`, `hla-backend-common`, `hla-rti-core`
-- `hla-bridge-java-common` -> `hla-rti1516e`, `hla-backend-common`
+- `hla-backend-python2025` -> `hla-rti1516-2025`, `hla-backend-common`, `hla-rti-core`, `hla-transport-common`
+- `hla-backend-shim` -> `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python2025`
 - `hla-backend-inmemory` -> `hla-rti1516e`, `hla-backend-common`
 - `hla-backend-certi` -> `hla-rti1516e`, `hla-bridge-java-common`, `hla-rti-core`, `hla-transport-common`
+- `hla-backend-cpp-shim` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`, `hla-backend-python2025`, `hla-backend-shim`, `hla-rti-core`
+- `hla-bridge-java-common` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-python2025`, `hla-backend-shim`, `hla-rti-core`
 - `hla-bridge-java-jpype` -> `hla-rti1516e`, `hla-bridge-java-common`
 - `hla-bridge-java-py4j` -> `hla-rti1516e`, `hla-bridge-java-common`
 - `hla-vendor-pitch` -> `hla-rti1516e`, `hla-bridge-java-common`, `hla-rti-core`
@@ -129,6 +133,8 @@ The approved internal dependency direction is:
 Important consequences:
 
 - `hla-rti1516e` depends on nothing internal
+- `hla-backend-python2025` is the main full 2025 runtime lane and must not import back through `hla.backends.shim.*`
+- `hla-backend-shim` may wrap `hla-backend-python2025`, but not re-own its runtime semantics
 - `hla-backend-inmemory` does not depend on `hla-bridge-java-common`
 - `hla-transport-common` does not depend on concrete backend or vendor packages
 - transport packages do not depend on `hla-backend-inmemory` or `hla-backend-certi`

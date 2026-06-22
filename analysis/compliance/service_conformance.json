@@ -13,6 +13,7 @@
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -30,6 +31,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -61,6 +63,7 @@
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -78,6 +81,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -109,6 +113,7 @@
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -126,6 +131,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -157,6 +163,7 @@
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -174,6 +181,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
@@ -204,6 +212,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_registration_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix"
       ],
       "implementation_refs": [
@@ -219,6 +228,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -250,6 +260,8 @@
         "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_registration_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix"
       ],
@@ -267,6 +279,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix"
       ],
@@ -297,6 +311,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix"
       ],
       "implementation_refs": [
@@ -312,6 +328,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -343,6 +361,8 @@
         "packages/hla-verification/src/hla.verification/scenario_sync.py::run_failed_federate_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_failed_federate_synchronization_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_failed_federate_synchronization_matrix"
       ],
@@ -360,6 +380,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_failed_federate_synchronization_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_failed_federate_synchronization_matrix"
       ],
@@ -392,6 +414,8 @@
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -408,6 +432,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -439,6 +465,7 @@
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -456,6 +483,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix"
       ],
@@ -486,6 +514,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -501,6 +531,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -530,6 +562,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -545,6 +579,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -574,6 +610,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
       "implementation_refs": [
@@ -589,6 +626,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -620,6 +658,8 @@
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -636,6 +676,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -665,6 +707,9 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -680,6 +725,9 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -711,6 +759,9 @@
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -727,6 +778,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -756,6 +810,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix"
       ],
       "implementation_refs": [
@@ -771,6 +826,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -802,6 +858,9 @@
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -818,6 +877,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -847,6 +909,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
@@ -862,6 +926,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -891,6 +957,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix"
       ],
       "implementation_refs": [
@@ -906,6 +973,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -935,6 +1003,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix"
       ],
       "implementation_refs": [
@@ -950,6 +1019,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -981,6 +1051,7 @@
         "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
@@ -998,6 +1069,7 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
@@ -1082,6 +1154,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_timed_delete_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix"
@@ -1101,6 +1174,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_local_delete_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_timed_delete_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix"
@@ -1132,6 +1206,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "implementation_refs": [
@@ -1147,6 +1223,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1176,6 +1254,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "implementation_refs": [
@@ -1191,6 +1271,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_object_scope_relevance_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1220,6 +1302,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_value_update_requests_only_to_owner_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
       "implementation_refs": [
@@ -1235,6 +1318,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_value_update_requests_only_to_owner_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1264,6 +1348,9 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_update_advisory.py::run_update_advisory_callback_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "implementation_refs": [
@@ -1279,6 +1366,9 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1308,6 +1398,9 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_update_advisory.py::run_update_advisory_callback_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "implementation_refs": [
@@ -1323,6 +1416,9 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_update_advisory_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1352,6 +1448,9 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "implementation_refs": [
@@ -1367,6 +1466,9 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1396,6 +1498,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "implementation_refs": [
@@ -1411,6 +1514,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1440,6 +1544,9 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "implementation_refs": [
@@ -1455,6 +1562,9 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1484,6 +1594,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
@@ -1499,6 +1611,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1528,6 +1642,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
@@ -1543,6 +1659,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1572,6 +1690,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "implementation_refs": [
@@ -1587,6 +1706,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1616,6 +1736,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
@@ -1631,6 +1753,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1660,6 +1784,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "implementation_refs": [
@@ -1675,6 +1801,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1706,6 +1834,8 @@
         "packages/hla-verification/src/hla.verification/scenario_discovery_class.py::run_discovery_class_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix"
       ],
@@ -1723,6 +1853,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlapping_subscribers_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix"
       ],
@@ -1750,7 +1882,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1764,7 +1897,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "get_producing_federate",
@@ -1789,7 +1923,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1803,7 +1938,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "get_sent_regions",
@@ -1828,7 +1964,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1842,7 +1979,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "has_producing_federate",
@@ -1867,7 +2005,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -1881,7 +2020,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix"
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "has_sent_regions",
@@ -1909,6 +2049,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_unavailable_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_unavailable_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix"
       ],
       "implementation_refs": [
@@ -1924,6 +2065,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_unavailable_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -1955,6 +2097,8 @@
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
@@ -1972,6 +2116,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
@@ -2002,6 +2148,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "implementation_refs": [
@@ -2017,6 +2165,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -2046,6 +2196,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_clears_offered_ownership_state_when_owner_disconnects_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "implementation_refs": [
@@ -2061,6 +2213,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_clears_offered_ownership_state_when_owner_disconnects_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -2090,6 +2244,7 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "implementation_refs": [
@@ -2105,6 +2260,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -2134,6 +2290,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "implementation_refs": [
@@ -2149,6 +2307,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -2178,6 +2338,8 @@
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_clears_offered_ownership_state_when_owner_disconnects_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe"
       ],
       "implementation_refs": [
@@ -2193,6 +2355,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_clears_offered_ownership_state_when_owner_disconnects_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
@@ -2224,6 +2388,8 @@
         "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
@@ -2241,6 +2407,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
@@ -2275,6 +2443,8 @@
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
@@ -2294,6 +2464,8 @@
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
@@ -2374,7 +2546,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_request_retraction_callback_over_fedpro_schema"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -2388,7 +2561,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_request_retraction_callback_over_fedpro_schema"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "request_retraction",
@@ -2416,7 +2590,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -2430,7 +2605,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "time_regulation_enabled",
@@ -2458,7 +2634,8 @@
       "evidence": [
         "packages/hla-backend-common/src/hla.backends.common/recording.py::RecordingFederateAmbassador",
         "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema"
       ],
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
@@ -2472,7 +2649,8 @@
       "negative_expectation_count": 0,
       "negative_test_refs": [],
       "positive_test_refs": [
-        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services"
+        "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema"
       ],
       "python_entry_point": "RecordingFederateAmbassador callback + snake_case alias",
       "python_name": "time_constrained_enabled",
@@ -4013,9 +4191,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "resignFederationExecution",
       "negative_executed_count": 6,
       "negative_expectation_count": 7,
@@ -4083,9 +4259,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "registerFederationSynchronizationPoint",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -4966,9 +5140,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "createFederationExecution",
       "negative_executed_count": 9,
       "negative_expectation_count": 10,
@@ -5029,9 +5201,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "createFederationExecutionWithMIM",
       "negative_executed_count": 9,
       "negative_expectation_count": 10,
@@ -5143,9 +5313,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "listFederationExecutions",
       "negative_executed_count": 1,
       "negative_expectation_count": 2,
@@ -6116,9 +6284,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "attributeOwnershipReleaseDenied",
       "negative_executed_count": 7,
       "negative_expectation_count": 8,
@@ -6172,9 +6338,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "attributeOwnershipDivestitureIfWanted",
       "negative_executed_count": 7,
       "negative_expectation_count": 8,
@@ -6229,9 +6393,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "cancelNegotiatedAttributeOwnershipDivestiture",
       "negative_executed_count": 8,
       "negative_expectation_count": 9,
@@ -6286,9 +6448,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "cancelAttributeOwnershipAcquisition",
       "negative_executed_count": 8,
       "negative_expectation_count": 9,
@@ -6561,9 +6721,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "confirmDivestiture",
       "negative_executed_count": 9,
       "negative_expectation_count": 10,
@@ -6619,9 +6777,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "attributeOwnershipAcquisition",
       "negative_executed_count": 9,
       "negative_expectation_count": 10,
@@ -6678,9 +6834,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "attributeOwnershipAcquisitionIfAvailable",
       "negative_executed_count": 10,
       "negative_expectation_count": 11,
@@ -7108,11 +7262,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getObjectInstanceName",
-      "negative_executed_count": 2,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7163,9 +7315,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAttributeHandle",
       "negative_executed_count": 4,
       "negative_expectation_count": 5,
@@ -7219,11 +7369,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAttributeName",
-      "negative_executed_count": 3,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7271,13 +7419,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getUpdateRateValue",
-      "negative_executed_count": 0,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7319,13 +7468,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getUpdateRateValueForAttribute",
-      "negative_executed_count": 0,
+      "negative_executed_count": 4,
       "negative_expectation_count": 5,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7368,9 +7518,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getInteractionClassHandle",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -7422,9 +7570,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getInteractionClassName",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -7477,11 +7623,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getParameterHandle",
-      "negative_executed_count": 3,
+      "negative_executed_count": 4,
       "negative_expectation_count": 5,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7533,11 +7677,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getParameterName",
-      "negative_executed_count": 3,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7587,11 +7729,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getOrderType",
-      "negative_executed_count": 1,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7638,13 +7778,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAutomaticResignDirective",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 3,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7687,11 +7828,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getOrderName",
-      "negative_executed_count": 1,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7739,13 +7878,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getTransportationType",
-      "negative_executed_count": 0,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7787,11 +7927,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getTransportationTypeHandle",
-      "negative_executed_count": 1,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7840,11 +7978,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getTransportationName",
-      "negative_executed_count": 1,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -7891,13 +8027,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getTransportationTypeName",
-      "negative_executed_count": 0,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7943,11 +8080,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAvailableDimensionsForClassAttribute",
-      "negative_executed_count": 3,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -8001,11 +8136,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAvailableDimensionsForInteractionClass",
-      "negative_executed_count": 1,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -8056,9 +8189,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getDimensionHandle",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -8119,9 +8250,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getDimensionName",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -8179,9 +8308,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getDimensionUpperBound",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -8243,13 +8370,18 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getDimensionHandleSet",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/factories/test_fom_time_factories.py",
+        "tests/backends/test_python_backend_support_services.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/factories/test_fom_time_factories.py",
@@ -8301,11 +8433,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getRangeBounds",
-      "negative_executed_count": 4,
+      "negative_executed_count": 6,
       "negative_expectation_count": 7,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -8359,13 +8489,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "setAutomaticResignDirective",
-      "negative_executed_count": 0,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8415,11 +8546,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "setRangeBounds",
-      "negative_executed_count": 4,
+      "negative_executed_count": 8,
       "negative_expectation_count": 9,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -8475,11 +8604,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "normalizeFederateHandle",
-      "negative_executed_count": 1,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -8527,13 +8654,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "normalizeServiceGroup",
-      "negative_executed_count": 0,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8576,13 +8704,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableObjectClassRelevanceAdvisorySwitch",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8625,13 +8754,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableObjectClassRelevanceAdvisorySwitch",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8674,13 +8804,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableAttributeRelevanceAdvisorySwitch",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8723,13 +8854,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableAttributeRelevanceAdvisorySwitch",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8772,13 +8904,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableAttributeScopeAdvisorySwitch",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8821,13 +8954,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableAttributeScopeAdvisorySwitch",
-      "negative_executed_count": 0,
+      "negative_executed_count": 5,
       "negative_expectation_count": 6,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8870,9 +9004,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableInteractionRelevanceAdvisorySwitch",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -8922,9 +9054,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getFederateHandle",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -8976,9 +9106,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableInteractionRelevanceAdvisorySwitch",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -9032,9 +9160,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "evokeCallback",
       "negative_executed_count": 1,
       "negative_expectation_count": 2,
@@ -9102,9 +9228,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "evokeMultipleCallbacks",
       "negative_executed_count": 1,
       "negative_expectation_count": 2,
@@ -9171,9 +9295,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableCallbacks",
       "negative_executed_count": 2,
       "negative_expectation_count": 3,
@@ -9236,9 +9358,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableCallbacks",
       "negative_executed_count": 2,
       "negative_expectation_count": 3,
@@ -9296,13 +9416,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAttributeHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9343,13 +9465,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAttributeHandleSetFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9390,13 +9514,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAttributeHandleValueMapFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9437,13 +9563,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getAttributeSetRegionSetPairListFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9484,13 +9612,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getDimensionHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9531,13 +9661,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getDimensionHandleSetFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9578,13 +9710,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getFederateHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9625,13 +9759,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getFederateHandleSetFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9720,13 +9856,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getInteractionClassHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9767,13 +9905,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getObjectClassHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9814,13 +9954,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getObjectInstanceHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9861,13 +10003,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getParameterHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9908,13 +10052,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getParameterHandleValueMapFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -9955,13 +10101,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getRegionHandleSetFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -10000,13 +10148,14 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getTimeFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/factories/test_fom_time_factories.py"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/factories/test_fom_time_factories.py"
@@ -10047,13 +10196,15 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getTransportationTypeHandleFactory",
-      "negative_executed_count": 0,
+      "negative_executed_count": 2,
       "negative_expectation_count": 2,
-      "negative_test_refs": [],
+      "negative_test_refs": [
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
       "positive_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
@@ -10097,11 +10248,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getFederateName",
-      "negative_executed_count": 2,
+      "negative_executed_count": 4,
       "negative_expectation_count": 5,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -10151,9 +10300,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getObjectClassHandle",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -10205,9 +10352,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getObjectClassName",
       "negative_executed_count": 3,
       "negative_expectation_count": 4,
@@ -10259,11 +10404,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getKnownObjectClassHandle",
-      "negative_executed_count": 2,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -10313,11 +10456,9 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "getObjectInstanceHandle",
-      "negative_executed_count": 2,
+      "negative_executed_count": 3,
       "negative_expectation_count": 4,
       "negative_test_refs": [
         "tests/scenarios/test_support_services_backend_matrix.py",
@@ -10539,9 +10680,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableAsynchronousDelivery",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -10600,9 +10739,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableAsynchronousDelivery",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -10887,9 +11024,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableTimeRegulation",
       "negative_executed_count": 8,
       "negative_expectation_count": 9,
@@ -11050,9 +11185,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "changeAttributeOrderType",
       "negative_executed_count": 7,
       "negative_expectation_count": 8,
@@ -11167,9 +11300,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableTimeRegulation",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -11222,9 +11353,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "enableTimeConstrained",
       "negative_executed_count": 7,
       "negative_expectation_count": 8,
@@ -11275,9 +11404,7 @@
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
-      "known_gaps": [
-        "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
-      ],
+      "known_gaps": [],
       "method_name": "disableTimeConstrained",
       "negative_executed_count": 5,
       "negative_expectation_count": 6,
@@ -17167,7 +17294,7 @@
       "total_generated_cases": 269
     },
     "row_count": 217,
-    "rows_with_known_gaps": 152,
+    "rows_with_known_gaps": 72,
     "version": "0.13.0"
   }
 }

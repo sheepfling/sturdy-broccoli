@@ -16,6 +16,11 @@ Start here:
 The `scripts/` tree is implementation and CI plumbing, not the primary
 human-facing operator surface.
 
+For IEEE 1516.1-2025 specifically, the runtime owner behind the supported
+operator flows is `hla-backend-python2025`. The legacy `shim` provider name
+remains wrapper-only, and hosted 2025 FedPro routes remain bounded route
+variants rather than separate RTI families.
+
 If you are trying to decide what to run by hand:
 
 - use `tools/` first
@@ -47,6 +52,13 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/lint` canonical local lint, link, and generated-doc hygiene flow
 - `./tools/two-federate` canonical generic two-federate artifact flow
 - `./tools/test` canonical direct pytest wrapper
+
+When a script or wrapper touches the 2025 runtime lane, interpret that work
+through these surfaces first:
+
+- [../docs/python_rti_backend.md](../docs/python_rti_backend.md)
+- [../docs/python_rti_reading_map.md](../docs/python_rti_reading_map.md)
+- [../docs/verification/time_model_compliance.md](../docs/verification/time_model_compliance.md)
 
 Repo setup entrypoints that still live under `scripts/`:
 

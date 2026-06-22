@@ -45,8 +45,16 @@ path starts, even though the backend itself is healthy.
 
 - `./tools/python verify-routes-preflight`
 - `./tools/python verify-routes`
+- `./tools/python verify-routes-2025`
 - `python3 -m pytest -q tests/scenarios/test_python_route_parity.py -k grpc`
+- `python3 -m pytest -q tests/transport/test_grpc_transport_2025.py`
 - `./tools/target-radar matrix`
+
+Route split:
+
+- `./tools/python verify-routes` is the older 2010 hosted Python parity lane
+- `./tools/python verify-routes-2025` is the bounded hosted IEEE 1516.1-2025
+  lane over the main `hla-backend-python2025` runtime
 
 ## Preferred Implementation
 
@@ -88,7 +96,9 @@ codex_runner_policy:
     - match:
         - ./tools/python verify-routes-preflight
         - ./tools/python verify-routes
+        - ./tools/python verify-routes-2025
         - python3 -m pytest -q tests/scenarios/test_python_route_parity.py -k grpc
+        - python3 -m pytest -q tests/transport/test_grpc_transport_2025.py
         - ./tools/target-radar matrix
       require_external_network: false
       require_loopback: true
@@ -108,6 +118,8 @@ After the policy change, these commands should pass on the same Codex surface:
 ./tools/python verify-routes-preflight --json
 python3 -m pytest -q tests/scenarios/test_python_route_parity.py -k grpc
 ./tools/python verify-routes
+python3 -m pytest -q tests/transport/test_grpc_transport_2025.py
+./tools/python verify-routes-2025
 ```
 
 Expected preflight result:
@@ -119,6 +131,8 @@ Expected preflight result:
 Expected parity result:
 
 - the `python-grpc` route passes the same semantic assertions as `python-direct`
+- the bounded `python-2025-fedpro-grpc` route passes the same hosted-route
+  identity and parity assertions as the direct `python2025` lane
 
 ## Copyable Change Request
 

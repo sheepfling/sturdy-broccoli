@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import inspect
 
+import pytest
+
 import hla.rti1516e
 import hla.rti1516e.rti as rti_module
 from hla.backends.common import RecordingBackend, make_rti_ambassador
@@ -10,6 +12,8 @@ from hla.rti1516e.rti import available_backend_plugins, create_rti_ambassador, d
 from hla.rti1516e import FederateAmbassador, NullFederateAmbassador, RTIambassador, lower_camel_to_snake
 from hla.rti1516e.federate_ambassador import UnimplementedFederateAmbassador
 from hla.rti1516e.rti_ambassador import UnimplementedRTIambassador
+
+_PYTHON2025_PROVIDER_ALIASES = ("python2025", "python-2025", "python-2025-backend")
 
 
 def _public_callables(cls: type) -> dict[str, object]:
@@ -85,6 +89,78 @@ def test_runtime_backend_listing_is_deduplicated_and_probeable():
     probed = {row.name: row for row in discover_rti_backends(probe=True)}
     assert probed["inmemory"].available is True
     assert probed["inmemory"].info.kind == "python/in-memory"
+
+
+def test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane() -> None:
+    from hla.rti import discover_rti_backends as discover_runtime_backends
+
+    registered = {row.name: row for row in discover_runtime_backends(spec="2025")}
+    probed = {row.name: row for row in discover_runtime_backends(spec="2025", probe=True)}
+
+    assert registered["python2025"].family == "inmemory-2025"
+    assert registered["python2025"].aliases == _PYTHON2025_PROVIDER_ALIASES[1:]
+    assert registered["python2025"].supports == ("rti1516_2025",)
+    assert registered["python2025"].description == "Primary Python 2025 RTI implementation package."
+    assert registered["python2025"].available is None
+    assert registered["python2025"].info is None
+    assert probed["python2025"].available is True
+    assert probed["python2025"].aliases == _PYTHON2025_PROVIDER_ALIASES[1:]
+    assert probed["python2025"].info.kind == "python/2025"
+    assert probed["python2025"].info.details["implementation_lane"] == "hla-backend-python2025"
+    assert probed["python2025"].info.details["counts_as_python_2025_rti"] is True
+    assert "wrapper_only" not in probed["python2025"].info.details
+
+
+@pytest.mark.parametrize("backend_name", _PYTHON2025_PROVIDER_ALIASES)
+def test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_primary_identity(
+    backend_name: str,
+) -> None:
+    from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
+
+    runtime_rti = create_runtime_rti_ambassador(spec="2025", backend=backend_name)
+
+    assert runtime_rti.backend_info.details["provider"] == "python2025"
+    assert runtime_rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert runtime_rti.backend_info.details["counts_as_python_2025_rti"] is True
+    assert runtime_rti.backend_info.kind == "python/2025"
+    assert "wrapper_only" not in runtime_rti.backend_info.details
+
+
+def test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name() -> None:
+    from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
+
+    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+        create_runtime_rti_ambassador(spec="2025", backend="shim")
+
+
+@pytest.mark.parametrize("backend_name", _PYTHON2025_PROVIDER_ALIASES)
+def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python2025_aliases(backend_name: str) -> None:
+    from hla.backends.python2025.hosted_fedpro import FedPro2025RTIAmbassador
+    from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
+
+    rti = create_runtime_rti_ambassador(
+        spec="2025",
+        backend=backend_name,
+        transport={"kind": "grpc", "target": "127.0.0.1:15164"},
+    )
+
+    assert isinstance(rti, FedPro2025RTIAmbassador)
+    assert rti.backend_info.details["provider"] == "python2025"
+    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+    assert rti.backend_info.details["wrapper_only"] is False
+    rti.close()
+
+
+def test_generic_runtime_creation_for_2025_rejects_hosted_transport_on_legacy_shim_provider() -> None:
+    from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
+
+    with pytest.raises(ValueError, match="Unknown RTI backend 'shim'"):
+        create_runtime_rti_ambassador(
+            spec="2025",
+            backend="shim",
+            transport={"kind": "grpc", "target": "127.0.0.1:15164"},
+        )
 
 
 def test_root_rti_facade_stays_narrow():

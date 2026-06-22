@@ -216,12 +216,26 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
                 "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario",
                 "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_receive_order_poison_scenario",
                 "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
                 "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
                 "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
             ),
             gaps=("The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm.",),
-            notes="The bounded radar time harness now proves future-exclusion blocking, closed-window output delivery, and downstream consumer ordering/replay behavior under timestamp order.",
+            notes=(
+                "The bounded radar time harness now proves future-exclusion blocking, closed-window output delivery, "
+                "downstream consumer ordering, pipeline overlap isolation, and receive-order poison rejection under "
+                "timestamp order, with spec-lane negative oracle guards for mismatched LITS, premature output, "
+                "reversed consumer order, cross-window contamination, and closed-window mutation."
+            ),
         ),
         VerificationAsset(
             "REQ-SAVE-RESTORE-001",
@@ -257,9 +271,19 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
                 "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
                 "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_output_scenario",
                 "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
                 "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
                 "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
+            ),
+            notes=(
+                "The bounded 2025 restore ladder now covers open-window restore, closed-window restore, output resume, "
+                "and pipeline resume, with spec-lane negative oracle guards for dirty post-close callback leakage, "
+                "dirty output replay, and dirty pipeline output replay."
             ),
         ),
         VerificationAsset(
@@ -283,8 +307,44 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             (
                 "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
                 "tests/verification/test_compliance_slice_v011.py::test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping",
+                "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_stale_directed_tso_cleanup_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_output_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
+                "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_post_restore_routing_over_fedpro_schema",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
             ),
-            notes="This slice specifies transient post-restore quiescence rather than persistence of queued callback or message-retraction state.",
+            notes=(
+                "This slice specifies transient post-restore quiescence rather than persistence of queued callback or "
+                "message-retraction state, including bounded 2025 restore-output and pipeline-resume checks that dirty "
+                "replayed outputs do not survive restore."
+            ),
+        ),
+        VerificationAsset(
+            "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+            "requirement",
+            "Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations",
+            ("1516-2010 §12.2", "1516.1-2010 §4.24-§4.29", "1516.1-2010 §5", "1516.1-2010 §6"),
+            "implemented-slice",
+            (
+                "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_plain_object_subscriber_routing_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_plain_interaction_subscriber_routing_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_directed_ddm_subscriber_routing_scenario",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing",
+                "tests/test_rti1516_2025_spec_and_shim.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_interaction_subscriber_routing_over_fedpro_schema",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema",
+            ),
+            notes=(
+                "This slice isolates declaration-routing rollback as saved RTI state: subscriber A owns the saved "
+                "route, subscriber B owns the dirty post-save route, and restore must reinstate the saved delivery "
+                "visibility for object reflections, plain interaction receipt, and directed DDM interaction routing."
+            ),
         ),
         VerificationAsset(
             "REQ-DM-DECLARATION-STATE-001",

@@ -32,6 +32,10 @@ class Spec2025RouteParityRow:
     notes: str
     evidence_scope: str = ""
     evidence_artifacts: tuple[str, ...] = ()
+    runtime_provider: str = ""
+    implementation_lane: str = ""
+    counts_as_python_2025_rti: bool | None = None
+    wrapper_only: bool | None = None
 
 
 _PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_spec_and_shim.py",)
@@ -43,6 +47,44 @@ _ROUTE_EVIDENCE_TESTS = (
 )
 _FINISH_LINE_TESTS = ("tests/requirements/test_2025_finish_line_snapshot.py",)
 _PYTHON_ROUTE_PARITY_TESTS = ("tests/scenarios/test_python_route_parity.py",)
+
+_STANDARD_ROUTE_BACKING_NOTE = (
+    "These binding/wrapper routes are executed over the primary python2025 runtime lane in "
+    "hla-backend-python2025, with the Java/C++ packages limited to compatibility and API adaptation."
+)
+
+_STANDARD_ROUTE_SEAM_NOTE = (
+    "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main "
+    "hla-backend-python2025 runtime, not as alternate ownership of core 2025 RTI semantics."
+)
+
+_HOSTED_PYTHON2025_IDENTITY_NOTE = (
+    "Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify "
+    "python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with "
+    "counts_as_python_2025_rti=true and wrapper_only=false where those fields apply."
+)
+
+_HOSTED_PYTHON2025_SEAM_NOTE = (
+    "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than "
+    "evidence that the main 2025 Python RTI lane lacks the underlying semantics."
+)
+
+
+def _normalized_notes(route: str, notes: str) -> str:
+    additions: list[str] = []
+    if route.startswith(("java-standard-2025", "cpp-standard-2025")):
+        if _STANDARD_ROUTE_BACKING_NOTE not in notes:
+            additions.append(_STANDARD_ROUTE_BACKING_NOTE)
+        if _STANDARD_ROUTE_SEAM_NOTE not in notes:
+            additions.append(_STANDARD_ROUTE_SEAM_NOTE)
+    if route == "python-2025-fedpro-grpc":
+        if _HOSTED_PYTHON2025_IDENTITY_NOTE not in notes:
+            additions.append(_HOSTED_PYTHON2025_IDENTITY_NOTE)
+        if _HOSTED_PYTHON2025_SEAM_NOTE not in notes:
+            additions.append(_HOSTED_PYTHON2025_SEAM_NOTE)
+    if not additions:
+        return notes
+    return f"{notes} {' '.join(additions)}"
 
 
 def _evidence_scope(scenario: str, route: str, status: str) -> str:
@@ -73,7 +115,10 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
             f"docs/evidence/shim_routes/route_traces/{route}.json",
         )
     if route == "python-2025-fedpro-grpc":
-        return ("tests/transport/test_grpc_transport_2025.py",)
+        return (
+            "tests/transport/test_grpc_transport_2025.py",
+            "docs/plans/spec2025_finish_line_snapshot.json",
+        )
     if route == "python-2025-inprocess":
         return ("tests/test_rti1516_2025_spec_and_shim.py",)
     return ()
@@ -87,15 +132,23 @@ def _row(
     evidence_tests: tuple[str, ...],
     notes: str,
 ) -> Spec2025RouteParityRow:
+    runtime_provider = "python2025" if route in ROUTE_IDS_2025 else ""
+    implementation_lane = "hla-backend-python2025" if route in ROUTE_IDS_2025 else ""
+    counts_as_python_2025_rti = True if route.startswith("python-2025") else False if route in ROUTE_IDS_2025 else None
+    wrapper_only = False if route in ROUTE_IDS_2025 else None
     return Spec2025RouteParityRow(
         scenario=scenario,
         route=route,
         status=status,
         requirements=requirements,
         evidence_tests=evidence_tests,
-        notes=notes,
+        notes=_normalized_notes(route, notes),
         evidence_scope=_evidence_scope(scenario, route, status),
         evidence_artifacts=_evidence_artifacts(scenario, route, status),
+        runtime_provider=runtime_provider,
+        implementation_lane=implementation_lane,
+        counts_as_python_2025_rti=counts_as_python_2025_rti,
+        wrapper_only=wrapper_only,
     )
 
 
@@ -106,7 +159,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-005", "HLA2025-FI-006"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers connect, create, join, resign, destroy, disconnect, and callback polling.",
+        "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, "
+        "disconnect, and callback polling.",
     ),
     _row(
         "federation_lifecycle",
@@ -115,9 +169,13 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls plus real "
-        "listFederationExecutions/listFederationExecutionMembers callback flow, explicit single-FOM and "
-        "createFederationExecutionWithMIM transport-command routing, missing-federation member notices, and "
-        "federateResigned callback delivery.",
+        "shared federation listing plus real listFederationExecutions/listFederationExecutionMembers callback flow, "
+        "explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of direct federation "
+        "listing and member-report callbacks through the hosted 2025 ambassador surface, "
+        "shared join-precondition rejection for not-connected, missing-federation, duplicate-name, already-joined, "
+        "save-in-progress, and restore-in-progress cases, shared resign-precondition rejection for not-connected, not-joined, invalid-action, owned-attribute, and pending-acquisition cases, "
+        "shared multi-participation across primary and secondary federations, shared resign/disconnect MOM cleanup, shared lost-federate MOM reporting plus automatic object cleanup, shared single-module and multi-module federation FOM visibility plus incompatible-join FOM integrity rejection, explicit single-FOM and createFederationExecutionWithMIM transport-command routing, "
+        "MIM-data alias normalization, missing-federation member notices, and federateResigned callback delivery.",
     ),
     _row(
         "federation_lifecycle",
@@ -161,7 +219,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, "
+        "Current Python 2025 RTI covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, "
         "universal directed subscribe alias, discovery, attribute reflection, interaction receipt, and directed interaction receipt.",
     ),
     _row(
@@ -171,7 +229,11 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers passive object and interaction subscribe aliases, universal directed subscribe alias, "
-        "object discovery, attribute reflection, interaction receipt, directed interaction receipt, selective directed set unsubscribe/unpublish, and timestamped variants.",
+        "object discovery, attribute reflection, interaction receipt, explicit factory-hosted create_rti_ambassador('python2025', "
+        "transport=...) execution of direct object discovery, reflection, and interaction receipt through the hosted 2025 ambassador surface, "
+        "directed interaction receipt, time-managed declaration independence, "
+        "selective directed set unsubscribe/unpublish, invalid attribute-publication rejection, post-unpublish object/interaction send rejection, "
+        "and timestamped variants.",
     ),
     _row(
         "object_exchange",
@@ -215,7 +277,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers basic, negotiated, cancellation, unavailable, release-denied, and resign ownership slices.",
+        "Current Python 2025 RTI covers basic, negotiated, cancellation, unavailable, release-denied, and resign ownership slices, "
+        "plus save/restore rollback of in-flight acquisition/divestiture state and cross-federate owner-visibility recovery.",
     ),
     _row(
         "ownership",
@@ -223,9 +286,16 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers basic divest/acquire/query callbacks, negotiated divestiture, release requests, "
-        "release denial, acquisition cancellation, divestiture-if-wanted, RTI-owned MOM attribute ownership query callbacks, "
-        "and cancel-negotiated-offer callbacks; "
+        "Hosted FedPro 2025 route covers unavailable acquisition, basic divest/acquire/query callbacks, non-owner update rejection, "
+        "negotiated divestiture, confirm-divestiture completion, release requests, release denial, acquisition cancellation, "
+        "divestiture-if-wanted, RTI-owned MOM attribute ownership query callbacks, "
+        "and cancel-negotiated-offer callbacks, explicit factory-hosted create_rti_ambassador('python2025', transport=...) "
+        "execution of the smoke save/restore ownership rollback gauntlet plus owned-attribute reacquisition rejection, "
+        "non-owner divestiture rejection, unowned query callbacks, fresh acquisition notification, informed-owner "
+        "query callbacks, restored in-flight ownership negotiation state, and restored cross-federate "
+        "owner-visibility callbacks through the direct 2025 ambassador surface; "
+        "save/restore recovery of in-flight ownership negotiation state and restored "
+        "cross-federate owner-visibility callbacks are also exercised over the hosted FedPro route; "
         "resign-time divest/delete/cancel ownership policies are exercised over the FedPro route.",
     ),
     _row(
@@ -272,7 +342,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers object-region filtering, passive object and interaction region-subscribe aliases, "
+        "Current Python 2025 RTI covers object-region filtering, passive object and interaction region-subscribe aliases, "
         "scope advisory callbacks, and 2025 default attribute policy calls.",
     ),
     _row(
@@ -328,12 +398,14 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
         _PYTHON_CORE_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
-        "Python 2025 shim covers logical-time factories, regulation/constrained mode, lookahead query/modify, "
+        "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, "
         "advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the "
-        "Target/Radar integrated lookahead-processing-window gauntlet plus the time-window core, "
-        "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
+        "Target/Radar integrated lookahead-processing-window gauntlet together with the time-window core, "
+        "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion blocking until "
+        "GALT/LITS reach the window end, "
         "save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, "
-        "save-restore-output-resume, and save-restore-pipeline-resume proofs.",
+        "save-restore-output-resume, and save-restore-pipeline-resume scenarios backed by falsifiable "
+        "oracle-rejection guards.",
     ),
     _row(
         "time_management",
@@ -343,11 +415,17 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         _FEDPRO_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
         "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
         "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, bounded logical time/GALT/LITS/lookahead query "
-        "evidence, queued-TSO GALT/LITS divergence after a live lookahead change, a hosted Target/Radar "
-        "proof-ladder replay over the real 2025 FedPro route, the Target/Radar "
+        "evidence, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM "
+        "time-management service interactions through the direct 2025 ambassador surface, queued-TSO GALT/LITS "
+        "divergence after a live lookahead change, a hosted Target/Radar "
+        "proof-ladder replay over the main python2025-backed FedPro route, explicit factory-hosted "
+        "create_rti_ambassador('python2025', transport=...) execution of the package-owned future-exclusion, "
+        "output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, and restore-state "
+        "scenario adapter paths, the Target/Radar "
         "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
         "save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, "
-        "save-restore-output-resume, and save-restore-pipeline-resume proofs, and "
+        "save-restore-output-resume, and save-restore-pipeline-resume scenarios backed by falsifiable "
+        "oracle-rejection guards, and "
         "pre-delivery retract.",
     ),
     _row(
@@ -392,10 +470,12 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers federation save/restore lifecycle, rollback callback slices, callback-delivery runtime-policy preservation, "
+        "Current Python 2025 RTI covers federation save/restore lifecycle, rollback callback slices, callback-delivery runtime-policy preservation, "
         "plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, in-flight ownership "
         "and owner-visibility rollback, time/switch-control rollback, saved lookahead recovery, transport/order policy "
-        "rollback, and pre-save queued-TSO redelivery after restore.",
+        "rollback including transportation-type restore persistence, restore failure/abort plus restore-precondition/participant/status "
+        "negative control flow, exact status-clear transitions back to NO_SAVE_IN_PROGRESS/NO_RESTORE_IN_PROGRESS, full initiate/save/restore callback "
+        "contracts, local-delete object-known-state recovery, and pre-save queued-TSO redelivery after restore.",
     ),
     _row(
         "save_restore",
@@ -404,8 +484,13 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers save/restore lifecycle calls, untimed and timed initiateFederateSave callbacks, "
-        "status callbacks, success/failure callbacks, abort callbacks, object registry rollback, logical-time rollback, "
-        "time/switch-control rollback, queued-TSO redelivery after restore, and bounded radar-window state rollback.",
+        "status callbacks, success/failure callbacks, abort callbacks, restore precondition/failure/abort plus restore participant/status exception control flow, "
+        "post-resign callback silence for departed federates, "
+        "object registry rollback, logical-time rollback, time/switch-control rollback, plain object/interaction "
+        "subscriber-routing rollback, directed DDM subscriber-routing rollback, local-delete object-known-state recovery, "
+        "transportation-type restore persistence, queued-TSO redelivery after restore, explicit factory-hosted "
+        "create_rti_ambassador('python2025', transport=...) execution of the package-owned restore-state, "
+        "restore-output-resume, and pipeline-resume scenario adapter paths, and bounded radar-window state rollback.",
     ),
     _row(
         "save_restore",
@@ -451,7 +536,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim records MOM switch/report serialization slices and routes MIM data, FOM module data, "
+        "Current Python 2025 RTI records MOM switch/report serialization slices and routes MIM data, FOM module data, "
         "synchronization point MOM request/report interactions, and service/exception reporting MOM adjust "
         "interactions plus exposed HLAsetSwitches adjust interactions and HLAsetTiming/HLAmodifyAttributeState adjust interactions "
         "plus federate-level FOM module data, publication/subscription, and object-instance information MOM reports, "
@@ -472,6 +557,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object "
         "instance information and object-instance counts, reports activity counts for updates/reflections/interactions, "
         "reports synchronization points/status, proves direct synchronization registration/announce/achieved/federation-synchronized callbacks, "
+        "proves explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM federation-management "
+        "save/restore service interactions plus MOM time-management service interactions through the direct 2025 ambassador surface, "
         "proves requestRetraction callback delivery after delivered timestamp-order receipt, round-trips 2025 switch services, emits HLAreportMOMexception "
         "for failed routed MOM actions, and routes all hosted MOM manager adjust/service command leaves with "
         "representative state and callback effects.",
@@ -518,7 +605,12 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-MOD-007"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim covers support lookups needed by the current runtime scenarios.",
+        "Primary Python 2025 RTI implementation covers FOM handle/name round trips, raw support-service handle-factory "
+        "and decode-helper proof without routing through the compatibility wrapper, snake-case alias acceptance on the "
+        "primary direct-runtime surface, transportation/order lookups, automatic resign directive get/set round trips, "
+        "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the "
+        "main hla-backend-python2025 lane, direct attribute and interaction transportation change/query callback flow, "
+        "and single/multiple object-instance name reservation/release callback flow.",
     ),
     _row(
         "support_services",
@@ -526,9 +618,10 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers FOM handle/name round trips, dimension/range, transportation/order, "
-        "update-rate, normalization, logical-time query, single and multiple object-instance name reservation/release "
-        "callback flow, turnUpdatesOn/turnUpdatesOff advisory callback flow for object-class subscriptions, direct "
+        "Hosted FedPro 2025 route over the primary Python 2025 RTI implementation covers FOM handle/name round trips, dimension/range, transportation/order, "
+        "update-rate, normalization, logical-time query, callback-delivery enable/disable control with queued reflection release plus reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect, "
+        "explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks, "
+        "single and multiple object-instance name reservation/release callback flow, turnUpdatesOn/turnUpdatesOff advisory callback flow for object-class subscriptions, direct "
         "attribute and interaction transportation change/query callback flow, automatic resign directive get/set, "
         "and 2025 switch get/set plus read-only switch inquiry services.",
     ),
@@ -651,6 +744,10 @@ def summarize_spec2025_route_parity(rows: tuple[Spec2025RouteParityRow, ...] = S
                 "evidence_tests": list(row.evidence_tests),
                 "evidence_scope": row.evidence_scope,
                 "evidence_artifacts": list(row.evidence_artifacts),
+                "runtime_provider": row.runtime_provider,
+                "implementation_lane": row.implementation_lane,
+                "counts_as_python_2025_rti": row.counts_as_python_2025_rti,
+                "wrapper_only": row.wrapper_only,
                 "notes": row.notes,
             }
             for row in rows
@@ -675,6 +772,10 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
                 "requirements",
                 "evidence_tests",
                 "evidence_artifacts",
+                "runtime_provider",
+                "implementation_lane",
+                "counts_as_python_2025_rti",
+                "wrapper_only",
                 "notes",
             ],
         )
@@ -689,6 +790,12 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
                     "requirements": "; ".join(row.requirements),
                     "evidence_tests": "; ".join(row.evidence_tests),
                     "evidence_artifacts": "; ".join(row.evidence_artifacts),
+                    "runtime_provider": row.runtime_provider,
+                    "implementation_lane": row.implementation_lane,
+                    "counts_as_python_2025_rti": ""
+                    if row.counts_as_python_2025_rti is None
+                    else str(row.counts_as_python_2025_rti).lower(),
+                    "wrapper_only": "" if row.wrapper_only is None else str(row.wrapper_only).lower(),
                     "notes": row.notes,
                 }
             )
@@ -698,14 +805,28 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "",
         "This matrix is not a conformance claim. It records which 2025 scenarios have executable route evidence and which routes remain partial or missing.",
         "",
-        "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Notes |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        "For the primary 2025 Python RTI claim, read the route identities narrowly:",
+        "",
+        "- `python-2025-inprocess` and `python-2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`.",
+        "- Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations.",
+        "- Hosted FedPro rows are transport-seam evidence over that same runtime, not a separate 2025 implementation family.",
+        "",
+        "For the main-implementation claim, read the scenario rows as a proof-family ledger too:",
+        "",
+        "- the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior",
+        "- Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`",
+        "- hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner",
+        "",
+        "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in SPEC2025_ROUTE_PARITY_ROWS:
         lines.append(
             f"| {row.scenario} | {row.route} | {row.status} | {row.evidence_scope} | "
             f"{', '.join(row.requirements)} | {', '.join(row.evidence_tests)} | "
-            f"{', '.join(row.evidence_artifacts)} | {row.notes} |"
+            f"{', '.join(row.evidence_artifacts)} | {row.runtime_provider} | {row.implementation_lane} | "
+            f"{'' if row.counts_as_python_2025_rti is None else str(row.counts_as_python_2025_rti).lower()} | "
+            f"{'' if row.wrapper_only is None else str(row.wrapper_only).lower()} | {row.notes} |"
         )
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return csv_path, md_path
@@ -730,6 +851,21 @@ def validate_spec2025_route_parity_evidence(
     root = Path(project_root)
     errors: list[str] = []
     for row in rows:
+        if row.route in ROUTE_IDS_2025:
+            if row.runtime_provider != "python2025":
+                errors.append(f"{row.scenario}/{row.route}: parity row must record runtime_provider=python2025")
+            if row.implementation_lane != "hla-backend-python2025":
+                errors.append(
+                    f"{row.scenario}/{row.route}: parity row must record implementation_lane=hla-backend-python2025"
+                )
+            expected_counts_as_primary = row.route.startswith("python-2025")
+            if row.counts_as_python_2025_rti is not expected_counts_as_primary:
+                errors.append(
+                    f"{row.scenario}/{row.route}: parity row must record counts_as_python_2025_rti="
+                    f"{str(expected_counts_as_primary).lower()}"
+                )
+            if row.wrapper_only is not False:
+                errors.append(f"{row.scenario}/{row.route}: parity row must record wrapper_only=false")
         if row.status == MISSING and row.evidence_artifacts:
             errors.append(f"{row.scenario}/{row.route}: missing rows must not carry evidence artifacts")
             continue
@@ -752,12 +888,55 @@ def validate_spec2025_route_parity_evidence(
                     errors.append(f"{row.scenario}/{row.route}: trace artifact route mismatch in {artifact}")
                 if payload.get("edition") != "2025":
                     errors.append(f"{row.scenario}/{row.route}: trace artifact is not 2025 in {artifact}")
+                route_selected = next((event for event in payload.get("trace", ()) if event.get("event") == "routeSelected"), None)
+                if route_selected is None:
+                    errors.append(f"{row.scenario}/{row.route}: trace artifact missing routeSelected event in {artifact}")
+                else:
+                    if route_selected.get("runtimeProvider") != "python2025":
+                        errors.append(
+                            f"{row.scenario}/{row.route}: route trace must record runtimeProvider=python2025 in {artifact}"
+                        )
+                    if route_selected.get("implementationLane") != "hla-backend-python2025":
+                        errors.append(
+                            f"{row.scenario}/{row.route}: route trace must record implementationLane=hla-backend-python2025 in {artifact}"
+                        )
+                    if route_selected.get("countsAsPython2025Rti") is not False:
+                        errors.append(
+                            f"{row.scenario}/{row.route}: route trace must record countsAsPython2025Rti=false in {artifact}"
+                        )
+                    if route_selected.get("wrapperOnly") is not False:
+                        errors.append(f"{row.scenario}/{row.route}: route trace must record wrapperOnly=false in {artifact}")
                 if row.scenario == "federation_lifecycle" and payload.get("scenario") != "lifecycle-core":
                     errors.append(f"{row.scenario}/{row.route}: lifecycle trace must record lifecycle-core in {artifact}")
                 if row.scenario == "federation_lifecycle" and payload.get("status") != "lifecycle-green":
                     errors.append(f"{row.scenario}/{row.route}: lifecycle trace must be lifecycle-green in {artifact}")
             elif artifact == "docs/evidence/shim_routes/java-standard-2025.json":
+                scenario_evidence = payload.get("scenario_evidence", {})
+                if scenario_evidence.get("runtime_provider") != "python2025":
+                    errors.append(f"{row.scenario}/{row.route}: Java aggregate route evidence must record runtime_provider=python2025")
+                if scenario_evidence.get("implementation_lane") != "hla-backend-python2025":
+                    errors.append(
+                        f"{row.scenario}/{row.route}: Java aggregate route evidence must record implementation_lane=hla-backend-python2025"
+                    )
+                if scenario_evidence.get("wrapper_only") is not False:
+                    errors.append(f"{row.scenario}/{row.route}: Java aggregate route evidence must record wrapper_only=false")
+                if scenario_evidence.get("counts_as_python_2025_rti") is not False:
+                    errors.append(
+                        f"{row.scenario}/{row.route}: Java aggregate route evidence must record counts_as_python_2025_rti=false"
+                    )
                 route_payload = payload.get("routes", {}).get(row.route, {})
+                if route_payload.get("runtime_provider") != "python2025":
+                    errors.append(f"{row.scenario}/{row.route}: Java route evidence must record runtime_provider=python2025")
+                if route_payload.get("implementation_lane") != "hla-backend-python2025":
+                    errors.append(
+                        f"{row.scenario}/{row.route}: Java route evidence must record implementation_lane=hla-backend-python2025"
+                    )
+                if route_payload.get("wrapper_only") is not False:
+                    errors.append(f"{row.scenario}/{row.route}: Java route evidence must record wrapper_only=false")
+                if route_payload.get("counts_as_python_2025_rti") is not False:
+                    errors.append(
+                        f"{row.scenario}/{row.route}: Java route evidence must record counts_as_python_2025_rti=false"
+                    )
                 if row.evidence_scope == "runtime-capability":
                     if route_payload.get("scenario") != "runtime-capability":
                         errors.append(f"{row.scenario}/{row.route}: Java route evidence must record runtime-capability")
@@ -771,7 +950,32 @@ def validate_spec2025_route_parity_evidence(
                             f"{sorted(missing_requirements)}"
                         )
             elif artifact == "docs/evidence/shim_routes/cpp-standard-2025.json":
+                scenario_evidence = payload.get("scenario_evidence", {})
+                if scenario_evidence.get("runtime_provider") != "python2025":
+                    errors.append(f"{row.scenario}/{row.route}: C++ aggregate route evidence must record runtime_provider=python2025")
+                if scenario_evidence.get("implementation_lane") != "hla-backend-python2025":
+                    errors.append(
+                        f"{row.scenario}/{row.route}: C++ aggregate route evidence must record implementation_lane=hla-backend-python2025"
+                    )
+                if scenario_evidence.get("wrapper_only") is not False:
+                    errors.append(f"{row.scenario}/{row.route}: C++ aggregate route evidence must record wrapper_only=false")
+                if scenario_evidence.get("counts_as_python_2025_rti") is not False:
+                    errors.append(
+                        f"{row.scenario}/{row.route}: C++ aggregate route evidence must record counts_as_python_2025_rti=false"
+                    )
                 route_payload = payload.get("routes", {}).get(row.route, {})
+                if route_payload.get("runtime_provider") != "python2025":
+                    errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record runtime_provider=python2025")
+                if route_payload.get("implementation_lane") != "hla-backend-python2025":
+                    errors.append(
+                        f"{row.scenario}/{row.route}: C++ route evidence must record implementation_lane=hla-backend-python2025"
+                    )
+                if route_payload.get("wrapper_only") is not False:
+                    errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record wrapper_only=false")
+                if route_payload.get("counts_as_python_2025_rti") is not False:
+                    errors.append(
+                        f"{row.scenario}/{row.route}: C++ route evidence must record counts_as_python_2025_rti=false"
+                    )
                 if row.evidence_scope == "lifecycle-trace":
                     if route_payload.get("scenario") != "lifecycle-core":
                         errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record lifecycle-core")

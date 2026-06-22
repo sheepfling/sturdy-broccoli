@@ -82,6 +82,17 @@ class ObjectClassSpec:
     attribute_transportations: Mapping[str, str] = field(default_factory=dict)
     attribute_update_rates: Mapping[str, str] = field(default_factory=dict)
     attribute_value_required: Mapping[str, str] = field(default_factory=dict)
+    attribute_update_types: Mapping[str, str] = field(default_factory=dict)
+    attribute_update_conditions: Mapping[str, str] = field(default_factory=dict)
+    attribute_ownership: Mapping[str, str] = field(default_factory=dict)
+    attribute_sharing: Mapping[str, str] = field(default_factory=dict)
+    attribute_order: Mapping[str, str] = field(default_factory=dict)
+    attribute_semantics: Mapping[str, str] = field(default_factory=dict)
+    sharing: str | None = None
+    semantics: str | None = None
+    directed_interactions: tuple[str, ...] = ()
+    directed_interaction_sharing: Mapping[str, str] = field(default_factory=dict)
+    dimensions: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -99,6 +110,11 @@ class InteractionClassSpec:
     declared_parameters: tuple[str, ...] = ()
     parameter_datatypes: Mapping[str, str] = field(default_factory=dict)
     transportation: str | None = None
+    sharing: str | None = None
+    order: str | None = None
+    semantics: str | None = None
+    parameter_semantics: Mapping[str, str] = field(default_factory=dict)
+    dimensions: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -193,6 +209,32 @@ class DimensionSpec:
     upper_bound: str | None = None
     normalization: str | None = None
     semantics: str | None = None
+    input_data_types: tuple[str, ...] = ()
+    input_data_description: str | None = None
+    output_data_semantics: str | None = None
+    value: str | None = None
+
+
+@dataclass(frozen=True)
+class TransportationSpec:
+    name: str
+    reliable: str | None = None
+    semantics: str | None = None
+
+
+@dataclass(frozen=True)
+class UpdateRateSpec:
+    name: str
+    rate: str | None = None
+    semantics: str | None = None
+
+
+@dataclass(frozen=True)
+class ForeignExtensionSpec:
+    """Foreign-namespace OMT extension payload retained without interpretation."""
+
+    parent_key: str
+    xml: str
 
 
 @dataclass(frozen=True)
@@ -225,13 +267,18 @@ class FOMModule:
     variant_record_datatypes: Mapping[str, VariantRecordDatatypeSpec] = field(default_factory=dict)
     tag_representations: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     transportation_names: tuple[str, ...] = ()
+    transportation_specs: Mapping[str, TransportationSpec] = field(default_factory=dict)
     update_rates: Mapping[str, str] = field(default_factory=dict)
+    update_rate_specs: Mapping[str, UpdateRateSpec] = field(default_factory=dict)
     synchronization_points: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     switch_settings: Mapping[str, str] = field(default_factory=dict)
     time_stamp_datatype: str | None = None
     lookahead_datatype: str | None = None
+    time_stamp_semantics: str | None = None
+    lookahead_semantics: str | None = None
     inferred_time_implementation: str | None = None
     notes: tuple[str, ...] = ()
+    foreign_extensions: tuple[ForeignExtensionSpec, ...] = ()
     is_mim: bool = False
 
     @property
@@ -253,12 +300,15 @@ class FOMModule:
             or self.variant_record_datatypes
             or self.tag_representations
             or self.transportation_names
+            or self.transportation_specs
             or self.update_rates
+            or self.update_rate_specs
             or self.synchronization_points
             or self.switch_settings
             or self.time_stamp_datatype
             or self.lookahead_datatype
             or self.notes
+            or self.foreign_extensions
         )
 
 
@@ -285,11 +335,15 @@ class FOMCatalog:
     variant_record_datatypes: Mapping[str, VariantRecordDatatypeSpec] = field(default_factory=dict)
     tag_representations: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     transportation_names: frozenset[str] = field(default_factory=frozenset)
+    transportation_specs: Mapping[str, TransportationSpec] = field(default_factory=dict)
     update_rates: Mapping[str, str] = field(default_factory=dict)
+    update_rate_specs: Mapping[str, UpdateRateSpec] = field(default_factory=dict)
     synchronization_points: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     switch_settings: Mapping[str, str] = field(default_factory=dict)
     time_stamp_datatype: str | None = None
     lookahead_datatype: str | None = None
+    time_stamp_semantics: str | None = None
+    lookahead_semantics: str | None = None
     notes: tuple[str, ...] = ()
     logical_time_implementation: str | None = None
 
@@ -333,7 +387,15 @@ class FOMCatalog:
                 for key, value in sorted(self.tag_representations.items())
             },
             "transportation_names": sorted(self.transportation_names),
+            "transportation_specs": {
+                key: _transportation_summary(spec)
+                for key, spec in sorted(self.transportation_specs.items())
+            },
             "update_rates": dict(sorted(self.update_rates.items())),
+            "update_rate_specs": {
+                key: _update_rate_summary(spec)
+                for key, spec in sorted(self.update_rate_specs.items())
+            },
             "synchronization_points": {
                 key: dict(sorted(value.items()))
                 for key, value in sorted(self.synchronization_points.items())
@@ -341,6 +403,8 @@ class FOMCatalog:
             "switch_settings": dict(sorted(self.switch_settings.items())),
             "time_stamp_datatype": self.time_stamp_datatype,
             "lookahead_datatype": self.lookahead_datatype,
+            "time_stamp_semantics": self.time_stamp_semantics,
+            "lookahead_semantics": self.lookahead_semantics,
             "notes": list(self.notes),
             "logical_time_implementation": self.logical_time_implementation,
         }
@@ -411,6 +475,20 @@ def _datatype_summary(spec: Any) -> dict[str, Any]:
     return {}
 
 
+def _transportation_summary(spec: TransportationSpec) -> dict[str, Any]:
+    return {
+        "reliable": spec.reliable,
+        "semantics": spec.semantics,
+    }
+
+
+def _update_rate_summary(spec: UpdateRateSpec) -> dict[str, Any]:
+    return {
+        "rate": spec.rate,
+        "semantics": spec.semantics,
+    }
+
+
 def _today_iso_date() -> str:
     from datetime import date
 
@@ -456,6 +534,10 @@ _KNOWN_SWITCH_NAMES = {
     "serviceReporting",
     "exceptionReporting",
     "delaySubscriptionEvaluation",
+    "nonRegulatedGrant",
+    "allowRelaxedDDM",
+    "advisoriesUseKnownClass",
+    "sendServiceReportsToFile",
     "automaticResignAction",
 }
 _DEFAULT_SWITCH_SETTINGS = {
@@ -470,6 +552,13 @@ _DEFAULT_SWITCH_SETTINGS = {
     "exceptionReporting": "false",
     "delaySubscriptionEvaluation": "false",
     "automaticResignAction": "NoAction",
+}
+_DEFAULT_2025_SWITCH_SETTINGS = {
+    **_DEFAULT_SWITCH_SETTINGS,
+    "nonRegulatedGrant": "false",
+    "allowRelaxedDDM": "false",
+    "advisoriesUseKnownClass": "false",
+    "sendServiceReportsToFile": "false",
 }
 _STRICT_OMT_TRANSPORTATION_RELIABILITY = {
     "HLAreliable": "Yes",
@@ -613,14 +702,70 @@ def _local_name(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
 
+def _direct_omt_children(element: ET.Element) -> list[ET.Element]:
+    return [child for child in list(element) if _is_native_omt_element(child)]
+
+
+def _extension_parent_key(element: ET.Element) -> str:
+    local_name = _local_name(element.tag)
+    name = _child_text(element, "name")
+    if name:
+        return f"{local_name}:{name}"
+    label = _child_text(element, "label")
+    if label:
+        return f"{local_name}:{label}"
+    return local_name
+
+
+def _extract_foreign_extensions(root: ET.Element) -> tuple[ForeignExtensionSpec, ...]:
+    extensions: list[ForeignExtensionSpec] = []
+    for parent in root.iter():
+        if not _is_native_omt_element(parent):
+            continue
+        parent_key = _extension_parent_key(parent)
+        for child in list(parent):
+            if _is_native_omt_element(child):
+                continue
+            extensions.append(
+                ForeignExtensionSpec(
+                    parent_key=parent_key,
+                    xml=ET.tostring(child, encoding="unicode"),
+                )
+            )
+    return tuple(extensions)
+
+
+def _append_foreign_extensions(root: ET.Element, extensions: Iterable[ForeignExtensionSpec]) -> None:
+    extensions_by_parent: dict[str, list[ForeignExtensionSpec]] = {}
+    for extension in extensions:
+        extensions_by_parent.setdefault(extension.parent_key, []).append(extension)
+    if not extensions_by_parent:
+        return
+
+    parent_by_key: dict[str, ET.Element] = {}
+    for element in root.iter():
+        if _is_native_omt_element(element):
+            parent_by_key.setdefault(_extension_parent_key(element), element)
+
+    for parent_key, parent_extensions in extensions_by_parent.items():
+        parent = parent_by_key.get(parent_key)
+        if parent is None:
+            continue
+        for extension in parent_extensions:
+            try:
+                parent.append(ET.fromstring(extension.xml))
+            except ET.ParseError:
+                continue
+
+
 def _direct_children(element: ET.Element, name: str) -> list[ET.Element]:
-    return [child for child in list(element) if _local_name(child.tag) == name]
+    return [child for child in _direct_omt_children(element) if _local_name(child.tag) == name]
 
 
 def _child_text(element: ET.Element | None, name: str) -> str | None:
     if element is None:
         return None
-    for child in list(element):
+    for child in _direct_omt_children(element):
         if _local_name(child.tag) == name:
             return (child.text or "").strip()
     return None
@@ -663,6 +808,44 @@ def _stable_spec_union(existing: Mapping[str, Any], incoming: Mapping[str, Any],
     return result
 
 
+def _stable_transportation_spec_union(
+    existing: Mapping[str, TransportationSpec],
+    incoming: Mapping[str, TransportationSpec],
+) -> dict[str, TransportationSpec]:
+    result = dict(existing)
+    for name, spec in dict(incoming).items():
+        current = result.get(name)
+        if current is None:
+            result[name] = spec
+            continue
+        if current.reliable and spec.reliable and current.reliable != spec.reliable:
+            raise FOMMergeError(f"Conflicting transportation reliability definition {name!r} across FOM modules")
+        result[name] = TransportationSpec(
+            name=name,
+            reliable=current.reliable or spec.reliable,
+            semantics=current.semantics or spec.semantics,
+        )
+    return result
+
+
+def _stable_update_rate_spec_union(
+    existing: Mapping[str, UpdateRateSpec],
+    incoming: Mapping[str, UpdateRateSpec],
+) -> dict[str, UpdateRateSpec]:
+    result = dict(existing)
+    for name, spec in dict(incoming).items():
+        current = result.get(name)
+        if current is None:
+            result[name] = spec
+            continue
+        result[name] = UpdateRateSpec(
+            name=name,
+            rate=current.rate or spec.rate,
+            semantics=current.semantics or spec.semantics,
+        )
+    return result
+
+
 def _require_unique_name(container: dict[str, Any], name: str, kind: str, *, path: Path) -> None:
     if name in container:
         raise FOMResolutionError(f"Duplicate {kind} definition {name!r} in {path}", kind="read")
@@ -674,6 +857,11 @@ def _namespace_uri(tag: str) -> str:
     return ""
 
 
+def _is_native_omt_element(element: ET.Element) -> bool:
+    namespace = _namespace_uri(element.tag)
+    return not namespace or namespace in _ALLOWED_OMT_NAMESPACES
+
+
 def _walk_object_class(
     element: ET.Element,
     parent: str = "",
@@ -682,6 +870,12 @@ def _walk_object_class(
     inherited_transportations: Mapping[str, str] | None = None,
     inherited_update_rates: Mapping[str, str] | None = None,
     inherited_value_required: Mapping[str, str] | None = None,
+    inherited_update_types: Mapping[str, str] | None = None,
+    inherited_update_conditions: Mapping[str, str] | None = None,
+    inherited_ownership: Mapping[str, str] | None = None,
+    inherited_sharing: Mapping[str, str] | None = None,
+    inherited_order: Mapping[str, str] | None = None,
+    inherited_semantics: Mapping[str, str] | None = None,
     path: Path | None = None,
 ) -> list[ObjectClassSpec]:
     name = _child_text(element, "name")
@@ -691,13 +885,35 @@ def _walk_object_class(
     inherited_transportations = dict(inherited_transportations or {})
     inherited_update_rates = dict(inherited_update_rates or {})
     inherited_value_required = dict(inherited_value_required or {})
+    inherited_update_types = dict(inherited_update_types or {})
+    inherited_update_conditions = dict(inherited_update_conditions or {})
+    inherited_ownership = dict(inherited_ownership or {})
+    inherited_sharing = dict(inherited_sharing or {})
+    inherited_order = dict(inherited_order or {})
+    inherited_semantics = dict(inherited_semantics or {})
     full_name = _append_path(parent, name)
+    class_sharing = (_child_text(element, "sharing") or "").strip() or None
+    class_semantics = (_child_text(element, "semantics") or "").strip() or None
+    directed_interaction_declarations = _extract_directed_interactions(element)
+    directed_interactions = tuple(name for name, _sharing in directed_interaction_declarations)
+    directed_interaction_sharing = {
+        name: sharing
+        for name, sharing in directed_interaction_declarations
+        if sharing
+    }
+    dimensions = _extract_dimension_references(element)
     declared_names: list[str] = []
     declared_seen: dict[str, bool] = {}
     declared_datatypes: dict[str, str] = {}
     declared_transportations: dict[str, str] = {}
     declared_update_rates: dict[str, str] = {}
     declared_value_required: dict[str, str] = {}
+    declared_update_types: dict[str, str] = {}
+    declared_update_conditions: dict[str, str] = {}
+    declared_ownership: dict[str, str] = {}
+    declared_sharing: dict[str, str] = {}
+    declared_order: dict[str, str] = {}
+    declared_semantics: dict[str, str] = {}
     for attr in _direct_children(element, "attribute"):
         attr_name = (_child_text(attr, "name") or "").strip()
         if not attr_name:
@@ -722,6 +938,24 @@ def _walk_object_class(
         value_required = (_child_text(attr, "valueRequired") or "").strip()
         if value_required:
             declared_value_required[attr_name] = value_required
+        update_type = (_child_text(attr, "updateType") or "").strip()
+        if update_type:
+            declared_update_types[attr_name] = update_type
+        update_condition = (_child_text(attr, "updateCondition") or "").strip()
+        if update_condition:
+            declared_update_conditions[attr_name] = update_condition
+        ownership = (_child_text(attr, "ownership") or "").strip()
+        if ownership:
+            declared_ownership[attr_name] = ownership
+        sharing = (_child_text(attr, "sharing") or "").strip()
+        if sharing:
+            declared_sharing[attr_name] = sharing
+        order = (_child_text(attr, "order") or "").strip()
+        if order:
+            declared_order[attr_name] = order
+        semantics = (_child_text(attr, "semantics") or "").strip()
+        if semantics:
+            declared_semantics[attr_name] = semantics
     declared = tuple(declared_names)
     if path is not None:
         inherited_names = set(inherited_attributes)
@@ -733,6 +967,12 @@ def _walk_object_class(
     transportations = _stable_mapping_union(inherited_transportations, declared_transportations)
     update_rates = _stable_mapping_union(inherited_update_rates, declared_update_rates)
     value_required = _stable_mapping_union(inherited_value_required, declared_value_required)
+    update_types = _stable_mapping_union(inherited_update_types, declared_update_types)
+    update_conditions = _stable_mapping_union(inherited_update_conditions, declared_update_conditions)
+    ownership = _stable_mapping_union(inherited_ownership, declared_ownership)
+    sharing = _stable_mapping_union(inherited_sharing, declared_sharing)
+    order = _stable_mapping_union(inherited_order, declared_order)
+    semantics = _stable_mapping_union(inherited_semantics, declared_semantics)
     result = [
         ObjectClassSpec(
             full_name,
@@ -743,6 +983,17 @@ def _walk_object_class(
             transportations,
             update_rates,
             value_required,
+            update_types,
+            update_conditions,
+            ownership,
+            sharing,
+            order,
+            semantics,
+            class_sharing,
+            class_semantics,
+            directed_interactions,
+            directed_interaction_sharing,
+            dimensions,
         )
     ]
     child_names: dict[str, bool] = {}
@@ -760,6 +1011,12 @@ def _walk_object_class(
                 transportations,
                 update_rates,
                 value_required,
+                update_types,
+                update_conditions,
+                ownership,
+                sharing,
+                order,
+                semantics,
                 path=path,
             )
         )
@@ -772,20 +1029,27 @@ def _walk_interaction_class(
     inherited_parameters: tuple[str, ...] = (),
     inherited_datatypes: Mapping[str, str] | None = None,
     inherited_transportation: str | None = None,
+    inherited_parameter_semantics: Mapping[str, str] | None = None,
     path: Path | None = None,
 ) -> list[InteractionClassSpec]:
     name = _child_text(element, "name")
     if not name:
         return []
     inherited_datatypes = dict(inherited_datatypes or {})
+    inherited_parameter_semantics = dict(inherited_parameter_semantics or {})
     full_name = _append_path(parent, name)
+    dimensions = _extract_dimension_references(element)
     transportation = (
         (_child_text(element, "transportation") or _child_text(element, "transportationType") or "").strip()
         or inherited_transportation
     )
+    sharing = (_child_text(element, "sharing") or "").strip() or None
+    order = (_child_text(element, "order") or "").strip() or None
+    semantics = (_child_text(element, "semantics") or "").strip() or None
     declared_names: list[str] = []
     declared_seen: dict[str, bool] = {}
     declared_datatypes: dict[str, str] = {}
+    declared_semantics: dict[str, str] = {}
     for param in _direct_children(element, "parameter"):
         param_name = (_child_text(param, "name") or "").strip()
         if not param_name:
@@ -796,6 +1060,9 @@ def _walk_interaction_class(
         data_type = (_child_text(param, "dataType") or "").strip()
         if data_type:
             declared_datatypes[param_name] = data_type
+        param_semantics = (_child_text(param, "semantics") or "").strip()
+        if param_semantics:
+            declared_semantics[param_name] = param_semantics
     declared = tuple(declared_names)
     if path is not None:
         inherited_names = set(inherited_parameters)
@@ -804,19 +1071,44 @@ def _walk_interaction_class(
                 raise FOMResolutionError(f"Duplicate parameter definition: {param_name!r}")
     available = _stable_union(inherited_parameters, declared)
     datatypes = _stable_mapping_union(inherited_datatypes, declared_datatypes)
-    result = [InteractionClassSpec(full_name, available, parent or None, declared, datatypes, transportation or None)]
+    parameter_semantics = _stable_mapping_union(inherited_parameter_semantics, declared_semantics)
+    result = [
+        InteractionClassSpec(
+            full_name,
+            available,
+            parent or None,
+            declared,
+            datatypes,
+            transportation or None,
+            sharing,
+            order,
+            semantics,
+            parameter_semantics,
+            dimensions,
+        )
+    ]
     child_names: dict[str, bool] = {}
     for child in _direct_children(element, "interactionClass"):
         child_name = (_child_text(child, "name") or "").strip()
         if child_name and path is not None:
             _require_unique_name(child_names, child_name, "interaction class", path=path)
             child_names[child_name] = True
-        result.extend(_walk_interaction_class(child, full_name, available, datatypes, transportation or None, path=path))
+        result.extend(
+            _walk_interaction_class(
+                child,
+                full_name,
+                available,
+                datatypes,
+                transportation or None,
+                parameter_semantics,
+                path=path,
+            )
+        )
     return result
 
 
 def _infer_time_implementation(root: ET.Element) -> str | None:
-    time_section = next((child for child in list(root) if _local_name(child.tag) == "time"), None)
+    time_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "time"), None)
     if time_section is None:
         return None
     hints: list[str] = []
@@ -836,10 +1128,10 @@ def _infer_time_implementation(root: ET.Element) -> str | None:
     return None
 
 
-def _extract_time_datatypes(root: ET.Element) -> tuple[str | None, str | None]:
-    time_section = next((child for child in list(root) if _local_name(child.tag) == "time"), None)
+def _extract_time_metadata(root: ET.Element) -> tuple[str | None, str | None, str | None, str | None]:
+    time_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "time"), None)
     if time_section is None:
-        return None, None
+        return None, None, None, None
     logical_time = next(iter(_direct_children(time_section, "logicalTime")), None)
     logical_time_interval = next(iter(_direct_children(time_section, "logicalTimeInterval")), None)
     time_stamp = next(iter(_direct_children(time_section, "timeStamp")), None)
@@ -847,42 +1139,67 @@ def _extract_time_datatypes(root: ET.Element) -> tuple[str | None, str | None]:
     return (
         _child_text(logical_time, "dataType") or _child_text(time_stamp, "dataType"),
         _child_text(logical_time_interval, "dataType") or _child_text(lookahead, "dataType"),
+        _child_text(logical_time, "semantics") or _child_text(time_stamp, "semantics"),
+        _child_text(logical_time_interval, "semantics") or _child_text(lookahead, "semantics"),
     )
 
 
-def _extract_transportation_names(root: ET.Element, *, path: Path) -> tuple[str, ...]:
-    names: list[str] = []
-    seen: dict[str, bool] = {}
-    transportations_section = next((child for child in list(root) if _local_name(child.tag) == "transportations"), None)
+def _extract_transportation_specs(root: ET.Element, *, path: Path) -> dict[str, TransportationSpec]:
+    specs: dict[str, TransportationSpec] = {}
+    transportations_section = next(
+        (child for child in _direct_omt_children(root) if _local_name(child.tag) == "transportations"),
+        None,
+    )
     if transportations_section is None:
-        return ()
+        return {}
     for transportation in _direct_children(transportations_section, "transportation"):
         name = _child_text(transportation, "name")
         if name:
-            _require_unique_name(seen, name, "transportation type", path=path)
-            seen[name] = True
-            names.append(name)
-    return _stable_union(names)
+            _require_unique_name(specs, name, "transportation type", path=path)
+            specs[name] = TransportationSpec(
+                name=name,
+                reliable=(_child_text(transportation, "reliable") or "").strip() or None,
+                semantics=(_child_text(transportation, "semantics") or "").strip() or None,
+            )
+    return specs
 
 
-def _extract_update_rates(root: ET.Element, *, path: Path) -> dict[str, str]:
-    rates: dict[str, str] = {}
-    update_rates_section = next((child for child in list(root) if _local_name(child.tag) == "updateRates"), None)
+def _extract_transportation_names(root: ET.Element, *, path: Path) -> tuple[str, ...]:
+    return _stable_union(_extract_transportation_specs(root, path=path))
+
+
+def _extract_update_rate_specs(root: ET.Element, *, path: Path) -> dict[str, UpdateRateSpec]:
+    specs: dict[str, UpdateRateSpec] = {}
+    update_rates_section = next(
+        (child for child in _direct_omt_children(root) if _local_name(child.tag) == "updateRates"),
+        None,
+    )
     if update_rates_section is None:
-        return rates
+        return specs
     for update_rate in _direct_children(update_rates_section, "updateRate"):
         name = _child_text(update_rate, "name")
         if not name:
             continue
-        _require_unique_name(rates, name, "update rate", path=path)
+        _require_unique_name(specs, name, "update rate", path=path)
         max_rate = (
             _child_text(update_rate, "rate")
             or _child_text(update_rate, "updateRate")
             or _child_text(update_rate, "maximumUpdateRate")
             or ""
         )
-        rates[name] = max_rate
-    return rates
+        specs[name] = UpdateRateSpec(
+            name=name,
+            rate=max_rate,
+            semantics=(_child_text(update_rate, "semantics") or "").strip() or None,
+        )
+    return specs
+
+
+def _extract_update_rates(root: ET.Element, *, path: Path) -> dict[str, str]:
+    return {
+        name: spec.rate or ""
+        for name, spec in _extract_update_rate_specs(root, path=path).items()
+    }
 
 
 _DATATYPE_ENTRY_TAGS = {
@@ -898,11 +1215,11 @@ _DATATYPE_ENTRY_TAGS = {
 def _extract_datatype_names(root: ET.Element, *, path: Path) -> tuple[str, ...]:
     names: list[str] = []
     seen: dict[str, bool] = {}
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return ()
-    for container in list(data_types_section):
-        for child in list(container):
+    for container in _direct_omt_children(data_types_section):
+        for child in _direct_omt_children(container):
             if _local_name(child.tag) == "basicData":
                 name = _child_text(child, "name") or (child.attrib.get("representation") or "").strip()
                 if name:
@@ -921,14 +1238,17 @@ def _extract_datatype_names(root: ET.Element, *, path: Path) -> tuple[str, ...]:
 
 
 def _extract_basic_datatypes(root: ET.Element, *, path: Path) -> dict[str, BasicDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "basicDataRepresentations"), None)
+    container = next(
+        (child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "basicDataRepresentations"),
+        None,
+    )
     if container is None:
         return {}
     basics: dict[str, BasicDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "basicData":
             continue
         name = (_child_text(child, "name") or child.attrib.get("representation") or "").strip()
@@ -947,14 +1267,14 @@ def _extract_basic_datatypes(root: ET.Element, *, path: Path) -> dict[str, Basic
 
 
 def _extract_simple_datatypes(root: ET.Element, *, path: Path) -> dict[str, SimpleDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "simpleDataTypes"), None)
+    container = next((child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "simpleDataTypes"), None)
     if container is None:
         return {}
     simple_types: dict[str, SimpleDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "simpleData":
             continue
         name = (_child_text(child, "name") or "").strip()
@@ -973,14 +1293,17 @@ def _extract_simple_datatypes(root: ET.Element, *, path: Path) -> dict[str, Simp
 
 
 def _extract_reference_datatypes(root: ET.Element, *, path: Path) -> dict[str, ReferenceDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "referenceDataTypes"), None)
+    container = next(
+        (child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "referenceDataTypes"),
+        None,
+    )
     if container is None:
         return {}
     reference_types: dict[str, ReferenceDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "referenceDataType":
             continue
         name = (_child_text(child, "name") or "").strip()
@@ -998,14 +1321,17 @@ def _extract_reference_datatypes(root: ET.Element, *, path: Path) -> dict[str, R
 
 
 def _extract_enumerated_datatypes(root: ET.Element, *, path: Path) -> dict[str, EnumeratedDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "enumeratedDataTypes"), None)
+    container = next(
+        (child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "enumeratedDataTypes"),
+        None,
+    )
     if container is None:
         return {}
     enumerated_types: dict[str, EnumeratedDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "enumeratedData":
             continue
         name = (_child_text(child, "name") or "").strip()
@@ -1036,14 +1362,14 @@ def _extract_enumerated_datatypes(root: ET.Element, *, path: Path) -> dict[str, 
 
 
 def _extract_array_datatypes(root: ET.Element, *, path: Path) -> dict[str, ArrayDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "arrayDataTypes"), None)
+    container = next((child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "arrayDataTypes"), None)
     if container is None:
         return {}
     array_types: dict[str, ArrayDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "arrayData":
             continue
         name = (_child_text(child, "name") or "").strip()
@@ -1067,14 +1393,17 @@ def _extract_array_datatypes(root: ET.Element, *, path: Path) -> dict[str, Array
 
 
 def _extract_fixed_record_datatypes(root: ET.Element, *, path: Path) -> dict[str, FixedRecordDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "fixedRecordDataTypes"), None)
+    container = next(
+        (child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "fixedRecordDataTypes"),
+        None,
+    )
     if container is None:
         return {}
     fixed_records: dict[str, FixedRecordDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "fixedRecordData":
             continue
         name = (_child_text(child, "name") or "").strip()
@@ -1103,14 +1432,17 @@ def _extract_fixed_record_datatypes(root: ET.Element, *, path: Path) -> dict[str
 
 
 def _extract_variant_record_datatypes(root: ET.Element, *, path: Path) -> dict[str, VariantRecordDatatypeSpec]:
-    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    data_types_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dataTypes"), None)
     if data_types_section is None:
         return {}
-    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "variantRecordDataTypes"), None)
+    container = next(
+        (child for child in _direct_omt_children(data_types_section) if _local_name(child.tag) == "variantRecordDataTypes"),
+        None,
+    )
     if container is None:
         return {}
     variant_records: dict[str, VariantRecordDatatypeSpec] = {}
-    for child in list(container):
+    for child in _direct_omt_children(container):
         if _local_name(child.tag) != "variantRecordData":
             continue
         name = (_child_text(child, "name") or "").strip()
@@ -1166,7 +1498,7 @@ def _standard_mim_datatype_catalog() -> dict[str, Any]:
 
 
 def _extract_notes(root: ET.Element) -> tuple[str, ...]:
-    notes_section = next((child for child in list(root) if _local_name(child.tag) == "notes"), None)
+    notes_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "notes"), None)
     if notes_section is None:
         return ()
     notes: list[str] = []
@@ -1183,24 +1515,29 @@ def _extract_notes(root: ET.Element) -> tuple[str, ...]:
 
 
 def _extract_model_identification(root: ET.Element, *, path: Path) -> dict[str, Any]:
-    model_identification = next((child for child in list(root) if _local_name(child.tag) == "modelIdentification"), None)
+    model_identification = next(
+        (child for child in _direct_omt_children(root) if _local_name(child.tag) == "modelIdentification"),
+        None,
+    )
     if model_identification is None:
         raise FOMResolutionError(f"Object model {path} is missing required modelIdentification", kind="read")
 
     metadata: dict[str, Any] = {}
     keywords: list[str] = []
+    keyword_taxonomies: list[str] = []
     pocs: list[dict[str, str]] = []
     references: list[dict[str, str]] = []
-    for child in list(model_identification):
+    for child in _direct_omt_children(model_identification):
         name = _local_name(child.tag)
         if name == "keyword":
             if child.text and child.text.strip():
                 keywords.append(child.text.strip())
+                keyword_taxonomies.append((child.attrib.get("taxonomy") or "").strip())
             continue
         if name == "poc":
             poc = {
                 _local_name(grandchild.tag): grandchild.text.strip()
-                for grandchild in list(child)
+                for grandchild in _direct_omt_children(child)
                 if grandchild.text and grandchild.text.strip()
             }
             if poc:
@@ -1209,7 +1546,7 @@ def _extract_model_identification(root: ET.Element, *, path: Path) -> dict[str, 
         if name == "reference":
             reference = {
                 _local_name(grandchild.tag): grandchild.text.strip()
-                for grandchild in list(child)
+                for grandchild in _direct_omt_children(child)
                 if grandchild.text and grandchild.text.strip()
             }
             if reference:
@@ -1220,6 +1557,8 @@ def _extract_model_identification(root: ET.Element, *, path: Path) -> dict[str, 
             metadata[name] = text
     if keywords:
         metadata["keywords"] = tuple(keywords)
+        if any(keyword_taxonomies):
+            metadata["keyword_taxonomies"] = tuple(keyword_taxonomies)
     if pocs:
         metadata["pocs"] = tuple(pocs)
     if references:
@@ -1270,17 +1609,23 @@ def _serialize_model_identification(
         emitted_scalars.add(key)
 
     for key, value in metadata.items():
-        if key in emitted_scalars or key in {"keywords", "pocs", "references"}:
+        if key in emitted_scalars or key in {"keywords", "keyword_taxonomies", "pocs", "references"}:
             continue
         text = str(value).strip()
         if not text:
             continue
         ET.SubElement(model_identification, f"{{{namespace}}}{key}").text = text
 
-    for keyword in metadata.get("keywords", ()):
+    keyword_taxonomies = tuple(metadata.get("keyword_taxonomies", ()))
+    for index, keyword in enumerate(metadata.get("keywords", ())):
         text = str(keyword).strip()
         if text:
-            ET.SubElement(model_identification, f"{{{namespace}}}keyword").text = text
+            attrs = {}
+            if index < len(keyword_taxonomies):
+                taxonomy = str(keyword_taxonomies[index]).strip()
+                if taxonomy:
+                    attrs["taxonomy"] = taxonomy
+            ET.SubElement(model_identification, f"{{{namespace}}}keyword", attrs).text = text
 
     pocs = metadata.get("pocs")
     if pocs:
@@ -1304,11 +1649,14 @@ def _serialize_model_identification(
 
 
 def _extract_service_utilization(root: ET.Element) -> dict[str, dict[str, str]]:
-    service_utilization = next((child for child in list(root) if _local_name(child.tag) == "serviceUtilization"), None)
+    service_utilization = next(
+        (child for child in _direct_omt_children(root) if _local_name(child.tag) == "serviceUtilization"),
+        None,
+    )
     if service_utilization is None:
         return {}
     services: dict[str, dict[str, str]] = {}
-    for child in list(service_utilization):
+    for child in _direct_omt_children(service_utilization):
         name = _local_name(child.tag)
         if not name:
             continue
@@ -1317,11 +1665,11 @@ def _extract_service_utilization(root: ET.Element) -> dict[str, dict[str, str]]:
 
 
 def _extract_tag_representations(root: ET.Element, *, path: Path) -> dict[str, dict[str, str]]:
-    tags_section = next((child for child in list(root) if _local_name(child.tag) == "tags"), None)
+    tags_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "tags"), None)
     if tags_section is None:
         return {}
     tags: dict[str, dict[str, str]] = {}
-    for tag in list(tags_section):
+    for tag in _direct_omt_children(tags_section):
         category = _local_name(tag.tag)
         if not category:
             continue
@@ -1335,11 +1683,11 @@ def _extract_tag_representations(root: ET.Element, *, path: Path) -> dict[str, d
 
 
 def _extract_switch_settings(root: ET.Element) -> dict[str, str]:
-    switches_section = next((child for child in list(root) if _local_name(child.tag) == "switches"), None)
+    switches_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "switches"), None)
     if switches_section is None:
         return {}
     settings: dict[str, str] = {}
-    for switch in list(switches_section):
+    for switch in _direct_omt_children(switches_section):
         name = _local_name(switch.tag)
         if not name:
             continue
@@ -1353,14 +1701,43 @@ def _extract_switch_settings(root: ET.Element) -> dict[str, str]:
     return settings
 
 
+def _extract_dimension_input_data_types(dimension: ET.Element) -> tuple[str, ...]:
+    input_data_types = next(iter(_direct_children(dimension, "inputDataTypes")), None)
+    if input_data_types is None:
+        return ()
+    return tuple(
+        text
+        for child in _direct_children(input_data_types, "dataType")
+        if (text := (child.text or "").strip())
+    )
+
+
+def _extract_dimension_references(element: ET.Element) -> tuple[str, ...]:
+    dimensions = next(iter(_direct_children(element, "dimensions")), None)
+    if dimensions is None:
+        return ()
+    return tuple(
+        text
+        for dimension in _direct_children(dimensions, "dimension")
+        if (text := (dimension.text or "").strip())
+    )
+
+
+def _extract_directed_interactions(element: ET.Element) -> tuple[tuple[str, str | None], ...]:
+    declarations: list[tuple[str, str | None]] = []
+    for directed_interaction in _direct_children(element, "directedInteraction"):
+        name = (_child_text(directed_interaction, "name") or "").strip()
+        if not name:
+            continue
+        sharing = (_child_text(directed_interaction, "sharing") or "").strip() or None
+        declarations.append((name, sharing))
+    return tuple(declarations)
+
+
 def _validate_xml_namespace_usage(root: ET.Element, *, path: Path) -> None:
     root_namespace = _namespace_uri(root.tag)
     if root_namespace and root_namespace not in _ALLOWED_OMT_NAMESPACES:
         raise FOMResolutionError(f"Unsupported objectModel namespace {root_namespace!r} in {path}", kind="read")
-    for element in root.iter():
-        namespace = _namespace_uri(element.tag)
-        if namespace and namespace not in _ALLOWED_OMT_NAMESPACES and namespace != _XML_SCHEMA_INSTANCE_NAMESPACE:
-            raise FOMResolutionError(f"Unsupported XML namespace {namespace!r} in {path}", kind="read")
 
 
 def _validate_transportation_references(
@@ -1788,18 +2165,18 @@ def validate_encoded_datatype_value(payload: bytes, datatype_name: str, catalog:
 
 def _extract_synchronization_points(root: ET.Element, *, path: Path) -> dict[str, dict[str, str]]:
     synchronization_section = next(
-        (child for child in list(root) if _local_name(child.tag) == "synchronizations"),
+        (child for child in _direct_omt_children(root) if _local_name(child.tag) == "synchronizations"),
         None,
     )
     if synchronization_section is None:
         synchronization_section = next(
-            (child for child in list(root) if _local_name(child.tag) == "synchronizationPoints"),
+            (child for child in _direct_omt_children(root) if _local_name(child.tag) == "synchronizationPoints"),
             None,
         )
     if synchronization_section is None:
         return {}
     points: dict[str, dict[str, str]] = {}
-    for point in list(synchronization_section):
+    for point in _direct_omt_children(synchronization_section):
         if _local_name(point.tag) not in {"synchronization", "synchronizationPoint"}:
             continue
         label = (_child_text(point, "label") or _child_text(point, "name") or "").strip()
@@ -1848,7 +2225,7 @@ def parse_fom_xml(
     model_type = str(identification_metadata.get("type") or "").strip() or None
     service_utilization = _extract_service_utilization(root)
 
-    objects_section = next((child for child in list(root) if _local_name(child.tag) == "objects"), None)
+    objects_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "objects"), None)
     object_classes: list[ObjectClassSpec] = []
     if objects_section is not None:
         top_level_object_classes = _direct_children(objects_section, "objectClass")
@@ -1866,7 +2243,7 @@ def parse_fom_xml(
                 root_object_names[object_name] = True
             object_classes.extend(_walk_object_class(object_class, path=path))
 
-    interactions_section = next((child for child in list(root) if _local_name(child.tag) == "interactions"), None)
+    interactions_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "interactions"), None)
     interaction_classes: list[InteractionClassSpec] = []
     if interactions_section is not None:
         top_level_interaction_classes = _direct_children(interactions_section, "interactionClass")
@@ -1887,7 +2264,7 @@ def parse_fom_xml(
     dimension_names: set[str] = set()
     dimension_specs: dict[str, DimensionSpec] = {}
     declared_dimension_names: dict[str, bool] = {}
-    dimensions_section = next((child for child in list(root) if _local_name(child.tag) == "dimensions"), None)
+    dimensions_section = next((child for child in _direct_omt_children(root) if _local_name(child.tag) == "dimensions"), None)
     if dimensions_section is not None:
         for dimension in _direct_children(dimensions_section, "dimension"):
             name = _child_text(dimension, "name")
@@ -1901,10 +2278,19 @@ def parse_fom_xml(
                     upper_bound=_child_text(dimension, "upperBound"),
                     normalization=_child_text(dimension, "normalization"),
                     semantics=_child_text(dimension, "semantics"),
+                    input_data_types=_extract_dimension_input_data_types(dimension),
+                    input_data_description=_child_text(dimension, "inputDataDescription"),
+                    output_data_semantics=_child_text(dimension, "outputDataSemantics"),
+                    value=_child_text(dimension, "value"),
                 )
 
     for element in root.iter():
-        if _local_name(element.tag) == "dimension" and element.text and not _direct_children(element, "name"):
+        if (
+            _is_native_omt_element(element)
+            and _local_name(element.tag) == "dimension"
+            and element.text
+            and not _direct_children(element, "name")
+        ):
             text = element.text.strip()
             if text:
                 dimension_names.add(text)
@@ -1912,7 +2298,12 @@ def parse_fom_xml(
     resolved_uri = uri or _path_to_file_uri(path)
     lower_type = (model_type or "").lower()
     lower_name = (model_name or "").lower()
-    time_stamp_datatype, lookahead_datatype = _extract_time_datatypes(root)
+    (
+        time_stamp_datatype,
+        lookahead_datatype,
+        time_stamp_semantics,
+        lookahead_semantics,
+    ) = _extract_time_metadata(root)
     datatype_names = _extract_datatype_names(root, path=path)
     basic_datatypes = _extract_basic_datatypes(root, path=path)
     simple_datatypes = _extract_simple_datatypes(root, path=path)
@@ -1922,8 +2313,13 @@ def parse_fom_xml(
     fixed_record_datatypes = _extract_fixed_record_datatypes(root, path=path)
     variant_record_datatypes = _extract_variant_record_datatypes(root, path=path)
     tag_representations = _extract_tag_representations(root, path=path)
-    transportation_names = _extract_transportation_names(root, path=path)
-    update_rates = _extract_update_rates(root, path=path)
+    transportation_specs = _extract_transportation_specs(root, path=path)
+    transportation_names = _stable_union(transportation_specs)
+    update_rate_specs = _extract_update_rate_specs(root, path=path)
+    update_rates = {
+        name: spec.rate or ""
+        for name, spec in update_rate_specs.items()
+    }
     synchronization_points = _extract_synchronization_points(root, path=path)
     switch_settings = _extract_switch_settings(root)
     _validate_transportation_references(object_classes, interaction_classes, transportation_names, path=path)
@@ -1969,13 +2365,18 @@ def parse_fom_xml(
         variant_record_datatypes=variant_record_datatypes,
         tag_representations=tag_representations,
         transportation_names=transportation_names,
+        transportation_specs=transportation_specs,
         update_rates=update_rates,
+        update_rate_specs=update_rate_specs,
         synchronization_points=synchronization_points,
         switch_settings=switch_settings,
         time_stamp_datatype=time_stamp_datatype,
         lookahead_datatype=lookahead_datatype,
+        time_stamp_semantics=time_stamp_semantics,
+        lookahead_semantics=lookahead_semantics,
         inferred_time_implementation=_infer_time_implementation(root),
         notes=_extract_notes(root),
+        foreign_extensions=_extract_foreign_extensions(root),
         is_mim=("mim" in lower_type or "mim" in lower_name or "initialization module" in lower_name),
     )
 
@@ -2005,7 +2406,9 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
     variant_record_datatypes: dict[str, VariantRecordDatatypeSpec] = {}
     tag_representations: dict[str, dict[str, str]] = {}
     transportation_names: set[str] = set()
+    transportation_specs: dict[str, TransportationSpec] = {}
     update_rates: dict[str, str] = {}
+    update_rate_specs: dict[str, UpdateRateSpec] = {}
     synchronization_points: dict[str, dict[str, str]] = {}
     switch_settings: dict[str, str] = {}
     notes: list[str] = []
@@ -2026,8 +2429,16 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
         for category, metadata in dict(module.tag_representations).items():
             tag_representations.setdefault(category, dict(metadata))
         transportation_names.update(module.transportation_names)
+        transportation_specs = _stable_transportation_spec_union(
+            transportation_specs,
+            module.transportation_specs,
+        )
         for name, value in dict(module.update_rates).items():
             update_rates.setdefault(name, value)
+        update_rate_specs = _stable_update_rate_spec_union(
+            update_rate_specs,
+            module.update_rate_specs,
+        )
         for label, metadata in dict(module.synchronization_points).items():
             synchronization_points.setdefault(label, dict(metadata))
         for name, value in dict(module.switch_settings).items():
@@ -2054,6 +2465,17 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
                     _stable_mapping_union(existing.attribute_transportations, spec.attribute_transportations),
                     _stable_mapping_union(existing.attribute_update_rates, spec.attribute_update_rates),
                     _stable_mapping_union(existing.attribute_value_required, spec.attribute_value_required),
+                    _stable_mapping_union(existing.attribute_update_types, spec.attribute_update_types),
+                    _stable_mapping_union(existing.attribute_update_conditions, spec.attribute_update_conditions),
+                    _stable_mapping_union(existing.attribute_ownership, spec.attribute_ownership),
+                    _stable_mapping_union(existing.attribute_sharing, spec.attribute_sharing),
+                    _stable_mapping_union(existing.attribute_order, spec.attribute_order),
+                    _stable_mapping_union(existing.attribute_semantics, spec.attribute_semantics),
+                    existing.sharing or spec.sharing,
+                    existing.semantics or spec.semantics,
+                    _stable_union(existing.directed_interactions, spec.directed_interactions),
+                    _stable_mapping_union(existing.directed_interaction_sharing, spec.directed_interaction_sharing),
+                    _stable_union(existing.dimensions, spec.dimensions),
                 )
 
         for spec in module.interaction_classes:
@@ -2072,6 +2494,11 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
                     _stable_union(existing.declared_parameters, spec.declared_parameters),
                     _stable_mapping_union(existing.parameter_datatypes, spec.parameter_datatypes),
                     existing.transportation or spec.transportation,
+                    existing.sharing or spec.sharing,
+                    existing.order or spec.order,
+                    existing.semantics or spec.semantics,
+                    _stable_mapping_union(existing.parameter_semantics, spec.parameter_semantics),
+                    _stable_union(existing.dimensions, spec.dimensions),
                 )
 
     unique_time_impls = {name for name in time_impls if name}
@@ -2094,7 +2521,9 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
         variant_record_datatypes=dict(sorted(variant_record_datatypes.items())),
         tag_representations={key: dict(sorted(value.items())) for key, value in sorted(tag_representations.items())},
         transportation_names=frozenset(transportation_names),
+        transportation_specs=dict(sorted(transportation_specs.items())),
         update_rates=dict(sorted(update_rates.items())),
+        update_rate_specs=dict(sorted(update_rate_specs.items())),
         synchronization_points={key: dict(sorted(value.items())) for key, value in sorted(synchronization_points.items())},
         switch_settings=dict(sorted(switch_settings.items())),
         notes=tuple(notes),
@@ -2269,18 +2698,42 @@ def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
     _serialize_interaction_class_tree(interactions, module.interaction_classes, namespace=namespace)
 
     dimensions = ET.SubElement(root, f"{{{namespace}}}dimensions")
-    for name in module.dimensions:
+    dimension_names = _stable_union([*module.dimensions, *dict(module.dimension_specs).keys()])
+    for name in dimension_names:
+        spec = dict(module.dimension_specs).get(name, DimensionSpec(name=name))
         dimension = ET.SubElement(dimensions, f"{{{namespace}}}dimension")
         ET.SubElement(dimension, f"{{{namespace}}}name").text = name
+        if edition == "2025" and spec.input_data_types:
+            input_data_types = ET.SubElement(dimension, f"{{{namespace}}}inputDataTypes")
+            for data_type in spec.input_data_types:
+                ET.SubElement(input_data_types, f"{{{namespace}}}dataType").text = data_type
+        if edition == "2025" and spec.input_data_description:
+            ET.SubElement(dimension, f"{{{namespace}}}inputDataDescription").text = spec.input_data_description
+        if spec.data_type:
+            ET.SubElement(dimension, f"{{{namespace}}}dataType").text = spec.data_type
+        if spec.upper_bound:
+            ET.SubElement(dimension, f"{{{namespace}}}upperBound").text = spec.upper_bound
+        if spec.normalization:
+            ET.SubElement(dimension, f"{{{namespace}}}normalization").text = spec.normalization
+        if edition == "2025" and spec.output_data_semantics:
+            ET.SubElement(dimension, f"{{{namespace}}}outputDataSemantics").text = spec.output_data_semantics
+        if spec.semantics:
+            ET.SubElement(dimension, f"{{{namespace}}}semantics").text = spec.semantics
+        if edition == "2025" and spec.value:
+            ET.SubElement(dimension, f"{{{namespace}}}value").text = spec.value
 
     if module.time_stamp_datatype or module.lookahead_datatype:
         time = ET.SubElement(root, f"{{{namespace}}}time")
         if module.time_stamp_datatype:
             time_stamp = ET.SubElement(time, f"{{{namespace}}}{logical_time_tag}")
             ET.SubElement(time_stamp, f"{{{namespace}}}dataType").text = module.time_stamp_datatype
+            if module.time_stamp_semantics:
+                ET.SubElement(time_stamp, f"{{{namespace}}}semantics").text = module.time_stamp_semantics
         if module.lookahead_datatype:
             lookahead = ET.SubElement(time, f"{{{namespace}}}{logical_interval_tag}")
             ET.SubElement(lookahead, f"{{{namespace}}}dataType").text = module.lookahead_datatype
+            if module.lookahead_semantics:
+                ET.SubElement(lookahead, f"{{{namespace}}}semantics").text = module.lookahead_semantics
 
     if module.tag_representations:
         tags = ET.SubElement(root, f"{{{namespace}}}tags")
@@ -2305,18 +2758,22 @@ def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
 
     transportations = ET.SubElement(root, f"{{{namespace}}}transportations")
     declared_transportations: list[str] = ["HLAreliable", "HLAbestEffort"]
-    for name in module.transportation_names:
+    for name in _stable_union([*module.transportation_names, *dict(module.transportation_specs).keys()]):
         if name not in declared_transportations:
             declared_transportations.append(name)
     for name in declared_transportations:
+        spec = dict(module.transportation_specs).get(name, TransportationSpec(name=name))
         transportation = ET.SubElement(transportations, f"{{{namespace}}}transportation")
         ET.SubElement(transportation, f"{{{namespace}}}name").text = name
-        ET.SubElement(transportation, f"{{{namespace}}}reliable").text = (
+        ET.SubElement(transportation, f"{{{namespace}}}reliable").text = spec.reliable or (
             _STRICT_OMT_TRANSPORTATION_RELIABILITY.get(name, "Yes")
         )
+        if spec.semantics:
+            ET.SubElement(transportation, f"{{{namespace}}}semantics").text = spec.semantics
 
     switches = ET.SubElement(root, f"{{{namespace}}}switches")
-    merged_switches = dict(_DEFAULT_SWITCH_SETTINGS)
+    switch_defaults = _DEFAULT_2025_SWITCH_SETTINGS if edition == "2025" else _DEFAULT_SWITCH_SETTINGS
+    merged_switches = dict(switch_defaults)
     merged_switches.update(dict(module.switch_settings))
     for name, value in merged_switches.items():
         attrs = {"isEnabled": value}
@@ -2324,12 +2781,16 @@ def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
             attrs = {"resignAction": value}
         ET.SubElement(switches, f"{{{namespace}}}{name}", attrs)
 
-    if module.update_rates:
+    update_rate_names = _stable_union([*module.update_rates.keys(), *dict(module.update_rate_specs).keys()])
+    if update_rate_names:
         update_rates = ET.SubElement(root, f"{{{namespace}}}updateRates")
-        for name, value in dict(module.update_rates).items():
+        for name in update_rate_names:
+            spec = dict(module.update_rate_specs).get(name, UpdateRateSpec(name=name, rate=dict(module.update_rates).get(name)))
             update_rate = ET.SubElement(update_rates, f"{{{namespace}}}updateRate")
             ET.SubElement(update_rate, f"{{{namespace}}}name").text = name
-            ET.SubElement(update_rate, f"{{{namespace}}}rate").text = value
+            ET.SubElement(update_rate, f"{{{namespace}}}rate").text = spec.rate or ""
+            if spec.semantics:
+                ET.SubElement(update_rate, f"{{{namespace}}}semantics").text = spec.semantics
 
     (
         serializer_basic_datatypes,
@@ -2461,6 +2922,7 @@ def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
             else:
                 ET.SubElement(note, f"{{{namespace}}}semantics").text = note_text
 
+    _append_foreign_extensions(root, module.foreign_extensions)
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
 
 
@@ -2477,19 +2939,49 @@ def _serialize_object_class_tree(parent: ET.Element, specs: tuple[ObjectClassSpe
     def emit(spec: ObjectClassSpec, parent_element: ET.Element) -> None:
         element = ET.SubElement(parent_element, f"{{{namespace}}}objectClass")
         ET.SubElement(element, f"{{{namespace}}}name").text = spec.full_name.rsplit(".", 1)[-1]
-        ET.SubElement(element, f"{{{namespace}}}sharing").text = "Neither"
+        ET.SubElement(element, f"{{{namespace}}}sharing").text = spec.sharing or "Neither"
+        if spec.semantics:
+            ET.SubElement(element, f"{{{namespace}}}semantics").text = spec.semantics
+        for directed_interaction_name in spec.directed_interactions:
+            directed_interaction = ET.SubElement(element, f"{{{namespace}}}directedInteraction")
+            ET.SubElement(directed_interaction, f"{{{namespace}}}name").text = directed_interaction_name
+            sharing = dict(spec.directed_interaction_sharing).get(directed_interaction_name)
+            if sharing:
+                ET.SubElement(directed_interaction, f"{{{namespace}}}sharing").text = sharing
+        if spec.dimensions:
+            dimensions = ET.SubElement(element, f"{{{namespace}}}dimensions")
+            for dimension_name in spec.dimensions:
+                ET.SubElement(dimensions, f"{{{namespace}}}dimension").text = dimension_name
         for attribute_name in spec.declared_attributes:
             attribute = ET.SubElement(element, f"{{{namespace}}}attribute")
             ET.SubElement(attribute, f"{{{namespace}}}name").text = attribute_name
             datatype = dict(spec.attribute_datatypes).get(attribute_name)
             if datatype:
                 ET.SubElement(attribute, f"{{{namespace}}}dataType").text = datatype
+            update_type = dict(spec.attribute_update_types).get(attribute_name)
+            if update_type:
+                ET.SubElement(attribute, f"{{{namespace}}}updateType").text = update_type
+            update_condition = dict(spec.attribute_update_conditions).get(attribute_name)
+            if update_condition:
+                ET.SubElement(attribute, f"{{{namespace}}}updateCondition").text = update_condition
             transportation = dict(spec.attribute_transportations).get(attribute_name)
             if transportation:
                 ET.SubElement(attribute, f"{{{namespace}}}transportation").text = transportation
+            ownership = dict(spec.attribute_ownership).get(attribute_name)
+            if ownership:
+                ET.SubElement(attribute, f"{{{namespace}}}ownership").text = ownership
+            sharing = dict(spec.attribute_sharing).get(attribute_name)
+            if sharing:
+                ET.SubElement(attribute, f"{{{namespace}}}sharing").text = sharing
+            order = dict(spec.attribute_order).get(attribute_name)
+            if order:
+                ET.SubElement(attribute, f"{{{namespace}}}order").text = order
             value_required = dict(spec.attribute_value_required).get(attribute_name)
             if value_required:
                 ET.SubElement(attribute, f"{{{namespace}}}valueRequired").text = value_required
+            semantics = dict(spec.attribute_semantics).get(attribute_name)
+            if semantics:
+                ET.SubElement(attribute, f"{{{namespace}}}semantics").text = semantics
         for child_spec in sorted(children_by_parent.get(spec.full_name, []), key=lambda item: item.full_name):
             emit(child_spec, element)
 
@@ -2509,15 +3001,24 @@ def _serialize_interaction_class_tree(parent: ET.Element, specs: tuple[Interacti
     def emit(spec: InteractionClassSpec, parent_element: ET.Element) -> None:
         element = ET.SubElement(parent_element, f"{{{namespace}}}interactionClass")
         ET.SubElement(element, f"{{{namespace}}}name").text = spec.full_name.rsplit(".", 1)[-1]
-        ET.SubElement(element, f"{{{namespace}}}sharing").text = "Neither"
+        ET.SubElement(element, f"{{{namespace}}}sharing").text = spec.sharing or "Neither"
         ET.SubElement(element, f"{{{namespace}}}transportation").text = spec.transportation or "HLAreliable"
-        ET.SubElement(element, f"{{{namespace}}}order").text = "Receive"
+        ET.SubElement(element, f"{{{namespace}}}order").text = spec.order or "Receive"
+        if spec.semantics:
+            ET.SubElement(element, f"{{{namespace}}}semantics").text = spec.semantics
+        if spec.dimensions:
+            dimensions = ET.SubElement(element, f"{{{namespace}}}dimensions")
+            for dimension_name in spec.dimensions:
+                ET.SubElement(dimensions, f"{{{namespace}}}dimension").text = dimension_name
         for parameter_name in spec.declared_parameters:
             parameter = ET.SubElement(element, f"{{{namespace}}}parameter")
             ET.SubElement(parameter, f"{{{namespace}}}name").text = parameter_name
             datatype = dict(spec.parameter_datatypes).get(parameter_name)
             if datatype:
                 ET.SubElement(parameter, f"{{{namespace}}}dataType").text = datatype
+            semantics = dict(spec.parameter_semantics).get(parameter_name)
+            if semantics:
+                ET.SubElement(parameter, f"{{{namespace}}}semantics").text = semantics
         for child_spec in sorted(children_by_parent.get(spec.full_name, []), key=lambda item: item.full_name):
             emit(child_spec, element)
 

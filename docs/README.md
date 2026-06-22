@@ -11,17 +11,25 @@ If you only need the shortest on-ramp:
 
 1. read [`../README.md`](../README.md)
 2. read [`onboarding.md`](onboarding.md)
-3. read [`first_run.md`](first_run.md)
-4. read [`networked_rti_python.md`](networked_rti_python.md) only if you need a hosted Python RTI route or its parity/hygiene lane
-5. read [`package_layout.md`](package_layout.md) if you need the package hierarchy first
+3. read [`first_run.md`](first_run.md) for the 2010 pure-Python bootstrap lane
+4. read [`python_rti_backend.md`](python_rti_backend.md) for the main 2025 Python RTI lane in `hla-backend-python2025`
+5. use `./tools/python verify-main-2025` as the normal direct `python2025` proof lane
+6. read [`networked_rti_python.md`](networked_rti_python.md) only if you need the bounded hosted 2025 route or its parity/hygiene lane
+7. use `./tools/python verify-routes-2025` when you need the bounded hosted `python-2025-fedpro-grpc` hygiene lane
+8. read [`verification/time_model_compliance.md`](verification/time_model_compliance.md) when the question is time, lookahead, GALT/LITS, or save/restore window proof
+9. read [`package_layout.md`](package_layout.md) if you need the package hierarchy first
 
 ## Start Here
 
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
-- [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC, with concrete entrypoints and usage shape
+- [python_rti_backend.md](python_rti_backend.md): main 2025 Python RTI lane, wrapper boundary, and bounded working-surface claim
+- [python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python2025` RTI lane
+- [networked_rti_python.md](networked_rti_python.md): bounded hosted `python-2025-fedpro-grpc` route over the main `python2025` lane, with concrete entrypoints and usage shape
+- [../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`
+- [verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, GALT/LITS, and radar-window proof front door for the primary 2025 Python RTI lane
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
-- [language_shim_routes.md](language_shim_routes.md): Java/C++ language-shim route experiments and evidence contract
+- [language_shim_routes.md](language_shim_routes.md): Java/C++ standard-surface binding routes and evidence contract
 - [java_toolchain.md](java_toolchain.md): Java discovery, required tools, and Java shim artifact inventory
 - [../tools/java](../tools/java): short Java toolchain inventory front door
 - [test_surface.md](test_surface.md): canonical verification lanes and machine-readable discovery flow
@@ -29,8 +37,6 @@ If you only need the shortest on-ramp:
 - [spec_reading_map.md](spec_reading_map.md): smallest practical reading path for the abstract/public spec surface
 - [fom_reading_map.md](fom_reading_map.md): smallest practical reading path for FOM parsing and merge behavior
 - [fom_validate.md](fom_validate.md): single-command XML validation path with human-readable reports
-- [python_rti_reading_map.md](python_rti_reading_map.md): smallest practical reading path for Python RTI edits
-- [python_rti_backend.md](python_rti_backend.md): broader Python RTI backend map
 - [rti_factory_reading_map.md](rti_factory_reading_map.md): installed RTI factory listing, selection, and introspection
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
 - [install_matrix.md](install_matrix.md): extras, backend families, and dependency order

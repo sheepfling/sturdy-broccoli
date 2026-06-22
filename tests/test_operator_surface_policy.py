@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,6 +57,10 @@ def _actual_repo_root_files() -> set[str]:
     return {path.name for path in ROOT.iterdir() if path.is_file()}
 
 
+def _all_tools_surface_references(text: str) -> set[str]:
+    return set(re.findall(r"\./tools/([A-Za-z0-9_-]+)", text))
+
+
 def test_tools_readme_declares_canonical_operator_surface() -> None:
     text = _read(ROOT / "tools" / "README.md")
     assert "canonical home for human-facing operator entrypoints" in text
@@ -79,10 +84,21 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/two-federate" in text
     assert "./tools/test" in text
     assert "./tools/java" in text
+    assert "./tools/examples" not in text
+    assert "./tools/human-editability" not in text
+    assert "./tools/new-fom-package" not in text
+    assert "./tools/rti-factories" not in text
+    assert "python examples/target_radar_simulation.py --backend python --steps 5" in text
+    assert "python examples/target_radar_simulation.py --backend python2025 --steps 5" in text
 
 
 def test_tools_readme_inventory_matches_actual_top_level_tool_wrappers() -> None:
     assert _documented_tool_inventory() == _actual_top_level_tool_wrappers()
+
+
+def test_tools_readme_inline_tool_references_match_actual_top_level_wrappers() -> None:
+    referenced = _all_tools_surface_references(_read(ROOT / "tools" / "README.md"))
+    assert referenced <= _actual_top_level_tool_wrappers(), sorted(referenced - _actual_top_level_tool_wrappers())
 
 
 def test_scripts_readme_supported_tool_inventory_matches_canonical_tools_surface() -> None:
@@ -151,6 +167,15 @@ def test_two_federate_quickstart_uses_tools_surface() -> None:
     assert "./tools/two-federate" in text
     assert "python3 scripts/run_two_federate_suite.py" not in text
     assert "../scripts/run_two_federate_suite.py" not in text
+
+
+def test_target_radar_tool_usage_keeps_python2025_primary_and_shim_wrapper_only() -> None:
+    text = _read(ROOT / "tools" / "target-radar")
+    normalized = " ".join(text.split()).lower()
+
+    assert "./tools/target-radar proof --backend python2025 --proof-backend python2025" in text
+    assert "for ieee 1516.1-2025, use `python2025` as the primary python rti lane." in normalized
+    assert "the `shim` backend names remain compatibility-wrapper aliases over that same runtime" in normalized
 
 
 def test_vendor_parity_doc_uses_tools_surface() -> None:

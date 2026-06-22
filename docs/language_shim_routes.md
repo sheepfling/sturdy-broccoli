@@ -1,9 +1,9 @@
 # Language Shim Routes
 
-This page tracks the Java and C++ shim-route experiments.
-The purpose of these routes is to test whether behavior exercised through
-language-specific API surfaces can be compared against the local Python
-reference route.
+This page tracks the Java and C++ standard-surface binding routes.
+Those routes adapt official Java and C++ 1516.1 APIs onto repo-owned Python
+runtime lanes so behavior exercised through language-specific API surfaces can
+be compared against the local Python RTI evidence.
 These routes are experimental. They are not a release, standard
 implementation, vendor runtime, conformance claim, or compatibility promise.
 A route should only be described as standard-backed when its artifact compiles
@@ -20,12 +20,23 @@ The language-shim route work currently tracks four standard API shim artifacts:
 | `librti1516e_standard_cpp_shim` | `rti1516e` C++ namespace | `IEEE1516-2010_C++_API.zip` | `cpp-standard-2010-pybind`, `cpp-standard-2010-grpc` |
 | `librti1516_2025_standard_cpp_shim` | `rti1516_2025` C++ namespace | `1516.1-2025_downloads.zip` | `cpp-standard-2025-pybind`, `cpp-standard-2025-grpc` |
 
-The current `java-shim-*` routes are in-process Java-shaped test fixtures. The
-current `cpp-shim-*` routes are C++ route scaffolds. They are useful, but they
+The older `java-shim-*` routes are in-process Java-shaped test fixtures. The
+older `cpp-shim-*` routes are C++ route scaffolds. They are useful, but they
 must not be described as standard-backed until their artifacts satisfy the
-contract below. `java-standard-2010-jpype` and `java-standard-2010-py4j` are
-real plugin routes, but they are unavailable until
-`./tools/shim-routes build java-standard-2010` produces the official-API-backed jar.
+contract below.
+
+For the 2025 lane specifically:
+
+- `java-standard-2025-jpype`, `java-standard-2025-py4j`,
+  `cpp-standard-2025-pybind`, and `cpp-standard-2025-grpc` are binding routes,
+  not separate RTIs
+- those routes execute over the primary `hla-backend-python2025` runtime lane
+- `hla-backend-shim` remains only a compatibility-wrapper alias where older
+  provider names or wrapper-shaped entry points still exist
+
+`java-standard-2010-jpype` and `java-standard-2010-py4j` are real plugin
+routes, but they are unavailable until `./tools/shim-routes build
+java-standard-2010` produces the official-API-backed jar.
 
 ## Completion Contract
 
@@ -39,12 +50,13 @@ A shim is complete only when:
 6. The route emits normalized traces comparable to Python reference traces.
 
 The current MVP is intentionally smaller than this full contract. It proves the
-standard-backed route wiring and a core behavior slice:
+standard-backed route wiring and a bounded behavior slice:
 
 - 2010 C++ standard routes run a two-federate object, interaction, and time
   exchange through the Python reference behavior model.
-- 2025 Java and C++ standard routes run lifecycle-core smoke through the 2025
-  shim path.
+- 2025 Java and C++ standard routes run bounded lifecycle, object exchange,
+  ownership, DDM, time-management, support-services, save/restore, MOM, and
+  runtime-capability traces over the primary `python2025` runtime lane.
 - Full standard conformance, DDM, ownership, save/restore, MOM, and complete
   2025 object exchange remain outside the MVP.
 
@@ -78,6 +90,17 @@ The intended operator commands are:
 The evidence command writes normalized MVP traces under
 `docs/evidence/shim_routes/route_traces/`. Those trace files are checked by tests so
 the route matrix remains grounded in executable route behavior.
+
+For 2025 standard routes, the checked-in trace and aggregate evidence also
+record:
+
+- `runtimeProvider = python2025`
+- `implementationLane = hla-backend-python2025`
+- `wrapperOnly = false`
+
+That contract exists to keep the route evidence explicit about the fact that
+Java and C++ bindings are adaptation lanes over the main Python 2025 RTI, not
+alternate 2025 RTI implementations.
 
 ## Java Toolchain Inventory
 

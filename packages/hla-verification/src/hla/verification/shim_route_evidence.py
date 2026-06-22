@@ -377,6 +377,24 @@ def _event(name: str, **payload: Any) -> dict[str, Any]:
     return {"event": name, **{key: _jsonable(value) for key, value in payload.items()}}
 
 
+def _route_selected_event_2025(backend_name: str, ambassador: Any) -> dict[str, Any]:
+    details = getattr(getattr(ambassador, "backend_info", None), "details", {}) or {}
+    runtime_provider = details.get("runtime_provider") or details.get("provider")
+    implementation_lane = details.get("implementation_lane")
+    wrapper_only = details.get("wrapper_only")
+    counts_as_python_2025_rti = details.get("counts_as_python_2025_rti")
+    return _event(
+        "routeSelected",
+        backend=backend_name,
+        spec="rti1516_2025",
+        standardBacked=details.get("standard_backed"),
+        runtimeProvider=runtime_provider,
+        implementationLane=implementation_lane,
+        countsAsPython2025Rti=counts_as_python_2025_rti,
+        wrapperOnly=wrapper_only,
+    )
+
+
 def _callback_events(raw_events: Iterable[tuple[str, Any]]) -> list[dict[str, Any]]:
     events: list[dict[str, Any]] = []
     for name, payload in raw_events:
@@ -556,7 +574,7 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
     fom_module = "TargetRadarFOMmodule.xml"
     rti = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, rti),
         _event("getHLAversion", value=rti.getHLAversion()),
     ]
     result = rti.connect(object(), CallbackModel.HLA_EVOKED)
@@ -597,7 +615,7 @@ def run_standard_2025_object_exchange_trace(backend_name: str) -> dict[str, Any]
     publisher = create_rti_ambassador(spec="2025", backend=backend_name)
     subscriber = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=publisher.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, publisher),
         _event("getHLAversion", value=publisher.getHLAversion()),
     ]
     publisher_connected = False
@@ -722,7 +740,7 @@ def run_standard_2025_runtime_capability_trace(backend_name: str) -> dict[str, A
     federate = _Recording2025FederateAmbassador()
     rti = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, rti),
         _event("getHLAversion", value=rti.getHLAversion()),
     ]
     connected = False
@@ -857,7 +875,7 @@ def run_2025_time_management_trace(backend_name: str = "shim") -> dict[str, Any]
     fom_module = "TargetRadarFOMmodule.xml"
     rti = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, rti),
     ]
     rti.connect(object(), CallbackModel.HLA_EVOKED)
     trace.append(_event("connect"))
@@ -923,7 +941,7 @@ def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
     owner = create_rti_ambassador(spec="2025", backend=backend_name)
     acquirer = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=owner.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, owner),
         _event("getHLAversion", value=owner.getHLAversion()),
     ]
     owner_connected = False
@@ -1052,7 +1070,7 @@ def run_standard_2025_ddm_trace(backend_name: str) -> dict[str, Any]:
     publisher = create_rti_ambassador(spec="2025", backend=backend_name)
     subscriber = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=publisher.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, publisher),
         _event("getHLAversion", value=publisher.getHLAversion()),
     ]
     publisher_connected = False
@@ -1192,7 +1210,7 @@ def run_standard_2025_support_services_trace(backend_name: str) -> dict[str, Any
     federate = _Recording2025FederateAmbassador()
     rti = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, rti),
         _event("getHLAversion", value=rti.getHLAversion()),
     ]
     connected = False
@@ -1289,7 +1307,7 @@ def run_standard_2025_save_restore_trace(backend_name: str) -> dict[str, Any]:
     leader = create_rti_ambassador(spec="2025", backend=backend_name)
     wing = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=leader.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, leader),
         _event("getHLAversion", value=leader.getHLAversion()),
     ]
     leader_connected = False
@@ -1433,7 +1451,7 @@ def run_standard_2025_mom_trace(backend_name: str) -> dict[str, Any]:
     source = create_rti_ambassador(spec="2025", backend=backend_name)
     observer = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
-        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=source.backend_info.details.get("standard_backed")),
+        _route_selected_event_2025(backend_name, source),
         _event("getHLAversion", value=source.getHLAversion()),
     ]
     source_connected = False

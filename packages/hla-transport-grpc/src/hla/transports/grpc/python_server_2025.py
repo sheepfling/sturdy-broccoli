@@ -6,6 +6,7 @@ from concurrent import futures
 from copy import deepcopy
 from dataclasses import dataclass, field
 from importlib import import_module
+from pathlib import Path
 from types import SimpleNamespace
 
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
@@ -111,6 +112,25 @@ def _handle(handle_type: type, value: str | int):
     return handle_type(data=str(value).encode("ascii"))
 
 
+_MOM_INTERACTION_NAME_ALIASES = {
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMData":
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata",
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMData":
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata",
+}
+
+
+def _canonical_mom_interaction_name(name: str) -> str:
+    return _MOM_INTERACTION_NAME_ALIASES.get(name, name)
+
+
+def _canonical_mom_parameter_name(interaction_name: str, parameter_name: str) -> str:
+    if interaction_name == "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata":
+        if parameter_name == "HLAMIMData":
+            return "HLAMIMdata"
+    return parameter_name
+
+
 def _attribute_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.AttributeHandleSet:
     result = datatypes_pb2.AttributeHandleSet()
     items = values.split(",") if isinstance(values, str) else values
@@ -166,6 +186,13 @@ def _merge_2025_fom_modules(modules: tuple[object, ...], *, mim_module: object) 
         fom.merge_fom_modules(modules, mim_module=mim_module)
     except fom.FOMMergeError as exc:
         raise RuntimeError(("InconsistentFOM", str(exc))) from exc
+
+
+def _module_payload_text(module: object, designator: str) -> str:
+    path = getattr(module, "path", None)
+    if path is not None:
+        return Path(path).read_text(encoding="utf-8")
+    return designator
 
 
 def _dimension_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.DimensionHandleSet:
@@ -238,6 +265,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAobjectRoot.Target": "101",
             "HLAobjectRoot.HLAmanager.HLAfederation": "102",
             "HLAobjectRoot.RateObject": "103",
+            "HLAobjectRoot.HLAmanager.HLAfederate": "104",
+            "HLAobjectRoot.SmokeObject": "105",
         }
         self.object_class_names = {value: key for key, value in self.object_classes.items()}
         self.attributes = {
@@ -246,6 +275,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("101", "RCS"): "202",
             ("102", "HLAfederationName"): "203",
             ("103", "Payload"): "204",
+            ("102", "HLAfederatesInFederation"): "205",
+            ("104", "HLAfederateName"): "206",
+            ("105", "Payload"): "207",
         }
         self.attribute_names = {(object_class, value): name for (object_class, name), value in self.attributes.items()}
         self.interactions = {
@@ -280,6 +312,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints": "428",
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus": "429",
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus": "430",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost": "431",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData": "432",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData": "433",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication": "434",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription": "435",
         }
         next_interaction_handle = 600
         for leaf in _MOM_FEDERATE_ADJUST_LEAVES:
@@ -330,6 +367,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("418", "HLAobjectClass"): "534",
             ("418", "HLAobjectInstanceName"): "535",
             ("418", "HLAattributeList"): "536",
+            ("418", "HLAregisteredClass"): "567",
+            ("418", "HLAknownClass"): "568",
+            ("418", "HLAownedInstanceAttributeList"): "569",
             ("419", "HLAfederate"): "537",
             ("420", "HLAfederate"): "538",
             ("420", "HLAobjectInstanceCounts"): "539",
@@ -349,6 +389,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("430", "HLAlabel"): "553",
             ("430", "HLAfederateList"): "554",
             ("430", "HLAfederateSynchronizationStatusList"): "555",
+            ("431", "HLAfederate"): "556",
+            ("431", "HLAfederateName"): "557",
+            ("431", "HLAtimeStamp"): "558",
+            ("431", "HLAfaultDescription"): "559",
+            ("432", "HLAFOMmoduleIndicator"): "560",
+            ("433", "HLAFOMmoduleIndicator"): "561",
+            ("433", "HLAFOMmoduleData"): "562",
+            ("434", "HLAfederate"): "563",
+            ("434", "HLAinteractionClassList"): "564",
+            ("435", "HLAfederate"): "565",
+            ("435", "HLAinteractionClassList"): "566",
         }
         self.next_parameter_handle = 800
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
@@ -359,6 +410,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.object_instances: dict[str, dict[str, str]] = {}
         self.mom_federation_object_handle: str | None = None
         self.mom_federation_name: str | None = None
+        self.mom_federate_object_handles: dict[str, str] = {}
+        self.federation_fom_designators: dict[str, tuple[str, ...]] = {}
+        self.federation_fom_payloads: dict[str, tuple[str, ...]] = {}
         self.reserved_object_instance_names: dict[str, str] = {}
         self.attribute_owners: dict[tuple[str, str], str] = {}
         self.published_object_attributes: dict[str, set[str]] = {}
@@ -524,6 +578,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 "",
             ) or "HLAinteger64Time"
             self.fom_modules = list(fom_designators)
+            self.federation_fom_designators[payload.federationName] = tuple(fom_designators)
+            self.federation_fom_payloads[payload.federationName] = tuple(
+                _module_payload_text(module, designator)
+                for module, designator in zip(resolved_foms, fom_designators, strict=False)
+            )
             self._ensure_mom_federation_object(payload.federationName)
             if request_kind == "createFederationExecutionWithTimeRequest":
                 return rti_pb2.CallResponse(createFederationExecutionWithTimeResponse=rti_pb2.CreateFederationExecutionWithTimeResponse())
@@ -596,16 +655,43 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "joinFederationExecutionWithModulesRequest",
             "joinFederationExecutionWithNameAndModulesRequest",
         }:
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer in self.peer_federate_handles:
+                return self._error("FederateAlreadyExecutionMember", peer)
             payload = getattr(request, request_kind)
             federation_name = payload.federationName
+            if self.save_label is not None or self.next_save_name is not None:
+                return self._error("SaveInProgress", federation_name)
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", federation_name)
             if federation_name not in self.federations:
                 return self._error("FederationExecutionDoesNotExist", federation_name)
+            if request_kind in {"joinFederationExecutionWithModulesRequest", "joinFederationExecutionWithNameAndModulesRequest"}:
+                fom_designators = tuple(_fom_module_designators(payload.additionalFomModules))
+                if fom_designators:
+                    try:
+                        fom = import_module("hla.rti1516e.fom")
+                        resolved_join_foms = _resolve_2025_fom_modules(fom_designators, mim=False)
+                        base_designators = self.federation_fom_designators.get(federation_name, ())
+                        resolved_base_foms = _resolve_2025_fom_modules(base_designators, mim=False)
+                        _merge_2025_fom_modules(
+                            resolved_base_foms + resolved_join_foms,
+                            mim_module=fom.standard_mim_module(),
+                        )
+                    except RuntimeError as exc:
+                        name, details = exc.args[0]
+                        return self._error(name, details)
             federate_name = getattr(payload, "federateName", "") or f"fedpro-federate-{self.next_federate_handle}"
+            if federate_name in self.joined_federates:
+                return self._error("FederateNameAlreadyInUse", federate_name)
             handle = self.next_federate_handle
             self.next_federate_handle += 1
             self.joined_federates[federate_name] = federation_name
             self.joined_federate_handles[str(handle)] = federate_name
             self.joined_federate_types[str(handle)] = payload.federateType
+            self._ensure_mom_federation_object(federation_name)
+            mom_federate_object = self._ensure_mom_federate_object(str(handle), federate_name)
             self.peer_federate_handles[peer] = str(handle)
             self.handle_service_reporting.setdefault(str(handle), False)
             self.handle_exception_reporting.setdefault(str(handle), True)
@@ -621,15 +707,65 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.handle_time_constrained.setdefault(str(handle), False)
             self.handle_asynchronous_delivery_enabled.setdefault(str(handle), False)
             self._sync_time_globals(str(handle))
+            for label, record in self.synchronization_points.items():
+                synchronized = record.get("synchronized", False)
+                dynamic_members = record.get("dynamic_members", False)
+                if not isinstance(synchronized, bool) or synchronized:
+                    continue
+                if not isinstance(dynamic_members, bool) or not dynamic_members:
+                    continue
+                federates = record.get("federates", set())
+                if isinstance(federates, set):
+                    federates.add(str(handle))
+                self._enqueue_callback(
+                    callback_pb2.CallbackRequest(
+                        announceSynchronizationPoint=callback_pb2.AnnounceSynchronizationPoint(
+                            synchronizationPointLabel=label,
+                            userSuppliedTag=record.get("tag", b"") if isinstance(record.get("tag", b""), bytes) else b"",
+                        )
+                    ),
+                    target_handles={str(handle)},
+                )
             result = datatypes_pb2.JoinResult(
                 federateHandle=datatypes_pb2.FederateHandle(data=str(handle).encode("ascii")),
                 logicalTimeImplementationName="HLAinteger64Time",
             )
+            discovery_targets = self._discovery_target_handles(
+                self.object_classes["HLAobjectRoot.HLAmanager.HLAfederate"],
+                exclude_handle=str(handle),
+            )
+            if discovery_targets:
+                self._queue_discovery(
+                    mom_federate_object,
+                    self.object_classes["HLAobjectRoot.HLAmanager.HLAfederate"],
+                    self.object_instances[mom_federate_object]["name"],
+                    target_handles=discovery_targets,
+                )
             if request_kind in {"joinFederationExecutionWithNameRequest", "joinFederationExecutionWithNameAndModulesRequest"}:
                 return rti_pb2.CallResponse(joinFederationExecutionWithNameResponse=rti_pb2.JoinFederationExecutionWithNameResponse(result=result))
             return rti_pb2.CallResponse(joinFederationExecutionResponse=rti_pb2.JoinFederationExecutionResponse(result=result))
         if request_kind == "resignFederationExecutionRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             action = request.resignFederationExecutionRequest.resignAction
+            try:
+                datatypes_pb2.ResignAction.Name(action)
+            except ValueError:
+                return self._error("InvalidResignAction", str(action))
+            current_handle = self._current_federate_handle(peer)
+            if action == datatypes_pb2.NO_ACTION:
+                if any(requester_handle == current_handle for requester_handle in self.pending_attribute_requesters.values()):
+                    return self._error(
+                        "OwnershipAcquisitionPending",
+                        "Cannot resign with pending ownership acquisition using NO_ACTION",
+                    )
+                if any(owner_handle == current_handle for owner_handle in self.attribute_owners.values()):
+                    return self._error(
+                        "FederateOwnsAttributes",
+                        "Cannot resign while owning attributes using NO_ACTION",
+                    )
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
                     federateResigned=callback_pb2.FederateResigned(
@@ -652,6 +788,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return self._error("FederatesCurrentlyJoined", payload.federationName)
             self.federations.discard(payload.federationName)
             self.federation_logical_time_implementations.pop(payload.federationName, None)
+            self.federation_fom_designators.pop(payload.federationName, None)
+            self.federation_fom_payloads.pop(payload.federationName, None)
             if not self.federations or self.mom_federation_name == payload.federationName:
                 self.mom_federation_name = None
                 self.mom_federation_object_handle = None
@@ -749,7 +887,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return self._error("AttributeNotDefined", attribute)
             return rti_pb2.CallResponse(getAttributeNameResponse=rti_pb2.GetAttributeNameResponse(result=name))
         if request_kind == "getInteractionClassHandleRequest":
-            name = request.getInteractionClassHandleRequest.interactionClassName
+            name = _canonical_mom_interaction_name(request.getInteractionClassHandleRequest.interactionClassName)
             try:
                 handle = self.interactions[name]
             except KeyError:
@@ -765,16 +903,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "getParameterHandleRequest":
             payload = request.getParameterHandleRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
+            interaction_name = self.interaction_names.get(interaction_class, "")
+            parameter_name = _canonical_mom_parameter_name(interaction_name, payload.parameterName)
             try:
-                handle = self.parameters[(interaction_class, payload.parameterName)]
+                handle = self.parameters[(interaction_class, parameter_name)]
             except KeyError:
-                interaction_name = self.interaction_names.get(interaction_class, "")
                 if ".HLAmanager." not in interaction_name:
-                    return self._error("NameNotFound", payload.parameterName)
+                    return self._error("NameNotFound", parameter_name)
                 handle = str(self.next_parameter_handle)
                 self.next_parameter_handle += 1
-                self.parameters[(interaction_class, payload.parameterName)] = handle
-                self.parameter_names[(interaction_class, handle)] = payload.parameterName
+                self.parameters[(interaction_class, parameter_name)] = handle
+                self.parameter_names[(interaction_class, handle)] = parameter_name
             return rti_pb2.CallResponse(
                 getParameterHandleResponse=rti_pb2.GetParameterHandleResponse(result=_handle(datatypes_pb2.ParameterHandle, handle))
             )
@@ -792,18 +931,41 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "registerFederationSynchronizationPointWithSetRequest",
         }:
             payload = getattr(request, request_kind)
+            if payload.synchronizationPointLabel in self.synchronization_points:
+                self._enqueue_callback(
+                    callback_pb2.CallbackRequest(
+                        synchronizationPointRegistrationFailed=callback_pb2.SynchronizationPointRegistrationFailed(
+                            synchronizationPointLabel=payload.synchronizationPointLabel,
+                            reason=datatypes_pb2.SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE,
+                        )
+                    ),
+                    target_handles={self._current_federate_handle(peer)},
+                )
+                if request_kind == "registerFederationSynchronizationPointWithSetRequest":
+                    return rti_pb2.CallResponse(
+                        registerFederationSynchronizationPointWithSetResponse=rti_pb2.RegisterFederationSynchronizationPointWithSetResponse()
+                    )
+                return rti_pb2.CallResponse(
+                    registerFederationSynchronizationPointResponse=rti_pb2.RegisterFederationSynchronizationPointResponse()
+                )
             target_federates = set(self._joined_handle_values())
+            dynamic_members = request_kind == "registerFederationSynchronizationPointRequest"
             if request_kind == "registerFederationSynchronizationPointWithSetRequest":
                 target_federates = {
                     item.data.decode("ascii") for item in payload.synchronizationSet.federateHandle if item.data
                 }
                 if not target_federates:
                     target_federates = set(self._joined_handle_values())
+                    dynamic_members = True
+                else:
+                    dynamic_members = False
             record = self._synchronization_point_record(payload.synchronizationPointLabel)
             record["tag"] = bytes(payload.userSuppliedTag)
             record["federates"] = target_federates
             record["achieved"].clear()
+            record["failed"].clear()
             record["synchronized"] = False
+            record["dynamic_members"] = dynamic_members
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
                     synchronizationPointRegistrationSucceeded=callback_pb2.SynchronizationPointRegistrationSucceeded(
@@ -833,7 +995,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             record = self._synchronization_point_record(payload.synchronizationPointLabel)
             if payload.successfully:
                 record["achieved"].add(self._current_federate_handle(peer))
-                self._queue_federation_synchronized_if_ready(payload.synchronizationPointLabel)
+            else:
+                record["failed"].add(self._current_federate_handle(peer))
+            self._queue_federation_synchronized_if_ready(payload.synchronizationPointLabel)
             return rti_pb2.CallResponse(synchronizationPointAchievedResponse=rti_pb2.SynchronizationPointAchievedResponse())
         if request_kind == "getDimensionHandleRequest":
             name = request.getDimensionHandleRequest.dimensionName
@@ -1086,11 +1250,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 self._start_federation_save(payload.label, None)
             return rti_pb2.CallResponse(requestFederationSaveWithTimeResponse=rti_pb2.RequestFederationSaveWithTimeResponse())
         if request_kind == "federateSaveBegunRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             if self.save_label is None:
                 return self._error("SaveNotInitiated", "No federation save is in progress")
             self.save_status[self._current_federate_handle(peer)] = datatypes_pb2.FEDERATE_SAVING
             return rti_pb2.CallResponse(federateSaveBegunResponse=rti_pb2.FederateSaveBegunResponse())
         if request_kind == "queryFederationSaveStatusRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
                     federationSaveStatusResponse=callback_pb2.FederationSaveStatusResponse(response=self._save_status_array())
@@ -1099,6 +1271,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
             return rti_pb2.CallResponse(queryFederationSaveStatusResponse=rti_pb2.QueryFederationSaveStatusResponse())
         if request_kind == "federateSaveCompleteRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             if self.save_label is None:
                 return self._error("SaveNotInitiated", "No federation save is in progress")
             self.save_status[self._current_federate_handle(peer)] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE
@@ -1114,6 +1290,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
             return rti_pb2.CallResponse(federateSaveCompleteResponse=rti_pb2.FederateSaveCompleteResponse())
         if request_kind == "federateSaveNotCompleteRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
+            if self.save_label is None:
+                return self._error("SaveNotInitiated", "No federation save is in progress")
             self.next_save_name = None
             self.next_save_time = None
             self.save_label = None
@@ -1127,6 +1309,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             return rti_pb2.CallResponse(federateSaveNotCompleteResponse=rti_pb2.FederateSaveNotCompleteResponse())
         if request_kind == "abortFederationSaveRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
+            if self.save_label is None:
+                return self._error("SaveNotInitiated", "No federation save is in progress")
             self.next_save_name = None
             self.next_save_time = None
             self.save_label = None
@@ -1145,6 +1333,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             label = request.requestFederationRestoreRequest.label
             if self.save_label is not None or self.next_save_name is not None:
                 return self._error("SaveInProgress", label)
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", label)
             if label not in self.saved_labels:
                 self._enqueue_callback(
                     callback_pb2.CallbackRequest(
@@ -1178,6 +1368,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             return rti_pb2.CallResponse(requestFederationRestoreResponse=rti_pb2.RequestFederationRestoreResponse())
         if request_kind == "queryFederationRestoreStatusRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
                     federationRestoreStatusResponse=callback_pb2.FederationRestoreStatusResponse(response=self._restore_status_array())
@@ -1186,6 +1380,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
             return rti_pb2.CallResponse(queryFederationRestoreStatusResponse=rti_pb2.QueryFederationRestoreStatusResponse())
         if request_kind == "federateRestoreCompleteRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
             if self.restore_label is None:
                 return self._error("RestoreNotRequested", "No federation restore is in progress")
             self.restore_status[self._current_federate_handle(peer)] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
@@ -1200,6 +1398,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
             return rti_pb2.CallResponse(federateRestoreCompleteResponse=rti_pb2.FederateRestoreCompleteResponse())
         if request_kind == "federateRestoreNotCompleteRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
+            if self.restore_label is None:
+                return self._error("RestoreNotRequested", "No federation restore is in progress")
             self.restore_label = None
             self.restore_status = {}
             for handle in self._joined_handle_values():
@@ -1211,6 +1415,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             return rti_pb2.CallResponse(federateRestoreNotCompleteResponse=rti_pb2.FederateRestoreNotCompleteResponse())
         if request_kind == "abortFederationRestoreRequest":
+            if peer not in self.peer_callback_delivery_enabled:
+                return self._error("NotConnected", peer)
+            if peer not in self.peer_federate_handles:
+                return self._error("FederateNotExecutionMember", peer)
+            if self.restore_label is None:
+                return self._error("RestoreNotInProgress", "No federation restore is in progress")
             self.restore_label = None
             self.restore_status = {}
             for handle in self._joined_handle_values():
@@ -1229,9 +1439,25 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "requestAttributeTransportationTypeChangeRequest":
             payload = request.requestAttributeTransportationTypeChangeRequest
             object_instance = payload.objectInstance.data.decode("ascii")
+            if self.save_label is not None:
+                return self._error("SaveInProgress", object_instance)
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", object_instance)
+            record = self.object_instances.get(object_instance)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            object_class = record["objectClass"]
             transportation = payload.transportationType.data.decode("ascii")
+            if transportation not in self.transportation_names:
+                return self._error("InvalidTransportationType", transportation)
+            current_handle = self._current_federate_handle(peer)
             for attribute in payload.attributes.attributeHandle:
-                self.default_attribute_transportation[(object_instance, attribute.data.decode("ascii"))] = transportation
+                attribute_handle = attribute.data.decode("ascii")
+                if (object_class, attribute_handle) not in self.attribute_names:
+                    return self._error("AttributeNotDefined", attribute_handle)
+                if self.attribute_owners.get((object_instance, attribute_handle)) != current_handle:
+                    return self._error("AttributeNotOwned", attribute_handle)
+                self.default_attribute_transportation[(object_instance, attribute_handle)] = transportation
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
                     confirmAttributeTransportationTypeChange=callback_pb2.ConfirmAttributeTransportationTypeChange(
@@ -1248,9 +1474,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "queryAttributeTransportationTypeRequest":
             payload = request.queryAttributeTransportationTypeRequest
             object_instance = payload.objectInstance.data.decode("ascii")
+            if self.save_label is not None:
+                return self._error("SaveInProgress", object_instance)
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", object_instance)
             attribute = payload.attribute.data.decode("ascii")
             record = self.object_instances.get(object_instance)
-            object_class = record["objectClass"] if record is not None else ""
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            object_class = record["objectClass"]
+            if (object_class, attribute) not in self.attribute_names:
+                return self._error("AttributeNotDefined", attribute)
             transportation = self.default_attribute_transportation.get(
                 (object_instance, attribute),
                 self.default_attribute_transportation.get((object_class, attribute), "1"),
@@ -1271,7 +1505,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "requestInteractionTransportationTypeChangeRequest":
             payload = request.requestInteractionTransportationTypeChangeRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
+            if self.save_label is not None:
+                return self._error("SaveInProgress", interaction_class)
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", interaction_class)
+            if interaction_class not in self.interaction_names:
+                return self._error("InvalidInteractionClassHandle", interaction_class)
             transportation = payload.transportationType.data.decode("ascii")
+            if transportation not in self.transportation_names:
+                return self._error("InvalidTransportationType", transportation)
             self.interaction_transportation = (interaction_class, transportation)
             self._enqueue_callback(
                 callback_pb2.CallbackRequest(
@@ -1288,6 +1530,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "queryInteractionTransportationTypeRequest":
             payload = request.queryInteractionTransportationTypeRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
+            if self.save_label is not None:
+                return self._error("SaveInProgress", interaction_class)
+            if self.restore_label is not None:
+                return self._error("RestoreInProgress", interaction_class)
+            if interaction_class not in self.interaction_names:
+                return self._error("InvalidInteractionClassHandle", interaction_class)
             transportation = (
                 self.interaction_transportation[1]
                 if self.interaction_transportation is not None and self.interaction_transportation[0] == interaction_class
@@ -1330,6 +1578,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "publishObjectClassAttributesRequest":
             payload = request.publishObjectClassAttributesRequest
             object_class = payload.objectClass.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                attribute_handle = attribute.data.decode("ascii")
+                if (object_class, attribute_handle) not in self.attribute_names:
+                    return self._error("AttributeNotDefined", attribute_handle)
             handle = self._current_federate_handle(peer)
             previous_interest = self._registration_interest_snapshot()
             self.handle_published_object_attributes.setdefault(handle, {}).setdefault(object_class, set()).update(
@@ -1972,10 +2224,21 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "requestInstanceAttributeValueUpdateRequest":
             payload = request.requestInstanceAttributeValueUpdateRequest
             object_instance = payload.objectInstance.data.decode("ascii")
+            requested_attributes = [attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle]
+            current_handle = self._current_federate_handle(peer)
+            if self._mom_attribute_value(object_instance, requested_attributes[0]) is not None:
+                self._queue_rti_owned_attribute_reflection(
+                    current_handle,
+                    object_instance,
+                    requested_attributes,
+                    payload.userSuppliedTag,
+                )
+                return rti_pb2.CallResponse(
+                    requestInstanceAttributeValueUpdateResponse=rti_pb2.RequestInstanceAttributeValueUpdateResponse()
+                )
             record = self.object_instances.get(object_instance)
             if record is None:
                 return self._error("ObjectInstanceNotKnown", object_instance)
-            requested_attributes = [attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle]
             owner_attributes: dict[str, list[str]] = {}
             for attribute in requested_attributes:
                 owner_handle = self.attribute_owners.get((object_instance, attribute))
@@ -1999,10 +2262,27 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "requestClassAttributeValueUpdateRequest":
             payload = request.requestClassAttributeValueUpdateRequest
             object_class = payload.objectClass.data.decode("ascii")
+            requested_attributes = [attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle]
+            current_handle = self._current_federate_handle(peer)
+            if object_class in {
+                self.object_classes["HLAobjectRoot.HLAmanager.HLAfederation"],
+                self.object_classes["HLAobjectRoot.HLAmanager.HLAfederate"],
+            }:
+                for object_instance, record in self.object_instances.items():
+                    if record["objectClass"] != object_class:
+                        continue
+                    self._queue_rti_owned_attribute_reflection(
+                        current_handle,
+                        object_instance,
+                        requested_attributes,
+                        payload.userSuppliedTag,
+                    )
+                return rti_pb2.CallResponse(
+                    requestClassAttributeValueUpdateResponse=rti_pb2.RequestClassAttributeValueUpdateResponse()
+                )
             for object_instance, record in self.object_instances.items():
                 if record["objectClass"] != object_class:
                     continue
-                requested_attributes = [attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle]
                 owner_attributes: dict[str, list[str]] = {}
                 for attribute in requested_attributes:
                     owner_handle = self.attribute_owners.get((object_instance, attribute))
@@ -2075,9 +2355,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications"]:
                 self._queue_object_publication_report(payload.parameterValues)
+                self._queue_interaction_publication_report(payload.parameterValues)
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions"]:
                 self._queue_object_subscription_report(payload.parameterValues)
+                self._queue_interaction_subscription_report(payload.parameterValues)
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent"]:
                 params = self._mom_params(
@@ -2132,10 +2414,25 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted"]:
+                params = self._mom_params(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted",
+                    payload.parameterValues,
+                )
+                requested_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle(peer))
+                count = 0
+                for object_instance, record in self.object_instances.items():
+                    if ".HLAmanager." in record["objectClass"]:
+                        continue
+                    if any(
+                        owner_handle == requested_handle and owned_instance == object_instance
+                        for (owned_instance, _attribute), owner_handle in self.attribute_owners.items()
+                    ):
+                        count += 1
                 self._queue_activity_count_report(
                     "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
                     "HLAobjectInstanceCounts",
-                    len(self.object_instances),
+                    count,
+                    requested_handle,
                 )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated"]:
@@ -2166,6 +2463,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData"]:
                 self._queue_fom_module_data_report(payload.parameterValues)
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData"]:
+                self._queue_federation_fom_module_data_report(payload.parameterValues)
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]:
                 self._queue_object_instance_information_report(payload.parameterValues)
@@ -2394,17 +2694,23 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.isAttributeOwnedByFederateRequest
             object_instance = payload.objectInstance.data.decode("ascii")
             attribute = payload.attribute.data.decode("ascii")
+            owner_handle = self.attribute_owners.get((object_instance, attribute))
             return rti_pb2.CallResponse(
                 isAttributeOwnedByFederateResponse=rti_pb2.IsAttributeOwnedByFederateResponse(
                     result=not self._is_rti_owned_attribute(object_instance, attribute)
                     and (object_instance, attribute) not in self.unowned_attributes
+                    and owner_handle == self._current_federate_handle(peer)
                 )
             )
         if request_kind == "unconditionalAttributeOwnershipDivestitureRequest":
             payload = request.unconditionalAttributeOwnershipDivestitureRequest
             object_instance = payload.objectInstance.data.decode("ascii")
+            requester_handle = self._current_federate_handle(peer)
             for attribute in payload.attributes.attributeHandle:
-                key = (object_instance, attribute.data.decode("ascii"))
+                attribute_value = attribute.data.decode("ascii")
+                key = (object_instance, attribute_value)
+                if self.attribute_owners.get(key) != requester_handle:
+                    return self._error("AttributeNotOwned", attribute_value)
                 self.unowned_attributes.add(key)
                 self.attribute_owners.pop(key, None)
             return rti_pb2.CallResponse(unconditionalAttributeOwnershipDivestitureResponse=rti_pb2.UnconditionalAttributeOwnershipDivestitureResponse())
@@ -2461,14 +2767,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "attributeOwnershipAcquisitionIfAvailableRequest":
             payload = request.attributeOwnershipAcquisitionIfAvailableRequest
             object_instance = payload.objectInstance.data.decode("ascii")
+            requester_handle = self._current_federate_handle(peer)
             available = []
             unavailable = []
             for attribute in payload.desiredAttributes.attributeHandle:
                 attribute_value = attribute.data.decode("ascii")
                 key = (object_instance, attribute_value)
+                if self.attribute_owners.get(key) == requester_handle:
+                    return self._error("AttributeAlreadyOwned", attribute_value)
                 if key in self.unowned_attributes:
                     self.unowned_attributes.discard(key)
-                    self.attribute_owners[key] = self._current_federate_handle(peer)
+                    self.attribute_owners[key] = requester_handle
                     available.append(attribute_value)
                 else:
                     unavailable.append(attribute_value)
@@ -3000,13 +3309,43 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if leaf == "HLArequestAttributeTransportationTypeChange":
             object_instance = self._mom_int(params, "HLAobjectInstance")
             transportation = self._mom_text(params, "HLAtransportation", "HLAreliable")
-            for attribute in self._mom_attributes(params):
+            target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle(peer))
+            attributes = self._mom_attributes(params)
+            for attribute in attributes:
                 self.default_attribute_transportation[(object_instance, attribute)] = transportation
+            self._enqueue_callback(
+                callback_pb2.CallbackRequest(
+                    confirmAttributeTransportationTypeChange=callback_pb2.ConfirmAttributeTransportationTypeChange(
+                        objectInstance=datatypes_pb2.ObjectInstanceHandle(data=str(object_instance).encode("ascii")),
+                        attributes=datatypes_pb2.AttributeHandleSet(
+                            attributeHandle=[datatypes_pb2.AttributeHandle(data=str(attribute).encode("ascii")) for attribute in attributes]
+                        ),
+                        transportationType=datatypes_pb2.TransportationTypeHandle(
+                            data=self.transportations[transportation].encode("ascii")
+                        ),
+                    )
+                ),
+                target_handles={target_handle},
+            )
             return
         if leaf == "HLArequestInteractionTransportationTypeChange":
+            interaction_class = self._mom_int(params, "HLAinteractionClass")
+            transportation = self._mom_text(params, "HLAtransportation", "HLAreliable")
+            target_handle = self._mom_text(params, "HLAfederate", self._current_federate_handle(peer))
             self.interaction_transportation = (
-                self._mom_int(params, "HLAinteractionClass"),
-                self._mom_text(params, "HLAtransportation", "HLAreliable"),
+                interaction_class,
+                transportation,
+            )
+            self._enqueue_callback(
+                callback_pb2.CallbackRequest(
+                    confirmInteractionTransportationTypeChange=callback_pb2.ConfirmInteractionTransportationTypeChange(
+                        interactionClass=datatypes_pb2.InteractionClassHandle(data=str(interaction_class).encode("ascii")),
+                        transportationType=datatypes_pb2.TransportationTypeHandle(
+                            data=self.transportations[transportation].encode("ascii")
+                        ),
+                    )
+                ),
+                target_handles={target_handle},
             )
             return
         if leaf == "HLAchangeAttributeOrderType":
@@ -3488,18 +3827,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 requested_handle = item.value.decode("ascii")
                 break
         requested_publications = self.handle_published_object_attributes.get(requested_handle, {})
-        publication_rows = [
-            f"{object_class}:{','.join(sorted(attributes, key=int))}"
+        publication_items = [
+            (object_class, ",".join(sorted(attributes, key=int)))
             for object_class, attributes in sorted(requested_publications.items(), key=lambda item: int(item[0]))
             if attributes
         ]
-        object_classes = ",".join(row.split(":", 1)[0] for row in publication_rows)
-        attribute_lists = ";".join(publication_rows)
+        object_classes = ",".join(object_class for object_class, _attributes in publication_items)
+        attribute_lists = ";".join(attributes for _object_class, attributes in publication_items)
         self._queue_mom_report(
             report_class,
             {
                 "HLAfederate": requested_handle.encode("ascii"),
-                "HLAnumberOfClasses": str(len(publication_rows)).encode("ascii"),
+                "HLAnumberOfClasses": str(len(publication_items)).encode("ascii"),
                 "HLAobjectClass": object_classes.encode("ascii"),
                 "HLAattributeList": attribute_lists.encode("ascii"),
             },
@@ -3521,22 +3860,70 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 requested_handle = item.value.decode("ascii")
                 break
         requested_subscriptions = self.handle_subscribed_object_attributes.get(requested_handle, {})
-        subscription_rows = [
-            f"{object_class}:{','.join(sorted(attributes, key=int))}"
+        subscription_items = [
+            (object_class, ",".join(sorted(attributes, key=int)))
             for object_class, attributes in sorted(requested_subscriptions.items(), key=lambda item: int(item[0]))
             if attributes
         ]
-        object_classes = ",".join(row.split(":", 1)[0] for row in subscription_rows)
-        attribute_lists = ";".join(subscription_rows)
+        object_classes = ",".join(object_class for object_class, _attributes in subscription_items)
+        attribute_lists = ";".join(attributes for _object_class, attributes in subscription_items)
         self._queue_mom_report(
             report_class,
             {
                 "HLAfederate": requested_handle.encode("ascii"),
-                "HLAnumberOfClasses": str(len(subscription_rows)).encode("ascii"),
+                "HLAnumberOfClasses": str(len(subscription_items)).encode("ascii"),
                 "HLAobjectClass": object_classes.encode("ascii"),
-                "HLAactive": b"HLAtrue" if subscription_rows else b"HLAfalse",
+                "HLAactive": b"HLAtrue" if subscription_items else b"HLAfalse",
                 "HLAmaxUpdateRate": b"",
                 "HLAattributeList": attribute_lists.encode("ascii"),
+            },
+        )
+
+    def _queue_interaction_publication_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        request_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications"
+        ]
+        requested_handle = "1"
+        requested_parameter = self.parameters[(request_class, "HLAfederate")]
+        for item in parameters.parameterHandleValue:
+            if item.parameterHandle.data.decode("ascii") == requested_parameter:
+                requested_handle = item.value.decode("ascii")
+                break
+        requested_publications = sorted(self.handle_published_interactions.get(requested_handle, ()), key=int)
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAfederate": requested_handle.encode("ascii"),
+                "HLAinteractionClassList": ",".join(requested_publications).encode("ascii"),
+            },
+        )
+
+    def _queue_interaction_subscription_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        request_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions"
+        ]
+        requested_handle = "1"
+        requested_parameter = self.parameters[(request_class, "HLAfederate")]
+        for item in parameters.parameterHandleValue:
+            if item.parameterHandle.data.decode("ascii") == requested_parameter:
+                requested_handle = item.value.decode("ascii")
+                break
+        requested_subscriptions = sorted(self.handle_subscribed_interactions.get(requested_handle, ()), key=int)
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAfederate": requested_handle.encode("ascii"),
+                "HLAinteractionClassList": ",".join(requested_subscriptions).encode("ascii"),
             },
         )
 
@@ -3585,6 +3972,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     "objectClass": object_class,
                     "objectInstanceName": record["name"],
                     "attributeList": ",".join(attributes),
+                    "ownedInstanceAttributeList": ",".join(
+                        sorted(
+                            (
+                                attribute
+                                for (owned_instance, attribute), owner_handle in self.attribute_owners.items()
+                                if owned_instance == object_instance and owner_handle == requested_handle
+                            ),
+                            key=int,
+                        )
+                    ),
                 }
             )
         self._queue_mom_report(
@@ -3595,6 +3992,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 "HLAobjectClass": ";".join(row["objectClass"] for row in rows).encode("ascii"),
                 "HLAobjectInstanceName": ";".join(row["objectInstanceName"] for row in rows).encode("ascii"),
                 "HLAattributeList": ";".join(row["attributeList"] for row in rows).encode("ascii"),
+                "HLAregisteredClass": ";".join(row["objectClass"] for row in rows).encode("ascii"),
+                "HLAknownClass": ";".join(row["objectClass"] for row in rows).encode("ascii"),
+                "HLAownedInstanceAttributeList": ";".join(
+                    row["ownedInstanceAttributeList"] for row in rows
+                ).encode("ascii"),
             },
         )
 
@@ -3623,6 +4025,34 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 "HLAfederate": requested_handle.encode("ascii"),
                 "HLAFOMmoduleIndicator": str(indicator).encode("ascii"),
                 "HLAFOMmoduleData": module_data.encode("ascii"),
+            },
+        )
+
+    def _queue_federation_fom_module_data_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
+        report_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData"]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        request_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData"]
+        indicator = 0
+        indicator_parameter = self.parameters[(request_class, "HLAFOMmoduleIndicator")]
+        for item in parameters.parameterHandleValue:
+            if item.parameterHandle.data.decode("ascii") == indicator_parameter:
+                try:
+                    indicator = int(item.value.decode("ascii") or "0")
+                except ValueError:
+                    indicator = 0
+                break
+        federation_name = self.mom_federation_name or next(iter(self.federations), "")
+        payloads = self.federation_fom_payloads.get(federation_name, ())
+        if payloads:
+            module_data = "\n".join(payloads)
+        else:
+            module_data = ""
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAFOMmoduleIndicator": str(indicator).encode("ascii"),
+                "HLAFOMmoduleData": module_data.encode("utf-8"),
             },
         )
 
@@ -3958,11 +4388,25 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self._enqueue_callback(callback, target_handles=delivered_targets)
 
     def _synchronization_point_record(self, label: str) -> dict[str, bytes | bool | set[str]]:
-        return self.synchronization_points.setdefault(label, {"tag": b"", "achieved": set(), "federates": set(), "synchronized": False})
+        return self.synchronization_points.setdefault(
+            label,
+            {
+                "tag": b"",
+                "achieved": set(),
+                "failed": set(),
+                "federates": set(),
+                "synchronized": False,
+                "dynamic_members": False,
+            },
+        )
 
     def _synchronization_point_achieved(self, label: str) -> set[str]:
         achieved = self.synchronization_points.get(label, {}).get("achieved", set())
         return achieved if isinstance(achieved, set) else set()
+
+    def _synchronization_point_failed(self, label: str) -> set[str]:
+        failed = self.synchronization_points.get(label, {}).get("failed", set())
+        return failed if isinstance(failed, set) else set()
 
     def _synchronization_point_federates(self, label: str) -> set[str]:
         federates = self.synchronization_points.get(label, {}).get("federates", set())
@@ -3974,14 +4418,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if isinstance(synchronized, bool) and synchronized:
             return
         target_federates = self._synchronization_point_federates(label)
-        if not target_federates or not target_federates.issubset(self._synchronization_point_achieved(label)):
+        completed = self._synchronization_point_achieved(label) | self._synchronization_point_failed(label)
+        if not target_federates or not target_federates.issubset(completed):
             return
         record["synchronized"] = True
+        failed_handles = sorted(self._synchronization_point_failed(label), key=int)
+        failed_set = datatypes_pb2.FederateHandleSet(
+            federateHandle=[_handle(datatypes_pb2.FederateHandle, handle) for handle in failed_handles]
+        )
         self._enqueue_callback_per_handle(
             callback_pb2.CallbackRequest(
                 federationSynchronized=callback_pb2.FederationSynchronized(
                     synchronizationPointLabel=label,
-                    failedToSyncSet=datatypes_pb2.FederateHandleSet(),
+                    failedToSyncSet=failed_set,
                 )
             ),
             target_handles=target_federates,
@@ -4014,6 +4463,23 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for candidate_peer, candidate_handle in tuple(self.peer_federate_handles.items()):
                 if candidate_handle == handle:
                     self.peer_federate_handles.pop(candidate_peer, None)
+        mom_object_handle = self.mom_federate_object_handles.pop(handle, None)
+        if mom_object_handle is not None:
+            mom_record = self._remove_object_instance(mom_object_handle)
+            if mom_record is not None:
+                remove_targets = self._discovery_target_handles(mom_record["objectClass"], exclude_handle=handle)
+                if remove_targets:
+                    callback = callback_pb2.CallbackRequest(
+                        removeObjectInstance=callback_pb2.RemoveObjectInstance(
+                            objectInstance=_handle(datatypes_pb2.ObjectInstanceHandle, mom_object_handle),
+                            userSuppliedTag=b"resign",
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, handle),
+                        )
+                    )
+                    if len(remove_targets) > 1:
+                        self._enqueue_callback_per_handle(callback, target_handles=remove_targets)
+                    else:
+                        self._enqueue_callback(callback, target_handles=remove_targets)
         name = self.joined_federate_handles.pop(handle, None)
         if name is not None:
             self.joined_federates.pop(name, None)
@@ -4382,6 +4848,118 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         }:
             self.pending_attribute_acquisitions.clear()
             self.pending_attribute_requesters.clear()
+
+    def _cancel_pending_acquisitions_for_handle(self, handle: str) -> None:
+        removed_keys = {
+            key for key, requester_handle in self.pending_attribute_requesters.items() if requester_handle == handle
+        }
+        self.pending_attribute_requesters = {
+            key: requester_handle
+            for key, requester_handle in self.pending_attribute_requesters.items()
+            if requester_handle != handle
+        }
+        self.pending_attribute_acquisitions = {
+            key: tag for key, tag in self.pending_attribute_acquisitions.items() if key not in removed_keys
+        }
+
+    def _delete_objects_owned_by_handle(self, handle: str, *, user_supplied_tag: bytes) -> None:
+        owned_instances = [
+            object_instance
+            for object_instance in tuple(self.object_instances)
+            if any(
+                owner_handle == handle and owned_instance == object_instance
+                for (owned_instance, _attribute), owner_handle in self.attribute_owners.items()
+            )
+        ]
+        for object_instance in owned_instances:
+            record = self._remove_object_instance(object_instance)
+            if record is None:
+                continue
+            remove_targets = self._discovery_target_handles(record["objectClass"], exclude_handle=handle)
+            if not remove_targets:
+                continue
+            callback = callback_pb2.CallbackRequest(
+                removeObjectInstance=callback_pb2.RemoveObjectInstance(
+                    objectInstance=_handle(datatypes_pb2.ObjectInstanceHandle, object_instance),
+                    userSuppliedTag=user_supplied_tag,
+                    producingFederate=_handle(datatypes_pb2.FederateHandle, handle),
+                )
+            )
+            if len(remove_targets) > 1:
+                self._enqueue_callback_per_handle(callback, target_handles=remove_targets)
+            else:
+                self._enqueue_callback(callback, target_handles=remove_targets)
+
+    def _divest_attributes_owned_by_handle(self, handle: str) -> None:
+        for key, owner_handle in tuple(self.attribute_owners.items()):
+            if owner_handle != handle:
+                continue
+            self.unowned_attributes.add(key)
+            self.offered_attributes.discard(key)
+            self.attribute_owners.pop(key, None)
+
+    def force_federate_loss(self, federate_handle: str, fault_description: str = "simulated federate fault") -> None:
+        handle = str(federate_handle)
+        lost_name = self.joined_federate_handles.get(handle)
+        if lost_name is None:
+            raise KeyError(f"Unknown federate handle {handle!r}")
+        peer = next(
+            (candidate_peer for candidate_peer, candidate_handle in self.peer_federate_handles.items() if candidate_handle == handle),
+            None,
+        )
+        if peer is not None:
+            self._enqueue_callback(
+                callback_pb2.CallbackRequest(
+                    connectionLost=callback_pb2.ConnectionLost(faultDescription=fault_description)
+                ),
+                target_peers={peer},
+            )
+
+        report_name = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost"
+        report_class = self.interactions.get(report_name)
+        if report_class is not None:
+            handle_module = import_module("hla.rti1516e.handles")
+            mom_module = import_module("hla.rti1516e.mom")
+            time_module = import_module("hla.rti1516e.time")
+            encoded_handle = handle_module.FederateHandle(int(handle)).encode()
+            raw_time = self._handle_current_time(handle).data.decode("ascii")
+            time_kind, time_value = raw_time.split(":", 1)
+            if time_kind == "HLAfloat64Time":
+                encoded_time = time_module.HLAfloat64Time(float(time_value)).encode()
+            else:
+                encoded_time = time_module.HLAinteger64Time(int(float(time_value))).encode()
+            self._queue_mom_report(
+                report_class,
+                {
+                    "HLAfederate": encoded_handle,
+                    "HLAfederateName": mom_module.encode_text(lost_name),
+                    "HLAtimeStamp": encoded_time,
+                    "HLAfaultDescription": mom_module.encode_text(fault_description),
+                },
+            )
+
+        action = self.automatic_resign_directive
+        if action in {
+            datatypes_pb2.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+            datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self._cancel_pending_acquisitions_for_handle(handle)
+        if action in {
+            datatypes_pb2.DELETE_OBJECTS,
+            datatypes_pb2.DELETE_OBJECTS_THEN_DIVEST,
+            datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self._delete_objects_owned_by_handle(handle, user_supplied_tag=b"lost")
+        if action in {
+            datatypes_pb2.UNCONDITIONALLY_DIVEST_ATTRIBUTES,
+            datatypes_pb2.DELETE_OBJECTS_THEN_DIVEST,
+            datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self._divest_attributes_owned_by_handle(handle)
+
+        if peer is not None:
+            self.peer_callback_delivery_enabled.pop(peer, None)
+        self._remove_federate_handle(handle, peer=peer, preserve_owned_attributes=False)
 
     def _snapshot(self) -> _FederationSnapshot:
         retained_queued_tso_callbacks = {
@@ -4823,11 +5401,86 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.mom_federation_name = federation_name
         if self.mom_federation_object_handle is None:
             self.mom_federation_object_handle = "900"
+        self.object_instances.setdefault(
+            self.mom_federation_object_handle,
+            {
+                "name": federation_name,
+                "objectClass": self.object_classes["HLAobjectRoot.HLAmanager.HLAfederation"],
+            },
+        )
+
+    def _ensure_mom_federate_object(self, federate_handle: str, federate_name: str) -> str:
+        object_handle = self.mom_federate_object_handles.setdefault(federate_handle, str(900 + int(federate_handle)))
+        self.object_instances.setdefault(
+            object_handle,
+            {
+                "name": f"HLAfederate.{federate_name}",
+                "objectClass": self.object_classes["HLAobjectRoot.HLAmanager.HLAfederate"],
+            },
+        )
+        return object_handle
+
+    def _mom_federates_in_federation_bytes(self) -> bytes:
+        members = [self.joined_federate_handles[handle] for handle in sorted(self.joined_federate_handles, key=int)]
+        return ",".join(members).encode("utf-8")
+
+    def _mom_attribute_value(self, object_instance: str, attribute: str) -> bytes | None:
+        federation_class = self.object_classes["HLAobjectRoot.HLAmanager.HLAfederation"]
+        federate_class = self.object_classes["HLAobjectRoot.HLAmanager.HLAfederate"]
+        if object_instance == self.mom_federation_object_handle:
+            if attribute == self.attributes[(federation_class, "HLAfederationName")]:
+                return (self.mom_federation_name or "").encode("utf-8")
+            if attribute == self.attributes[(federation_class, "HLAfederatesInFederation")]:
+                return self._mom_federates_in_federation_bytes()
+            return None
+        for federate_handle, mom_object_handle in self.mom_federate_object_handles.items():
+            if mom_object_handle != object_instance:
+                continue
+            if attribute == self.attributes[(federate_class, "HLAfederateName")]:
+                return self.joined_federate_handles.get(federate_handle, "").encode("utf-8")
+            return None
+        return None
+
+    def _queue_rti_owned_attribute_reflection(
+        self,
+        target_handle: str,
+        object_instance: str,
+        attributes: list[str],
+        user_supplied_tag: bytes,
+    ) -> None:
+        values = datatypes_pb2.AttributeHandleValueMap()
+        for attribute in attributes:
+            payload = self._mom_attribute_value(object_instance, attribute)
+            if payload is None:
+                continue
+            row = values.attributeHandleValue.add()
+            row.attributeHandle.data = attribute.encode("ascii")
+            row.value = payload
+        if not values.attributeHandleValue:
+            return
+        self._enqueue_callback(
+            callback_pb2.CallbackRequest(
+                reflectAttributeValues=callback_pb2.ReflectAttributeValues(
+                    objectInstance=_handle(datatypes_pb2.ObjectInstanceHandle, object_instance),
+                    attributeValues=values,
+                    userSuppliedTag=user_supplied_tag,
+                    transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                    producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                )
+            ),
+            target_handles={target_handle},
+        )
 
     def _is_rti_owned_attribute(self, object_instance: str, attribute: str) -> bool:
-        return (
-            object_instance == self.mom_federation_object_handle
-            and attribute == self.attributes.get((self.object_classes["HLAobjectRoot.HLAmanager.HLAfederation"], "HLAfederationName"))
+        if object_instance == self.mom_federation_object_handle:
+            return attribute in {
+                self.attributes.get((self.object_classes["HLAobjectRoot.HLAmanager.HLAfederation"], "HLAfederationName")),
+                self.attributes.get((self.object_classes["HLAobjectRoot.HLAmanager.HLAfederation"], "HLAfederatesInFederation")),
+            }
+        return any(
+            mom_object_handle == object_instance
+            and attribute == self.attributes.get((self.object_classes["HLAobjectRoot.HLAmanager.HLAfederate"], "HLAfederateName"))
+            for mom_object_handle in self.mom_federate_object_handles.values()
         )
 
     def _remove_region_references(self, region: str) -> None:
@@ -4858,6 +5511,12 @@ class RTI2025GrpcServer:
         if grpc is None:  # pragma: no cover - optional dependency guard
             raise RuntimeError("gRPC server requested, but grpcio is not installed") from _GRPC_IMPORT_ERROR
         self.config = config
+        self.runtime_provider = "python2025"
+        self.implementation_lane = "hla-backend-python2025"
+        self.counts_as_python_2025_rti = True
+        self.wrapper_only = False
+        self.spec = "rti1516_2025"
+        self.transport_kind = "grpc"
         self.servicer = _FedPro2025GatewayServicer()
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         pb2_grpc.add_HLA2025FedProGatewayServicer_to_server(self.servicer, self.server)
@@ -4875,6 +5534,17 @@ class RTI2025GrpcServer:
         if self._started:
             self.server.stop(0).wait()
             self._started = False
+
+    def capability_report(self) -> dict[str, object]:
+        return {
+            "runtime_provider": self.runtime_provider,
+            "implementation_lane": self.implementation_lane,
+            "counts_as_python_2025_rti": self.counts_as_python_2025_rti,
+            "wrapper_only": self.wrapper_only,
+            "spec": self.spec,
+            "transport_kind": self.transport_kind,
+            "target": self.target,
+        }
 
 
 def start_2025_grpc_server(

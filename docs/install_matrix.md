@@ -7,6 +7,11 @@ This page answers two questions:
 
 Start with the base Python environment first. Then add only what you need.
 
+For IEEE 1516.1-2025 specifically, treat `hla-backend-python2025` as the main
+runtime lane after bootstrap. The legacy `shim` provider name remains only a
+compatibility-wrapper alias, and the hosted FedPro route remains a bounded
+route variant rather than a separate RTI family.
+
 ## Install Order
 
 1. `./tools/bootstrap python`
@@ -46,6 +51,8 @@ machine/workspace readiness check.
 ## Rules Of Thumb
 
 - If you are unsure, start with the pure-Python backend.
+- For the primary 2025 Python RTI lane, read [`python_rti_backend.md`](python_rti_backend.md)
+  after bootstrap rather than inferring runtime ownership from bridge or shim tooling.
 - If you only need to read or modify the API surface, do not install vendor runtimes.
 - If you need Java-backed routes, install bridge extras before touching vendor runtimes.
 - If you need CERTI or Pitch, treat them as a second phase after Python setup, not as the starting point.
@@ -56,6 +63,8 @@ machine/workspace readiness check.
 
 - [`python_environment.md`](python_environment.md)
 - [`first_run.md`](first_run.md)
+- [`python_rti_backend.md`](python_rti_backend.md)
+- [`python_rti_reading_map.md`](python_rti_reading_map.md)
 - [`rti_options_and_test_matrix.md`](rti_options_and_test_matrix.md)
 - [`../packages/hla-backend-certi/docs/certi_section8_runbook.md`](../packages/hla-backend-certi/docs/certi_section8_runbook.md)
 - [`../packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md)

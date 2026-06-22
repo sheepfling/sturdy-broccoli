@@ -332,12 +332,16 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
         evidence = _evidence_for(method, group)
         handler = f"_svc_{method}"
         has_handler = handler in python_backend_handler_names()
+        declared_exceptions = _declared_exceptions(overloads)
+        actionable_negative_count = sum(
+            1 for exc in declared_exceptions if exc not in non_actionable_negative_exceptions()
+        )
+        negative_executed_count = negative_executed_by_method().get(method, mom_executable_count if method == "sendInteraction" else 0)
         gaps: list[str] = []
         if not has_handler:
             gaps.append("No pure-Python service handler is visible; calls may be adapter-only or unsupported.")
-        if overloads and _declared_exceptions(overloads):
+        if overloads and declared_exceptions and negative_executed_count < actionable_negative_count:
             gaps.append(negative_path_gap())
-        negative_executed_count = negative_executed_by_method().get(method, mom_executable_count if method == "sendInteraction" else 0)
         asset_id = _section_asset_id(section)
         seed_row = ServiceConformanceRow(
             requirement_id="",
@@ -351,7 +355,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
             service_group=group,
             source_languages=_source_languages(overloads),
             source_overload_count=len(overloads),
-            declared_exceptions=_declared_exceptions(overloads),
+            declared_exceptions=declared_exceptions,
             python_entry_point=(
                 f"hla.backends.inmemory.backend.PythonRTIBackend.{handler}"
                 if has_handler

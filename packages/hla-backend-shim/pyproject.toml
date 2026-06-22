@@ -5,16 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hla-backend-shim"
 version = "0.13.0"
-description = "Spec-shaped shim RTI backend for HLA 1516.1-2025 development"
+description = "Legacy compatibility-wrapper package for the main full Python 2025 RTI"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["hla-rti-core==0.13.0", "hla-rti1516-2025==0.13.0"]
+dependencies = ["hla-backend-python2025==0.13.0", "hla-rti-core==0.13.0", "hla-rti1516-2025==0.13.0"]
 
 [project.optional-dependencies]
 test = ["pytest"]
-
-[project.entry-points."hla.rti_backends"]
-shim = "hla.backends.shim.plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -25,10 +22,10 @@ include = ["hla.backends.shim*"]
 namespaces = true
 
 [tool.hla.package]
-status = "implementation-owned"
-role = "rti-backend"
+status = "transition-wrapper"
+role = "compatibility-wrapper"
 backend_names = ["shim"]
-backend_aliases = ["2025-shim", "rti1516_2025-shim", "reference-shim"]
+backend_aliases = []
 source_roots = [
   "packages/hla-backend-shim/src/hla/backends/shim",
 ]

@@ -32,6 +32,7 @@
     "scenarios": [
       "2010 standard route two-federate object, interaction, and time exchange"
     ],
+    "scope": "core exchange evidence delegated through the standard-route smoke tests",
     "status": "core-green",
     "tests": [
       "tests/backends/test_standard_shim_artifacts.py"
@@ -39,6 +40,6 @@
   },
   "surface": "official IEEE 1516.1-2010 C++ API",
   "unsupported_services": [
-    "RTIambassador surface is header-backed; service semantics are delegated to the Python shim route for the core scenario subset"
+    "RTIambassador surface is header-backed; service semantics are delegated to the backing Python runtime route for the core scenario subset"
   ]
 }

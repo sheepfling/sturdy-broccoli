@@ -8,7 +8,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getObjectInstanceName"
       ],
@@ -26,7 +26,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getAttributeHandle"
       ],
@@ -44,7 +44,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getAttributeName"
       ],
@@ -62,7 +62,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getUpdateRateValue"
       ],
@@ -80,7 +80,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getUpdateRateValueForAttribute"
       ],
@@ -98,7 +98,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getInteractionClassHandle"
       ],
@@ -116,7 +116,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getInteractionClassName"
       ],
@@ -134,7 +134,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getParameterHandle"
       ],
@@ -152,7 +152,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getParameterName"
       ],
@@ -170,7 +170,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getOrderType"
       ],
@@ -188,7 +188,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getAutomaticResignDirective"
       ],
@@ -206,7 +206,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getOrderName"
       ],
@@ -224,7 +224,7 @@
       "interface_counts": {
         "RTIambassador": 2
       },
-      "known_gap_rows": 2,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getTransportationType",
         "RTIambassador.getTransportationTypeHandle"
@@ -243,7 +243,7 @@
       "interface_counts": {
         "RTIambassador": 2
       },
-      "known_gap_rows": 2,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getTransportationName",
         "RTIambassador.getTransportationTypeName"
@@ -262,7 +262,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getAvailableDimensionsForClassAttribute"
       ],
@@ -280,7 +280,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getAvailableDimensionsForInteractionClass"
       ],
@@ -298,7 +298,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getDimensionHandle"
       ],
@@ -316,7 +316,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getDimensionName"
       ],
@@ -334,7 +334,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getDimensionUpperBound"
       ],
@@ -352,7 +352,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getDimensionHandleSet"
       ],
@@ -370,7 +370,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getRangeBounds"
       ],
@@ -388,7 +388,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.setAutomaticResignDirective"
       ],
@@ -406,7 +406,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.setRangeBounds"
       ],
@@ -424,7 +424,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.normalizeFederateHandle"
       ],
@@ -442,7 +442,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.normalizeServiceGroup"
       ],
@@ -460,7 +460,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableObjectClassRelevanceAdvisorySwitch"
       ],
@@ -478,7 +478,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableObjectClassRelevanceAdvisorySwitch"
       ],
@@ -496,7 +496,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableAttributeRelevanceAdvisorySwitch"
       ],
@@ -514,7 +514,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableAttributeRelevanceAdvisorySwitch"
       ],
@@ -532,7 +532,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableAttributeScopeAdvisorySwitch"
       ],
@@ -550,7 +550,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableAttributeScopeAdvisorySwitch"
       ],
@@ -568,7 +568,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableInteractionRelevanceAdvisorySwitch"
       ],
@@ -586,7 +586,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getFederateHandle"
       ],
@@ -604,7 +604,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableInteractionRelevanceAdvisorySwitch"
       ],
@@ -622,7 +622,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.evokeCallback"
       ],
@@ -640,7 +640,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.evokeMultipleCallbacks"
       ],
@@ -658,7 +658,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableCallbacks"
       ],
@@ -676,7 +676,7 @@
       "interface_counts": {
         "RTIambassador": 18
       },
-      "known_gap_rows": 17,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableCallbacks",
         "RTIambassador.getAttributeHandleFactory",
@@ -711,7 +711,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getFederateName"
       ],
@@ -729,7 +729,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getObjectClassHandle"
       ],
@@ -747,7 +747,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getObjectClassName"
       ],
@@ -765,7 +765,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getKnownObjectClassHandle"
       ],
@@ -783,7 +783,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.getObjectInstanceHandle"
       ],
@@ -827,7 +827,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.resignFederationExecution"
       ],
@@ -845,7 +845,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.registerFederationSynchronizationPoint"
       ],
@@ -1301,7 +1301,7 @@
       "interface_counts": {
         "RTIambassador": 2
       },
-      "known_gap_rows": 2,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.createFederationExecution",
         "RTIambassador.createFederationExecutionWithMIM"
@@ -1338,7 +1338,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.listFederationExecutions"
       ],
@@ -2176,7 +2176,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.attributeOwnershipReleaseDenied"
       ],
@@ -2194,7 +2194,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.attributeOwnershipDivestitureIfWanted"
       ],
@@ -2212,7 +2212,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.cancelNegotiatedAttributeOwnershipDivestiture"
       ],
@@ -2230,7 +2230,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.cancelAttributeOwnershipAcquisition"
       ],
@@ -2394,7 +2394,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.confirmDivestiture"
       ],
@@ -2430,7 +2430,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.attributeOwnershipAcquisition"
       ],
@@ -2448,7 +2448,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.attributeOwnershipAcquisitionIfAvailable"
       ],
@@ -2538,7 +2538,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableAsynchronousDelivery"
       ],
@@ -2556,7 +2556,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableAsynchronousDelivery"
       ],
@@ -2646,7 +2646,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableTimeRegulation"
       ],
@@ -2718,7 +2718,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.changeAttributeOrderType"
       ],
@@ -2772,7 +2772,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableTimeRegulation"
       ],
@@ -2790,7 +2790,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.enableTimeConstrained"
       ],
@@ -2826,7 +2826,7 @@
       "interface_counts": {
         "RTIambassador": 1
       },
-      "known_gap_rows": 1,
+      "known_gap_rows": 0,
       "methods": [
         "RTIambassador.disableTimeConstrained"
       ],

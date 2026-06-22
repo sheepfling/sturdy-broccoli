@@ -47,6 +47,17 @@ TRACK_PARAM_RCS = "RCS"
 TRACK_PARAM_TIME = "Time"
 
 
+def _edition_enums_for_rti(rti: Any) -> tuple[type[Any], type[Any]]:
+    backend_info = getattr(rti, "backend_info", None)
+    details = getattr(backend_info, "details", {}) or {}
+    spec_name = details.get("spec")
+    backend_kind = getattr(backend_info, "kind", "")
+    if spec_name == "rti1516_2025" or str(backend_kind).endswith("/2025"):
+        enums = import_module("hla.rti1516_2025.enums")
+        return enums.CallbackModel, enums.ResignAction
+    return CallbackModel, ResignAction
+
+
 @dataclass(frozen=True)
 class Vec3:
     """Simple 3D vector in meters."""
@@ -481,9 +492,11 @@ def run_target_radar_scenario(
     radar = radar or RadarFederate()
     target_rti = _call_factory(rti_factory, "target")
     radar_rti = _call_factory(rti_factory, "radar")
+    target_callback_model, _target_resign_action = _edition_enums_for_rti(target_rti)
+    radar_callback_model, _radar_resign_action = _edition_enums_for_rti(radar_rti)
 
-    target_rti.connect(target, CallbackModel.HLA_EVOKED)
-    radar_rti.connect(radar, CallbackModel.HLA_EVOKED)
+    target_rti.connect(target, target_callback_model.HLA_EVOKED)
+    radar_rti.connect(radar, radar_callback_model.HLA_EVOKED)
 
     try:
         target_rti.create_federation_execution(federation_name, list(fom_modules or ["TargetRadarFOMmodule.xml"]))
@@ -534,7 +547,8 @@ def run_target_radar_scenario(
     if cleanup:
         for rti in (radar_rti, target_rti):
             try:
-                rti.resign_federation_execution(ResignAction.NO_ACTION)
+                _, resign_action = _edition_enums_for_rti(rti)
+                rti.resign_federation_execution(resign_action.NO_ACTION)
             except RTIexception:
                 pass
         try:

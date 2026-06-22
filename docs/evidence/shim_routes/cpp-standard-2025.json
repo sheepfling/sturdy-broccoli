@@ -8,19 +8,30 @@
   "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip",
   "routes": {
     "cpp-standard-2025-grpc": {
+      "counts_as_python_2025_rti": false,
+      "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
+      "runtime_provider": "python2025",
       "scenario": "lifecycle-core",
       "status": "core-green",
-      "surface": "official IEEE 1516.1-2025 C++ API"
+      "surface": "official IEEE 1516.1-2025 C++ API",
+      "wrapper_only": false
     },
     "cpp-standard-2025-pybind": {
+      "counts_as_python_2025_rti": false,
+      "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
+      "runtime_provider": "python2025",
       "scenario": "lifecycle-core",
       "status": "core-green",
-      "surface": "official IEEE 1516.1-2025 C++ API"
+      "surface": "official IEEE 1516.1-2025 C++ API",
+      "wrapper_only": false
     }
   },
   "scenario_evidence": {
+    "counts_as_python_2025_rti": false,
+    "implementation_lane": "hla-backend-python2025",
+    "runtime_provider": "python2025",
     "scenarios": [
       "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
       "2025 standard route object exchange: two-federate publish/subscribe, discover, reflect, receive, and unsubscribe suppression",
@@ -44,10 +55,11 @@
       "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_save_restore_when_built",
       "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_mom_when_built",
       "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built"
-    ]
+    ],
+    "wrapper_only": false
   },
   "surface": "official IEEE 1516.1-2025 C++ API",
   "unsupported_services": [
-    "RTIambassador surface is header-backed; service semantics are delegated to the Python shim route for the core scenario subset"
+    "RTIambassador surface is header-backed; service semantics are delegated to the backing Python runtime route for the core scenario subset"
   ]
 }

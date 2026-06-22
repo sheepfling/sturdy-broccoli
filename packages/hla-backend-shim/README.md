@@ -1,17 +1,32 @@
 # hla-backend-shim
 
-`hla-backend-shim` provides the current in-repo RTI backend for the IEEE
-1516.1-2025 Python API package.
+`hla-backend-shim` provides the legacy compatibility-wrapper package for the
+IEEE 1516.1-2025 Python API surface.
 
-Historically this lane started as a deliberately small, spec-shaped shim while
-the 2025 surface was being stood up. In the current repo it is the active
-Python implementation lane for `rti1516_2025`, and the verification work in
-this workspace treats it as a real executable backend rather than a stub.
+The package name is historical. In the current repo the main full Python 2025
+RTI implementation executes from `hla-backend-python2025`, while this package
+retains import-level wrapper-facing normalization and legacy compatibility
+aliases.
 
-It is not a 2010 backend and it is not a vendor adapter. The longer-term
-architectural goal is to keep shim concerns and RTI concerns separable enough
-that this lane can either justify promotion as the real 2025 Python RTI or be
-cleanly split into a narrower shim plus a dedicated 2025 RTI backend later.
+At the package root, the shim-specific surface is only
+`Shim2025Backend`, `Shim2025RTIAmbassador`, and `create_shim_backend`.
+If older code still needs runtime-class compatibility aliases, use the
+explicit module path `hla.backends.shim.runtime_aliases`, where
+`Python2025Backend`, `Python2025RTIAmbassador`, and
+`create_python2025_backend` still point through to the real runtime lane.
+
+It is not a 2010 backend and it is not a vendor adapter. The architectural
+split that matters is already in place: `hla-backend-python2025` is the real
+2025 RTI runtime owner, and `hla-backend-shim` stays narrow and
+compatibility-focused.
+
+Future work here is boundary cleanup, not deciding whether a dedicated Python
+2025 backend should exist. That backend already exists in
+`hla-backend-python2025`.
+
+When adding or reviewing 2025 runtime behavior, default to the `python2025`
+lane. Only use `hla.backends.shim` when you explicitly need the legacy
+compatibility-wrapper surface.
 
 For the current evidence-based decision point, see
 [`docs/plans/2025_python_rti_backend_audit.md`](../../docs/plans/2025_python_rti_backend_audit.md)

@@ -269,6 +269,7 @@ def test_package_deps_top_level_wrapper_bootstraps_source_checkout(tmp_path: Pat
     doc_text = doc_path.read_text(encoding="utf-8")
     assert "`hla-rti1516e` and `hla-rti1516-2025` are sibling versioned spec packages." in doc_text
     assert "`hla-rti-core` is the cross-version discovery and factory package." in doc_text
+    assert "`hla-transport-grpc` already carries the bounded 2025 FedPro transport/client/server surface alongside the older 2010-hosted route." in doc_text
 
 
 def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:

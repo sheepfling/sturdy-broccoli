@@ -49,6 +49,17 @@ The intended reading order for a new contributor is:
 - [docs/vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner variables, marker paths, and provisioning checklist
 - [docs/vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable runner provisioning template
 
+For the current 2025 Python RTI closeout path, the most important reference
+surfaces are:
+
+- [docs/python_rti_backend.md](python_rti_backend.md): current 2025 runtime-lane ownership and bounded working-surface claim
+- [docs/python_rti_reading_map.md](python_rti_reading_map.md): shortest path for editing the main `python2025` RTI lane
+- `./tools/python verify-main-2025`: normal direct `python2025` proof lane for the main implementation surface
+- [docs/verification/time_model_compliance.md](verification/time_model_compliance.md): current GALT/LITS/lookahead proof ladder for the 2025 lane
+- `./tools/python verify-routes-2025`: bounded hosted `python-2025-fedpro-grpc` hygiene lane over that same runtime
+- [docs/plans/spec2025_finish_line.md](plans/spec2025_finish_line.md): generated 2025 finish-line evidence snapshot
+- [docs/plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md): generated route-parity evidence for the main 2025 RTI lane
+
 ### Historical / Provenance
 
 - [docs/source_documents.md](source_documents.md): retained source references and provenance
@@ -94,7 +105,8 @@ For each family, keep the same story in each layer:
 
 Current families in the repo:
 
-- Python RTI
+- Python RTI 2010
+- Python RTI 2025
 - CERTI
 - CERTI Java profile
 - JPype
@@ -115,6 +127,13 @@ Verification docs should use the same shape:
 
 That means a reader can move from claim to evidence without learning a new
 document structure for each backend or test family.
+
+For 2025 readers, note the boundary explicitly:
+
+- `backend_conformance_matrix.md` and `verification/verification_plan.md` are
+  2010-specific reference surfaces
+- the current `python2025` RTI evidence path runs through the 2025 finish-line,
+  route-parity, backend-audit, and time-model documents listed above
 
 ### Install / Run / Verify
 

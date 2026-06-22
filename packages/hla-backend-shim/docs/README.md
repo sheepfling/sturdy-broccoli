@@ -1,14 +1,23 @@
 # hla-backend-shim docs
 
-The shim backend is the current executable Python runtime lane for
-`rti1516_2025`.
+The legacy `hla-backend-shim` package is a compatibility wrapper over the main
+full Python 2025 RTI lane for `rti1516_2025`.
 
-It still carries shim responsibilities, but the repo now validates it as more
-than a thin adapter: the 2025 verification surface exercises federation
-lifecycle, object exchange, ownership, time management, save/restore, callback
-normalization, and bounded route/time-window proofs against this backend.
+The executable runtime now lives in `hla-backend-python2025`. This package
+retains the legacy `shim` provider name plus wrapper-facing normalization and
+compatibility aliases used by older routes and tests.
 
-The architectural intent remains explicit. Shim concerns and RTI concerns
-should stay separable enough that this lane can either remain the promoted
-Python 2025 RTI or later be split into a narrower shim plus a dedicated 2025
-backend without losing the shared verification evidence.
+At the package root, only the `Shim2025*` names represent the wrapper-only
+lane. If compatibility code still needs runtime aliases, use the explicit
+module path `hla.backends.shim.runtime_aliases`, where `Python2025Backend`,
+`Python2025RTIAmbassador`, and `create_python2025_backend` still point through
+to the real runtime package.
+
+The architectural intent remains explicit. The real Python 2025 RTI backend
+already lives in `hla-backend-python2025`; this package is the wrapper-only
+compatibility lane. Future work is about keeping that wrapper narrow, not
+about deciding whether a dedicated 2025 backend should exist.
+
+Current working stance: implement new 2025 runtime behavior in
+`hla-backend-python2025`, and reserve `hla-backend-shim` for compatibility-only
+surface concerns.

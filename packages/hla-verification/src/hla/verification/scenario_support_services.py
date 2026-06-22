@@ -21,6 +21,7 @@ from hla.rti1516e.handles import (
     InteractionClassHandle,
     InteractionClassHandleFactory,
     MessageRetractionHandle,
+    MessageRetractionHandleFactory,
     ObjectClassHandle,
     ObjectClassHandleFactory,
     ObjectInstanceHandle,
@@ -28,6 +29,7 @@ from hla.rti1516e.handles import (
     ParameterHandle,
     ParameterHandleFactory,
     ParameterHandleValueMapFactory,
+    RegionHandleFactory,
     RegionHandle,
     RegionHandleSetFactory,
     TransportationTypeHandleFactory,
@@ -179,23 +181,73 @@ def run_support_factory_and_decode_scenario(
     factory_summary: dict[str, Any] = {}
     if config.include_factory_support:
         factory_summary = {
-            "attribute_factory": rti.get_attribute_handle_factory(),
-            "attribute_set_factory": rti.get_attribute_handle_set_factory(),
-            "attribute_value_map_factory": rti.get_attribute_handle_value_map_factory(),
-            "attribute_region_pair_list_factory": rti.get_attribute_set_region_set_pair_list_factory(),
-            "dimension_factory": rti.get_dimension_handle_factory(),
-            "dimension_set_factory": rti.get_dimension_handle_set_factory(),
-            "federate_factory": rti.get_federate_handle_factory(),
-            "federate_set_factory": rti.get_federate_handle_set_factory(),
-            "interaction_factory": rti.get_interaction_class_handle_factory(),
-            "object_class_factory": rti.get_object_class_handle_factory(),
-            "object_instance_factory": rti.get_object_instance_handle_factory(),
-            "parameter_factory": rti.get_parameter_handle_factory(),
-            "parameter_value_map_factory": rti.get_parameter_handle_value_map_factory(),
-            "region_set_factory": rti.get_region_handle_set_factory(),
+            "attribute_factory": _invoke_rti_method(rti, "get_attribute_handle_factory", "getAttributeHandleFactory"),
+            "attribute_set_factory": _invoke_rti_method(
+                rti,
+                "get_attribute_handle_set_factory",
+                "getAttributeHandleSetFactory",
+            ),
+            "attribute_value_map_factory": _invoke_rti_method(
+                rti,
+                "get_attribute_handle_value_map_factory",
+                "getAttributeHandleValueMapFactory",
+            ),
+            "attribute_region_pair_list_factory": _invoke_rti_method(
+                rti,
+                "get_attribute_set_region_set_pair_list_factory",
+                "getAttributeSetRegionSetPairListFactory",
+            ),
+            "dimension_factory": _invoke_rti_method(rti, "get_dimension_handle_factory", "getDimensionHandleFactory"),
+            "dimension_set_factory": _invoke_rti_method(
+                rti,
+                "get_dimension_handle_set_factory",
+                "getDimensionHandleSetFactory",
+            ),
+            "federate_factory": _invoke_rti_method(rti, "get_federate_handle_factory", "getFederateHandleFactory"),
+            "federate_set_factory": _invoke_rti_method(
+                rti,
+                "get_federate_handle_set_factory",
+                "getFederateHandleSetFactory",
+            ),
+            "interaction_factory": _invoke_rti_method(
+                rti,
+                "get_interaction_class_handle_factory",
+                "getInteractionClassHandleFactory",
+            ),
+            "object_class_factory": _invoke_rti_method(
+                rti,
+                "get_object_class_handle_factory",
+                "getObjectClassHandleFactory",
+            ),
+            "object_instance_factory": _invoke_rti_method(
+                rti,
+                "get_object_instance_handle_factory",
+                "getObjectInstanceHandleFactory",
+            ),
+            "parameter_factory": _invoke_rti_method(rti, "get_parameter_handle_factory", "getParameterHandleFactory"),
+            "parameter_value_map_factory": _invoke_rti_method(
+                rti,
+                "get_parameter_handle_value_map_factory",
+                "getParameterHandleValueMapFactory",
+            ),
+            "region_factory": _invoke_rti_method(rti, "get_region_handle_factory", "getRegionHandleFactory"),
+            "region_set_factory": _invoke_rti_method(
+                rti,
+                "get_region_handle_set_factory",
+                "getRegionHandleSetFactory",
+            ),
+            "message_retraction_factory": _invoke_rti_method(
+                rti,
+                "get_message_retraction_handle_factory",
+                "getMessageRetractionHandleFactory",
+            ),
         }
         if config.include_transport_support:
-            factory_summary["transportation_factory"] = rti.get_transportation_type_handle_factory()
+            factory_summary["transportation_factory"] = _invoke_rti_method(
+                rti,
+                "get_transportation_type_handle_factory",
+                "getTransportationTypeHandleFactory",
+            )
 
         assert isinstance(factory_summary["attribute_factory"], AttributeHandleFactory)
         assert isinstance(factory_summary["attribute_set_factory"], AttributeHandleSetFactory)
@@ -210,7 +262,9 @@ def run_support_factory_and_decode_scenario(
         assert isinstance(factory_summary["object_instance_factory"], ObjectInstanceHandleFactory)
         assert isinstance(factory_summary["parameter_factory"], ParameterHandleFactory)
         assert isinstance(factory_summary["parameter_value_map_factory"], ParameterHandleValueMapFactory)
+        assert isinstance(factory_summary["region_factory"], RegionHandleFactory)
         assert isinstance(factory_summary["region_set_factory"], RegionHandleSetFactory)
+        assert isinstance(factory_summary["message_retraction_factory"], MessageRetractionHandleFactory)
         if config.include_transport_support:
             assert isinstance(factory_summary["transportation_factory"], TransportationTypeHandleFactory)
 

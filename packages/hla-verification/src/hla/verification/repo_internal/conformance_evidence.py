@@ -1,8 +1,253 @@
 from __future__ import annotations
 
+_SHARED_SUPPORT_FACTORY_AND_DECODE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario"
+)
+_HOSTED_SUPPORT_FACTORY_AND_DECODE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route"
+)
+_SHARED_CALLBACK_CONTROL_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_callback_control_scenario"
+)
+_HOSTED_CALLBACK_CONTROL_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_callback_control_scenario_over_fedpro_route"
+)
+_SHARED_FEDERATION_LIFECYCLE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
+)
+_HOSTED_FEDERATION_LIFECYCLE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fedpro_route"
+)
+_HOSTED_FEDERATION_LIFECYCLE_WITH_MIM_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_with_mim_create_over_fedpro_route"
+)
+_SHARED_FEDERATION_LIFECYCLE_NEGATIVE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario"
+)
+_HOSTED_FEDERATION_LIFECYCLE_NEGATIVE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenario_over_fedpro_route"
+)
+_SHARED_FEDERATION_LISTING_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario"
+)
+_HOSTED_FEDERATION_LISTING_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_listing_scenario_over_fedpro_route"
+)
+_SHARED_MULTI_PARTICIPATION_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario"
+)
+_HOSTED_MULTI_PARTICIPATION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_multi_participation_scenario_over_fedpro_route"
+)
+_SHARED_RESIGN_MOM_CLEANUP_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario"
+)
+_HOSTED_RESIGN_MOM_CLEANUP_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_mom_cleanup_scenario_over_fedpro_route"
+)
+_SHARED_DISCONNECT_MOM_CLEANUP_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario"
+)
+_HOSTED_DISCONNECT_MOM_CLEANUP_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_disconnect_mom_cleanup_scenario_over_fedpro_route"
+)
+_SHARED_JOIN_PRECONDITION_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario"
+)
+_HOSTED_JOIN_PRECONDITION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route"
+)
+_SHARED_RESIGN_PRECONDITION_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario"
+)
+_HOSTED_RESIGN_PRECONDITION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route"
+)
+_SHARED_SAVE_RESTORE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario"
+)
+_HOSTED_SHARED_SAVE_RESTORE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route"
+)
+_HOSTED_BACKEND_NEUTRAL_SAVE_RESTORE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route"
+)
+_SAVE_FAILURE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario"
+)
+_HOSTED_SAVE_FAILURE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_failure_scenario_over_fedpro_route"
+)
+_SAVE_ABORT_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario"
+)
+_HOSTED_SAVE_ABORT_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_abort_scenario_over_fedpro_route"
+)
+_RESTORE_REQUEST_FAILURE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario"
+)
+_HOSTED_RESTORE_REQUEST_FAILURE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_request_failure_scenario_over_fedpro_route"
+)
+_RESTORE_FAILURE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario"
+)
+_HOSTED_RESTORE_FAILURE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_failure_scenario_over_fedpro_route"
+)
+_RESTORE_ABORT_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_scenario"
+)
+_HOSTED_RESTORE_ABORT_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_abort_scenario_over_fedpro_route"
+)
+_RESIGNED_FEDERATE_CALLBACK_SILENCE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario"
+)
+_HOSTED_RESIGNED_FEDERATE_CALLBACK_SILENCE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_resigned_federate_callback_silence_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_FUTURE_EXCLUSION_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario"
+)
+_HOSTED_TARGET_RADAR_FUTURE_EXCLUSION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_OUTPUT_DELIVERY_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_output_delivery_scenario"
+)
+_HOSTED_TARGET_RADAR_OUTPUT_DELIVERY_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_CONSUMER_ORDER_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_consumer_order_scenario"
+)
+_HOSTED_TARGET_RADAR_CONSUMER_ORDER_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_RESTORE_STATE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario"
+)
+_HOSTED_TARGET_RADAR_RESTORE_STATE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route"
+)
+_NAME_RESERVATION_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario"
+)
+_HOSTED_NAME_RESERVATION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_name_reservation_scenario_over_fedpro_route"
+)
+_LOCAL_DELETE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_local_delete.py::run_local_delete_scenario"
+)
+_HOSTED_LOCAL_DELETE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_local_delete_scenario_over_fedpro_route"
+)
+_REQUEST_ATTRIBUTE_VALUE_UPDATE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario"
+)
+_HOSTED_REQUEST_ATTRIBUTE_VALUE_UPDATE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route"
+)
+_REQUEST_ATTRIBUTE_VALUE_UPDATE_ROUTING_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_routing_scenario"
+)
+_HOSTED_REQUEST_ATTRIBUTE_VALUE_UPDATE_ROUTING_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_routing_scenario_over_fedpro_route"
+)
+_OBJECT_SCOPE_RELEVANCE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario"
+)
+_HOSTED_OBJECT_SCOPE_RELEVANCE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_object_scope_relevance_scenario_over_fedpro_route"
+)
+_SHARED_DECLARATION_MANAGEMENT_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario"
+)
+_HOSTED_SHARED_DECLARATION_MANAGEMENT_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
+)
+_HOSTED_DECLARATION_INVALID_ATTRIBUTE_PUBLICATION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_invalid_attribute_publication_scenario_over_fedpro_route"
+)
+_HOSTED_DECLARATION_UNPUBLISH_REJECTION_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
+)
+_HOSTED_TIME_MANAGED_DECLARATION_INDEPENDENCE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
+)
+_HOSTED_UPDATE_RATE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_update_rate_scenario_over_fedpro_route"
+)
+_FOM_MODULE_VISIBILITY_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
+)
+_HOSTED_FOM_MODULE_VISIBILITY_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_fom_module_visibility_scenario_over_fedpro_route"
+)
+_MULTI_MODULE_FOM_VISIBILITY_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario"
+)
+_HOSTED_MULTI_MODULE_FOM_VISIBILITY_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_multi_module_fom_visibility_scenario_over_fedpro_route"
+)
+_FOM_INTEGRITY_NEGATIVE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario"
+)
+_HOSTED_FOM_INTEGRITY_NEGATIVE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_fom_integrity_negative_scenario_over_fedpro_route"
+)
+_LOST_FEDERATE_MOM_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario"
+)
+_HOSTED_LOST_FEDERATE_MOM_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_lost_federate_mom_scenario_over_fedpro_route"
+)
+_RESTORE_OBJECT_STATE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_object_state_scenario"
+)
+_HOSTED_RESTORE_OBJECT_STATE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_object_state_scenario_over_fedpro_route"
+)
+_RESTORE_FEDERATE_LOCAL_STATE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario"
+)
+_HOSTED_RESTORE_FEDERATE_LOCAL_STATE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_federate_local_state_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_RECEIVE_ORDER_POISON_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_receive_order_poison_scenario"
+)
+_HOSTED_TARGET_RADAR_RECEIVE_ORDER_POISON_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_receive_order_poison_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_RESTORE_OUTPUT_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_output_scenario"
+)
+_HOSTED_TARGET_RADAR_RESTORE_OUTPUT_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_output_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_PIPELINE_RESTORE_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_pipeline_restore_scenario"
+)
+_HOSTED_TARGET_RADAR_PIPELINE_RESTORE_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_pipeline_restore_scenario_over_fedpro_route"
+)
+_TARGET_RADAR_GAUNTLET_SCENARIO = (
+    "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_gauntlet_scenario"
+)
+_HOSTED_TARGET_RADAR_GAUNTLET_FEDPRO_ROUTE_TEST = (
+    "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
+)
+
 _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
     "connect": ("tests/scenarios/test_startup_sync_fom_java_translation_v09.py",),
-    "createFederationExecution": ("tests/factories/test_fom_time_factories.py", "tests/scenarios/test_startup_sync_fom_java_translation_v09.py"),
+    "createFederationExecution": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fedpro_route",
+    ),
     "createFederationExecutionWithMIM": (
         "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix",
@@ -35,7 +280,12 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix",
     ),
-    "joinFederationExecution": ("tests/scenarios/test_startup_sync_fom_java_translation_v09.py",),
+    "joinFederationExecution": (
+        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_multi_participation_scenario_over_fedpro_route",
+    ),
     "resignFederationExecution": (
         "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario",
         "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario",
@@ -462,24 +712,43 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
     ),
-    "enableTimeRegulation": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "enableTimeRegulation": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+    ),
     "enableTimeConstrained": (
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
         "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
     ),
     "disableTimeRegulation": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
     "disableTimeConstrained": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
-    "timeAdvanceRequest": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "timeAdvanceRequest": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+    ),
     "timeAdvanceRequestAvailable": (
         "tests/time/test_mom_mim_time_v10.py",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
     ),
-    "nextMessageRequest": ("tests/time/test_mom_mim_time_v10.py",),
+    "nextMessageRequest": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+    ),
     "nextMessageRequestAvailable": (
         "tests/time/test_mom_mim_time_v10.py",
         "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
     ),
     "flushQueueRequest": ("tests/time/test_mom_mim_time_v10.py",),
     "queryGALT": (
@@ -525,8 +794,12 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/backends/test_python_backend_federation_extended.py",
         "tests/backends/test_python_backend_object_ownership_extended.py",
         "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
     ),
-    "queryLookahead": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
+    "queryLookahead": (
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+    ),
     "retract": (
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -1225,6 +1498,335 @@ _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
     ),
 }
+
+for _method_name, _evidence in tuple(_FOCUSED_EVIDENCE_BY_METHOD.items()):
+    if (
+        _SHARED_SUPPORT_FACTORY_AND_DECODE_SCENARIO in _evidence
+        and _HOSTED_SUPPORT_FACTORY_AND_DECODE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_evidence,
+            _HOSTED_SUPPORT_FACTORY_AND_DECODE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_CALLBACK_CONTROL_SCENARIO in _evidence
+        and _HOSTED_CALLBACK_CONTROL_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_CALLBACK_CONTROL_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_FEDERATION_LIFECYCLE_SCENARIO in _evidence
+        and _HOSTED_FEDERATION_LIFECYCLE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_FEDERATION_LIFECYCLE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _method_name == "createFederationExecutionWithMIM"
+        and _HOSTED_FEDERATION_LIFECYCLE_WITH_MIM_FEDPRO_ROUTE_TEST not in _FOCUSED_EVIDENCE_BY_METHOD[_method_name]
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_FEDERATION_LIFECYCLE_WITH_MIM_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_FEDERATION_LIFECYCLE_NEGATIVE_SCENARIO in _evidence
+        and _HOSTED_FEDERATION_LIFECYCLE_NEGATIVE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_FEDERATION_LIFECYCLE_NEGATIVE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_FEDERATION_LISTING_SCENARIO in _evidence
+        and _HOSTED_FEDERATION_LISTING_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_FEDERATION_LISTING_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_MULTI_PARTICIPATION_SCENARIO in _evidence
+        and _HOSTED_MULTI_PARTICIPATION_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_MULTI_PARTICIPATION_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_RESIGN_MOM_CLEANUP_SCENARIO in _evidence
+        and _HOSTED_RESIGN_MOM_CLEANUP_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESIGN_MOM_CLEANUP_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_DISCONNECT_MOM_CLEANUP_SCENARIO in _evidence
+        and _HOSTED_DISCONNECT_MOM_CLEANUP_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_DISCONNECT_MOM_CLEANUP_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_JOIN_PRECONDITION_SCENARIO in _evidence
+        and _HOSTED_JOIN_PRECONDITION_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_JOIN_PRECONDITION_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_RESIGN_PRECONDITION_SCENARIO in _evidence
+        and _HOSTED_RESIGN_PRECONDITION_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESIGN_PRECONDITION_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_SAVE_RESTORE_SCENARIO in _evidence
+        and _HOSTED_SHARED_SAVE_RESTORE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_SHARED_SAVE_RESTORE_FEDPRO_ROUTE_TEST,
+            _HOSTED_BACKEND_NEUTRAL_SAVE_RESTORE_FEDPRO_ROUTE_TEST,
+        )
+    if _SAVE_FAILURE_SCENARIO in _evidence and _HOSTED_SAVE_FAILURE_FEDPRO_ROUTE_TEST not in _evidence:
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_SAVE_FAILURE_FEDPRO_ROUTE_TEST,
+        )
+    if _SAVE_ABORT_SCENARIO in _evidence and _HOSTED_SAVE_ABORT_FEDPRO_ROUTE_TEST not in _evidence:
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_SAVE_ABORT_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _RESTORE_REQUEST_FAILURE_SCENARIO in _evidence
+        and _HOSTED_RESTORE_REQUEST_FAILURE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESTORE_REQUEST_FAILURE_FEDPRO_ROUTE_TEST,
+        )
+    if _RESTORE_FAILURE_SCENARIO in _evidence and _HOSTED_RESTORE_FAILURE_FEDPRO_ROUTE_TEST not in _evidence:
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESTORE_FAILURE_FEDPRO_ROUTE_TEST,
+        )
+    if _RESTORE_ABORT_SCENARIO in _evidence and _HOSTED_RESTORE_ABORT_FEDPRO_ROUTE_TEST not in _evidence:
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESTORE_ABORT_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _RESIGNED_FEDERATE_CALLBACK_SILENCE_SCENARIO in _evidence
+        and _HOSTED_RESIGNED_FEDERATE_CALLBACK_SILENCE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESIGNED_FEDERATE_CALLBACK_SILENCE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_FUTURE_EXCLUSION_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_FUTURE_EXCLUSION_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_FUTURE_EXCLUSION_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_OUTPUT_DELIVERY_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_OUTPUT_DELIVERY_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_OUTPUT_DELIVERY_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_CONSUMER_ORDER_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_CONSUMER_ORDER_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_CONSUMER_ORDER_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_RESTORE_STATE_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_RESTORE_STATE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_RESTORE_STATE_FEDPRO_ROUTE_TEST,
+        )
+    if _NAME_RESERVATION_SCENARIO in _evidence and _HOSTED_NAME_RESERVATION_FEDPRO_ROUTE_TEST not in _evidence:
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_NAME_RESERVATION_FEDPRO_ROUTE_TEST,
+        )
+    if _LOCAL_DELETE_SCENARIO in _evidence and _HOSTED_LOCAL_DELETE_FEDPRO_ROUTE_TEST not in _evidence:
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_LOCAL_DELETE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _REQUEST_ATTRIBUTE_VALUE_UPDATE_SCENARIO in _evidence
+        and _HOSTED_REQUEST_ATTRIBUTE_VALUE_UPDATE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_REQUEST_ATTRIBUTE_VALUE_UPDATE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _REQUEST_ATTRIBUTE_VALUE_UPDATE_ROUTING_SCENARIO in _evidence
+        and _HOSTED_REQUEST_ATTRIBUTE_VALUE_UPDATE_ROUTING_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_REQUEST_ATTRIBUTE_VALUE_UPDATE_ROUTING_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _OBJECT_SCOPE_RELEVANCE_SCENARIO in _evidence
+        and _HOSTED_OBJECT_SCOPE_RELEVANCE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_OBJECT_SCOPE_RELEVANCE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _SHARED_DECLARATION_MANAGEMENT_SCENARIO in _evidence
+        and _HOSTED_SHARED_DECLARATION_MANAGEMENT_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_SHARED_DECLARATION_MANAGEMENT_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _method_name == "publishObjectClassAttributes"
+        and _HOSTED_DECLARATION_INVALID_ATTRIBUTE_PUBLICATION_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_DECLARATION_INVALID_ATTRIBUTE_PUBLICATION_FEDPRO_ROUTE_TEST,
+        )
+    if _method_name in {"unpublishObjectClass", "unpublishObjectClassAttributes", "unpublishInteractionClass"} and (
+        _HOSTED_DECLARATION_UNPUBLISH_REJECTION_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_DECLARATION_UNPUBLISH_REJECTION_FEDPRO_ROUTE_TEST,
+        )
+    if _method_name in {
+        "publishObjectClassAttributes",
+        "publishInteractionClass",
+        "subscribeObjectClassAttributes",
+        "subscribeInteractionClass",
+        "startRegistrationForObjectClass",
+        "turnInteractionsOn",
+    } and (_HOSTED_TIME_MANAGED_DECLARATION_INDEPENDENCE_FEDPRO_ROUTE_TEST not in _evidence):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TIME_MANAGED_DECLARATION_INDEPENDENCE_FEDPRO_ROUTE_TEST,
+        )
+    if _method_name in {"getUpdateRateValue", "getUpdateRateValueForAttribute"} and (
+        _HOSTED_UPDATE_RATE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_UPDATE_RATE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _FOM_MODULE_VISIBILITY_SCENARIO in _evidence
+        and _HOSTED_FOM_MODULE_VISIBILITY_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_FOM_MODULE_VISIBILITY_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _MULTI_MODULE_FOM_VISIBILITY_SCENARIO in _evidence
+        and _HOSTED_MULTI_MODULE_FOM_VISIBILITY_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_MULTI_MODULE_FOM_VISIBILITY_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _FOM_INTEGRITY_NEGATIVE_SCENARIO in _evidence
+        and _HOSTED_FOM_INTEGRITY_NEGATIVE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_FOM_INTEGRITY_NEGATIVE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _LOST_FEDERATE_MOM_SCENARIO in _evidence
+        and _HOSTED_LOST_FEDERATE_MOM_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_LOST_FEDERATE_MOM_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _RESTORE_OBJECT_STATE_SCENARIO in _evidence
+        and _HOSTED_RESTORE_OBJECT_STATE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESTORE_OBJECT_STATE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _RESTORE_FEDERATE_LOCAL_STATE_SCENARIO in _evidence
+        and _HOSTED_RESTORE_FEDERATE_LOCAL_STATE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_RESTORE_FEDERATE_LOCAL_STATE_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_RECEIVE_ORDER_POISON_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_RECEIVE_ORDER_POISON_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_RECEIVE_ORDER_POISON_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_RESTORE_OUTPUT_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_RESTORE_OUTPUT_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_RESTORE_OUTPUT_FEDPRO_ROUTE_TEST,
+        )
+    if (
+        _TARGET_RADAR_PIPELINE_RESTORE_SCENARIO in _evidence
+        and _HOSTED_TARGET_RADAR_PIPELINE_RESTORE_FEDPRO_ROUTE_TEST not in _evidence
+    ):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_PIPELINE_RESTORE_FEDPRO_ROUTE_TEST,
+        )
+    if _method_name in {
+        "timeAdvanceGrant",
+        "timeAdvanceRequestAvailable",
+        "queryGALT",
+        "queryLITS",
+        "nextMessageRequest",
+        "sendInteraction",
+        "receiveInteraction",
+        "reflectAttributeValues",
+    } and (_HOSTED_TARGET_RADAR_GAUNTLET_FEDPRO_ROUTE_TEST not in _evidence):
+        _FOCUSED_EVIDENCE_BY_METHOD[_method_name] = (
+            *_FOCUSED_EVIDENCE_BY_METHOD[_method_name],
+            _HOSTED_TARGET_RADAR_GAUNTLET_FEDPRO_ROUTE_TEST,
+        )
 
 
 

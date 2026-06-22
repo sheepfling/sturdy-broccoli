@@ -192,7 +192,7 @@ def _evidence(args: argparse.Namespace) -> int:
         print(path)
 
     summary = {
-        "status": "core-green",
+        "status": "trace-green",
         "scope": "MVP route proof, not full HLA conformance",
         "trace_count": len(traces),
         "routes": [trace["route"] for trace in traces],

@@ -11,6 +11,19 @@ def _load(route: str) -> dict[str, object]:
     return json.loads((TRACE_DIR / f"{route}.json").read_text(encoding="utf-8"))
 
 
+def _assert_route_selected_uses_python2025_main_lane(evidence: dict[str, object], route: str) -> None:
+    route_selected = evidence["trace"][0]  # type: ignore[index]
+
+    assert route_selected["event"] == "routeSelected"
+    assert route_selected["backend"] == route
+    assert route_selected["spec"] == "rti1516_2025"
+    assert route_selected["standardBacked"] is True
+    assert route_selected["runtimeProvider"] == "python2025"
+    assert route_selected["implementationLane"] == "hla-backend-python2025"
+    assert route_selected["countsAsPython2025Rti"] is False
+    assert route_selected["wrapperOnly"] is False
+
+
 def test__route_trace_summary_lists_mvp_scope() -> None:
     summary = json.loads((TRACE_DIR / "summary.json").read_text(encoding="utf-8"))
 
@@ -47,6 +60,7 @@ def test__2025_traces_cover_lifecycle_core() -> None:
         assert evidence["scenario"] == "lifecycle-core"
         assert evidence["status"] == "lifecycle-green"
         assert {"HLA2025-FR-004", "HLA2025-FI-005", "HLA2025-FI-006"} <= set(evidence["requirements_exercised"])
+        _assert_route_selected_uses_python2025_main_lane(evidence, route)
         assert events == [
             "routeSelected",
             "getHLAversion",

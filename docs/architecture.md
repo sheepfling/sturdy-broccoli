@@ -15,6 +15,12 @@ The stricter package dependency rules live in
 - `hla.rti1516e`: canonical IEEE 1516.1-2010 Python API package.
 - `hla.rti1516_2025`: canonical IEEE 1516.1-2025 Python API package scaffold.
 
+For the primary 2025 Python RTI implementation lane, keep the ownership split explicit:
+
+- `hla-backend-python2025` is the main full Python-owned IEEE 1516.1-2025 RTI implementation package
+- `hla-backend-shim` is only a compatibility-wrapper alias over that runtime
+- Java/C++ 2025 binding routes are adaptation lanes over the main full Python 2025 RTI, not alternate Python RTIs
+
 These facade modules are package-owned import paths under the shared PEP 420
 `hla` namespace. No package owns `src/hla/__init__.py`.
 
@@ -75,6 +81,8 @@ should not be mistaken for installable package dependencies.
 ## Factories And Registries
 
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/factory.py`: pure-Python backend constructors.
+- `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`: main full Python 2025 backend plugin and discovery surface.
+- `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`: wrapper-only compatibility alias plugin for the 2025 lane.
 - `packages/hla-rti-core/src/hla/rti/`: workspace-facing backend discovery and ambassador-construction helpers.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend plugin descriptors.
 
@@ -101,6 +109,10 @@ The development goal is that a federate written against `hla.rti1516e` or
 backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and
 gRPC are transport options underneath that backend-neutral surface, not separate
 application APIs.
+
+For IEEE 1516.1-2025 specifically, the main executable Python RTI lane is
+`hla-backend-python2025`. The `shim` provider name remains supported only as a
+compatibility-wrapper surface and should not be treated as the runtime owner.
 
 The remaining documented version-local facade is intentionally narrow:
 `hla.rti1516e.rti` is the 2010-local backend discovery and ambassador-creation

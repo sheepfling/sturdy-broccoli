@@ -26,7 +26,7 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.2-2010 (2010 edition) §7 | 15 | 0 | 0 | 0 | 0 | 1 | 14 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 6 | 0 |
-| multi-section §12 | 4 | 0 | 0 | 0 | 0 | 4 | 0 |
+| multi-section §12 | 5 | 0 | 0 | 0 | 0 | 5 | 0 |
 | multi-section §4 | 3 | 0 | 0 | 0 | 0 | 3 | 0 |
 | multi-section §5 | 10 | 0 | 0 | 0 | 0 | 10 | 0 |
 | multi-section §6 | 14 | 0 | 0 | 0 | 0 | 14 | 0 |
@@ -952,6 +952,7 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | multi-section | 11 | REQ-MOM-NEG-001 | not-applicable | verification-slice | Strict MOM decoding reports and raises through generated parameterized negative-path tests |
 | multi-section | 11 | REQ-SERVICE-FILE-001 | not-applicable | verification-slice | Service-report file output contains initial and per-service records with section anchors |
 | multi-section | 12 | REQ-SAVE-RESTORE-CALLBACK-POLICY-001 | not-applicable | verification-slice | Save/restore treats callback enablement as local runtime policy rather than persisted federation state |
+| multi-section | 12 | REQ-SAVE-RESTORE-ROUTING-STATE-001 | not-applicable | verification-slice | Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations |
 | multi-section | 12 | REQ-SAVE-RESTORE-OBJECT-STATE-001 | not-applicable | verification-slice | Save/restore reinstates saved object existence, name mapping, attribute values, and ownership state |
 | multi-section | 12 | REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001 | not-applicable | verification-slice | Save/restore reinstates saved federate runtime flags, policy switches, reporting switches, conveyance state, order-override state, and transportation-override state |
 | multi-section | 12 | REQ-SAVE-RESTORE-TRANSIENT-STATE-001 | not-applicable | verification-slice | Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state |

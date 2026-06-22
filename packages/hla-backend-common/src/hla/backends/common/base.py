@@ -768,6 +768,14 @@ class DelegatingRTIAmbassador(_SplitRuntimeRTIAmbassador):
         """Delegate HLA RTI service getRegionHandleSetFactory to the configured backend. Spec reference: IEEE 1516.1-2010 §10.44 Disable Callbacks service (Support Services)."""
         return self._invoke("getRegionHandleSetFactory", *args, **kwargs)
 
+    def getRegionHandleFactory(self, *args: Any, **kwargs: Any) -> Any:  # noqa: N802
+        """Delegate HLA RTI service getRegionHandleFactory to the configured backend. Spec reference: IEEE 1516.1-2010/2025 support-factory surface."""
+        return self._invoke("getRegionHandleFactory", *args, **kwargs)
+
+    def getMessageRetractionHandleFactory(self, *args: Any, **kwargs: Any) -> Any:  # noqa: N802
+        """Delegate HLA RTI service getMessageRetractionHandleFactory to the configured backend. Spec reference: IEEE 1516.1-2010/2025 support-factory surface."""
+        return self._invoke("getMessageRetractionHandleFactory", *args, **kwargs)
+
     def getTransportationTypeHandleFactory(self, *args: Any, **kwargs: Any) -> Any:  # noqa: N802
         """Delegate HLA RTI service getTransportationTypeHandleFactory to the configured backend. Spec reference: IEEE 1516.1-2010 §10.44 Disable Callbacks service (Support Services)."""
         return self._invoke("getTransportationTypeHandleFactory", *args, **kwargs)

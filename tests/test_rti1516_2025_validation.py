@@ -151,7 +151,13 @@ def test_2025_omt_schema_validation_rejects_named_keyref_and_unique_constraints(
         assert expected_requirement in requirements
 
 
-@pytest.mark.requirements("HLA2025-MOD-010", "HLA2025-VER-002", "HLA2025-OMT-002")
+@pytest.mark.requirements(
+    "HLA2025-MOD-010",
+    "HLA2025-VER-002",
+    "HLA2025-OMT-002",
+    "HLA2025-OMT-COMP-192",
+    "HLA2025-OMT-COMP-196",
+)
 def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
     from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
 
@@ -171,8 +177,8 @@ def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
   </modelIdentification>
   <objects><objectClass><name>HLAobjectRoot</name></objectClass></objects>
   <time>
-    <logicalTime><dataType>HLAinteger64Time</dataType></logicalTime>
-    <logicalTimeInterval><dataType>HLAinteger64Time</dataType></logicalTimeInterval>
+    <logicalTime><dataType>HLAinteger64Time</dataType><semantics>Logical time semantics.</semantics></logicalTime>
+    <logicalTimeInterval><dataType>HLAinteger64Time</dataType><semantics>Lookahead semantics.</semantics></logicalTimeInterval>
   </time>
 </objectModel>
 """,
@@ -182,6 +188,8 @@ def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
     module = parse_fom_xml(source)
     assert module.time_stamp_datatype == "HLAinteger64Time"
     assert module.lookahead_datatype == "HLAinteger64Time"
+    assert module.time_stamp_semantics == "Logical time semantics."
+    assert module.lookahead_semantics == "Lookahead semantics."
     assert module.inferred_time_implementation == "HLAinteger64Time"
 
     xml_text = serialize_fom_module(module, edition="2025")
@@ -196,6 +204,8 @@ def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
     reparsed = parse_fom_xml(roundtrip)
     assert reparsed.time_stamp_datatype == "HLAinteger64Time"
     assert reparsed.lookahead_datatype == "HLAinteger64Time"
+    assert reparsed.time_stamp_semantics == "Logical time semantics."
+    assert reparsed.lookahead_semantics == "Lookahead semantics."
 
 
 @pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-002", "HLA2025-OMT-006")
@@ -577,6 +587,10 @@ def test_2025_parser_round_trips_metadata_switches_transport_and_time_subset(tmp
         "serviceReporting": "false",
         "exceptionReporting": "false",
         "delaySubscriptionEvaluation": "false",
+        "nonRegulatedGrant": "false",
+        "allowRelaxedDDM": "false",
+        "advisoriesUseKnownClass": "false",
+        "sendServiceReportsToFile": "false",
         "automaticResignAction": "CancelThenDeleteThenDivest",
     }
     assert reparsed.time_stamp_datatype == "HLAinteger64Time"
@@ -973,21 +987,9 @@ def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -
 
 
 @pytest.mark.requirements(
-    "HLA2025-OMT-COMP-011",
-    "HLA2025-OMT-COMP-012",
-    "HLA2025-OMT-COMP-014",
-    "HLA2025-OMT-COMP-017",
-    "HLA2025-OMT-COMP-018",
-    "HLA2025-OMT-COMP-041",
-    "HLA2025-OMT-COMP-044",
-    "HLA2025-OMT-COMP-080",
     "HLA2025-OMT-COMP-083",
-    "HLA2025-OMT-COMP-109",
-    "HLA2025-OMT-COMP-114",
-    "HLA2025-OMT-COMP-133",
     "HLA2025-OMT-COMP-200",
     "HLA2025-OMT-COMP-201",
-    "HLA2025-OMT-COMP-207",
 )
 def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) -> None:
     from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
@@ -1059,22 +1061,212 @@ def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) 
     entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
     assert entity.attribute_datatypes["Status"] == "HLAunicodeString"
     assert entity.attribute_transportations["Status"] == "HLAreliable"
+    assert entity.attribute_update_types["Status"] == "Static"
+    assert entity.attribute_update_conditions["Status"] == "Conditional"
+    assert entity.attribute_ownership["Status"] == "NoTransfer"
+    assert entity.attribute_sharing["Status"] == "PublishSubscribe"
+    assert entity.attribute_order["Status"] == "Timestamp"
+    assert entity.attribute_semantics["Status"] == "Status semantics"
+    root_object = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot")
+    root_interaction = next(spec for spec in module.interaction_classes if spec.full_name == "HLAinteractionRoot")
+    assert root_object.sharing == "PublishSubscribe"
+    assert root_object.semantics == "Root semantics"
+    assert root_interaction.sharing == "PublishSubscribe"
+    assert root_interaction.order == "Timestamp"
+    assert root_interaction.semantics == "Interaction semantics"
+    assert root_interaction.parameter_semantics["Payload"] == "Payload semantics"
     assert module.dimension_specs["RouteDim"].upper_bound == "100"
+    assert module.dimension_specs["RouteDim"].value == "[0..1)"
     assert module.model_identification["keywords"] == ("alpha",)
+    assert module.model_identification["keyword_taxonomies"] == ("domain",)
+    assert module.transportation_specs["HLAreliable"].reliable == "Yes"
+    assert module.transportation_specs["HLAreliable"].semantics == "Reliable semantics"
 
     xml_text = serialize_fom_module(module, edition="2025")
-    assert 'taxonomy="domain"' not in xml_text
-    assert "<updateType>" not in xml_text
-    assert "<updateCondition>" not in xml_text
-    assert "<ownership>" not in xml_text
-    assert "<order>Timestamp</order>" not in xml_text
-    assert "Status semantics" not in xml_text
-    assert "Interaction semantics" not in xml_text
-    assert "Payload semantics" not in xml_text
-    assert "<upperBound>100</upperBound>" not in xml_text
-    assert "<value>[0..1)</value>" not in xml_text
-    assert "Reliable semantics" not in xml_text
-    assert "Fast semantics" not in xml_text
+    assert 'taxonomy="domain"' in xml_text
+    assert "<updateType>Static</updateType>" in xml_text
+    assert "<updateCondition>Conditional</updateCondition>" in xml_text
+    assert "<ownership>NoTransfer</ownership>" in xml_text
+    assert "<sharing>PublishSubscribe</sharing>" in xml_text
+    assert "<order>Timestamp</order>" in xml_text
+    assert "Status semantics" in xml_text
+    assert "Interaction semantics" in xml_text
+    assert "Payload semantics" in xml_text
+    assert "<upperBound>100</upperBound>" in xml_text
+    assert "<value>[0..1)</value>" in xml_text
+    assert "Reliable semantics" in xml_text
+    assert "Fast semantics" in xml_text
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-074",
+    "HLA2025-OMT-COMP-079",
+    "HLA2025-OMT-COMP-080",
+    "HLA2025-OMT-COMP-109",
+    "HLA2025-OMT-COMP-114",
+    "HLA2025-OMT-COMP-133",
+)
+def test_2025_class_and_parameter_metadata_round_trips(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "class-parameter-metadata.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Class Metadata</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <sharing>PublishSubscribe</sharing>
+      <semantics>Root semantics</semantics>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>PublishSubscribe</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Timestamp</order>
+      <semantics>Interaction semantics</semantics>
+      <parameter><name>Payload</name><dataType>HLAunicodeString</dataType><semantics>Payload semantics</semantics></parameter>
+    </interactionClass>
+  </interactions>
+  <transportations><transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation></transportations>
+  <dataTypes><simpleDataTypes><simpleData><name>HLAunicodeString</name></simpleData></simpleDataTypes></dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    root_object = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot")
+    root_interaction = next(spec for spec in module.interaction_classes if spec.full_name == "HLAinteractionRoot")
+
+    assert root_object.sharing == "PublishSubscribe"
+    assert root_object.semantics == "Root semantics"
+    assert root_interaction.sharing == "PublishSubscribe"
+    assert root_interaction.order == "Timestamp"
+    assert root_interaction.semantics == "Interaction semantics"
+    assert root_interaction.parameter_semantics["Payload"] == "Payload semantics"
+
+    reparsed_path = tmp_path / "reparsed.xml"
+    reparsed_path.write_text(serialize_fom_module(module, edition="2025"), encoding="utf-8")
+    reparsed = parse_fom_xml(reparsed_path)
+    reparsed_object = next(spec for spec in reparsed.object_classes if spec.full_name == "HLAobjectRoot")
+    reparsed_interaction = next(spec for spec in reparsed.interaction_classes if spec.full_name == "HLAinteractionRoot")
+
+    assert reparsed_object.sharing == root_object.sharing
+    assert reparsed_object.semantics == root_object.semantics
+    assert reparsed_interaction.sharing == root_interaction.sharing
+    assert reparsed_interaction.order == root_interaction.order
+    assert reparsed_interaction.semantics == root_interaction.semantics
+    assert reparsed_interaction.parameter_semantics == root_interaction.parameter_semantics
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-011",
+    "HLA2025-OMT-COMP-012",
+    "HLA2025-OMT-COMP-014",
+    "HLA2025-OMT-COMP-015",
+    "HLA2025-OMT-COMP-017",
+    "HLA2025-OMT-COMP-018",
+)
+def test_2025_attribute_metadata_round_trips(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "attribute-metadata.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Attribute Metadata</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Entity</name>
+        <attribute>
+          <name>Status</name>
+          <dataType>HLAunicodeString</dataType>
+          <updateType>Static</updateType>
+          <updateCondition>On change</updateCondition>
+          <ownership>NoTransfer</ownership>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Timestamp</order>
+          <valueRequired>true</valueRequired>
+          <semantics>Status semantics</semantics>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations><transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation></transportations>
+  <dataTypes><simpleDataTypes><simpleData><name>HLAunicodeString</name></simpleData></simpleDataTypes></dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    assert entity.attribute_update_types["Status"] == "Static"
+    assert entity.attribute_update_conditions["Status"] == "On change"
+    assert entity.attribute_ownership["Status"] == "NoTransfer"
+    assert entity.attribute_sharing["Status"] == "PublishSubscribe"
+    assert entity.attribute_order["Status"] == "Timestamp"
+    assert entity.attribute_semantics["Status"] == "Status semantics"
+
+    reparsed_path = tmp_path / "reparsed.xml"
+    reparsed_path.write_text(serialize_fom_module(module, edition="2025"), encoding="utf-8")
+    reparsed = parse_fom_xml(reparsed_path)
+    reparsed_entity = next(spec for spec in reparsed.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+
+    assert reparsed_entity.attribute_update_types == entity.attribute_update_types
+    assert reparsed_entity.attribute_update_conditions == entity.attribute_update_conditions
+    assert reparsed_entity.attribute_ownership == entity.attribute_ownership
+    assert reparsed_entity.attribute_sharing == entity.attribute_sharing
+    assert reparsed_entity.attribute_order == entity.attribute_order
+    assert reparsed_entity.attribute_semantics == entity.attribute_semantics
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-200",
+    "HLA2025-OMT-COMP-201",
+    "HLA2025-OMT-COMP-207",
+)
+def test_2025_transportation_and_update_rate_metadata_round_trips(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "transport-update-rate-metadata.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Metadata</name><type>FOM</type></modelIdentification>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable><semantics>Reliable semantics</semantics></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable><semantics>Best effort semantics</semantics></transportation>
+  </transportations>
+  <updateRates>
+    <updateRate><name>Fast</name><rate>10.0</rate><semantics>Fast semantics</semantics></updateRate>
+  </updateRates>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    assert module.transportation_specs["HLAreliable"].reliable == "Yes"
+    assert module.transportation_specs["HLAreliable"].semantics == "Reliable semantics"
+    assert module.transportation_specs["HLAbestEffort"].reliable == "No"
+    assert module.transportation_specs["HLAbestEffort"].semantics == "Best effort semantics"
+    assert module.update_rate_specs["Fast"].rate == "10.0"
+    assert module.update_rate_specs["Fast"].semantics == "Fast semantics"
+
+    reparsed_path = tmp_path / "reparsed.xml"
+    reparsed_path.write_text(serialize_fom_module(module, edition="2025"), encoding="utf-8")
+    reparsed = parse_fom_xml(reparsed_path)
+
+    assert reparsed.transportation_specs == module.transportation_specs
+    assert reparsed.update_rate_specs == module.update_rate_specs
 
 
 @pytest.mark.requirements(
@@ -1282,6 +1474,27 @@ def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) 
 """,
         ),
         (
+            "nested-extension-payload-xs-any",
+            """
+  <modelIdentification><name>Ext</name><type>FOM</type><ext:vendorProfile ext:version="2">payload-text<ext:nested flag="yes">nested-text</ext:nested></ext:vendorProfile></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <attribute>
+        <name>Status</name>
+        <dataType>HLAunicodeString</dataType>
+        <ext:attributeExtension ext:kind="diagnostic">attribute-payload<ext:child>attribute-child</ext:child></ext:attributeExtension>
+      </attribute>
+    </objectClass>
+  </objects>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAunicodeString</name><size>0</size><interpretation>String</interpretation><endian>Big</endian><encoding>Unicode</encoding><ext:basicDataExtension ext:kind="text">basic-payload</ext:basicDataExtension></basicData>
+    </basicDataRepresentations>
+  </dataTypes>
+""",
+        ),
+        (
             "variant-record-xs-any",
             """
   <modelIdentification><name>Ext</name><type>FOM</type></modelIdentification>
@@ -1298,34 +1511,54 @@ def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) 
         ),
     ],
 )
-def test_2025_parser_rejects_foreign_namespace_extension_points(tmp_path: Path, case_name: str, body: str) -> None:
-    from hla.rti1516e.fom import FOMResolutionError, parse_fom_xml
+def test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points(
+    tmp_path: Path,
+    case_name: str,
+    body: str,
+) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / f"{case_name}.xml"
     source.write_text(_wrap_omt_2025_fragment(body, extra_root_attrs=' xmlns:ext="urn:ext"'), encoding="utf-8")
 
-    with pytest.raises(FOMResolutionError, match="Unsupported XML namespace 'urn:ext'"):
-        parse_fom_xml(source)
+    module = parse_fom_xml(source)
+    xml_text = serialize_fom_module(module, edition="2025")
+
+    assert module.name == "Ext"
+    assert module.foreign_extensions
+    assert all("urn:ext" in extension.xml for extension in module.foreign_extensions)
+    if case_name == "nested-extension-payload-xs-any":
+        extension_xml = "\n".join(extension.xml for extension in module.foreign_extensions)
+        assert "payload-text" in extension_xml
+        assert "nested-text" in extension_xml
+        assert "attribute-child" in extension_xml
+        assert "basic-payload" in extension_xml
+    assert "urn:ext" in xml_text
+    assert any(local_name in xml_text for local_name in ("modelIdentification", "objects", "interactionClass", "variantRecordData"))
+    if case_name == "nested-extension-payload-xs-any":
+        assert "payload-text" in xml_text
+        assert "nested-text" in xml_text
+        assert "attribute-child" in xml_text
+        assert "basic-payload" in xml_text
+    reparsed_source = tmp_path / f"{case_name}-roundtrip.xml"
+    reparsed_source.write_text(xml_text, encoding="utf-8")
+    reparsed = parse_fom_xml(reparsed_source)
+    assert len(reparsed.foreign_extensions) == len(module.foreign_extensions)
 
 
 @pytest.mark.requirements(
-    "HLA2025-OMT-COMP-015",
     "HLA2025-OMT-COMP-048",
     "HLA2025-OMT-COMP-049",
-    "HLA2025-OMT-COMP-074",
     "HLA2025-OMT-COMP-075",
     "HLA2025-OMT-COMP-076",
-    "HLA2025-OMT-COMP-079",
     "HLA2025-OMT-COMP-110",
     "HLA2025-OMT-COMP-111",
     "HLA2025-OMT-COMP-112",
-    "HLA2025-OMT-COMP-192",
-    "HLA2025-OMT-COMP-196",
 )
-def test_2025_parser_flattens_or_drops_unmodeled_structural_omt_fields(tmp_path: Path) -> None:
+def test_2025_parser_round_trips_structural_association_omt_fields(tmp_path: Path) -> None:
     from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
 
-    source = tmp_path / "unmodeled-structural-omt.xml"
+    source = tmp_path / "structural-association-omt.xml"
     source.write_text(
         _wrap_omt_2025_fragment(
             """
@@ -1363,23 +1596,40 @@ def test_2025_parser_flattens_or_drops_unmodeled_structural_omt_fields(tmp_path:
     )
 
     module = parse_fom_xml(source)
+    root_object = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot")
     entity = next(spec for spec in module.object_classes if spec.full_name == "HLAobjectRoot.Entity")
+    root_interaction = next(spec for spec in module.interaction_classes if spec.full_name == "HLAinteractionRoot")
 
+    assert root_object.directed_interactions == ("Ping",)
+    assert root_object.directed_interaction_sharing["Ping"] == "Subscribe"
+    assert root_object.dimensions == ("ObjDim",)
     assert entity.attribute_datatypes["Status"] == "HLAunicodeString"
+    assert root_interaction.dimensions == ("IntDim",)
     assert set(module.dimensions) == {"IntDim", "ObjDim"}
     assert module.time_stamp_datatype == "HLAinteger64Time"
     assert module.lookahead_datatype == "HLAinteger64Time"
 
     xml_text = serialize_fom_module(module, edition="2025")
+    round_trip_source = tmp_path / "structural-association-roundtrip.xml"
+    round_trip_source.write_text(xml_text, encoding="utf-8")
+    reparsed = parse_fom_xml(round_trip_source)
+    reparsed_root_object = next(spec for spec in reparsed.object_classes if spec.full_name == "HLAobjectRoot")
+    reparsed_root_interaction = next(
+        spec for spec in reparsed.interaction_classes if spec.full_name == "HLAinteractionRoot"
+    )
 
-    assert "<directedInteraction>" not in xml_text
-    assert "<dimensions><dimension>ObjDim</dimension></dimensions>" not in xml_text
-    assert "<dimensions><dimension>IntDim</dimension></dimensions>" not in xml_text
-    assert "<attribute><name>Status</name><dataType>HLAunicodeString</dataType><sharing>" not in xml_text
-    assert "<interactionClass><name>HLAinteractionRoot</name><sharing>Neither</sharing>" in xml_text
-    assert "<order>Receive</order>" in xml_text
-    assert "LT sem" not in xml_text
-    assert "LTI sem" not in xml_text
+    assert "<directedInteraction><name>Ping</name><sharing>Subscribe</sharing></directedInteraction>" in xml_text
+    assert "<dimensions><dimension>ObjDim</dimension></dimensions>" in xml_text
+    assert "<dimensions><dimension>IntDim</dimension></dimensions>" in xml_text
+    assert "<attribute><name>Status</name><dataType>HLAunicodeString</dataType><sharing>Subscribe</sharing></attribute>" in xml_text
+    assert reparsed_root_object.directed_interactions == ("Ping",)
+    assert reparsed_root_object.directed_interaction_sharing["Ping"] == "Subscribe"
+    assert reparsed_root_object.dimensions == ("ObjDim",)
+    assert reparsed_root_interaction.dimensions == ("IntDim",)
+    assert "<interactionClass><name>HLAinteractionRoot</name><sharing>PublishSubscribe</sharing>" in xml_text
+    assert "<order>Timestamp</order>" in xml_text
+    assert "LT sem" in xml_text
+    assert "LTI sem" in xml_text
 
 
 @pytest.mark.requirements(
@@ -1388,23 +1638,44 @@ def test_2025_parser_flattens_or_drops_unmodeled_structural_omt_fields(tmp_path:
     "HLA2025-OMT-COMP-169",
     "HLA2025-OMT-COMP-170",
 )
-@pytest.mark.parametrize("switch_name", ("nonRegulatedGrant", "allowRelaxedDDM", "advisoriesUseKnownClass", "sendServiceReportsToFile"))
-def test_2025_parser_rejects_unknown_2025_switch_definitions(tmp_path: Path, switch_name: str) -> None:
-    from hla.rti1516e.fom import FOMResolutionError, parse_fom_xml
+def test_2025_parser_round_trips_additional_switch_metadata(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
 
-    source = tmp_path / f"{switch_name}.xml"
+    source = tmp_path / "additional-switches.xml"
     source.write_text(
         _wrap_omt_2025_fragment(
-            f"""
+            """
   <modelIdentification><name>Probe</name><type>FOM</type></modelIdentification>
-  <switches><{switch_name} isEnabled="true" /></switches>
+  <switches>
+    <nonRegulatedGrant isEnabled="true" />
+    <allowRelaxedDDM isEnabled="true" />
+    <advisoriesUseKnownClass isEnabled="false" />
+    <sendServiceReportsToFile isEnabled="true" />
+  </switches>
 """
         ),
         encoding="utf-8",
     )
 
-    with pytest.raises(FOMResolutionError, match=rf"Unknown switch definition '{switch_name}'"):
-        parse_fom_xml(source)
+    module = parse_fom_xml(source)
+    assert module.switch_settings["nonRegulatedGrant"] == "true"
+    assert module.switch_settings["allowRelaxedDDM"] == "true"
+    assert module.switch_settings["advisoriesUseKnownClass"] == "false"
+    assert module.switch_settings["sendServiceReportsToFile"] == "true"
+
+    reparsed_path = tmp_path / "additional-switches-roundtrip.xml"
+    reparsed_path.write_text(serialize_fom_module(module, edition="2025"), encoding="utf-8")
+    reparsed = parse_fom_xml(reparsed_path)
+    assert reparsed.switch_settings["nonRegulatedGrant"] == "true"
+    assert reparsed.switch_settings["allowRelaxedDDM"] == "true"
+    assert reparsed.switch_settings["advisoriesUseKnownClass"] == "false"
+    assert reparsed.switch_settings["sendServiceReportsToFile"] == "true"
+
+    xml_text = reparsed_path.read_text(encoding="utf-8")
+    assert '<nonRegulatedGrant isEnabled="true"' in xml_text
+    assert '<allowRelaxedDDM isEnabled="true"' in xml_text
+    assert '<advisoriesUseKnownClass isEnabled="false"' in xml_text
+    assert '<sendServiceReportsToFile isEnabled="true"' in xml_text
 
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:
@@ -1495,7 +1766,7 @@ def test_2025_shim_rejects_fom_with_invalid_hla_user_defined_names(tmp_path: Pat
         encoding="utf-8",
     )
 
-    factory = create_hla_factory(provider="shim")
+    factory = create_hla_factory(provider="python2025")
     result = factory.load_fom([invalid_fom])
     assert result.status == "invalid"
     assert any(entry == "validation_issues=1" for entry in result.diagnostics)
@@ -1543,7 +1814,7 @@ def test_2025_factory_load_fom_reports_strict_identification_failures(tmp_path: 
         encoding="utf-8",
     )
 
-    result = create_hla_factory(provider="shim").load_fom(
+    result = create_hla_factory(provider="python2025").load_fom(
         [invalid_fom],
         strict_identification=True,
     )

@@ -1,7 +1,8 @@
 # hla-transport-grpc
 
 Canonical gRPC transport package for the HLA 1516e-2010 FedPro-style
-protobuf profile.
+protobuf profile, plus the bounded IEEE 1516.1-2025 FedPro hosted route
+variant.
 
 This package owns:
 
@@ -17,9 +18,12 @@ Use this package when you need the networked RTI route:
 
 Schema imports are under `hla.transports.grpc.fedpro2010`.
 The IEEE 1516.1-2025 FedPro schema is also checked in under
-`hla.transports.grpc.fedpro2025`, with a separate 2025 smoke server helper.
+`hla.transports.grpc.fedpro2025`, with a separate 2025 hosted server path.
 
 Use `start_2025_grpc_server(...)` when you need the 2025 schema path.
+That 2025 server is a bounded hosted route variant over the current Python
+2025 lane, not a separate RTI family and not the main in-process
+implementation lane.
 
 Regenerate stubs with:
 

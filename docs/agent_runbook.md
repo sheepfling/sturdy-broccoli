@@ -5,6 +5,12 @@ This page is for agents or automation entering the repo cold.
 The main failure mode is starting with vendor tooling before the base Python
 environment exists. Do not do that.
 
+For IEEE 1516.1-2025 work, also keep this boundary explicit:
+
+- `hla-backend-python2025` is the main executable 2025 RTI lane
+- `shim` is only a compatibility-wrapper provider name over that runtime
+- hosted 2025 FedPro work is a bounded route variant, not a separate RTI family
+
 ## First Sequence
 
 From the repository root:
@@ -38,6 +44,10 @@ Do not assume:
 
 - `packages/hla-rti1516e/src/hla/rti1516e/` owns the IEEE 1516.1-2010 API
 - `packages/hla-rti-core/src/hla/rti/` owns cross-version discovery and factories
+- `packages/hla-backend-python2025/src/hla/backends/python2025/` owns the main full
+  IEEE 1516.1-2025 Python RTI runtime
+- `packages/hla-backend-shim/src/hla/backends/shim/` is a wrapper-only
+  compatibility surface over that runtime
 - `packages/*/src/` owns backend, transport, bridge, FOM, and support implementations
 - `examples/` contains runnable entrypoints
 - `tools/` contains the human-facing vendor/runtime entrypoints
@@ -66,6 +76,12 @@ Use this order:
 4. bridge extras if required
 5. vendor-runtime tooling if explicitly needed
 
+For 2025 runtime work after base bootstrap, send the reader to:
+
+1. [`python_rti_backend.md`](python_rti_backend.md)
+2. [`python_rti_reading_map.md`](python_rti_reading_map.md)
+3. [`verification/time_model_compliance.md`](verification/time_model_compliance.md)
+
 ## When To Install Extras
 
 - Need JPype: `HLA2010_BOOTSTRAP_EXTRAS=jpype ./tools/bootstrap python`
@@ -83,3 +99,9 @@ When a user asks where to begin, point them here:
 2. [`python_environment.md`](python_environment.md)
 3. [`two_federate_quickstart.md`](two_federate_quickstart.md)
 4. [`install_matrix.md`](install_matrix.md)
+
+For 2025-specific runtime ownership and proof status, point them instead to:
+
+1. [`python_rti_backend.md`](python_rti_backend.md)
+2. [`python_rti_reading_map.md`](python_rti_reading_map.md)
+3. [`verification/time_model_compliance.md`](verification/time_model_compliance.md)

@@ -7,13 +7,13 @@ from hla.rti import HlaFactoryRegistry as _HlaFactoryRegistry
 from hla.rti import create_rti_ambassador as _create_rti_ambassador
 
 
-def create_rti_ambassador(backend: str = "shim", **options: Any):
+def create_rti_ambassador(backend: str = "python2025", **options: Any):
     """Create an IEEE 1516.1-2025 RTI ambassador."""
 
     return _create_rti_ambassador(spec="rti1516_2025", backend=backend, **options)
 
 
-def create_hla_factory(provider: str = "shim", **options: Any):
+def create_hla_factory(provider: str = "python2025", **options: Any):
     """Create a composed IEEE 1516.1-2025 factory for one provider route."""
 
     return _HlaFactoryRegistry.get("rti1516_2025", provider=provider, **options)

@@ -109,6 +109,7 @@
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -321,6 +322,9 @@
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/time/test_mom_mim_time_v10.py",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
           ],
           "python_runtime_status": "yes",
@@ -424,6 +428,7 @@
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/time/test_mom_mim_time_v10.py",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
           ],
           "python_runtime_status": "yes",
@@ -533,6 +538,9 @@
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/time/test_mom_mim_time_v10.py",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
           ],
           "python_runtime_status": "yes",
@@ -642,6 +650,7 @@
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/time/test_mom_mim_time_v10.py",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
           ],
           "python_runtime_status": "yes",
@@ -718,7 +727,11 @@
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
+            "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
+            "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
+            "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+            "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
             "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -1554,6 +1567,7 @@
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
             "tests/scenarios/test_target_radar_scenario.py",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
           ],

@@ -29,6 +29,8 @@ from hla.verification import (
     run_callback_control_scenario,
     run_example_fom_save_restore_gauntlet_scenario,
     run_federation_lifecycle_scenario,
+    run_restore_plain_interaction_subscriber_routing_scenario,
+    run_restore_plain_object_subscriber_routing_scenario,
     run_smoke_fom_save_restore_ownership_gauntlet_scenario,
     run_target_radar_time_window_consumer_order_scenario,
     run_target_radar_time_window_future_exclusion_scenario,
@@ -258,8 +260,13 @@ def test_python_route_parity_example_fom_save_restore_gauntlet(route) -> None:
 
         assert summary["saved_fingerprints"] != summary["dirty_fingerprints"]
         assert summary["restored_fingerprints"] == summary["saved_fingerprints"]
+        assert summary["baseline_reflect"].args[0] == summary["mirror_object_instance"]
+        assert summary["baseline_interaction"].args[2] == b"baseline-track"
+        assert summary["dirty_reflect"].args[0] == summary["mirror_object_instance"]
+        assert summary["dirty_interaction"].args[2] == b"dirty-track"
         assert all(float(getattr(time, "value", time)) == 5.0 for time in summary["restored_times"].values())
         assert summary["dirty_remove"].args[1] == b"dirty-delete"
+        assert summary["branch_reflect"].args[0] == summary["mirror_object_instance"]
         assert summary["branch_interaction"].args[2] == b"branch-track"
 
         cleanup_federation(
@@ -307,9 +314,15 @@ def test_python_route_parity_smoke_fom_save_restore_ownership_gauntlet(route) ->
 
         assert summary["saved_fingerprints"] != summary["dirty_fingerprints"]
         assert summary["restored_fingerprints"] == summary["saved_fingerprints"]
+        assert summary["baseline_reflect"].args[0] == summary["observer_object_instance"]
+        assert summary["baseline_interaction"].args[2] == b"baseline-message"
+        assert summary["dirty_not_owned"].args[0] == summary["object_instance"]
         assert all(float(getattr(time, "value", time)) == 5.0 for time in summary["restored_times"].values())
         assert summary["dirty_acquired"].args[0] == summary["mirror_object_instance"]
+        assert summary["dirty_reflect"].args[0] == summary["observer_object_instance"]
+        assert summary["dirty_interaction"].args[2] == b"dirty-message"
         assert summary["restored_informed"].args[0] == summary["object_instance"]
+        assert summary["branch_reflect"].args[0] == summary["observer_object_instance"]
         assert summary["branch_interaction"].args[2] == b"branch-message"
 
         cleanup_federation(
@@ -356,7 +369,9 @@ def test_python_route_parity_target_radar_time_window_future_exclusion(route) ->
         assert summary["oracle_report"]["assertions"] == {
             "radar_not_granted_to_window_end_while_future_input_possible": True,
             "blocked_grant_matches_current_galt_or_none": True,
-            "future_input_exclusion_reaches_window_end": True,
+            "blocked_lits_matches_blocked_galt": True,
+            "future_input_exclusion_reaches_window_end_for_galt": True,
+            "future_input_exclusion_reaches_window_end_for_lits": True,
             "radar_granted_to_window_end_only_after_future_input_excluded": True,
             "late_timestamp_into_closed_window_rejected": True,
             "boundary_timestamp_delivered_after_window_closure": True,
@@ -408,6 +423,28 @@ def test_python_route_parity_target_radar_time_window_gauntlet(route) -> None:
         assert summary["subproofs"]["output_delivery"]["certification_target"] == "time-window-output-delivery"
         assert summary["subproofs"]["consumer_order"]["certification_target"] == "time-window-consumer-order"
         assert summary["subproofs"]["pipeline"]["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["subproofs"]["core"]["window_close_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["subproofs"]["core"]["published_output_time"] == HLAinteger64Time(config.radar_output_time)
+        assert summary["subproofs"]["future_exclusion"]["blocked_grant"] is None
+        assert summary["subproofs"]["future_exclusion"]["final_grant"].args[0] == HLAinteger64Time(config.scan_window_end)
+        assert summary["subproofs"]["future_exclusion"]["late_send_rejected"] is True
+        assert summary["subproofs"]["output_delivery"]["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["subproofs"]["output_delivery"]["consumer_receive"].args[5] == HLAinteger64Time(
+            config.scan_window_end + 1
+        )
+        assert [
+            (record.args[2], record.args[5]) for record in summary["subproofs"]["consumer_order"]["consumer_receives"]
+        ] == [
+            (b"other-track-output", HLAinteger64Time(config.scan_window_end)),
+            (b"radar-track-output", HLAinteger64Time(config.scan_window_end + 1)),
+        ]
+        pipeline_deliveries = [
+            (record.args[2], record.args[5]) for record in summary["subproofs"]["pipeline"]["consumer_receives"]
+        ]
+        assert [payload for payload, _timestamp in pipeline_deliveries] == [b"scan1-track-output", b"scan2-track-output"]
+        assert pipeline_deliveries[0][1] < pipeline_deliveries[1][1]
+        assert all(timestamp >= HLAinteger64Time(config.scan_window_end) for _payload, timestamp in pipeline_deliveries)
+        assert summary["subproofs"]["pipeline"]["scan2_reflect"].args[2] == b"scan2-input"
         assert summary["oracle_report"]["certification_target"] == "lookahead-processing-window-certified"
         assert summary["oracle_report"]["assertions"] == {
             "future_exclusion_blocked_until_window_safe": True,
@@ -654,6 +691,10 @@ def test_python_route_parity_target_radar_time_window_pipeline_restore(route) ->
             b"dirty-scan1-track-output",
             b"dirty-scan2-track-output",
         ]
+        assert [record.args[5] for record in summary["dirty_consumer_receives"]] == [
+            HLAinteger64Time(config.scan1_output_time),
+            HLAinteger64Time(config.scan2_output_time),
+        ]
         assert summary["restored_radar_time"] == HLAinteger64Time(config.scan2_input_time)
         assert summary["restored_consumer_time"] == HLAinteger64Time(config.scan1_end)
         assert summary["post_restore_scan2_reflects"] == []
@@ -661,12 +702,18 @@ def test_python_route_parity_target_radar_time_window_pipeline_restore(route) ->
             b"restored-scan1-track-output",
             b"restored-scan2-track-output",
         ]
+        assert [record.args[5] for record in summary["restored_consumer_receives"]] == [
+            HLAinteger64Time(config.scan1_output_time),
+            HLAinteger64Time(config.scan2_output_time),
+        ]
         assert list(summary["restored_consumer_receives"][0].args[1].values()) == [
             config.restored_scan1_track_id.encode("utf-8")
         ]
         assert list(summary["restored_consumer_receives"][1].args[1].values()) == [
             config.restored_scan2_track_id.encode("utf-8")
         ]
+        assert summary["dirty_scan2_close_grant"].args[0] == HLAinteger64Time(config.scan2_end)
+        assert summary["restored_scan2_close_grant"].args[0] == HLAinteger64Time(config.scan2_end)
         assert len(summary["post_restore_duplicate_receives"]) == 2
         assert summary["certification_target"] == "time-window-save-restore-pipeline-resume"
         assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-pipeline-resume"
@@ -716,6 +763,7 @@ def test_python_route_parity_target_radar_time_window_receive_order_poison(route
         if len(summary["poison_reflection"].args) > 8:
             assert summary["poison_reflection"].args[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
         assert summary["consumer_receive"].args[2] == b"radar-track-output"
+        assert list(summary["consumer_receive"].args[1].values()) == [b"track-poison-safe"]
         assert summary["consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
         assert summary["certification_target"] == "time-window-receive-order-poison"
         assert summary["oracle_report"]["certification_target"] == "time-window-receive-order-poison"
@@ -761,11 +809,25 @@ def test_python_route_parity_target_radar_time_window_restore_state(route) -> No
         assert summary["closed_restored_truth_time"] == HLAinteger64Time(config.scan_window_end)
         assert summary["closed_restored_radar_time"] == HLAinteger64Time(config.scan_window_end)
         assert summary["post_closed_restore_reflects"] == []
+        assert {
+            key: value for key, value in summary["saved_open_state"].items() if key != "restore_generation"
+        } == {
+            key: value for key, value in summary["restored_open_state"].items() if key != "restore_generation"
+        }
+        assert {
+            key: value for key, value in summary["saved_closed_state"].items() if key != "restore_generation"
+        } == {
+            key: value for key, value in summary["restored_closed_state"].items() if key != "restore_generation"
+        }
+        assert summary["restored_open_state"]["restore_generation"] == summary["saved_open_state"]["restore_generation"] + 1
+        assert summary["restored_closed_state"]["restore_generation"] == summary["saved_closed_state"]["restore_generation"] + 1
         assert summary["saved_open_state"]["window_closed"] is False
         assert summary["restored_open_state"]["window_closed"] is False
         assert summary["saved_closed_state"]["window_closed"] is True
         assert summary["restored_closed_state"]["window_closed"] is True
         assert summary["dirty_post_close_reflect"].args[2] == b"dirty-post-close"
+        assert summary["dirty_post_close_reflect"].args[5] == HLAinteger64Time(config.post_close_resume_time)
+        assert summary["dirty_post_close_grant"].args[0] == HLAinteger64Time(config.post_close_resume_time)
         assert summary["certification_target"] == "time-window-save-restore-window-state"
         assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-window-state"
         assert summary["oracle_report"]["assertions"] == {
@@ -808,11 +870,14 @@ def test_python_route_parity_target_radar_time_window_restore_output(route) -> N
         assert summary["saved_consumer_time"] == HLAinteger64Time(config.scan_window_end)
         assert summary["dirty_consumer_receive"].args[2] == b"dirty-track-output"
         assert summary["dirty_consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
+        assert list(summary["dirty_consumer_receive"].args[1].values()) == [b"dirty-track-100-110"]
         assert summary["restored_truth_time"] == HLAinteger64Time(config.scan_window_end)
         assert summary["restored_radar_time"] == HLAinteger64Time(config.scan_window_end)
         assert summary["restored_consumer_time"] == HLAinteger64Time(config.scan_window_end)
         assert [record.args[2] for record in summary["post_restore_receives"]] == [b"restored-track-output"]
+        assert list(summary["restored_consumer_receive"].args[1].values()) == [b"restored-track-100-110"]
         assert summary["restored_consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
+        assert len(summary["post_restore_receives"]) == 1
         assert summary["certification_target"] == "time-window-save-restore-output-resume"
         assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-output-resume"
         assert summary["oracle_report"]["assertions"] == {

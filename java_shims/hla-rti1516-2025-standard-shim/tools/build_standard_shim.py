@@ -22,6 +22,11 @@ REPORT_MD = ROOT / "docs/evidence/shim_routes/java-standard-2025.md"
 API_PREFIX = "1516-2025_API_XML_2025_08_14"
 PACKAGE = "com.sheepfling.hla.shimroutes.rti1516_2025"
 FACTORY_NAME = "Java 2025 Standard Shim"
+BACKING_RUNTIME = {
+    "runtime_provider": "python2025",
+    "implementation_lane": "hla-backend-python2025",
+    "wrapper_only": False,
+}
 
 IMPLEMENTED = {"getHLAversion"}
 SCENARIO_PARITY_TESTS = [
@@ -233,6 +238,7 @@ def _write_report(methods: list[Method]) -> None:
         "scenario_evidence": {
             "status": "scenario-parity-green",
             "scope": "bounded scenario-parity evidence, not full Java RTI conformance",
+            **BACKING_RUNTIME,
             "tests": SCENARIO_PARITY_TESTS,
             "scenarios": SCENARIO_PARITY_SUMMARY,
             "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
@@ -243,6 +249,7 @@ def _write_report(methods: list[Method]) -> None:
                 "surface": "official Java 2025 API",
                 "scenario": "runtime-capability",
                 "parity_scope": "bounded scenario-parity evidence",
+                **BACKING_RUNTIME,
                 "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
             },
             "java-standard-2025-py4j": {
@@ -250,6 +257,7 @@ def _write_report(methods: list[Method]) -> None:
                 "surface": "official Java 2025 API",
                 "scenario": "runtime-capability",
                 "parity_scope": "bounded scenario-parity evidence",
+                **BACKING_RUNTIME,
                 "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
             },
         },

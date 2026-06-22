@@ -6,6 +6,18 @@ Use this page when the question is:
 - where vendor parity is passing, partial, divergent, or not yet matrixed
 - which generated artifact to open next for one backend or one spec slice
 
+This page is centered on the generated 2010/vendor compliance packet. It is not
+the main discovery surface for the current IEEE 1516.1-2025 Python RTI
+closeout.
+
+For the main 2025 Python RTI lane, start instead with:
+
+- [python_rti_backend.md](python_rti_backend.md)
+- [verification/time_model_compliance.md](verification/time_model_compliance.md)
+- [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)
+- [plans/spec2025_finish_line.md](plans/spec2025_finish_line.md)
+- [plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)
+
 ## Short Path
 
 Refresh the compliance packet, then run the discovery command:
@@ -69,6 +81,9 @@ Context sources:
 
 - [backend_conformance_matrix.md](backend_conformance_matrix.md)
 - [rti_options_and_test_matrix.md](rti_options_and_test_matrix.md)
+
+For 2025 readers, treat those context sources as bounded reference surfaces,
+not as the main proof ledger for `hla-backend-python2025`.
 
 ## What You Get
 

@@ -2,6 +2,10 @@
 
 Reserved for deterministic checks that are specific to the HLA 2010 workspace.
 
+The repo also carries the current IEEE 1516.1-2025 Python RTI lane. Treat
+`hla-backend-python2025` as the main 2025 runtime behind those tests and treat
+`hla-backend-shim` only as a compatibility-wrapper alias.
+
 ## Start Here
 
 Fastest human-friendly starting points:
@@ -12,6 +16,20 @@ Fastest human-friendly starting points:
 
 Do not start with vendor/runtime-dependent suites unless the base Python path is
 already working.
+
+For the 2025 lane specifically, the first architecture/proof surfaces to read
+after bootstrap are:
+
+- `docs/python_rti_backend.md`
+- `docs/python_rti_reading_map.md`
+- `docs/verification/time_model_compliance.md`
+
+The routine 2025 proof commands behind those surfaces are:
+
+- `./tools/python verify-main-2025` for the normal direct `python2025`
+  main-surface proof lane
+- `./tools/python verify-routes-2025` when you also need the bounded hosted
+  `python-2025-fedpro-grpc` hygiene lane
 
 ## Test Families
 
@@ -24,6 +42,7 @@ already working.
 - `tests/time/`: time-management and MOM/time semantic slices. Use these after the plain exchange path is already healthy.
 - `tests/vendors/`: real-vendor backend matrices and vendor smoke tests. These are environment-dependent and are not a newcomer entrypoint.
 - `tests/verification/`: conformance, requirements-ledger, MOM negative-matrix, and spec-traceability tests. Use these for defended compliance work, not first-run validation.
+- `tests/requirements/`: 2025 finish-line, route-parity, backend-audit, and wording-boundary checks for the main `python2025` RTI lane.
 - `tests/`: direct executable slices that have not been grouped further yet.
 
 ## Environment-Aware Markers

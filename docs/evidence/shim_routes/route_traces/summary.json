@@ -9,14 +9,5 @@
   ],
   "scope": "MVP route proof, not full HLA conformance",
   "status": "trace-green",
-  "trace_count": 6,
-  "status_vocabulary": [
-    "surface-backed",
-    "lifecycle-green",
-    "adapter-smoke-green",
-    "core-exchange-green",
-    "trace-green",
-    "full-interface-surface-complete",
-    "full-interface-behavior-complete"
-  ]
+  "trace_count": 6
 }

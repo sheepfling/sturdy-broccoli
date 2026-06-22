@@ -6,13 +6,15 @@ transport host instead of directly in-process.
 This repo currently has two different hosted Python stories:
 
 - the 2010 hosted Python RTI route over gRPC
-- the bounded 2025 hosted FedPro gRPC route over the current 2025 lane
+- the bounded 2025 hosted FedPro gRPC route over the repo's main full 2025
+  Python RTI lane
 
 Those routes are related, but they are not identical claims.
 
 - the 2010 route is the familiar hosted form of the pure Python in-memory RTI
 - the 2025 route is a typed FedPro transport-hosted slice over the current
-  `hla-backend-shim` implementation lane
+  `hla-backend-python2025` implementation lane, with `hla-backend-shim`
+  retained only as a compatibility-wrapper alias
 
 If you need the architecture and evidence posture for that 2025 lane, read
 [`python_rti_backend.md`](python_rti_backend.md) and
@@ -65,15 +67,31 @@ That route is the documented Python RTI over gRPC path in
 The 2025 hosted path is narrower and more explicit.
 
 It is not documented as a generic "remote Python RTI" abstraction. It is the
-current transport-hosted FedPro route over the live Python 2025 lane.
+current transport-hosted FedPro route over the main full `python2025` Python RTI
+lane.
 
 The relevant pieces are:
 
-- `packages/hla-backend-shim` for the current executable 2025 backend lane
+- `packages/hla-backend-python2025` for the main executable 2025 Python RTI lane
+- `packages/hla-backend-shim` for the legacy compatibility-wrapper alias
 - `hla.transports.grpc.python_server_2025.start_2025_grpc_server(...)` for the
   hosted server helper
 - `GrpcTransport(GrpcTransportConfig(..., schema="rti1516_2025"))` for the
   typed FedPro 2025 client path
+
+The repo now exposes this hosted 2025 path through
+`create_rti_ambassador("python2025", transport=...)`. That factory spelling
+resolves onto the same hosted FedPro route over `hla-backend-python2025`, so
+the explicit server-plus-typed-transport path and the factory spelling now
+describe one runtime lane rather than separate ownership paths.
+
+Keep the ownership wording strict here:
+
+- use `python2025` when naming the hosted 2025 route
+- treat `shim` as a compatibility-wrapper alias, not as the hosted runtime lane
+- do not describe `create_rti_ambassador("shim", transport=...)` as the main
+  2025 operator path
+- do not refer to the primary 2025 runtime lane itself as a shim
 
 Minimal server shape:
 
@@ -107,6 +125,19 @@ Treat the 2025 hosted route as:
 - still a bounded FedPro runtime slice rather than a blanket full-semantics or
   full-MOM conformance claim
 
+The remaining hosted-only proof weight here is mostly transport-specific:
+
+- typed FedPro request/response envelope handling
+- callback polling and queue-drain behavior across the wire seam
+- per-peer server bookkeeping such as disconnect cleanup and callback routing
+- the explicit hosted operator path around `start_2025_grpc_server(...)` plus
+  `GrpcTransport(..., schema="rti1516_2025")`
+
+Those are important proofs, but they should not be confused with ownership of
+the core 2025 RTI semantics, which live in `hla-backend-python2025`.
+They are transport-seam proof over that runtime, not evidence that the main
+2025 Python RTI lane still lacks the underlying semantics.
+
 ## Operator Lane
 
 The maintained verification lane for these hosted surfaces is:
@@ -114,11 +145,20 @@ The maintained verification lane for these hosted surfaces is:
 ```bash
 ./tools/python verify-routes-preflight
 ./tools/python verify-routes
+./tools/python verify-routes-2025
 ```
 
-That lane runs the shared direct-versus-hosted Python parity suite, the hosted
-Python gRPC transport tests, regenerates the route parity matrix artifact, and
-reruns the tracked route scenarios over the supported hosted paths.
+Those lanes are split by ownership:
+
+- `./tools/python verify-routes` runs the older 2010 direct-versus-hosted
+  Python parity suite, the hosted Python gRPC transport tests, regenerates the
+  2010 Python route parity matrix artifact, and reruns the tracked hosted
+  Python example paths.
+- `./tools/python verify-routes-2025` runs the bounded hosted 2025 FedPro
+  transport suite, direct `python2025` time-window, save/restore, ownership,
+  callback, support-service, and MOM proof selectors, the 2025 route-parity ledger
+  checks, regenerates the 2025 route-parity artifacts, and reruns the
+  `python2025` Target/Radar example path.
 
 Treat it as regular hygiene after changes to:
 

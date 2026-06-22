@@ -64,6 +64,11 @@ SCENARIO_PARITY_SUMMARY_2025 = [
     "2025 standard route MOM: service-report serialization, MIM/FOM module data, and manager request/report interactions",
     "2025 standard route runtime capability: FOM handles, default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization",
 ]
+BACKING_RUNTIME_2025 = {
+    "runtime_provider": "python2025",
+    "implementation_lane": "hla-backend-python2025",
+    "wrapper_only": False,
+}
 
 CPP_2010_HELPER_PATCHES = (
     {
@@ -159,7 +164,9 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
         "surface": config["surface"],
         "cpp_standard": config["std"],
         "implemented_services": [],
-        "unsupported_services": ["RTIambassador surface is header-backed; service semantics are delegated to the Python shim route for the core scenario subset"],
+        "unsupported_services": [
+            "RTIambassador surface is header-backed; service semantics are delegated to the backing Python runtime route for the core scenario subset"
+        ],
         "scenario_evidence": {
             "status": "core-green" if edition == "2010" else "scenario-parity-green",
             "scope": (
@@ -167,6 +174,7 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
                 if edition == "2010"
                 else "bounded scenario-parity evidence, not full C++ RTI conformance"
             ),
+            **({} if edition == "2010" else BACKING_RUNTIME_2025),
             "tests": (
                 ["tests/backends/test_standard_shim_artifacts.py"]
                 if edition == "2010"
@@ -183,7 +191,14 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
                 "status": "core-green",
                 "surface": config["surface"],
                 "scenario": "two-federate-core-exchange" if edition == "2010" else "lifecycle-core",
-                **({} if edition == "2010" else {"parity_scope": "bounded scenario-parity evidence"}),
+                **(
+                    {}
+                    if edition == "2010"
+                    else {
+                        "parity_scope": "bounded scenario-parity evidence",
+                        **BACKING_RUNTIME_2025,
+                    }
+                ),
             }
             for route in routes
         },

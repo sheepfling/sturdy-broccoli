@@ -1,10 +1,9 @@
 {
   "total_rows": 691,
   "by_disposition": {
-    "covered": 564,
+    "covered": 645,
     "duplicate/umbrella": 22,
-    "retired/legacy-only": 24,
-    "unsupported-boundary": 81
+    "retired/legacy-only": 24
   },
   "by_priority": {
     "P0": 89,
@@ -12,11 +11,14 @@
     "P2": 172
   },
   "by_area": {
+    "Callback/configuration/binding deltas": {
+      "duplicate/umbrella": 12
+    },
     "Federate Interface service catalog": {
       "covered": 196
     },
-    "SOM/FOM service-usage requirements": {
-      "covered": 196
+    "Framework and Rules": {
+      "duplicate/umbrella": 10
     },
     "OMT component-level conformance": {
       "partial": 224
@@ -24,14 +26,11 @@
     "OMT validator-negative conformance": {
       "covered": 29
     },
-    "Framework and Rules": {
-      "duplicate/umbrella": 10
-    },
-    "Callback/configuration/binding deltas": {
-      "duplicate/umbrella": 12
-    },
     "Retired / replacement mapping candidates": {
       "retired/legacy-only": 24
+    },
+    "SOM/FOM service-usage requirements": {
+      "covered": 196
     }
   },
   "by_area_and_disposition": {
@@ -45,8 +44,7 @@
       "duplicate/umbrella": 10
     },
     "OMT component-level conformance": {
-      "covered": 143,
-      "unsupported-boundary": 81
+      "covered": 224
     },
     "OMT validator-negative conformance": {
       "covered": 29
@@ -59,18 +57,20 @@
     }
   },
   "by_closure_wave": {
-    "0-retired-filter-and-replacement-map": 24,
     "1-fi-service-and-binding-disposition": 208,
-    "2-omt-field-and-validator-fixtures": 253,
     "3-som-fom-service-usage-crosscheck": 196,
-    "4-framework-som-rule-decomposition": 10
+    "2-omt-field-and-validator-fixtures": 253,
+    "4-framework-som-rule-decomposition": 10,
+    "0-retired-filter-and-replacement-map": 24
   },
   "fi_binding_surface": {
     "fi_rows": 196,
     "java_present": 196,
     "cpp_present": 196,
-    "fedpro_present": 191,
+    "fedpro_present": 192,
     "fedpro_alias_or_split_route": 1,
     "fedpro_route_boundary_or_missing_review": 4
-  }
+  },
+  "row_count_from_csv": 691,
+  "covered_row_count": 645
 }

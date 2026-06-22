@@ -14,6 +14,7 @@ The supported front door is:
 - `hla.rti1516_2025` for the 2025 API package
 - `hla.rti` for cross-version discovery and ambassador creation
 - `hla.backends.inmemory` for the local in-memory RTI backend
+- `hla.backends.python2025` for the main Python RTI backend for IEEE 1516.1-2025
 - `hla.transports.grpc` for networked transport-hosted RTI routes
 - `./tools/target-radar` and `examples/target_radar_simulation.py` for the Target/Radar example flow
 
@@ -40,6 +41,7 @@ map. Those live under `docs/` and `packages/`.
 The repo is organized as a monorepo workspace:
 
 - `hla.rti1516e` is the IEEE 1516.1-2010 API package
+- `hla.rti1516_2025` is the IEEE 1516.1-2025 API package
 - `hla.rti` owns cross-version discovery and backend selection
 - `packages/*/src/` holds package-owned backend, FOM, transport, and support implementations
 - `tools/` is the canonical home for human-facing operator entrypoints
@@ -88,6 +90,27 @@ If you want an executable setup check first, run:
 ```bash
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
+
+If you want the shortest runnable IEEE 1516.1-2025 path on the main Python
+2025 RTI lane, run:
+
+```bash
+python examples/target_radar_simulation.py --backend python2025 --steps 5
+```
+
+Treat `python2025` as the real 2025 runtime lane here. The `shim` backend name
+remains only a compatibility-wrapper alias over that runtime.
+
+For the routine 2025 proof lanes behind that runtime:
+
+```bash
+./tools/python verify-main-2025
+./tools/python verify-routes-2025
+```
+
+Use `verify-main-2025` as the default direct `python2025` proof lane. Use
+`verify-routes-2025` when you also need the bounded hosted
+`python-2025-fedpro-grpc` hygiene lane over `hla-backend-python2025`.
 
 3. Run the backend smoke example:
 
@@ -161,6 +184,12 @@ The repo is intended to make it easy to:
 - validate behavior against local, bridged, and real vendor runtimes
 - generate the evidence needed to understand what is supported today
 
+For the 2025 lane specifically:
+
+- `hla-backend-python2025` is the main full executable Python RTI implementation lane
+- `hla-backend-shim` is a compatibility-wrapper alias over that runtime, not a separate RTI family
+- Java and C++ 2025 binding routes are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs
+
 ## Example Federates
 
 The `examples/` directory is the fastest way to see the API in action.
@@ -196,6 +225,8 @@ This workspace has a lot more than just the pure Python RTI.
 Current backend names include:
 
 - `python`, `in-memory`, `python-in-memory`
+- `python2025`, `python-2025`, `python-2025-backend`
+- `shim`
 - `jpype`, `py4j`
 - `pitch-jpype`, `pitch-py4j`
 - `certi`, `certi-jpype`, `certi-py4j`
@@ -205,6 +236,8 @@ Current backend names include:
 The important part is that these are not all the same level of maturity:
 
 - `python` is the strongest local reference path
+- `python2025` is the main Python RTI implementation lane for IEEE 1516.1-2025
+- `shim` is only a compatibility-wrapper provider name over `python2025`
 - the Java shims are repo verification backends, not part of the public runtime surface
 - `java-standard-*` and `cpp-standard-*` route names are reserved for future
   language-shim artifacts that compile against the matching official Java/C++

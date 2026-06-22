@@ -5,12 +5,15 @@ This is the shortest supported path from a fresh checkout to a working example.
 Use this if you are new to the repo and do not need CERTI, Pitch, JPype, or
 Py4J yet.
 
+This page is the 2010 pure-Python bootstrap path. It is not the main entry
+point for the IEEE 1516.1-2025 runtime lane.
+
 ## Goal
 
 Get all of these working in order:
 
 1. the repo-local Python environment
-2. the pure-Python backend
+2. the pure-Python 2010 backend
 3. the Target/Radar example
 
 ## Prerequisites
@@ -34,6 +37,15 @@ python examples/target_radar_simulation.py --backend python --steps 5
 
 If those commands succeed, your base environment is working.
 
+For the primary 2025 Python RTI lane, switch next to:
+
+- [`python_rti_backend.md`](python_rti_backend.md) for the main
+  `hla-backend-python2025` runtime lane
+- [`python_rti_reading_map.md`](python_rti_reading_map.md) for the shortest
+  edit path through that runtime
+- [`networked_rti_python.md`](networked_rti_python.md) for the bounded hosted
+  `python-2025-fedpro-grpc` route
+
 ## What This Does
 
 - `./tools/bootstrap python`
@@ -47,6 +59,11 @@ If those commands succeed, your base environment is working.
   proves the lightweight backend path works
 - `python examples/target_radar_simulation.py --backend python --steps 5`
   proves a real example federate path works
+
+The 2025 runtime story is intentionally separate:
+
+- `python2025` is the main IEEE 1516.1-2025 RTI lane
+- `shim` is only a compatibility-wrapper provider name over that runtime
 
 ## What Not To Do First
 

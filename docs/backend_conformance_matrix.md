@@ -3,6 +3,9 @@
 Clause-level conformance snapshot for the backend-neutral Python HLA 1516.1-2010
 surface.
 
+This page is 2010-specific. It is not the primary clause/proof ledger for the
+current IEEE 1516.1-2025 Python RTI lane.
+
 This is document `4/4` in the backend documentation set.
 For the canonical documentation hierarchy, see
 [documentation_hierarchy.md](documentation_hierarchy.md).
@@ -50,7 +53,11 @@ Use this file to answer:
 For the current 2025 closeout posture, use:
 
 - [python_rti_backend.md](python_rti_backend.md)
+- [backend_route_inventory.md](backend_route_inventory.md)
+- [verification/time_model_compliance.md](verification/time_model_compliance.md)
+- [plans/2025_python_rti_backend_audit.md](plans/2025_python_rti_backend_audit.md)
 - [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
+- [plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)
 
 For CERTI-specific caveats, baseline-selection commands, and the distinction
 between repo-local patched CERTI and pristine upstream CERTI, see

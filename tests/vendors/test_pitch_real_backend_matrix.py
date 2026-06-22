@@ -1729,7 +1729,9 @@ def test_pitch_time_window_future_exclusion_matrix(kind: str):
         assert summary["oracle_report"]["assertions"] == {
             "radar_not_granted_to_window_end_while_future_input_possible": True,
             "blocked_grant_matches_current_galt_or_none": True,
-            "future_input_exclusion_reaches_window_end": True,
+            "blocked_lits_matches_blocked_galt": True,
+            "future_input_exclusion_reaches_window_end_for_galt": True,
+            "future_input_exclusion_reaches_window_end_for_lits": True,
             "radar_granted_to_window_end_only_after_future_input_excluded": True,
             "late_timestamp_into_closed_window_rejected": True,
             "boundary_timestamp_delivered_after_window_closure": True,

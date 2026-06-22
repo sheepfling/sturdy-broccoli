@@ -26,7 +26,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.2-2010 (2010 edition) §7 | 15 | 12 | 0 | 1 | 0 | 0 | 2 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 0 | 6 |
-| multi-section §12 | 4 | 2 | 0 | 0 | 0 | 2 | 0 |
+| multi-section §12 | 5 | 2 | 0 | 0 | 0 | 2 | 1 |
 | multi-section §4 | 3 | 1 | 0 | 0 | 0 | 2 | 0 |
 | multi-section §5 | 10 | 0 | 0 | 0 | 0 | 0 | 10 |
 | multi-section §6 | 14 | 13 | 0 | 1 | 0 | 0 | 0 |
@@ -409,5 +409,6 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | multi-section | 11 | REQ-MOM-NEG-001 | classification-required | verification-slice | Strict MOM decoding reports and raises through generated parameterized negative-path tests |
 | multi-section | 11 | REQ-SERVICE-FILE-001 | classification-required | verification-slice | Service-report file output contains initial and per-service records with section anchors |
 | multi-section | 12 | REQ-SAVE-RESTORE-CALLBACK-POLICY-001 | not-applicable | verification-slice | Save/restore treats callback enablement as local runtime policy rather than persisted federation state |
+| multi-section | 12 | REQ-SAVE-RESTORE-ROUTING-STATE-001 | classification-required | verification-slice | Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations |
 | multi-section | 12 | REQ-SAVE-RESTORE-TRANSIENT-STATE-001 | not-applicable | verification-slice | Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state |
 | multi-section | unknown | REQ-OMT-SCHEMA-001 | classification-required | verification-slice | Annex E schema-level conformance checking is identified explicitly and remains planned |

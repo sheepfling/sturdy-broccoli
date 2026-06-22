@@ -16,6 +16,10 @@ The time model here covers the core IEEE 1516.1 time-management contract:
 The compliance claim in this repo is bounded to the supported Python backend
 subset and the runtime paths that are backed by executable proof.
 
+For the 2025 lane, that proof is not limited to algorithm-unit coverage. The
+current `hla-backend-python2025` runtime also carries an explicit Target/Radar
+lookahead proof ladder over both the in-process and hosted FedPro routes.
+
 ## How It Works
 
 The implementation is split across the time-management modules:
@@ -144,6 +148,83 @@ That is compliant enough for the supported subset because:
 - the docs and traceability matrix point to the same code and evidence
 - the unsupported or vendor-divergent cases are kept explicit instead of being
   hidden behind a broader parity claim
+
+## 2025 Lookahead Proof Ladder
+
+The 2025 Python RTI evidence now separates several proof levels instead of
+pretending one small time test proves the whole lookahead story.
+
+The bounded 2025 certification ladder is:
+
+- `time-window-core`: proves pending timestamped inputs are not skipped and the
+  radar window does not close before known `< window_end` inputs arrive
+- `time-window-future-exclusion`: proves closure is blocked while another
+  regulating federate could still legally send into the closing window
+- `time-window-output-delivery`: proves the closed window can produce a legal
+  timestamped output
+- `time-window-consumer-order`: proves downstream consumers observe that output
+  in timestamp order
+- `time-window-pipeline-two-scans`: proves one scan can be processed while the
+  next scan is collected without cross-window contamination
+- `time-window-receive-order-poison`: proves receive-order side traffic does
+  not mutate a closed timestamp-managed window
+- `time-window-save-restore-window-state`, `time-window-save-restore-output-resume`,
+  and `time-window-save-restore-pipeline-resume`: prove dirty post-save window,
+  output, and pipeline state are rolled back rather than leaking across restore
+
+The integrated route is named:
+
+- `lookahead-processing-window-certified`
+
+That integrated route is still a bounded working-surface claim, not an
+unqualified blanket correctness claim for every possible time-policy topology.
+
+What it proves today is narrower and more honest:
+
+- the live `hla-backend-python2025` lane can close a time window only when
+  GALT/LITS and lookahead state make it safe
+- the same lane can process after closure, publish legal output, and deliver it
+  in order
+- the same proof ladder is replayed over the hosted `python-2025-fedpro-grpc`
+  route
+- matching negative-oracle tests reject premature closure, mismatched LITS
+  boundaries, premature output, reversed consumer order, cross-window
+  contamination, closed-window mutation, and dirty post-restore replay
+
+## 2025 Evidence Anchors
+
+The main 2025 runtime evidence is:
+
+- [`../../tests/test_rti1516_2025_spec_and_shim.py`](../../tests/test_rti1516_2025_spec_and_shim.py)
+  - historical filename; direct in-process `python2025` time-management
+    services plus the Target/Radar time-window proof ladder and
+    negative-oracle guards
+- [`../../tests/scenarios/test_python_route_parity.py`](../../tests/scenarios/test_python_route_parity.py)
+  - route-level replay of the proof ladder over the in-process and hosted 2025
+    Python routes
+- [`../../tests/transport/test_grpc_transport_2025.py`](../../tests/transport/test_grpc_transport_2025.py)
+  - hosted FedPro 2025 time-management behavior, including lookahead queries,
+    grants, queued TSO delivery, and hosted proof-ladder replay
+- [`../plans/spec2025_route_parity_matrix.md`](../plans/spec2025_route_parity_matrix.md)
+  - the machine-readable and human-readable route-parity claim for the main
+    Python 2025 RTI lane
+- [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
+  - finish-line snapshot and milestone wording for bounded GALT/LITS and
+    lookahead-window evidence
+
+## Vendor Boundary
+
+The repo does not currently treat vendor parity as the primary proof for the
+2025 lookahead ladder.
+
+The strongest current 2025 evidence is still the in-process and hosted Python
+RTI routes. Vendor runs add credence only where the route topology is small
+enough to be meaningful and supported by the vendor runtime.
+
+For Pitch specifically, the current trial-safe candidate is the two-federate
+`time-window-future-exclusion` route. That is useful vendor credence, but it
+does not replace the broader Python proof for output delivery, consumer order,
+pipeline overlap, or save/restore replay.
 
 ## Where To Look Next
 

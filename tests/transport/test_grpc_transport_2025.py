@@ -13,29 +13,46 @@ import grpc
 import pytest
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.certi.certi.callbacks import dispatch_helper_callback
+from hla.foms.target_radar._internal.target_radar_2025_adapter import TargetRadar2025RTIAdapter
 from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import (
     AlreadyConnected,
+    AttributeNotDefined,
+    AttributeNotPublished,
     AttributeNotOwned,
+    CouldNotOpenFDD,
+    ErrorReadingFDD,
+    FederateAlreadyExecutionMember,
+    FederateNameAlreadyInUse,
     FederateNotExecutionMember,
+    FederateOwnsAttributes,
     FederateIsExecutionMember,
     FederatesCurrentlyJoined,
     FederationExecutionAlreadyExists,
     FederationExecutionDoesNotExist,
+    InvalidInteractionClassHandle,
     InvalidLogicalTime,
+    InvalidResignAction,
+    InvalidTransportationType,
+    InconsistentFDD,
+    InteractionClassNotPublished,
     NotConnected,
     ObjectInstanceNotKnown,
+    ObjectClassNotPublished,
+    OwnershipAcquisitionPending,
     RestoreInProgress,
     RestoreNotRequested,
     SaveInProgress,
     SaveNotInitiated,
 )
+from hla.rti1516_2025.factory import create_rti_ambassador as create_2025_rti_ambassador
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,
     FederateHandle,
     InteractionClassHandle,
+    MessageRetractionHandle,
     ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
@@ -63,11 +80,19 @@ from hla.verification import (
     DdmObjectRegionLifecycleScenarioConfig,
     DdmPassiveRegionScenarioConfig,
     FederationLifecycleScenarioConfig,
+    JoinScenarioConfig,
     LocalDeleteScenarioConfig,
+    LostFederateScenarioConfig,
     NameReservationScenarioConfig,
+    NegotiatedOwnershipScenarioConfig,
+    NonOwnerUpdateScenarioConfig,
+    OwnershipScenarioConfig,
     ObjectScopeScenarioConfig,
+    ReleaseRequestOwnershipScenarioConfig,
     RequestAttributeValueUpdateScenarioConfig,
+    ResignScenarioConfig,
     SaveRestoreScenarioConfig,
+    SynchronizationScenarioConfig,
     SuiteRecordingFederateAmbassador,
     SupportServicesScenarioConfig,
     TargetRadarConsumerOrderConfig,
@@ -82,33 +107,80 @@ from hla.verification import (
     TransportationTypeScenarioConfig,
     UpdateRateScenarioConfig,
     run_callback_control_scenario,
+    run_declaration_invalid_attribute_publication_scenario,
     run_declaration_management_scenario,
+    run_declaration_unpublish_rejection_scenario,
+    run_disconnect_mom_cleanup_scenario,
+    run_time_managed_declaration_independence_scenario,
     run_ddm_declaration_gating_scenario,
     run_ddm_object_region_lifecycle_scenario,
     run_ddm_passive_region_subscription_scenario,
+    run_fom_integrity_negative_scenario,
+    run_fom_module_visibility_scenario,
+    run_federation_listing_scenario,
     run_federation_lifecycle_negative_scenario,
     run_federation_lifecycle_scenario,
     run_local_delete_scenario,
+    run_join_precondition_scenario,
+    run_lost_federate_mom_scenario,
+    run_multi_module_fom_visibility_scenario,
+    run_multi_participation_scenario,
     run_name_reservation_scenario,
+    run_confirm_divestiture_negotiated_scenario,
+    run_attribute_ownership_unavailable_scenario,
+    run_attribute_ownership_scenario,
+    run_attribute_ownership_query_callback_scenario,
+    run_negotiated_attribute_ownership_scenario,
+    run_non_owner_update_rejection_scenario,
     run_object_scope_relevance_scenario,
+    run_release_request_ownership_scenario,
     run_request_attribute_value_update_routing_scenario,
     run_request_attribute_value_update_scenario,
+    run_resign_precondition_scenario,
+    run_resign_mom_cleanup_scenario,
     run_restore_federate_local_state_scenario,
     run_restore_callback_policy_scenario,
+    run_restore_abort_scenario,
+    run_restore_abort_exception_scenario,
+    run_restore_directed_ddm_subscriber_routing_scenario,
+    run_restore_failure_scenario,
+    run_restore_participant_exception_scenario,
+    run_restore_request_precondition_scenario,
     run_restore_request_failure_scenario,
     run_restore_object_state_scenario,
+    run_resigned_federate_callback_silence_scenario,
+    run_abort_save_exception_scenario,
+    run_restore_status_exception_scenario,
+    run_smoke_fom_save_restore_ownership_gauntlet_scenario,
+    run_save_participant_exception_scenario,
+    run_save_abort_scenario,
     run_save_request_precondition_scenario,
     run_save_failure_scenario,
+    run_save_status_exception_scenario,
     run_save_restore_queued_callback_scenario,
     run_scheduled_save_restore_time_state_scenario,
     run_save_restore_scenario,
+    run_failed_federate_synchronization_scenario,
+    run_late_join_synchronization_scenario,
+    run_multiple_synchronization_points_scenario,
     run_support_factory_and_decode_scenario,
+    run_synchronization_registration_failure_scenario,
+    run_synchronization_scenario,
     run_suite_ddm_scenario,
+    run_transportation_type_rejection_scenario,
     run_transportation_type_restore_persistence_scenario,
+    run_transportation_type_scenario,
     run_update_rate_scenario,
     run_target_radar_time_window_future_exclusion_scenario,
     run_target_radar_time_window_gauntlet_scenario,
+    run_target_radar_time_window_core_scenario,
+    run_target_radar_time_window_consumer_order_scenario,
+    run_target_radar_time_window_pipeline_restore_scenario,
+    run_target_radar_time_window_pipeline_scenario,
+    run_target_radar_time_window_output_delivery_scenario,
     run_target_radar_time_window_receive_order_poison_scenario,
+    run_target_radar_time_window_restore_output_scenario,
+    run_target_radar_time_window_restore_state_scenario,
     write_update_rate_fom,
 )
 from hla.verification.scenario_support import drain_callbacks_pair, wait_for_callback
@@ -122,6 +194,39 @@ from hla.verification.scenario_target_radar_time import (
 )
 
 pytestmark = pytest.mark.requires_loopback_server
+
+
+class _Recording2025FederateAmbassador:
+    def __init__(self) -> None:
+        self.callbacks: list[tuple[str, tuple[object, ...]]] = []
+
+    def __getattr__(self, name: str):  # noqa: ANN204
+        if name.startswith("_"):
+            raise AttributeError(name)
+
+        def _record(*args) -> None:  # noqa: ANN002
+            self.callbacks.append((name, args))
+
+        return _record
+
+    def last_callback(self, name: str):  # noqa: ANN201
+        for callback_name, args in reversed(self.callbacks):
+            if callback_name == name:
+                return args
+        return None
+
+
+def _last_2025_received_interaction_by_name(  # noqa: ANN201
+    callbacks: _Recording2025FederateAmbassador,
+    rti,  # noqa: ANN001
+    interaction_name: str,
+):
+    for callback_name, args in reversed(callbacks.callbacks):
+        if callback_name != "receiveInteraction":
+            continue
+        if rti.getInteractionClassName(args[0]) == interaction_name:
+            return args
+    return None
 
 
 class _FedPro2025Servicer(transport_pb2_grpc.HLA2025FedProGatewayServicer):
@@ -163,6 +268,3181 @@ def _close_rti_ambassador(rti) -> None:  # noqa: ANN001
     close = getattr(rti, "close", None)
     if callable(close):
         close()
+
+
+def _drain_hosted_2025_callbacks(*rtis, loops: int = 16) -> None:  # noqa: ANN002
+    for _ in range(loops):
+        progressed = False
+        for rti in rtis:
+            evoke = getattr(rti, "evokeMultipleCallbacks", None)
+            if evoke is None:
+                continue
+            try:
+                if evoke(0.0, 0.0):
+                    progressed = True
+            except Exception:
+                continue
+        if not progressed:
+            break
+
+
+def test_2025_transport_server_reports_python2025_main_lane_identity() -> None:
+    server = start_2025_grpc_server()
+    direct_rti = None
+    transport = None
+    try:
+        direct_rti = create_2025_rti_ambassador()
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025"))
+        assert server.runtime_provider == "python2025"
+        assert server.implementation_lane == "hla-backend-python2025"
+        assert server.counts_as_python_2025_rti is True
+        assert server.wrapper_only is False
+        assert server.spec == "rti1516_2025"
+        assert server.transport_kind == "grpc"
+        assert direct_rti.backend_info.name == "python2025-rti"
+        assert direct_rti.backend_info.kind == "python/2025"
+        assert direct_rti.backend_info.details["provider"] == server.runtime_provider
+        assert direct_rti.backend_info.details["implementation_lane"] == server.implementation_lane
+        assert direct_rti.backend_info.details["counts_as_python_2025_rti"] is True
+        assert transport.client_adapter.runtime_provider == server.runtime_provider
+        assert transport.client_adapter.implementation_lane == server.implementation_lane
+        assert transport.client_adapter.counts_as_python_2025_rti is True
+        assert transport.client_adapter.wrapper_only is False
+        client_report = transport.capability_report()
+        assert client_report == {
+            "runtime_provider": "python2025",
+            "implementation_lane": "hla-backend-python2025",
+            "counts_as_python_2025_rti": True,
+            "wrapper_only": False,
+            "spec": "rti1516_2025",
+            "transport_kind": "grpc",
+            "route_family": "fedpro",
+            "target": server.target,
+            "schema": "rti1516_2025",
+            "secure": False,
+            "started": False,
+        }
+        transport.start()
+        started_client_report = transport.capability_report()
+        assert started_client_report["started"] is True
+        assert started_client_report["runtime_provider"] == server.runtime_provider
+        assert started_client_report["implementation_lane"] == server.implementation_lane
+        report = server.capability_report()
+        assert report == {
+            "runtime_provider": "python2025",
+            "implementation_lane": "hla-backend-python2025",
+            "counts_as_python_2025_rti": True,
+            "wrapper_only": False,
+            "spec": "rti1516_2025",
+            "transport_kind": "grpc",
+            "target": server.target,
+        }
+    finally:
+        if transport is not None:
+            transport.close()
+        if direct_rti is not None:
+            _close_rti_ambassador(direct_rti)
+        server.close()
+
+
+def test_2025_factory_transport_route_creates_hosted_python2025_ambassador() -> None:
+    server = start_2025_grpc_server()
+    rti = None
+    try:
+        rti = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        assert rti.backend_info.details["provider"] == "python2025"
+        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        federate = RecordingFederateAmbassador()
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+        rti.disconnect()
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-NEW-002", "HLA2025-NEW-003", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"factory-hosted-python2025-listing-{uuid.uuid4().hex[:8]}"
+    try:
+        leader_callbacks = _Recording2025FederateAmbassador()
+        wing_callbacks = _Recording2025FederateAmbassador()
+        leader = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        wing = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        leader.connect(leader_callbacks, CallbackModel2025.HLA_EVOKED)
+        wing.connect(wing_callbacks, CallbackModel2025.HLA_EVOKED)
+        leader.createFederationExecution(
+            federation_name,
+            [_target_radar_fom_path()],
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+
+        assert leader.backend_info.details["provider"] == "python2025"
+        assert leader.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert leader.backend_info.details["counts_as_python_2025_rti"] is True
+
+        leader.listFederationExecutions()
+        _drain_hosted_2025_callbacks(leader, loops=24)
+        execution_report = leader_callbacks.last_callback("reportFederationExecutions")
+        assert execution_report is not None
+        executions = execution_report[0]
+        assert any(
+            row.federationExecutionName == federation_name and row.logicalTimeImplementationName == "HLAinteger64Time"
+            for row in executions
+        )
+
+        leader.joinFederationExecution("HostedLeader", "TestFederate", federation_name)
+        wing.joinFederationExecution("HostedWing", "Observer", federation_name)
+
+        leader.listFederationExecutionMembers(federation_name)
+        _drain_hosted_2025_callbacks(leader, loops=24)
+        members_report = leader_callbacks.last_callback("reportFederationExecutionMembers")
+        assert members_report is not None
+        assert members_report[0] == federation_name
+        assert {(row.federateName, row.federateType) for row in members_report[1]} == {
+            ("HostedLeader", "TestFederate"),
+            ("HostedWing", "Observer"),
+        }
+
+        leader.listFederationExecutionMembers(f"{federation_name}-missing")
+        _drain_hosted_2025_callbacks(leader, loops=24)
+        assert leader_callbacks.last_callback("reportFederationExecutionDoesNotExist") == (f"{federation_name}-missing",)
+    finally:
+        if wing is not None:
+            try:
+                wing.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if wing is not None:
+            _close_rti_ambassador(wing)
+        if leader is not None:
+            _close_rti_ambassador(leader)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-NEW-007", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_mom_federation_management_service_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    controller = None
+    federation_name = f"factory-hosted-python2025-mom-fm-{uuid.uuid4().hex[:8]}"
+    try:
+        controller_callbacks = _Recording2025FederateAmbassador()
+        controller = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        controller.connect(controller_callbacks, CallbackModel2025.HLA_EVOKED)
+        controller.createFederationExecution(federation_name, ["TargetRadarFOMmodule.xml"])
+        controller_handle = controller.joinFederationExecution("HostedMomFmController", "TestFederate", federation_name)
+
+        assert controller.backend_info.details["provider"] == "python2025"
+        assert controller.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert controller.backend_info.details["counts_as_python_2025_rti"] is True
+        controller.requestFederationSave("MOM-SAVE")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("initiateFederateSave") == ("MOM-SAVE",)
+        save_begun = controller.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun"
+        )
+        save_complete = controller.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete"
+        )
+        controller.sendInteraction(
+            save_begun,
+            {controller.getParameterHandle(save_begun, "HLAfederate"): str(controller_handle.value).encode("ascii")},
+            b"mom-save-begun",
+        )
+        controller.sendInteraction(
+            save_complete,
+            {
+                controller.getParameterHandle(save_complete, "HLAfederate"): str(controller_handle.value).encode("ascii"),
+                controller.getParameterHandle(save_complete, "HLAsuccessIndicator"): b"HLAtrue",
+            },
+            b"mom-save-complete",
+        )
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationSaved") == ()
+
+        controller.requestFederationRestore("MOM-SAVE")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("requestFederationRestoreSucceeded") == ("MOM-SAVE",)
+        assert controller_callbacks.last_callback("federationRestoreBegun") == ()
+        assert controller_callbacks.last_callback("initiateFederateRestore") is not None
+        restore_complete = controller.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete"
+        )
+        controller.sendInteraction(
+            restore_complete,
+            {
+                controller.getParameterHandle(restore_complete, "HLAfederate"): str(controller_handle.value).encode("ascii"),
+                controller.getParameterHandle(restore_complete, "HLAsuccessIndicator"): b"HLAtrue",
+            },
+            b"mom-restore-complete",
+        )
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationRestored") == ()
+    finally:
+        if controller is not None:
+            try:
+                controller.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if controller is not None:
+            _close_rti_ambassador(controller)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-023", "HLA2025-FI-SVC-032", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_restore_control_negative_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.enums import RestoreFailureReason as RestoreFailureReason2025
+    from hla.rti1516_2025.enums import SaveFailureReason as SaveFailureReason2025
+    from hla.rti1516_2025.exceptions import RestoreNotRequested
+
+    server = start_2025_grpc_server()
+    controller = None
+    federation_name = f"factory-hosted-python2025-restore-control-{uuid.uuid4().hex[:8]}"
+    try:
+        controller_callbacks = _Recording2025FederateAmbassador()
+        controller = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        controller.connect(controller_callbacks, CallbackModel2025.HLA_EVOKED)
+        controller.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        controller.joinFederationExecution("HostedRestoreControl", "TestFederate", federation_name)
+
+        controller.requestFederationSave("SAVE-1")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("initiateFederateSave") == ("SAVE-1",)
+        controller.federateSaveBegun()
+        controller.federateSaveComplete()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationSaved") == ()
+
+        controller.requestFederationRestore("MISSING-SAVE")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("requestFederationRestoreFailed") == ("MISSING-SAVE",)
+
+        controller.requestFederationRestore("SAVE-1")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("requestFederationRestoreSucceeded") == ("SAVE-1",)
+        assert controller_callbacks.last_callback("federationRestoreBegun") == ()
+        initiate_restore = controller_callbacks.last_callback("initiateFederateRestore")
+        assert initiate_restore is not None
+        assert initiate_restore[0] == "SAVE-1"
+        controller.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationRestored") == ()
+        with pytest.raises(RestoreNotRequested):
+            controller.federateRestoreComplete()
+
+        controller.requestFederationSave("SAVE-ABORT")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("initiateFederateSave") == ("SAVE-ABORT",)
+        controller.abortFederationSave()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationNotSaved") == (SaveFailureReason2025.SAVE_ABORTED,)
+
+        controller.requestFederationRestore("SAVE-1")
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("requestFederationRestoreSucceeded") == ("SAVE-1",)
+        assert controller_callbacks.last_callback("federationRestoreBegun") == ()
+        assert controller_callbacks.last_callback("initiateFederateRestore") is not None
+        controller.abortFederationRestore()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationNotRestored") == (RestoreFailureReason2025.RESTORE_ABORTED,)
+    finally:
+        if controller is not None:
+            try:
+                controller.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if controller is not None:
+            _close_rti_ambassador(controller)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-061",
+    "HLA2025-FI-SVC-062",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_runs_direct_local_delete_restore_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber = None
+    federation_name = f"factory-hosted-python2025-local-delete-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-LOCAL-DELETE-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        subscriber_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber.connect(subscriber_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        owner.joinFederationExecution("HostedLocalDeleteOwner", "Controller", federation_name)
+        subscriber.joinFederationExecution("HostedLocalDeleteSubscriber", "Observer", federation_name)
+
+        owner_object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(owner_object_class, "Position")
+        subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "Position")
+        owner.publishObjectClassAttributes(owner_object_class, {owner_attribute})
+        subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+
+        object_instance = owner.registerObjectInstance(owner_object_class, "HostedLocalDeleteRestoreTarget-1")
+        _drain_hosted_2025_callbacks(owner, subscriber, loops=24)
+        discovery = subscriber_callbacks.last_callback("discoverObjectInstance")
+        assert discovery is not None
+        assert discovery[0] == object_instance
+        assert discovery[2] == "HostedLocalDeleteRestoreTarget-1"
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber, loops=24)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        owner.federateSaveBegun()
+        subscriber.federateSaveBegun()
+        owner.federateSaveComplete()
+        subscriber.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber, loops=24)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_callbacks.last_callback("federationSaved") == ()
+
+        subscriber.localDeleteObjectInstance(object_instance)
+        with pytest.raises(ObjectInstanceNotKnown):
+            subscriber.getObjectInstanceName(object_instance)
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert subscriber_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_callbacks.last_callback("federationRestoreBegun") == ()
+        owner_restore = owner_callbacks.last_callback("initiateFederateRestore")
+        subscriber_restore = subscriber_callbacks.last_callback("initiateFederateRestore")
+        assert owner_restore is not None
+        assert subscriber_restore is not None
+        assert owner_restore[0] == save_label
+        assert subscriber_restore[0] == save_label
+        owner.federateRestoreComplete()
+        subscriber.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber, loops=24)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_callbacks.last_callback("federationRestored") == ()
+
+        assert subscriber.getObjectInstanceName(object_instance) == "HostedLocalDeleteRestoreTarget-1"
+        subscriber_callbacks.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"RESTORED"}, b"restored-local-delete")
+        _drain_hosted_2025_callbacks(subscriber, loops=24)
+        reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+        assert reflection is not None
+        assert reflection[0] == object_instance
+        assert reflection[1] == {subscriber_attribute: b"RESTORED"}
+        assert reflection[2] == b"restored-local-delete"
+    finally:
+        if subscriber is not None:
+            try:
+                subscriber.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.DELETE_OBJECTS)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber is not None:
+            _close_rti_ambassador(subscriber)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_clears_stale_plain_callbacks_and_preserves_post_restore_routing() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber = None
+    observer = None
+    federation_name = f"factory-hosted-python2025-plain-callback-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-PLAIN-CALLBACKS-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        subscriber_callbacks = _Recording2025FederateAmbassador()
+        observer_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        observer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber.connect(subscriber_callbacks, CallbackModel2025.HLA_EVOKED)
+        observer.connect(observer_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        owner.joinFederationExecution("HostedPlainRestoreOwner", "Controller", federation_name)
+        subscriber.joinFederationExecution("HostedPlainRestoreSubscriber", "Observer", federation_name)
+        observer.joinFederationExecution("HostedPlainRestoreObserver", "Observer", federation_name)
+
+        owner_interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_interaction = subscriber.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_parameter = subscriber.getParameterHandle(subscriber_interaction, "TrackId")
+        owner_parameter = owner.getParameterHandle(owner_interaction, "TrackId")
+        owner.publishInteractionClass(owner_interaction)
+        subscriber.subscribeInteractionClass(subscriber_interaction)
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber, observer, loops=24)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert observer_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        owner.federateSaveBegun()
+        subscriber.federateSaveBegun()
+        observer.federateSaveBegun()
+        owner.federateSaveComplete()
+        subscriber.federateSaveComplete()
+        observer.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber, observer, loops=24)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_callbacks.last_callback("federationSaved") == ()
+        assert observer_callbacks.last_callback("federationSaved") == ()
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber, observer, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert subscriber_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert observer_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_callbacks.last_callback("federationRestoreBegun") == ()
+        assert observer_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_callbacks.last_callback("initiateFederateRestore") is not None
+        assert observer_callbacks.last_callback("initiateFederateRestore") is not None
+
+        subscriber_callbacks.callbacks.clear()
+        observer_callbacks.callbacks.clear()
+        owner.sendInteraction(owner_interaction, {owner_parameter: b"STALE"}, b"stale-plain")
+
+        owner.federateRestoreComplete()
+        subscriber.federateRestoreComplete()
+        observer.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber, observer, loops=24)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_callbacks.last_callback("federationRestored") == ()
+        assert observer_callbacks.last_callback("federationRestored") == ()
+
+        stale_callbacks = [
+            args for callback_name, args in subscriber_callbacks.callbacks
+            if callback_name == "receiveInteraction" and args[2] == b"stale-plain"
+        ]
+        assert stale_callbacks == []
+        assert subscriber.evokeCallback(0.0) is False
+        assert observer_callbacks.last_callback("receiveInteraction") is None
+        assert observer.evokeCallback(0.0) is False
+
+        subscriber_callbacks.callbacks.clear()
+        observer_callbacks.callbacks.clear()
+        owner.sendInteraction(owner_interaction, {owner_parameter: b"FRESH"}, b"fresh-post-restore")
+        _drain_hosted_2025_callbacks(owner, subscriber, observer, loops=24)
+        interaction = subscriber_callbacks.last_callback("receiveInteraction")
+        assert interaction is not None
+        assert interaction[0] == subscriber_interaction
+        assert interaction[1] == {subscriber_parameter: b"FRESH"}
+        assert interaction[2] == b"fresh-post-restore"
+        assert observer_callbacks.last_callback("receiveInteraction") is None
+    finally:
+        if observer is not None:
+            try:
+                observer.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber is not None:
+            try:
+                subscriber.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.DELETE_OBJECTS_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if observer is not None:
+            _close_rti_ambassador(observer)
+        if subscriber is not None:
+            _close_rti_ambassador(subscriber)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-061",
+    "HLA2025-FI-SVC-062",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_clears_stale_timed_remove_and_preserves_post_restore_remove_routing() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import OrderType as OrderType2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.exceptions import InvalidMessageRetractionHandle
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber_a = None
+    subscriber_b = None
+    federation_name = f"factory-hosted-python2025-timed-remove-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-TIMED-REMOVE-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        subscriber_a_callbacks = _Recording2025FederateAmbassador()
+        subscriber_b_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_a = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_b = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_a.connect(subscriber_a_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_b.connect(subscriber_b_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_fedpro_fom_path("DeleteTso2025.xml")])
+        owner_handle = owner.joinFederationExecution("HostedTimedRemoveOwner", "Controller", federation_name)
+        subscriber_a.joinFederationExecution("HostedTimedRemoveA", "Observer", federation_name)
+        subscriber_b.joinFederationExecution("HostedTimedRemoveB", "Observer", federation_name)
+
+        owner_object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_a_object_class = subscriber_a.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_b_object_class = subscriber_b.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(owner_object_class, "Position")
+        subscriber_a_attribute = subscriber_a.getAttributeHandle(subscriber_a_object_class, "Position")
+        subscriber_b_attribute = subscriber_b.getAttributeHandle(subscriber_b_object_class, "Position")
+
+        owner.publishObjectClassAttributes(owner_object_class, {owner_attribute})
+        subscriber_a.subscribeObjectClassAttributes(subscriber_a_object_class, {subscriber_a_attribute})
+        subscriber_b.subscribeObjectClassAttributes(subscriber_b_object_class, {subscriber_b_attribute})
+
+        object_instance = owner.registerObjectInstance(owner_object_class, "HostedTimedRemoveRestoreTarget-1")
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert subscriber_a_callbacks.last_callback("discoverObjectInstance") is not None
+        assert subscriber_b_callbacks.last_callback("discoverObjectInstance") is not None
+
+        time_factory = owner.getTimeFactory()
+        subscriber_a.enableTimeConstrained()
+        subscriber_b.enableTimeConstrained()
+        owner.enableTimeRegulation(time_factory.makeInterval(1))
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert subscriber_a_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        assert subscriber_b_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        assert owner_callbacks.last_callback("timeRegulationEnabled") == (time_factory.makeInitial(),)
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_a_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_b_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        owner.federateSaveBegun()
+        subscriber_a.federateSaveBegun()
+        subscriber_b.federateSaveBegun()
+        owner.federateSaveComplete()
+        subscriber_a.federateSaveComplete()
+        subscriber_b.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_a_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_b_callbacks.last_callback("federationSaved") == ()
+
+        stale_remove = owner.deleteObjectInstance(
+            object_instance,
+            b"stale-remove",
+            time_factory.makeTime(5),
+        )
+        assert stale_remove is not None
+        owner.timeAdvanceRequest(time_factory.makeTime(25))
+        _drain_hosted_2025_callbacks(owner, loops=24)
+        assert owner_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(25),)
+
+        subscriber_a.nextMessageRequest(time_factory.makeTime(5))
+        _drain_hosted_2025_callbacks(subscriber_a, loops=24)
+        stale_callback = subscriber_a_callbacks.last_callback("removeObjectInstance")
+        assert stale_callback is not None
+        assert stale_callback[0] == object_instance
+        assert stale_callback[1] == b"stale-remove"
+        assert stale_callback[2] == owner_handle
+        assert stale_callback[3] == time_factory.makeTime(5)
+        assert stale_callback[4].name == OrderType2025.TIMESTAMP.name
+        assert stale_callback[5].name == OrderType2025.TIMESTAMP.name
+        assert stale_callback[6] is None
+        assert subscriber_a_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(5),)
+
+        owner_callbacks.callbacks.clear()
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_a_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_b_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_a_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_b_callbacks.last_callback("initiateFederateRestore") is not None
+        owner.federateRestoreComplete()
+        subscriber_a.federateRestoreComplete()
+        subscriber_b.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_a_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_b_callbacks.last_callback("federationRestored") == ()
+
+        subscriber_b.nextMessageRequest(time_factory.makeTime(5))
+        _drain_hosted_2025_callbacks(subscriber_b, loops=24)
+        stale_post_restore = [
+            args
+            for callback_name, args in subscriber_b_callbacks.callbacks
+            if callback_name == "removeObjectInstance" and args[1] == b"stale-remove"
+        ]
+        assert stale_post_restore == []
+
+        with pytest.raises(InvalidMessageRetractionHandle):
+            owner.retract(stale_remove.handle)
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        fresh_remove = owner.deleteObjectInstance(
+            object_instance,
+            b"fresh-remove",
+            time_factory.makeTime(7),
+        )
+        assert fresh_remove is not None
+
+        subscriber_a.nextMessageRequest(time_factory.makeTime(7))
+        _drain_hosted_2025_callbacks(subscriber_a, loops=24)
+        fresh_a = subscriber_a_callbacks.last_callback("removeObjectInstance")
+        assert fresh_a is not None
+        assert fresh_a[0] == object_instance
+        assert fresh_a[1] == b"fresh-remove"
+        assert fresh_a[2] == owner_handle
+        assert fresh_a[3] == time_factory.makeTime(7)
+        assert fresh_a[4].name == OrderType2025.TIMESTAMP.name
+        assert fresh_a[5].name == OrderType2025.TIMESTAMP.name
+        assert fresh_a[6] is None
+        assert subscriber_a_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(7),)
+
+        subscriber_b.nextMessageRequest(time_factory.makeTime(7))
+        _drain_hosted_2025_callbacks(subscriber_b, loops=24)
+        fresh_b = subscriber_b_callbacks.last_callback("removeObjectInstance")
+        assert fresh_b is not None
+        assert fresh_b[0] == object_instance
+        assert fresh_b[1] == b"fresh-remove"
+        assert fresh_b[2] == owner_handle
+        assert fresh_b[3] == time_factory.makeTime(7)
+        assert fresh_b[4].name == OrderType2025.TIMESTAMP.name
+        assert fresh_b[5].name == OrderType2025.TIMESTAMP.name
+        assert fresh_b[6] is None
+        assert subscriber_b_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(7),)
+    finally:
+        if subscriber_b is not None:
+            try:
+                subscriber_b.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber_a is not None:
+            try:
+                subscriber_a.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.DELETE_OBJECTS_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber_b is not None:
+            _close_rti_ambassador(subscriber_b)
+        if subscriber_a is not None:
+            _close_rti_ambassador(subscriber_a)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_recovers_plain_object_subscriber_routing_after_restore() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber_a = None
+    subscriber_b = None
+    federation_name = f"factory-hosted-python2025-object-routing-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-OBJECT-ROUTING-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        subscriber_a_callbacks = _Recording2025FederateAmbassador()
+        subscriber_b_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_a = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_b = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_a.connect(subscriber_a_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_b.connect(subscriber_b_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_fedpro_fom_path("ObjectRestore2025.xml")])
+        owner.joinFederationExecution("HostedObjectOwner", "Controller", federation_name)
+        subscriber_a.joinFederationExecution("HostedObjectA", "Observer", federation_name)
+        subscriber_b.joinFederationExecution("HostedObjectB", "Observer", federation_name)
+
+        owner_object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_a_object_class = subscriber_a.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_b_object_class = subscriber_b.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(owner_object_class, "Position")
+        subscriber_a_attribute = subscriber_a.getAttributeHandle(subscriber_a_object_class, "Position")
+        subscriber_b_attribute = subscriber_b.getAttributeHandle(subscriber_b_object_class, "Position")
+
+        owner.publishObjectClassAttributes(owner_object_class, {owner_attribute})
+        subscriber_a.subscribeObjectClassAttributes(subscriber_a_object_class, {subscriber_a_attribute})
+
+        object_instance = owner.registerObjectInstance(owner_object_class, "HostedObjectRestoreTarget-1")
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert subscriber_a_callbacks.last_callback("discoverObjectInstance") is not None
+
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"SAVED"}, b"saved-route")
+        _drain_hosted_2025_callbacks(subscriber_a, subscriber_b, loops=24)
+        saved_reflection = subscriber_a_callbacks.last_callback("reflectAttributeValues")
+        assert saved_reflection is not None
+        assert saved_reflection[0] == object_instance
+        assert saved_reflection[1] == {subscriber_a_attribute: b"SAVED"}
+        assert saved_reflection[2] == b"saved-route"
+        assert subscriber_b_callbacks.last_callback("reflectAttributeValues") is None
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_a_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_b_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        owner.federateSaveBegun()
+        subscriber_a.federateSaveBegun()
+        subscriber_b.federateSaveBegun()
+        owner.federateSaveComplete()
+        subscriber_a.federateSaveComplete()
+        subscriber_b.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_a_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_b_callbacks.last_callback("federationSaved") == ()
+
+        subscriber_a.unsubscribeObjectClassAttributes(subscriber_a_object_class, {subscriber_a_attribute})
+        subscriber_b.subscribeObjectClassAttributes(subscriber_b_object_class, {subscriber_b_attribute})
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert subscriber_b_callbacks.last_callback("discoverObjectInstance") is not None
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"MUTATED"}, b"mutated-route")
+        _drain_hosted_2025_callbacks(subscriber_a, subscriber_b, loops=24)
+        assert subscriber_a_callbacks.last_callback("reflectAttributeValues") is None
+        mutated_reflection = subscriber_b_callbacks.last_callback("reflectAttributeValues")
+        assert mutated_reflection is not None
+        assert mutated_reflection[0] == object_instance
+        assert mutated_reflection[1] == {subscriber_b_attribute: b"MUTATED"}
+        assert mutated_reflection[2] == b"mutated-route"
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert subscriber_a_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert subscriber_b_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_a_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_b_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_a_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_b_callbacks.last_callback("initiateFederateRestore") is not None
+        owner.federateRestoreComplete()
+        subscriber_a.federateRestoreComplete()
+        subscriber_b.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_a_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_b_callbacks.last_callback("federationRestored") == ()
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        owner.updateAttributeValues(object_instance, {owner_attribute: b"RESTORED"}, b"restored-route")
+        _drain_hosted_2025_callbacks(subscriber_a, subscriber_b, loops=24)
+        restored_reflection = subscriber_a_callbacks.last_callback("reflectAttributeValues")
+        assert restored_reflection is not None
+        assert restored_reflection[0] == object_instance
+        assert restored_reflection[1] == {subscriber_a_attribute: b"RESTORED"}
+        assert restored_reflection[2] == b"restored-route"
+        assert subscriber_b_callbacks.last_callback("reflectAttributeValues") is None
+    finally:
+        if subscriber_b is not None:
+            try:
+                subscriber_b.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber_a is not None:
+            try:
+                subscriber_a.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.DELETE_OBJECTS)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber_b is not None:
+            _close_rti_ambassador(subscriber_b)
+        if subscriber_a is not None:
+            _close_rti_ambassador(subscriber_a)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-060",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_recovers_plain_interaction_subscriber_routing_after_restore() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber_a = None
+    subscriber_b = None
+    federation_name = f"factory-hosted-python2025-interaction-routing-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-INTERACTION-ROUTING-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        subscriber_a_callbacks = _Recording2025FederateAmbassador()
+        subscriber_b_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_a = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_b = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_a.connect(subscriber_a_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_b.connect(subscriber_b_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_fedpro_fom_path("InteractionRestore2025.xml")])
+        owner.joinFederationExecution("HostedInteractionOwner", "Controller", federation_name)
+        subscriber_a.joinFederationExecution("HostedInteractionA", "Observer", federation_name)
+        subscriber_b.joinFederationExecution("HostedInteractionB", "Observer", federation_name)
+
+        interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        owner_parameter = owner.getParameterHandle(interaction_class, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        subscriber_b_parameter = subscriber_b.getParameterHandle(subscriber_b_interaction, "TrackId")
+
+        owner.publishInteractionClass(interaction_class)
+        subscriber_a.subscribeInteractionClass(subscriber_a_interaction)
+
+        owner.sendInteraction(interaction_class, {owner_parameter: b"SAVED"}, b"saved-interaction")
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        saved_interaction = subscriber_a_callbacks.last_callback("receiveInteraction")
+        assert saved_interaction is not None
+        assert saved_interaction[0] == subscriber_a_interaction
+        assert saved_interaction[1] == {subscriber_a_parameter: b"SAVED"}
+        assert saved_interaction[2] == b"saved-interaction"
+        assert subscriber_b_callbacks.last_callback("receiveInteraction") is None
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_a_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert subscriber_b_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        owner.federateSaveBegun()
+        subscriber_a.federateSaveBegun()
+        subscriber_b.federateSaveBegun()
+        owner.federateSaveComplete()
+        subscriber_a.federateSaveComplete()
+        subscriber_b.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_a_callbacks.last_callback("federationSaved") == ()
+        assert subscriber_b_callbacks.last_callback("federationSaved") == ()
+
+        subscriber_a.unsubscribeInteractionClass(subscriber_a_interaction)
+        subscriber_b.subscribeInteractionClass(subscriber_b_interaction)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        owner.sendInteraction(interaction_class, {owner_parameter: b"MUTATED"}, b"mutated-interaction")
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert subscriber_a_callbacks.last_callback("receiveInteraction") is None
+        mutated_interaction = subscriber_b_callbacks.last_callback("receiveInteraction")
+        assert mutated_interaction is not None
+        assert mutated_interaction[0] == subscriber_b_interaction
+        assert mutated_interaction[1] == {subscriber_b_parameter: b"MUTATED"}
+        assert mutated_interaction[2] == b"mutated-interaction"
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert subscriber_a_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert subscriber_b_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_a_callbacks.last_callback("federationRestoreBegun") == ()
+        assert subscriber_b_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_a_callbacks.last_callback("initiateFederateRestore") is not None
+        assert subscriber_b_callbacks.last_callback("initiateFederateRestore") is not None
+        owner.federateRestoreComplete()
+        subscriber_a.federateRestoreComplete()
+        subscriber_b.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_a_callbacks.last_callback("federationRestored") == ()
+        assert subscriber_b_callbacks.last_callback("federationRestored") == ()
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        owner.sendInteraction(interaction_class, {owner_parameter: b"RESTORED"}, b"restored-interaction")
+        _drain_hosted_2025_callbacks(owner, subscriber_a, subscriber_b, loops=24)
+        restored_interaction = subscriber_a_callbacks.last_callback("receiveInteraction")
+        assert restored_interaction is not None
+        assert restored_interaction[0] == subscriber_a_interaction
+        assert restored_interaction[1] == {subscriber_a_parameter: b"RESTORED"}
+        assert restored_interaction[2] == b"restored-interaction"
+        assert subscriber_b_callbacks.last_callback("receiveInteraction") is None
+    finally:
+        if subscriber_b is not None:
+            try:
+                subscriber_b.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber_a is not None:
+            try:
+                subscriber_a.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.DELETE_OBJECTS_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber_b is not None:
+            _close_rti_ambassador(subscriber_b)
+        if subscriber_a is not None:
+            _close_rti_ambassador(subscriber_a)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-061",
+    "HLA2025-FI-SVC-062",
+    "HLA2025-FI-SVC-063",
+    "HLA2025-FI-SVC-064",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_recovers_directed_ddm_subscriber_routing_after_restore() -> None:
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber_a = None
+    subscriber_b = None
+    federation_name = f"factory-hosted-python2025-directed-ddm-restore-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = TargetRadar2025RTIAdapter(create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target}))
+        subscriber_a = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        subscriber_b = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=(_fedpro_fom_path("DirectedDDMRestore2025.xml"),),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="DirectedOwner",
+            wing_name="DirectedA",
+            federate_type="Observer",
+            save_name=f"SAVE-DIRECTED-DDM-{uuid.uuid4().hex[:8]}",
+        )
+
+        assert owner.backend_info.details["provider"] == "python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+        assert subscriber_a.backend_info.details["provider"] == "python2025"
+        assert subscriber_a.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert subscriber_b.backend_info.details["provider"] == "python2025"
+        assert subscriber_b.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+
+        summary = run_restore_directed_ddm_subscriber_routing_scenario(
+            owner,
+            subscriber_a,
+            subscriber_b,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            subscriber_a_federate=RecordingFederateAmbassador(),
+            subscriber_b_federate=RecordingFederateAmbassador(),
+        )
+
+        assert list(summary["saved_receive"].args[2].values()) == [b"SAVED"]
+        assert summary["saved_receive"].args[3] == b"save-state"
+        assert summary["subscriber_b_saved_receive"] is None
+        assert list(summary["mutated_receive"].args[2].values()) == [b"MUTATED"]
+        assert summary["mutated_receive"].args[3] == b"mutated-state"
+        assert summary["subscriber_a_mutated_receive"] is None
+        assert list(summary["restored_receive"].args[2].values()) == [b"RESTORED"]
+        assert summary["restored_receive"].args[3] == b"restored-state"
+        assert summary["subscriber_b_restored_receive"] is None
+    finally:
+        for rti in (subscriber_b, subscriber_a, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (subscriber_b, subscriber_a, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_recovers_time_and_switch_control_state_after_restore() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
+
+    server = start_2025_grpc_server()
+    controller = None
+    federation_name = f"factory-hosted-python2025-control-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-CONTROL-{uuid.uuid4().hex[:8]}"
+    try:
+        controller_callbacks = _Recording2025FederateAmbassador()
+        controller = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        controller.connect(controller_callbacks, CallbackModel2025.HLA_EVOKED)
+        controller.createFederationExecution(
+            federation_name,
+            [_fedpro_fom_path("ControlRestore2025.xml")],
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        controller.joinFederationExecution("HostedControlRestore", "TestFederate", federation_name)
+
+        time_factory = controller.getTimeFactory()
+        controller.enableTimeRegulation(time_factory.makeInterval(2))
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("timeRegulationEnabled") == (time_factory.makeInitial(),)
+        controller.enableTimeConstrained()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        controller.enableAsynchronousDelivery()
+        controller.setServiceReportingSwitch(True)
+        controller.setExceptionReportingSwitch(True)
+        controller.setAutomaticResignDirective(ResignAction2025.DELETE_OBJECTS)
+        assert controller.queryLookahead() == time_factory.makeInterval(2)
+        assert controller.getServiceReportingSwitch() is True
+        assert controller.getExceptionReportingSwitch() is True
+        assert controller.getAutomaticResignDirective() is ResignAction2025.DELETE_OBJECTS
+
+        controller.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        controller.federateSaveBegun()
+        controller.federateSaveComplete()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationSaved") == ()
+
+        controller.modifyLookahead(time_factory.makeInterval(7))
+        controller.disableAsynchronousDelivery()
+        controller.disableTimeConstrained()
+        controller.disableTimeRegulation()
+        controller.setServiceReportingSwitch(False)
+        controller.setExceptionReportingSwitch(False)
+        controller.setAutomaticResignDirective(ResignAction2025.NO_ACTION)
+        with pytest.raises(TimeRegulationIsNotEnabled):
+            controller.queryLookahead()
+        assert controller.getServiceReportingSwitch() is False
+        assert controller.getExceptionReportingSwitch() is False
+        assert controller.getAutomaticResignDirective() is ResignAction2025.NO_ACTION
+
+        controller.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert controller_callbacks.last_callback("federationRestoreBegun") == ()
+        assert controller_callbacks.last_callback("initiateFederateRestore") is not None
+        controller.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(controller, loops=24)
+        assert controller_callbacks.last_callback("federationRestored") == ()
+
+        assert controller.queryLookahead() == time_factory.makeInterval(2)
+        assert controller.getServiceReportingSwitch() is True
+        assert controller.getExceptionReportingSwitch() is True
+        assert controller.getAutomaticResignDirective() is ResignAction2025.DELETE_OBJECTS
+    finally:
+        if controller is not None:
+            try:
+                controller.resignFederationExecution(ResignAction2025.DELETE_OBJECTS_THEN_DIVEST)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if controller is not None:
+            _close_rti_ambassador(controller)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-122",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_restores_lookahead_and_redelivers_presave_queued_tso() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.time import HLAinteger64Interval as HLAinteger64Interval2025
+    from hla.rti1516_2025.time import HLAinteger64Time as HLAinteger64Time2025
+
+    server = start_2025_grpc_server()
+    sender = None
+    receiver = None
+    federation_name = f"factory-hosted-python2025-time-restore-divergence-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-DIVERGENCE-{uuid.uuid4().hex[:8]}"
+    try:
+        sender_callbacks = _Recording2025FederateAmbassador()
+        receiver_callbacks = _Recording2025FederateAmbassador()
+        sender = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        receiver = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        sender.connect(sender_callbacks, CallbackModel2025.HLA_EVOKED)
+        receiver.connect(receiver_callbacks, CallbackModel2025.HLA_EVOKED)
+        sender.createFederationExecution(
+            federation_name,
+            [_fedpro_fom_path("Exchange2025.xml")],
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        sender_handle = sender.joinFederationExecution("RestoreDivergenceSender", "TestFederate", federation_name)
+        receiver_handle = receiver.joinFederationExecution("RestoreDivergenceReceiver", "TestFederate", federation_name)
+
+        assert sender.backend_info.details["provider"] == "python2025"
+        assert sender.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert sender.backend_info.details["counts_as_python_2025_rti"] is True
+        assert receiver.backend_info.details["provider"] == "python2025"
+        assert receiver.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert receiver.backend_info.details["counts_as_python_2025_rti"] is True
+
+        interaction_class = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        receiver_interaction = receiver.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        sender_parameter = sender.getParameterHandle(interaction_class, "TrackId")
+        receiver_parameter = receiver.getParameterHandle(receiver_interaction, "TrackId")
+        sender.publishInteractionClass(interaction_class)
+        receiver.subscribeInteractionClass(receiver_interaction)
+
+        sender.enableTimeRegulation(HLAinteger64Interval2025(2))
+        receiver.enableTimeRegulation(HLAinteger64Interval2025(1))
+        _drain_hosted_2025_callbacks(sender, receiver, loops=24)
+        assert sender_callbacks.last_callback("timeRegulationEnabled") == (HLAinteger64Time2025(0),)
+        assert receiver_callbacks.last_callback("timeRegulationEnabled") == (HLAinteger64Time2025(0),)
+
+        sender.timeAdvanceRequest(HLAinteger64Time2025(5))
+        receiver.timeAdvanceRequest(HLAinteger64Time2025(9))
+        _drain_hosted_2025_callbacks(sender, receiver, loops=24)
+        assert sender_callbacks.last_callback("timeAdvanceGrant") == (HLAinteger64Time2025(5),)
+        assert receiver_callbacks.last_callback("timeAdvanceGrant") == (HLAinteger64Time2025(9),)
+
+        sender.sendInteraction(
+            interaction_class,
+            {sender_parameter: b"pre-save-queue"},
+            b"pre-save-queue",
+            HLAinteger64Time2025(7),
+        )
+
+        assert sender.queryLookahead() == HLAinteger64Interval2025(2)
+        assert receiver.queryLookahead() == HLAinteger64Interval2025(1)
+        assert sender.queryLogicalTime() == HLAinteger64Time2025(5)
+        assert receiver.queryLogicalTime() == HLAinteger64Time2025(9)
+        assert receiver.queryGALT().time == HLAinteger64Time2025(7)
+        assert receiver.queryLITS().time == HLAinteger64Time2025(7)
+
+        sender_callbacks.callbacks.clear()
+        receiver_callbacks.callbacks.clear()
+        sender.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(sender, receiver, loops=24)
+        assert sender_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert receiver_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        sender.federateSaveBegun()
+        receiver.federateSaveBegun()
+        sender.federateSaveComplete()
+        receiver.federateSaveComplete()
+        _drain_hosted_2025_callbacks(sender, receiver, loops=24)
+        assert sender_callbacks.last_callback("federationSaved") == ()
+        assert receiver_callbacks.last_callback("federationSaved") == ()
+
+        sender.modifyLookahead(HLAinteger64Interval2025(12))
+        assert sender.queryLookahead() == HLAinteger64Interval2025(12)
+        assert receiver.queryGALT().time == HLAinteger64Time2025(17)
+        assert receiver.queryLITS().time == HLAinteger64Time2025(7)
+
+        sender_callbacks.callbacks.clear()
+        receiver_callbacks.callbacks.clear()
+        sender.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(sender, receiver, loops=24)
+        assert sender_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert sender_callbacks.last_callback("federationRestoreBegun") == ()
+        assert receiver_callbacks.last_callback("federationRestoreBegun") == ()
+        assert sender_callbacks.last_callback("initiateFederateRestore") == (
+            save_label,
+            "RestoreDivergenceSender",
+            sender_handle,
+        )
+        assert receiver_callbacks.last_callback("initiateFederateRestore") == (
+            save_label,
+            "RestoreDivergenceReceiver",
+            receiver_handle,
+        )
+        sender.federateRestoreComplete()
+        receiver.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(sender, receiver, loops=24)
+        assert sender_callbacks.last_callback("federationRestored") == ()
+        assert receiver_callbacks.last_callback("federationRestored") == ()
+
+        assert sender.queryLookahead() == HLAinteger64Interval2025(2)
+        assert receiver.queryLookahead() == HLAinteger64Interval2025(1)
+        assert sender.queryLogicalTime() == HLAinteger64Time2025(5)
+        assert receiver.queryLogicalTime() == HLAinteger64Time2025(9)
+        assert receiver.queryGALT().time == HLAinteger64Time2025(7)
+        assert receiver.queryLITS().time == HLAinteger64Time2025(7)
+
+        receive_baseline = len([args for name, args in receiver_callbacks.callbacks if name == "receiveInteraction"])
+        grant_baseline = len([args for name, args in receiver_callbacks.callbacks if name == "timeAdvanceGrant"])
+        receiver.nextMessageRequestAvailable(HLAinteger64Time2025(20))
+        _drain_hosted_2025_callbacks(receiver, loops=24)
+
+        post_restore_receives = [args for name, args in receiver_callbacks.callbacks if name == "receiveInteraction"][
+            receive_baseline:
+        ]
+        assert len(post_restore_receives) == 1
+        assert post_restore_receives[0][0] == receiver_interaction
+        assert post_restore_receives[0][1] == {receiver_parameter: b"pre-save-queue"}
+        assert post_restore_receives[0][2] == b"pre-save-queue"
+        assert post_restore_receives[0][5] == HLAinteger64Time2025(7)
+        assert [args for name, args in receiver_callbacks.callbacks if name == "timeAdvanceGrant"][grant_baseline:] == [
+            (HLAinteger64Time2025(7),)
+        ]
+        assert receiver.queryGALT().time == HLAinteger64Time2025(7)
+        assert receiver.queryLITS().time == HLAinteger64Time2025(7)
+    finally:
+        if receiver is not None:
+            try:
+                receiver.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if sender is not None:
+            try:
+                sender.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if sender is not None:
+            try:
+                sender.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if receiver is not None:
+            _close_rti_ambassador(receiver)
+        if sender is not None:
+            _close_rti_ambassador(sender)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-009", "HLA2025-NEW-007", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_mom_time_management_service_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
+
+    server = start_2025_grpc_server()
+    controller = None
+    target = None
+    federation_name = f"factory-hosted-python2025-mom-time-{uuid.uuid4().hex[:8]}"
+    try:
+        target_callbacks = _Recording2025FederateAmbassador()
+        controller = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        target = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        controller.connect(_Recording2025FederateAmbassador(), CallbackModel2025.HLA_EVOKED)
+        target.connect(target_callbacks, CallbackModel2025.HLA_EVOKED)
+        controller.createFederationExecution(federation_name, ["TargetRadarFOMmodule.xml"])
+        controller.joinFederationExecution("HostedMomTimeController", "TestFederate", federation_name)
+        target_handle = target.joinFederationExecution("HostedMomTimeTarget", "TestFederate", federation_name)
+
+        def mom_service(name: str):  # noqa: ANN202
+            return controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.{name}")
+
+        def send_service(name: str, parameters: dict[str, bytes]) -> None:
+            interaction = mom_service(name)
+            payload = {controller.getParameterHandle(interaction, "HLAfederate"): str(target_handle.value).encode("ascii")}
+            payload.update({controller.getParameterHandle(interaction, key): value for key, value in parameters.items()})
+            controller.sendInteraction(interaction, payload, f"mom-{name}".encode("ascii"))
+            _drain_hosted_2025_callbacks(target, loops=24)
+
+        time_factory = target.getTimeFactory()
+        send_service("HLAenableTimeRegulation", {"HLAlookahead": b"2"})
+        assert target.queryLookahead() == time_factory.makeInterval(2)
+        assert target_callbacks.last_callback("timeRegulationEnabled") == (time_factory.makeInitial(),)
+
+        send_service("HLAenableTimeConstrained", {})
+        assert target_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+
+        send_service("HLAtimeAdvanceRequest", {"HLAtimeStamp": b"10"})
+        assert target.queryLogicalTime() == time_factory.makeTime(10)
+        assert target_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(10),)
+
+        send_service("HLAmodifyLookahead", {"HLAlookahead": b"3"})
+        assert target.queryLookahead() == time_factory.makeInterval(3)
+
+        send_service("HLAflushQueueRequest", {"HLAtimeStamp": b"12"})
+        assert target.queryLogicalTime() == time_factory.makeTime(12)
+
+        send_service("HLAtimeAdvanceRequestAvailable", {"HLAtimeStamp": b"14"})
+        assert target.queryLogicalTime() == time_factory.makeTime(14)
+        assert target_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(14),)
+
+        send_service("HLAnextMessageRequest", {"HLAtimeStamp": b"16"})
+        assert target.queryLogicalTime() == time_factory.makeTime(16)
+        assert target_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(16),)
+
+        send_service("HLAnextMessageRequestAvailable", {"HLAtimeStamp": b"18"})
+        assert target.queryLogicalTime() == time_factory.makeTime(18)
+        assert target_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(18),)
+
+        send_service("HLAenableAsynchronousDelivery", {})
+        send_service("HLAdisableAsynchronousDelivery", {})
+        send_service("HLAdisableTimeConstrained", {})
+        send_service("HLAdisableTimeRegulation", {})
+        with pytest.raises(TimeRegulationIsNotEnabled):
+            target.queryLookahead()
+    finally:
+        if target is not None:
+            try:
+                target.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if target is not None:
+            _close_rti_ambassador(target)
+        if controller is not None:
+            _close_rti_ambassador(controller)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber = None
+    federation_name = f"factory-hosted-python2025-support-services-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        subscriber_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber.connect(subscriber_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, ["TargetRadarFOMmodule.xml"])
+        owner.joinFederationExecution("HostedSupportOwner", "TestFederate", federation_name)
+        subscriber_handle = subscriber.joinFederationExecution("HostedSupportSubscriber", "TestFederate", federation_name)
+
+        assert owner.backend_info.details["provider"] == "python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+        assert subscriber.backend_info.details["provider"] == "python2025"
+        assert subscriber.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert subscriber.backend_info.details["counts_as_python_2025_rti"] is True
+
+        owner.setAutomaticResignDirective(ResignAction2025.DELETE_OBJECTS)
+        assert owner.getAutomaticResignDirective() is ResignAction2025.DELETE_OBJECTS
+
+        reserved_names = {"HostedSupport-A", "HostedSupport-B"}
+        owner.reserveMultipleObjectInstanceNames(reserved_names)
+        _drain_hosted_2025_callbacks(owner)
+        assert owner_callbacks.last_callback("multipleObjectInstanceNameReservationSucceeded") == (reserved_names,)
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = owner.getAttributeHandle(object_class, "Position")
+        subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "Position")
+        owner.publishObjectClassAttributes(object_class, {attribute})
+        subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+        object_instance = owner.registerObjectInstance(object_class, "HostedSupportTarget")
+        _drain_hosted_2025_callbacks(owner, subscriber)
+        discovery = subscriber_callbacks.last_callback("discoverObjectInstance")
+        assert discovery is not None
+        assert discovery[0] == object_instance
+        assert discovery[2] == "HostedSupportTarget"
+        assert owner.getObjectInstanceName(object_instance) == "HostedSupportTarget"
+
+        subscriber_callbacks.callbacks.clear()
+        subscriber.disableCallbacks()
+        owner.updateAttributeValues(object_instance, {attribute: b"queued-reflection"}, b"hosted-support-update")
+        assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
+        assert subscriber.evokeCallback(0.0) is False
+
+        subscriber.enableCallbacks()
+        drained = 0
+        while drained < 8 and subscriber.evokeMultipleCallbacks(0.0, 0.0):
+            drained += 1
+        reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+        assert reflection is not None
+        assert reflection[0] == object_instance
+        assert reflection[1] == {subscriber_attribute: b"queued-reflection"}
+        assert reflection[2] == b"hosted-support-update"
+        assert reflection[4] == subscriber_handle or reflection[4] is not None
+    finally:
+        if subscriber is not None:
+            try:
+                subscriber.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.releaseMultipleObjectInstanceNames({"HostedSupport-A", "HostedSupport-B"})
+            except Exception:
+                pass
+            try:
+                owner.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber is not None:
+            _close_rti_ambassador(subscriber)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_shared_support_factory_and_decode_scenario() -> None:
+    server = start_2025_grpc_server()
+    rti = None
+    federation_name = f"factory-hosted-python2025-shared-support-{uuid.uuid4().hex[:8]}"
+    try:
+        rti = TargetRadar2025RTIAdapter(create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target}))
+        config = SupportServicesScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            interaction_class_name="HLAinteractionRoot.TrackReport",
+            parameter_name="TrackId",
+            object_instance_name=f"factory-hosted-support-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_support_factory_and_decode_scenario(
+            rti,
+            config=config,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert rti.backend_info is not None
+        assert rti.backend_info.details["provider"] == "python2025"
+        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+        assert summary["lookup_summary"]["federate_name"] == config.federate_name
+        assert summary["lookup_summary"]["normalized_federate_handle"] == summary["federate_handle"].value
+        assert summary["lookup_summary"]["object_class_name"] == config.object_class_name
+        assert summary["lookup_summary"]["attribute_name"] == config.attribute_name
+        assert summary["lookup_summary"]["interaction_class_name"] == config.interaction_class_name
+        assert summary["lookup_summary"]["parameter_name"] == config.parameter_name
+        assert summary["lookup_summary"]["object_instance_name"] == config.object_instance_name
+        assert summary["lookup_summary"]["object_instance_handle"] == summary["object_instance"]
+        assert summary["lookup_summary"]["known_object_class"] == summary["object_class"]
+        assert summary["lookup_summary"]["receive_order_name"] == "HLAreceive"
+        assert summary["lookup_summary"]["timestamp_order_type"] is OrderType.TIMESTAMP
+        assert summary["lookup_summary"]["reliable_transport_name"] == "HLAreliable"
+        assert summary["lookup_summary"]["best_effort_transport_name"] == "HLAbestEffort"
+        assert summary["lookup_summary"]["reliable_transport_enum_name"] == "HLAreliable"
+        assert summary["lookup_summary"]["best_effort_transport_enum_name"] == "HLAbestEffort"
+        assert summary["factory_summary"]["attribute_factory"] is not None
+        assert summary["factory_summary"]["attribute_set_factory"] is not None
+        assert summary["factory_summary"]["attribute_value_map_factory"] is not None
+        assert summary["factory_summary"]["dimension_factory"] is not None
+        assert summary["factory_summary"]["dimension_set_factory"] is not None
+        assert summary["factory_summary"]["federate_factory"] is not None
+        assert summary["factory_summary"]["federate_set_factory"] is not None
+        assert summary["factory_summary"]["interaction_factory"] is not None
+        assert summary["factory_summary"]["object_class_factory"] is not None
+        assert summary["factory_summary"]["object_instance_factory"] is not None
+        assert summary["factory_summary"]["parameter_factory"] is not None
+        assert summary["factory_summary"]["parameter_value_map_factory"] is not None
+        assert summary["factory_summary"]["region_factory"] is not None
+        assert summary["factory_summary"]["region_set_factory"] is not None
+        assert summary["factory_summary"]["message_retraction_factory"] is not None
+        assert summary["factory_summary"]["transportation_factory"] is not None
+        assert summary["factory_summary"]["attribute_region_pair_list_factory"] is not None
+        assert summary["decoded_summary"]["federate_handle"] == summary["federate_handle"]
+        assert summary["decoded_summary"]["object_class_handle"] == summary["object_class"]
+        assert summary["decoded_summary"]["interaction_class_handle"] == summary["interaction_class"]
+        assert summary["decoded_summary"]["object_instance_handle"] == summary["object_instance"]
+        assert summary["decoded_summary"]["attribute_handle"] == summary["attribute"]
+        assert summary["decoded_summary"]["parameter_handle"] == summary["parameter"]
+        assert summary["decoded_summary"]["dimension_handle"].value == config.sample_dimension_value
+        assert summary["decoded_summary"]["message_retraction_handle"].value == config.sample_message_retraction_value
+        assert summary["decoded_summary"]["region_handle"].value == config.sample_region_value
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-005",
+    "HLA2025-FI-SVC-011",
+    "HLA2025-FI-SVC-195",
+    "HLA2025-FI-SVC-196",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_drops_disconnected_callback_backlog_before_reconnect() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    reconnect = None
+    federation_name = f"factory-hosted-python2025-callback-reconnect-{uuid.uuid4().hex[:8]}"
+    try:
+        leader_callbacks = _Recording2025FederateAmbassador()
+        wing_callbacks = _Recording2025FederateAmbassador()
+        reconnect_callbacks = _Recording2025FederateAmbassador()
+        leader = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        wing = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        leader.connect(leader_callbacks, CallbackModel2025.HLA_EVOKED)
+        wing.connect(wing_callbacks, CallbackModel2025.HLA_EVOKED)
+        leader.createFederationExecution(federation_name, [_fedpro_fom_path("CallbackControl2025.xml")])
+        leader.joinFederationExecution("HostedCallbackLeader", "Controller", federation_name)
+        wing.joinFederationExecution("HostedCallbackWing", "Observer", federation_name)
+
+        interaction_class = leader.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = leader.getParameterHandle(interaction_class, "TrackId")
+        leader.publishInteractionClass(interaction_class)
+        wing.subscribeInteractionClass(interaction_class)
+
+        wing.disableCallbacks()
+        leader.sendInteraction(interaction_class, {parameter: b"stale"}, b"stale-queue")
+        assert wing.evokeCallback(0.0) is False
+
+        wing._transport.close()
+        wing = None
+
+        reconnect = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        reconnect.connect(reconnect_callbacks, CallbackModel2025.HLA_EVOKED)
+        reconnect.joinFederationExecution("HostedCallbackReconnect", "Observer", federation_name)
+        reconnect.subscribeInteractionClass(reconnect.getInteractionClassHandle("HLAinteractionRoot.TrackReport"))
+        _drain_hosted_2025_callbacks(reconnect, loops=8)
+        assert reconnect_callbacks.last_callback("receiveInteraction") is None
+
+        leader.sendInteraction(interaction_class, {parameter: b"fresh"}, b"fresh-queue")
+        _drain_hosted_2025_callbacks(leader, reconnect, loops=24)
+        interaction = reconnect_callbacks.last_callback("receiveInteraction")
+        reconnect_interaction = reconnect.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        reconnect_parameter = reconnect.getParameterHandle(reconnect_interaction, "TrackId")
+        assert interaction is not None
+        assert interaction[0] == reconnect_interaction
+        assert interaction[1] == {reconnect_parameter: b"fresh"}
+        assert interaction[2] == b"fresh-queue"
+    finally:
+        if reconnect is not None:
+            try:
+                reconnect.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if wing is not None:
+            try:
+                wing.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if reconnect is not None:
+            _close_rti_ambassador(reconnect)
+        if wing is not None:
+            _close_rti_ambassador(wing)
+        if leader is not None:
+            _close_rti_ambassador(leader)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_ownership_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.exceptions import AttributeAlreadyOwned, AttributeNotOwned
+
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"factory-hosted-python2025-ownership-{uuid.uuid4().hex[:8]}"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        acquirer_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        acquirer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        acquirer.connect(acquirer_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_vendor_smoke_fom_path()])
+        owner_handle = owner.joinFederationExecution("HostedOwner", "TestFederate", federation_name)
+        acquirer_handle = acquirer.joinFederationExecution("HostedAcquirer", "TestFederate", federation_name)
+
+        assert owner.backend_info.details["provider"] == "python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.SmokeObject")
+        acquirer_object_class = acquirer.getObjectClassHandle("HLAobjectRoot.SmokeObject")
+        attribute = owner.getAttributeHandle(object_class, "Payload")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_object_class, "Payload")
+        object_instance = owner.registerObjectInstance(object_class, "HostedOwnable-1")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+
+        assert owner.isAttributeOwnedByFederate(object_instance, attribute) is True
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is False
+
+        with pytest.raises(AttributeAlreadyOwned):
+            owner.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"already-owned")
+
+        acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {acquirer_attribute}, b"blocked")
+        _drain_hosted_2025_callbacks(acquirer)
+        assert acquirer_callbacks.last_callback("attributeOwnershipUnavailable") == (
+            object_instance,
+            {acquirer_attribute},
+            b"blocked",
+        )
+        assert owner.isAttributeOwnedByFederate(object_instance, attribute) is True
+
+        with pytest.raises(AttributeNotOwned):
+            acquirer.unconditionalAttributeOwnershipDivestiture(object_instance, {acquirer_attribute}, b"not-owned")
+
+        owner.unconditionalAttributeOwnershipDivestiture(object_instance, {attribute}, b"divest")
+        assert owner.isAttributeOwnedByFederate(object_instance, attribute) is False
+
+        owner.queryAttributeOwnership(object_instance, {attribute})
+        _drain_hosted_2025_callbacks(owner)
+        assert owner_callbacks.last_callback("attributeIsNotOwned") == (object_instance, {attribute})
+
+        acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {acquirer_attribute}, b"claim")
+        _drain_hosted_2025_callbacks(acquirer)
+        assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"claim",
+        )
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is True
+
+        owner.queryAttributeOwnership(object_instance, {attribute})
+        acquirer.queryAttributeOwnership(object_instance, {acquirer_attribute})
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {attribute},
+            acquirer_handle,
+        )
+        assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {acquirer_attribute},
+            acquirer_handle,
+        )
+        assert owner_handle != acquirer_handle
+    finally:
+        if acquirer is not None:
+            try:
+                acquirer.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if acquirer is not None:
+            _close_rti_ambassador(acquirer)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-097",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_runs_smoke_fom_save_restore_ownership_gauntlet(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import OrderType as OrderType2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+
+    server = start_2025_grpc_server()
+    owner = None
+    mirror = None
+    sender = None
+    observer = None
+    smoke_fom = tmp_path / "SmokeSaveRestore2025.xml"
+    smoke_fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Smoke Save Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused smoke FOM for save/restore ownership rollback.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter>
+          <name>TrackId</name>
+          <dataType>HLAunicodeString</dataType>
+        </parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    federation_name = f"factory-hosted-python2025-smoke-ownership-restore-{uuid.uuid4().hex[:8]}"
+    save_name = f"SAVE-OWNERSHIP-GAUNTLET-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        mirror = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        sender = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        observer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner_federate = _Recording2025FederateAmbassador()
+        mirror_federate = _Recording2025FederateAmbassador()
+        sender_federate = _Recording2025FederateAmbassador()
+        observer_federate = _Recording2025FederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=(str(smoke_fom),),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Owner",
+            wing_name="Mirror",
+            federate_type="SaveRestoreGauntlet",
+            save_name=save_name,
+        )
+
+        for rti in (owner, mirror, sender, observer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        for rti, federate in (
+            (owner, owner_federate),
+            (mirror, mirror_federate),
+            (sender, sender_federate),
+            (observer, observer_federate),
+        ):
+            rti.connect(federate, CallbackModel2025.HLA_EVOKED)
+
+        role_ledgers = {
+            "owner": {"role": "owner", "random_state": 111, "sequence_counter": 0, "phase": "bootstrap"},
+            "mirror": {"role": "mirror", "random_state": 222, "sequence_counter": 0, "phase": "bootstrap"},
+            "sender": {"role": "sender", "random_state": 333, "sequence_counter": 0, "phase": "bootstrap"},
+            "observer": {"role": "observer", "random_state": 444, "sequence_counter": 0, "phase": "bootstrap"},
+        }
+
+        def advance_ledger(ledger: dict[str, object], *, phase: str) -> None:
+            next_state = (int(ledger["random_state"]) * 1_103_515_245 + 12_345) % (2**31)
+            ledger["random_state"] = next_state
+            ledger["sequence_counter"] = int(ledger["sequence_counter"]) + 1
+            ledger["phase"] = phase
+
+        owner.createFederationExecution(
+            federation_name,
+            [str(smoke_fom)],
+            "HLAinteger64Time",
+        )
+        owner_handle = owner.joinFederationExecution("Owner", "SaveRestoreGauntlet", federation_name)
+        mirror.joinFederationExecution("Mirror", "SaveRestoreGauntlet", federation_name)
+        sender.joinFederationExecution("Owner-Sender", "SaveRestoreGauntlet", federation_name)
+        observer.joinFederationExecution("Mirror-Observer", "SaveRestoreGauntlet", federation_name)
+
+        owner_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        mirror_class = mirror.getObjectClassHandle("HLAobjectRoot.Target")
+        observer_class = observer.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(owner_class, "Position")
+        mirror_attribute = mirror.getAttributeHandle(mirror_class, "Position")
+        observer_attribute = observer.getAttributeHandle(observer_class, "Position")
+        interaction_class = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        observer_interaction = observer.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        interaction_parameter = sender.getParameterHandle(interaction_class, "TrackId")
+        observer_parameter = observer.getParameterHandle(observer_interaction, "TrackId")
+
+        owner.publishObjectClassAttributes(owner_class, {owner_attribute})
+        mirror.publishObjectClassAttributes(mirror_class, {mirror_attribute})
+        mirror.subscribeObjectClassAttributes(mirror_class, {mirror_attribute})
+        observer.subscribeObjectClassAttributes(observer_class, {observer_attribute})
+        sender.publishInteractionClass(interaction_class)
+        observer.subscribeInteractionClass(observer_interaction)
+
+        owner.enableTimeRegulation(HLAinteger64Interval(1))
+        sender.enableTimeRegulation(HLAinteger64Interval(1))
+        mirror.enableTimeConstrained()
+        observer.enableTimeConstrained()
+        sender.changeInteractionOrderType(interaction_class, OrderType2025.TIMESTAMP)
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+
+        object_instance = owner.registerObjectInstance(owner_class, "Owned-Target-Checkpoint-1")
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+        owner.changeAttributeOrderType(object_instance, {owner_attribute}, OrderType2025.TIMESTAMP)
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+        mirror_object_instance = mirror.getObjectInstanceHandle("Owned-Target-Checkpoint-1")
+        observer_object_instance = observer.getObjectInstanceHandle("Owned-Target-Checkpoint-1")
+
+        saved_payload = b"saved-payload"
+        dirty_payload = b"dirty-payload"
+        branch_payload = b"branch-payload"
+
+        owner.updateAttributeValues(
+            object_instance,
+            {owner_attribute: saved_payload},
+            b"baseline-attributes",
+            HLAinteger64Time(4),
+        )
+        sender.sendInteraction(
+            interaction_class,
+            {interaction_parameter: b"baseline-message"},
+            b"baseline-message",
+            HLAinteger64Time(5),
+        )
+        for rti in (owner, mirror, sender, observer):
+            rti.timeAdvanceRequestAvailable(HLAinteger64Time(5))
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=32)
+
+        baseline_reflect = observer_federate.last_callback("reflectAttributeValues")
+        baseline_interaction = observer_federate.last_callback("receiveInteraction")
+        assert baseline_reflect is not None
+        assert baseline_interaction is not None
+        assert baseline_reflect[0] == observer_object_instance
+        assert baseline_reflect[1] == {observer_attribute: saved_payload}
+        assert baseline_interaction[1] == {observer_parameter: b"baseline-message"}
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is True
+        assert mirror.isAttributeOwnedByFederate(mirror_object_instance, mirror_attribute) is False
+
+        for ledger in role_ledgers.values():
+            advance_ledger(ledger, phase="saved")
+        saved_ledgers = {role: dict(ledger) for role, ledger in role_ledgers.items()}
+        saved_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in saved_ledgers.items()}
+
+        owner.requestFederationSave(save_name)
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("initiateFederateSave") == (save_name,)
+        for rti in (owner, mirror, sender, observer):
+            rti.federateSaveBegun()
+        for rti in (owner, mirror, sender, observer):
+            rti.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("federationSaved") == ()
+
+        for ledger in role_ledgers.values():
+            advance_ledger(ledger, phase="dirty")
+        dirty_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in role_ledgers.items()}
+        assert dirty_fingerprints != saved_fingerprints
+
+        owner.unconditionalAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"dirty-divest")
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=12)
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=12)
+        assert owner_federate.last_callback("attributeIsNotOwned") == (object_instance, {owner_attribute})
+
+        mirror.attributeOwnershipAcquisitionIfAvailable(mirror_object_instance, {mirror_attribute}, b"claim")
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=12)
+        dirty_acquired = mirror_federate.last_callback("attributeOwnershipAcquisitionNotification")
+        assert dirty_acquired == (mirror_object_instance, {mirror_attribute}, b"claim")
+        assert mirror.isAttributeOwnedByFederate(mirror_object_instance, mirror_attribute) is True
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is False
+
+        mirror.updateAttributeValues(mirror_object_instance, {mirror_attribute: dirty_payload}, b"dirty-attributes")
+        sender.sendInteraction(
+            interaction_class,
+            {interaction_parameter: b"dirty-message"},
+            b"dirty-message",
+            HLAinteger64Time(8),
+        )
+        for rti in (owner, mirror, sender, observer):
+            rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=32)
+
+        dirty_reflect = [args for name, args in observer_federate.callbacks if name == "reflectAttributeValues"][-1]
+        dirty_interaction = [args for name, args in observer_federate.callbacks if name == "receiveInteraction"][-1]
+        assert dirty_reflect[0] == observer_object_instance
+        assert dirty_reflect[1] == {observer_attribute: dirty_payload}
+        assert dirty_interaction[1] == {observer_parameter: b"dirty-message"}
+
+        owner.requestFederationRestore(save_name)
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+        assert owner_federate.last_callback("requestFederationRestoreSucceeded") == (save_name,)
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("initiateFederateRestore")[0] == save_name
+        restored_ledgers = {role: dict(ledger) for role, ledger in saved_ledgers.items()}
+
+        for rti in (owner, mirror, sender, observer):
+            rti.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=24)
+        for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
+            assert federate.last_callback("federationRestored") == ()
+
+        restored_times = {
+            "owner": owner.queryLogicalTime(),
+            "mirror": mirror.queryLogicalTime(),
+            "sender": sender.queryLogicalTime(),
+            "observer": observer.queryLogicalTime(),
+        }
+        assert all(time == HLAinteger64Time(5) for time in restored_times.values())
+        restored_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in restored_ledgers.items()}
+        assert restored_fingerprints == saved_fingerprints
+
+        owner_federate.callbacks.clear()
+        observer_federate.callbacks.clear()
+
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=12)
+        restored_informed = owner_federate.last_callback("informAttributeOwnership")
+        assert restored_informed == (object_instance, {owner_attribute}, owner_handle)
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is True
+        assert mirror.isAttributeOwnedByFederate(mirror_object_instance, mirror_attribute) is False
+
+        owner.updateAttributeValues(
+            object_instance,
+            {owner_attribute: branch_payload},
+            b"branch-attributes",
+            HLAinteger64Time(7),
+        )
+        sender.sendInteraction(
+            interaction_class,
+            {interaction_parameter: b"branch-message"},
+            b"branch-message",
+            HLAinteger64Time(7),
+        )
+        for rti in (owner, mirror, sender, observer):
+            rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        _drain_hosted_2025_callbacks(owner, mirror, sender, observer, loops=32)
+
+        branch_reflect = observer_federate.last_callback("reflectAttributeValues")
+        branch_interaction = observer_federate.last_callback("receiveInteraction")
+        assert branch_reflect is not None
+        assert branch_interaction is not None
+        assert branch_reflect[0] == observer_object_instance
+        assert branch_reflect[1] == {observer_attribute: branch_payload}
+        assert branch_interaction[1] == {observer_parameter: b"branch-message"}
+        branch_tags = {args[2] for name, args in observer_federate.callbacks if name == "reflectAttributeValues"}
+        branch_tags.update(args[2] for name, args in observer_federate.callbacks if name == "receiveInteraction")
+        assert b"dirty-attributes" not in branch_tags
+        assert b"dirty-message" not in branch_tags
+    finally:
+        for rti, action in (
+            (observer, ResignAction2025.NO_ACTION),
+            (sender, ResignAction2025.NO_ACTION),
+            (mirror, ResignAction2025.UNCONDITIONALLY_DIVEST_ATTRIBUTES),
+            (owner, ResignAction2025.DELETE_OBJECTS),
+        ):
+            if rti is None:
+                continue
+            try:
+                rti.resignFederationExecution(action)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        for rti in (observer, sender, mirror, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-097",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_restores_inflight_ownership_state() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"factory-hosted-python2025-ownership-restore-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-OWNERSHIP"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        acquirer_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        acquirer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        acquirer.connect(acquirer_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_fedpro_fom_path("Ownership2025.xml")])
+        owner_handle = owner.joinFederationExecution("OwnerRestore", "TestFederate", federation_name)
+        acquirer_handle = acquirer.joinFederationExecution("AcquirerRestore", "TestFederate", federation_name)
+
+        for rti in (owner, acquirer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(object_class, "Position")
+        acquirer_class = acquirer.getObjectClassHandle("HLAobjectRoot.Target")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_class, "Position")
+        object_instance = owner.registerObjectInstance(object_class, "HostedOwnershipRestoreTarget-1")
+
+        owner.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"saved-offer")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert acquirer_callbacks.last_callback("requestAttributeOwnershipAssumption") == (
+            object_instance,
+            {acquirer_attribute},
+            b"saved-offer",
+        )
+
+        acquirer.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, b"saved-pending")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("requestDivestitureConfirmation") == (
+            object_instance,
+            {owner_attribute},
+            b"saved-pending",
+        )
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert acquirer_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        for rti in (owner, acquirer):
+            rti.federateSaveBegun()
+        for rti in (owner, acquirer):
+            rti.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert acquirer_callbacks.last_callback("federationSaved") == ()
+
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute})
+        acquirer.cancelAttributeOwnershipAcquisition(object_instance, {acquirer_attribute})
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert acquirer_callbacks.last_callback("confirmAttributeOwnershipAcquisitionCancellation") == (
+            object_instance,
+            {acquirer_attribute},
+        )
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is True
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is False
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, acquirer, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert acquirer_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") == (save_label, "OwnerRestore", owner_handle)
+        assert acquirer_callbacks.last_callback("initiateFederateRestore") == (
+            save_label,
+            "AcquirerRestore",
+            acquirer_handle,
+        )
+        for rti in (owner, acquirer):
+            rti.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert acquirer_callbacks.last_callback("federationRestored") == ()
+
+        acquirer_callbacks.callbacks.clear()
+        divested = owner.attributeOwnershipDivestitureIfWanted(object_instance, {owner_attribute})
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert divested == {owner_attribute}
+        assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"",
+        )
+
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _drain_hosted_2025_callbacks(owner)
+        assert owner_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is True
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is False
+    finally:
+        if acquirer is not None:
+            try:
+                acquirer.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if acquirer is not None:
+            _close_rti_ambassador(acquirer)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-097",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_restores_cross_federate_attribute_owner_visibility() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"factory-hosted-python2025-owner-visibility-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-OWNER-VIS"
+    try:
+        owner_callbacks = _Recording2025FederateAmbassador()
+        acquirer_callbacks = _Recording2025FederateAmbassador()
+        owner = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        acquirer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        owner.connect(owner_callbacks, CallbackModel2025.HLA_EVOKED)
+        acquirer.connect(acquirer_callbacks, CallbackModel2025.HLA_EVOKED)
+        owner.createFederationExecution(federation_name, [_fedpro_fom_path("Ownership2025.xml")])
+        owner_handle = owner.joinFederationExecution("Owner", "Controller", federation_name)
+        acquirer_handle = acquirer.joinFederationExecution("Acquirer", "Observer", federation_name)
+
+        for rti in (owner, acquirer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
+        owner_attribute = owner.getAttributeHandle(object_class, "Position")
+        acquirer_class = acquirer.getObjectClassHandle("HLAobjectRoot.Target")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_class, "Position")
+        object_instance = owner.registerObjectInstance(object_class, "HostedOwnerVisibilityTarget-1")
+
+        owner.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"offer")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert acquirer_callbacks.last_callback("requestAttributeOwnershipAssumption") == (
+            object_instance,
+            {acquirer_attribute},
+            b"offer",
+        )
+
+        acquirer.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, b"acquire")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("requestDivestitureConfirmation") == (
+            object_instance,
+            {owner_attribute},
+            b"acquire",
+        )
+
+        owner.confirmDivestiture(object_instance, {owner_attribute}, b"confirm")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"confirm",
+        )
+
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        acquirer.queryAttributeOwnership(object_instance, {acquirer_attribute})
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+        assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {acquirer_attribute},
+            acquirer_handle,
+        )
+        assert owner_handle != acquirer_handle
+
+        owner.requestFederationSave(save_label)
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        assert acquirer_callbacks.last_callback("initiateFederateSave") == (save_label,)
+        for rti in (owner, acquirer):
+            rti.federateSaveBegun()
+        for rti in (owner, acquirer):
+            rti.federateSaveComplete()
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("federationSaved") == ()
+        assert acquirer_callbacks.last_callback("federationSaved") == ()
+
+        acquirer.unconditionalAttributeOwnershipDivestiture(object_instance, {acquirer_attribute}, b"dirty-divest")
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _drain_hosted_2025_callbacks(owner)
+        assert owner_callbacks.last_callback("attributeIsNotOwned") == (object_instance, {owner_attribute})
+
+        owner.requestFederationRestore(save_label)
+        _drain_hosted_2025_callbacks(owner, acquirer, loops=24)
+        assert owner_callbacks.last_callback("requestFederationRestoreSucceeded") == (save_label,)
+        assert owner_callbacks.last_callback("federationRestoreBegun") == ()
+        assert acquirer_callbacks.last_callback("federationRestoreBegun") == ()
+        assert owner_callbacks.last_callback("initiateFederateRestore") == (save_label, "Owner", owner_handle)
+        assert acquirer_callbacks.last_callback("initiateFederateRestore") == (save_label, "Acquirer", acquirer_handle)
+        for rti in (owner, acquirer):
+            rti.federateRestoreComplete()
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("federationRestored") == ()
+        assert acquirer_callbacks.last_callback("federationRestored") == ()
+
+        owner_callbacks.callbacks.clear()
+        acquirer_callbacks.callbacks.clear()
+        owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        acquirer.queryAttributeOwnership(object_instance, {acquirer_attribute})
+        _drain_hosted_2025_callbacks(owner, acquirer)
+        assert owner_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {owner_attribute},
+            acquirer_handle,
+        )
+        assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
+            object_instance,
+            {acquirer_attribute},
+            acquirer_handle,
+        )
+        assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is False
+        assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is True
+    finally:
+        if acquirer is not None:
+            try:
+                acquirer.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if acquirer is not None:
+            _close_rti_ambassador(acquirer)
+        if owner is not None:
+            _close_rti_ambassador(owner)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    controller = None
+    target = None
+    observer = None
+    federation_name = f"factory-hosted-python2025-mom-reports-{uuid.uuid4().hex[:8]}"
+    try:
+        controller_callbacks = _Recording2025FederateAmbassador()
+        observer_callbacks = _Recording2025FederateAmbassador()
+        controller = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        target = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        observer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        controller.connect(controller_callbacks, CallbackModel2025.HLA_EVOKED)
+        target.connect(_Recording2025FederateAmbassador(), CallbackModel2025.HLA_EVOKED)
+        observer.connect(observer_callbacks, CallbackModel2025.HLA_EVOKED)
+        controller.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        controller.joinFederationExecution("HostedMomReportController", "TestFederate", federation_name)
+        target_handle = target.joinFederationExecution("HostedMomReportTarget", "TestFederate", federation_name)
+        observer.joinFederationExecution("HostedMomReportObserver", "TestFederate", federation_name)
+
+        assert controller.backend_info.details["provider"] == "python2025"
+        assert controller.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert controller.backend_info.details["counts_as_python_2025_rti"] is True
+
+        object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = target.getAttributeHandle(object_class, "Position")
+        interaction_class = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        interaction_parameter = target.getParameterHandle(interaction_class, "TrackId")
+
+        target.publishObjectClassAttributes(object_class, {attribute})
+        target.subscribeObjectClassAttributes(object_class, {attribute})
+        target.publishInteractionClass(interaction_class)
+        target.subscribeInteractionClass(interaction_class)
+        object_instance = target.registerObjectInstance(object_class, "HostedMomReportTargetObject")
+        _drain_hosted_2025_callbacks(target, observer, controller)
+        target.updateAttributeValues(object_instance, {attribute: b"1,2,3"}, b"mom-report-update")
+        target.sendInteraction(interaction_class, {interaction_parameter: b"track-1"}, b"mom-report-interaction")
+        _drain_hosted_2025_callbacks(target, observer, controller)
+
+        report_names = (
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+        )
+        for report_name in report_names:
+            observer.subscribeInteractionClass(observer.getInteractionClassHandle(report_name))
+
+        def send_request(name: str, extra: dict[str, bytes] | None = None) -> None:
+            request = controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.{name}")
+            values = {controller.getParameterHandle(request, "HLAfederate"): str(target_handle.value).encode("ascii")}
+            if extra:
+                values.update({controller.getParameterHandle(request, key): value for key, value in extra.items()})
+            controller.sendInteraction(request, values, f"hosted-mom-{name}".encode("ascii"))
+            _drain_hosted_2025_callbacks(controller, target, observer, loops=32)
+
+        send_request("HLArequestPublications")
+        object_publication = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
+        )
+        assert object_publication is not None
+        object_pub_params = object_publication[1]
+        assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAfederate")] == str(
+            target_handle.value
+        ).encode("ascii")
+        assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAnumberOfClasses")] == b"1"
+        assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAobjectClass")] == str(
+            object_class.value
+        ).encode("ascii")
+        assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAattributeList")] == str(
+            attribute.value
+        ).encode("ascii")
+
+        interaction_publication = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+        )
+        assert interaction_publication is not None
+        assert interaction_publication[1][
+            observer.getParameterHandle(interaction_publication[0], "HLAinteractionClassList")
+        ] == str(interaction_class.value).encode("ascii")
+
+        send_request("HLArequestSubscriptions")
+        object_subscription = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
+        )
+        assert object_subscription is not None
+        object_sub_params = object_subscription[1]
+        assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAnumberOfClasses")] == b"1"
+        assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAobjectClass")] == str(
+            object_class.value
+        ).encode("ascii")
+        assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAactive")] == b"HLAtrue"
+        assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAattributeList")] == str(
+            attribute.value
+        ).encode("ascii")
+
+        interaction_subscription = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+        )
+        assert interaction_subscription is not None
+        assert interaction_subscription[1][
+            observer.getParameterHandle(interaction_subscription[0], "HLAinteractionClassList")
+        ] == str(interaction_class.value).encode("ascii")
+
+        send_request("HLArequestObjectInstanceInformation", {"HLAobjectInstance": str(object_instance.value).encode("ascii")})
+        object_information = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+        )
+        assert object_information is not None
+        object_info_params = object_information[1]
+        assert object_info_params[observer.getParameterHandle(object_information[0], "HLAobjectInstance")] == str(
+            object_instance.value
+        ).encode("ascii")
+        assert object_info_params[observer.getParameterHandle(object_information[0], "HLAregisteredClass")] == str(
+            object_class.value
+        ).encode("ascii")
+
+        send_request("HLArequestUpdatesSent")
+        updates_sent = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+        )
+        assert updates_sent is not None
+        assert updates_sent[1][observer.getParameterHandle(updates_sent[0], "HLAupdatesSent")] == b"1"
+
+        send_request("HLArequestInteractionsReceived")
+        interactions_received = _last_2025_received_interaction_by_name(
+            observer_callbacks,
+            observer,
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+        )
+        assert interactions_received is not None
+        assert interactions_received[1][
+            observer.getParameterHandle(interactions_received[0], "HLAinteractionsReceived")
+        ] == b"1"
+    finally:
+        if observer is not None:
+            try:
+                observer.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if target is not None:
+            try:
+                target.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if observer is not None:
+            _close_rti_ambassador(observer)
+        if target is not None:
+            _close_rti_ambassador(target)
+        if controller is not None:
+            _close_rti_ambassador(controller)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FR-005", "HLA2025-NEW-007", "HLA2025-REQ-002", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_mom_object_and_ownership_service_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+    from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
+
+    server = start_2025_grpc_server()
+    controller = None
+    target = None
+    observer = None
+    acquirer = None
+    federation_name = f"factory-hosted-python2025-mom-object-service-{uuid.uuid4().hex[:8]}"
+    try:
+        target_callbacks = _Recording2025FederateAmbassador()
+        observer_callbacks = _Recording2025FederateAmbassador()
+        acquirer_callbacks = _Recording2025FederateAmbassador()
+        controller = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        target = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        observer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        acquirer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        controller.connect(_Recording2025FederateAmbassador(), CallbackModel2025.HLA_EVOKED)
+        target.connect(target_callbacks, CallbackModel2025.HLA_EVOKED)
+        observer.connect(observer_callbacks, CallbackModel2025.HLA_EVOKED)
+        acquirer.connect(acquirer_callbacks, CallbackModel2025.HLA_EVOKED)
+        controller.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        controller.joinFederationExecution("HostedMomObjectController", "TestFederate", federation_name)
+        target_handle = target.joinFederationExecution("HostedMomObjectTarget", "TestFederate", federation_name)
+        observer.joinFederationExecution("HostedMomObjectObserver", "TestFederate", federation_name)
+        acquirer.joinFederationExecution("HostedMomObjectAcquirer", "TestFederate", federation_name)
+
+        assert target.backend_info.details["provider"] == "python2025"
+        assert target.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert target.backend_info.details["counts_as_python_2025_rti"] is True
+
+        object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+        observer_object_class = observer.getObjectClassHandle("HLAobjectRoot.Target")
+        acquirer_object_class = acquirer.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = target.getAttributeHandle(object_class, "Position")
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_object_class, "Position")
+        interaction_class = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        observer_attribute = observer.getAttributeHandle(observer_object_class, "Position")
+
+        target.publishObjectClassAttributes(object_class, {attribute})
+        target.publishInteractionClass(interaction_class)
+        observer.subscribeObjectClassAttributes(observer_object_class, {observer_attribute})
+        object_instance = target.registerObjectInstance(object_class, "HostedMomObjectTarget")
+        _drain_hosted_2025_callbacks(target, observer, acquirer)
+
+        def send_service(name: str, parameters: dict[str, bytes]) -> None:
+            interaction = controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.{name}")
+            payload = {controller.getParameterHandle(interaction, "HLAfederate"): str(target_handle.value).encode("ascii")}
+            payload.update({controller.getParameterHandle(interaction, key): value for key, value in parameters.items()})
+            controller.sendInteraction(interaction, payload, f"hosted-mom-service-{name}".encode("ascii"))
+            _drain_hosted_2025_callbacks(controller, target, observer, acquirer, loops=32)
+
+        send_service(
+            "HLArequestAttributeTransportationTypeChange",
+            {
+                "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+                "HLAattributeList": str(attribute.value).encode("ascii"),
+                "HLAtransportation": b"HLAbestEffort",
+            },
+        )
+        assert target_callbacks.last_callback("confirmAttributeTransportationTypeChange") == (
+            object_instance,
+            {attribute},
+            target.getTransportationTypeHandle("HLAbestEffort"),
+        )
+
+        send_service(
+            "HLArequestInteractionTransportationTypeChange",
+            {
+                "HLAinteractionClass": str(interaction_class.value).encode("ascii"),
+                "HLAtransportation": b"HLAbestEffort",
+            },
+        )
+        assert target_callbacks.last_callback("confirmInteractionTransportationTypeChange") == (
+            interaction_class,
+            target.getTransportationTypeHandle("HLAbestEffort"),
+        )
+
+        assert target.isAttributeOwnedByFederate(object_instance, attribute) is True
+        send_service(
+            "HLAunconditionalAttributeOwnershipDivestiture",
+            {
+                "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+                "HLAattributeList": str(attribute.value).encode("ascii"),
+            },
+        )
+        assert target.isAttributeOwnedByFederate(object_instance, attribute) is False
+        acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {acquirer_attribute}, b"after-hosted-mom-divest")
+        _drain_hosted_2025_callbacks(acquirer, loops=24)
+        assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+            object_instance,
+            {acquirer_attribute},
+            b"after-hosted-mom-divest",
+        )
+
+        object_instance_to_delete = target.registerObjectInstance(object_class, "HostedMomObjectDelete")
+        _drain_hosted_2025_callbacks(observer, loops=24)
+        send_service(
+            "HLAdeleteObjectInstance",
+            {
+                "HLAobjectInstance": str(object_instance_to_delete.value).encode("ascii"),
+                "HLAtag": b"hosted-mom-delete-object",
+            },
+        )
+        remove_callback = observer_callbacks.last_callback("removeObjectInstance")
+        assert remove_callback is not None
+        assert remove_callback[0] == object_instance_to_delete
+        with pytest.raises(ObjectInstanceNotKnown):
+            target.deleteObjectInstance(object_instance_to_delete, b"already-deleted")
+
+        object_instance_to_forget = target.registerObjectInstance(object_class, "HostedMomObjectLocalDelete")
+        _drain_hosted_2025_callbacks(observer, loops=24)
+        send_service(
+            "HLAlocalDeleteObjectInstance",
+            {"HLAobjectInstance": str(object_instance_to_forget.value).encode("ascii")},
+        )
+        assert target.isAttributeOwnedByFederate(object_instance_to_forget, attribute) is True
+    finally:
+        if acquirer is not None:
+            try:
+                acquirer.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if observer is not None:
+            try:
+                observer.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if target is not None:
+            try:
+                target.resignFederationExecution(ResignAction2025.CANCEL_THEN_DELETE_THEN_DIVEST)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if controller is not None:
+            try:
+                controller.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if acquirer is not None:
+            _close_rti_ambassador(acquirer)
+        if observer is not None:
+            _close_rti_ambassador(observer)
+        if target is not None:
+            _close_rti_ambassador(target)
+        if controller is not None:
+            _close_rti_ambassador(controller)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_direct_object_exchange_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    publisher = None
+    subscriber = None
+    federation_name = f"factory-hosted-python2025-object-exchange-{uuid.uuid4().hex[:8]}"
+    try:
+        publisher_callbacks = _Recording2025FederateAmbassador()
+        subscriber_callbacks = _Recording2025FederateAmbassador()
+        publisher = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        publisher.connect(publisher_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber.connect(subscriber_callbacks, CallbackModel2025.HLA_EVOKED)
+        publisher.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        publisher.joinFederationExecution("HostedPublisher", "TestFederate", federation_name)
+        subscriber_handle = subscriber.joinFederationExecution("HostedSubscriber", "TestFederate", federation_name)
+
+        assert publisher.backend_info.details["provider"] == "python2025"
+        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert publisher.backend_info.details["counts_as_python_2025_rti"] is True
+
+        publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.Target")
+        publisher_attribute = publisher.getAttributeHandle(publisher_object_class, "Position")
+        subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "Position")
+        publisher_interaction = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_interaction = subscriber.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        publisher_parameter = publisher.getParameterHandle(publisher_interaction, "TrackId")
+        subscriber_parameter = subscriber.getParameterHandle(subscriber_interaction, "TrackId")
+
+        publisher.publishObjectClassAttributes(publisher_object_class, {publisher_attribute})
+        publisher.publishInteractionClass(publisher_interaction)
+        subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+        subscriber.subscribeInteractionClass(subscriber_interaction)
+
+        object_instance = publisher.registerObjectInstance(publisher_object_class, "HostedTarget-1")
+        _drain_hosted_2025_callbacks(publisher, subscriber)
+        discovery = subscriber_callbacks.last_callback("discoverObjectInstance")
+        assert discovery is not None
+        assert discovery[0] == object_instance
+        assert discovery[2] == "HostedTarget-1"
+
+        publisher.updateAttributeValues(object_instance, {publisher_attribute: b"123,456"}, b"hosted-object-update")
+        publisher.sendInteraction(
+            publisher_interaction,
+            {publisher_parameter: b"track-001"},
+            b"hosted-object-interaction",
+        )
+        _drain_hosted_2025_callbacks(subscriber, loops=24)
+
+        reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+        assert reflection is not None
+        assert reflection[0] == object_instance
+        assert reflection[1] == {subscriber_attribute: b"123,456"}
+        assert reflection[2] == b"hosted-object-update"
+        assert reflection[4] == subscriber_handle or reflection[4] is not None
+
+        interaction = subscriber_callbacks.last_callback("receiveInteraction")
+        assert interaction is not None
+        assert interaction[0] == subscriber_interaction
+        assert interaction[1] == {subscriber_parameter: b"track-001"}
+        assert interaction[2] == b"hosted-object-interaction"
+    finally:
+        if subscriber is not None:
+            try:
+                subscriber.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.resignFederationExecution(ResignAction2025.DELETE_OBJECTS)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber is not None:
+            _close_rti_ambassador(subscriber)
+        if publisher is not None:
+            _close_rti_ambassador(publisher)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-057",
+    "HLA2025-FI-SVC-060",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_runs_direct_timestamped_delivery_and_retraction_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    publisher = None
+    subscriber_a = None
+    subscriber_b = None
+    federation_name = f"factory-hosted-python2025-tso-retract-{uuid.uuid4().hex[:8]}"
+    try:
+        publisher_callbacks = _Recording2025FederateAmbassador()
+        subscriber_a_callbacks = _Recording2025FederateAmbassador()
+        subscriber_b_callbacks = _Recording2025FederateAmbassador()
+        publisher = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_a = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_b = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        publisher.connect(publisher_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_a.connect(subscriber_a_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_b.connect(subscriber_b_callbacks, CallbackModel2025.HLA_EVOKED)
+        publisher.createFederationExecution(federation_name, [_target_radar_fom_path()])
+        publisher.joinFederationExecution("HostedTsoPublisher", "TestFederate", federation_name)
+        subscriber_a.joinFederationExecution("HostedTsoSubscriberA", "TestFederate", federation_name)
+        subscriber_b.joinFederationExecution("HostedTsoSubscriberB", "TestFederate", federation_name)
+
+        assert publisher.backend_info.details["provider"] == "python2025"
+        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert publisher.backend_info.details["counts_as_python_2025_rti"] is True
+
+        publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_a_object_class = subscriber_a.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_b_object_class = subscriber_b.getObjectClassHandle("HLAobjectRoot.Target")
+        publisher_attribute = publisher.getAttributeHandle(publisher_object_class, "Position")
+        subscriber_a_attribute = subscriber_a.getAttributeHandle(subscriber_a_object_class, "Position")
+        subscriber_b_attribute = subscriber_b.getAttributeHandle(subscriber_b_object_class, "Position")
+        publisher_interaction = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        publisher_parameter = publisher.getParameterHandle(publisher_interaction, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+
+        publisher.publishObjectClassAttributes(publisher_object_class, {publisher_attribute})
+        publisher.publishInteractionClass(publisher_interaction)
+        subscriber_a.subscribeObjectClassAttributes(subscriber_a_object_class, {subscriber_a_attribute})
+        subscriber_b.subscribeObjectClassAttributes(subscriber_b_object_class, {subscriber_b_attribute})
+        subscriber_a.subscribeInteractionClass(subscriber_a_interaction)
+        subscriber_b.subscribeInteractionClass(subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport"))
+
+        object_instance = publisher.registerObjectInstance(publisher_object_class, "HostedTsoTarget-1")
+        _drain_hosted_2025_callbacks(publisher, subscriber_a, subscriber_b, loops=24)
+
+        time_factory = publisher.getTimeFactory()
+        subscriber_a.enableTimeConstrained()
+        subscriber_b.enableTimeConstrained()
+        publisher.enableTimeRegulation(time_factory.makeInterval(1))
+        _drain_hosted_2025_callbacks(publisher, subscriber_a, subscriber_b, loops=24)
+        assert subscriber_a_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        assert subscriber_b_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        assert publisher_callbacks.last_callback("timeRegulationEnabled") == (time_factory.makeInitial(),)
+
+        publisher_callbacks.callbacks.clear()
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+
+        update_result = publisher.updateAttributeValues(
+            object_instance,
+            {publisher_attribute: b"tso-reflect"},
+            b"hosted-tso-update",
+            time_factory.makeTime(5),
+        )
+        interaction_result = publisher.sendInteraction(
+            publisher_interaction,
+            {publisher_parameter: b"TSO-TRACK"},
+            b"hosted-tso-interaction",
+            time_factory.makeTime(5),
+        )
+        assert update_result is not None
+        assert interaction_result is not None
+        assert update_result.handle != interaction_result.handle
+
+        publisher.timeAdvanceRequest(time_factory.makeTime(25))
+        _drain_hosted_2025_callbacks(publisher, loops=24)
+        assert publisher_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(25),)
+
+        subscriber_a.nextMessageRequest(time_factory.makeTime(5))
+        _drain_hosted_2025_callbacks(subscriber_a, loops=24)
+        reflection = subscriber_a_callbacks.last_callback("reflectAttributeValues")
+        assert reflection is not None
+        assert reflection[0] == object_instance
+        assert reflection[1] == {subscriber_a_attribute: b"tso-reflect"}
+        assert reflection[2] == b"hosted-tso-update"
+        assert reflection[5] == time_factory.makeTime(5)
+        interaction = subscriber_a_callbacks.last_callback("receiveInteraction")
+        assert interaction is not None
+        assert interaction[0] == subscriber_a_interaction
+        assert interaction[1] == {subscriber_a_parameter: b"TSO-TRACK"}
+        assert interaction[2] == b"hosted-tso-interaction"
+        assert interaction[5] == time_factory.makeTime(5)
+        assert subscriber_a_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(5),)
+
+        publisher.retract(update_result.handle)
+        publisher.retract(interaction_result.handle)
+        _drain_hosted_2025_callbacks(publisher, subscriber_a, subscriber_b, loops=24)
+        retractions_a = [args[0] for callback_name, args in subscriber_a_callbacks.callbacks if callback_name == "requestRetraction"]
+        assert update_result.handle in retractions_a
+        assert interaction_result.handle in retractions_a
+
+        subscriber_b.nextMessageRequest(time_factory.makeTime(5))
+        _drain_hosted_2025_callbacks(subscriber_b, loops=24)
+        assert subscriber_b_callbacks.last_callback("reflectAttributeValues") is None
+        assert subscriber_b_callbacks.last_callback("receiveInteraction") is None
+        assert subscriber_b_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(5),)
+        assert subscriber_b_callbacks.last_callback("requestRetraction") is None
+    finally:
+        if subscriber_b is not None:
+            try:
+                subscriber_b.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber_a is not None:
+            try:
+                subscriber_a.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.resignFederationExecution(ResignAction2025.DELETE_OBJECTS_THEN_DIVEST)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if subscriber_b is not None:
+            _close_rti_ambassador(subscriber_b)
+        if subscriber_a is not None:
+            _close_rti_ambassador(subscriber_a)
+        if publisher is not None:
+            _close_rti_ambassador(publisher)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-059",
+    "HLA2025-FI-SVC-060",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-BND-003",
+)
+def test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_slice() -> None:
+    from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025
+    from hla.rti1516_2025.enums import ResignAction as ResignAction2025
+
+    server = start_2025_grpc_server()
+    publisher = None
+    subscriber_a = None
+    subscriber_b = None
+    observer = None
+    federation_name = f"factory-hosted-python2025-directed-{uuid.uuid4().hex[:8]}"
+    try:
+        publisher_callbacks = _Recording2025FederateAmbassador()
+        subscriber_a_callbacks = _Recording2025FederateAmbassador()
+        subscriber_b_callbacks = _Recording2025FederateAmbassador()
+        observer_callbacks = _Recording2025FederateAmbassador()
+        publisher = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_a = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        subscriber_b = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        observer = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        publisher.connect(publisher_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_a.connect(subscriber_a_callbacks, CallbackModel2025.HLA_EVOKED)
+        subscriber_b.connect(subscriber_b_callbacks, CallbackModel2025.HLA_EVOKED)
+        observer.connect(observer_callbacks, CallbackModel2025.HLA_EVOKED)
+        publisher.createFederationExecution(federation_name, [_fedpro_fom_path("DirectedTso2025.xml")])
+        publisher.joinFederationExecution("HostedDirectedPublisher", "TestFederate", federation_name)
+        subscriber_a.joinFederationExecution("HostedDirectedSubscriberA", "TestFederate", federation_name)
+        subscriber_b.joinFederationExecution("HostedDirectedSubscriberB", "TestFederate", federation_name)
+        observer.joinFederationExecution("HostedDirectedObserver", "TestFederate", federation_name)
+
+        assert publisher.backend_info.details["provider"] == "python2025"
+        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert publisher.backend_info.details["counts_as_python_2025_rti"] is True
+
+        publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_a_object_class = subscriber_a.getObjectClassHandle("HLAobjectRoot.Target")
+        subscriber_b_object_class = subscriber_b.getObjectClassHandle("HLAobjectRoot.Target")
+        observer_object_class = observer.getObjectClassHandle("HLAobjectRoot.Target")
+        publisher_interaction = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_a_interaction = subscriber_a.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        subscriber_b_interaction = subscriber_b.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        publisher_parameter = publisher.getParameterHandle(publisher_interaction, "TrackId")
+        subscriber_a_parameter = subscriber_a.getParameterHandle(subscriber_a_interaction, "TrackId")
+        subscriber_b_parameter = subscriber_b.getParameterHandle(subscriber_b_interaction, "TrackId")
+
+        publisher.publishObjectClassDirectedInteractions(publisher_object_class, {publisher_interaction})
+        subscriber_a.subscribeObjectClassDirectedInteractions(subscriber_a_object_class, {subscriber_a_interaction})
+        subscriber_b.subscribeObjectClassDirectedInteractions(subscriber_b_object_class, {subscriber_b_interaction})
+
+        object_instance = publisher.registerObjectInstance(publisher_object_class, "HostedDirectedTarget-1")
+        _drain_hosted_2025_callbacks(publisher, subscriber_a, subscriber_b, observer, loops=24)
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        observer_callbacks.callbacks.clear()
+
+        plain_result = publisher.sendDirectedInteraction(
+            publisher_interaction,
+            object_instance,
+            {publisher_parameter: b"TRACK-D"},
+            b"hosted-directed-plain",
+        )
+        _drain_hosted_2025_callbacks(subscriber_a, subscriber_b, observer, loops=24)
+        assert plain_result.retractionHandleIsValid is False
+        directed_plain = subscriber_a_callbacks.last_callback("receiveDirectedInteraction")
+        assert directed_plain is not None
+        assert directed_plain[0] == subscriber_a_interaction
+        assert directed_plain[1] == object_instance
+        assert directed_plain[2] == {subscriber_a_parameter: b"TRACK-D"}
+        assert directed_plain[3] == b"hosted-directed-plain"
+        assert observer_callbacks.last_callback("receiveDirectedInteraction") is None
+
+        time_factory = publisher.getTimeFactory()
+        subscriber_a.enableTimeConstrained()
+        subscriber_b.enableTimeConstrained()
+        publisher.enableTimeRegulation(time_factory.makeInterval(1))
+        _drain_hosted_2025_callbacks(publisher, subscriber_a, subscriber_b, observer, loops=24)
+        assert subscriber_a_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        assert subscriber_b_callbacks.last_callback("timeConstrainedEnabled") == (time_factory.makeInitial(),)
+        assert publisher_callbacks.last_callback("timeRegulationEnabled") == (time_factory.makeInitial(),)
+
+        subscriber_a_callbacks.callbacks.clear()
+        subscriber_b_callbacks.callbacks.clear()
+        observer_callbacks.callbacks.clear()
+
+        tso_result = publisher.sendDirectedInteraction(
+            publisher_interaction,
+            object_instance,
+            {publisher_parameter: b"TRACK-TSO"},
+            b"hosted-directed-tso",
+            time_factory.makeTime(5),
+        )
+        assert tso_result.retractionHandleIsValid is True
+        publisher.timeAdvanceRequest(time_factory.makeTime(25))
+        _drain_hosted_2025_callbacks(publisher, loops=24)
+        assert publisher_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(25),)
+
+        subscriber_a.nextMessageRequest(time_factory.makeTime(5))
+        _drain_hosted_2025_callbacks(subscriber_a, loops=24)
+        directed_tso = subscriber_a_callbacks.last_callback("receiveDirectedInteraction")
+        assert directed_tso is not None
+        assert directed_tso[0] == subscriber_a_interaction
+        assert directed_tso[1] == object_instance
+        assert directed_tso[2] == {subscriber_a_parameter: b"TRACK-TSO"}
+        assert directed_tso[3] == b"hosted-directed-tso"
+        assert directed_tso[6] == time_factory.makeTime(5)
+        assert isinstance(directed_tso[9], type(tso_result.handle))
+        assert subscriber_a_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(5),)
+        assert observer_callbacks.last_callback("receiveDirectedInteraction") is None
+
+        publisher.retract(tso_result.handle)
+        _drain_hosted_2025_callbacks(publisher, subscriber_a, subscriber_b, observer, loops=24)
+        assert subscriber_a_callbacks.last_callback("requestRetraction") == (tso_result.handle,)
+
+        subscriber_b.nextMessageRequest(time_factory.makeTime(5))
+        _drain_hosted_2025_callbacks(subscriber_b, loops=24)
+        assert subscriber_b_callbacks.last_callback("receiveDirectedInteraction") is None
+        assert subscriber_b_callbacks.last_callback("timeAdvanceGrant") == (time_factory.makeTime(5),)
+        assert subscriber_b_callbacks.last_callback("requestRetraction") is None
+    finally:
+        if observer is not None:
+            try:
+                observer.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber_b is not None:
+            try:
+                subscriber_b.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if subscriber_a is not None:
+            try:
+                subscriber_a.resignFederationExecution(ResignAction2025.NO_ACTION)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.resignFederationExecution(ResignAction2025.DELETE_OBJECTS_THEN_DIVEST)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.destroyFederationExecution(federation_name)
+            except Exception:
+                pass
+        if observer is not None:
+            _close_rti_ambassador(observer)
+        if subscriber_b is not None:
+            _close_rti_ambassador(subscriber_b)
+        if subscriber_a is not None:
+            _close_rti_ambassador(subscriber_a)
+        if publisher is not None:
+            _close_rti_ambassador(publisher)
+        server.close()
 
 
 def _evoke_until_fields(transport: GrpcTransport, expected_fields: tuple[str, ...], *, attempts: int = 16) -> tuple[str, ...]:
@@ -210,13 +3490,64 @@ def _fedpro_fom_path(designator: str) -> str:
         return designator
     if designator == "TargetRadarFOMmodule.xml":
         return _target_radar_fom_path()
+    resource_name = Path(designator).name
+    packaged_2025_fom = files("hla.rti1516_2025.resources.foms").joinpath(resource_name)
+    if packaged_2025_fom.is_file():
+        return str(packaged_2025_fom)
     fixture_dir = Path(tempfile.gettempdir()) / "hla-2025-fedpro-foms"
     fixture_dir.mkdir(parents=True, exist_ok=True)
-    path = fixture_dir / Path(designator).name
+    path = fixture_dir / resource_name
     if not path.exists():
         source = Path(_vendor_smoke_fom_path()).read_text(encoding="utf-8")
         path.write_text(source.replace("<name>VendorSmokeFOM.xml</name>", f"<name>{path.stem}</name>"), encoding="utf-8")
     return str(path)
+
+
+class _FedProOwnershipRecordingFederateAmbassador(RecordingFederateAmbassador):
+    """Normalize ownership callbacks so shared scenario oracles stay route-neutral."""
+
+    def record_callback(self, method_name: str, *args, **kwargs):  # noqa: ANN001, ANN201
+        if method_name == "informAttributeOwnership" and len(args) == 3:
+            attributes = args[1]
+            if isinstance(attributes, set) and len(attributes) == 1:
+                args = (args[0], next(iter(attributes)), args[2])
+        if method_name in {"attributeIsNotOwned", "attributeIsOwnedByRTI"} and len(args) == 2:
+            attributes = args[1]
+            if isinstance(attributes, set) and len(attributes) == 1:
+                args = (args[0], next(iter(attributes)))
+        return super().record_callback(method_name, *args, **kwargs)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-008",
+    "HLA2025-FI-SVC-089",
+    "HLA2025-FI-SVC-090",
+    "HLA2025-FI-SVC-091",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_attribute_ownership_query_callback_scenario_over_fedpro_route() -> None:
+    federate = _FedProOwnershipRecordingFederateAmbassador()
+
+    summary = run_attribute_ownership_query_callback_scenario(
+        federate.informAttributeOwnership,
+        federate.attributeIsNotOwned,
+        federate.attributeIsOwnedByRTI,
+        federate=federate,
+    )
+
+    assert summary["inform_record"].args == (
+        summary["object_handle"],
+        summary["attribute_handle"],
+        summary["owner_handle"],
+    )
+    assert summary["not_owned_record"].args == (
+        summary["object_handle"],
+        summary["attribute_handle"],
+    )
+    assert summary["rti_owned_record"].args == (
+        summary["object_handle"],
+        summary["attribute_handle"],
+    )
 
 
 @pytest.mark.requirements("HLA2025-BND-003", "HLA2025-FI-004")
@@ -322,6 +3653,10 @@ class _FedPro2025ScenarioAdapter:
             raise AlreadyConnected(exc.message or exc.code) from exc
         if exc.code == "FederateIsExecutionMember":
             raise FederateIsExecutionMember(exc.message or exc.code) from exc
+        if exc.code == "FederateAlreadyExecutionMember":
+            raise FederateAlreadyExecutionMember(exc.message or exc.code) from exc
+        if exc.code == "FederateNameAlreadyInUse":
+            raise FederateNameAlreadyInUse(exc.message or exc.code) from exc
         if exc.code == "FederatesCurrentlyJoined":
             raise FederatesCurrentlyJoined(exc.message or exc.code) from exc
         if exc.code == "FederationExecutionAlreadyExists":
@@ -334,8 +3669,26 @@ class _FedPro2025ScenarioAdapter:
             raise NotConnected(exc.message or exc.code) from exc
         if exc.code == "ObjectInstanceNotKnown":
             raise ObjectInstanceNotKnown(exc.message or exc.code) from exc
+        if exc.code == "AttributeNotDefined":
+            raise AttributeNotDefined(exc.message or exc.code) from exc
+        if exc.code == "AttributeNotPublished":
+            raise AttributeNotPublished(exc.message or exc.code) from exc
         if exc.code == "AttributeNotOwned":
             raise AttributeNotOwned(exc.message or exc.code) from exc
+        if exc.code == "CouldNotOpenFOM":
+            raise CouldNotOpenFDD(exc.message or exc.code) from exc
+        if exc.code == "ErrorReadingFOM":
+            raise ErrorReadingFDD(exc.message or exc.code) from exc
+        if exc.code == "InvalidInteractionClassHandle":
+            raise InvalidInteractionClassHandle(exc.message or exc.code) from exc
+        if exc.code == "InconsistentFOM":
+            raise InconsistentFDD(exc.message or exc.code) from exc
+        if exc.code == "ObjectClassNotPublished":
+            raise ObjectClassNotPublished(exc.message or exc.code) from exc
+        if exc.code == "InteractionClassNotPublished":
+            raise InteractionClassNotPublished(exc.message or exc.code) from exc
+        if exc.code in {"InvalidTransportationType", "InvalidTransportationTypeHandle"}:
+            raise InvalidTransportationType(exc.message or exc.code) from exc
         if exc.code == "FederateNotExecutionMember":
             raise FederateNotExecutionMember(exc.message or exc.code) from exc
         if exc.code == "SaveInProgress":
@@ -344,8 +3697,22 @@ class _FedPro2025ScenarioAdapter:
             raise SaveNotInitiated(exc.message or exc.code) from exc
         if exc.code == "RestoreInProgress":
             raise RestoreInProgress(exc.message or exc.code) from exc
+        if exc.code == "RestoreNotInProgress":
+            from hla.rti1516e.exceptions import RestoreNotInProgress
+
+            raise RestoreNotInProgress(exc.message or exc.code) from exc
         if exc.code == "RestoreNotRequested":
             raise RestoreNotRequested(exc.message or exc.code) from exc
+        if exc.code == "InvalidMessageRetractionHandle":
+            from hla.rti1516e.exceptions import InvalidMessageRetractionHandle
+
+            raise InvalidMessageRetractionHandle(exc.message or exc.code) from exc
+        if exc.code == "InvalidResignAction":
+            raise InvalidResignAction(exc.message or exc.code) from exc
+        if exc.code == "FederateOwnsAttributes":
+            raise FederateOwnsAttributes(exc.message or exc.code) from exc
+        if exc.code == "OwnershipAcquisitionPending":
+            raise OwnershipAcquisitionPending(exc.message or exc.code) from exc
         raise exc
 
     def connect(self, federate, callback_model, local_settings_designator: str = "") -> None:  # noqa: ANN001
@@ -366,15 +3733,41 @@ class _FedPro2025ScenarioAdapter:
     def get_time_factory(self):  # noqa: ANN201
         return get_logical_time_factory(self._logical_time_hint)
 
-    def create_federation_execution(self, federation_name: str, fom_modules: list[object], logical_time_implementation_name: str) -> None:
+    def create_federation_execution(
+        self,
+        federation_name: str,
+        fom_modules: list[object],
+        logical_time_implementation_name: str | None = None,
+    ) -> None:
+        effective_time = logical_time_implementation_name or "HLAinteger64Time"
+        self._logical_time_hint = effective_time
+        module_fields = tuple(_fedpro_fom_path(str(module)) for module in fom_modules)
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="CREATE",
+                    fields=(federation_name, effective_time, *module_fields),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def create_federation_execution_with_mim(
+        self,
+        federation_name: str,
+        fom_modules: list[object],
+        logical_time_implementation_name: str,
+    ) -> None:
         self._logical_time_hint = logical_time_implementation_name
+        mim_path = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
         fields = (
             federation_name,
             logical_time_implementation_name,
+            mim_path,
             *(_fedpro_fom_path(str(module)) for module in fom_modules),
         )
         try:
-            self._transport.request(TransportRequest(command="CREATE", fields=fields))
+            self._transport.request(TransportRequest(command="CREATE_WITH_MIM_AND_TIME", fields=fields))
         except TransportError as exc:
             self._remap_transport_error(exc)
 
@@ -384,12 +3777,65 @@ class _FedPro2025ScenarioAdapter:
         except TransportError as exc:
             self._remap_transport_error(exc)
 
-    def join_federation_execution(self, federate_name: str, federate_type: str, federation_name: str):
+    def list_federation_executions(self) -> None:
+        try:
+            self._transport.request(TransportRequest(command="LIST_FEDERATION_EXECUTIONS"))
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def list_federation_execution_members(self, federation_name: str) -> None:
+        try:
+            self._transport.request(
+                TransportRequest(command="LIST_FEDERATION_EXECUTION_MEMBERS", fields=(federation_name,))
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def register_federation_synchronization_point(self, label: str, user_supplied_tag: bytes, sync_set=None) -> None:  # noqa: ANN001
+        fields = [label, user_supplied_tag.hex()]
+        if sync_set is not None:
+            fields.append(",".join(sorted(self._field_text(handle) for handle in sync_set)))
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="REGISTER_FEDERATION_SYNCHRONIZATION_POINT",
+                    fields=tuple(fields),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def synchronization_point_achieved(self, label: str, success_indicator: bool = True) -> None:
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="SYNCHRONIZATION_POINT_ACHIEVED",
+                    fields=(label, "1" if success_indicator else "0"),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def join_federation_execution(
+        self,
+        federate_name: str,
+        federate_type: str,
+        federation_name: str,
+        additional_fom_modules=None,
+    ):
+        fields = (federate_name, federate_type, federation_name)
+        if additional_fom_modules is not None:
+            fields = (
+                federate_name,
+                federate_type,
+                federation_name,
+                *(_fedpro_fom_path(str(module)) for module in additional_fom_modules),
+            )
         try:
             handle = self._as_handle(
                 FederateHandle,
                 self._transport.request(
-                    TransportRequest(command="JOIN", fields=(federate_name, federate_type, federation_name))
+                    TransportRequest(command="JOIN", fields=fields)
                 ).fields[0],
             )
             self._joined_handle = handle
@@ -401,6 +3847,15 @@ class _FedPro2025ScenarioAdapter:
         action = getattr(resign_action, "name", str(resign_action))
         try:
             self._transport.request(TransportRequest(command="RESIGN", fields=(action,)))
+        except KeyError as exc:
+            raise InvalidResignAction(action) from exc
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def set_automatic_resign_directive(self, resign_action) -> None:  # noqa: ANN001
+        action = getattr(resign_action, "name", str(resign_action))
+        try:
+            self._transport.request(TransportRequest(command="SET_AUTOMATIC_RESIGN_DIRECTIVE", fields=(action,)))
         except TransportError as exc:
             self._remap_transport_error(exc)
 
@@ -668,10 +4123,22 @@ class _FedPro2025ScenarioAdapter:
         return ParameterHandleValueMapFactory()
 
     @staticmethod
+    def get_region_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import RegionHandleFactory
+
+        return RegionHandleFactory()
+
+    @staticmethod
     def get_region_handle_set_factory():  # noqa: ANN201
         from hla.rti1516e.handles import RegionHandleSetFactory
 
         return RegionHandleSetFactory()
+
+    @staticmethod
+    def get_message_retraction_handle_factory():  # noqa: ANN201
+        from hla.rti1516e.handles import MessageRetractionHandleFactory
+
+        return MessageRetractionHandleFactory()
 
     @staticmethod
     def get_transportation_type_handle_factory():  # noqa: ANN201
@@ -742,24 +4209,60 @@ class _FedPro2025ScenarioAdapter:
         ).fields[0]
 
     def publish_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
-        self._transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(self._field_text(interaction_class),)))
+        try:
+            self._transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(self._field_text(interaction_class),)))
+        except TransportError as exc:
+            self._remap_transport_error(exc)
 
     def subscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(self._field_text(interaction_class),)))
 
+    def publish_object_class_directed_interactions(self, object_class, interaction_classes) -> None:  # noqa: ANN001
+        for interaction_class in interaction_classes:
+            self._transport.request(
+                TransportRequest(
+                    command="PUBLISH_OBJECT_CLASS_DIRECTED_INTERACTIONS",
+                    fields=(self._field_text(object_class), self._field_text(interaction_class)),
+                )
+            )
+
+    def subscribe_object_class_directed_interactions(self, object_class, interaction_classes) -> None:  # noqa: ANN001
+        for interaction_class in interaction_classes:
+            self._transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS",
+                    fields=(self._field_text(object_class), self._field_text(interaction_class)),
+                )
+            )
+
+    def unsubscribe_object_class_directed_interactions(self, object_class, interaction_classes) -> None:  # noqa: ANN001
+        del interaction_classes
+        self._transport.request(
+            TransportRequest(
+                command="UNSUBSCRIBE_OBJECT_CLASS_DIRECTED_INTERACTIONS",
+                fields=(self._field_text(object_class),),
+            )
+        )
+
     def unpublish_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
-        self._transport.request(TransportRequest(command="UNPUBLISH_INTERACTION_CLASS", fields=(self._field_text(interaction_class),)))
+        try:
+            self._transport.request(TransportRequest(command="UNPUBLISH_INTERACTION_CLASS", fields=(self._field_text(interaction_class),)))
+        except TransportError as exc:
+            self._remap_transport_error(exc)
 
     def unsubscribe_interaction_class(self, interaction_class) -> None:  # noqa: ANN001
         self._transport.request(TransportRequest(command="UNSUBSCRIBE_INTERACTION_CLASS", fields=(self._field_text(interaction_class),)))
 
     def publish_object_class_attributes(self, object_class, attributes: set[object]) -> None:  # noqa: ANN001
-        self._transport.request(
-            TransportRequest(
-                command="PUBLISH_OBJECT_CLASS_ATTRIBUTES",
-                fields=(self._field_text(object_class), self._encode_handle_set(attributes)),
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="PUBLISH_OBJECT_CLASS_ATTRIBUTES",
+                    fields=(self._field_text(object_class), self._encode_handle_set(attributes)),
+                )
             )
-        )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
 
     def subscribe_object_class_attributes(self, object_class, attributes: set[object], update_rate_designator: str | None = None) -> None:  # noqa: ANN001
         command = "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_RATE" if update_rate_designator else "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES"
@@ -976,11 +4479,84 @@ class _FedPro2025ScenarioAdapter:
         if self._federate is None or not parts:
             return False
         kind = parts[0]
+        if kind == "DIRECTED_INTERACTION":
+            parameter_values: dict[ParameterHandle, bytes] = {}
+            if len(parts) > 3 and parts[3]:
+                for item in parts[3].split(","):
+                    if not item:
+                        continue
+                    handle_raw, value_raw = item.split(":", 1)
+                    parameter_values[self._as_handle(ParameterHandle, handle_raw)] = bytes.fromhex(value_raw)
+            getattr(self._federate, "receiveDirectedInteraction")(
+                self._as_handle(InteractionClassHandle, parts[1]),
+                self._as_handle(ObjectInstanceHandle, parts[2]),
+                parameter_values,
+                bytes.fromhex(parts[4]),
+                self._as_handle(TransportationTypeHandle, parts[5]),
+                self._as_handle(FederateHandle, parts[6]),
+            )
+            return True
+        if kind == "DIRECTED_INTERACTION_TSO":
+            parameter_values: dict[ParameterHandle, bytes] = {}
+            if len(parts) > 3 and parts[3]:
+                for item in parts[3].split(","):
+                    if not item:
+                        continue
+                    handle_raw, value_raw = item.split(":", 1)
+                    parameter_values[self._as_handle(ParameterHandle, handle_raw)] = bytes.fromhex(value_raw)
+            getattr(self._federate, "receiveDirectedInteraction")(
+                self._as_handle(InteractionClassHandle, parts[1]),
+                self._as_handle(ObjectInstanceHandle, parts[2]),
+                parameter_values,
+                bytes.fromhex(parts[4]),
+                self._as_handle(TransportationTypeHandle, parts[5]),
+                self._as_handle(FederateHandle, parts[6]),
+                self._decode_time(parts[7], parts[8]),
+                OrderType.TIMESTAMP,
+                OrderType.TIMESTAMP,
+                self._as_handle(MessageRetractionHandle, parts[9]),
+            )
+            return True
         if kind == "OBJECT_INSTANCE_NAME_RESERVATION_SUCCEEDED":
             getattr(self._federate, "objectInstanceNameReservationSucceeded")(parts[1])
             return True
         if kind == "OBJECT_INSTANCE_NAME_RESERVATION_FAILED":
             getattr(self._federate, "objectInstanceNameReservationFailed")(parts[1])
+            return True
+        if kind == "CONNECTION_LOST":
+            getattr(self._federate, "connectionLost")(parts[1])
+            return True
+        if kind == "FEDERATE_RESIGNED":
+            getattr(self._federate, "federateResigned")(parts[1])
+            return True
+        if kind == "REPORT_FEDERATION_EXECUTIONS":
+            report = []
+            if len(parts) > 1 and parts[1]:
+                for item in parts[1].split(";"):
+                    federation_name, logical_time_name = item.split(":", 1)
+                    report.append(
+                        {
+                            "federationExecutionName": federation_name,
+                            "logicalTimeImplementationName": logical_time_name,
+                        }
+                    )
+            getattr(self._federate, "reportFederationExecutions")(report)
+            return True
+        if kind == "REPORT_FEDERATION_EXECUTION_MEMBERS":
+            report = []
+            if len(parts) > 2 and parts[2]:
+                for item in parts[2].split(";"):
+                    federate_name, federate_type = item.split(":", 1)
+                    report.append(
+                        {
+                            "federateName": federate_name,
+                            "federateType": federate_type,
+                        }
+                    )
+            getattr(self._federate, "reportFederationExecutionMembers")(parts[1], report)
+            return True
+        if kind == "REPORT_FEDERATION_EXECUTION_DOES_NOT_EXIST":
+            getattr(self._federate, "reportFederationExecutionDoesNotExist")(parts[1])
             return True
         if kind == "MULTIPLE_OBJECT_INSTANCE_NAME_RESERVATION_SUCCEEDED":
             getattr(self._federate, "multipleObjectInstanceNameReservationSucceeded")(
@@ -1048,6 +4624,74 @@ class _FedPro2025ScenarioAdapter:
                 self._as_handle(FederateHandle, parts[1]),
                 self._as_handle(InteractionClassHandle, parts[2]),
                 self._as_handle(TransportationTypeHandle, parts[3]),
+            )
+            return True
+        if kind == "OWNERSHIP_ACQUIRED":
+            getattr(self._federate, "attributeOwnershipAcquisitionNotification")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                {self._as_handle(AttributeHandle, value) for value in parts[2].split(",") if value},
+                bytes.fromhex(parts[3]),
+            )
+            return True
+        if kind == "ATTRIBUTE_OWNERSHIP_UNAVAILABLE":
+            getattr(self._federate, "attributeOwnershipUnavailable")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                {self._as_handle(AttributeHandle, value) for value in parts[2].split(",") if value},
+                bytes.fromhex(parts[3]),
+            )
+            return True
+        if kind == "REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION":
+            getattr(self._federate, "requestAttributeOwnershipAssumption")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                {self._as_handle(AttributeHandle, value) for value in parts[2].split(",") if value},
+                bytes.fromhex(parts[3]),
+            )
+            return True
+        if kind == "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE":
+            getattr(self._federate, "requestAttributeOwnershipRelease")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                {self._as_handle(AttributeHandle, value) for value in parts[2].split(",") if value},
+                bytes.fromhex(parts[3]),
+            )
+            return True
+        if kind == "REQUEST_DIVESTITURE_CONFIRMATION":
+            getattr(self._federate, "requestDivestitureConfirmation")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                {self._as_handle(AttributeHandle, value) for value in parts[2].split(",") if value},
+                bytes.fromhex(parts[3]),
+            )
+            return True
+        if kind == "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION":
+            getattr(self._federate, "confirmAttributeOwnershipAcquisitionCancellation")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                {self._as_handle(AttributeHandle, value) for value in parts[2].split(",") if value},
+            )
+            return True
+        if kind == "INFORM_ATTRIBUTE_OWNERSHIP":
+            getattr(self._federate, "informAttributeOwnership")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                self._as_handle(AttributeHandle, parts[2]),
+                self._as_handle(FederateHandle, parts[3]),
+            )
+            return True
+        if kind == "ATTRIBUTE_IS_NOT_OWNED":
+            getattr(self._federate, "attributeIsNotOwned")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                self._as_handle(AttributeHandle, parts[2]),
+            )
+            return True
+        if kind == "ATTRIBUTE_IS_OWNED_BY_RTI":
+            getattr(self._federate, "attributeIsOwnedByRTI")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                self._as_handle(AttributeHandle, parts[2]),
+            )
+            return True
+        if kind == "REMOVE_OBJECT_INSTANCE" and len(parts) >= 4:
+            getattr(self._federate, "removeObjectInstance")(
+                self._as_handle(ObjectInstanceHandle, parts[1]),
+                bytes.fromhex(parts[2]),
+                OrderType.RECEIVE,
+                SimpleNamespace(producing_federate=self._as_handle(FederateHandle, parts[3])),
             )
             return True
         return False
@@ -1149,6 +4793,14 @@ class _FedPro2025ScenarioAdapter:
         kind, scalar = self._time_kind_and_value(logical_time)
         self._logical_time_hint = kind
         self._transport.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=(kind, scalar)))
+
+    def retract(self, retraction_handle) -> None:  # noqa: ANN001
+        try:
+            self._transport.request(
+                TransportRequest(command="RETRACT", fields=(self._field_text(retraction_handle),))
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
 
     def query_logical_time(self):
         kind, scalar = self._transport.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields
@@ -1297,6 +4949,62 @@ class _FedPro2025ScenarioAdapter:
         except TransportError as exc:
             self._remap_transport_error(exc)
 
+    def negotiated_attribute_ownership_divestiture(self, object_instance, attributes: set[object], user_supplied_tag: bytes = b"") -> None:  # noqa: ANN001
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE",
+                    fields=(
+                        self._field_text(object_instance),
+                        self._encode_handle_set(attributes),
+                        user_supplied_tag.hex(),
+                    ),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def confirm_divestiture(self, object_instance, attributes: set[object], user_supplied_tag: bytes = b"") -> None:  # noqa: ANN001
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="CONFIRM_DIVESTITURE",
+                    fields=(
+                        self._field_text(object_instance),
+                        self._encode_handle_set(attributes),
+                        user_supplied_tag.hex(),
+                    ),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def cancel_attribute_ownership_acquisition(self, object_instance, attributes: set[object]) -> None:  # noqa: ANN001
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION",
+                    fields=(self._field_text(object_instance), self._encode_handle_set(attributes)),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
+    def attribute_ownership_release_denied(self, object_instance, attributes: set[object], user_supplied_tag: bytes = b"") -> None:  # noqa: ANN001
+        try:
+            self._transport.request(
+                TransportRequest(
+                    command="ATTRIBUTE_OWNERSHIP_RELEASE_DENIED",
+                    fields=(
+                        self._field_text(object_instance),
+                        self._encode_handle_set(attributes),
+                        user_supplied_tag.hex(),
+                    ),
+                )
+            )
+        except TransportError as exc:
+            self._remap_transport_error(exc)
+
     def attribute_ownership_divestiture_if_wanted(self, object_instance, attributes: set[object]):  # noqa: ANN001, ANN201
         try:
             fields = self._transport.request(
@@ -1338,12 +5046,15 @@ class _FedPro2025ScenarioAdapter:
     def send_interaction(self, interaction_class, parameter_values: dict[object, bytes], user_supplied_tag: bytes, logical_time=None) -> None:  # noqa: ANN001
         encoded_parameters = self._encode_parameter_values(parameter_values)
         if logical_time is None:
-            self._transport.request(
-                TransportRequest(
-                    command="SEND_INTERACTION",
-                    fields=(self._field_text(interaction_class), encoded_parameters, user_supplied_tag.hex()),
+            try:
+                self._transport.request(
+                    TransportRequest(
+                        command="SEND_INTERACTION",
+                        fields=(self._field_text(interaction_class), encoded_parameters, user_supplied_tag.hex()),
+                    )
                 )
-            )
+            except TransportError as exc:
+                self._remap_transport_error(exc)
             return
         kind, scalar = self._time_kind_and_value(logical_time)
         self._logical_time_hint = kind
@@ -1393,6 +5104,48 @@ class _FedPro2025ScenarioAdapter:
             )
         except TransportError as exc:
             self._remap_transport_error(exc)
+
+    def send_directed_interaction(
+        self,
+        interaction_class,
+        object_instance,
+        parameter_values: dict[object, bytes],
+        user_supplied_tag: bytes,
+        logical_time=None,
+    ):
+        encoded_parameters = self._encode_parameter_values(parameter_values)
+        if logical_time is None:
+            self._transport.request(
+                TransportRequest(
+                    command="SEND_DIRECTED_INTERACTION",
+                    fields=(
+                        self._field_text(interaction_class),
+                        self._field_text(object_instance),
+                        encoded_parameters,
+                        user_supplied_tag.hex(),
+                    ),
+                )
+            )
+            return SimpleNamespace(retractionHandleIsValid=False, handle=None)
+        kind, scalar = self._time_kind_and_value(logical_time)
+        self._logical_time_hint = kind
+        handle = self._transport.request(
+            TransportRequest(
+                command="SEND_DIRECTED_INTERACTION_TIMESTAMP",
+                fields=(
+                    self._field_text(interaction_class),
+                    self._field_text(object_instance),
+                    encoded_parameters,
+                    user_supplied_tag.hex(),
+                    kind,
+                    scalar,
+                ),
+            )
+        ).fields[0]
+        return SimpleNamespace(
+            retractionHandleIsValid=True,
+            handle=self._as_handle(MessageRetractionHandle, handle),
+        )
 
     def evoke_callback(self, seconds: float = 0.0) -> bool:
         del seconds
@@ -1581,7 +5334,7 @@ def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_
             )
         assert error.value.code == "ObjectClassNotPublished"
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -1659,7 +5412,7 @@ def test_2025_transport_server_routes_discovery_and_remove_only_to_subscriber_ov
             "1",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
         assert subscriber.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -1754,7 +5507,7 @@ def test_2025_transport_server_routes_reflect_and_interaction_only_to_subscriber
             "1",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
         assert subscriber.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -1882,7 +5635,7 @@ def test_2025_transport_server_delivers_timestamped_updates_and_interactions_to_
         assert second_b == second_a
         assert grant_b == grant_a
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -1977,7 +5730,7 @@ def test_2025_transport_server_holds_tso_for_lagging_subscribers_over_fedpro_sch
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "INTERACTION_TSO")
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -2055,7 +5808,7 @@ def test_2025_transport_server_retracts_partially_delivered_tso_without_releasin
         assert first_b[:2] != ("1", "INTERACTION_TSO")
         assert ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5") in {first_b, second_b}
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -2147,7 +5900,7 @@ def test_2025_transport_server_drops_retraction_callbacks_for_disconnected_deliv
         assert second_b[:2] != ("1", "INTERACTION_TSO")
         assert ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5") in {first_b, second_b}
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -2247,7 +6000,7 @@ def test_2025_transport_server_drops_queued_plain_tso_for_disconnected_target_ov
         )
         assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -2358,7 +6111,7 @@ def test_2025_transport_server_drops_queued_ddm_tso_reflect_for_disconnected_tar
         )
         assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -2452,7 +6205,7 @@ def test_2025_transport_server_fans_out_post_delivery_retraction_to_all_subscrib
             owner.request(TransportRequest(command="RETRACT", fields=(handle,)))
         assert error.value.code == "MessageCanNoLongerBeRetracted"
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -2691,7 +6444,7 @@ def test_2025_transport_server_drains_multiple_callbacks_in_order_over_fedpro_sc
         trailing = transport.request(TransportRequest(command="EVOKE")).fields
         assert trailing == ("0",)
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
     finally:
@@ -2785,7 +6538,7 @@ def test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery
         )
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -2799,6 +6552,121 @@ def test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery
     finally:
         if transport is not None:
             transport.close()
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-005",
+    "HLA2025-FI-SVC-011",
+    "HLA2025-FI-SVC-195",
+    "HLA2025-FI-SVC-196",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_drops_disconnected_peer_callback_backlog_before_reconnect_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    reconnect = None
+    federation_name = "fedpro-2025-callback-reconnect-hygiene"
+    try:
+        leader = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        wing = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert leader.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert wing.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert leader.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", _fedpro_fom_path("CallbackControl2025.xml")))
+        ).fields == ()
+        assert leader.request(
+            TransportRequest(command="JOIN", fields=("Leader", "Controller", federation_name))
+        ).fields == ("1", "HLAinteger64Time")
+        wing_handle = wing.request(
+            TransportRequest(command="JOIN", fields=("Wing", "Observer", federation_name))
+        ).fields[0]
+
+        interaction_class = leader.request(
+            TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
+        ).fields[0]
+        parameter = leader.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))
+        ).fields[0]
+
+        assert leader.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert wing.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        server.servicer.callback_queue.clear()
+        server.servicer.callback_targets.clear()
+
+        assert wing.request(TransportRequest(command="DISABLE_CALLBACKS")).fields == ()
+        assert (
+            leader.request(
+                TransportRequest(
+                    command="SEND_INTERACTION",
+                    fields=(interaction_class, f"{parameter}:7374616c65", "7374616c652d7175657565"),
+                )
+            ).fields
+            == ()
+        )
+        assert wing.request(TransportRequest(command="EVOKE")).fields == ("0",)
+        assert server.servicer.callback_queue
+
+        _drop_joined_peer(server, wing_handle)
+        wing.close()
+        wing = None
+
+        assert server.servicer.callback_queue == []
+        assert all(
+            target_handles is None or wing_handle not in target_handles
+            for _target_peers, target_handles in server.servicer.callback_targets.values()
+        )
+
+        reconnect = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        assert reconnect.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert reconnect.request(
+            TransportRequest(command="JOIN", fields=("Wing", "Observer", federation_name))
+        ).fields == ("3", "HLAinteger64Time")
+        assert reconnect.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert reconnect.request(TransportRequest(command="EVOKE")).fields == ("0",)
+
+        assert (
+            leader.request(
+                TransportRequest(
+                    command="SEND_INTERACTION",
+                    fields=(interaction_class, f"{parameter}:6672657368", "66726573682d7175657565"),
+                )
+            ).fields
+            == ()
+        )
+        assert reconnect.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INTERACTION",
+            interaction_class,
+            f"{parameter}:6672657368",
+            "66726573682d7175657565",
+            "1",
+            "1",
+        )
+
+        assert reconnect.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert reconnect.request(TransportRequest(command="DISCONNECT")).fields == ()
+        assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "disableCallbacksRequest",
+            "sendInteractionRequest",
+            "subscribeInteractionClassRequest",
+            "joinFederationExecutionWithNameRequest",
+            "resignFederationExecutionRequest",
+            "destroyFederationExecutionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if reconnect is not None:
+            reconnect.close()
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
         server.close()
 
 
@@ -3006,7 +6874,7 @@ def test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_sc
             )
         assert error.value.code == "InteractionClassNotPublished"
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -3200,7 +7068,7 @@ def test_2025_transport_server_runs_object_management_support_callbacks_over_fed
             transport.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,)))
         assert local_delete_error.value.code == "ObjectInstanceNotKnown"
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -3282,7 +7150,7 @@ def test_2025_transport_server_routes_attribute_value_update_requests_only_to_ow
             "636c6173732d69736f",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert requester.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert requester.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -3709,7 +7577,7 @@ def test_2025_transport_server_queues_timestamped_directed_interactions_and_retr
             transport.request(TransportRequest(command="RETRACT", fields=(late,)))
         assert error.value.code == "MessageCanNoLongerBeRetracted"
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -3840,7 +7708,7 @@ def test_2025_transport_server_delivers_and_retracts_timestamped_directed_intera
             owner.request(TransportRequest(command="RETRACT", fields=(handle,)))
         assert error.value.code == "MessageCanNoLongerBeRetracted"
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
@@ -3942,7 +7810,7 @@ def test_2025_transport_server_drops_queued_directed_tso_for_disconnected_target
         )
         assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -4048,7 +7916,7 @@ def test_2025_transport_server_routes_directed_interactions_only_to_subscribers_
             "1",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
@@ -4173,7 +8041,7 @@ def test_2025_transport_server_runs_time_management_services_over_fedpro_schema(
         assert transport.request(TransportRequest(command="DISABLE_TIME_REGULATION")).fields == ()
         assert server.servicer.time_regulating is False
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -4579,7 +8447,9 @@ def test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro
         assert summary["oracle_report"]["assertions"] == {
             "radar_not_granted_to_window_end_while_future_input_possible": True,
             "blocked_grant_matches_current_galt_or_none": True,
-            "future_input_exclusion_reaches_window_end": True,
+            "blocked_lits_matches_blocked_galt": True,
+            "future_input_exclusion_reaches_window_end_for_galt": True,
+            "future_input_exclusion_reaches_window_end_for_lits": True,
             "radar_granted_to_window_end_only_after_future_input_excluded": True,
             "late_timestamp_into_closed_window_rejected": True,
             "boundary_timestamp_delivered_after_window_closure": True,
@@ -4598,6 +8468,1189 @@ def test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro
             except Exception:
                 pass
         for rti in (radar, slow):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario() -> None:
+    server = start_2025_grpc_server()
+    slow = None
+    radar = None
+    federation_name = f"factory-hosted-python2025-future-exclusion-{uuid.uuid4().hex[:8]}"
+    try:
+        slow = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        slow_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        config = TargetRadarFutureExclusionConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        assert slow.backend_info.details["provider"] == "python2025"
+        assert slow.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert slow.backend_info.details["counts_as_python_2025_rti"] is True
+        assert radar.backend_info.details["provider"] == "python2025"
+        assert radar.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert radar.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_future_exclusion_scenario(
+            slow,
+            radar,
+            config=config,
+            slow_federate=slow_federate,
+            radar_federate=radar_federate,
+        )
+
+        assert summary["certification_target"] == "time-window-future-exclusion"
+        assert summary["oracle_report"]["certification_target"] == "time-window-future-exclusion"
+        assert summary["initial_slow_grant"].args[0].value == config.slow_initial_time
+        assert summary["blocked_galt"].time.value == config.slow_initial_time + config.slow_lookahead
+        assert summary["blocked_lits"].time.value == config.slow_initial_time + config.slow_lookahead
+        assert summary["blocked_grant"] is None
+        assert summary["clearance_slow_grant"].args[0].value == config.slow_clearance_time
+        assert summary["cleared_galt"].time.value == config.scan_window_end
+        assert summary["cleared_lits"].time.value == config.scan_window_end
+        assert summary["final_grant"].args[0].value == config.scan_window_end
+        assert summary["late_send_rejected"] is True
+        assert summary["boundary_receive"].args[2] == b"boundary-track-110"
+        assert summary["boundary_receive"].args[5].value == config.legal_boundary_time
+        assert summary["oracle_report"]["assertions"] == {
+            "radar_not_granted_to_window_end_while_future_input_possible": True,
+            "blocked_grant_matches_current_galt_or_none": True,
+            "blocked_lits_matches_blocked_galt": True,
+            "future_input_exclusion_reaches_window_end_for_galt": True,
+            "future_input_exclusion_reaches_window_end_for_lits": True,
+            "radar_granted_to_window_end_only_after_future_input_excluded": True,
+            "late_timestamp_into_closed_window_rejected": True,
+            "boundary_timestamp_delivered_after_window_closure": True,
+        }
+    finally:
+        for rti in (radar, slow):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if slow is not None:
+            try:
+                slow.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (radar, slow):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_restore_state_scenario() -> None:
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    federation_name = f"factory-hosted-python2025-restore-state-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        config = TargetRadarWindowRestoreConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        assert truth.backend_info.details["provider"] == "python2025"
+        assert truth.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert truth.backend_info.details["counts_as_python_2025_rti"] is True
+        assert radar.backend_info.details["provider"] == "python2025"
+        assert radar.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert radar.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_restore_state_scenario(
+            truth,
+            radar,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+        )
+
+        assert summary["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["first_grant"].args[0].value == config.first_input_time
+        assert summary["dirty_close_grant"].args[0].value == config.scan_window_end
+        assert summary["open_restored_truth_time"].value == config.first_input_time
+        assert summary["open_restored_radar_time"].value == config.first_input_time
+        assert summary["reclosed_grant"].args[0].value == config.scan_window_end
+        assert summary["closed_restored_truth_time"].value == config.scan_window_end
+        assert summary["closed_restored_radar_time"].value == config.scan_window_end
+        assert summary["saved_open_state"]["window_closed"] is False
+        assert summary["restored_open_state"]["window_closed"] is False
+        assert summary["saved_closed_state"]["window_closed"] is True
+        assert summary["restored_closed_state"]["window_closed"] is True
+        assert summary["oracle_report"]["assertions"] == {
+            "open_restore_reinstates_preclosure_time": True,
+            "open_restore_reinstates_open_window_state": True,
+            "restored_open_branch_recloses_at_window_end": True,
+            "closed_restore_reinstates_window_end_time": True,
+            "closed_restore_reinstates_closed_window_state": True,
+            "closed_restore_discards_dirty_post_close_callbacks": True,
+        }
+    finally:
+        for rti in (radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario() -> None:
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"factory-hosted-python2025-output-delivery-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        consumer = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarOutputDeliveryConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        for rti in (truth, radar, consumer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_output_delivery_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        assert summary["certification_target"] == "time-window-output-delivery"
+        assert summary["oracle_report"]["certification_target"] == "time-window-output-delivery"
+        assert summary["oracle_report"]["state_model"] == "OPEN -> CLOSED -> OUTPUT_PUBLISHED -> CONSUMED"
+        assert summary["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["consumer_receive"].args[5].value == config.radar_output_time
+        assert list(summary["consumer_receive"].args[1].values()) == [config.output_track_id.encode("utf-8")]
+        assert len(summary["post_delivery_receives"]) == 1
+        assert summary["oracle_report"]["assertions"] == {
+            "window_closed_before_output": True,
+            "output_timestamp_not_before_window_end": True,
+            "consumer_received_single_track_output": True,
+            "consumer_received_output_at_expected_time": True,
+            "output_payload_tied_to_closed_window_inputs": True,
+            "no_duplicate_output_after_consumer_readvance": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario() -> None:
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    other = None
+    consumer = None
+    federation_name = f"factory-hosted-python2025-consumer-order-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        other = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        consumer = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        other_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarConsumerOrderConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        for rti in (truth, radar, other, consumer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_consumer_order_scenario(
+            truth,
+            radar,
+            other,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            other_federate=other_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
+        assert delivered == [
+            (b"other-track-output", config.competing_event_time),
+            (b"radar-track-output", config.radar_output_time),
+        ]
+        assert list(summary["consumer_receives"][0].args[1].values()) == [config.competing_track_id.encode("utf-8")]
+        assert list(summary["consumer_receives"][1].args[1].values()) == [config.radar_output_track_id.encode("utf-8")]
+        assert len(summary["post_readvance_receives"]) == 2
+        assert summary["certification_target"] == "time-window-consumer-order"
+        assert summary["oracle_report"]["certification_target"] == "time-window-consumer-order"
+        assert summary["oracle_report"]["assertions"] == {
+            "consumer_delivery_timestamps_sorted": True,
+            "competing_event_arrives_before_radar_output": True,
+            "radar_output_timestamp_not_before_window_end": True,
+            "consumer_payloads_match_competing_and_radar_sources": True,
+            "no_duplicate_consumer_replay_after_readvance": True,
+        }
+    finally:
+        for rti in (consumer, other, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, other, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_time_window_gauntlet() -> None:
+    server = start_2025_grpc_server()
+    truth = None
+    sensor = None
+    radar = None
+    consumer = None
+    fast = None
+    slow = None
+    federation_name = f"factory-hosted-python2025-time-window-gauntlet-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        sensor = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        consumer = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        fast = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        slow = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        truth_federate = RecordingFederateAmbassador()
+        sensor_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        fast_federate = RecordingFederateAmbassador()
+        slow_federate = RecordingFederateAmbassador()
+        config = TargetRadarTimeWindowConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        for rti in (truth, sensor, radar, consumer, fast, slow):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_gauntlet_scenario(
+            truth,
+            sensor,
+            radar,
+            consumer,
+            fast,
+            slow,
+            config=config,
+            truth_federate=truth_federate,
+            sensor_federate=sensor_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+            fast_federate=fast_federate,
+            slow_federate=slow_federate,
+        )
+
+        assert summary["certification_target"] == "lookahead-processing-window-certified"
+        assert set(summary["subproofs"]) == {
+            "core",
+            "future_exclusion",
+            "output_delivery",
+            "consumer_order",
+            "pipeline",
+        }
+        assert summary["subproofs"]["core"]["certification_target"] == "time-window-core"
+        assert summary["subproofs"]["future_exclusion"]["certification_target"] == "time-window-future-exclusion"
+        assert summary["subproofs"]["output_delivery"]["certification_target"] == "time-window-output-delivery"
+        assert summary["subproofs"]["consumer_order"]["certification_target"] == "time-window-consumer-order"
+        assert summary["subproofs"]["pipeline"]["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["subproofs"]["core"]["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["subproofs"]["core"]["published_output_time"].value == config.radar_output_time
+        assert summary["subproofs"]["future_exclusion"]["blocked_grant"] is None
+        assert summary["subproofs"]["future_exclusion"]["final_grant"].args[0].value == config.scan_window_end
+        assert summary["subproofs"]["future_exclusion"]["late_send_rejected"] is True
+        assert summary["subproofs"]["output_delivery"]["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["subproofs"]["output_delivery"]["consumer_receive"].args[5].value == config.scan_window_end + 1
+        assert [
+            (record.args[2], record.args[5].value) for record in summary["subproofs"]["consumer_order"]["consumer_receives"]
+        ] == [
+            (b"other-track-output", config.scan_window_end),
+            (b"radar-track-output", config.scan_window_end + 1),
+        ]
+        pipeline_deliveries = [
+            (record.args[2], record.args[5].value) for record in summary["subproofs"]["pipeline"]["consumer_receives"]
+        ]
+        assert [payload for payload, _timestamp in pipeline_deliveries] == [b"scan1-track-output", b"scan2-track-output"]
+        assert pipeline_deliveries[0][1] < pipeline_deliveries[1][1]
+        assert all(timestamp >= config.scan_window_end for _payload, timestamp in pipeline_deliveries)
+        assert summary["subproofs"]["pipeline"]["scan2_reflect"].args[2] == b"scan2-input"
+        assert summary["oracle_report"]["certification_target"] == "lookahead-processing-window-certified"
+        assert summary["oracle_report"]["assertions"] == {
+            "future_exclusion_blocked_until_window_safe": True,
+            "core_window_closure_proved": True,
+            "closed_window_output_delivered_legally": True,
+            "consumer_observed_timestamp_order": True,
+            "pipeline_overlapping_windows_proved": True,
+        }
+    finally:
+        for rti in (slow, fast, consumer, radar, sensor, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (slow, fast, consumer, radar, sensor, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario() -> None:
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"factory-hosted-python2025-restore-output-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        consumer = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarWindowRestoreOutputConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        for rti in (truth, radar, consumer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_restore_output_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        assert summary["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["saved_consumer_time"].value == config.scan_window_end
+        assert summary["dirty_consumer_receive"].args[2] == b"dirty-track-output"
+        assert summary["dirty_consumer_receive"].args[5].value == config.radar_output_time
+        assert summary["restored_truth_time"].value == config.scan_window_end
+        assert summary["restored_radar_time"].value == config.scan_window_end
+        assert summary["restored_consumer_time"].value == config.scan_window_end
+        assert [record.args[2] for record in summary["post_restore_receives"]] == [b"restored-track-output"]
+        assert summary["restored_consumer_receive"].args[5].value == config.radar_output_time
+        assert summary["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["assertions"] == {
+            "closed_window_saved_before_output": True,
+            "dirty_branch_output_published_before_restore": True,
+            "restored_timeline_republishes_legal_output": True,
+            "dirty_output_not_replayed_after_restore": True,
+            "single_post_restore_output_delivery": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario() -> None:
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"factory-hosted-python2025-pipeline-restore-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        radar = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        consumer = TargetRadar2025RTIAdapter(
+            create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
+        )
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarPipelineRestoreConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        for rti in (truth, radar, consumer):
+            assert rti.backend_info.details["provider"] == "python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["counts_as_python_2025_rti"] is True
+
+        summary = run_target_radar_time_window_pipeline_restore_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        assert summary["saved_radar_time"].value == config.scan2_input_time
+        assert summary["saved_consumer_time"].value == config.scan1_end
+        assert [record.args[2] for record in summary["dirty_consumer_receives"]] == [
+            b"dirty-scan1-track-output",
+            b"dirty-scan2-track-output",
+        ]
+        assert summary["restored_radar_time"].value == config.scan2_input_time
+        assert summary["restored_consumer_time"].value == config.scan1_end
+        assert summary["post_restore_scan2_reflects"] == []
+        assert [record.args[2] for record in summary["restored_consumer_receives"]] == [
+            b"restored-scan1-track-output",
+            b"restored-scan2-track-output",
+        ]
+        assert list(summary["restored_consumer_receives"][0].args[1].values()) == [
+            config.restored_scan1_track_id.encode("utf-8")
+        ]
+        assert list(summary["restored_consumer_receives"][1].args[1].values()) == [
+            config.restored_scan2_track_id.encode("utf-8")
+        ]
+        assert len(summary["post_restore_duplicate_receives"]) == 2
+        assert summary["certification_target"] == "time-window-save-restore-pipeline-resume"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-pipeline-resume"
+        assert summary["oracle_report"]["assertions"] == {
+            "restore_reinstates_saved_radar_time": True,
+            "restore_reinstates_saved_consumer_time": True,
+            "dirty_pipeline_outputs_do_not_replay": True,
+            "scan2_collected_state_restored_without_reflection_replay": True,
+            "restored_outputs_match_saved_window_inputs": True,
+            "no_duplicate_restored_pipeline_outputs_after_readvance": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    sensor = None
+    radar = None
+    consumer = None
+    fast = None
+    slow = None
+    federation_name = f"fedpro-2025-shared-time-window-core-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        sensor = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        consumer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        fast = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        slow = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        sensor_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        fast_federate = RecordingFederateAmbassador()
+        slow_federate = RecordingFederateAmbassador()
+        config = TargetRadarTimeWindowConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_core_scenario(
+            truth,
+            sensor,
+            radar,
+            consumer,
+            fast,
+            slow,
+            config=config,
+            truth_federate=truth_federate,
+            sensor_federate=sensor_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+            fast_federate=fast_federate,
+            slow_federate=slow_federate,
+        )
+
+        assert summary["certification_target"] == "time-window-core"
+        assert summary["first_grant"].args[0].value == config.truth_update_time
+        assert summary["second_grant"].args[0].value == config.sensor_detection_time
+        assert summary["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["late_rejections"] == [
+            config.scan_window_start,
+            config.truth_update_time,
+            config.scan_window_end - 1,
+        ]
+        assert int(getattr(summary["processing_progress"]["fast_time"], "value", 0)) > config.scan_window_end
+        assert summary["published_output_time"].value == config.radar_output_time
+        assert summary["oracle_report"]["certification_target"] == "time-window-core"
+        assert summary["oracle_report"]["assertions"] == {
+            "pending_timestamped_messages_not_skipped": True,
+            "window_not_closed_before_truth_update": True,
+            "window_not_closed_before_sensor_update": True,
+            "window_closed_only_at_end": True,
+            "no_post_close_input_less_than_window_end": True,
+        }
+    finally:
+        for rti in (slow, fast, consumer, radar, sensor, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (slow, fast, consumer, radar, sensor, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_output_delivery_scenario_via_runner_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"fedpro-2025-shared-output-delivery-runner-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        consumer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarOutputDeliveryConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_output_delivery_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        assert summary["certification_target"] == "time-window-output-delivery"
+        assert summary["oracle_report"]["certification_target"] == "time-window-output-delivery"
+        assert summary["oracle_report"]["state_model"] == "OPEN -> CLOSED -> OUTPUT_PUBLISHED -> CONSUMED"
+        assert summary["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["consumer_receive"].args[5].value == config.radar_output_time
+        assert list(summary["consumer_receive"].args[1].values()) == [config.output_track_id.encode("utf-8")]
+        assert len(summary["post_delivery_receives"]) == 1
+        assert summary["oracle_report"]["assertions"] == {
+            "window_closed_before_output": True,
+            "output_timestamp_not_before_window_end": True,
+            "consumer_received_single_track_output": True,
+            "consumer_received_output_at_expected_time": True,
+            "output_payload_tied_to_closed_window_inputs": True,
+            "no_duplicate_output_after_consumer_readvance": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_consumer_order_scenario_via_runner_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    other = None
+    consumer = None
+    federation_name = f"fedpro-2025-shared-consumer-order-runner-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        other = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        consumer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        other_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarConsumerOrderConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_consumer_order_scenario(
+            truth,
+            radar,
+            other,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            other_federate=other_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
+        assert delivered == [
+            (b"other-track-output", config.competing_event_time),
+            (b"radar-track-output", config.radar_output_time),
+        ]
+        assert list(summary["consumer_receives"][0].args[1].values()) == [config.competing_track_id.encode("utf-8")]
+        assert list(summary["consumer_receives"][1].args[1].values()) == [config.radar_output_track_id.encode("utf-8")]
+        assert len(summary["post_readvance_receives"]) == 2
+        assert summary["certification_target"] == "time-window-consumer-order"
+        assert summary["oracle_report"]["certification_target"] == "time-window-consumer-order"
+        assert summary["oracle_report"]["assertions"] == {
+            "consumer_delivery_timestamps_sorted": True,
+            "competing_event_arrives_before_radar_output": True,
+            "radar_output_timestamp_not_before_window_end": True,
+            "consumer_payloads_match_competing_and_radar_sources": True,
+            "no_duplicate_consumer_replay_after_readvance": True,
+        }
+    finally:
+        for rti in (consumer, other, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, other, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_pipeline_scenario_via_runner_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"fedpro-2025-shared-pipeline-runner-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        consumer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarPipelineConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_pipeline_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
+        assert delivered == [
+            (b"scan1-track-output", config.scan1_output_time),
+            (b"scan2-track-output", config.scan2_output_time),
+        ]
+        assert list(summary["consumer_receives"][0].args[1].values()) == [config.scan1_track_id.encode("utf-8")]
+        assert list(summary["consumer_receives"][1].args[1].values()) == [config.scan2_track_id.encode("utf-8")]
+        assert len(summary["post_readvance_receives"]) == 2
+        assert summary["scan1_close_grant"].args[0].value == config.scan1_end
+        assert summary["scan2_close_grant"].args[0].value == config.scan2_end
+        assert summary["scan2_reflect"].args[2] == b"scan2-input"
+        assert summary["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["oracle_report"]["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["oracle_report"]["assertions"] == {
+            "scan1_closes_before_scan2_input": True,
+            "scan2_input_collected_while_scan1_output_pending": True,
+            "scan1_output_precedes_scan2_output": True,
+            "no_cross_window_contamination": True,
+            "scan_outputs_tied_to_their_own_window_inputs": True,
+            "no_duplicate_pipeline_replay_after_readvance": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009", "HLA2025-BND-003")
+def test_2025_transport_server_runs_synchronization_scenario_via_runner_over_fedpro_route():
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-sync-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = SynchronizationScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"sync-tag",
+        )
+
+        summary = run_synchronization_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert summary["leader_registration"].args == (config.label,)
+        assert summary["leader_announce"].args[:2] == (config.label, config.tag)
+        assert summary["wing_announce"].args[:2] == (config.label, config.tag)
+        assert summary["leader_sync"].args == (config.label, set())
+        assert summary["wing_sync"].args == (config.label, set())
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-010", "HLA2025-BND-003")
+def test_2025_transport_server_runs_synchronization_registration_failure_scenario_via_runner_over_fedpro_route():
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.rti1516e.enums import SynchronizationPointFailureReason
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-sync-failure-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = SynchronizationScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"sync-tag",
+        )
+
+        summary = run_synchronization_registration_failure_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert summary["registration_success"].args == (config.label,)
+        assert summary["registration_failure"].args == (
+            config.label,
+            SynchronizationPointFailureReason.SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE,
+        )
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-011", "HLA2025-BND-003")
+def test_2025_transport_server_runs_failed_federate_synchronization_scenario_via_runner_over_fedpro_route():
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-sync-failed-set-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = SynchronizationScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"sync-tag",
+        )
+
+        summary = run_failed_federate_synchronization_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            leader_success=True,
+            wing_success=False,
+        )
+
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert summary["leader_registration"].args == (config.label,)
+        assert summary["leader_announce"].args[:2] == (config.label, config.tag)
+        assert summary["wing_announce"].args[:2] == (config.label, config.tag)
+        assert summary["leader_sync"].args[0] == config.label
+        assert summary["wing_sync"].args[0] == config.label
+        assert summary["leader_sync"].args[1] == {summary["wing_handle"]}
+        assert summary["wing_sync"].args[1] == {summary["wing_handle"]}
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-012", "HLA2025-BND-003")
+def test_2025_transport_server_runs_late_join_synchronization_scenario_via_runner_over_fedpro_route():
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    late = None
+    federation_name = f"fedpro-2025-sync-late-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        late = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = SynchronizationScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            late_name="Late",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"sync-tag",
+        )
+
+        summary = run_late_join_synchronization_scenario(
+            leader,
+            wing,
+            late,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            late_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert summary["late_handle"] is not None
+        assert summary["leader_announce"].args[:2] == (config.label, config.tag)
+        assert summary["wing_announce"].args[:2] == (config.label, config.tag)
+        assert summary["late_announce"].args[:2] == (config.label, config.tag)
+        assert summary["leader_sync"].args == (config.label, set())
+        assert summary["wing_sync"].args == (config.label, set())
+        assert summary["late_sync"].args == (config.label, set())
+    finally:
+        for rti in (late, wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (late, wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-013", "HLA2025-BND-003")
+def test_2025_transport_server_runs_multiple_synchronization_points_scenario_via_runner_over_fedpro_route():
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-sync-multi-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = SynchronizationScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=tuple(scenario_fom_paths("message-test")),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"sync-tag",
+            second_label="PreRun",
+            second_tag=b"prerun-tag",
+        )
+
+        summary = run_multiple_synchronization_points_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert {record.args[:2] for record in summary["leader_announces"]} == {
+            (config.label, config.tag),
+            (config.second_label, config.second_tag),
+        }
+        assert {record.args[:2] for record in summary["wing_announces"]} == {
+            (config.label, config.tag),
+            (config.second_label, config.second_tag),
+        }
+        assert summary["first_sync_leader"].args[0] == config.label
+        assert summary["first_sync_wing"].args[0] == config.label
+        assert summary["second_sync_leader"].args[0] == config.second_label
+        assert summary["second_sync_wing"].args[0] == config.second_label
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
             if rti is not None:
                 _close_rti_ambassador(rti)
         server.close()
@@ -5400,6 +10453,14 @@ def test_2025_transport_server_runs_shared_restore_window_state_oracle_over_fedp
             post_closed_restore_reflects=post_closed_restore_reflects,
         )
 
+        assert restored_open_state == saved_open_state
+        assert restored_closed_state == saved_closed_state
+        assert open_restore_time == HLAinteger64Time(config.first_input_time)
+        assert closed_restore_time == HLAinteger64Time(config.scan_window_end)
+        assert reclosed_grant.args[0] == HLAinteger64Time(config.scan_window_end)
+        assert dirty_post_close_grant == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", str(config.post_close_resume_time))
+        assert post_closed_restore_reflects == []
+
         assert oracle_report["certification_target"] == "time-window-save-restore-window-state"
         assert oracle_report["assertions"] == {
             "open_restore_reinstates_preclosure_time": True,
@@ -5699,6 +10760,14 @@ def test_2025_transport_server_runs_shared_restore_output_oracle_over_fedpro_rou
             )
         )
         post_restore_receives = [restored_consumer_receive]
+
+        assert dirty_consumer_receive.args[2] == b"dirty-track-output"
+        assert list(dirty_consumer_receive.args[1].values()) == [b"dirty-track-100-110"]
+        assert dirty_consumer_receive.args[5] == HLAinteger64Time(config.radar_output_time)
+        assert restored_consumer_receive.args[2] == b"restored-track-output"
+        assert list(restored_consumer_receive.args[1].values()) == [b"restored-track-100-110"]
+        assert restored_consumer_receive.args[5] == HLAinteger64Time(config.radar_output_time)
+        assert len(post_restore_receives) == 1
 
         oracle_report = _verify_time_window_restore_output_oracle(
             config=config,
@@ -6062,6 +11131,25 @@ def test_2025_transport_server_runs_shared_pipeline_restore_oracle_over_fedpro_r
         ]
         post_restore_duplicate_receives = list(restored_consumer_receives)
 
+        assert [record.args[2] for record in dirty_consumer_receives] == [
+            b"dirty-scan1-track-output",
+            b"dirty-scan2-track-output",
+        ]
+        assert [record.args[5] for record in dirty_consumer_receives] == [
+            HLAinteger64Time(131),
+            HLAinteger64Time(132),
+        ]
+        assert [record.args[2] for record in restored_consumer_receives] == [
+            b"restored-scan1-track-output",
+            b"restored-scan2-track-output",
+        ]
+        assert [record.args[5] for record in restored_consumer_receives] == [
+            HLAinteger64Time(115),
+            HLAinteger64Time(131),
+        ]
+        assert post_restore_scan2_reflects == []
+        assert len(post_restore_duplicate_receives) == 2
+
         oracle_report = _verify_time_window_pipeline_restore_oracle(
             config=config,
             saved_radar_time=saved_radar_time,
@@ -6275,6 +11363,393 @@ def test_2025_transport_server_runs_shared_local_delete_scenario_over_fedpro_rou
         server.close()
 
 
+@pytest.mark.requirements(
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-122",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_attribute_ownership_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"fedpro-2025-ownership-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        acquirer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = OwnershipScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"fedpro-ownership-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_attribute_ownership_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=_FedProOwnershipRecordingFederateAmbassador(),
+            acquirer_federate=_FedProOwnershipRecordingFederateAmbassador(),
+        )
+
+        assert summary["not_owned"].args == (summary["object_instance"], summary["owner_attribute"])
+        assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+        assert summary["informed"].args[0] == summary["object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+        assert summary["informed_federate_name"] == config.acquirer_name
+    finally:
+        for rti in (acquirer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (acquirer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-084",
+    "HLA2025-FI-SVC-085",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_attribute_ownership_unavailable_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"fedpro-2025-ownership-unavailable-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        acquirer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = OwnershipScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"fedpro-unavailable-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_attribute_ownership_unavailable_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=_FedProOwnershipRecordingFederateAmbassador(),
+            acquirer_federate=_FedProOwnershipRecordingFederateAmbassador(),
+        )
+
+        assert summary["unavailable"].args[0] == summary["object_instance"]
+        assert summary["acquirer_attribute"] in summary["unavailable"].args[1]
+        assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is True
+        assert acquirer.is_attribute_owned_by_federate(summary["object_instance"], summary["acquirer_attribute"]) is False
+    finally:
+        for rti in (acquirer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (acquirer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-086",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_non_owner_update_rejection_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    observer = None
+    federation_name = f"fedpro-2025-non-owner-update-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        observer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = NonOwnerUpdateScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            observer_name="Observer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"fedpro-illegal-update-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_non_owner_update_rejection_scenario(
+            owner,
+            observer,
+            config=config,
+            owner_federate=_FedProOwnershipRecordingFederateAmbassador(),
+            observer_federate=_FedProOwnershipRecordingFederateAmbassador(),
+        )
+
+        assert summary["failure"] is not None
+        assert isinstance(summary["failure"], AttributeNotOwned)
+        assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is True
+        assert observer.is_attribute_owned_by_federate(summary["observer_object_instance"], summary["observer_attribute"]) is False
+    finally:
+        for rti in (observer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (observer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_release_request_ownership_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"fedpro-2025-release-request-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        acquirer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = ReleaseRequestOwnershipScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"fedpro-release-{uuid.uuid4().hex[:8]}",
+            request_tag=b"acquire-request",
+            owner_action="ifwanted",
+        )
+
+        summary = run_release_request_ownership_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=_FedProOwnershipRecordingFederateAmbassador(),
+            acquirer_federate=_FedProOwnershipRecordingFederateAmbassador(),
+        )
+
+        assert summary["release"].args == (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            b"acquire-request",
+        )
+        assert summary["divested"] == {summary["owner_attribute"]}
+        assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+        assert summary["informed"].args[0] == summary["object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+        assert acquirer.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+        assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is False
+    finally:
+        for rti in (acquirer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (acquirer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_negotiated_attribute_ownership_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"fedpro-2025-negotiated-route-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        acquirer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = NegotiatedOwnershipScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"fedpro-negotiated-{uuid.uuid4().hex[:8]}",
+            assumption_tag=b"offer-tag",
+            request_tag=b"request-tag",
+            cancel_tag=b"cancel-tag",
+        )
+
+        summary = run_negotiated_attribute_ownership_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=_FedProOwnershipRecordingFederateAmbassador(),
+            acquirer_federate=_FedProOwnershipRecordingFederateAmbassador(),
+        )
+
+        if summary["assumption"] is not None:
+            assert summary["assumption"].args == (
+                summary["object_instance"],
+                {summary["acquirer_attribute"]},
+                config.assumption_tag,
+            )
+        if summary["divestiture_confirmation"] is not None:
+            assert summary["divestiture_confirmation"].args == (
+                summary["object_instance"],
+                {summary["owner_attribute"]},
+                config.request_tag,
+            )
+        assert summary["release"].args[2] == config.cancel_tag
+        assert summary["cancellation"].args == (
+            summary["release_acquirer_object_instance"],
+            {summary["acquirer_attribute"]},
+        )
+        assert summary["divested"] == {summary["owner_attribute"]}
+        assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
+        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+        assert summary["informed"].args[0] == summary["release_object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+    finally:
+        for rti in (acquirer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (acquirer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_confirm_divestiture_negotiated_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    acquirer = None
+    federation_name = f"fedpro-2025-confirm-negotiated-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        acquirer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = NegotiatedOwnershipScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            object_instance_name=f"fedpro-confirm-negotiated-{uuid.uuid4().hex[:8]}",
+            assumption_tag=b"offer-tag",
+            request_tag=b"request-tag",
+            cancel_tag=b"cancel-tag",
+        )
+
+        summary = run_confirm_divestiture_negotiated_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=_FedProOwnershipRecordingFederateAmbassador(),
+            acquirer_federate=_FedProOwnershipRecordingFederateAmbassador(),
+        )
+
+        assert summary["divestiture_confirmation"].args == (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            config.request_tag,
+        )
+        assert summary["acquired"].args == (
+            summary["acquirer_object_instance"],
+            {summary["acquirer_attribute"]},
+            summary["confirm_tag"],
+        )
+        assert summary["informed"].args[0] == summary["object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+        assert acquirer.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+        assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is False
+    finally:
+        for rti in (acquirer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (acquirer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
 def test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route():
     server = start_2025_grpc_server()
@@ -6327,6 +11802,283 @@ def test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_rou
                 leader.destroy_federation_execution(federation_name)
             except Exception:
                 pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_federation_listing_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    reporter = None
+    federation_name = f"fedpro-2025-shared-listing-{uuid.uuid4().hex[:8]}"
+    try:
+        reporter = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            federate_name="Reporter",
+            federate_type="LifecycleFederate",
+        )
+
+        summary = run_federation_listing_scenario(
+            reporter,
+            config=config,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["federation_name"] == federation_name
+        assert federation_name in summary["reported_names"]
+        assert federation_name not in summary["post_destroy_reported_names"]
+    finally:
+        if reporter is not None:
+            _close_rti_ambassador(reporter)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    late = None
+    federation_name = f"fedpro-2025-shared-join-preconditions-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        late = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = JoinScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            late_name="Late",
+            federate_type="JoinFederate",
+            save_name=f"JOIN-BLOCK-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_join_precondition_scenario(
+            leader,
+            wing,
+            late,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            late_federate=RecordingFederateAmbassador(),
+        )
+
+        assert isinstance(summary["not_connected"], NotConnected)
+        assert isinstance(summary["missing_federation"], FederationExecutionDoesNotExist)
+        assert isinstance(summary["duplicate_name"], FederateNameAlreadyInUse)
+        assert isinstance(summary["already_joined"], FederateAlreadyExecutionMember)
+        assert isinstance(summary["save_in_progress"], SaveInProgress)
+        assert isinstance(summary["restore_in_progress"], RestoreInProgress)
+    finally:
+        for rti in (late, wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-008", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_multi_participation_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    shadow = None
+    federation_name = f"fedpro-2025-shared-multi-participation-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        shadow = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            secondary_federation_name=f"{federation_name}-secondary",
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            federate_name="Leader",
+            second_federate_name="Wing",
+            secondary_federate_name="Shadow",
+            federate_type="LifecycleType",
+        )
+
+        summary = run_multi_participation_scenario(
+            leader,
+            wing,
+            shadow,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            shadow_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["primary_federation_name"] == config.federation_name
+        assert summary["secondary_federation_name"] == config.secondary_federation_name
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
+        assert summary["shadow_handle"] is not None
+    finally:
+        for rti in (shadow, wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_resign_mom_cleanup_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-shared-resign-mom-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = ResignScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="ResignFederate",
+        )
+
+        summary = run_resign_mom_cleanup_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["wing_before"].args[1]
+        assert summary["federation_after"].args[1]
+        assert isinstance(summary["object_instance_not_known"], ObjectInstanceNotKnown)
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_disconnect_mom_cleanup_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-shared-disconnect-mom-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = ResignScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="ResignFederate",
+        )
+
+        summary = run_disconnect_mom_cleanup_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_before"].args[1]
+        assert summary["federation_after"].args[1]
+        assert isinstance(summary["object_instance_not_known"], ObjectInstanceNotKnown)
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-003", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_transport_server_runs_shared_lost_federate_mom_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    observer = None
+    victim = None
+    federation_name = f"fedpro-2025-shared-lost-federate-{uuid.uuid4().hex[:8]}"
+    try:
+        observer = _FedPro2025ScenarioAdapter(
+            GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        )
+        victim = _FedPro2025ScenarioAdapter(
+            GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        )
+        config = LostFederateScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            observer_name="Observer",
+            victim_name="Victim",
+            federate_type="LostFederateProbe",
+            object_instance_name=f"fedpro-2025-lost-{uuid.uuid4().hex[:8]}",
+            fault_description="fedpro hosted induced loss",
+        )
+
+        summary = run_lost_federate_mom_scenario(
+            observer,
+            victim,
+            config=config,
+            observer_federate=RecordingFederateAmbassador(),
+            victim_federate=RecordingFederateAmbassador(),
+            induce_loss=lambda federate_handle, fault_description: server.servicer.force_federate_loss(
+                str(getattr(federate_handle, "value", federate_handle)),
+                fault_description,
+            ),
+        )
+
+        assert summary["loss_record"].args[1]
+        assert summary["removal"].args[0] == summary["object_instance"]
+        assert isinstance(summary["object_instance_not_known"], ObjectInstanceNotKnown)
+    finally:
+        for rti in (victim, observer):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-shared-resign-preconditions-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = ResignScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="ResignFederate",
+        )
+
+        summary = run_resign_precondition_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert isinstance(summary["not_connected"], NotConnected)
+        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
+        assert isinstance(summary["invalid_action"], InvalidResignAction)
+        assert isinstance(summary["owns_attributes"], FederateOwnsAttributes)
+        assert isinstance(summary["acquisition_pending"], OwnershipAcquisitionPending)
+        assert summary["object_instance"] is not None
+        assert summary["attribute"] is not None
+    finally:
         for rti in (wing, leader):
             if rti is not None:
                 _close_rti_ambassador(rti)
@@ -6451,6 +12203,259 @@ def test_2025_transport_server_runs_save_restore_queued_callback_scenario_over_f
                 leader.destroy_federation_execution(federation_name)
             except Exception:
                 pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_restore_request_precondition_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-restore-request-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"RESTORE-REQ-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_restore_request_precondition_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["save_in_progress"].__class__.__name__ == "SaveInProgress"
+        assert summary["restore_in_progress"].__class__.__name__ == "RestoreInProgress"
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_abort_save_exception_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    rti = None
+    try:
+        rti = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        summary = run_abort_save_exception_scenario(
+            rti,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_restore_abort_exception_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-restore-abort-exc-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"RESTORE-ABORT-EXC-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_restore_abort_exception_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["restore_not_in_progress"].__class__.__name__ == "RestoreNotInProgress"
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_save_status_exception_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    rti = None
+    try:
+        rti = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        summary = run_save_status_exception_scenario(
+            rti,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_restore_status_exception_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    rti = None
+    try:
+        rti = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        summary = run_restore_status_exception_scenario(
+            rti,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_save_participant_exception_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-save-participant-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-PART-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_save_participant_exception_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["begun_not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["complete_not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_complete_not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["begun_not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["complete_not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["not_complete_not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["begun_not_initiated"].__class__.__name__ == "SaveNotInitiated"
+        assert summary["complete_not_initiated"].__class__.__name__ == "SaveNotInitiated"
+        assert summary["not_complete_not_initiated"].__class__.__name__ == "SaveNotInitiated"
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_restore_participant_exception_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-restore-participant-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"RESTORE-PART-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_restore_participant_exception_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["complete_not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["not_complete_not_connected"].__class__.__name__ == "NotConnected"
+        assert summary["complete_not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["not_complete_not_joined"].__class__.__name__ == "FederateNotExecutionMember"
+        assert summary["complete_not_requested"].__class__.__name__ == "RestoreNotRequested"
+        assert summary["not_complete_not_requested"].__class__.__name__ == "RestoreNotRequested"
+    finally:
         for rti in (wing, leader):
             if rti is not None:
                 _close_rti_ambassador(rti)
@@ -6745,6 +12750,305 @@ def test_2025_transport_server_runs_restore_request_failure_scenario_over_fedpro
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-029",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_restore_failure_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-restore-failure-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-RESTORE-FAIL-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_restore_failure_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["restore_succeeded"].args == (config.save_name,)
+        assert summary["wing_initiate_restore"].args[0] == config.save_name
+        assert summary["leader_not_restored"].args[0].name == "FEDERATE_REPORTED_FAILURE_DURING_RESTORE"
+        assert summary["wing_not_restored"].args[0].name == "FEDERATE_REPORTED_FAILURE_DURING_RESTORE"
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-027",
+    "HLA2025-FI-SVC-029",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_save_abort_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-save-abort-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-ABORT-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_save_abort_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["leader_initiate_save"].args == (config.save_name,)
+        assert summary["wing_initiate_save"].args == (config.save_name,)
+        assert summary["leader_not_saved"].args[0].name == "SAVE_ABORTED"
+        assert summary["wing_not_saved"].args[0].name == "SAVE_ABORTED"
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-028",
+    "HLA2025-FI-SVC-029",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_restore_abort_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-restore-abort-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"RESTORE-ABORT-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_restore_abort_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+
+        assert summary["restore_succeeded"].args == (config.save_name,)
+        assert summary["wing_initiate_restore"].args[0] == config.save_name
+        assert summary["leader_not_restored"].args[0].name == "RESTORE_ABORTED"
+        assert summary["wing_not_restored"].args[0].name == "RESTORE_ABORTED"
+    finally:
+        for rti in (wing, leader):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if leader is not None:
+            try:
+                leader.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_resigned_federate_callback_silence_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-resign-callback-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = SaveRestoreScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"POST-RESIGN-SAVE-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_resigned_federate_callback_silence_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_initiate_save"].args == (config.save_name,)
+        assert summary["leader_saved"] is not None
+        assert summary["wing_record_count_after"] == summary["wing_record_count_before"]
+        assert summary["wing_post_resign_records"] == []
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_transportation_type_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    observer = None
+    federation_name = f"fedpro-2025-transport-route-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        observer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = TransportationTypeScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            observer_name="Observer",
+            federate_type="TransportationFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            interaction_class_name="HLAinteractionRoot.TrackReport",
+            object_instance_name=f"transport-route-{uuid.uuid4().hex[:8]}",
+            transportation_name="HLAbestEffort",
+            second_attribute_name="Velocity",
+            parameter_name="TrackId",
+        )
+
+        summary = run_transportation_type_scenario(
+            owner,
+            observer,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            observer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["confirm_attribute"].args == (
+            summary["object_instance"],
+            {summary["attribute"]},
+            summary["transport"],
+        )
+        assert summary["report_attribute"].args == (
+            summary["object_instance"],
+            summary["attribute"],
+            summary["transport"],
+        )
+        assert summary["confirm_interaction"].args == (
+            summary["interaction"],
+            summary["transport"],
+        )
+        assert summary["report_interaction"].args[1:] == (
+            summary["interaction"],
+            summary["transport"],
+        )
+    finally:
+        for rti in (observer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (observer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-065",
     "HLA2025-FI-SVC-066",
     "HLA2025-FI-SVC-067",
@@ -6793,6 +13097,67 @@ def test_2025_transport_server_runs_transportation_type_restore_persistence_scen
             summary["best_effort_transport"],
         )
         assert summary["post_restore_interaction"].args[4] == summary["best_effort_transport"]
+    finally:
+        for rti in (observer, owner):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if owner is not None:
+            try:
+                owner.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (observer, owner):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_runs_transportation_type_rejection_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    owner = None
+    observer = None
+    federation_name = f"fedpro-2025-transport-reject-route-{uuid.uuid4().hex[:8]}"
+    try:
+        owner = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        observer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = TransportationTypeScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            observer_name="Observer",
+            federate_type="TransportationFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            interaction_class_name="HLAinteractionRoot.TrackReport",
+            object_instance_name=f"transport-reject-{uuid.uuid4().hex[:8]}",
+            parameter_name="TrackId",
+            save_name=f"TRANSPORT-REJECT-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_transportation_type_rejection_scenario(
+            owner,
+            observer,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            observer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["object_instance"] is not None
+        assert summary["attribute"] is not None
+        assert summary["interaction"] is not None
+        assert summary["reliable_transport"] is not None
     finally:
         for rti in (observer, owner):
             if rti is None:
@@ -7445,6 +13810,161 @@ def test_2025_transport_server_runs_shared_request_attribute_value_update_scenar
         server.close()
 
 
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-021", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_declaration_invalid_attribute_publication_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    publisher = None
+    federation_name = f"fedpro-2025-shared-declaration-invalid-{uuid.uuid4().hex[:8]}"
+    try:
+        publisher = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = DeclarationManagementScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            publisher_name="Publisher",
+            federate_type="SmokeFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            interaction_class_name="HLAinteractionRoot.TrackReport",
+            parameter_name="TrackId",
+        )
+
+        summary = run_declaration_invalid_attribute_publication_scenario(
+            publisher,
+            config=config,
+            publisher_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["publisher_handle"] is not None
+        assert summary["publisher_class"] is not None
+        assert summary["publisher_attribute"] is not None
+        assert summary["invalid_attribute"] is not None
+        assert type(summary["exception"]).__name__ == "AttributeNotDefined"
+    finally:
+        if publisher is not None:
+            try:
+                publisher.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+            try:
+                publisher.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+            _close_rti_ambassador(publisher)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-022", "HLA2025-FI-SVC-023", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    publisher = None
+    federation_name = f"fedpro-2025-shared-declaration-unpublish-{uuid.uuid4().hex[:8]}"
+    try:
+        publisher = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = DeclarationManagementScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            publisher_name="Publisher",
+            federate_type="SmokeFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            interaction_class_name="HLAinteractionRoot.TrackReport",
+            parameter_name="TrackId",
+            object_instance_name=f"DeclarationObject-{uuid.uuid4().hex[:8]}",
+            attribute_payload=b"declaration-payload",
+            attribute_tag=b"declaration-tag",
+            interaction_payload=b"declaration-interaction",
+            interaction_tag=b"declaration-interaction-tag",
+        )
+
+        summary = run_declaration_unpublish_rejection_scenario(
+            publisher,
+            config=config,
+            publisher_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["publisher_handle"] is not None
+        assert summary["object_instance"] is not None
+        assert type(summary["object_unpublish_error"]).__name__ in {"AttributeNotPublished", "ObjectClassNotPublished"}
+        assert type(summary["interaction_unpublish_error"]).__name__ == "InteractionClassNotPublished"
+    finally:
+        if publisher is not None:
+            try:
+                publisher.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+            try:
+                publisher.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+            _close_rti_ambassador(publisher)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-001", "HLA2025-FI-009", "HLA2025-MOD-006", "HLA2025-FI-SVC-101", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    publisher = None
+    subscriber = None
+    federation_name = f"fedpro-2025-shared-declaration-time-{uuid.uuid4().hex[:8]}"
+    try:
+        publisher = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        subscriber = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = DeclarationManagementScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            publisher_name="Publisher",
+            subscriber_name="Subscriber",
+            federate_type="SmokeFederate",
+            object_class_name="HLAobjectRoot.Target",
+            attribute_name="Position",
+            interaction_class_name="HLAinteractionRoot.TrackReport",
+            parameter_name="TrackId",
+            object_instance_name=f"DeclarationObject-{uuid.uuid4().hex[:8]}",
+            attribute_payload=b"declaration-payload",
+            attribute_tag=b"declaration-tag",
+            interaction_payload=b"declaration-interaction",
+            interaction_tag=b"declaration-interaction-tag",
+        )
+
+        summary = run_time_managed_declaration_independence_scenario(
+            publisher,
+            subscriber,
+            config=config,
+            publisher_federate=RecordingFederateAmbassador(),
+            subscriber_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["publisher_handle"] is not None
+        assert summary["subscriber_handle"] is not None
+        assert summary["time_regulation"].args[0].value == 0
+        assert summary["time_constrained"].args[0].value == 0
+        assert summary["start_record"].args == (summary["publisher_class"],)
+        assert summary["turn_on_record"].args == (summary["publisher_interaction"],)
+        assert summary["discover_record"].args[2] == config.object_instance_name
+        assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+        assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+    finally:
+        for rti in (subscriber, publisher):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if publisher is not None:
+            try:
+                publisher.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (subscriber, publisher):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
 def test_2025_transport_server_runs_shared_request_attribute_value_update_routing_scenario_over_fedpro_route():
     server = start_2025_grpc_server()
@@ -7537,6 +14057,36 @@ def test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fe
         server.close()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003", "HLA2025-OMT-007")
+def test_2025_transport_server_runs_shared_federation_lifecycle_with_mim_create_over_fedpro_route():
+    server = start_2025_grpc_server()
+    rti = None
+    federation_name = f"fedpro-2025-shared-lifecycle-mim-{uuid.uuid4().hex[:8]}"
+    try:
+        rti = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("Support2025.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            use_mim_create=True,
+        )
+
+        summary = run_federation_lifecycle_scenario(
+            rti,
+            config=config,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["federation_name"] == config.federation_name
+        assert summary["federate_handle"] is not None
+        assert summary["resign_action"] == config.resign_action
+        assert summary["use_mim_create"] is True
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
 def test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_over_fedpro_route():
     server = start_2025_grpc_server()
@@ -7576,8 +14126,31 @@ def test_2025_transport_server_runs_shared_support_factory_and_decode_scenario_o
         assert summary["lookup_summary"]["best_effort_transport_name"] == "HLAbestEffort"
         assert summary["lookup_summary"]["reliable_transport_enum_name"] == "HLAreliable"
         assert summary["lookup_summary"]["best_effort_transport_enum_name"] == "HLAbestEffort"
+        assert summary["factory_summary"]["attribute_factory"] is not None
+        assert summary["factory_summary"]["attribute_set_factory"] is not None
+        assert summary["factory_summary"]["attribute_value_map_factory"] is not None
+        assert summary["factory_summary"]["dimension_factory"] is not None
+        assert summary["factory_summary"]["dimension_set_factory"] is not None
+        assert summary["factory_summary"]["federate_factory"] is not None
+        assert summary["factory_summary"]["federate_set_factory"] is not None
+        assert summary["factory_summary"]["interaction_factory"] is not None
+        assert summary["factory_summary"]["object_class_factory"] is not None
+        assert summary["factory_summary"]["object_instance_factory"] is not None
+        assert summary["factory_summary"]["parameter_factory"] is not None
+        assert summary["factory_summary"]["parameter_value_map_factory"] is not None
+        assert summary["factory_summary"]["region_factory"] is not None
+        assert summary["factory_summary"]["region_set_factory"] is not None
+        assert summary["factory_summary"]["message_retraction_factory"] is not None
+        assert summary["factory_summary"]["transportation_factory"] is not None
+        assert summary["decoded_summary"]["federate_handle"] == summary["federate_handle"]
+        assert summary["decoded_summary"]["object_class_handle"] == summary["object_class"]
+        assert summary["decoded_summary"]["interaction_class_handle"] == summary["interaction_class"]
+        assert summary["decoded_summary"]["object_instance_handle"] == summary["object_instance"]
         assert summary["decoded_summary"]["attribute_handle"] == summary["attribute"]
         assert summary["decoded_summary"]["parameter_handle"] == summary["parameter"]
+        assert summary["decoded_summary"]["dimension_handle"].value == config.sample_dimension_value
+        assert summary["decoded_summary"]["message_retraction_handle"].value == config.sample_message_retraction_value
+        assert summary["decoded_summary"]["region_handle"].value == config.sample_region_value
         assert summary["factory_summary"]["attribute_region_pair_list_factory"] is not None
     finally:
         if rti is not None:
@@ -7616,6 +14189,104 @@ def test_2025_transport_server_runs_shared_federation_lifecycle_negative_scenari
         assert type(summary["disconnect_while_joined"]).__name__ == "FederateIsExecutionMember"
         assert type(summary["destroy_with_joined"]).__name__ == "FederatesCurrentlyJoined"
         assert type(summary["destroy_missing"]).__name__ == "FederationExecutionDoesNotExist"
+    finally:
+        for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-008", "HLA2025-OMT-007", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_fom_module_visibility_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    rti = None
+    federation_name = f"fedpro-2025-shared-fom-visibility-{uuid.uuid4().hex[:8]}"
+    try:
+        rti = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+        )
+
+        summary = run_fom_module_visibility_scenario(
+            rti,
+            config=config,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["federation_name"] == config.federation_name
+        assert summary["federate_handle"] is not None
+        assert summary["fom_report_record"].args[0] is not None
+        assert summary["mim_report_record"].args[0] is not None
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-008", "HLA2025-OMT-007", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_multi_module_fom_visibility_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    rti = None
+    federation_name = f"fedpro-2025-shared-fom-multi-{uuid.uuid4().hex[:8]}"
+    try:
+        rti = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            federate_name="Leader",
+            federate_type="LifecycleType",
+        )
+
+        summary = run_multi_module_fom_visibility_scenario(
+            rti,
+            config=config,
+            federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["federation_name"] == config.federation_name
+        assert summary["federate_handle"] is not None
+        assert b"DimA" in summary["payload"]
+        assert b"DimB" in summary["payload"]
+    finally:
+        if rti is not None:
+            _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-OMT-007", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_fom_integrity_negative_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    leader = None
+    wing = None
+    federation_name = f"fedpro-2025-shared-fom-negative-{uuid.uuid4().hex[:8]}"
+    try:
+        leader = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        wing = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        config = FederationLifecycleScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            federate_name="Leader",
+            second_federate_name="Wing",
+            federate_type="LifecycleType",
+        )
+
+        summary = run_fom_integrity_negative_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert isinstance(summary["create_missing"], CouldNotOpenFDD)
+        assert isinstance(summary["create_bad"], ErrorReadingFDD)
+        assert isinstance(summary["create_inconsistent"], InconsistentFDD)
+        assert isinstance(summary["join_missing"], CouldNotOpenFDD)
+        assert isinstance(summary["join_bad"], ErrorReadingFDD)
+        assert isinstance(summary["join_inconsistent"], InconsistentFDD)
+        assert summary["leader_handle"] is not None
+        assert summary["wing_handle"] is not None
     finally:
         for rti in (wing, leader):
             if rti is not None:
@@ -7887,7 +14558,10 @@ def test_2025_transport_server_runs_shared_receive_order_poison_scenario_over_fe
         assert summary["closed_window_tags_before"] == [b"truth-105", b"truth-106"]
         assert summary["closed_window_tags_after"] == [b"truth-105", b"truth-106"]
         assert summary["poison_reflection"].args[2] == b"receive-order-poison"
+        if len(summary["poison_reflection"].args) > 8:
+            assert summary["poison_reflection"].args[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
         assert summary["consumer_receive"].args[2] == b"radar-track-output"
+        assert list(summary["consumer_receive"].args[1].values()) == [b"track-poison-safe"]
         assert summary["consumer_receive"].args[5] == HLAinteger64Time(config.radar_output_time)
         assert summary["oracle_report"]["certification_target"] == "time-window-receive-order-poison"
         assert summary["oracle_report"]["assertions"] == {
@@ -7895,6 +14569,214 @@ def test_2025_transport_server_runs_shared_receive_order_poison_scenario_over_fe
             "poison_reflection_has_no_timestamp": True,
             "poison_reflection_is_receive_order": True,
             "consumer_output_still_delivered_at_expected_time": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    federation_name = f"fedpro-2025-shared-restore-state-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        config = TargetRadarWindowRestoreConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_restore_state_scenario(
+            truth,
+            radar,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+        )
+
+        assert summary["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["first_grant"].args[0].value == config.first_input_time
+        assert summary["dirty_close_grant"].args[0].value == config.scan_window_end
+        assert summary["open_restored_truth_time"].value == config.first_input_time
+        assert summary["open_restored_radar_time"].value == config.first_input_time
+        assert summary["reclosed_grant"].args[0].value == config.scan_window_end
+        assert summary["closed_restored_truth_time"].value == config.scan_window_end
+        assert summary["closed_restored_radar_time"].value == config.scan_window_end
+        assert summary["saved_open_state"]["window_closed"] is False
+        assert summary["restored_open_state"]["window_closed"] is False
+        assert summary["saved_closed_state"]["window_closed"] is True
+        assert summary["restored_closed_state"]["window_closed"] is True
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-window-state"
+        assert summary["oracle_report"]["assertions"] == {
+            "open_restore_reinstates_preclosure_time": True,
+            "open_restore_reinstates_open_window_state": True,
+            "restored_open_branch_recloses_at_window_end": True,
+            "closed_restore_reinstates_window_end_time": True,
+            "closed_restore_reinstates_closed_window_state": True,
+            "closed_restore_discards_dirty_post_close_callbacks": True,
+        }
+    finally:
+        for rti in (radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_restore_output_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"fedpro-2025-shared-restore-output-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        consumer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarWindowRestoreOutputConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_restore_output_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        assert summary["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["saved_consumer_time"].value == config.scan_window_end
+        assert summary["dirty_consumer_receive"].args[2] == b"dirty-track-output"
+        assert summary["dirty_consumer_receive"].args[5].value == config.radar_output_time
+        assert summary["restored_truth_time"].value == config.scan_window_end
+        assert summary["restored_radar_time"].value == config.scan_window_end
+        assert summary["restored_consumer_time"].value == config.scan_window_end
+        assert [record.args[2] for record in summary["post_restore_receives"]] == [b"restored-track-output"]
+        assert summary["restored_consumer_receive"].args[5].value == config.radar_output_time
+        assert summary["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-output-resume"
+        assert summary["oracle_report"]["assertions"] == {
+            "closed_window_saved_before_output": True,
+            "dirty_branch_output_published_before_restore": True,
+            "restored_timeline_republishes_legal_output": True,
+            "dirty_output_not_replayed_after_restore": True,
+            "single_post_restore_output_delivery": True,
+        }
+    finally:
+        for rti in (consumer, radar, truth):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if truth is not None:
+            try:
+                truth.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (consumer, radar, truth):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006", "HLA2025-BND-003")
+def test_2025_transport_server_runs_shared_pipeline_restore_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    truth = None
+    radar = None
+    consumer = None
+    federation_name = f"fedpro-2025-shared-pipeline-restore-{uuid.uuid4().hex[:8]}"
+    try:
+        truth = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        radar = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        consumer = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        truth_federate = RecordingFederateAmbassador()
+        radar_federate = RecordingFederateAmbassador()
+        consumer_federate = RecordingFederateAmbassador()
+        config = TargetRadarPipelineRestoreConfig(
+            federation_name=federation_name,
+            fom_modules=("TargetRadarFOMmodule.xml",),
+        )
+
+        summary = run_target_radar_time_window_pipeline_restore_scenario(
+            truth,
+            radar,
+            consumer,
+            config=config,
+            truth_federate=truth_federate,
+            radar_federate=radar_federate,
+            consumer_federate=consumer_federate,
+        )
+
+        assert summary["saved_radar_time"].value == config.scan2_input_time
+        assert summary["saved_consumer_time"].value == config.scan1_end
+        assert [record.args[2] for record in summary["dirty_consumer_receives"]] == [
+            b"dirty-scan1-track-output",
+            b"dirty-scan2-track-output",
+        ]
+        assert summary["restored_radar_time"].value == config.scan2_input_time
+        assert summary["restored_consumer_time"].value == config.scan1_end
+        assert summary["post_restore_scan2_reflects"] == []
+        assert [record.args[2] for record in summary["restored_consumer_receives"]] == [
+            b"restored-scan1-track-output",
+            b"restored-scan2-track-output",
+        ]
+        assert list(summary["restored_consumer_receives"][0].args[1].values()) == [
+            config.restored_scan1_track_id.encode("utf-8")
+        ]
+        assert list(summary["restored_consumer_receives"][1].args[1].values()) == [
+            config.restored_scan2_track_id.encode("utf-8")
+        ]
+        assert len(summary["post_restore_duplicate_receives"]) == 2
+        assert summary["certification_target"] == "time-window-save-restore-pipeline-resume"
+        assert summary["oracle_report"]["certification_target"] == "time-window-save-restore-pipeline-resume"
+        assert summary["oracle_report"]["assertions"] == {
+            "restore_reinstates_saved_radar_time": True,
+            "restore_reinstates_saved_consumer_time": True,
+            "dirty_pipeline_outputs_do_not_replay": True,
+            "scan2_collected_state_restored_without_reflection_replay": True,
+            "restored_outputs_match_saved_window_inputs": True,
+            "no_duplicate_restored_pipeline_outputs_after_readvance": True,
         }
     finally:
         for rti in (consumer, radar, truth):
@@ -7968,6 +14850,31 @@ def test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fe
             "consumer_order",
             "pipeline",
         }
+        assert summary["subproofs"]["core"]["certification_target"] == "time-window-core"
+        assert summary["subproofs"]["future_exclusion"]["certification_target"] == "time-window-future-exclusion"
+        assert summary["subproofs"]["output_delivery"]["certification_target"] == "time-window-output-delivery"
+        assert summary["subproofs"]["consumer_order"]["certification_target"] == "time-window-consumer-order"
+        assert summary["subproofs"]["pipeline"]["certification_target"] == "time-window-pipeline-two-scans"
+        assert summary["subproofs"]["core"]["window_close_grant"].args[0].value == config.scan_window_end
+        assert summary["subproofs"]["core"]["published_output_time"].value == config.radar_output_time
+        assert summary["subproofs"]["future_exclusion"]["blocked_grant"] is None
+        assert summary["subproofs"]["future_exclusion"]["final_grant"].args[0].value == config.scan_window_end
+        assert summary["subproofs"]["future_exclusion"]["late_send_rejected"] is True
+        assert summary["subproofs"]["output_delivery"]["consumer_receive"].args[2] == b"radar-track-output"
+        assert summary["subproofs"]["output_delivery"]["consumer_receive"].args[5].value == config.scan_window_end + 1
+        assert [
+            (record.args[2], record.args[5].value) for record in summary["subproofs"]["consumer_order"]["consumer_receives"]
+        ] == [
+            (b"other-track-output", config.scan_window_end),
+            (b"radar-track-output", config.scan_window_end + 1),
+        ]
+        pipeline_deliveries = [
+            (record.args[2], record.args[5].value) for record in summary["subproofs"]["pipeline"]["consumer_receives"]
+        ]
+        assert [payload for payload, _timestamp in pipeline_deliveries] == [b"scan1-track-output", b"scan2-track-output"]
+        assert pipeline_deliveries[0][1] < pipeline_deliveries[1][1]
+        assert all(timestamp >= config.scan_window_end for _payload, timestamp in pipeline_deliveries)
+        assert summary["subproofs"]["pipeline"]["scan2_reflect"].args[2] == b"scan2-input"
         assert summary["oracle_report"]["certification_target"] == "lookahead-processing-window-certified"
         assert summary["oracle_report"]["assertions"] == {
             "future_exclusion_blocked_until_window_safe": True,
@@ -9619,6 +16526,12 @@ def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
         )
         assert transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+        assert transport.request(TransportRequest(command="QUERY_FEDERATION_RESTORE_STATUS")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "FEDERATION_RESTORE_STATUS_RESPONSE",
+            "1:1:NO_RESTORE_IN_PROGRESS",
+        )
         assert transport.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "5")
         assert transport.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(saved_object,))).fields == (
             "FedProSavedTarget-1",
@@ -9652,7 +16565,7 @@ def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
         assert transport.request(TransportRequest(command="ABORT_FEDERATION_RESTORE")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_NOT_RESTORED", "RESTORE_ABORTED")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -10739,6 +17652,9 @@ def test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fe
             attribute,
             "61667465722d63616e63656c",
         )
+        assert transport.request(TransportRequest(command="IS_ATTRIBUTE_OWNED_BY_FEDERATE", fields=(object_instance, attribute))).fields == (
+            "1",
+        )
 
         assert transport.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("SAVE-OWNERSHIP",))).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", "SAVE-OWNERSHIP")
@@ -10769,6 +17685,9 @@ def test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fe
             attribute,
             "726573746f7265642d6f66666572",
         )
+        assert transport.request(TransportRequest(command="IS_ATTRIBUTE_OWNED_BY_FEDERATE", fields=(object_instance, attribute))).fields == (
+            "1",
+        )
         assert transport.request(
             TransportRequest(
                 command="ATTRIBUTE_OWNERSHIP_DIVESTITURE_IF_WANTED",
@@ -10783,7 +17702,7 @@ def test_2025_transport_server_restore_recovers_inflight_ownership_state_over_fe
             "726573746f7265642d70656e64696e67",
         )
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -10947,8 +17866,8 @@ def test_2025_transport_server_restores_cross_federate_attribute_owner_visibilit
             "2",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert acquirer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
+        assert acquirer.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert acquirer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
         assert acquirer.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -11167,14 +18086,6 @@ def test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_
             "1",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
-        assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
-        assert subscriber_a.request(TransportRequest(command="DISCONNECT")).fields == ()
-        assert subscriber_b.request(TransportRequest(command="DISCONNECT")).fields == ()
-
         assert {
             "requestFederationSaveWithTimeRequest",
             "federateSaveBegunRequest",
@@ -11193,6 +18104,173 @@ def test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_
             subscriber_b.close()
         if subscriber_a is not None:
             subscriber_a.close()
+        if owner is not None:
+            owner.close()
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-061",
+    "HLA2025-FI-SVC-062",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_restore_recovers_locally_deleted_object_known_state_over_fedpro_schema(
+    tmp_path: Path,
+):
+    server = start_2025_grpc_server()
+    owner = None
+    subscriber = None
+    federation_name = f"fedpro-2025-local-delete-restore-{uuid.uuid4().hex[:8]}"
+    save_label = f"SAVE-LOCAL-DELETE-{uuid.uuid4().hex[:8]}"
+    fom = tmp_path / "LocalDeleteRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Local Delete Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-21</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused local-delete restore fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    try:
+        owner = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        subscriber = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert owner.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert subscriber.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert owner.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", str(fom)))
+        ).fields == ()
+        assert owner.request(
+            TransportRequest(command="JOIN", fields=("LocalDeleteOwner", "Controller", federation_name))
+        ).fields == ("1", "HLAinteger64Time")
+        assert subscriber.request(
+            TransportRequest(command="JOIN", fields=("LocalDeleteSubscriber", "Observer", federation_name))
+        ).fields == ("2", "HLAinteger64Time")
+
+        object_class = owner.request(
+            TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))
+        ).fields[0]
+        attribute = owner.request(
+            TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))
+        ).fields[0]
+        assert owner.request(
+            TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))
+        ).fields == ()
+        assert subscriber.request(
+            TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))
+        ).fields == ()
+
+        object_instance = owner.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProLocalDeleteRestoreTarget-1"))
+        ).fields[0]
+        assert subscriber.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_instance,
+            object_class,
+            "FedProLocalDeleteRestoreTarget-1",
+        )
+
+        assert owner.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=(save_label,))).fields == ()
+        assert _evoke_until_fields(owner, ("1", "INITIATE_FEDERATE_SAVE", save_label))
+        assert _evoke_until_fields(subscriber, ("1", "INITIATE_FEDERATE_SAVE", save_label))
+        assert owner.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        assert subscriber.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        assert owner.request(TransportRequest(command="FEDERATE_SAVE_COMPLETE")).fields == ()
+        assert subscriber.request(TransportRequest(command="FEDERATE_SAVE_COMPLETE")).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+        assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+
+        assert subscriber.request(
+            TransportRequest(command="LOCAL_DELETE_OBJECT_INSTANCE", fields=(object_instance,))
+        ).fields == ()
+        with pytest.raises(TransportError) as local_delete_error:
+            subscriber.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,)))
+        assert local_delete_error.value.code == "ObjectInstanceNotKnown"
+
+        assert owner.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=(save_label,))).fields == ()
+        assert _evoke_until_fields(owner, ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", save_label))
+        assert _evoke_until_fields(subscriber, ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", save_label))
+        assert _evoke_until_fields(owner, ("1", "FEDERATION_RESTORE_BEGUN"))
+        assert _evoke_until_fields(subscriber, ("1", "FEDERATION_RESTORE_BEGUN"))
+        assert _evoke_until_fields(owner, ("1", "INITIATE_FEDERATE_RESTORE", save_label, "LocalDeleteOwner", "1"))
+        assert _evoke_until_fields(
+            subscriber,
+            ("1", "INITIATE_FEDERATE_RESTORE", save_label, "LocalDeleteSubscriber", "2"),
+        )
+        assert owner.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
+        assert subscriber.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
+        assert owner.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+        assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+
+        assert subscriber.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,))).fields == (
+            "FedProLocalDeleteRestoreTarget-1",
+        )
+        assert owner.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES",
+                fields=(object_instance, f"{attribute}:524553544f524544", "726573746f7265642d6c6f63616c2d64656c657465"),
+            )
+        ).fields == ()
+        assert _evoke_until_prefix(subscriber, ("1", "REFLECT")) == (
+            "1",
+            "REFLECT",
+            object_instance,
+            f"{attribute}:524553544f524544",
+            "726573746f7265642d6c6f63616c2d64656c657465",
+            "1",
+            "1",
+        )
+
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
+        assert subscriber.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert subscriber.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
+        assert subscriber.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "requestFederationSaveWithTimeRequest",
+            "federateSaveBegunRequest",
+            "federateSaveCompleteRequest",
+            "localDeleteObjectInstanceRequest",
+            "requestFederationRestoreRequest",
+            "federateRestoreCompleteRequest",
+            "updateAttributeValuesRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if subscriber is not None:
+            subscriber.close()
         if owner is not None:
             owner.close()
         server.close()
@@ -11370,14 +18448,6 @@ def test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_p
         assert owner.request(TransportRequest(command="RETRACT", fields=(fresh_handle,))).fields == ()
         assert subscriber.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_RETRACTION", fresh_handle)
         assert observer.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "REQUEST_RETRACTION")
-
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert subscriber.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
-        assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
-        assert subscriber.request(TransportRequest(command="DISCONNECT")).fields == ()
-        assert observer.request(TransportRequest(command="DISCONNECT")).fields == ()
 
         assert {
             "requestFederationSaveWithTimeRequest",
@@ -11591,7 +18661,7 @@ def test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_p
         )
         assert subscriber_b.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -11734,7 +18804,7 @@ def test_2025_transport_server_restore_clears_stale_plain_callbacks_and_preserve
         )
 
         for transport in (owner, subscriber, observer):
-            assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+            assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         for transport in (owner, subscriber, observer):
             assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -11911,7 +18981,7 @@ def test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_
             "1",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -12114,7 +19184,7 @@ def test_2025_transport_server_restore_recovers_plain_interaction_subscriber_rou
             f"{dimension}:0:10",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -12224,7 +19294,7 @@ def test_2025_transport_server_restore_recovers_time_and_switch_control_state_ov
         assert server.servicer.time_constrained is True
         assert server.servicer.asynchronous_delivery_enabled is True
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -12704,7 +19774,7 @@ def test_2025_transport_server_restore_recovers_transport_and_order_policy_state
         assert server.servicer.default_attribute_order[(object_instance, attribute)] == datatypes_pb2.TIMESTAMP
         assert server.servicer.interaction_order == (interaction_class, datatypes_pb2.TIMESTAMP)
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -12799,7 +19869,7 @@ def test_2025_transport_server_treats_callback_delivery_as_runtime_policy_not_sa
             "1",
         )
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -12886,8 +19956,6 @@ def test_2025_transport_server_runs_federation_reporting_callbacks_over_fedpro_s
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATE_RESIGNED", "NO_ACTION")
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
         assert wing.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -12971,7 +20039,7 @@ def test_2025_transport_server_isolates_requester_and_disabled_callbacks_per_fed
 
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATE_RESIGNED", "NO_ACTION")
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
         assert wing.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -13153,7 +20221,7 @@ def test_2025_transport_server_routes_transportation_query_callbacks_only_to_req
             transportation,
         )
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -13265,8 +20333,8 @@ def test_2025_transport_server_runs_object_instance_name_reservation_flow_over_f
             names,
         )
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATE_RESIGNED", "NO_ACTION")
+        assert transport.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATE_RESIGNED", "UNCONDITIONALLY_DIVEST_ATTRIBUTES")
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -13348,8 +20416,8 @@ def test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_
             attribute,
         )
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATE_RESIGNED", "NO_ACTION")
+        assert transport.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATE_RESIGNED", "UNCONDITIONALLY_DIVEST_ATTRIBUTES")
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -13441,7 +20509,7 @@ def test_2025_transport_server_isolates_name_reservation_callbacks_per_federate_
             names,
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert rival.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert rival.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -13737,8 +20805,8 @@ def test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema
             "61667465722d63616e63656c",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert acquirer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
+        assert acquirer.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert acquirer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
         assert acquirer.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -13833,7 +20901,7 @@ def test_2025_transport_server_drops_pending_ownership_requester_after_disconnec
             for callback in server.servicer.callback_queue
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -13909,7 +20977,7 @@ def test_2025_transport_server_releases_owned_attributes_when_owner_disconnects_
             "646973636f6e6e6563742d61637661696c",
         )
 
-        assert acquirer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert acquirer.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert acquirer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert acquirer.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -14002,7 +21070,7 @@ def test_2025_transport_server_clears_offered_ownership_state_when_owner_disconn
             for callback in server.servicer.callback_queue
         )
 
-        assert acquirer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert acquirer.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert acquirer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert acquirer.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -14097,7 +21165,7 @@ def test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_t
             federation_name_attribute,
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert requester.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert bystander.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert bystander.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -14535,7 +21603,7 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
         )
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("0",)
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -14691,7 +21759,7 @@ def test_2025_transport_server_routes_attribute_scope_advisories_only_to_overlap
             attribute,
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -14899,7 +21967,7 @@ def test_2025_transport_server_removes_disconnected_region_interaction_subscribe
         ).fields == ()
         assert observer.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "INTERACTION")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -15194,7 +22262,7 @@ def test_2025_transport_server_routes_directed_ddm_interactions_only_to_overlapp
             "1",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert subscriber_a.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert subscriber_b.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
@@ -15301,7 +22369,7 @@ def test_2025_transport_server_removes_disconnected_directed_ddm_subscriber_from
         ).fields == ()
         assert observer.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "DIRECTED_INTERACTION")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -15359,7 +22427,7 @@ def test_2025_transport_server_reports_mom_service_invocation_over_fedpro_schema
             "1",
         )
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -15436,7 +22504,7 @@ def test_2025_transport_server_routes_mom_service_reports_only_to_enabled_federa
             )
             assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -15496,7 +22564,7 @@ def test_2025_transport_server_reports_mim_data_for_mom_request_over_fedpro_sche
         )
         assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -15506,6 +22574,56 @@ def test_2025_transport_server_reports_mim_data_for_mom_request_over_fedpro_sche
             "subscribeInteractionClassRequest",
             "sendInteractionRequest",
         } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
+def test_2025_transport_server_normalizes_mim_data_aliases_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-mim-alias"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(
+            TransportRequest(
+                command="CREATE",
+                fields=(federation_name, "HLAinteger64Time", _fedpro_fom_path("MomMim2025.xml")),
+            )
+        ).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MIMAlias", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        report_alias = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMData",),
+            )
+        ).fields[0]
+        report_canonical = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata",),
+            )
+        ).fields[0]
+        assert report_alias == report_canonical
+
+        parameter_alias = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_alias, "HLAMIMData"))
+        ).fields[0]
+        parameter_canonical = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_alias, "HLAMIMdata"))
+        ).fields[0]
+        assert parameter_alias == parameter_canonical
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
     finally:
         if transport is not None:
             transport.close()
@@ -15614,7 +22732,7 @@ def test_2025_transport_server_reports_synchronization_points_for_mom_requests_o
         assert bytes.fromhex(status_payloads[status_list]).decode("ascii") == "ReadyToRun:1:achieved"
         assert status_report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -15759,7 +22877,7 @@ def test_2025_transport_server_fans_out_mom_sync_status_reports_only_to_subscrib
             assert report[4:] == ("4d4f4d", "1", "1")
         assert observer_report[:2] != ("1", "INTERACTION")
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert member.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -15868,7 +22986,7 @@ def test_2025_transport_server_preserves_plain_mom_report_delivery_with_mixed_re
         assert regional.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "INTERACTION")
 
         for transport in (leader, plain, regional):
-            assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+            assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert regional.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         for transport in (leader, plain, regional):
             assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -15963,7 +23081,7 @@ def test_2025_transport_server_removes_mom_resigned_federate_from_delivery_state
         ).fields == ()
         assert observer.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "INTERACTION")
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert owner.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
         assert observer.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -16212,7 +23330,7 @@ def test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to
         assert server.servicer.callback_queue == []
 
         for transport in (leader, member, observer):
-            assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+            assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         for transport in (leader, member, observer):
             assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -16695,7 +23813,7 @@ def test_2025_transport_server_reports_fom_module_data_for_mom_request_over_fedp
         assert Path(bytes.fromhex(payloads[report_data_param]).decode("ascii")).name == "MomFomExtension2025.xml"
         assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -16762,7 +23880,7 @@ def test_2025_transport_server_reports_object_publications_for_mom_request_over_
         assert bytes.fromhex(payloads[attributes_param]).decode("ascii") == f"{object_class}:{attribute}"
         assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -16843,7 +23961,7 @@ def test_2025_transport_server_reports_object_publications_for_requested_federat
         request_and_assert(leader_handle, target_class, target_attribute)
         request_and_assert(wing_handle, route_class, route_attribute)
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -16912,7 +24030,7 @@ def test_2025_transport_server_reports_object_subscriptions_for_mom_request_over
         assert bytes.fromhex(payloads[attributes_param]).decode("ascii") == f"{object_class}:{attribute}"
         assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -16995,7 +24113,7 @@ def test_2025_transport_server_reports_object_subscriptions_for_requested_federa
         request_and_assert(leader_handle, target_class, target_attribute)
         request_and_assert(wing_handle, route_class, route_attribute)
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -17072,7 +24190,7 @@ def test_2025_transport_server_reports_object_instance_information_for_mom_reque
         assert attribute in bytes.fromhex(payloads[report_attributes_param]).decode("ascii").split(",")
         assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -17206,7 +24324,7 @@ def test_2025_transport_server_reports_requested_federate_identity_for_mom_objec
         assert bytes.fromhex(fom_payloads[fom_report_federate_param]).decode("ascii") == wing_handle
         assert bytes.fromhex(fom_payloads[fom_report_indicator_param]).decode("ascii") == "1"
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -17290,7 +24408,7 @@ def test_2025_transport_server_preserves_other_federate_interaction_publication_
             "77696e672d746167",
         )
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -17373,7 +24491,7 @@ def test_2025_transport_server_preserves_other_federate_directed_publication_aft
             "77696e672d746167",
         )
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -17507,7 +24625,7 @@ def test_2025_transport_server_preserves_other_federate_interaction_subscription
         )
 
         assert sender.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert sender.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -17649,8 +24767,8 @@ def test_2025_transport_server_preserves_other_federate_object_subscription_afte
             f"{attribute}:7365636f6e642d77696e67",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -17739,7 +24857,7 @@ def test_2025_transport_server_reports_activity_counts_for_mom_requests_over_fed
             assert bytes.fromhex(payloads[count_param]).decode("ascii") == expected
             assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -17859,7 +24977,7 @@ def test_2025_transport_server_reports_per_federate_activity_counts_for_mom_requ
             "1",
         )
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -18161,7 +25279,7 @@ def test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_fe
             "0",
         )
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -18409,7 +25527,7 @@ def test_2025_transport_server_routes_mom_adjust_controls_to_observable_switch_s
         assert leader.request(TransportRequest(command="GET_AUTO_PROVIDE_SWITCH")).fields == ("1",)
         assert wing.request(TransportRequest(command="GET_AUTO_PROVIDE_SWITCH")).fields == ("1",)
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -18496,7 +25614,7 @@ def test_2025_transport_server_routes_mom_exception_reporting_adjust_to_targeted
         assert leader.request(TransportRequest(command="GET_EXCEPTION_REPORTING_SWITCH")).fields == ("1",)
         assert wing.request(TransportRequest(command="GET_EXCEPTION_REPORTING_SWITCH")).fields == ("1",)
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -18610,7 +25728,7 @@ def test_2025_transport_server_routes_mom_exception_reports_only_to_federates_wi
         assert leader.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "INTERACTION", report_class)
         assert wing.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "INTERACTION", report_class)
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -18717,7 +25835,7 @@ def test_2025_transport_server_routes_mom_save_restore_completion_callbacks_only
         assert leader.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "FEDERATION_RESTORED")
         assert wing.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
 
-        assert leader.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert leader.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
         assert wing.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert wing.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert leader.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -18826,7 +25944,7 @@ def test_2025_transport_server_routes_mom_delete_remove_only_to_discovered_obser
             owner_handle,
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert bystander.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert bystander.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -18930,7 +26048,7 @@ def test_2025_transport_server_routes_mom_local_delete_to_requester_local_known_
         )
         assert server.servicer.handle_locally_deleted_objects[observer_handle] == {object_instance}
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert observer.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert observer.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert owner.request(TransportRequest(command="DISCONNECT")).fields == ()
@@ -19094,7 +26212,7 @@ def test_2025_transport_server_routes_mom_transport_and_ownership_actions_to_obs
             "0",
         )
 
-        assert owner.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert owner.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert requester.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert bystander.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert bystander.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -19180,7 +26298,7 @@ def test_2025_transport_server_reports_failed_mom_service_actions_as_mom_excepti
         assert bytes.fromhex(payloads[report_parameter_error_param]).decode("ascii") == "HLAfalse"
         assert report[4:] == ("4d4f4d", "1", "1")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -19289,7 +26407,7 @@ def test_2025_transport_server_rejects_invalid_mom_control_spellings_with_except
         assert transport.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,))).fields == (
             "FedProMomInvalidTarget-1",
         )
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
     finally:
@@ -19372,7 +26490,7 @@ def test_2025_transport_server_rejects_invalid_mom_boolean_spellings_with_except
 
         assert server.servicer.service_reporting is False
         assert server.servicer.switch_states["autoProvide"] is False
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
     finally:
@@ -19633,7 +26751,7 @@ def test_2025_transport_server_round_trips_support_services_over_fedpro_schema()
         assert transport.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "18")
         assert transport.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "18")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -19696,9 +26814,88 @@ def test_2025_transport_server_rejects_invalid_support_lookup_values_over_fedpro
             transport.request(TransportRequest(command="GET_TRANSPORTATION_TYPE_NAME", fields=("999",)))
         assert transportation_handle_error.value.code == "InvalidTransportationTypeHandle"
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-138",
+    "HLA2025-FI-SVC-139",
+    "HLA2025-FI-SVC-140",
+    "HLA2025-FI-SVC-145",
+    "HLA2025-FI-SVC-147",
+    "HLA2025-FI-SVC-148",
+    "HLA2025-FI-SVC-153",
+    "HLA2025-FI-SVC-154",
+    "HLA2025-FI-SVC-155",
+    "HLA2025-FI-SVC-156",
+    "HLA2025-FI-SVC-180",
+    "HLA2025-FI-SVC-181",
+    "HLA2025-BND-003",
+)
+def test_2025_transport_server_keeps_decode_support_helpers_available_while_joined_identity_queries_stop_after_resign_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-support-membership-negative"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", _fedpro_fom_path("Support2025.xml")))
+        ).fields == ()
+        assert transport.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025SupportNegative", "TestFederate", federation_name))
+        ).fields
+
+        object_class = transport.request(
+            TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))
+        ).fields[0]
+        attribute = transport.request(
+            TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))
+        ).fields[0]
+        object_instance = transport.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProSupportNegativeTarget-1"))
+        ).fields[0]
+        reliable = transport.request(
+            TransportRequest(command="GET_TRANSPORTATION_TYPE_HANDLE", fields=("HLAreliable",))
+        ).fields[0]
+        joined_federate_name_request = TransportRequest(command="GET_FEDERATE_NAME", fields=("1",))
+
+        decode_helper_commands = (
+            TransportRequest(command="GET_FEDERATE_HANDLE", fields=("FedPro2025SupportNegative",)),
+            TransportRequest(command="GET_OBJECT_CLASS_NAME", fields=(object_class,)),
+            TransportRequest(command="GET_ATTRIBUTE_NAME", fields=(object_class, attribute)),
+            TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,)),
+            TransportRequest(command="GET_OBJECT_INSTANCE_HANDLE", fields=("FedProSupportNegativeTarget-1",)),
+            TransportRequest(command="GET_KNOWN_OBJECT_CLASS_HANDLE", fields=(object_instance,)),
+            TransportRequest(command="GET_UPDATE_RATE_VALUE", fields=("HLAdefaultUpdateRate",)),
+            TransportRequest(command="GET_UPDATE_RATE_VALUE_FOR_ATTRIBUTE", fields=(object_instance, attribute)),
+            TransportRequest(command="GET_TRANSPORTATION_TYPE_HANDLE", fields=("HLAreliable",)),
+            TransportRequest(command="GET_TRANSPORTATION_TYPE_NAME", fields=(reliable,)),
+            TransportRequest(command="GET_AUTOMATIC_RESIGN_DIRECTIVE"),
+            TransportRequest(command="SET_AUTOMATIC_RESIGN_DIRECTIVE", fields=("NO_ACTION",)),
+            TransportRequest(command="NORMALIZE_SERVICE_GROUP", fields=("OBJECT_MANAGEMENT",)),
+        )
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("UNCONDITIONALLY_DIVEST_ATTRIBUTES",))).fields == ()
+        with pytest.raises(TransportError) as not_member_error:
+            transport.request(joined_federate_name_request)
+        assert not_member_error.value.code == "FederateNotExecutionMember"
+        for request in decode_helper_commands:
+            transport.request(request)
+
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+        with pytest.raises(TransportError) as disconnected_lookup_error:
+            transport.request(joined_federate_name_request)
+        assert disconnected_lookup_error.value.code == "FederateNotExecutionMember"
+        for request in decode_helper_commands:
+            transport.request(request)
     finally:
         if transport is not None:
             transport.close()
@@ -19739,7 +26936,7 @@ def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
         callback = transport.request(TransportRequest(command="EVOKE"))
         assert callback.fields == ("0",)
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 
@@ -20054,7 +27251,7 @@ def test_2025_transport_server_runs_runtime_capability_session_over_fedpro_schem
         assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "9"))).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "9")
 
-        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="RESIGN", fields=("DELETE_OBJECTS_THEN_DIVEST",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
         assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
 

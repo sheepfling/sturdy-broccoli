@@ -13,9 +13,14 @@ Canonical target/radar operator flows:
   ./tools/target-radar matrix
   ./tools/target-radar proof
   ./tools/target-radar proof --backend python --proof-backend python
+  ./tools/target-radar proof --backend python2025 --proof-backend python2025
 
 This is the human-facing wrapper over the target/radar backend matrix and proof
 artifact generators under `scripts/`.
+
+For IEEE 1516.1-2025, use `python2025` as the primary Python RTI lane.
+The `shim` backend names remain compatibility-wrapper aliases over that same
+runtime and are not a separate RTI family.
 EOF
 }
 

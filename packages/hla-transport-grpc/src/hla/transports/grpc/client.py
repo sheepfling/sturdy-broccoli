@@ -596,6 +596,13 @@ _CALLBACK_RESPONSE_FIELDS = {
 class FedPro2010ClientAdapter:
     """Map internal backend transport envelopes onto FedPro 2010 protobuf calls."""
 
+    runtime_provider = "python"
+    implementation_lane = "hla-backend-inmemory"
+    wrapper_only = False
+    spec = "rti1516e"
+    transport_kind = "grpc"
+    route_family = "fedpro"
+
     def encode_request(self, request: TransportRequest) -> Any:
         request_field = self.request_field_for(request)
         payload = _build_payload(request_field, _request_fields_for_call(request_field, request.fields))
@@ -696,6 +703,16 @@ class FedPro2010ClientAdapter:
             return TransportResponse(fields=("0",))
         encoded = _CALLBACK_RESPONSE_FIELDS.get(callback_kind, lambda payload: (callback_kind,))(getattr(request, callback_kind))
         return TransportResponse(fields=("1", *encoded))
+
+    def capability_report(self) -> dict[str, object]:
+        return {
+            "runtime_provider": self.runtime_provider,
+            "implementation_lane": self.implementation_lane,
+            "wrapper_only": self.wrapper_only,
+            "spec": self.spec,
+            "transport_kind": self.transport_kind,
+            "route_family": self.route_family,
+        }
 
 
 GrpcTransportClientAdapter = FedPro2010ClientAdapter

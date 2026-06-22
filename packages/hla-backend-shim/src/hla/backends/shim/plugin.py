@@ -1,6 +1,7 @@
-"""Entry point descriptor for the 2025 shim backend."""
+"""Entry point descriptor for the wrapper-only 2025 compatibility package."""
 from __future__ import annotations
 
+from hla.backends.python2025.compatibility_wrapper import ShimBackendInfo
 from hla.rti.plugin_api import RTIBackendDiscovery, RTIBackendPlugin
 
 from .backend import create_shim_backend
@@ -9,18 +10,19 @@ from .backend import create_shim_backend
 def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="shim",
-        aliases=("2025-shim", "rti1516_2025-shim", "reference-shim"),
+        aliases=(),
         family="shim",
         supports=("rti1516_2025",),
-        description="Spec-shaped IEEE 1516.1-2025 RTI shim backend.",
+        description="Legacy compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation.",
         create_backend=create_shim_backend,
         discover=lambda: RTIBackendDiscovery(
             name="shim",
-            aliases=("2025-shim", "rti1516_2025-shim", "reference-shim"),
+            aliases=(),
             family="shim",
             supports=("rti1516_2025",),
-            description="Spec-shaped IEEE 1516.1-2025 RTI shim backend.",
+            description="Legacy compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation.",
             available=True,
+            info=ShimBackendInfo(),
         ),
     )
 

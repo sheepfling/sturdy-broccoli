@@ -51,6 +51,18 @@ hla-rti1516e
         │   └── hla-vendor-portico
         ├── hla-vendor-pitch
         └── hla-backend-certi
+
+hla-rti1516-2025
+└── hla-rti-core
+    ├── hla-backend-python2025
+    ├── hla-backend-shim (compatibility wrapper over hla-backend-python2025)
+    ├── hla-bridge-java-common
+    ├── hla-backend-cpp-shim
+    ├── hla-transport-grpc (bounded FedPro 2025 hosted route)
+    ├── hla-fom-proto2025-message-test
+    ├── hla-fom-proto2025-space-lite
+    ├── hla-fom-proto2025-time-mgmt-test
+    └── hla-verification
 ```
 
 That tree is intentionally simplified. It is meant to answer:
@@ -68,12 +80,11 @@ one in [`package_dependency_tree.md`](package_dependency_tree.md).
 
 The current machine-generated layer model is:
 
-- Layer 0: `hla-rti1516e`
-- Layer 1: `hla-backend-common`
-- Layer 2: `hla-bridge-java-common`, `hla-backend-inmemory`, `hla-transport-common`
-- Layer 3: `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-rti-core`
-- Layer 4: `hla-backend-certi`, `hla-vendor-pitch`, `hla-vendor-portico`, `hla-transport-grpc`, `hla-transport-rest`, `hla-verification`
-- Layer 5: `hla-fom-target-radar`, `hla-fom-proto2025-message-test`, `hla-fom-proto2025-space-lite`, `hla-fom-proto2025-time-mgmt-test`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
+- Layer 0: `hla-rti-core`, `hla-rti1516e`
+- Layer 1: `hla-backend-common`, `hla-fom-target-radar`, `hla-rti1516-2025`
+- Layer 2: `hla-backend-inmemory`, `hla-backend-python2025`, `hla-bridge-java-common`, `hla-transport-common`
+- Layer 3: `hla-backend-certi`, `hla-backend-cpp-shim`, `hla-backend-shim`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-fom-proto2025-message-test`, `hla-fom-proto2025-space-lite`, `hla-fom-proto2025-time-mgmt-test`, `hla-transport-grpc`, `hla-transport-rest`, `hla-vendor-pitch`
+- Layer 4: `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`, `hla-vendor-portico`, `hla-verification`
 
 Regenerate and check the dependency evidence with:
 

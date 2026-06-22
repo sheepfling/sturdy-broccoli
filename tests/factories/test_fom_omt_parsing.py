@@ -24,6 +24,8 @@ from hla.rti1516e.fom import (
     FixedRecordFieldSpec,
     InteractionClassSpec,
     ObjectClassSpec,
+    TransportationSpec,
+    UpdateRateSpec,
     VariantAlternativeSpec,
     VariantRecordDatatypeSpec,
     SimpleDatatypeSpec,
@@ -84,12 +86,12 @@ def test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables(t
     <lookahead><dataType>HLAfloat64BE</dataType></lookahead>
   </time>
   <transportations>
-    <transportation><name>HLAreliable</name></transportation>
-    <transportation><name>HLAbestEffort</name></transportation>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable><semantics>Reliable transport.</semantics></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable><semantics>Best-effort transport.</semantics></transportation>
   </transportations>
   <updateRates>
-    <updateRate><name>HLAdefault</name><rate>0.0</rate></updateRate>
-    <updateRate><name>Fast</name><rate>10.0</rate></updateRate>
+    <updateRate><name>HLAdefault</name><rate>0.0</rate><semantics>Default rate.</semantics></updateRate>
+    <updateRate><name>Fast</name><rate>10.0</rate><semantics>Fast rate.</semantics></updateRate>
   </updateRates>
   <dataTypes>
     <simpleDataTypes>
@@ -109,7 +111,27 @@ def test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables(t
     assert module.time_stamp_datatype == "HLAfloat64BE"
     assert module.lookahead_datatype == "HLAfloat64BE"
     assert module.transportation_names == ("HLAreliable", "HLAbestEffort")
+    assert module.transportation_specs["HLAreliable"] == TransportationSpec(
+        name="HLAreliable",
+        reliable="Yes",
+        semantics="Reliable transport.",
+    )
+    assert module.transportation_specs["HLAbestEffort"] == TransportationSpec(
+        name="HLAbestEffort",
+        reliable="No",
+        semantics="Best-effort transport.",
+    )
     assert module.update_rates == {"HLAdefault": "0.0", "Fast": "10.0"}
+    assert module.update_rate_specs["HLAdefault"] == UpdateRateSpec(
+        name="HLAdefault",
+        rate="0.0",
+        semantics="Default rate.",
+    )
+    assert module.update_rate_specs["Fast"] == UpdateRateSpec(
+        name="Fast",
+        rate="10.0",
+        semantics="Fast rate.",
+    )
     assert module.datatype_names == ("HLAfloat64BE", "Vec2")
     assert module.is_mim is False
 
@@ -1353,7 +1375,26 @@ def test_serialize_fom_module_preserves_metadata_subset_across_round_trip(tmp_pa
             "sendReceiveTag": {"datatype": "Simple1", "semantics": "Interaction tag."},
         },
         transportation_names=("HLAreliable", "HLAbestEffort"),
+        transportation_specs={
+            "HLAreliable": TransportationSpec(
+                name="HLAreliable",
+                reliable="Yes",
+                semantics="Reliable transport.",
+            ),
+            "HLAbestEffort": TransportationSpec(
+                name="HLAbestEffort",
+                reliable="No",
+                semantics="Best-effort transport.",
+            ),
+        },
         update_rates={"Fast": "10.0"},
+        update_rate_specs={
+            "Fast": UpdateRateSpec(
+                name="Fast",
+                rate="10.0",
+                semantics="Fast update rate.",
+            ),
+        },
         synchronization_points={
             "ReadyToRun": {
                 "tag_datatype": "Simple1",
@@ -1377,7 +1418,9 @@ def test_serialize_fom_module_preserves_metadata_subset_across_round_trip(tmp_pa
     assert {"Simple1", "Record1"}.issubset(set(reparsed.datatype_names))
     assert reparsed.tag_representations == module.tag_representations
     assert reparsed.transportation_names == module.transportation_names
+    assert reparsed.transportation_specs == module.transportation_specs
     assert reparsed.update_rates == module.update_rates
+    assert reparsed.update_rate_specs == module.update_rate_specs
     assert reparsed.synchronization_points == module.synchronization_points
     for name, value in module.switch_settings.items():
         assert reparsed.switch_settings[name] == value
@@ -1772,14 +1815,10 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
 
 
 @pytest.mark.requirements(
-    "HLA2025-OMT-COMP-037",
-    "HLA2025-OMT-COMP-038",
-    "HLA2025-OMT-COMP-040",
     "HLA2025-OMT-COMP-041",
     "HLA2025-OMT-COMP-042",
-    "HLA2025-OMT-COMP-043",
 )
-def test_dimension_metadata_round_trip_is_still_intentionally_lossy(tmp_path: Path):
+def test_dimension_metadata_round_trips_through_parser_and_serializer(tmp_path: Path):
     xml_text = """<?xml version="1.0" encoding="utf-8"?>
 <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
   <modelIdentification>
@@ -1807,15 +1846,71 @@ def test_dimension_metadata_round_trip_is_still_intentionally_lossy(tmp_path: Pa
     assert parsed.dimension_specs["RegionX"].semantics == "Spatial bucket edge case."
 
     serialized = serialize_fom_module(parsed)
-    roundtrip_path = tmp_path / "dimension-lossy-roundtrip.xml"
+    roundtrip_path = tmp_path / "dimension-roundtrip.xml"
     roundtrip_path.write_text(serialized, encoding="utf-8")
     reparsed = parse_fom_xml(roundtrip_path)
 
     assert reparsed.dimensions == ("RegionX",)
-    assert reparsed.dimension_specs["RegionX"].data_type is None
-    assert reparsed.dimension_specs["RegionX"].upper_bound is None
-    assert reparsed.dimension_specs["RegionX"].normalization is None
-    assert reparsed.dimension_specs["RegionX"].semantics is None
+    assert reparsed.dimension_specs["RegionX"].data_type == "HLAinteger32BE"
+    assert reparsed.dimension_specs["RegionX"].upper_bound == "1024"
+    assert reparsed.dimension_specs["RegionX"].normalization == "normalize-01"
+    assert reparsed.dimension_specs["RegionX"].semantics == "Spatial bucket edge case."
+
+
+@pytest.mark.requirements(
+    "HLA2025-OMT-COMP-037",
+    "HLA2025-OMT-COMP-038",
+    "HLA2025-OMT-COMP-040",
+    "HLA2025-OMT-COMP-043",
+    "HLA2025-OMT-COMP-044",
+)
+def test_2025_dimension_specific_children_round_trip(tmp_path: Path):
+    xml_path = tmp_path / "dimension-2025-specific.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Dimension Specific 2025 FOM</name>
+    <type>FOM</type>
+  </modelIdentification>
+  <dimensions>
+    <dimension>
+      <name>RegionX</name>
+      <inputDataTypes><dataType>HLAinteger32BE</dataType></inputDataTypes>
+      <inputDataDescription>Federate view of the dimension.</inputDataDescription>
+      <upperBound>1024</upperBound>
+      <normalization>normalize-01</normalization>
+      <outputDataSemantics>Spatial bucket edge case.</outputDataSemantics>
+      <value>[0..1024]</value>
+    </dimension>
+  </dimensions>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    parsed = parse_fom_xml(xml_path)
+    assert parsed.dimensions == ("RegionX",)
+    assert parsed.dimension_specs["RegionX"].upper_bound == "1024"
+    assert parsed.dimension_specs["RegionX"].normalization == "normalize-01"
+    assert parsed.dimension_specs["RegionX"].input_data_types == ("HLAinteger32BE",)
+    assert parsed.dimension_specs["RegionX"].input_data_description == "Federate view of the dimension."
+    assert parsed.dimension_specs["RegionX"].output_data_semantics == "Spatial bucket edge case."
+    assert parsed.dimension_specs["RegionX"].value == "[0..1024]"
+
+    serialized = serialize_fom_module(parsed, edition="2025")
+    roundtrip_path = tmp_path / "dimension-2025-specific-roundtrip.xml"
+    roundtrip_path.write_text(serialized, encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip_path)
+
+    assert reparsed.dimension_specs["RegionX"].input_data_types == ("HLAinteger32BE",)
+    assert reparsed.dimension_specs["RegionX"].input_data_description == "Federate view of the dimension."
+    assert reparsed.dimension_specs["RegionX"].output_data_semantics == "Spatial bucket edge case."
+    assert reparsed.dimension_specs["RegionX"].value == "[0..1024]"
+    assert "<inputDataTypes>" in serialized
+    assert "<inputDataDescription>Federate view of the dimension.</inputDataDescription>" in serialized
+    assert "<outputDataSemantics>Spatial bucket edge case.</outputDataSemantics>" in serialized
+    assert "<value>[0..1024]</value>" in serialized
 
 
 def test_parse_fom_xml_extracts_richer_datatype_semantics_and_merge_summary():

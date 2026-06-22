@@ -4,6 +4,17 @@ This plan defines the standards-conformance work for the Python HLA 1516.1-2010 
 
 It is intentionally separate from [validation_plan.md](validation_plan.md).
 
+This page is 2010-specific. For the current IEEE 1516.1-2025 Python RTI lane,
+do not treat this file as the main conformance plan.
+
+Use these 2025 evidence anchors instead:
+
+- [`../python_rti_backend.md`](../python_rti_backend.md)
+- [`../verification/time_model_compliance.md`](time_model_compliance.md)
+- [`../plans/2025_python_rti_backend_audit.md`](../plans/2025_python_rti_backend_audit.md)
+- [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
+- [`../plans/spec2025_route_parity_matrix.md`](../plans/spec2025_route_parity_matrix.md)
+
 ## Goal
 
 Produce defensible evidence that `hla2010` implements the IEEE 1516.1-2010 federate interface correctly enough to support explicit clause-level claims.

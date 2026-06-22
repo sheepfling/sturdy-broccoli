@@ -2,6 +2,10 @@
 
 Use this when you want the fastest path to the repo's two-federate example.
 
+This page is scenario-first, not edition-neutral architecture guidance. For the
+current 2025 runtime-lane ownership and wrapper boundary, use
+[`python_rti_backend.md`](python_rti_backend.md).
+
 ## Run It
 
 ```bash
@@ -38,6 +42,12 @@ If you want the broader verification context, use:
 - [`docs/verification/run_sequence.md`](verification/run_sequence.md)
 - [`docs/local_verification_commands.md`](local_verification_commands.md)
 
+If you want the 2025 RTI-specific runtime path behind these scenarios, use:
+
+- [`python_rti_backend.md`](python_rti_backend.md)
+- [`python_rti_reading_map.md`](python_rti_reading_map.md)
+- [`verification/time_model_compliance.md`](verification/time_model_compliance.md)
+
 ## When To Use It
 
 This is the best entry point when you want to:
@@ -45,6 +55,10 @@ This is the best entry point when you want to:
 - explain how the repo exercises two federates together
 - point someone at the first runnable artifact-producing example
 - show where the generated report and CSV/SVG artifacts land
+
+For IEEE 1516.1-2025 work, remember that the scenario may run over the main full
+`python2025` lane or bounded hosted route variants, but `hla-backend-python2025`
+remains the main runtime and `shim` does not count as a separate RTI family.
 
 ## Read Next
 

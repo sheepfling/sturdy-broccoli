@@ -65,7 +65,9 @@ def test_tools_python_help_describes_repo_green_operator_lane() -> None:
 
     assert result.returncode == 0
     assert "./tools/python verify" in result.stdout
+    assert "./tools/python verify-main-2025" in result.stdout
     assert "./tools/python verify-routes" in result.stdout
+    assert "./tools/python verify-routes-2025" in result.stdout
     assert "./tools/python verify-routes-preflight" in result.stdout
     assert "./scripts/ci/repo_green.sh" in result.stdout
     assert "./tools/certi-easy" in result.stdout
@@ -403,6 +405,54 @@ def test_tools_python_verify_routes_can_delegate(tmp_path: Path) -> None:
     assert (tmp_path / "artifacts" / "verify-routes.json").exists()
 
 
+def test_tools_python_verify_routes_2025_can_delegate(tmp_path: Path) -> None:
+    delegate = tmp_path / "verify_routes_2025_delegate.py"
+    _write_delegate_script(
+        delegate,
+        payloads={"verify-routes-2025.json": {"tool": "python-verify-routes-2025", "result": "ok"}},
+        exit_code=0,
+    )
+    env = os.environ.copy()
+    env["HLA2010_PYTHON_VERIFY_ROUTES_2025_DELEGATE"] = str(delegate)
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "artifacts")
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-routes-2025"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert (tmp_path / "artifacts" / "verify-routes-2025.json").exists()
+
+
+def test_tools_python_verify_main_2025_can_delegate(tmp_path: Path) -> None:
+    delegate = tmp_path / "verify_main_2025_delegate.py"
+    _write_delegate_script(
+        delegate,
+        payloads={"verify-main-2025.json": {"tool": "python-verify-main-2025", "result": "ok"}},
+        exit_code=0,
+    )
+    env = os.environ.copy()
+    env["HLA2010_PYTHON_VERIFY_MAIN_2025_DELEGATE"] = str(delegate)
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "artifacts")
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-main-2025"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert (tmp_path / "artifacts" / "verify-main-2025.json").exists()
+
+
 def test_tools_python_verify_routes_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
     fake_python = tmp_path / "fake_python.py"
     log_path = tmp_path / "calls.jsonl"
@@ -454,6 +504,124 @@ raise SystemExit(0)
         assert str(ROOT / "packages/hla-rti1516e/src") in pythonpath
         assert str(ROOT / "packages/hla-fom-target-radar/src") in pythonpath
         assert str(ROOT / "packages/hla-transport-grpc/src") in pythonpath
+
+
+def test_tools_python_verify_routes_2025_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
+    fake_python = tmp_path / "fake_python.py"
+    log_path = tmp_path / "calls_2025.jsonl"
+    fake_python.write_text(
+        """#!/usr/bin/env python3
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+log_path = Path(os.environ["HLA2010_TEST_LOG_PATH"])
+argv = sys.argv[1:]
+log_path.parent.mkdir(parents=True, exist_ok=True)
+with log_path.open("a", encoding="utf-8") as handle:
+    handle.write(json.dumps({"argv": argv, "pythonpath": os.environ.get("PYTHONPATH", "")}) + "\\n")
+raise SystemExit(0)
+""",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o755)
+    env = os.environ.copy()
+    env["HLA2010_PYTHON_VERIFY_ROUTES_PYTHON"] = str(fake_python)
+    env["HLA2010_TEST_LOG_PATH"] = str(log_path)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-routes-2025"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+    assert len(calls) == 11
+    expected_suffixes = [
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "time_window and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "save_restore and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "ownership and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "callback and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "support_service and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "mom and python2025"],
+        ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_2025.py"],
+        ["-m", "pytest", "-q", "tests/requirements/test_2025_route_parity_matrix.py"],
+        ["-m", "pytest", "-q", "tests/requirements/test_2025_finish_line_snapshot.py", "-k", "checked_in_finish_line_artifacts_preserve_python2025_route_identity"],
+        ["scripts/run_spec2025_route_parity_matrix.py"],
+        ["examples/target_radar_simulation.py", "--backend", "python2025", "--steps", "5"],
+    ]
+    for call, expected_argv in zip(calls, expected_suffixes, strict=True):
+        assert call["argv"] == expected_argv
+        pythonpath = call["pythonpath"]
+        assert str(ROOT / "packages/hla-rti1516-2025/src") in pythonpath
+        assert str(ROOT / "packages/hla-backend-python2025/src") in pythonpath
+        assert str(ROOT / "packages/hla-fom-target-radar/src") in pythonpath
+        assert str(ROOT / "packages/hla-verification/src") in pythonpath
+
+
+def test_tools_python_verify_main_2025_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
+    fake_python = tmp_path / "fake_python.py"
+    log_path = tmp_path / "calls_main_2025.jsonl"
+    fake_python.write_text(
+        """#!/usr/bin/env python3
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+log_path = Path(os.environ["HLA2010_TEST_LOG_PATH"])
+argv = sys.argv[1:]
+log_path.parent.mkdir(parents=True, exist_ok=True)
+with log_path.open("a", encoding="utf-8") as handle:
+    handle.write(json.dumps({"argv": argv, "pythonpath": os.environ.get("PYTHONPATH", "")}) + "\\n")
+raise SystemExit(0)
+""",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o755)
+    env = os.environ.copy()
+    env["HLA2010_PYTHON_VERIFY_ROUTES_PYTHON"] = str(fake_python)
+    env["HLA2010_TEST_LOG_PATH"] = str(log_path)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-main-2025"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+    assert len(calls) == 9
+    expected_suffixes = [
+        ["-m", "pytest", "-q", "tests/test_python2025_split_package.py", "tests/test_package_import_isolation.py", "tests/test_package_dependency_metadata.py", "tests/test_root_facade_policy.py"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "time_window and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "save_restore and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "ownership and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "callback and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "support_service and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_spec_and_shim.py", "-k", "mom and python2025"],
+        ["-m", "pytest", "-q", "tests/test_rti1516_2025_validation.py", "tests/factories/test_fom_omt_parsing.py"],
+        ["examples/target_radar_simulation.py", "--backend", "python2025", "--steps", "5"],
+    ]
+    for call, expected_argv in zip(calls, expected_suffixes, strict=True):
+        assert call["argv"] == expected_argv
+        pythonpath = call["pythonpath"]
+        assert str(ROOT / "packages/hla-rti1516-2025/src") in pythonpath
+        assert str(ROOT / "packages/hla-backend-python2025/src") in pythonpath
+        assert str(ROOT / "packages/hla-fom-target-radar/src") in pythonpath
+        assert str(ROOT / "packages/hla-verification/src") in pythonpath
 
 
 def test_tools_python_verify_routes_preflight_can_delegate(tmp_path: Path) -> None:

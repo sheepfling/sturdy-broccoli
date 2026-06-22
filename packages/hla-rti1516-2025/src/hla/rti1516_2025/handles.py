@@ -159,3 +159,116 @@ class AttributeRegionAssociation(NamedTuple):
 class AttributeSetRegionSetPairList(list[AttributeRegionAssociation], ABC):
     @abstractmethod
     def clone(self) -> Self: ...
+
+
+class HandleFactory(Generic[T]):
+    """Factory for decoding a specific 2025 handle type."""
+
+    def __init__(self, handle_type: type[T]):
+        self.handle_type = handle_type
+
+    def decode(self, data: bytes | bytearray | memoryview, offset: int = 0) -> T:
+        return self.handle_type.decode(data, offset)
+
+    def make(self, value: int) -> T:
+        return self.handle_type(value)
+
+
+class CollectionFactory(Generic[T]):
+    """Small Java-style collection factory with a ``create`` helper."""
+
+    def __init__(self, collection_type: type[Any]):
+        self.collection_type = collection_type
+
+    def create(self, capacity: int | None = None) -> Any:
+        return self.collection_type()
+
+
+class FederateHandleFactory(HandleFactory[FederateHandle]):
+    def __init__(self) -> None:
+        super().__init__(FederateHandle)
+
+
+class ObjectClassHandleFactory(HandleFactory[ObjectClassHandle]):
+    def __init__(self) -> None:
+        super().__init__(ObjectClassHandle)
+
+
+class InteractionClassHandleFactory(HandleFactory[InteractionClassHandle]):
+    def __init__(self) -> None:
+        super().__init__(InteractionClassHandle)
+
+
+class ObjectInstanceHandleFactory(HandleFactory[ObjectInstanceHandle]):
+    def __init__(self) -> None:
+        super().__init__(ObjectInstanceHandle)
+
+
+class AttributeHandleFactory(HandleFactory[AttributeHandle]):
+    def __init__(self) -> None:
+        super().__init__(AttributeHandle)
+
+
+class ParameterHandleFactory(HandleFactory[ParameterHandle]):
+    def __init__(self) -> None:
+        super().__init__(ParameterHandle)
+
+
+class DimensionHandleFactory(HandleFactory[DimensionHandle]):
+    def __init__(self) -> None:
+        super().__init__(DimensionHandle)
+
+
+class MessageRetractionHandleFactory(HandleFactory[MessageRetractionHandle]):
+    def __init__(self) -> None:
+        super().__init__(MessageRetractionHandle)
+
+
+class RegionHandleFactory(HandleFactory[RegionHandle]):
+    def __init__(self) -> None:
+        super().__init__(RegionHandle)
+
+
+class TransportationTypeHandleFactory(HandleFactory[TransportationTypeHandle]):
+    def __init__(self) -> None:
+        super().__init__(TransportationTypeHandle)
+
+
+class AttributeHandleSetFactory(CollectionFactory[AttributeHandleSet]):
+    def __init__(self) -> None:
+        super().__init__(AttributeHandleSet)
+
+
+class DimensionHandleSetFactory(CollectionFactory[DimensionHandleSet]):
+    def __init__(self) -> None:
+        super().__init__(DimensionHandleSet)
+
+
+class FederateHandleSetFactory(CollectionFactory[FederateHandleSet]):
+    def __init__(self) -> None:
+        super().__init__(FederateHandleSet)
+
+
+class InteractionClassHandleSetFactory(CollectionFactory[InteractionClassHandleSet]):
+    def __init__(self) -> None:
+        super().__init__(InteractionClassHandleSet)
+
+
+class RegionHandleSetFactory(CollectionFactory[RegionHandleSet]):
+    def __init__(self) -> None:
+        super().__init__(RegionHandleSet)
+
+
+class AttributeHandleValueMapFactory(CollectionFactory[AttributeHandleValueMap]):
+    def __init__(self) -> None:
+        super().__init__(AttributeHandleValueMap)
+
+
+class ParameterHandleValueMapFactory(CollectionFactory[ParameterHandleValueMap]):
+    def __init__(self) -> None:
+        super().__init__(ParameterHandleValueMap)
+
+
+class AttributeSetRegionSetPairListFactory(CollectionFactory[AttributeSetRegionSetPairList]):
+    def __init__(self) -> None:
+        super().__init__(AttributeSetRegionSetPairList)

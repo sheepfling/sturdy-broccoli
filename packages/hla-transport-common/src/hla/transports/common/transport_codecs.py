@@ -31,7 +31,10 @@ def handle_value_map_spec(values: Mapping[Any, bytes | bytearray | memoryview]) 
 
 
 def decode_handle_value_map(spec: str, handle_type: type[Any], map_type: type[Any]) -> Any:
-    result = map_type()
+    try:
+        result = map_type()
+    except TypeError:
+        result = {}
     if not spec:
         return result
     for entry in spec.split(","):
@@ -45,7 +48,10 @@ def decode_order(value: str) -> OrderType:
 
 
 def decode_handle_set(spec: str, handle_type: type[Any], set_type: type[Any]) -> Any:
-    result = set_type()
+    try:
+        result = set_type()
+    except TypeError:
+        result = set()
     if not spec:
         return result
     for entry in spec.split(","):

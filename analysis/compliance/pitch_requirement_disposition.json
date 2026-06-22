@@ -26857,6 +26857,25 @@
       "applicability": "artifact-or-model-verification",
       "clause_root": "12",
       "document": "multi-section",
+      "evidence_refs": [],
+      "kind": "verification-slice",
+      "matrix_id": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome.",
+      "pitch_disposition": "classification-required",
+      "pitch_jpype_disposition": "classification-required",
+      "pitch_jpype_evidence_refs": [],
+      "pitch_py4j_disposition": "classification-required",
+      "pitch_py4j_evidence_refs": [],
+      "pitch_runtime_status": "",
+      "python_runtime_status": "",
+      "requirement_id": "REQ-SAVE-RESTORE-ROUTING-STATE-001",
+      "section_ref": "1516-2010 \u00a712.2; 1516.1-2010 \u00a74.24-\u00a74.29; 1516.1-2010 \u00a75; 1516.1-2010 \u00a76",
+      "title": "Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations"
+    },
+    {
+      "applicability": "artifact-or-model-verification",
+      "clause_root": "12",
+      "document": "multi-section",
       "evidence_refs": [
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_object_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_object_state_matrix",
@@ -26977,7 +26996,7 @@
   ],
   "summary": {
     "applicability_counts": {
-      "artifact-or-model-verification": 76,
+      "artifact-or-model-verification": 77,
       "classification-required": 23,
       "runtime-or-service-probe": 810,
       "section-summary-row": 9,
@@ -27076,8 +27095,9 @@
         "total": 6
       },
       "multi-section \u00a712": {
+        "classification-required": 1,
         "not-applicable": 2,
-        "total": 4,
+        "total": 5,
         "verified": 2
       },
       "multi-section \u00a74": {
@@ -27105,7 +27125,7 @@
     },
     "disposition_counts": {
       "blocked": 4,
-      "classification-required": 210,
+      "classification-required": 211,
       "not-applicable": 26,
       "not-yet-tested": 91,
       "vendor-divergent": 43,
@@ -27205,8 +27225,9 @@
           "total": 6
         },
         "multi-section \u00a712": {
+          "classification-required": 1,
           "not-applicable": 2,
-          "total": 4,
+          "total": 5,
           "verified": 2
         },
         "multi-section \u00a74": {
@@ -27325,8 +27346,9 @@
           "total": 6
         },
         "multi-section \u00a712": {
+          "classification-required": 1,
           "not-applicable": 2,
-          "total": 4,
+          "total": 5,
           "verified": 2
         },
         "multi-section \u00a74": {
@@ -27356,7 +27378,7 @@
     "profile_disposition_counts": {
       "pitch-jpype": {
         "blocked": 4,
-        "classification-required": 210,
+        "classification-required": 211,
         "not-applicable": 26,
         "not-yet-tested": 91,
         "vendor-divergent": 43,
@@ -27364,14 +27386,14 @@
       },
       "pitch-py4j": {
         "blocked": 4,
-        "classification-required": 210,
+        "classification-required": 211,
         "not-applicable": 26,
         "not-yet-tested": 91,
         "vendor-divergent": 43,
         "verified": 545
       }
     },
-    "row_count": 919,
+    "row_count": 920,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
   }
 }

@@ -75,9 +75,19 @@ class PythonRTISupportFactoriesMixin(PythonRTISupportControlMixin):
         self._require_joined()
         return hla_handles.ParameterHandleValueMapFactory()
 
+    def _svc_getRegionHandleFactory(self) -> hla_handles.RegionHandleFactory:
+        self._require_joined()
+        return hla_handles.RegionHandleFactory()
+
     def _svc_getRegionHandleSetFactory(self) -> hla_handles.RegionHandleSetFactory:
         self._require_joined()
         return hla_handles.RegionHandleSetFactory()
+
+    def _svc_getMessageRetractionHandleFactory(
+        self,
+    ) -> hla_handles.MessageRetractionHandleFactory:
+        self._require_joined()
+        return hla_handles.MessageRetractionHandleFactory()
 
     def _svc_getTransportationTypeHandleFactory(
         self,

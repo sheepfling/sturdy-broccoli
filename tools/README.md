@@ -4,6 +4,11 @@ This directory is the canonical home for human-facing operator entrypoints.
 
 If you are deciding what command to run, start here, not in `scripts/`.
 
+For IEEE 1516.1-2025 specifically, interpret the operator surface through
+`hla-backend-python2025` as the main runtime lane. The legacy `shim` provider
+name remains only a compatibility-wrapper alias, and hosted FedPro routes are
+bounded route variants rather than separate RTI families.
+
 Core operator entrypoints:
 
 - `./tools/python`
@@ -38,46 +43,28 @@ and generated guidance should point at `tools/`.
 Shortest common paths:
 
 - bootstrap and activate: `./tools/bootstrap python`
-- run one example: `./tools/examples target-radar --backend in-memory --steps 5`
-- inspect factories: `./tools/rti-factories list`
-- trace one method: `./tools/human-editability trace timeAdvanceRequest`
+- run one 2010 example: `python examples/target_radar_simulation.py --backend python --steps 5`
+- run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python2025 --steps 5`
 - run the default test wrapper: `./tools/test`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
+- run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
+- run bounded hosted 2025 Python/FedPro route checks: `./tools/python verify-routes-2025`
 - check whether hosted Python gRPC is runnable here: `./tools/python verify-routes-preflight`
 - inspect the language-shim route matrix: `./tools/shim-routes matrix --editions 2010,2025 --routes all`
 - inspect the Java toolchain inventory: `./tools/shim-routes java doctor`
 - inspect the Java toolchain inventory via the short front door: `./tools/java`
 - validate one FOM XML or an inventory family: `./tools/fom-validate DemoFOMmodule.xml` or `./tools/fom-validate --family rpr-normative`
 
-Useful `./tools/human-editability` entrypoints:
+For 2025 runtime ownership and proof status behind those commands, read:
 
-`./tools/human-editability check`
-`./tools/human-editability front-doors`
-`./tools/human-editability front-doors spec`
-`./tools/human-editability front-doors fom`
-`./tools/human-editability front-doors python-rti`
-`./tools/human-editability front-doors python-rti-service`
-`./tools/human-editability front-doors requirements-trace`
-`./tools/human-editability front-doors rti-factories`
-`./tools/human-editability front-doors requirements`
-`./tools/human-editability trace timeAdvanceRequest`
-`./tools/human-editability requirement REQ-RTI-TM-8_8-timeAdvanceRequest`
+- `docs/python_rti_backend.md`
+- `docs/python_rti_reading_map.md`
+- `docs/verification/time_model_compliance.md`
 
-Useful FOM scaffold entrypoint:
+Useful direct example entrypoints:
 
-`./tools/new-fom-package target-tracker`
-
-Useful `./tools/examples` entrypoints:
-
-`./tools/examples backend-recording`
-`./tools/examples rti-factory-selection --name in-memory --probe`
-`./tools/examples target-radar --backend in-memory --steps 5`
-`./tools/examples minimal-fom-demo --backend in-memory`
-
-Useful `./tools/rti-factories` entrypoints:
-
-`./tools/rti-factories list`
-`./tools/rti-factories show python`
-`./tools/rti-factories show in-memory --probe`
-`./tools/rti-factories instantiate in-memory --probe`
+`python examples/backend_recording.py`
+`python examples/rti_factory_selection.py --name in-memory --probe`
+`python examples/target_radar_simulation.py --backend python --steps 5`
+`python examples/target_radar_simulation.py --backend python2025 --steps 5`

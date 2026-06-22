@@ -6,8 +6,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 
 | Pitch backend | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |
 |---|---:|---:|---:|---:|---:|---:|
-| pitch-jpype | 545 | 4 | 43 | 91 | 26 | 210 |
-| pitch-py4j | 545 | 4 | 43 | 91 | 26 | 210 |
+| pitch-jpype | 545 | 4 | 43 | 91 | 26 | 211 |
+| pitch-py4j | 545 | 4 | 43 | 91 | 26 | 211 |
 
 ## Clause Summary
 
@@ -31,7 +31,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.2-2010 (2010 edition) §7 | 15 | 12 | 0 | 1 | 0 | 0 | 2 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 0 | 6 |
-| multi-section §12 | 4 | 2 | 0 | 0 | 0 | 2 | 0 |
+| multi-section §12 | 5 | 2 | 0 | 0 | 0 | 2 | 1 |
 | multi-section §4 | 3 | 1 | 0 | 0 | 0 | 2 | 0 |
 | multi-section §5 | 10 | 0 | 0 | 0 | 0 | 0 | 10 |
 | multi-section §6 | 14 | 13 | 0 | 1 | 0 | 0 | 0 |
@@ -62,7 +62,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.2-2010 (2010 edition) §7 | 15 | 12 | 0 | 1 | 0 | 0 | 2 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 0 | 6 |
-| multi-section §12 | 4 | 2 | 0 | 0 | 0 | 2 | 0 |
+| multi-section §12 | 5 | 2 | 0 | 0 | 0 | 2 | 1 |
 | multi-section §4 | 3 | 1 | 0 | 0 | 0 | 2 | 0 |
 | multi-section §5 | 10 | 0 | 0 | 0 | 0 | 0 | 10 |
 | multi-section §6 | 14 | 13 | 0 | 1 | 0 | 0 | 0 |
@@ -91,7 +91,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 | IEEE 1516.2-2010 (2010 edition) §7 | 15 | 12 | 0 | 1 | 0 | 0 | 2 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 0 | 6 |
-| multi-section §12 | 4 | 2 | 0 | 0 | 0 | 2 | 0 |
+| multi-section §12 | 5 | 2 | 0 | 0 | 0 | 2 | 1 |
 | multi-section §4 | 3 | 1 | 0 | 0 | 0 | 2 | 0 |
 | multi-section §5 | 10 | 0 | 0 | 0 | 0 | 0 | 10 |
 | multi-section §6 | 14 | 13 | 0 | 1 | 0 | 0 | 0 |
@@ -414,4 +414,5 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | multi-section | 11 | REQ-MOM-REPORT-001 | verification-slice | artifact-or-model-verification | MOM reports use the exact parameter names declared in the active MIM catalog |
 | multi-section | 11 | REQ-MOM-NEG-001 | verification-slice | artifact-or-model-verification | Strict MOM decoding reports and raises through generated parameterized negative-path tests |
 | multi-section | 11 | REQ-SERVICE-FILE-001 | verification-slice | artifact-or-model-verification | Service-report file output contains initial and per-service records with section anchors |
+| multi-section | 12 | REQ-SAVE-RESTORE-ROUTING-STATE-001 | verification-slice | artifact-or-model-verification | Save/restore reinstates saved object and interaction subscription-routing state rather than preserving dirty post-save declaration mutations |
 | multi-section | unknown | REQ-OMT-SCHEMA-001 | verification-slice | classification-required | Annex E schema-level conformance checking is identified explicitly and remains planned |

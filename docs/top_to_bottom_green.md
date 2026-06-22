@@ -29,7 +29,9 @@ Required outcome:
 
 - repo-local `.venv` bootstraps successfully
 - the workspace installs in editable mode
-- the pure Python backend runs
+- the pure Python 2010 backend runs
+- the main full Python 2025 RTI lane runs from `hla-backend-python2025`
+- the legacy `shim` provider name remains only a compatibility-wrapper alias
 - the example federate path runs
 
 Canonical commands:
@@ -40,7 +42,23 @@ Canonical commands:
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
+python examples/target_radar_simulation.py --backend python2025 --steps 5
 ```
+
+For IEEE 1516.1-2025 specifically, treat `python2025` as the main executable
+runtime lane. Do not treat `shim` as a separate RTI family; it remains a
+wrapper-only compatibility surface over `hla-backend-python2025`.
+
+Routine 2025 proof commands:
+
+```bash
+./tools/python verify-main-2025
+./tools/python verify-routes-2025
+```
+
+Use `verify-main-2025` as the default direct `python2025` proof lane. Use
+`verify-routes-2025` when you also need the bounded hosted
+`python-2025-fedpro-grpc` hygiene lane.
 
 ### 2. Repo Green
 
@@ -52,6 +70,8 @@ Required outcome:
 - generated status and parity artifacts are produced
 - vendor prerequisites are still checked
 - blocked CERTI or Pitch runtime prerequisites do not fail the whole lane
+- the direct and hosted `python2025` route evidence remains aligned with the
+  main 2025 Python RTI lane
 
 If you need to inspect the Java toolchain that backs language-shim route evidence,
 use `./tools/java`.
@@ -63,6 +83,10 @@ Canonical command:
 ```
 
 Repo-green is the standard answer to "does the repo work here?"
+
+For the 2025 lane, that answer should be grounded in the audited
+`hla-backend-python2025` runtime plus its bounded hosted route evidence, not in
+shim-first wording.
 
 ### 3. Vendor Green
 

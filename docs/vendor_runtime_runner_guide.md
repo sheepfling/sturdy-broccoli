@@ -61,8 +61,18 @@ Commands that require that authorization:
 
 - `./tools/python verify-routes-preflight`
 - `./tools/python verify-routes`
+- `./tools/python verify-routes-2025`
 - `python3 -m pytest -q tests/scenarios/test_python_route_parity.py -k grpc`
+- `python3 -m pytest -q tests/transport/test_grpc_transport_2025.py`
 - `./tools/target-radar matrix`
+
+Hosted-route meaning in this guide:
+
+- `./tools/python verify-routes` is the hosted 2010 Python direct-vs-gRPC lane
+- `./tools/python verify-routes-2025` is the bounded hosted `python2025` plus
+  `python-2025-fedpro-grpc` lane
+- both need the same local loopback authorization, but only the second one is
+  the current IEEE 1516.1-2025 hosted-route hygiene lane
 
 If you are using Codex interactively, the supported way to unblock those
 commands is to run them outside the managed sandbox through an approved

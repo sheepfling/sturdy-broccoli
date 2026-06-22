@@ -15,6 +15,13 @@ Read these first:
 That path explains the public API, the current backend-lane reality, and the
 cross-version factory entrypoint.
 
+Routine proof commands behind that selection story:
+
+- `./tools/python verify-main-2025` for the normal direct `python2025`
+  factory/runtime proof lane
+- `./tools/python verify-routes-2025` when factory or route changes must stay
+  aligned with the bounded hosted `python-2025-fedpro-grpc` lane
+
 ## Core Factory Files
 
 Cross-version factory and registry logic lives in:
@@ -31,6 +38,7 @@ Version-local helpers live in:
 Plugin registration entrypoints live in:
 
 - [../packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py](../packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py)
+- [../packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py](../packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py)
 - [../packages/hla-backend-shim/src/hla/backends/shim/plugin.py](../packages/hla-backend-shim/src/hla/backends/shim/plugin.py)
 
 ## What To Read By Question
@@ -45,26 +53,51 @@ If you want to know how the 2025 backend is selected:
 
 1. `packages/hla-rti1516-2025/src/hla/rti1516_2025/factory.py`
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
-3. `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`
+3. `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`
+4. `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`
 
-If you want to know why `shim` is the selected 2025 provider today:
+Read the shim plugin fourth on purpose: the factory's main 2025 selection story
+is the default `python2025` lane, while the explicit `shim` spelling is only a
+wrapper-only compatibility alias over that runtime.
+
+If you want to know why `python2025` is the selected 2025 provider today and
+why `shim` is now wrapper-only:
 
 1. [python_rti_backend.md](python_rti_backend.md)
-2. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
-3. [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
+2. [../packages/hla-backend-python2025/README.md](../packages/hla-backend-python2025/README.md)
+3. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
+4. [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
 
 ## Current Practical Selection Story
 
 Today the repo's practical Python RTI selection story is:
 
 - `inmemory` is the real pure-Python backend for `rti1516e`
-- `shim` is the current executable backend lane for `rti1516_2025`
+- `python2025` is the main full executable backend lane for `rti1516_2025`
+- `shim` is an explicit compatibility-wrapper alias over that runtime rather than the implementation owner
 - hosted routes such as the 2025 FedPro gRPC path are route variants layered
   over the selected backend/factory surface, not independent RTI families
 
 So if you create a 2025 RTI ambassador through the current factory stack, you
-should expect to land on the `hla-backend-shim` lane unless you are explicitly
-using a hosted route variant.
+should expect to land on the `hla-backend-python2025` lane by default. The
+explicit `backend="shim"` spelling is wrapper-only. The main `python2025`
+factory path now does accept hosted 2025 creation through `transport=...`,
+while the explicit `shim` alias still rejects hosted ownership and remains a
+wrapper-only opt-in. The same hosted FedPro route can therefore be reached
+either through the explicit FedPro server plus typed `GrpcTransport` surface
+or through `create_rti_ambassador(backend="python2025", transport=...)`.
+
+For evidence that this is not just naming policy, follow the default-selection
+proof first and only then inspect the wrapper alias:
+
+1. `tests/test_hla_factory_composition.py`
+2. `tests/test_rti1516_2025_spec_and_shim.py` (historical filename; main in-process `python2025` proof suite)
+3. `tests/requirements/test_2025_finish_line_snapshot.py`
+4. `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`
+
+In practice, `./tools/python verify-main-2025` is the normal proof command for
+that direct factory-selection path, while `./tools/python verify-routes-2025`
+is the follow-on lane when hosted factory transport ownership must stay green.
 
 ## Verification Anchors
 
@@ -72,7 +105,7 @@ The main tests that prove the current factory composition and 2025 selection
 behavior are:
 
 - [../tests/test_hla_factory_composition.py](../tests/test_hla_factory_composition.py)
-- [../tests/test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py)
+- [../tests/test_rti1516_2025_spec_and_shim.py](../tests/test_rti1516_2025_spec_and_shim.py) (historical filename; main in-process `python2025` proof suite)
 - [../tests/requirements/test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)
 
 Use those when changing:

@@ -32,6 +32,8 @@ No distribution owns `src/hla/__init__.py`.
 
 - Keep version-specific API code under `hla.rti1516e` or `hla.rti1516_2025`.
 - Keep cross-version discovery and ambassador-factory helpers under `hla.rti`.
+- Keep the main full IEEE 1516.1-2025 runtime semantics under `hla.backends.python2025`.
+- Keep `hla.backends.shim` narrow and wrapper-only; it should not re-own the 2025 runtime.
 - Package-owned implementation should import `hla.rti` directly when it needs backend discovery or ambassador-factory helpers.
 - Keep concrete backend and support implementations in their owning `packages/<name>/src/` trees.
 - Keep runnable examples thin and repo-local under `examples/`.

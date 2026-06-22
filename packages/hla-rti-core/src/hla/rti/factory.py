@@ -32,8 +32,8 @@ _SOURCE_CHECKOUT_SPEC_PLUGIN_MODULES: tuple[str, ...] = (
 )
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla.backends.inmemory.plugin",
+    "hla.backends.python2025.plugin",
     "hla.backends.cpp_shim.plugin",
-    "hla.backends.shim.plugin",
     "hla.bridges.java.common.java_shim_plugin",
     "hla.bridges.java.jpype.plugin",
     "hla.bridges.java.py4j.plugin",
@@ -59,7 +59,7 @@ class EditionCapabilities:
 
 @dataclass(frozen=True, slots=True)
 class NoAuthProvider:
-    """Default permissive auth provider for local/spec shim routes."""
+    """Default permissive auth provider for local and compatibility-wrapper routes."""
 
     name: str = "none"
     credential_type: str = "HLAnoCredentials"
@@ -329,6 +329,10 @@ class HlaFactory:
     def create_rti_ambassador(self, **options: Any) -> Any:
         merged = dict(self.options)
         merged.update(options)
+        # Composition-layer helpers such as auth belong to the factory/runtime
+        # context, not the backend constructor surface.
+        for key in ("auth", "auth_provider", "encoding_registry"):
+            merged.pop(key, None)
         composition = self._composition()
         merged.setdefault("factory_composition", composition)
         return create_rti_ambassador(spec=self.spec, backend=self.provider, **merged)
@@ -380,7 +384,7 @@ class HlaFactory:
     def create_authentication_context(self, config: Any = None, *, transport: str = "inproc") -> AuthenticationContext:
         mode = _auth_config_value(config, "mode", "NoAuth")
         supports_standard = self.spec.name == "rti1516_2025"
-        supports_custom_credentials = supports_standard and self.provider in {"shim"}
+        supports_custom_credentials = supports_standard and self.provider in {"python2025", "shim"}
         supported_custom_credential_types = tuple(_auth_config_value(config, "supported_custom_credential_types", ()))
         if mode != "NoAuth" and not supports_standard:
             raise ValueError("Standard credentials are unsupported for the 1516e-2010 profile")
@@ -418,8 +422,8 @@ class HlaFactory:
         authorizer_provider = None
         authorizer_mode = _auth_config_value(config, "authorizer_mode", None)
         if authorizer_mode is not None:
-            if not (supports_standard and self.provider == "shim"):
-                raise ValueError("Authorizer providers are available only for hosted 2025 shim/proxy modes")
+            if not (supports_standard and self.provider in {"python2025", "shim"}):
+                raise ValueError("Authorizer providers are available only for 2025 Python RTI providers")
             if authorizer_mode != "Fake":
                 raise ValueError(f"Unsupported authorizer mode: {authorizer_mode!r}")
             allowed_federations = _auth_config_value(config, "allowed_federations", None)
@@ -763,8 +767,14 @@ def discover_rti_backends(*, spec: str | HLASpec | None = None, probe: bool = Fa
         error: str | None = None
         if probe and plugin.discover is not None:
             try:
-                info = plugin.discover()
-                available = info is not None
+                discovered = plugin.discover()
+                if isinstance(discovered, RTIBackendDiscovery):
+                    available = True if discovered.available is None else discovered.available
+                    info = discovered.info
+                    error = discovered.error
+                else:
+                    info = discovered
+                    available = info is not None
             except Exception as exc:
                 available = False
                 error = str(exc)

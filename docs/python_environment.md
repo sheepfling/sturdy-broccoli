@@ -5,6 +5,11 @@ This is the canonical setup path for this repository.
 If you are a person, an agent, or CI automation, start here before running
 examples, tests, or backend tools.
 
+This page covers the shared Python bootstrap contract for both editions. For
+the current IEEE 1516.1-2025 runtime lane, the main executable backend remains
+`hla-backend-python2025`, while `shim` stays only as a compatibility-wrapper
+provider name.
+
 ## What You Need First
 
 - Python 3.10 or newer
@@ -32,6 +37,15 @@ python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
 That is the shortest supported path to a working local Python setup.
+
+For the main 2025 lane after bootstrap, continue with:
+
+- [`python_rti_backend.md`](python_rti_backend.md) for the current runtime
+  ownership and wrapper boundary
+- [`python_rti_reading_map.md`](python_rti_reading_map.md) for the shortest
+  edit path through `hla-backend-python2025`
+- [`networked_rti_python.md`](networked_rti_python.md) for the bounded hosted
+  `python-2025-fedpro-grpc` route
 
 If you want to check the machine and workspace before bootstrapping, run:
 
@@ -164,6 +178,12 @@ python examples/target_radar_simulation.py --backend python --steps 5
 
 If those commands work, the base environment is healthy.
 
+For IEEE 1516.1-2025 specifically:
+
+- `python2025` is the main in-process RTI lane
+- `shim` is a compatibility-wrapper alias over that runtime
+- the hosted gRPC path is a bounded route variant, not a separate RTI family
+
 ## Hosted Python gRPC Authorization
 
 The hosted Python gRPC route needs one extra capability beyond the direct
@@ -194,9 +214,16 @@ not grant that capability. You must either:
 Once authorized, use:
 
 ```bash
+./tools/python verify-main-2025
 ./tools/python verify-routes
+./tools/python verify-routes-2025
 python examples/target_radar_simulation.py --backend python-grpc --steps 5
+python examples/target_radar_simulation.py --backend python2025 --steps 5
 ```
+
+Treat `./tools/python verify-main-2025` as the normal main-surface proof lane
+for the real 2025 Python RTI. Use `./tools/python verify-routes-2025` only
+when you also need the bounded hosted `python-2025-fedpro-grpc` hygiene lane.
 
 ## Vendor Runtime Order
 

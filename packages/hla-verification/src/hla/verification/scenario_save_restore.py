@@ -10,6 +10,7 @@ from typing import Any
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.exceptions import (
     FederateNotExecutionMember,
+    InvalidMessageRetractionHandle,
     NotConnected,
     RestoreInProgress,
     RestoreNotRequested,
@@ -66,6 +67,36 @@ def _encode_float64(value: float) -> bytes:
 
 def _encode_text(value: str) -> bytes:
     return value.encode("utf-8")
+
+
+def _same_handle(left: Any, right: Any) -> bool:
+    return int(getattr(left, "value", left)) == int(getattr(right, "value", right))
+
+
+def _producing_federate_from_record(record: Any) -> Any:
+    args = getattr(record, "args", ())
+    if len(args) >= 6:
+        supplemental = args[5]
+        producing = getattr(supplemental, "producing_federate", None)
+        if producing is not None:
+            return producing
+        producing = getattr(supplemental, "producingFederate", None)
+        if producing is not None:
+            return producing
+    if len(args) >= 5 and hasattr(args[4], "value"):
+        return args[4]
+    return None
+
+
+def _callback_args(record: Any) -> tuple[Any, ...]:
+    return tuple(getattr(record, "args", record))
+
+
+def _callback_contains_payload(record: Any, payload: bytes) -> bool:
+    for item in _callback_args(record):
+        if isinstance(item, dict) and payload in item.values():
+            return True
+    return False
 
 
 def _ledger_fingerprint(ledger: dict[str, Any]) -> str:
@@ -155,7 +186,7 @@ def run_example_fom_save_restore_gauntlet_scenario(
     sender_rti.change_interaction_order_type(interaction_class, OrderType.TIMESTAMP)
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
 
-    object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, object_instance_name)
+    object_instance = owner_rti.register_object_instance(owner_class, object_instance_name)
     owner_rti.change_attribute_order_type(object_instance, {owner_position, owner_velocity, owner_rcs}, OrderType.TIMESTAMP)
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
     mirror_object_instance = mirror_rti.get_object_instance_handle(object_instance_name)
@@ -408,7 +439,7 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
     sender_rti.change_interaction_order_type(interaction_class, OrderType.TIMESTAMP)
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
 
-    object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, object_instance_name)
+    object_instance = owner_rti.register_object_instance(owner_class, object_instance_name)
     owner_rti.change_attribute_order_type(object_instance, {owner_attribute}, OrderType.TIMESTAMP)
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
     mirror_object_instance = mirror_rti.get_object_instance_handle(object_instance_name)
@@ -592,6 +623,527 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
         "dirty_fingerprints": dirty_fingerprints,
         "restored_fingerprints": restored_fingerprints,
         "restored_times": restored_times,
+    }
+
+
+def run_restore_plain_object_subscriber_routing_scenario(
+    owner_rti: Any,
+    subscriber_a_rti: Any,
+    subscriber_b_rti: Any,
+    *,
+    config: SaveRestoreScenarioConfig,
+    owner_federate: Any,
+    subscriber_a_federate: Any,
+    subscriber_b_federate: Any,
+    object_class_name: str = "HLAobjectRoot.SmokeObject",
+    object_instance_name: str = "RestoreRoutingObject-1",
+    attribute_name: str = "Payload",
+) -> dict[str, Any]:
+    members = (
+        (owner_rti, owner_federate, config.leader_name),
+        (subscriber_a_rti, subscriber_a_federate, config.wing_name),
+        (subscriber_b_rti, subscriber_b_federate, f"{config.wing_name}-Alt"),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    owner_handle = owner_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
+    subscriber_a_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    subscriber_b_rti.join_federation_execution(f"{config.wing_name}-Alt", config.federate_type, config.federation_name)
+
+    owner_class = owner_rti.get_object_class_handle(object_class_name)
+    subscriber_a_class = subscriber_a_rti.get_object_class_handle(object_class_name)
+    subscriber_b_class = subscriber_b_rti.get_object_class_handle(object_class_name)
+    owner_attribute = owner_rti.get_attribute_handle(owner_class, attribute_name)
+    subscriber_a_attribute = subscriber_a_rti.get_attribute_handle(subscriber_a_class, attribute_name)
+    subscriber_b_attribute = subscriber_b_rti.get_attribute_handle(subscriber_b_class, attribute_name)
+
+    owner_rti.publish_object_class_attributes(owner_class, {owner_attribute})
+    subscriber_a_rti.subscribe_object_class_attributes(subscriber_a_class, {subscriber_a_attribute})
+
+    object_instance = owner_rti.register_object_instance(owner_class, object_instance_name)
+    discovered_a = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "discoverObjectInstance", loops=120)
+    assert discovered_a is not None
+    assert discovered_a.args[:3] == (object_instance, subscriber_a_class, object_instance_name)
+    if len(discovered_a.args) >= 4:
+        assert _same_handle(discovered_a.args[3], owner_handle)
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    owner_rti.update_attribute_values(object_instance, {owner_attribute: b"SAVED"}, b"saved-route")
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    saved_reflect = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "reflectAttributeValues", loops=120)
+    assert saved_reflect is not None
+    assert subscriber_b_federate.last_callback("reflectAttributeValues") is None
+    assert saved_reflect.args[:3] == (
+        object_instance,
+        {subscriber_a_attribute: b"SAVED"},
+        b"saved-route",
+    )
+
+    owner_rti.request_federation_save(config.save_name)
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateSave", loops=120)
+        assert initiate is not None
+        assert initiate.args == (config.save_name,)
+    for rti, _federate, _name in members:
+        rti.federate_save_begun()
+    for rti, _federate, _name in members:
+        rti.federate_save_complete()
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationSaved", loops=120) is not None
+
+    subscriber_a_rti.unsubscribe_object_class_attributes(subscriber_a_class, {subscriber_a_attribute})
+    subscriber_b_rti.subscribe_object_class_attributes(subscriber_b_class, {subscriber_b_attribute})
+    discovered_b = wait_for_callback(subscriber_b_rti, subscriber_b_federate, "discoverObjectInstance", loops=120)
+    assert discovered_b is not None
+    assert discovered_b.args[:3] == (object_instance, subscriber_b_class, object_instance_name)
+    if len(discovered_b.args) >= 4:
+        assert _same_handle(discovered_b.args[3], owner_handle)
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    owner_rti.update_attribute_values(object_instance, {owner_attribute: b"MUTATED"}, b"mutated-route")
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_a_federate.last_callback("reflectAttributeValues") is None
+    mutated_reflect = wait_for_callback(subscriber_b_rti, subscriber_b_federate, "reflectAttributeValues", loops=120)
+    assert mutated_reflect is not None
+    assert mutated_reflect.args[:3] == (
+        object_instance,
+        {subscriber_b_attribute: b"MUTATED"},
+        b"mutated-route",
+    )
+
+    owner_rti.request_federation_restore(config.save_name)
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateRestore", loops=120)
+        assert initiate is not None
+        assert initiate.args[0] == config.save_name
+    for rti, _federate, _name in members:
+        rti.federate_restore_complete()
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationRestored", loops=120) is not None
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    owner_rti.update_attribute_values(object_instance, {owner_attribute: b"RESTORED"}, b"restored-route")
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_b_federate.last_callback("reflectAttributeValues") is None
+    restored_reflect = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "reflectAttributeValues", loops=120)
+    assert restored_reflect is not None
+    assert restored_reflect.args[:3] == (
+        object_instance,
+        {subscriber_a_attribute: b"RESTORED"},
+        b"restored-route",
+    )
+
+    return {
+        "object_instance": object_instance,
+        "owner_handle": owner_handle,
+        "saved_reflect": saved_reflect,
+        "mutated_reflect": mutated_reflect,
+        "restored_reflect": restored_reflect,
+        "subscriber_b_saved_reflect": None,
+        "subscriber_a_mutated_reflect": None,
+        "subscriber_b_restored_reflect": None,
+    }
+
+
+def run_restore_plain_interaction_subscriber_routing_scenario(
+    publisher_rti: Any,
+    subscriber_a_rti: Any,
+    subscriber_b_rti: Any,
+    *,
+    config: SaveRestoreScenarioConfig,
+    publisher_federate: Any,
+    subscriber_a_federate: Any,
+    subscriber_b_federate: Any,
+    interaction_class_name: str = "HLAinteractionRoot.SmokeInteraction",
+    parameter_name: str = "Message",
+) -> dict[str, Any]:
+    members = (
+        (publisher_rti, publisher_federate, config.leader_name),
+        (subscriber_a_rti, subscriber_a_federate, config.wing_name),
+        (subscriber_b_rti, subscriber_b_federate, f"{config.wing_name}-Alt"),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    publisher_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    publisher_handle = publisher_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
+    subscriber_a_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    subscriber_b_rti.join_federation_execution(f"{config.wing_name}-Alt", config.federate_type, config.federation_name)
+
+    interaction_class = publisher_rti.get_interaction_class_handle(interaction_class_name)
+    subscriber_a_interaction = subscriber_a_rti.get_interaction_class_handle(interaction_class_name)
+    subscriber_b_interaction = subscriber_b_rti.get_interaction_class_handle(interaction_class_name)
+    parameter = publisher_rti.get_parameter_handle(interaction_class, parameter_name)
+    subscriber_a_parameter = subscriber_a_rti.get_parameter_handle(subscriber_a_interaction, parameter_name)
+    subscriber_b_parameter = subscriber_b_rti.get_parameter_handle(subscriber_b_interaction, parameter_name)
+
+    publisher_rti.publish_interaction_class(interaction_class)
+    subscriber_a_rti.subscribe_interaction_class(subscriber_a_interaction)
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    publisher_rti.send_interaction(interaction_class, {parameter: b"SAVED"}, b"saved-interaction")
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    saved_receive = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "receiveInteraction", loops=120)
+    assert saved_receive is not None
+    assert subscriber_b_federate.last_callback("receiveInteraction") is None
+    assert saved_receive.args[:3] == (
+        subscriber_a_interaction,
+        {subscriber_a_parameter: b"SAVED"},
+        b"saved-interaction",
+    )
+    publisher_rti.request_federation_save(config.save_name)
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateSave", loops=120)
+        assert initiate is not None
+        assert initiate.args == (config.save_name,)
+    for rti, _federate, _name in members:
+        rti.federate_save_begun()
+    for rti, _federate, _name in members:
+        rti.federate_save_complete()
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationSaved", loops=120) is not None
+
+    subscriber_a_rti.unsubscribe_interaction_class(subscriber_a_interaction)
+    subscriber_b_rti.subscribe_interaction_class(subscriber_b_interaction)
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    publisher_rti.send_interaction(interaction_class, {parameter: b"MUTATED"}, b"mutated-interaction")
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_a_federate.last_callback("receiveInteraction") is None
+    mutated_receive = wait_for_callback(subscriber_b_rti, subscriber_b_federate, "receiveInteraction", loops=120)
+    assert mutated_receive is not None
+    assert mutated_receive.args[:3] == (
+        subscriber_b_interaction,
+        {subscriber_b_parameter: b"MUTATED"},
+        b"mutated-interaction",
+    )
+    publisher_rti.request_federation_restore(config.save_name)
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateRestore", loops=120)
+        assert initiate is not None
+        assert initiate.args[0] == config.save_name
+    for rti, _federate, _name in members:
+        rti.federate_restore_complete()
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationRestored", loops=120) is not None
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    publisher_rti.send_interaction(interaction_class, {parameter: b"RESTORED"}, b"restored-interaction")
+    drain_callbacks_pair(publisher_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_b_federate.last_callback("receiveInteraction") is None
+    restored_receive = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "receiveInteraction", loops=120)
+    assert restored_receive is not None
+    assert restored_receive.args[:3] == (
+        subscriber_a_interaction,
+        {subscriber_a_parameter: b"RESTORED"},
+        b"restored-interaction",
+    )
+    return {
+        "publisher_handle": publisher_handle,
+        "saved_receive": saved_receive,
+        "mutated_receive": mutated_receive,
+        "restored_receive": restored_receive,
+        "subscriber_b_saved_receive": None,
+        "subscriber_a_mutated_receive": None,
+        "subscriber_b_restored_receive": None,
+    }
+
+
+def run_restore_directed_ddm_subscriber_routing_scenario(
+    owner_rti: Any,
+    subscriber_a_rti: Any,
+    subscriber_b_rti: Any,
+    *,
+    config: SaveRestoreScenarioConfig,
+    owner_federate: Any,
+    subscriber_a_federate: Any,
+    subscriber_b_federate: Any,
+    object_class_name: str = "HLAobjectRoot.Target",
+    object_instance_name: str = "DirectedRestoreTarget-1",
+    attribute_name: str = "Position",
+    interaction_class_name: str = "HLAinteractionRoot.TrackReport",
+    parameter_name: str = "TrackId",
+    dimension_name: str = "RoutingSpace",
+    saved_payload: bytes = b"SAVED",
+    mutated_payload: bytes = b"MUTATED",
+    restored_payload: bytes = b"RESTORED",
+) -> dict[str, Any]:
+    from hla.rti1516e.datatypes import RangeBounds
+
+    members = (
+        (owner_rti, owner_federate, config.leader_name),
+        (subscriber_a_rti, subscriber_a_federate, config.wing_name),
+        (subscriber_b_rti, subscriber_b_federate, f"{config.wing_name}-Alt"),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name,
+    )
+    owner_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
+    subscriber_a_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    subscriber_b_rti.join_federation_execution(f"{config.wing_name}-Alt", config.federate_type, config.federation_name)
+
+    owner_class = owner_rti.get_object_class_handle(object_class_name)
+    owner_attribute = owner_rti.get_attribute_handle(owner_class, attribute_name)
+    interaction_class = owner_rti.get_interaction_class_handle(interaction_class_name)
+    subscriber_a_interaction = subscriber_a_rti.get_interaction_class_handle(interaction_class_name)
+    subscriber_b_interaction = subscriber_b_rti.get_interaction_class_handle(interaction_class_name)
+    parameter = owner_rti.get_parameter_handle(interaction_class, parameter_name)
+    subscriber_a_parameter = subscriber_a_rti.get_parameter_handle(subscriber_a_interaction, parameter_name)
+    subscriber_b_parameter = subscriber_b_rti.get_parameter_handle(subscriber_b_interaction, parameter_name)
+    owner_dimension = owner_rti.get_dimension_handle(dimension_name)
+    subscriber_a_dimension = subscriber_a_rti.get_dimension_handle(dimension_name)
+    subscriber_b_dimension = subscriber_b_rti.get_dimension_handle(dimension_name)
+
+    owner_rti.publish_object_class_directed_interactions(owner_class, {interaction_class})
+    subscriber_a_rti.subscribe_object_class_directed_interactions(owner_class, {subscriber_a_interaction})
+    subscriber_b_rti.subscribe_object_class_directed_interactions(owner_class, {subscriber_b_interaction})
+
+    publisher_region = owner_rti.create_region({owner_dimension})
+    subscriber_a_region = subscriber_a_rti.create_region({subscriber_a_dimension})
+    subscriber_b_region = subscriber_b_rti.create_region({subscriber_b_dimension})
+    owner_rti.set_range_bounds(publisher_region, owner_dimension, RangeBounds(0, 10))
+    subscriber_a_rti.set_range_bounds(subscriber_a_region, subscriber_a_dimension, RangeBounds(5, 15))
+    subscriber_b_rti.set_range_bounds(subscriber_b_region, subscriber_b_dimension, RangeBounds(50, 60))
+    try:
+        owner_rti.commit_region_modifications({publisher_region, subscriber_a_region, subscriber_b_region})
+    except Exception:
+        owner_rti.commit_region_modifications({publisher_region})
+        subscriber_a_rti.commit_region_modifications({subscriber_a_region})
+        subscriber_b_rti.commit_region_modifications({subscriber_b_region})
+
+    object_instance = owner_rti.register_object_instance(owner_class, object_instance_name)
+    owner_rti.associate_regions_for_updates(object_instance, [({owner_attribute}, {publisher_region})])
+    subscriber_a_rti.subscribe_interaction_class_with_regions(subscriber_a_interaction, {subscriber_a_region})
+    subscriber_b_rti.subscribe_interaction_class_with_regions(subscriber_b_interaction, {subscriber_b_region})
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    owner_rti.send_directed_interaction(
+        interaction_class,
+        object_instance,
+        {parameter: saved_payload},
+        b"save-state",
+    )
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
+    saved_receive = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "receiveDirectedInteraction", loops=120)
+    assert saved_receive is not None
+    assert b"save-state" in _callback_args(saved_receive)
+    assert _callback_contains_payload(saved_receive, saved_payload)
+
+    owner_rti.request_federation_save(config.save_name)
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateSave", loops=120)
+        assert initiate is not None
+        assert _callback_args(initiate) == (config.save_name,)
+    for rti, _federate, _name in members:
+        rti.federate_save_begun()
+    for rti, _federate, _name in members:
+        rti.federate_save_complete()
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationSaved", loops=120) is not None
+
+    subscriber_a_rti.unsubscribe_object_class_directed_interactions(owner_class, {subscriber_a_interaction})
+    subscriber_a_rti.unsubscribe_interaction_class_with_regions(subscriber_a_interaction, {subscriber_a_region})
+    subscriber_b_rti.set_range_bounds(subscriber_b_region, subscriber_b_dimension, RangeBounds(8, 12))
+    subscriber_b_rti.commit_region_modifications({subscriber_b_region})
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    owner_rti.send_directed_interaction(
+        interaction_class,
+        object_instance,
+        {parameter: mutated_payload},
+        b"mutated-state",
+    )
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_a_federate.last_callback("receiveDirectedInteraction") is None
+    mutated_receive = wait_for_callback(subscriber_b_rti, subscriber_b_federate, "receiveDirectedInteraction", loops=120)
+    assert mutated_receive is not None
+    assert b"mutated-state" in _callback_args(mutated_receive)
+    assert _callback_contains_payload(mutated_receive, mutated_payload)
+
+    owner_rti.request_federation_restore(config.save_name)
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateRestore", loops=120)
+        assert initiate is not None
+        assert _callback_args(initiate)[0] == config.save_name
+    for rti, _federate, _name in members:
+        rti.federate_restore_complete()
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationRestored", loops=120) is not None
+
+    subscriber_a_federate.clear()
+    subscriber_b_federate.clear()
+    owner_rti.send_directed_interaction(
+        interaction_class,
+        object_instance,
+        {parameter: restored_payload},
+        b"restored-state",
+    )
+    drain_callbacks_pair(owner_rti, subscriber_a_rti, subscriber_b_rti, loops=16)
+    assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
+    restored_receive = wait_for_callback(subscriber_a_rti, subscriber_a_federate, "receiveDirectedInteraction", loops=120)
+    assert restored_receive is not None
+    assert b"restored-state" in _callback_args(restored_receive)
+    assert _callback_contains_payload(restored_receive, restored_payload)
+
+    return {
+        "saved_receive": saved_receive,
+        "mutated_receive": mutated_receive,
+        "restored_receive": restored_receive,
+        "subscriber_b_saved_receive": None,
+        "subscriber_a_mutated_receive": None,
+        "subscriber_b_restored_receive": None,
+    }
+
+
+def run_restore_stale_directed_tso_cleanup_scenario(
+    owner_rti: Any,
+    subscriber_rti: Any,
+    observer_rti: Any,
+    *,
+    config: SaveRestoreScenarioConfig,
+    owner_federate: Any,
+    subscriber_federate: Any,
+    observer_federate: Any,
+    object_class_name: str = "HLAobjectRoot.Target",
+    object_instance_name: str = "DirectedTSORestoreTarget-1",
+    interaction_class_name: str = "HLAinteractionRoot.TrackReport",
+    parameter_name: str = "TrackId",
+    stale_time: HLAinteger64Time = HLAinteger64Time(5),
+    fresh_time: HLAinteger64Time = HLAinteger64Time(7),
+) -> dict[str, Any]:
+    members = (
+        (owner_rti, owner_federate, config.leader_name),
+        (subscriber_rti, subscriber_federate, config.wing_name),
+        (observer_rti, observer_federate, f"{config.wing_name}-Observer"),
+    )
+    for rti, federate, _name in members:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(
+        config.federation_name,
+        list(config.fom_modules),
+        config.logical_time_implementation_name or "HLAinteger64Time",
+    )
+    owner_handle = owner_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
+    subscriber_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    observer_rti.join_federation_execution(f"{config.wing_name}-Observer", config.federate_type, config.federation_name)
+
+    object_class = owner_rti.get_object_class_handle(object_class_name)
+    interaction_class = owner_rti.get_interaction_class_handle(interaction_class_name)
+    subscriber_interaction = subscriber_rti.get_interaction_class_handle(interaction_class_name)
+    parameter = owner_rti.get_parameter_handle(interaction_class, parameter_name)
+    subscriber_parameter = subscriber_rti.get_parameter_handle(subscriber_interaction, parameter_name)
+    object_instance = owner_rti.register_object_instance(object_class, object_instance_name)
+
+    owner_rti.publish_object_class_directed_interactions(object_class, {interaction_class})
+    subscriber_rti.subscribe_object_class_directed_interactions(object_class, {subscriber_interaction})
+    owner_rti.enable_time_regulation(HLAinteger64Interval(1))
+    subscriber_rti.enable_time_constrained()
+    observer_rti.enable_time_constrained()
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=24)
+
+    owner_rti.request_federation_save(config.save_name)
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=16)
+    for rti, federate, _name in members:
+        initiate = wait_for_callback(rti, federate, "initiateFederateSave", loops=120)
+        assert initiate is not None
+        assert _callback_args(initiate) == (config.save_name,)
+    for rti, _federate, _name in members:
+        rti.federate_save_begun()
+    for rti, _federate, _name in members:
+        rti.federate_save_complete()
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationSaved", loops=120) is not None
+
+    stale = owner_rti.send_directed_interaction(
+        interaction_class,
+        object_instance,
+        {parameter: b"STALE"},
+        b"stale-tso",
+        stale_time,
+    )
+    assert stale.retractionHandleIsValid is True
+
+    owner_rti.request_federation_restore(config.save_name)
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=16)
+    for rti, federate, _name in members:
+        restore_begin = wait_for_callback(rti, federate, "initiateFederateRestore", loops=120)
+        assert restore_begin is not None
+        assert _callback_args(restore_begin)[0] == config.save_name
+    for rti, _federate, _name in members:
+        rti.federate_restore_complete()
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=16)
+    for rti, federate, _name in members:
+        assert wait_for_callback(rti, federate, "federationRestored", loops=120) is not None
+
+    subscriber_federate.clear()
+    observer_federate.clear()
+    subscriber_rti.next_message_request(stale_time)
+    observer_rti.next_message_request(stale_time)
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=24)
+    assert subscriber_federate.callbacks_named("receiveDirectedInteraction") == []
+    assert observer_federate.callbacks_named("receiveDirectedInteraction") == []
+    try:
+        owner_rti.retract(stale.handle)
+    except InvalidMessageRetractionHandle:
+        pass
+    else:
+        raise AssertionError("Dirty post-save directed TSO handle remained retractable after restore")
+
+    subscriber_federate.clear()
+    observer_federate.clear()
+    fresh = owner_rti.send_directed_interaction(
+        interaction_class,
+        object_instance,
+        {parameter: b"FRESH"},
+        b"fresh-tso",
+    )
+    drain_callbacks_pair(owner_rti, subscriber_rti, observer_rti, loops=16)
+
+    fresh_receive = wait_for_callback(subscriber_rti, subscriber_federate, "receiveDirectedInteraction", loops=120)
+    assert fresh_receive is not None
+    assert b"fresh-tso" in _callback_args(fresh_receive)
+    assert _callback_contains_payload(fresh_receive, b"FRESH")
+    assert observer_federate.last_callback("receiveDirectedInteraction") is None
+
+    return {
+        "stale_time": stale_time,
+        "fresh_time": fresh_time,
+        "stale_handle": stale.handle,
+        "fresh_receive": fresh_receive,
     }
 
 
@@ -2382,6 +2934,10 @@ def run_resigned_federate_callback_silence_scenario(
 __all__ = [
     "SaveRestoreScenarioConfig",
     "run_abort_save_exception_scenario",
+    "run_restore_plain_interaction_subscriber_routing_scenario",
+    "run_restore_plain_object_subscriber_routing_scenario",
+    "run_restore_directed_ddm_subscriber_routing_scenario",
+    "run_restore_stale_directed_tso_cleanup_scenario",
     "run_restore_callback_policy_scenario",
     "run_restore_request_precondition_scenario",
     "run_restore_participant_exception_scenario",

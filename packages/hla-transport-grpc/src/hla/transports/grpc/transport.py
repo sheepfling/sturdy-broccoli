@@ -116,6 +116,19 @@ class GrpcTransport(RTITransport):
             self._channel.close()
             self._channel = None
 
+    def capability_report(self) -> dict[str, object]:
+        adapter_report = {}
+        report_method = getattr(self.client_adapter, "capability_report", None)
+        if callable(report_method):
+            adapter_report = dict(report_method())
+        return {
+            **adapter_report,
+            "target": self.config.target,
+            "schema": self._schema_name,
+            "secure": self.config.secure,
+            "started": self._channel is not None,
+        }
+
 
 def create_grpc_transport(config: GrpcTransportConfig) -> GrpcTransport:
     return GrpcTransport(config)

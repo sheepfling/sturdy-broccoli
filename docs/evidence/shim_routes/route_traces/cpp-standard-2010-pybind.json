@@ -1,5 +1,15 @@
 {
   "edition": "2010",
+  "requirements_exercised": [
+    "HLA2025-FR-001",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FR-007",
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-006",
+    "HLA2025-FI-009"
+  ],
   "route": "cpp-standard-2010-pybind",
   "scenario": "two-federate-core-exchange",
   "status": "core-exchange-green",
@@ -76,7 +86,16 @@
         "value": 4
       },
       "order": "RECEIVE",
-      "tag": "update-tag"
+      "producingFederate": "SupplementalReflectInfo(producing_federate=FederateHandle(value=2), sent_regions=frozenset())",
+      "receivedOrder": null,
+      "retraction": null,
+      "sentRegions": null,
+      "tag": "update-tag",
+      "time": null,
+      "transportation": {
+        "type": "TransportationTypeHandle",
+        "value": 1
+      }
     },
     {
       "event": "receiveInteraction",
@@ -88,7 +107,16 @@
       "parameters": {
         "{'type': 'ParameterHandle', 'value': 1}": "hello"
       },
-      "tag": "interaction-tag"
+      "producingFederate": "SupplementalReceiveInfo(producing_federate=FederateHandle(value=2), sent_regions=frozenset())",
+      "receivedOrder": null,
+      "retraction": null,
+      "sentRegions": null,
+      "tag": "interaction-tag",
+      "time": null,
+      "transportation": {
+        "type": "TransportationTypeHandle",
+        "value": 1
+      }
     },
     {
       "event": "timeRegulationEnabled",
@@ -113,15 +141,5 @@
         "target"
       ]
     }
-  ],
-  "requirements_exercised": [
-    "HLA2025-FR-001",
-    "HLA2025-FR-003",
-    "HLA2025-FR-004",
-    "HLA2025-FR-007",
-    "HLA2025-FR-010",
-    "HLA2025-FI-001",
-    "HLA2025-FI-006",
-    "HLA2025-FI-009"
   ]
 }

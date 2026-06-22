@@ -20,6 +20,8 @@ def _load_api_metadata() -> dict[str, dict[str, list[dict[str, Any]]]]:
 
 
 API_METADATA = _load_api_metadata()
+API_METADATA.setdefault("RTIambassador", {}).setdefault("getRegionHandleFactory", [])
+API_METADATA.setdefault("RTIambassador", {}).setdefault("getMessageRetractionHandleFactory", [])
 
 
 class RTIambassador(ABC):
@@ -483,6 +485,16 @@ class RTIambassador(ABC):
     @abstractmethod
     def getRegionHandleSetFactory(self, *args: Any, **kwargs: Any) -> Any:
         """getRegionHandleSetFactory; 1 source overload(s). See API_METADATA."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def getRegionHandleFactory(self, *args: Any, **kwargs: Any) -> Any:
+        """getRegionHandleFactory; compatibility/support-factory extension. See API_METADATA."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def getMessageRetractionHandleFactory(self, *args: Any, **kwargs: Any) -> Any:
+        """getMessageRetractionHandleFactory; compatibility/support-factory extension. See API_METADATA."""
         raise NotImplementedError
 
     @abstractmethod
