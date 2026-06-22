@@ -2,7 +2,7 @@
 
 This page explains how the repo implements the HLA callback delivery split and
 what evidence we use to treat that behavior as compliant for the supported
-Python backend path.
+Python backend paths.
 
 ## Scope
 
@@ -19,7 +19,7 @@ API surface.
 
 ## How It Works
 
-The Python backend implementation is explicit:
+The reference Python backend implementation is explicit:
 
 - [`hla.backends.inmemory/state.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py)
   stores the callback model on each federate state and defaults to
@@ -32,6 +32,17 @@ The Python backend implementation is explicit:
     services
 - The callback invocation path preserves the usual re-entrancy guards and wraps
   unexpected ambassador failures in `FederateInternalError`.
+
+For the primary 2025 lane, the same split is now explicit in the dedicated
+runtime too:
+
+- [`hla.backends.python2025.callback_runtime`](../../packages/hla-backend-python2025/src/hla/backends/python2025/callback_runtime.py)
+  honors `HLA_EVOKED` by queueing until explicit drain and honors
+  `HLA_IMMEDIATE` by delivering inline when callbacks are enabled
+- [`hla.backends.python2025.federation_management_runtime`](../../packages/hla-backend-python2025/src/hla/backends/python2025/federation_management_runtime.py)
+  stores the selected callback model on the connected `python2025` federate
+- [`hla.backends.python2025.federation_time_surface_mixin`](../../packages/hla-backend-python2025/src/hla/backends/python2025/federation_time_surface_mixin.py)
+  exposes the public drain/enable/disable services over that runtime
 
 Operationally, that means:
 
@@ -55,13 +66,23 @@ The strongest executable evidence lives in the Python backend tests:
   adds immediate-callback coverage for ownership-path failure and callback
   sequencing cases.
 
+For the main 2025 RTI lane, executable evidence now also includes:
+
+- [`tests/test_rti1516_2025_python2025_runtime.py`](../../tests/test_rti1516_2025_python2025_runtime.py)
+  proves raw callback-control queueing on the direct `python2025` surface and
+  proves inline `HLA_IMMEDIATE` object-callback delivery without explicit
+  evocation
+- [`tests/transport/test_grpc_transport_2025.py`](../../tests/transport/test_grpc_transport_2025.py)
+  proves hosted FedPro callback-control, backlog drain, and reconnect-hygiene
+  behavior over the bounded hosted route
+
 The conformance matrix uses those tests as evidence anchors for the service
 rows that depend on callback delivery semantics.
 
 ## Why This Counts As Compliant
 
 The repo does not claim blanket vendor parity for callback delivery. It claims
-compliance for the supported Python backend subset and for the rows in the
+compliance for the supported Python backend subsets and for the rows in the
 traceability catalog that are backed by executable proof.
 
 That compliance claim is valid because:
@@ -72,6 +93,14 @@ That compliance claim is valid because:
   artifacts
 - the failure modes are explicit when a backend does not support inline
   immediate delivery
+
+For the 2025 lane specifically, the honest boundary is:
+
+- direct `hla-backend-python2025` now has positive proof for both
+  `HLA_EVOKED` and inline `HLA_IMMEDIATE`
+- the hosted FedPro route is still primarily a callback-polling and
+  transport-seam proof surface, not the strongest place to claim inline
+  immediate-callback semantics
 
 In other words, the repo is compliant where it has positive proof, and it keeps
 the unsupported boundary visible instead of collapsing it into a broader claim.

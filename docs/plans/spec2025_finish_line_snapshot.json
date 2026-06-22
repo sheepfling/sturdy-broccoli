@@ -2495,8 +2495,8 @@
     "rows": [
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
-        "current_source_line_baseline": 3997,
-        "current_source_method_baseline": 71,
+        "current_source_line_baseline": 4004,
+        "current_source_method_baseline": 72,
         "proof_family_count": 5,
         "route_backed": true,
         "slice_id": "2025-save-restore-lifecycle",
@@ -2520,8 +2520,8 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2154,
-            "current_method_count": 20,
+            "current_line_count": 2161,
+            "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
           }
@@ -2530,8 +2530,8 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
-        "current_source_line_baseline": 3167,
-        "current_source_method_baseline": 44,
+        "current_source_line_baseline": 3174,
+        "current_source_method_baseline": 45,
         "proof_family_count": 6,
         "route_backed": true,
         "slice_id": "2025-ownership-proof-families",
@@ -2549,8 +2549,8 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2154,
-            "current_method_count": 20,
+            "current_line_count": 2161,
+            "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
           }
@@ -2559,8 +2559,8 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py",
-        "current_source_line_baseline": 3236,
-        "current_source_method_baseline": 52,
+        "current_source_line_baseline": 3243,
+        "current_source_method_baseline": 53,
         "proof_family_count": 5,
         "route_backed": true,
         "slice_id": "2025-directed-interaction-boundary",
@@ -2578,8 +2578,8 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2154,
-            "current_method_count": 20,
+            "current_line_count": 2161,
+            "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
           }
@@ -2588,8 +2588,8 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py",
-        "current_source_line_baseline": 4683,
-        "current_source_method_baseline": 134,
+        "current_source_line_baseline": 4690,
+        "current_source_method_baseline": 135,
         "proof_family_count": 6,
         "route_backed": true,
         "slice_id": "2025-ddm-default-attribute-policy",
@@ -2613,8 +2613,8 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2154,
-            "current_method_count": 20,
+            "current_line_count": 2161,
+            "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
           }
@@ -7983,7 +7983,7 @@
     "audit_status": "implementation-concentration-captured",
     "backend_shell_ratio": 0.0,
     "current_assessment": "The primary 2025 Python RTI lane still cites hla-backend-python2025/backend.py as a frequent evidence anchor, but semantic concentration is no longer material there: the ambassador shell is thin and most runtime behavior now lives in extracted python2025 modules. Remaining pressure is architectural hygiene, not proof that core 2025 semantics still live in one oversized backend class.",
-    "extracted_runtime_module_line_count": 11324,
+    "extracted_runtime_module_line_count": 11331,
     "extraction_pressure_boundary": "The main python2025 runtime should keep absorbing real RTI semantics, while wrapper-only compatibility logic should keep shrinking or moving outward into narrower adapters and reusable runtime modules.",
     "implemented_slice_count": 76,
     "leading_extracted_runtime_modules": [
@@ -18049,7 +18049,7 @@
     "audit_status": "python2025-source-responsibility-captured",
     "current_assessment": "The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python2025, while the substantive runtime behavior is spread across extracted python2025 modules and hla-backend-shim has been reduced to a compatibility wrapper. Save/restore lifecycle, directed-interaction routing, time management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery are now measurable as named source-owned families under the main python2025 runtime package.",
     "extracted_runtime_module_count": 50,
-    "extracted_runtime_module_line_count": 11324,
+    "extracted_runtime_module_line_count": 11331,
     "extracted_runtime_modules": [
       {
         "family": "misc-support",
@@ -18102,8 +18102,9 @@
       },
       {
         "family": "callback-delivery-and-control",
-        "function_count": 14,
+        "function_count": 15,
         "functions": [
+          "_callback_requires_evocation",
           "force_connection_lost",
           "evoke_callback",
           "evoke_multiple_callbacks",
@@ -18119,7 +18120,7 @@
           "deliver_queued_callback",
           "deliver_mom_service_report"
         ],
-        "line_count": 173,
+        "line_count": 180,
         "path": "packages/hla-backend-python2025/src/hla/backends/python2025/callback_runtime.py"
       },
       {
@@ -18774,17 +18775,17 @@
       },
       {
         "family": "callback-delivery-and-control",
-        "line_count": 2154,
-        "method_count": 20,
+        "line_count": 2161,
+        "method_count": 21,
         "sample_methods": [
           "deliver_forced_remove_callbacks",
           "evaluate_attribute_scope_advisories",
+          "_callback_requires_evocation",
           "force_connection_lost",
           "evoke_callback",
           "evoke_multiple_callbacks",
           "enable_callbacks",
-          "disable_callbacks",
-          "enable_asynchronous_delivery"
+          "disable_callbacks"
         ]
       },
       {
@@ -18987,7 +18988,7 @@
         ],
         "route": "python-2025-inprocess",
         "route_notes": [
-          "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, and callback polling.",
+          "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery.",
           "Current Python 2025 RTI covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, universal directed subscribe alias, discovery, attribute reflection, interaction receipt, and directed interaction receipt.",
           "Current Python 2025 RTI covers basic, negotiated, cancellation, unavailable, release-denied, and resign ownership slices, plus save/restore rollback of in-flight acquisition/divestiture state and cross-federate owner-visibility recovery.",
           "Current Python 2025 RTI covers object-region filtering, passive object and interaction region-subscribe aliases, scope advisory callbacks, and 2025 default attribute policy calls.",
@@ -20166,8 +20167,9 @@
         "requirement_id": "HLA2025-FI-005"
       },
       {
-        "pytest_anchor_count": 5,
+        "pytest_anchor_count": 6,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_is_first_green_runtime_path",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_validates_callback_model_and_credentials_at_connect",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice",
@@ -22587,8 +22589,9 @@
         "requirement_id": "HLA2025-FI-SVC-192"
       },
       {
-        "pytest_anchor_count": 6,
+        "pytest_anchor_count": 7,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_callback_delivery_policy",
@@ -22800,7 +22803,7 @@
         "requirement_id": "HLA2025-FR-010"
       },
       {
-        "pytest_anchor_count": 36,
+        "pytest_anchor_count": 37,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
@@ -22833,6 +22836,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_encoding_auth_contexts.py::test_2025_encoding_auth_factory_surface_rejects_legacy_shim_provider",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
@@ -27054,7 +27058,7 @@
           "tests/test_rti1516_2025_python2025_runtime.py"
         ],
         "implementation_lane": "hla-backend-python2025",
-        "notes": "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, and callback polling.",
+        "notes": "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery.",
         "requirements": [
           "HLA2025-FI-005",
           "HLA2025-FI-006"
@@ -28219,7 +28223,7 @@
           "tests/test_rti1516_2025_python2025_runtime.py"
         ],
         "implementation_lane": "hla-backend-python2025",
-        "notes": "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, and callback polling.",
+        "notes": "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery.",
         "requirements": [
           "HLA2025-FI-005",
           "HLA2025-FI-006"

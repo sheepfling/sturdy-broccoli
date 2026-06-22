@@ -406,7 +406,7 @@ Leading extracted runtime owners:
 - Source path: packages/hla-backend-python2025/src/hla/backends/python2025/backend.py
 - Source line count: 488
 - Extracted runtime helper modules: 50
-- Extracted runtime helper lines: 11324
+- Extracted runtime helper lines: 11331
 - Runtime ambassador class: Python2025RTIAmbassador
 - Runtime ambassador line count: 18
 - Runtime ambassador methods: 0
@@ -421,7 +421,7 @@ Leading extracted runtime owners:
 Python 2025 source responsibility families:
 
 - misc-support: 33 methods, 2235 lines; sample=create_python2025_backend, require_connected, require_joined, require_no_save_or_restore, normalize_reserved_object_instance_name, normalize_reserved_object_instance_name_set, normalize_object_class_subscription_args, coerce_time
-- callback-delivery-and-control: 20 methods, 2154 lines; sample=deliver_forced_remove_callbacks, evaluate_attribute_scope_advisories, force_connection_lost, evoke_callback, evoke_multiple_callbacks, enable_callbacks, disable_callbacks, enable_asynchronous_delivery
+- callback-delivery-and-control: 21 methods, 2161 lines; sample=deliver_forced_remove_callbacks, evaluate_attribute_scope_advisories, _callback_requires_evocation, force_connection_lost, evoke_callback, evoke_multiple_callbacks, enable_callbacks, disable_callbacks
 - object-attribute-runtime: 82 methods, 1447 lines; sample=known_object_classes_for_federate, publish_object_class_attributes, unpublish_object_class, unpublish_object_class_attributes, subscribe_object_class_attributes, unsubscribe_object_class, unsubscribe_object_class_attributes, reserve_object_instance_name
 - mom-and-switch-services: 39 methods, 1309 lines; sample=mom_request_params_by_name, mom_target_rti, mom_bool, mom_int, mom_attribute_handles, mom_text, mom_number, mom_handle_list_payload
 - federation-management-runtime: 48 methods, 1041 lines; sample=extract_federation_name, extract_create_federation_name, extract_join_names, extract_federate_type, extract_logical_time_implementation_name, extract_fom_sources, extract_mim_source, extract_additional_fom_modules
@@ -440,7 +440,7 @@ Extracted Python 2025 runtime helper modules:
 - packages/hla-backend-python2025/src/hla/backends/python2025/attribute_scope.py: object-attribute-runtime, 0 functions, 5 lines; functions=
 - packages/hla-backend-python2025/src/hla/backends/python2025/attribute_scope_runtime.py: callback-delivery-and-control, 2 functions, 104 lines; functions=deliver_forced_remove_callbacks, evaluate_attribute_scope_advisories
 - packages/hla-backend-python2025/src/hla/backends/python2025/backend_factory_runtime.py: misc-support, 1 functions, 94 lines; functions=create_python2025_backend
-- packages/hla-backend-python2025/src/hla/backends/python2025/callback_runtime.py: callback-delivery-and-control, 14 functions, 173 lines; functions=force_connection_lost, evoke_callback, evoke_multiple_callbacks, enable_callbacks, disable_callbacks, enable_asynchronous_delivery, disable_asynchronous_delivery, deliver_callback, deliver_callback_now, deliver_to_federate_handle, deliver_to_federate_handle_now, apply_object_callback_state, deliver_queued_callback, deliver_mom_service_report
+- packages/hla-backend-python2025/src/hla/backends/python2025/callback_runtime.py: callback-delivery-and-control, 15 functions, 180 lines; functions=_callback_requires_evocation, force_connection_lost, evoke_callback, evoke_multiple_callbacks, enable_callbacks, disable_callbacks, enable_asynchronous_delivery, disable_asynchronous_delivery, deliver_callback, deliver_callback_now, deliver_to_federate_handle, deliver_to_federate_handle_now, apply_object_callback_state, deliver_queued_callback, deliver_mom_service_report
 - packages/hla-backend-python2025/src/hla/backends/python2025/catalog_access_runtime.py: fom-catalog-and-handle-support, 10 functions, 101 lines; functions=normalize_handle, federation_record, catalog, stable_handles, object_class_handles, interaction_class_handles, dimension_handles, dimension_spec, dimension_default_upper_bound, transportation_handles
 - packages/hla-backend-python2025/src/hla/backends/python2025/catalog_runtime.py: fom-catalog-and-handle-support, 8 functions, 112 lines; functions=attribute_handles, parameter_handles, object_class_name, interaction_class_name, transportation_handle_by_name, object_instance_record, object_instance_record_known, synchronization_required_federates
 - packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py: ddm-region-runtime, 9 functions, 155 lines; functions=ranges_overlap, region_owner_key, regions_overlap_pair, region_sets_overlap, reflectable_attribute_names_for_subscriber, default_transportation_for, attribute_transportation_for, default_order_for, attribute_order_for
@@ -1547,10 +1547,10 @@ Pre-extraction gates:
 
 Extraction impact rows:
 
-- 2025-save-restore-lifecycle: source families=4, baseline=3997 lines/71 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py; save-restore-runtime=430 lines/13 methods, time-management-runtime=830 lines/27 methods, ownership-runtime=583 lines/11 methods, callback-delivery-and-control=2154 lines/20 methods
-- 2025-ownership-proof-families: source families=3, baseline=3167 lines/44 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py; ownership-runtime=583 lines/11 methods, save-restore-runtime=430 lines/13 methods, callback-delivery-and-control=2154 lines/20 methods
-- 2025-directed-interaction-boundary: source families=3, baseline=3236 lines/52 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py; interaction-routing-runtime=628 lines/23 methods, ddm-region-runtime=454 lines/9 methods, callback-delivery-and-control=2154 lines/20 methods
-- 2025-ddm-default-attribute-policy: source families=4, baseline=4683 lines/134 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py; ddm-region-runtime=454 lines/9 methods, object-attribute-runtime=1447 lines/82 methods, interaction-routing-runtime=628 lines/23 methods, callback-delivery-and-control=2154 lines/20 methods
+- 2025-save-restore-lifecycle: source families=4, baseline=4004 lines/72 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py; save-restore-runtime=430 lines/13 methods, time-management-runtime=830 lines/27 methods, ownership-runtime=583 lines/11 methods, callback-delivery-and-control=2161 lines/21 methods
+- 2025-ownership-proof-families: source families=3, baseline=3174 lines/45 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py; ownership-runtime=583 lines/11 methods, save-restore-runtime=430 lines/13 methods, callback-delivery-and-control=2161 lines/21 methods
+- 2025-directed-interaction-boundary: source families=3, baseline=3243 lines/53 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py; interaction-routing-runtime=628 lines/23 methods, ddm-region-runtime=454 lines/9 methods, callback-delivery-and-control=2161 lines/21 methods
+- 2025-ddm-default-attribute-policy: source families=4, baseline=4690 lines/135 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py; ddm-region-runtime=454 lines/9 methods, object-attribute-runtime=1447 lines/82 methods, interaction-routing-runtime=628 lines/23 methods, callback-delivery-and-control=2161 lines/21 methods
 
 ## Promotion Vs Split Audit
 

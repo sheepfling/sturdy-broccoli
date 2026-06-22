@@ -169,7 +169,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         ("HLA2025-FI-005", "HLA2025-FI-006"),
         _PYTHON_CORE_TESTS,
         "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, "
-        "disconnect, and callback polling.",
+        "disconnect, evoked callback polling, and direct inline immediate callback delivery.",
     ),
     _row(
         "federation_lifecycle",

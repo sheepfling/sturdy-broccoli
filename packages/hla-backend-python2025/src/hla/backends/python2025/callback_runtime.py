@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from hla.rti1516_2025.enums import CallbackModel
 from hla.rti1516_2025.exceptions import (
     InvalidFederateHandle,
     InvalidObjectInstanceHandle,
@@ -16,6 +17,10 @@ class QueuedCallback:
     target_federate: FederateHandle | None
     method_name: str
     args: tuple[Any, ...]
+
+
+def _callback_requires_evocation(backend: Any) -> bool:
+    return backend._callback_model is CallbackModel.HLA_EVOKED
 
 
 def force_connection_lost(backend: Any, fault_description: str) -> None:
@@ -55,7 +60,7 @@ def disable_asynchronous_delivery(backend: Any) -> None:
 
 
 def deliver_callback(backend: Any, method_name: str, *args: Any) -> None:
-    if not backend._callbacks_enabled:
+    if not backend._callbacks_enabled or _callback_requires_evocation(backend):
         backend._evoked_callback_queue.append(QueuedCallback(None, method_name, args))
         return
     deliver_callback_now(backend, method_name, *args)
@@ -74,7 +79,9 @@ def deliver_callback_now(backend: Any, method_name: str, *args: Any) -> None:
 def deliver_to_federate_handle(backend: Any, federate_handle: FederateHandle, method_name: str, *args: Any) -> None:
     federation = backend._federation_record()
     target_rti = federation.member_rtis.get(federate_handle.value)
-    if target_rti is not None and not target_rti._callbacks_enabled:
+    if target_rti is not None and (
+        not target_rti._callbacks_enabled or _callback_requires_evocation(target_rti)
+    ):
         target_rti._evoked_callback_queue.append(QueuedCallback(None, method_name, args))
         return
     deliver_to_federate_handle_now(backend, federate_handle, method_name, *args)

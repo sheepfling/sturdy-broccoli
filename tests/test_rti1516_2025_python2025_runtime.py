@@ -309,6 +309,16 @@ def _callbacks_named_2025(
     return [args for recorded_name, args in federate.callbacks if recorded_name == method_name]
 
 
+def _evoke_all_2025(*rtis: object, loops: int = 8) -> None:
+    for _ in range(loops):
+        delivered = False
+        for rti in rtis:
+            if rti.evokeMultipleCallbacks(0.0, 0.0):
+                delivered = True
+        if not delivered:
+            return
+
+
 def _normalize_2025_callback_value(value):  # noqa: ANN001, ANN201
     value_type = type(value)
     module_name = getattr(value_type, "__module__", "")
@@ -3242,6 +3252,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
     subscriber.subscribeObjectClassAttributes(object_class, {attribute})
     subscriber.subscribeInteractionClass(interaction_class)
     object_instance = publisher.registerObjectInstance(object_class, "Target-Exchange-1")
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
     assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
         object_instance,
         object_class,
@@ -3254,6 +3265,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
     publisher.publishObjectClassAttributes(object_class, {attribute})
     publisher.changeDefaultAttributeOrderType(object_class, {attribute}, OrderType.TIMESTAMP)
     publisher.updateAttributeValues(object_instance, {attribute: b"123,456"}, b"update-tag")
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
     reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
     assert reflection is not None
     assert reflection[:6] == (
@@ -3269,6 +3281,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
     publisher.changeAttributeOrderType(object_instance, {attribute}, OrderType.RECEIVE)
     subscriber_callbacks.callbacks.clear()
     publisher.updateAttributeValues(object_instance, {attribute: b"receive-ordered"}, b"receive-order-tag")
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
     receive_order_reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
     assert receive_order_reflection is not None
     assert receive_order_reflection[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
@@ -3278,6 +3291,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
     publisher.publishInteractionClass(interaction_class)
     publisher.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
     publisher.sendInteraction(interaction_class, {parameter: b"T-1"}, b"interaction-tag")
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
     received = subscriber_callbacks.last_callback("receiveInteraction")
     assert received is not None
     assert received[:6] == (
@@ -5143,6 +5157,7 @@ def test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end(ba
     parameter = rti.getParameterHandle(interaction_class, "TestCaseId")
     rti.publishObjectClassAttributes(object_class, {attribute})
     rti.reserveObjectInstanceName("support-suite")
+    assert rti.evokeMultipleCallbacks(0.0, 0.0) is True
     assert callbacks.last_callback("objectInstanceNameReservationSucceeded") == ("support-suite",)
     object_instance = rti.registerObjectInstance(object_class, "support-suite")
 
@@ -5268,6 +5283,7 @@ def test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_withou
     parameter = rti.getParameterHandle(interaction_class, "TestCaseId")
     rti.publishObjectClassAttributes(object_class, {attribute})
     rti.reserveObjectInstanceName("python2025-direct-support-suite")
+    assert rti.evokeMultipleCallbacks(0.0, 0.0) is True
     assert callbacks.last_callback("objectInstanceNameReservationSucceeded") == ("python2025-direct-support-suite",)
     object_instance = rti.registerObjectInstance(object_class, "python2025-direct-support-suite")
 
@@ -5355,6 +5371,7 @@ def test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_s
     parameter = rti.get_parameter_handle(interaction_class, "TestCaseId")
     rti.publish_object_class_attributes(object_class, {attribute})
     rti.reserve_object_instance_name("python2025-snake-surface-suite")
+    assert rti.evoke_multiple_callbacks(0.0, 0.0) is True
     assert callbacks.last_callback("objectInstanceNameReservationSucceeded") == ("python2025-snake-surface-suite",)
     object_instance = rti.register_object_instance(object_class, "python2025-snake-surface-suite")
 
@@ -5474,6 +5491,77 @@ def test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_
         except Exception:
             pass
         for rti in (subscriber, publisher):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements("HLA2025-FI-006", "HLA2025-FI-SVC-193", "HLA2025-MIL-001")
+def test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    federation_name = f"python2025-immediate-callbacks-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    owner_fed = Recording2025FederateAmbassador()
+    observer_fed = Recording2025FederateAmbassador()
+
+    try:
+        owner.connect(owner_fed, CallbackModel.HLA_EVOKED)
+        observer.connect(observer_fed, CallbackModel.HLA_IMMEDIATE)
+        owner.createFederationExecution(
+            federationName=federation_name,
+            fomModules=scenario_fom_paths("message-test"),
+            logicalTimeImplementationName="HLAinteger64Time",
+        )
+        owner.joinFederationExecution(
+            federateName="ImmediateOwner",
+            federateType="CallbackFederate",
+            federationName=federation_name,
+        )
+        observer.joinFederationExecution(
+            federateName="ImmediateObserver",
+            federateType="CallbackFederate",
+            federationName=federation_name,
+        )
+
+        owner_class = owner.getObjectClassHandle("HLAobjectRoot.Proto2025.MessageTest.TestSuite")
+        observer_class = observer.getObjectClassHandle("HLAobjectRoot.Proto2025.MessageTest.TestSuite")
+        owner_attribute = owner.getAttributeHandle(owner_class, "SuiteId")
+        observer_attribute = observer.getAttributeHandle(observer_class, "SuiteId")
+
+        owner.publishObjectClassAttributes(owner_class, {owner_attribute})
+        observer.subscribeObjectClassAttributes(observer_class, {observer_attribute})
+
+        object_instance = owner.registerObjectInstance(owner_class, f"immediate-suite-{uuid.uuid4().hex[:8]}")
+        owner.updateAttributeValues(
+            object_instance,
+            {owner_attribute: b"inline-callback-payload"},
+            b"inline-callback-tag",
+        )
+
+        discover = observer_fed.last_callback("discoverObjectInstance")
+        assert discover is not None
+        assert discover[1] == observer_class
+        reflect = observer_fed.last_callback("reflectAttributeValues")
+        assert reflect is not None
+        assert reflect[1] == {observer_attribute: b"inline-callback-payload"}
+        assert reflect[2] == b"inline-callback-tag"
+        assert observer.evokeCallback(0.0) is False
+    finally:
+        for rti, action in ((observer, ResignAction.NO_ACTION), (owner, ResignAction.DELETE_OBJECTS)):
+            try:
+                rti.resignFederationExecution(action)
+            except Exception:
+                pass
+        try:
+            owner.destroyFederationExecution(federationName=federation_name)
+        except Exception:
+            pass
+        for rti in (observer, owner):
             try:
                 rti.disconnect()
             except Exception:
@@ -7084,8 +7172,10 @@ def test_2025_provider_runs_callback_control_route_with_object_reflection_end_to
     subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
 
     publisher.reserveObjectInstanceName("callback-suite")
+    assert publisher.evokeMultipleCallbacks(0.0, 0.0) is True
     assert publisher_callbacks.last_callback("objectInstanceNameReservationSucceeded") == ("callback-suite",)
     object_instance = publisher.registerObjectInstance(object_class, "callback-suite")
+    assert subscriber.evokeMultipleCallbacks(0.0, 0.0) is True
     first_discovery = subscriber_callbacks.last_callback("discoverObjectInstance")
     assert first_discovery is not None
     assert first_discovery[0] == object_instance
@@ -7221,6 +7311,7 @@ def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend
 
     offered = owner.register_object_instance(object_class, "Compat-Negotiated-1")
     owner.negotiated_attribute_ownership_divestiture(offered, {attribute}, config.assumption_tag)
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption").args == (
         offered,
         {attribute},
@@ -7228,12 +7319,14 @@ def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend
     )
 
     acquirer.attribute_ownership_acquisition(offered, {attribute}, b"acquire-tag")
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert owner_federate.last_callback("requestDivestitureConfirmation").args == (
         offered,
         {attribute},
         b"acquire-tag",
     )
     owner.confirm_divestiture(offered, {attribute}, b"acquire-confirmed")
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification").args == (
         offered,
         {attribute},
@@ -7243,19 +7336,23 @@ def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend
 
     pending = owner.register_object_instance(object_class, "Compat-Pending-1")
     acquirer.attribute_ownership_acquisition(pending, {attribute}, config.request_tag)
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert owner_federate.last_callback("requestAttributeOwnershipRelease").args == (
         pending,
         {attribute},
         config.request_tag,
     )
     acquirer.cancel_attribute_ownership_acquisition(pending, {attribute})
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert acquirer_federate.last_callback("confirmAttributeOwnershipAcquisitionCancellation").args == (
         pending,
         {attribute},
     )
 
+    acquirer_federate.clear()
     acquirer.attribute_ownership_acquisition(pending, {attribute}, config.cancel_tag)
     divested = owner.attribute_ownership_divestiture_if_wanted(pending, {attribute})
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert divested == {attribute}
     assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification").args == (
         pending,
@@ -7266,18 +7363,21 @@ def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend
 
     confirmable = owner.register_object_instance(object_class, "Compat-Confirm-1")
     owner.negotiated_attribute_ownership_divestiture(confirmable, {attribute}, b"confirm-offer")
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption").args == (
         confirmable,
         {attribute},
         b"confirm-offer",
     )
     acquirer.attribute_ownership_acquisition(confirmable, {attribute}, b"confirm-request")
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert owner_federate.last_callback("requestDivestitureConfirmation").args == (
         confirmable,
         {attribute},
         b"confirm-request",
     )
     owner.confirm_divestiture(confirmable, {attribute}, b"confirm-divest")
+    _evoke_all_2025(owner._delegate, acquirer._delegate)
     assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification").args == (
         confirmable,
         {attribute},
@@ -9788,19 +9888,23 @@ def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, ba
     with pytest.raises(SaveNotInitiated):
         leader.federateSaveComplete()
     leader.requestFederationSave("SAVE-1")
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("initiateFederateSave") == ("SAVE-1",)
     assert wing_callbacks.last_callback("initiateFederateSave") == ("SAVE-1",)
     with pytest.raises(SaveInProgress):
         wing.requestFederationSave("SAVE-2")
     leader.federateSaveBegun()
     leader.queryFederationSaveStatus()
+    _evoke_all_2025(leader, wing)
     save_status = {pair.handle: pair.status for pair in leader_callbacks.last_callback("federationSaveStatusResponse")[0]}
     assert save_status[leader_handle] is SaveStatus.FEDERATE_SAVING
     assert save_status[wing_handle] is SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE
     wing.federateSaveBegun()
     leader.federateSaveComplete()
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("federationSaved") is None
     wing.federateSaveComplete()
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("federationSaved") == ()
     assert wing_callbacks.last_callback("federationSaved") == ()
     leader.timeAdvanceRequest(leader.getTimeFactory().makeTime(9))
@@ -9808,6 +9912,7 @@ def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, ba
     with pytest.raises(ObjectInstanceNotKnown):
         wing.requestAttributeValueUpdate(object_instance, {wing_attribute}, b"deleted")
     leader.queryFederationSaveStatus()
+    _evoke_all_2025(leader, wing)
     save_status = {pair.handle: pair.status for pair in leader_callbacks.last_callback("federationSaveStatusResponse")[0]}
     assert save_status == {
         leader_handle: SaveStatus.NO_SAVE_IN_PROGRESS,
@@ -9815,39 +9920,49 @@ def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, ba
     }
 
     leader.requestFederationRestore("MISSING-SAVE")
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("requestFederationRestoreFailed") == ("MISSING-SAVE",)
     leader.requestFederationRestore("SAVE-1")
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("requestFederationRestoreSucceeded") == ("SAVE-1",)
     assert leader_callbacks.last_callback("federationRestoreBegun") == ()
     assert wing_callbacks.last_callback("initiateFederateRestore") == ("SAVE-1", "Wing", wing_handle)
     leader.queryFederationRestoreStatus()
+    _evoke_all_2025(leader, wing)
     restore_status = {pair.preRestoreHandle: pair.status for pair in leader_callbacks.last_callback("federationRestoreStatusResponse")[0]}
     assert restore_status[leader_handle] is RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
     assert restore_status[wing_handle] is RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
     leader.federateRestoreComplete()
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("federationRestored") is None
     wing.federateRestoreComplete()
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("federationRestored") == ()
     assert wing_callbacks.last_callback("federationRestored") == ()
     assert leader.queryLogicalTime() == leader.getTimeFactory().makeTime(5)
     wing.requestAttributeValueUpdate(object_instance, {wing_attribute}, b"after-restore")
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("provideAttributeValueUpdate") == (object_instance, {attribute}, b"after-restore")
     with pytest.raises(RestoreNotRequested):
         leader.federateRestoreComplete()
 
     leader.requestFederationSave("SAVE-FAIL")
+    _evoke_all_2025(leader, wing)
     leader.federateSaveBegun()
     wing.federateSaveBegun()
     leader.federateSaveComplete()
     wing.federateSaveNotComplete()
+    _evoke_all_2025(leader, wing)
     assert leader_callbacks.last_callback("federationNotSaved") == (SaveFailureReason.FEDERATE_REPORTED_FAILURE_DURING_SAVE,)
 
     leader.requestFederationSave("SAVE-ABORT")
     leader.abortFederationSave()
+    _evoke_all_2025(leader, wing)
     assert wing_callbacks.last_callback("federationNotSaved") == (SaveFailureReason.SAVE_ABORTED,)
 
     leader.requestFederationRestore("SAVE-1")
     leader.abortFederationRestore()
+    _evoke_all_2025(leader, wing)
     assert wing_callbacks.last_callback("federationNotRestored") == (RestoreFailureReason.RESTORE_ABORTED,)
 
     wing.resignFederationExecution(ResignAction.NO_ACTION)
@@ -9932,9 +10047,11 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
         sender.enableTimeRegulation(HLAinteger64Interval(1))
         mirror.enableTimeConstrained()
         observer.enableTimeConstrained()
+        _evoke_all_2025(owner, mirror, sender, observer)
         sender.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
 
         object_instance = owner.registerObjectInstance(target_class, "Target-Checkpoint-1")
+        _evoke_all_2025(owner, mirror, sender, observer)
         owner.changeAttributeOrderType(object_instance, {owner_position, owner_velocity, owner_rcs}, OrderType.TIMESTAMP)
         mirror_object_instance = mirror.getObjectInstanceHandle("Target-Checkpoint-1")
 
@@ -9960,6 +10077,7 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
         )
         for rti in (owner, mirror, sender, observer):
             rti.timeAdvanceRequestAvailable(HLAinteger64Time(5))
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
 
         baseline_reflect = mirror_federate.last_callback("reflectAttributeValues")
         baseline_interaction = observer_federate.last_callback("receiveInteraction")
@@ -9978,12 +10096,14 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
         saved_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in saved_ledgers.items()}
 
         owner.requestFederationSave(save_name)
+        _evoke_all_2025(owner, mirror, sender, observer)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("initiateFederateSave") == (save_name,)
         for rti in (owner, mirror, sender, observer):
             rti.federateSaveBegun()
         for rti in (owner, mirror, sender, observer):
             rti.federateSaveComplete()
+        _evoke_all_2025(owner, mirror, sender, observer)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("federationSaved") == ()
 
@@ -10006,18 +10126,21 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
         )
         for rti in (owner, mirror, sender, observer):
             rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
         dirty_reflect = _callbacks_named_2025(mirror_federate, "reflectAttributeValues")[-1]
         dirty_interaction = _callbacks_named_2025(observer_federate, "receiveInteraction")[-1]
         assert dirty_reflect[1][mirror_position] == dirty_position
         assert dirty_interaction[1] == {observer_parameter: b"dirty-track"}
 
         owner.deleteObjectInstance(object_instance, b"dirty-delete")
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
         dirty_remove = mirror_federate.last_callback("removeObjectInstance")
         assert dirty_remove is not None
         assert dirty_remove[0] == mirror_object_instance
         assert dirty_remove[1] == b"dirty-delete"
 
         owner.requestFederationRestore(save_name)
+        _evoke_all_2025(owner, mirror, sender, observer)
         assert owner_federate.last_callback("requestFederationRestoreSucceeded") == (save_name,)
         assert owner_federate.last_callback("initiateFederateRestore") == (save_name, "Owner", owner_handle)
         assert mirror_federate.last_callback("initiateFederateRestore") == (save_name, "Mirror", mirror_handle)
@@ -10027,6 +10150,7 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
         restored_ledgers = {role: dict(ledger) for role, ledger in saved_ledgers.items()}
         for rti in (owner, mirror, sender, observer):
             rti.federateRestoreComplete()
+        _evoke_all_2025(owner, mirror, sender, observer)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("federationRestored") == ()
 
@@ -10057,6 +10181,7 @@ def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str)
         )
         for rti in (owner, mirror, sender, observer):
             rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
 
         branch_reflect = mirror_federate.last_callback("reflectAttributeValues")
         branch_interaction = observer_federate.last_callback("receiveInteraction")
@@ -10221,9 +10346,11 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         sender.enableTimeRegulation(HLAinteger64Interval(1))
         mirror.enableTimeConstrained()
         observer.enableTimeConstrained()
+        _evoke_all_2025(owner, mirror, sender, observer)
         sender.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
 
         object_instance = owner.registerObjectInstance(owner_class, "Owned-Target-Checkpoint-1")
+        _evoke_all_2025(owner, mirror, sender, observer)
         owner.changeAttributeOrderType(object_instance, {owner_attribute}, OrderType.TIMESTAMP)
         mirror_object_instance = mirror.getObjectInstanceHandle("Owned-Target-Checkpoint-1")
         observer_object_instance = observer.getObjectInstanceHandle("Owned-Target-Checkpoint-1")
@@ -10246,6 +10373,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         )
         for rti in (owner, mirror, sender, observer):
             rti.timeAdvanceRequestAvailable(HLAinteger64Time(5))
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
 
         baseline_reflect = observer_federate.last_callback("reflectAttributeValues")
         baseline_interaction = observer_federate.last_callback("receiveInteraction")
@@ -10263,12 +10391,14 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         saved_fingerprints = {role: json.dumps(ledger, sort_keys=True) for role, ledger in saved_ledgers.items()}
 
         owner.requestFederationSave(save_name)
+        _evoke_all_2025(owner, mirror, sender, observer)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("initiateFederateSave") == (save_name,)
         for rti in (owner, mirror, sender, observer):
             rti.federateSaveBegun()
         for rti in (owner, mirror, sender, observer):
             rti.federateSaveComplete()
+        _evoke_all_2025(owner, mirror, sender, observer)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("federationSaved") == ()
 
@@ -10279,9 +10409,11 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
 
         owner.unconditionalAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"dirty-divest")
         owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _evoke_all_2025(owner, mirror, sender, observer)
         assert owner_federate.last_callback("attributeIsNotOwned") == (object_instance, {owner_attribute})
 
         mirror.attributeOwnershipAcquisitionIfAvailable(mirror_object_instance, {mirror_attribute}, b"claim")
+        _evoke_all_2025(owner, mirror, sender, observer)
         dirty_acquired = mirror_federate.last_callback("attributeOwnershipAcquisitionNotification")
         assert dirty_acquired == (mirror_object_instance, {mirror_attribute}, b"claim")
         assert mirror.isAttributeOwnedByFederate(mirror_object_instance, mirror_attribute) is True
@@ -10296,6 +10428,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         )
         for rti in (owner, mirror, sender, observer):
             rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
 
         dirty_reflect = _callbacks_named_2025(observer_federate, "reflectAttributeValues")[-1]
         dirty_interaction = _callbacks_named_2025(observer_federate, "receiveInteraction")[-1]
@@ -10304,6 +10437,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         assert dirty_interaction[1] == {observer_parameter: b"dirty-message"}
 
         owner.requestFederationRestore(save_name)
+        _evoke_all_2025(owner, mirror, sender, observer)
         assert owner_federate.last_callback("requestFederationRestoreSucceeded") == (save_name,)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("initiateFederateRestore")[0] == save_name
@@ -10311,6 +10445,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
 
         for rti in (owner, mirror, sender, observer):
             rti.federateRestoreComplete()
+        _evoke_all_2025(owner, mirror, sender, observer)
         for federate in (owner_federate, mirror_federate, sender_federate, observer_federate):
             assert federate.last_callback("federationRestored") == ()
 
@@ -10328,6 +10463,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         observer_federate.callbacks.clear()
 
         owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _evoke_all_2025(owner, mirror, sender, observer)
         restored_informed = owner_federate.last_callback("informAttributeOwnership")
         assert restored_informed == (object_instance, {owner_attribute}, owner_handle)
         assert owner.isAttributeOwnedByFederate(object_instance, owner_attribute) is True
@@ -10347,6 +10483,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
         )
         for rti in (owner, mirror, sender, observer):
             rti.timeAdvanceRequestAvailable(HLAinteger64Time(8))
+        _evoke_all_2025(owner, mirror, sender, observer, loops=16)
 
         branch_reflect = observer_federate.last_callback("reflectAttributeValues")
         branch_interaction = observer_federate.last_callback("receiveInteraction")
@@ -10784,6 +10921,9 @@ def test_2025_provider_routes_directed_interactions_only_to_subscribers(
         object_instance = owner.registerObjectInstance(object_class, "Directed-Routing-Target-1")
 
         owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"ROUTED"}, b"routed-tag")
+        assert subscriber_a.evokeMultipleCallbacks(0.0, 0.0) is True
+        assert subscriber_b.evokeMultipleCallbacks(0.0, 0.0) is True
+        assert observer.evokeCallback(0.0) is False
 
         assert observer_federate.last_callback("receiveDirectedInteraction") is None
         assert owner_federate.last_callback("receiveDirectedInteraction") is None
@@ -11254,6 +11394,9 @@ def test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subs
         observer.subscribeInteractionClassWithRegions(interaction_class, {observer_region})
 
         owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"OVERLAP"}, b"first-route")
+        assert subscriber_a.evokeMultipleCallbacks(0.0, 0.0) is True
+        assert subscriber_b.evokeCallback(0.0) is False
+        assert observer.evokeCallback(0.0) is False
         assert subscriber_b_federate.last_callback("receiveDirectedInteraction") is None
         assert observer_federate.last_callback("receiveDirectedInteraction") is None
         assert subscriber_a_federate.last_callback("receiveDirectedInteraction") == (
@@ -11278,6 +11421,9 @@ def test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subs
         subscriber_b.commitRegionModifications({subscriber_b_region})
 
         owner.sendDirectedInteraction(interaction_class, object_instance, {parameter: b"SHIFT"}, b"second-route")
+        assert subscriber_a.evokeCallback(0.0) is False
+        assert subscriber_b.evokeMultipleCallbacks(0.0, 0.0) is True
+        assert observer.evokeCallback(0.0) is False
         assert subscriber_a_federate.last_callback("receiveDirectedInteraction") is None
         assert observer_federate.last_callback("receiveDirectedInteraction") is None
         assert subscriber_b_federate.last_callback("receiveDirectedInteraction") == (
@@ -13206,6 +13352,7 @@ def test_2025_provider_applies_resign_time_ownership_policies(tmp_path: Path, ba
 
     cancelled = owner.registerObjectInstance(object_class, "Cancel-Pending")
     acquirer.attributeOwnershipAcquisition(cancelled, {attribute}, b"cancel-on-resign")
+    _evoke_all_2025(owner, acquirer, subscriber)
     assert owner_callbacks.last_callback("requestAttributeOwnershipRelease") == (
         cancelled,
         {attribute},
@@ -13222,13 +13369,16 @@ def test_2025_provider_applies_resign_time_ownership_policies(tmp_path: Path, ba
 
     transferred = owner.registerObjectInstance(object_class, "Transfer-On-Resign")
     acquirer.attributeOwnershipAcquisition(transferred, {attribute}, b"transfer-on-resign")
+    _evoke_all_2025(owner, acquirer, subscriber)
     owner.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+    _evoke_all_2025(owner, acquirer, subscriber)
     assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
         transferred,
         {attribute},
         b"transfer-on-resign",
     )
     acquirer.queryAttributeOwnership(transferred, {attribute})
+    _evoke_all_2025(acquirer, subscriber)
     assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
         transferred,
         {attribute},
@@ -13243,9 +13393,11 @@ def test_2025_provider_applies_resign_time_ownership_policies(tmp_path: Path, ba
     delete_attribute = deleter.getAttributeHandle(delete_object_class, "Position")
     deleter.publishObjectClassAttributes(delete_object_class, {delete_attribute})
     deleted = deleter.registerObjectInstance(delete_object_class, "Delete-On-Resign")
+    _evoke_all_2025(deleter, subscriber)
     assert subscriber_callbacks.last_callback("discoverObjectInstance")[0] == deleted
     assert deleter.isAttributeOwnedByFederate(deleted, delete_attribute) is True
     deleter.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    _evoke_all_2025(deleter, subscriber)
     assert subscriber_callbacks.last_callback("removeObjectInstance")[0] == deleted
     with pytest.raises(ObjectInstanceNotKnown):
         subscriber.requestAttributeValueUpdate(deleted, {subscriber_attribute}, b"deleted")
@@ -13358,6 +13510,7 @@ def test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callb
         owner.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"already-owned")
 
     acquiring.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"blocked")
+    _evoke_all_2025(owner, acquiring)
     unavailable = acquiring_callbacks.last_callback("attributeOwnershipUnavailable")
     assert unavailable == (object_instance, {attribute}, b"blocked")
     assert owner.isAttributeOwnedByFederate(object_instance, attribute) is True
@@ -13369,20 +13522,24 @@ def test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callb
     assert owner.isAttributeOwnedByFederate(object_instance, attribute) is False
 
     owner.queryAttributeOwnership(object_instance, {attribute})
+    _evoke_all_2025(owner, acquiring)
     assert owner_callbacks.last_callback("attributeIsNotOwned") == (object_instance, {attribute})
 
     acquiring.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"claim")
+    _evoke_all_2025(owner, acquiring)
     acquired = acquiring_callbacks.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired == (object_instance, {attribute}, b"claim")
     assert acquiring.isAttributeOwnedByFederate(object_instance, attribute) is True
 
     owner.queryAttributeOwnership(object_instance, {attribute})
+    _evoke_all_2025(owner, acquiring)
     assert owner_callbacks.last_callback("informAttributeOwnership") == (
         object_instance,
         {attribute},
         acquiring_handle,
     )
     acquiring.queryAttributeOwnership(object_instance, {attribute})
+    _evoke_all_2025(owner, acquiring)
     assert acquiring_callbacks.last_callback("informAttributeOwnership") == (
         object_instance,
         {attribute},
@@ -13477,6 +13634,7 @@ def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
 
     offered = owner.registerObjectInstance(object_class, "Negotiated-1")
     owner.negotiatedAttributeOwnershipDivestiture(offered, {attribute}, b"offer-tag")
+    _evoke_all_2025(owner, acquirer)
     assert acquirer_callbacks.last_callback("requestAttributeOwnershipAssumption") == (
         offered,
         {attribute},
@@ -13487,12 +13645,14 @@ def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
     assert owner.isAttributeOwnedByFederate(offered, attribute) is True
 
     acquirer.attributeOwnershipAcquisition(offered, {attribute}, b"acquire-tag")
+    _evoke_all_2025(owner, acquirer)
     assert owner_callbacks.last_callback("requestDivestitureConfirmation") == (
         offered,
         {attribute},
         b"acquire-tag",
     )
     owner.confirmDivestiture(offered, {attribute}, b"acquire-confirmed")
+    _evoke_all_2025(owner, acquirer)
     assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
         offered,
         {attribute},
@@ -13502,12 +13662,14 @@ def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
 
     pending = owner.registerObjectInstance(object_class, "Pending-1")
     acquirer.attributeOwnershipAcquisition(pending, {attribute}, b"request-tag")
+    _evoke_all_2025(owner, acquirer)
     assert owner_callbacks.last_callback("requestAttributeOwnershipRelease") == (
         pending,
         {attribute},
         b"request-tag",
     )
     acquirer.cancelAttributeOwnershipAcquisition(pending, {attribute})
+    _evoke_all_2025(owner, acquirer)
     assert acquirer_callbacks.last_callback("confirmAttributeOwnershipAcquisitionCancellation") == (
         pending,
         {attribute},
@@ -13515,8 +13677,10 @@ def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
     with pytest.raises(AttributeAcquisitionWasNotRequested):
         acquirer.cancelAttributeOwnershipAcquisition(pending, {attribute})
 
+    acquirer_callbacks.callbacks.clear()
     acquirer.attributeOwnershipAcquisition(pending, {attribute}, b"retry-tag")
     divested = owner.attributeOwnershipDivestitureIfWanted(pending, {attribute})
+    _evoke_all_2025(owner, acquirer)
     assert divested == {attribute}
     assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
         pending,
@@ -13602,6 +13766,8 @@ def test_2025_provider_serializes_mom_service_reports_without_overclaiming_confo
     assert report["arguments"]["attrs"] == [{"type": "AttributeHandle", "value": 7}]
     assert report["returned"] == {"value": {"status": "serialized"}}
     json.dumps(report, sort_keys=True)
+    rti.evokeMultipleCallbacks(0.0, 0.1)
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     assert source_callbacks.last_callback("momServiceReport") == (report,)
     assert observer_callbacks.last_callback("momServiceReport") == (report,)
 
@@ -13615,6 +13781,7 @@ def test_2025_provider_serializes_mom_service_reports_without_overclaiming_confo
     assert failed["success"] is False
     assert failed["exception"] == "FederateNotExecutionMember"
     assert rti.serviceReportRecordsSnapshot() == (report, failed)
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     assert observer_callbacks.last_callback("momServiceReport") == (failed,)
 
     observer.resignFederationExecution(ResignAction.NO_ACTION)
@@ -13861,6 +14028,7 @@ def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interaction
     report_data = observer.getParameterHandle(fom_report, "HLAFOMmoduleData")
     observer.subscribeInteractionClass(fom_report)
     observer.sendInteraction(fom_request, {request_indicator: b"1"}, b"mom-fom-module-request")
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     fom_callback = observer_callbacks.last_callback("receiveInteraction")
     assert fom_callback is not None
     assert fom_callback[0] == fom_report
@@ -13879,6 +14047,7 @@ def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interaction
     observer.subscribeInteractionClass(mim_report)
     observer_callbacks.callbacks.clear()
     observer.sendInteraction(mim_request, {}, b"mom-mim-request")
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     mim_callback = observer_callbacks.last_callback("receiveInteraction")
     assert mim_callback is not None
     assert mim_callback[0] == mim_report
@@ -13907,6 +14076,7 @@ def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interaction
         },
         b"mom-federate-fom-module-request",
     )
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     federate_fom_callback = observer_callbacks.last_callback("receiveInteraction")
     assert federate_fom_callback is not None
     assert federate_fom_callback[0] == federate_fom_report
@@ -14204,6 +14374,7 @@ def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resig
     target.publishInteractionClass(target_interaction)
 
     object_instance = target.registerObjectInstance(target_class, "MomAliasTarget-1")
+    _evoke_all_2025(controller, target)
     assert controller_callbacks.last_callback("discoverObjectInstance") == (
         object_instance,
         controller_target_class,
@@ -14239,6 +14410,7 @@ def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resig
         b"mom-alias-order",
     )
     target.sendInteraction(target_interaction, {target_parameter: b"mom-alias-track"}, b"mom-alias-track-tag")
+    _evoke_all_2025(controller, target)
     received = controller_callbacks.last_callback("receiveInteraction")
     assert received is not None
     assert received[:6] == (
@@ -14263,6 +14435,7 @@ def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resig
         },
         b"mom-alias-resign",
     )
+    _evoke_all_2025(controller, target)
     removed = controller_callbacks.last_callback("removeObjectInstance")
     assert removed is not None
     assert removed[0] == object_instance
@@ -14960,13 +15133,16 @@ def test_2025_provider_routes_mom_time_management_service_interactions(backend_n
         controller.sendInteraction(interaction, payload, f"mom-{name}".encode("ascii"))
 
     send_service("HLAenableTimeRegulation", {"HLAlookahead": b"2"})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target.queryLookahead() == target.getTimeFactory().makeInterval(2)
     assert target_callbacks.last_callback("timeRegulationEnabled") == (target.getTimeFactory().makeInitial(),)
 
     send_service("HLAenableTimeConstrained", {})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target_callbacks.last_callback("timeConstrainedEnabled") == (target.getTimeFactory().makeInitial(),)
 
     send_service("HLAtimeAdvanceRequest", {"HLAtimeStamp": b"10"})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target.queryLogicalTime() == target.getTimeFactory().makeTime(10)
     assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(10),)
 
@@ -14974,6 +15150,7 @@ def test_2025_provider_routes_mom_time_management_service_interactions(backend_n
     assert target.queryLookahead() == target.getTimeFactory().makeInterval(3)
 
     send_service("HLAflushQueueRequest", {"HLAtimeStamp": b"12"})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target.queryLogicalTime() == target.getTimeFactory().makeTime(12)
     assert target_callbacks.last_callback("flushQueueGrant") == (
         target.getTimeFactory().makeTime(12),
@@ -14981,14 +15158,17 @@ def test_2025_provider_routes_mom_time_management_service_interactions(backend_n
     )
 
     send_service("HLAtimeAdvanceRequestAvailable", {"HLAtimeStamp": b"14"})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target.queryLogicalTime() == target.getTimeFactory().makeTime(14)
     assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(14),)
 
     send_service("HLAnextMessageRequest", {"HLAtimeStamp": b"16"})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target.queryLogicalTime() == target.getTimeFactory().makeTime(16)
     assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(16),)
 
     send_service("HLAnextMessageRequestAvailable", {"HLAtimeStamp": b"18"})
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target.queryLogicalTime() == target.getTimeFactory().makeTime(18)
     assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(18),)
 
@@ -15064,6 +15244,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
             "HLAtransportation": b"HLAbestEffort",
         },
     )
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target_callbacks.last_callback("confirmAttributeTransportationTypeChange") == (
         object_instance,
         {attribute},
@@ -15077,6 +15258,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
             "HLAtransportation": b"HLAbestEffort",
         },
     )
+    target.evokeMultipleCallbacks(0.0, 0.1)
     assert target_callbacks.last_callback("confirmInteractionTransportationTypeChange") == (
         interaction_class,
         target.getTransportationTypeHandle("HLAbestEffort"),
@@ -15092,6 +15274,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
     )
     observer_callbacks.callbacks.clear()
     target.updateAttributeValues(object_instance, {attribute: b"ordered"}, b"mom-order-update")
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     ordered_reflection = observer_callbacks.last_callback("reflectAttributeValues")
     assert ordered_reflection is not None
     assert ordered_reflection[7:9] == (OrderType.TIMESTAMP, OrderType.TIMESTAMP)
@@ -15106,6 +15289,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
     )
     observer_callbacks.callbacks.clear()
     target.sendInteraction(interaction_class, {}, b"mom-order-interaction")
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     ordered_interaction = observer_callbacks.last_callback("receiveInteraction")
     assert ordered_interaction is not None
     assert ordered_interaction[7:9] == (OrderType.TIMESTAMP, OrderType.TIMESTAMP)
@@ -15120,6 +15304,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
     )
     assert target.isAttributeOwnedByFederate(object_instance, attribute) is False
     acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"after-mom-divest")
+    acquirer.evokeMultipleCallbacks(0.0, 0.1)
     assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
         object_instance,
         {attribute},
@@ -15134,6 +15319,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
             "HLAtag": b"mom-delete-object",
         },
     )
+    observer.evokeMultipleCallbacks(0.0, 0.1)
     assert observer_callbacks.last_callback("removeObjectInstance") is not None
     assert observer_callbacks.last_callback("removeObjectInstance")[0] == object_instance_to_delete
     with pytest.raises(ObjectInstanceNotKnown):
@@ -16771,11 +16957,13 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
 
         sender.enableTimeRegulation(HLAinteger64Interval(2))
         receiver.enableTimeRegulation(HLAinteger64Interval(1))
+        _evoke_all_2025(sender, receiver)
         assert sender_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
         assert receiver_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
 
         sender.timeAdvanceRequest(HLAinteger64Time(5))
         receiver.timeAdvanceRequest(HLAinteger64Time(9))
+        _evoke_all_2025(sender, receiver, loops=16)
         assert sender_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(5),)
         assert receiver_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(9),)
 
@@ -16796,12 +16984,14 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
         sender_federate.callbacks.clear()
         receiver_federate.callbacks.clear()
         sender.requestFederationSave(save_label)
+        _evoke_all_2025(sender, receiver)
         assert sender_federate.last_callback("initiateFederateSave") == (save_label,)
         assert receiver_federate.last_callback("initiateFederateSave") == (save_label,)
         sender.federateSaveBegun()
         receiver.federateSaveBegun()
         sender.federateSaveComplete()
         receiver.federateSaveComplete()
+        _evoke_all_2025(sender, receiver)
         assert sender_federate.last_callback("federationSaved") == ()
         assert receiver_federate.last_callback("federationSaved") == ()
 
@@ -16813,6 +17003,7 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
         sender_federate.callbacks.clear()
         receiver_federate.callbacks.clear()
         sender.requestFederationRestore(save_label)
+        _evoke_all_2025(sender, receiver)
         assert sender_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
         assert sender_federate.last_callback("federationRestoreBegun") == ()
         assert receiver_federate.last_callback("federationRestoreBegun") == ()
@@ -16828,6 +17019,7 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
         )
         sender.federateRestoreComplete()
         receiver.federateRestoreComplete()
+        _evoke_all_2025(sender, receiver)
         assert sender_federate.last_callback("federationRestored") == ()
         assert receiver_federate.last_callback("federationRestored") == ()
 
@@ -16841,6 +17033,7 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
         receive_baseline = len(_callbacks_named_2025(receiver_federate, "receiveInteraction"))
         grant_baseline = len(_callbacks_named_2025(receiver_federate, "timeAdvanceGrant"))
         receiver.nextMessageRequestAvailable(HLAinteger64Time(20))
+        _evoke_all_2025(sender, receiver, loops=16)
         post_restore_receives = _callbacks_named_2025(receiver_federate, "receiveInteraction")[receive_baseline:]
         assert len(post_restore_receives) == 1
         assert post_restore_receives[0][1] == {parameter: b"pre-save-queue"}
@@ -17637,12 +17830,14 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
         object_instance = owner.registerObjectInstance(object_class, "ShimOwnershipRestoreTarget-1")
 
         owner.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute}, b"saved-offer")
+        _evoke_all_2025(owner, acquirer)
         assert acquirer_federate.last_callback("requestAttributeOwnershipAssumption") == (
             object_instance,
             {acquirer_attribute},
             b"saved-offer",
         )
         acquirer.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, b"saved-pending")
+        _evoke_all_2025(owner, acquirer)
         assert owner_federate.last_callback("requestDivestitureConfirmation") == (
             object_instance,
             {owner_attribute},
@@ -17650,17 +17845,20 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
         )
 
         owner.requestFederationSave(save_label)
+        _evoke_all_2025(owner, acquirer)
         assert owner_federate.last_callback("initiateFederateSave") == (save_label,)
         assert acquirer_federate.last_callback("initiateFederateSave") == (save_label,)
         for rti in (owner, acquirer):
             rti.federateSaveBegun()
         for rti in (owner, acquirer):
             rti.federateSaveComplete()
+        _evoke_all_2025(owner, acquirer)
         assert owner_federate.last_callback("federationSaved") == ()
         assert acquirer_federate.last_callback("federationSaved") == ()
 
         owner.cancelNegotiatedAttributeOwnershipDivestiture(object_instance, {owner_attribute})
         acquirer.cancelAttributeOwnershipAcquisition(object_instance, {acquirer_attribute})
+        _evoke_all_2025(owner, acquirer)
         assert acquirer_federate.last_callback("confirmAttributeOwnershipAcquisitionCancellation") == (
             object_instance,
             {acquirer_attribute},
@@ -17671,6 +17869,7 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
         assert acquirer.isAttributeOwnedByFederate(object_instance, acquirer_attribute) is False
 
         owner.requestFederationRestore(save_label)
+        _evoke_all_2025(owner, acquirer)
         assert owner_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
         assert owner_federate.last_callback("federationRestoreBegun") == ()
         assert acquirer_federate.last_callback("federationRestoreBegun") == ()
@@ -17682,11 +17881,13 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
         )
         for rti in (owner, acquirer):
             rti.federateRestoreComplete()
+        _evoke_all_2025(owner, acquirer)
         assert owner_federate.last_callback("federationRestored") == ()
         assert acquirer_federate.last_callback("federationRestored") == ()
 
         acquirer_federate.callbacks.clear()
         divested = owner.attributeOwnershipDivestitureIfWanted(object_instance, {owner_attribute})
+        _evoke_all_2025(owner, acquirer)
         assert divested == {owner_attribute}
         assert acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification") == (
             object_instance,
@@ -17694,6 +17895,7 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
             b"",
         )
         owner.queryAttributeOwnership(object_instance, {owner_attribute})
+        _evoke_all_2025(owner, acquirer)
         assert owner_federate.last_callback("attributeIsOwnedByRTI") is None
         assert owner_federate.last_callback("informAttributeOwnership") == (
             object_instance,
@@ -18440,6 +18642,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
 
         truth.enableTimeRegulation(HLAinteger64Interval(1))
         radar.enableTimeConstrained()
+        _evoke_all_2025(truth, radar, consumer, fast, slow)
         assert truth_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
         assert radar_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
 
@@ -18457,6 +18660,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
             HLAinteger64Time(106),
         )
         truth.timeAdvanceRequest(HLAinteger64Time(109))
+        _evoke_all_2025(truth, radar, consumer, fast, slow, loops=16)
         assert truth_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(109),)
 
         initial_galt = radar.queryGALT()
@@ -18469,6 +18673,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
         radar_receive_baseline = len(_callbacks_named_2025(radar_federate, "receiveInteraction"))
         radar_grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
         radar.nextMessageRequest(HLAinteger64Time(110))
+        _evoke_all_2025(truth, radar, consumer, fast, slow, loops=16)
         first_receive = _callbacks_named_2025(radar_federate, "receiveInteraction")[radar_receive_baseline:]
         first_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[radar_grant_baseline:]
         assert len(first_receive) == 1
@@ -18480,6 +18685,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
         radar_receive_baseline = len(_callbacks_named_2025(radar_federate, "receiveInteraction"))
         radar_grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
         radar.nextMessageRequest(HLAinteger64Time(110))
+        _evoke_all_2025(truth, radar, consumer, fast, slow, loops=16)
         second_receive = _callbacks_named_2025(radar_federate, "receiveInteraction")[radar_receive_baseline:]
         second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[radar_grant_baseline:]
         assert len(second_receive) == 1
@@ -18498,6 +18704,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
         radar_grant_baseline = len(_callbacks_named_2025(radar_federate, "timeAdvanceGrant"))
         radar.nextMessageRequest(HLAinteger64Time(110))
         truth.timeAdvanceRequest(HLAinteger64Time(110))
+        _evoke_all_2025(truth, radar, consumer, fast, slow, loops=16)
         close_grants = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[radar_grant_baseline:]
         assert close_grants == [(HLAinteger64Time(110),)]
         assert truth_federate.last_callback("timeAdvanceGrant") == (HLAinteger64Time(110),)
@@ -18506,6 +18713,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
         consumer.enableTimeConstrained()
         fast.enableTimeRegulation(HLAinteger64Interval(1))
         slow.enableTimeRegulation(HLAinteger64Interval(2))
+        _evoke_all_2025(truth, radar, consumer, fast, slow, loops=16)
         assert radar_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(110),)
         assert consumer_federate.last_callback("timeConstrainedEnabled") == (HLAinteger64Time(0),)
         assert fast_federate.last_callback("timeRegulationEnabled") == (HLAinteger64Time(0),)
@@ -18526,6 +18734,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
         consumer.nextMessageRequest(HLAinteger64Time(140))
         fast.timeAdvanceRequest(HLAinteger64Time(160))
         slow.timeAdvanceRequest(HLAinteger64Time(118))
+        _evoke_all_2025(truth, radar, consumer, fast, slow, loops=16)
         assert truth.queryLogicalTime() == HLAinteger64Time(119)
         assert fast.queryLogicalTime() == HLAinteger64Time(160)
         assert slow.queryLogicalTime() == HLAinteger64Time(118)
@@ -19067,12 +19276,14 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         truth_federate.callbacks.clear()
         radar_federate.callbacks.clear()
         truth.requestFederationSave(save_label)
+        _evoke_all_2025(truth, radar)
         assert truth_federate.last_callback("initiateFederateSave") == (save_label,)
         assert radar_federate.last_callback("initiateFederateSave") == (save_label,)
         truth.federateSaveBegun()
         radar.federateSaveBegun()
         truth.federateSaveComplete()
         radar.federateSaveComplete()
+        _evoke_all_2025(truth, radar)
         assert truth_federate.last_callback("federationSaved") == ()
         assert radar_federate.last_callback("federationSaved") == ()
 
@@ -19080,11 +19291,13 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         truth_federate.callbacks.clear()
         radar_federate.callbacks.clear()
         truth.requestFederationRestore(save_label)
+        _evoke_all_2025(truth, radar)
         assert truth_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
         assert truth_federate.last_callback("federationRestoreBegun") == ()
         assert radar_federate.last_callback("initiateFederateRestore") == (save_label, config.radar_name, radar_handle)
         truth.federateRestoreComplete()
         radar.federateRestoreComplete()
+        _evoke_all_2025(truth, radar)
         assert truth_federate.last_callback("federationRestored") == ()
         assert radar_federate.last_callback("federationRestored") == ()
 
@@ -19116,7 +19329,9 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
 
         truth.enableTimeRegulation(HLAinteger64Interval(1))
         radar.enableTimeConstrained()
+        _evoke_all_2025(truth, radar)
         target_object = truth.registerObjectInstance(target_class, config.target_object_name)
+        _evoke_all_2025(truth, radar)
         truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
 
         truth.updateAttributeValues(
@@ -19127,6 +19342,7 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         )
         truth.timeAdvanceRequest(HLAinteger64Time(config.first_input_time))
         radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, loops=16)
         first_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
         first_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert first_reflect[2] == b"truth-105"
@@ -19149,11 +19365,13 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         )
         truth.timeAdvanceRequest(HLAinteger64Time(config.scan_window_end))
         radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, loops=16)
         dirty_second_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
         dirty_second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert dirty_second_reflect[2] == b"truth-106"
         assert dirty_second_grant == (HLAinteger64Time(config.second_input_time),)
         radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, loops=16)
         dirty_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert dirty_close_grant == (HLAinteger64Time(config.scan_window_end),)
 
@@ -19177,11 +19395,13 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         )
         truth.timeAdvanceRequest(HLAinteger64Time(config.scan_window_end))
         radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, loops=16)
         reclosed_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
         reclosed_second_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert reclosed_reflect[2] == b"truth-106-branch"
         assert reclosed_second_grant == (HLAinteger64Time(config.second_input_time),)
         radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, loops=16)
         reclosed_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert reclosed_grant == (HLAinteger64Time(config.scan_window_end),)
         saved_closed_state = snapshot_window_state(
@@ -19202,6 +19422,7 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         )
         truth.timeAdvanceRequest(HLAinteger64Time(config.post_close_resume_time))
         radar.nextMessageRequest(HLAinteger64Time(config.post_close_resume_time))
+        _evoke_all_2025(truth, radar, loops=16)
         dirty_post_close_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
         dirty_post_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert dirty_post_close_reflect[2] == b"dirty-post-close"
@@ -19222,6 +19443,7 @@ def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: 
         radar_federate.callbacks.clear()
         truth.timeAdvanceRequest(HLAinteger64Time(config.post_close_resume_time))
         radar.nextMessageRequest(HLAinteger64Time(config.post_close_resume_time))
+        _evoke_all_2025(truth, radar, loops=16)
         assert _callbacks_named_2025(radar_federate, "reflectAttributeValues") == []
     finally:
         for rti in (radar, truth):
@@ -19267,6 +19489,7 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
         radar_federate.callbacks.clear()
         consumer_federate.callbacks.clear()
         truth.requestFederationSave(save_label)
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("initiateFederateSave") == (save_label,)
         assert radar_federate.last_callback("initiateFederateSave") == (save_label,)
         assert consumer_federate.last_callback("initiateFederateSave") == (save_label,)
@@ -19276,6 +19499,7 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
         truth.federateSaveComplete()
         radar.federateSaveComplete()
         consumer.federateSaveComplete()
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("federationSaved") == ()
         assert radar_federate.last_callback("federationSaved") == ()
         assert consumer_federate.last_callback("federationSaved") == ()
@@ -19285,12 +19509,14 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
         radar_federate.callbacks.clear()
         consumer_federate.callbacks.clear()
         truth.requestFederationRestore(save_label)
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
         assert radar_federate.last_callback("initiateFederateRestore") == (save_label, config.radar_name, radar_handle)
         assert consumer_federate.last_callback("initiateFederateRestore") == (save_label, config.consumer_name, consumer_handle)
         truth.federateRestoreComplete()
         radar.federateRestoreComplete()
         consumer.federateRestoreComplete()
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("federationRestored") == ()
         assert radar_federate.last_callback("federationRestored") == ()
         assert consumer_federate.last_callback("federationRestored") == ()
@@ -19340,7 +19566,9 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
 
         truth.enableTimeRegulation(HLAinteger64Interval(1))
         radar.enableTimeConstrained()
+        _evoke_all_2025(truth, radar, consumer)
         target_object = truth.registerObjectInstance(target_class, config.target_object_name)
+        _evoke_all_2025(truth, radar, consumer)
         truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
         truth.updateAttributeValues(target_object, {position: b"truth-105"}, b"truth-105", HLAinteger64Time(config.first_input_time))
         truth.updateAttributeValues(target_object, {position: b"truth-106"}, b"truth-106", HLAinteger64Time(config.second_input_time))
@@ -19348,13 +19576,16 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
 
         for _ in range(3):
             radar.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         window_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert window_close_grant == (HLAinteger64Time(config.scan_window_end),)
 
         radar.enableTimeRegulation(HLAinteger64Interval(1))
         consumer.enableTimeConstrained()
+        _evoke_all_2025(truth, radar, consumer)
         radar.changeInteractionOrderType(radar_track_interaction, OrderType.TIMESTAMP)
         consumer.nextMessageRequest(HLAinteger64Time(config.scan_window_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         assert consumer.queryLogicalTime() == HLAinteger64Time(config.scan_window_end)
 
         complete_save(config.save_closed_name)
@@ -19369,6 +19600,7 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
             HLAinteger64Time(config.radar_output_time),
         )
         radar.timeAdvanceRequest(HLAinteger64Time(config.resume_time))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         dirty_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
         assert len(dirty_receives) == 1
         assert dirty_receives[-1][2] == b"dirty-track-output"
@@ -19390,6 +19622,7 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
             HLAinteger64Time(config.radar_output_time),
         )
         radar.timeAdvanceRequest(HLAinteger64Time(config.resume_time))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         post_restore_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
         assert len(post_restore_receives) == 1
         assert post_restore_receives[-1][2] == b"restored-track-output"
@@ -19439,6 +19672,7 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
         radar_federate.callbacks.clear()
         consumer_federate.callbacks.clear()
         truth.requestFederationSave(save_label)
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("initiateFederateSave") == (save_label,)
         assert radar_federate.last_callback("initiateFederateSave") == (save_label,)
         assert consumer_federate.last_callback("initiateFederateSave") == (save_label,)
@@ -19448,6 +19682,7 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
         truth.federateSaveComplete()
         radar.federateSaveComplete()
         consumer.federateSaveComplete()
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("federationSaved") == ()
         assert radar_federate.last_callback("federationSaved") == ()
         assert consumer_federate.last_callback("federationSaved") == ()
@@ -19457,12 +19692,14 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
         radar_federate.callbacks.clear()
         consumer_federate.callbacks.clear()
         truth.requestFederationRestore(save_label)
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("requestFederationRestoreSucceeded") == (save_label,)
         assert radar_federate.last_callback("initiateFederateRestore") == (save_label, config.radar_name, radar_handle)
         assert consumer_federate.last_callback("initiateFederateRestore") == (save_label, config.consumer_name, consumer_handle)
         truth.federateRestoreComplete()
         radar.federateRestoreComplete()
         consumer.federateRestoreComplete()
+        _evoke_all_2025(truth, radar, consumer)
         assert truth_federate.last_callback("federationRestored") == ()
         assert radar_federate.last_callback("federationRestored") == ()
         assert consumer_federate.last_callback("federationRestored") == ()
@@ -19512,25 +19749,31 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
 
         truth.enableTimeRegulation(HLAinteger64Interval(1))
         radar.enableTimeConstrained()
+        _evoke_all_2025(truth, radar, consumer)
         target_object = truth.registerObjectInstance(target_class, config.target_object_name)
+        _evoke_all_2025(truth, radar, consumer)
         truth.changeAttributeOrderType(target_object, {position}, OrderType.TIMESTAMP)
         truth.updateAttributeValues(target_object, {position: b"scan1-input-a"}, b"scan1-input-a", HLAinteger64Time(config.scan1_input_a_time))
         truth.updateAttributeValues(target_object, {position: b"scan1-input-b"}, b"scan1-input-b", HLAinteger64Time(config.scan1_input_b_time))
         truth.timeAdvanceRequest(HLAinteger64Time(config.scan1_end))
         for _ in range(3):
             radar.nextMessageRequest(HLAinteger64Time(config.scan1_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         scan1_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert scan1_close_grant == (HLAinteger64Time(config.scan1_end),)
 
         radar.enableTimeRegulation(HLAinteger64Interval(1))
         consumer.enableTimeConstrained()
+        _evoke_all_2025(truth, radar, consumer)
         radar.changeInteractionOrderType(radar_track_interaction, OrderType.TIMESTAMP)
         consumer.nextMessageRequest(HLAinteger64Time(config.scan1_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         assert consumer.queryLogicalTime() == HLAinteger64Time(config.scan1_end)
 
         truth.updateAttributeValues(target_object, {position: b"scan2-input"}, b"scan2-input", HLAinteger64Time(config.scan2_input_time))
         truth.timeAdvanceRequest(HLAinteger64Time(config.consumer_resume_time))
         radar.nextMessageRequest(HLAinteger64Time(config.scan2_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         scan2_reflect = _callbacks_named_2025(radar_federate, "reflectAttributeValues")[-1]
         scan2_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert scan2_reflect[2] == b"scan2-input"
@@ -19549,6 +19792,7 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
         )
         radar.timeAdvanceRequest(HLAinteger64Time(config.scan1_output_time))
         radar.nextMessageRequest(HLAinteger64Time(config.scan2_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         dirty_scan2_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert dirty_scan2_close_grant == (HLAinteger64Time(config.scan2_end),)
         consumer.nextMessageRequest(HLAinteger64Time(config.consumer_resume_time))
@@ -19559,6 +19803,7 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
             HLAinteger64Time(config.scan2_output_time),
         )
         radar.timeAdvanceRequest(HLAinteger64Time(config.consumer_resume_time))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         dirty_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
         assert [record[2] for record in dirty_receives] == [
             b"dirty-scan1-track-output",
@@ -19578,9 +19823,11 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
             HLAinteger64Time(config.scan1_output_time),
         )
         radar.timeAdvanceRequest(HLAinteger64Time(config.scan1_output_time))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
 
         radar_federate.callbacks.clear()
         radar.nextMessageRequest(HLAinteger64Time(config.scan2_end))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         post_restore_scan2_reflects = _callbacks_named_2025(radar_federate, "reflectAttributeValues")
         restored_scan2_close_grant = _callbacks_named_2025(radar_federate, "timeAdvanceGrant")[-1]
         assert post_restore_scan2_reflects == []
@@ -19594,6 +19841,7 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
             HLAinteger64Time(config.scan2_output_time),
         )
         radar.timeAdvanceRequest(HLAinteger64Time(config.consumer_resume_time))
+        _evoke_all_2025(truth, radar, consumer, loops=16)
         restored_receives = _callbacks_named_2025(consumer_federate, "receiveInteraction")
         assert [record[2] for record in restored_receives] == [
             b"restored-scan1-track-output",

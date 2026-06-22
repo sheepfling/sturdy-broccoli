@@ -1139,7 +1139,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_parity_statuses"] == {"parity-covered": 8}
     assert "best-attempt bounded working surface" in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["summary"]
     assert "full-fledged RTI" in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["boundary"]
-    assert "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, and callback polling." in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"]
+    assert "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery." in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"]
     assert "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries" in " ".join(milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"])
     assert "save-restore lookahead rollback with queued-TSO redelivery" in " ".join(milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"])
     assert "MOM switch/report serialization slices" in " ".join(milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"])

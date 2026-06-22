@@ -10,7 +10,7 @@ from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import RTIexception
 from hla.rti1516e.handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
 from hla.rti1516_2025.exceptions import RTIexception as RTIexception2025
-from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
+from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback, wait_for_callback_count
 
 
 def _handle_value(value: Any) -> Any:
@@ -106,6 +106,7 @@ def probe_negotiated_attribute_ownership_offer(
     acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
     acquirer_rti.subscribe_object_class_attributes(acquirer_class, {acquirer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
+    drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
     assert discover is not None
     acquirer_object = acquirer_rti.get_object_instance_handle(config.object_instance_name)
@@ -157,6 +158,7 @@ def run_attribute_ownership_scenario(
     acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
     acquirer_rti.subscribe_object_class_attributes(acquirer_class, {acquirer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
+    drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
     assert discover is not None
     acquirer_object = acquirer_rti.get_object_instance_handle(config.object_instance_name)
@@ -351,8 +353,17 @@ def run_negotiated_attribute_ownership_scenario(
         assert offered_acquired is not None
         pending_object_name = f"{config.object_instance_name}-pending"
         owner_class = owner_rti.get_object_class_handle(config.object_class_name)
+        expected_discover_count = len(acquirer_federate.callbacks_named("discoverObjectInstance")) + 1
         release_object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, pending_object_name)
-        pending_discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
+        drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
+        discover_records = wait_for_callback_count(
+            acquirer_rti,
+            acquirer_federate,
+            "discoverObjectInstance",
+            expected_discover_count,
+            loops=120,
+        )
+        pending_discover = discover_records[-1] if discover_records else None
         assert pending_discover is not None
         release_acquirer_object = acquirer_rti.get_object_instance_handle(pending_object_name)
         acquirer_rti.attribute_ownership_acquisition(release_acquirer_object, {acquirer_attr}, config.request_tag)

@@ -22,7 +22,7 @@ evidence scenarios. It is not a conformance claim.
 | HLA2025-FI-003 | Language evidence | Java 2025, C++ 2025, Python mapping split. |
 | HLA2025-FI-004 | binding/intake routes | Java standard jars and C++ standard capsules. |
 | HLA2025-FI-005 | Negative tests | Structured RTI exceptions for illegal operations. |
-| HLA2025-FI-006 | Callback model | `HLA_EVOKED` evidence now; `HLA_IMMEDIATE` backlog. |
+| HLA2025-FI-006 | Callback model | Direct `python2025` evidence now proves both `HLA_EVOKED` and inline `HLA_IMMEDIATE`; hosted and binding rows still describe their callback-model boundaries separately. |
 | HLA2025-FI-007 | FOM validation | Required FDD tables and case-sensitive names. |
 | HLA2025-FI-008 | FOM validation | Create/join reject invalid FOM modules. |
 | HLA2025-FI-009 | Time | Default integer/float time factories and timestamp ordering. |
