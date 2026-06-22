@@ -363,7 +363,7 @@ Extracted Python 2025 runtime helper modules:
 - Aggregated slices >=10 requirements and runtime-backed: 3
 - Aggregated slices >=20 requirements: 7
 - Aggregated slices >=20 requirements and runtime-backed: 2
-- Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy and save-restore slices now have explicit requirement-family maps, so the main current-package pressure point is directed-interaction-boundary, with DDM and save/restore still credible next targets if the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.
+- Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy, save/restore, and directed-interaction slices now have explicit requirement-family maps, so the remaining pressure is no longer about unnamed large bundles; it is about whether the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.
 - Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits before extracting a dedicated 2025 backend.
 
 Largest implemented slices:
@@ -919,6 +919,26 @@ Save/restore requirement families:
 - Direct test count: 2
 - Hosted test count: 2
 
+
+## Directed Interaction Requirement-Family Audit
+
+- Audit status: directed-interaction-requirement-family-map-captured
+- Slice id: 2025-directed-interaction-boundary
+- Requirement count: 11
+- Family count: 5
+- All directed-interaction rows family-mapped: True
+- Unmapped requirement ids: 0
+- Unexpected requirement ids: 0
+- Assessment: The directed-interaction aggregate is now backed by an explicit requirement-family map instead of only one flat slice-level claim. That makes the directed declaration-control, send/receive routing, spec-delta, and FI matrix umbrella rows auditable requirement-by-requirement.
+- Residual boundary: This is still a requirement-family map over one larger directed-interaction runtime slice, not a promise that every directed-interaction requirement now has its own standalone implemented-evidence slice.
+
+Directed-interaction requirement families:
+
+- declaration-publication-control: 2 requirements, in-slice=True
+- declaration-subscription-control: 2 requirements, in-slice=True
+- send-receive-routing-and-hla-surface: 4 requirements, in-slice=True
+- directed-interaction-delta-rows: 2 requirements, in-slice=True
+- service-group-matrix-traceability: 1 requirements, in-slice=True
 
 ## DDM Default-Policy Decomposition Audit
 

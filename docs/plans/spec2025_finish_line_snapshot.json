@@ -2111,6 +2111,65 @@
     "requirement_count": 11,
     "slice_id": "2025-directed-interaction-boundary"
   },
+  "directed_interaction_requirement_family_audit": {
+    "all_directed_interaction_rows_family_mapped": true,
+    "audit_status": "directed-interaction-requirement-family-map-captured",
+    "current_assessment": "The directed-interaction aggregate is now backed by an explicit requirement-family map instead of only one flat slice-level claim. That makes the directed declaration-control, send/receive routing, spec-delta, and FI matrix umbrella rows auditable requirement-by-requirement.",
+    "families": [
+      {
+        "all_requirements_in_slice": true,
+        "family": "declaration-publication-control",
+        "requirement_count": 2,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-039",
+          "HLA2025-FI-SVC-040"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "declaration-subscription-control",
+        "requirement_count": 2,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-045",
+          "HLA2025-FI-SVC-046"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "send-receive-routing-and-hla-surface",
+        "requirement_count": 4,
+        "requirement_ids": [
+          "HLA2025-FI-SVC-063",
+          "HLA2025-FI-SVC-064",
+          "HLA2025-FR-003",
+          "HLA2025-FR-004"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "directed-interaction-delta-rows",
+        "requirement_count": 2,
+        "requirement_ids": [
+          "HLA2025-MOD-007",
+          "HLA2025-NEW-001"
+        ]
+      },
+      {
+        "all_requirements_in_slice": true,
+        "family": "service-group-matrix-traceability",
+        "requirement_count": 1,
+        "requirement_ids": [
+          "HLA2025-FI-001"
+        ]
+      }
+    ],
+    "family_count": 5,
+    "requirement_count": 11,
+    "residual_boundary": "This is still a requirement-family map over one larger directed-interaction runtime slice, not a promise that every directed-interaction requirement now has its own standalone implemented-evidence slice.",
+    "slice_id": "2025-directed-interaction-boundary",
+    "unexpected_requirement_ids": [],
+    "unmapped_requirement_ids": []
+  },
   "executable_test_backlog": {
     "by_expected_status": {
       "callback-green or callback-poll-green": 47,
@@ -29694,7 +29753,7 @@
     "aggregated_slice_count_ge_20_requirements": 7,
     "aggregated_slice_count_ge_20_requirements_runtime_backed": 2,
     "audit_status": "slice-aggregation-pressure-captured",
-    "current_assessment": "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy and save-restore slices now have explicit requirement-family maps, so the main current-package pressure point is directed-interaction-boundary, with DDM and save/restore still credible next targets if the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.",
+    "current_assessment": "Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy, save/restore, and directed-interaction slices now have explicit requirement-family maps, so the remaining pressure is no longer about unnamed large bundles; it is about whether the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.",
     "implemented_slice_count": 74,
     "largest_implemented_slices": [
       {

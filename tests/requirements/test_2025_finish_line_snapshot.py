@@ -1659,8 +1659,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {"slice_id": "2025-save-restore-lifecycle", "requirement_count": 20, "runtime_backend_backed": True},
         {"slice_id": "2025-directed-interaction-boundary", "requirement_count": 11, "runtime_backend_backed": True},
     ]
-    assert "DDM/default-policy and save-restore slices now have explicit requirement-family maps" in aggregation_audit["current_assessment"]
-    assert "directed-interaction-boundary" in aggregation_audit["current_assessment"]
+    assert "DDM/default-policy, save/restore, and directed-interaction slices now have explicit requirement-family maps" in aggregation_audit["current_assessment"]
+    assert "leaf-level implemented slices" in aggregation_audit["current_assessment"]
     service_utilization_audit = snapshot["service_utilization_decomposition_audit"]
     assert service_utilization_audit["audit_status"] == "service-utilization-decomposition-captured"
     assert service_utilization_audit["slice_id"] == "2025-service-utilization-crosscheck"
@@ -1957,6 +1957,37 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_post_restore_routing_over_fedpro_schema"
     )
     assert "base routing/callback delivery, timestamped delivery and retraction, DDM overlap filtering" in directed_audit["current_assessment"]
+    directed_requirement_audit = snapshot["directed_interaction_requirement_family_audit"]
+    assert directed_requirement_audit["audit_status"] == "directed-interaction-requirement-family-map-captured"
+    assert directed_requirement_audit["slice_id"] == "2025-directed-interaction-boundary"
+    assert directed_requirement_audit["requirement_count"] == 11
+    assert directed_requirement_audit["family_count"] == 5
+    assert directed_requirement_audit["all_directed_interaction_rows_family_mapped"] is True
+    assert directed_requirement_audit["unmapped_requirement_ids"] == []
+    assert directed_requirement_audit["unexpected_requirement_ids"] == []
+    directed_families = {family["family"]: family for family in directed_requirement_audit["families"]}
+    assert directed_families["declaration-publication-control"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-039",
+        "HLA2025-FI-SVC-040",
+    ]
+    assert directed_families["declaration-subscription-control"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-045",
+        "HLA2025-FI-SVC-046",
+    ]
+    assert directed_families["send-receive-routing-and-hla-surface"]["requirement_ids"] == [
+        "HLA2025-FI-SVC-063",
+        "HLA2025-FI-SVC-064",
+        "HLA2025-FR-003",
+        "HLA2025-FR-004",
+    ]
+    assert directed_families["directed-interaction-delta-rows"]["requirement_ids"] == [
+        "HLA2025-MOD-007",
+        "HLA2025-NEW-001",
+    ]
+    assert directed_families["service-group-matrix-traceability"]["requirement_ids"] == ["HLA2025-FI-001"]
+    assert all(family["all_requirements_in_slice"] is True for family in directed_requirement_audit["families"])
+    assert "explicit requirement-family map" in directed_requirement_audit["current_assessment"]
+    assert "standalone implemented-evidence slice" in directed_requirement_audit["residual_boundary"]
     ddm_audit = snapshot["ddm_default_policy_decomposition_audit"]
     assert ddm_audit["audit_status"] == "ddm-default-policy-decomposition-captured"
     assert ddm_audit["slice_id"] == "2025-ddm-default-attribute-policy"
@@ -3534,6 +3565,13 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Directed Interaction Decomposition Audit" in markdown
     assert "Slice id: 2025-directed-interaction-boundary" in markdown
     assert "directed-interaction/ddm-overlap-filtering" in markdown
+    assert "Directed Interaction Requirement-Family Audit" in markdown
+    assert "All directed-interaction rows family-mapped: True" in markdown
+    assert "declaration-publication-control: 2 requirements, in-slice=True" in markdown
+    assert "declaration-subscription-control: 2 requirements, in-slice=True" in markdown
+    assert "send-receive-routing-and-hla-surface: 4 requirements, in-slice=True" in markdown
+    assert "directed-interaction-delta-rows: 2 requirements, in-slice=True" in markdown
+    assert "service-group-matrix-traceability: 1 requirements, in-slice=True" in markdown
     assert "DDM Default-Policy Decomposition Audit" in markdown
     assert "Slice id: 2025-ddm-default-attribute-policy" in markdown
     assert "ddm-default-policy/object-region-routing-and-scope-advisories" in markdown
