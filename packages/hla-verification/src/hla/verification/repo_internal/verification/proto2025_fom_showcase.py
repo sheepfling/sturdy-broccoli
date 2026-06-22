@@ -89,7 +89,7 @@ def run_proto2025_fom_showcase(*, target_radar_steps: int = 3) -> dict[str, Any]
     return {
         "suite_name": "proto2025-fom-simulation-showcase",
         "suite_version": "0.1",
-        "profile": "python-inmemory",
+        "profile": "python2025-direct",
         "status": "lifecycle-green" if all(row["execution_complete"] for row in scenarios) else "failed",
         "scenario_count": len(scenarios),
         "scenarios": scenarios,

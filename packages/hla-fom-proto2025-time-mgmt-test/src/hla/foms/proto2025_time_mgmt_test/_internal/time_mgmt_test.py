@@ -6,15 +6,15 @@ from pathlib import Path
 from typing import Any
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.rti1516_2025.enums import CallbackModel, ResignAction
+from hla.rti1516_2025.factory import create_rti_ambassador
 from hla.rti1516_2025.foms import scenario_fom_paths
-from hla.rti1516e.enums import CallbackModel, ResignAction
 
 
 def _drain(*rtis: object, rounds: int = 25) -> None:
     for _ in range(rounds):
         for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.0)
+            rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
 def _jsonable(value: Any) -> Any:
@@ -30,9 +30,8 @@ def _jsonable(value: Any) -> Any:
 def run_time_mgmt_test_showcase() -> dict[str, Any]:
     """Run the package-owned TimeMgmtTest showcase scenario."""
 
-    engine = InMemoryRTIEngine()
-    source = rti_ambassador(engine=engine)
-    sink = rti_ambassador(engine=engine)
+    source = create_rti_ambassador()
+    sink = create_rti_ambassador()
     source_fed = RecordingFederateAmbassador()
     sink_fed = RecordingFederateAmbassador()
     foms = scenario_fom_paths("time-mgmt-test")
@@ -43,20 +42,20 @@ def run_time_mgmt_test_showcase() -> dict[str, Any]:
     sink.connect(sink_fed, CallbackModel.HLA_EVOKED)
     lifecycle.append("connected")
     try:
-        source.create_federation_execution(federation_name, foms)
+        source.createFederationExecution(federation_name, foms)
         lifecycle.append("federation-created")
-        source.join_federation_execution("EventSourceFederate", "TimeProducer", federation_name)
-        sink.join_federation_execution("EventSinkFederate", "TimeConsumer", federation_name)
+        source.joinFederationExecution("EventSourceFederate", "TimeProducer", federation_name)
+        sink.joinFederationExecution("EventSinkFederate", "TimeConsumer", federation_name)
         lifecycle.append("joined")
 
-        participant_class = source.get_object_class_handle("HLAobjectRoot.Proto2025.TimeMgmtTest.TimeParticipant")
-        federate_name_attr = source.get_attribute_handle(participant_class, "FederateName")
-        current_time_attr = source.get_attribute_handle(participant_class, "CurrentLogicalTime")
-        source.publish_object_class_attributes(participant_class, {federate_name_attr, current_time_attr})
-        sink.subscribe_object_class_attributes(participant_class, {federate_name_attr, current_time_attr})
-        participant = source.register_object_instance(participant_class, "EventSourceFederate-time-state")
+        participant_class = source.getObjectClassHandle("HLAobjectRoot.Proto2025.TimeMgmtTest.TimeParticipant")
+        federate_name_attr = source.getAttributeHandle(participant_class, "FederateName")
+        current_time_attr = source.getAttributeHandle(participant_class, "CurrentLogicalTime")
+        source.publishObjectClassAttributes(participant_class, {federate_name_attr, current_time_attr})
+        sink.subscribeObjectClassAttributes(participant_class, {federate_name_attr, current_time_attr})
+        participant = source.registerObjectInstance(participant_class, "EventSourceFederate-time-state")
         _drain(source, sink)
-        source.update_attribute_values(
+        source.updateAttributeValues(
             participant,
             {federate_name_attr: b"EventSourceFederate", current_time_attr: b"0"},
             b"proto2025-time-participant-state",
@@ -64,33 +63,33 @@ def run_time_mgmt_test_showcase() -> dict[str, Any]:
         _drain(source, sink)
         lifecycle.append("time-participant-state-reflected")
 
-        event_interaction = source.get_interaction_class_handle("HLAinteractionRoot.Proto2025.TimeMgmtTest.EmitEvent")
-        event_id = source.get_parameter_handle(event_interaction, "EventId")
-        sequence_number = source.get_parameter_handle(event_interaction, "SequenceNumber")
-        source.publish_interaction_class(event_interaction)
-        sink.subscribe_interaction_class(event_interaction)
-        factory = source.get_time_factory()
-        source.enable_time_regulation(factory.make_interval(1.0))
-        sink.enable_time_constrained()
+        event_interaction = source.getInteractionClassHandle("HLAinteractionRoot.Proto2025.TimeMgmtTest.EmitEvent")
+        event_id = source.getParameterHandle(event_interaction, "EventId")
+        sequence_number = source.getParameterHandle(event_interaction, "SequenceNumber")
+        source.publishInteractionClass(event_interaction)
+        sink.subscribeInteractionClass(event_interaction)
+        factory = source.getTimeFactory()
+        source.enableTimeRegulation(factory.makeInterval(1.0))
+        sink.enableTimeConstrained()
         _drain(source, sink)
         lifecycle.append("time-management-enabled")
 
-        source.send_interaction(
+        source.sendInteraction(
             event_interaction,
             {event_id: b"evt-002", sequence_number: b"2"},
             b"event-2",
-            factory.make_time(3.0),
+            factory.makeTime(3.0),
         )
-        source.send_interaction(
+        source.sendInteraction(
             event_interaction,
             {event_id: b"evt-001", sequence_number: b"1"},
             b"event-1",
-            factory.make_time(2.0),
+            factory.makeTime(2.0),
         )
-        source.time_advance_request_available(factory.make_time(5.0))
-        sink.next_message_request(factory.make_time(10.0))
+        source.timeAdvanceRequestAvailable(factory.makeTime(5.0))
+        sink.nextMessageRequest(factory.makeTime(10.0))
         _drain(source, sink)
-        sink.next_message_request_available(factory.make_time(10.0))
+        sink.nextMessageRequestAvailable(factory.makeTime(10.0))
         _drain(source, sink)
         lifecycle.append("timestamp-ordered-events-delivered")
 
@@ -127,11 +126,11 @@ def run_time_mgmt_test_showcase() -> dict[str, Any]:
     finally:
         for rti in (source, sink):
             try:
-                rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+                rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
             except Exception:
                 pass
         try:
-            source.destroy_federation_execution(federation_name)
+            source.destroyFederationExecution(federation_name)
             lifecycle.append("federation-destroyed")
         except Exception:
             pass
