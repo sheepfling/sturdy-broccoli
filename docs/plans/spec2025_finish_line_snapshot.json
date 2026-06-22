@@ -2655,7 +2655,7 @@
     "extraction_trigger_signals": [
       "new runtime semantics keep accumulating in wrapper-facing compatibility layers instead of the python2025 runtime package",
       "adapter compatibility logic begins to obscure save/restore, directed interaction, DDM, or time semantics",
-      "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the shim package can provide"
+      "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the remaining compatibility-wrapper layer can provide"
     ],
     "future_backend_package_target": "hla-backend-python2025",
     "future_backend_plugin_family": "python-rti-2025",

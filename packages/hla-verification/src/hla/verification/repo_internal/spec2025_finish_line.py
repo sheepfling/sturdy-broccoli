@@ -6561,7 +6561,7 @@ def _build_extraction_readiness_audit(
         "extraction_trigger_signals": [
             "new runtime semantics keep accumulating in wrapper-facing compatibility layers instead of the python2025 runtime package",
             "adapter compatibility logic begins to obscure save/restore, directed interaction, DDM, or time semantics",
-            "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the shim package can provide",
+            "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the remaining compatibility-wrapper layer can provide",
         ],
         "pre_extraction_gates": [
             "keep the dedicated rti1516_2025 Python backend plugin discoverable and keep the backend scan detecting it",

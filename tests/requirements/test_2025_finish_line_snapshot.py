@@ -2992,6 +2992,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "hla-backend-python2025 now owns the live backend" in extraction_audit["current_assessment"]
     assert "hla-backend-shim remains only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in extraction_audit["current_assessment"]
     assert "concrete migration map for continuing to narrow those scaffolding responsibilities while preserving the direct and hosted proof families" in extraction_audit["current_assessment"]
+    assert (
+        "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the remaining compatibility-wrapper layer can provide"
+        in extraction_audit["extraction_trigger_signals"]
+    )
     assert extraction_audit["pre_extraction_gates"][0] == "keep the dedicated rti1516_2025 Python backend plugin discoverable and keep the backend scan detecting it"
     extraction_impact_audit = snapshot["extraction_impact_audit"]
     assert extraction_impact_audit["audit_status"] == "extraction-impact-map-captured"
