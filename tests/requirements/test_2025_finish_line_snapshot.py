@@ -2429,6 +2429,27 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "use the route-parity matrix as the scenario-family ledger behind that claim" in current_lane_statement["current_assessment"]
     assert len(current_lane_statement["non_claims"]) == 4
     assert any("full requirement-by-requirement IEEE 1516.1-2025 conformance claim" in item for item in current_lane_statement["non_claims"])
+    main_impl_claim = snapshot["main_python2025_implementation_claim_audit"]
+    assert main_impl_claim["audit_status"] == "main-python2025-implementation-claim-captured"
+    assert main_impl_claim["claim_shape"] == "bounded-main-python2025-rti-implementation"
+    assert main_impl_claim["ready_for_main_python2025_implementation_claim"] is True
+    assert main_impl_claim["ready_for_full_2025_conformance_claim"] is False
+    assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
+    assert main_impl_claim["compatibility_wrapper"] == "hla-backend-shim"
+    assert main_impl_claim["default_operator_lane"] == "python-main-2025"
+    assert main_impl_claim["hosted_extension_lane"] == "python-routes-2025"
+    assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
+    assert "direct plus hosted Python 2025 proof lanes are sufficiently green" in main_impl_claim["claim"]
+    assert len(main_impl_claim["promotion_basis"]) == 5
+    assert any("verify-main-2025" in item for item in main_impl_claim["promotion_basis"])
+    assert any("All tracked objective dimensions are bounded-ready" in item for item in main_impl_claim["promotion_basis"])
+    assert len(main_impl_claim["non_claims"]) == 4
+    assert any("not a full IEEE 1516.1-2025 conformance claim" in item for item in main_impl_claim["non_claims"])
+    assert any("hosted FedPro route into a second full RTI implementation owner" in item for item in main_impl_claim["non_claims"])
+    assert any("artifact/runtime-capability evidence" in item for item in main_impl_claim["full_conformance_blockers"])
+    assert any("hosted FedPro route remains a bounded runtime slice" in item for item in main_impl_claim["full_conformance_blockers"])
+    assert "separates the two judgments cleanly" in main_impl_claim["current_assessment"]
+    assert "main python2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
     assert implementation_lane_audit["audit_status"] == "current-lane-architecture-captured"
     assert implementation_lane_audit["current_2025_lane"] == {
@@ -4066,6 +4087,8 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["promotion_split_audit"]["ready_for_permanent_no-split_decision"] is False
     assert payload["objective_dimension_audit"]["ready_for_bounded_working_surface_claim"] is True
     assert payload["objective_dimension_audit"]["ready_for_full_2025_completion_claim"] is False
+    assert payload["main_python2025_implementation_claim_audit"]["ready_for_main_python2025_implementation_claim"] is True
+    assert payload["main_python2025_implementation_claim_audit"]["ready_for_full_2025_conformance_claim"] is False
     assert payload["closeout_readiness"]["ready_for_slice_closeout"] is True
     assert payload["closeout_readiness"]["ready_for_full_completion_claim"] is False
 
@@ -4086,6 +4109,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "Requirement-By-Requirement Audit" in markdown
     assert "Completion Claim Audit" in markdown
     assert "Supported Boundary Statement" in markdown
+    assert "Main Python2025 Implementation Claim Audit" in markdown
     assert "Objective Audit" in markdown
     assert "Implemented Evidence Slices" in markdown
     matrix = paths["verification_matrix"].read_text(encoding="utf-8")
@@ -4185,6 +4209,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     markdown = (ROOT / "docs" / "plans" / "spec2025_finish_line.md").read_text(encoding="utf-8")
     legacy_markdown = (ROOT / "docs" / "plans" / "2025_requirements_finish_line.md").read_text(encoding="utf-8")
     current_lane_statement = payload["current_lane_working_surface_statement"]
+    main_impl_claim = payload["main_python2025_implementation_claim_audit"]
     route_rows = {
         (row["scenario"], row["route"]): row
         for row in payload["route_parity_matrix"]["rows"]
@@ -4195,6 +4220,11 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is a legacy compatibility wrapper" in current_lane_statement["statement"]
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in current_lane_statement["statement"]
     assert "use the route-parity matrix as the scenario-family ledger behind that claim" in current_lane_statement["current_assessment"]
+    assert main_impl_claim["ready_for_main_python2025_implementation_claim"] is True
+    assert main_impl_claim["ready_for_full_2025_conformance_claim"] is False
+    assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
+    assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
+    assert "main python2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
 
     assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["runtime_provider"] == "python2025"
     assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"

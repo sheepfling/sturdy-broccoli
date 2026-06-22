@@ -1216,6 +1216,41 @@ Non-claims:
 - This does not upgrade Java or C++ bindings into exhaustive behavior-conformance lanes.
 - This does not turn the hosted FedPro route into a full RTI semantics or exhaustive cross-binding conformance pass.
 
+## Main Python2025 Implementation Claim Audit
+
+- Audit status: main-python2025-implementation-claim-captured
+- Claim shape: bounded-main-python2025-rti-implementation
+- Ready for main python2025 implementation claim: True
+- Ready for full 2025 conformance claim: False
+- Implementation owner: hla-backend-python2025
+- Compatibility wrapper: hla-backend-shim
+- Default operator lane: python-main-2025
+- Hosted extension lane: python-routes-2025
+- Claim: The repo can now make a distinct bounded claim for the main Python 2025 RTI implementation lane: hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface, hla-backend-shim is compatibility-wrapper-only, and the direct plus hosted Python 2025 proof lanes are sufficiently green to promote that lane as the main bounded working RTI implementation.
+- Assessment: The repo now separates the two judgments cleanly: the main python2025 RTI implementation claim is ready as a bounded working-surface statement, while the broader full-2025 conformance claim remains blocked by row-granularity, cross-binding, hosted-route, xs:any-extension, and legacy-only boundaries.
+
+Promotion basis:
+
+- hla-backend-python2025 is the discovered dedicated rti1516_2025 backend package and current implementation owner.
+- The canonical operator lane marks verify-main-2025 as the default direct proof route for the real python2025 runtime.
+- All tracked objective dimensions are bounded-ready for the Python-centered 2025 working surface.
+- The current-lane working-surface statement is ready without relying on shim-owned runtime semantics.
+- The promotion-vs-split audit already says the current python2025 lane can be promoted as the working surface while keeping future extraction optional.
+
+Non-claims:
+
+- This is not a full IEEE 1516.1-2025 conformance claim.
+- This does not promote Java or C++ binding routes into full behavior-conformance lanes.
+- This does not turn the hosted FedPro route into a second full RTI implementation owner.
+- This does not settle a permanent no-split architecture decision.
+
+Full-conformance blockers:
+
+- Covered rows include bounded supported-scope evidence, including OMT xs:any extension payload preservation without arbitrary third-party extension execution semantics.
+- Java and C++ binding rows remain artifact/runtime-capability evidence rather than exhaustive behavior-conformance proof.
+- The hosted FedPro route remains a bounded runtime slice and not a full RTI semantics or exhaustive cross-binding conformance pass.
+- Duplicate/umbrella rows remain normalization aids rather than direct one-row conformance assertions.
+
 ## Implementation Lane Audit
 
 - Audit status: current-lane-architecture-captured

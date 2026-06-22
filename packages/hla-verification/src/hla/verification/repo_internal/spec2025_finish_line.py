@@ -6693,6 +6693,59 @@ def _build_current_lane_working_surface_statement(
     }
 
 
+def _build_main_python2025_implementation_claim_audit(
+    implementation_lane_audit: Mapping[str, Any],
+    python2025_proof_lane_audit: Mapping[str, Any],
+    objective_dimension_audit: Mapping[str, Any],
+    current_lane_working_surface_statement: Mapping[str, Any],
+    completion_claim_audit: Mapping[str, Any],
+    promotion_split_audit: Mapping[str, Any],
+) -> dict[str, Any]:
+    ready = (
+        implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
+        and implementation_lane_audit["dedicated_2025_backend_package_present"]
+        and python2025_proof_lane_audit["ready_for_main_implementation_operator_lane_claim"]
+        and objective_dimension_audit["ready_for_bounded_working_surface_claim"]
+        and current_lane_working_surface_statement["ready"]
+        and promotion_split_audit["ready_for_current_lane_promotion_as_working_surface"]
+    )
+    return {
+        "audit_status": "main-python2025-implementation-claim-captured",
+        "claim_shape": "bounded-main-python2025-rti-implementation",
+        "ready_for_main_python2025_implementation_claim": ready,
+        "ready_for_full_2025_conformance_claim": completion_claim_audit["ready_for_full_2025_conformance_claim"],
+        "implementation_owner": "hla-backend-python2025",
+        "compatibility_wrapper": "hla-backend-shim",
+        "default_operator_lane": python2025_proof_lane_audit["default_direct_lane"]["lane_id"],
+        "hosted_extension_lane": python2025_proof_lane_audit["hosted_extension_lane"]["lane_id"],
+        "claim": (
+            "The repo can now make a distinct bounded claim for the main Python 2025 RTI implementation lane: "
+            "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface, "
+            "hla-backend-shim is compatibility-wrapper-only, and the direct plus hosted Python 2025 proof lanes are "
+            "sufficiently green to promote that lane as the main bounded working RTI implementation."
+        ),
+        "promotion_basis": [
+            "hla-backend-python2025 is the discovered dedicated rti1516_2025 backend package and current implementation owner.",
+            "The canonical operator lane marks verify-main-2025 as the default direct proof route for the real python2025 runtime.",
+            "All tracked objective dimensions are bounded-ready for the Python-centered 2025 working surface.",
+            "The current-lane working-surface statement is ready without relying on shim-owned runtime semantics.",
+            "The promotion-vs-split audit already says the current python2025 lane can be promoted as the working surface while keeping future extraction optional.",
+        ],
+        "non_claims": [
+            "This is not a full IEEE 1516.1-2025 conformance claim.",
+            "This does not promote Java or C++ binding routes into full behavior-conformance lanes.",
+            "This does not turn the hosted FedPro route into a second full RTI implementation owner.",
+            "This does not settle a permanent no-split architecture decision.",
+        ],
+        "full_conformance_blockers": list(completion_claim_audit["full_claim_blockers"]),
+        "current_assessment": (
+            "The repo now separates the two judgments cleanly: the main python2025 RTI implementation claim is ready "
+            "as a bounded working-surface statement, while the broader full-2025 conformance claim remains blocked by "
+            "row-granularity, cross-binding, hosted-route, xs:any-extension, and legacy-only boundaries."
+        ),
+    }
+
+
 def _route_dimension_summary(
     route_parity_rows: list[dict[str, Any]],
     scenarios: tuple[str, ...],
@@ -7652,6 +7705,14 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         python2025_source_responsibility_audit,
     )
     hosted_shared_scenario_coverage_audit = _build_hosted_shared_scenario_coverage_audit(project_root)
+    main_python2025_implementation_claim_audit = _build_main_python2025_implementation_claim_audit(
+        implementation_lane_audit,
+        python2025_proof_lane_audit,
+        objective_dimension_audit,
+        current_lane_working_surface_statement,
+        completion_claim_audit,
+        promotion_split_audit,
+    )
 
     return {
         "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
@@ -7728,6 +7789,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "wrapper_boundary_family_asymmetry_audit": wrapper_boundary_family_asymmetry_audit,
         "current_lane_coherence_audit": current_lane_coherence_audit,
         "current_lane_working_surface_statement": current_lane_working_surface_statement,
+        "main_python2025_implementation_claim_audit": main_python2025_implementation_claim_audit,
         "implementation_lane_audit": implementation_lane_audit,
         "hosted_shared_scenario_coverage_audit": hosted_shared_scenario_coverage_audit,
         "time_window_vendor_parity_audit": time_window_vendor_parity_audit,
@@ -7794,6 +7856,7 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     shim_pressure_family_asymmetry_audit = snapshot["shim_pressure_family_asymmetry_audit"]
     current_lane_coherence_audit = snapshot["current_lane_coherence_audit"]
     current_lane_working_surface_statement = snapshot["current_lane_working_surface_statement"]
+    main_python2025_implementation_claim_audit = snapshot["main_python2025_implementation_claim_audit"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
     hosted_shared_scenario_coverage_audit = snapshot["hosted_shared_scenario_coverage_audit"]
     time_window_vendor_parity_audit = snapshot["time_window_vendor_parity_audit"]
@@ -8815,6 +8878,46 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
         ]
     )
     for item in current_lane_working_surface_statement["non_claims"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "## Main Python2025 Implementation Claim Audit",
+            "",
+            f"- Audit status: {main_python2025_implementation_claim_audit['audit_status']}",
+            f"- Claim shape: {main_python2025_implementation_claim_audit['claim_shape']}",
+            f"- Ready for main python2025 implementation claim: {main_python2025_implementation_claim_audit['ready_for_main_python2025_implementation_claim']}",
+            f"- Ready for full 2025 conformance claim: {main_python2025_implementation_claim_audit['ready_for_full_2025_conformance_claim']}",
+            f"- Implementation owner: {main_python2025_implementation_claim_audit['implementation_owner']}",
+            f"- Compatibility wrapper: {main_python2025_implementation_claim_audit['compatibility_wrapper']}",
+            f"- Default operator lane: {main_python2025_implementation_claim_audit['default_operator_lane']}",
+            f"- Hosted extension lane: {main_python2025_implementation_claim_audit['hosted_extension_lane']}",
+            f"- Claim: {main_python2025_implementation_claim_audit['claim']}",
+            f"- Assessment: {main_python2025_implementation_claim_audit['current_assessment']}",
+            "",
+            "Promotion basis:",
+            "",
+        ]
+    )
+    for item in main_python2025_implementation_claim_audit["promotion_basis"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Non-claims:",
+            "",
+        ]
+    )
+    for item in main_python2025_implementation_claim_audit["non_claims"]:
+        lines.append(f"- {item}")
+    lines.extend(
+        [
+            "",
+            "Full-conformance blockers:",
+            "",
+        ]
+    )
+    for item in main_python2025_implementation_claim_audit["full_conformance_blockers"]:
         lines.append(f"- {item}")
     lines.extend(
         [
