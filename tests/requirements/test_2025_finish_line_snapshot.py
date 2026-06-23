@@ -2202,7 +2202,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route"
     )
     assert save_restore_audit["proof_families"][2]["direct_tests"][2].endswith(
-        "test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter"
+        "test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter"
     )
     assert save_restore_audit["proof_families"][2]["hosted_tests"][2].endswith(
         "test_2025_transport_server_runs_transportation_type_restore_persistence_scenario_over_fedpro_route"
@@ -2334,7 +2334,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing_over_fedpro_schema"
     )
     assert object_management_audit["proof_families"][4]["direct_tests"][3].endswith(
-        "test_2025_provider_restores_transportation_type_state_via_compat_adapter"
+        "test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter"
     )
     assert object_management_audit["proof_families"][6]["hosted_tests"][1].endswith(
         "test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_slice"

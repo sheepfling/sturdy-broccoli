@@ -5654,7 +5654,7 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_callback_delivery_policy",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
@@ -6199,10 +6199,10 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "transportation-query-and-policy-state",
             "focus": "attribute and interaction transportation change confirmation, requester-only query/report callbacks, rejection paths, and restore persistence",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_transportation_type_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restores_transportation_type_state_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
             ],

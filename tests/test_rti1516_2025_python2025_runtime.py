@@ -9259,6 +9259,62 @@ def test_2025_provider_runs_transportation_type_restore_persistence_scenario_via
     "HLA2025-FI-SVC-066",
     "HLA2025-FI-SVC-067",
     "HLA2025-FI-SVC-068",
+    "HLA2025-FI-SVC-069",
+    "HLA2025-FI-SVC-070",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_restore_persistence_scenario
+
+    federation_name = f"python2025-direct-transport-restore-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    config = TransportationTypeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        federate_type="TransportationFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        second_attribute_name="RCS",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"transport-restore-direct-{uuid.uuid4().hex[:8]}",
+        save_name=f"TRANSPORT-SAVE-DIRECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_transportation_type_restore_persistence_scenario(
+        owner,
+        observer,
+        config=config,
+        owner_federate=_CompatRecordingFederateAmbassador(),
+        observer_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert observer.backend_info.details["provider"] == "python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["counts_as_python_2025_rti"] is True
+    assert len(summary["pre_restore_reflects"]) == 2
+    assert len(summary["post_restore_attribute_reports"]) >= 2
+    assert len(summary["post_restore_reflects"]) == 2
+    assert _normalized_2025_callback_equal(summary["post_restore_interaction_report"].args[1:], (
+        summary["interaction"],
+        summary["best_effort_transport"],
+    ))
+    assert _normalized_2025_callback_equal(summary["post_restore_interaction"].args[4], summary["best_effort_transport"])
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_adapter(
@@ -9286,6 +9342,47 @@ def test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_ad
         observer_federate=_CompatRecordingFederateAmbassador(),
     )
 
+    assert summary["object_instance"] is not None
+    assert summary["attribute"] is not None
+    assert summary["interaction"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_rejection_scenario
+
+    federation_name = f"python2025-direct-transport-reject-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    config = TransportationTypeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_instance_name=f"transport-reject-direct-{uuid.uuid4().hex[:8]}",
+        save_name=f"TRANSPORT-REJECT-DIRECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_transportation_type_rejection_scenario(
+        owner,
+        observer,
+        config=config,
+        owner_federate=_CompatRecordingFederateAmbassador(),
+        observer_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert observer.backend_info.details["provider"] == "python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["object_instance"] is not None
     assert summary["attribute"] is not None
     assert summary["interaction"] is not None
@@ -9403,12 +9500,14 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     owner.request_interaction_transportation_type_change(interaction, best_effort_transport)
 
     owner.request_federation_save(save_label)
+    _evoke_all_2025(owner, observer)
     assert owner_federate.last_callback("initiateFederateSave").args == (save_label,)
     assert observer_federate.last_callback("initiateFederateSave").args == (save_label,)
     owner.federate_save_begun()
     observer.federate_save_begun()
     owner.federate_save_complete()
     observer.federate_save_complete()
+    _evoke_all_2025(owner, observer)
     assert owner_federate.last_callback("federationSaved").args == ()
     assert observer_federate.last_callback("federationSaved").args == ()
 
@@ -9416,11 +9515,13 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     owner.request_interaction_transportation_type_change(interaction, reliable_transport)
 
     owner.request_federation_restore(save_label)
+    _evoke_all_2025(owner, observer)
     assert owner_federate.last_callback("requestFederationRestoreSucceeded").args == (save_label,)
     assert owner_federate.last_callback("federationRestoreBegun").args == ()
     assert observer_federate.last_callback("federationRestoreBegun").args == ()
     owner.federate_restore_complete()
     observer.federate_restore_complete()
+    _evoke_all_2025(owner, observer)
     assert owner_federate.last_callback("federationRestored").args == ()
     assert observer_federate.last_callback("federationRestored").args == ()
 
@@ -9429,6 +9530,7 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     owner.query_attribute_transportation_type(object_instance, reliable_attribute)
     owner.query_attribute_transportation_type(object_instance, best_effort_attribute)
     owner.query_interaction_transportation_type(interaction)
+    _evoke_all_2025(owner, observer)
 
     attribute_reports = owner_federate.callbacks_named("reportAttributeTransportationType")
     attribute_transports = {_handle_value(record.args[1]): record.args[2] for record in attribute_reports}
@@ -9443,6 +9545,7 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
 
     observer_federate.clear()
     owner.update_attribute_values(object_instance, {reliable_attribute: b"restored-reliable"}, b"restored-reliable-tag")
+    _evoke_all_2025(owner, observer)
     reliable_reflect = observer_federate.last_callback("reflectAttributeValues")
     assert reliable_reflect is not None
     assert _normalized_2025_callback_equal(reliable_reflect.args[0], object_instance)
@@ -9452,6 +9555,7 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     assert reliable_reflect.args[8:] == (OrderType.RECEIVE, None)
 
     owner.update_attribute_values(object_instance, {best_effort_attribute: b"restored-best-effort"}, b"restored-best-effort-tag")
+    _evoke_all_2025(owner, observer)
     best_effort_reflect = observer_federate.last_callback("reflectAttributeValues")
     assert best_effort_reflect is not None
     assert _normalized_2025_callback_equal(best_effort_reflect.args[0], object_instance)
@@ -9460,6 +9564,207 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     assert best_effort_reflect.args[8:] == (OrderType.RECEIVE, None)
 
     owner.send_interaction(interaction, {parameter: b"restored-track"}, b"restored-track-tag")
+    _evoke_all_2025(owner, observer)
+    received = observer_federate.last_callback("receiveInteraction")
+    assert received is not None
+    assert _normalized_2025_callback_equal(received.args[0], observer_interaction)
+    assert _normalized_2025_callback_equal(
+        received.args[1],
+        {observer.get_parameter_handle(observer_interaction, "TrackId"): b"restored-track"},
+    )
+    assert received.args[2] == b"restored-track-tag"
+    assert _normalized_2025_callback_equal(received.args[4], best_effort_transport)
+    assert received.args[8] == OrderType.RECEIVE
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST)
+    owner.destroy_federation_execution(federation_name=federation_name)
+    observer.disconnect()
+    owner.disconnect()
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
+    "HLA2025-FI-SVC-069",
+    "HLA2025-FI-SVC-070",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter(tmp_path: Path) -> None:
+    from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "DirectTransportRestore2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Direct Transport Restore 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-19</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused transport restore direct fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+        <attribute>
+          <name>Velocity</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"python2025-direct-transport-restore-adapter-{uuid.uuid4().hex[:8]}"
+    save_label = "SAVE-TRANSPORT-DIRECT"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    owner_federate = _CompatRecordingFederateAmbassador()
+    observer_federate = _CompatRecordingFederateAmbassador()
+
+    owner.connect(owner_federate, CallbackModel.HLA_EVOKED)
+    observer.connect(observer_federate, CallbackModel.HLA_EVOKED)
+    owner.create_federation_execution(federation_name, [str(fom)])
+    owner_handle = owner.join_federation_execution("Owner", "TransportationFederate", federation_name)
+    observer.join_federation_execution("Observer", "TransportationFederate", federation_name)
+
+    object_class = owner.get_object_class_handle("HLAobjectRoot.Target")
+    observer_object_class = observer.get_object_class_handle("HLAobjectRoot.Target")
+    reliable_attribute = owner.get_attribute_handle(object_class, "Position")
+    best_effort_attribute = owner.get_attribute_handle(object_class, "Velocity")
+    observer_reliable_attribute = observer.get_attribute_handle(observer_object_class, "Position")
+    observer_best_effort_attribute = observer.get_attribute_handle(observer_object_class, "Velocity")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    observer_interaction = observer.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    parameter = owner.get_parameter_handle(interaction, "TrackId")
+    reliable_transport = owner.get_transportation_type_handle("HLAreliable")
+    best_effort_transport = owner.get_transportation_type_handle("HLAbestEffort")
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert observer.backend_info.details["provider"] == "python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["counts_as_python_2025_rti"] is True
+
+    owner.publish_object_class_attributes(object_class, {reliable_attribute, best_effort_attribute})
+    owner.publish_interaction_class(interaction)
+    observer.subscribe_object_class_attributes(
+        observer_object_class,
+        {observer_reliable_attribute, observer_best_effort_attribute},
+    )
+    observer.subscribe_interaction_class(observer_interaction)
+
+    object_instance = owner.register_object_instance(object_class, f"DirectTransportTarget-{uuid.uuid4().hex[:8]}")
+    owner.request_attribute_transportation_type_change(object_instance, {reliable_attribute}, reliable_transport)
+    owner.request_attribute_transportation_type_change(object_instance, {best_effort_attribute}, best_effort_transport)
+    owner.request_interaction_transportation_type_change(interaction, best_effort_transport)
+
+    owner.request_federation_save(save_label)
+    _evoke_all_2025(owner, observer)
+    assert owner_federate.last_callback("initiateFederateSave").args == (save_label,)
+    assert observer_federate.last_callback("initiateFederateSave").args == (save_label,)
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    _evoke_all_2025(owner, observer)
+    assert owner_federate.last_callback("federationSaved").args == ()
+    assert observer_federate.last_callback("federationSaved").args == ()
+
+    owner.request_attribute_transportation_type_change(object_instance, {best_effort_attribute}, reliable_transport)
+    owner.request_interaction_transportation_type_change(interaction, reliable_transport)
+
+    owner.request_federation_restore(save_label)
+    _evoke_all_2025(owner, observer)
+    assert owner_federate.last_callback("requestFederationRestoreSucceeded").args == (save_label,)
+    assert owner_federate.last_callback("federationRestoreBegun").args == ()
+    assert observer_federate.last_callback("federationRestoreBegun").args == ()
+    owner.federate_restore_complete()
+    observer.federate_restore_complete()
+    _evoke_all_2025(owner, observer)
+    assert owner_federate.last_callback("federationRestored").args == ()
+    assert observer_federate.last_callback("federationRestored").args == ()
+
+    owner_federate.clear()
+    observer_federate.clear()
+    owner.query_attribute_transportation_type(object_instance, reliable_attribute)
+    owner.query_attribute_transportation_type(object_instance, best_effort_attribute)
+    owner.query_interaction_transportation_type(interaction)
+    _evoke_all_2025(owner, observer)
+
+    attribute_reports = owner_federate.callbacks_named("reportAttributeTransportationType")
+    attribute_transports = {_handle_value(record.args[1]): record.args[2] for record in attribute_reports}
+    assert _normalized_2025_callback_equal(attribute_transports[_handle_value(reliable_attribute)], reliable_transport)
+    assert _normalized_2025_callback_equal(attribute_transports[_handle_value(best_effort_attribute)], best_effort_transport)
+    interaction_report = owner_federate.last_callback("reportInteractionTransportationType")
+    assert interaction_report is not None
+    assert _normalized_2025_callback_equal(
+        interaction_report.args,
+        (owner_handle, interaction, best_effort_transport),
+    )
+
+    observer_federate.clear()
+    owner.update_attribute_values(object_instance, {reliable_attribute: b"restored-reliable"}, b"restored-reliable-tag")
+    _evoke_all_2025(owner, observer)
+    reliable_reflect = observer_federate.last_callback("reflectAttributeValues")
+    assert reliable_reflect is not None
+    assert _normalized_2025_callback_equal(reliable_reflect.args[0], object_instance)
+    assert _normalized_2025_callback_equal(reliable_reflect.args[1], {observer_reliable_attribute: b"restored-reliable"})
+    assert reliable_reflect.args[2] == b"restored-reliable-tag"
+    assert _normalized_2025_callback_equal(reliable_reflect.args[4], reliable_transport)
+    assert reliable_reflect.args[8:] == (OrderType.RECEIVE, None)
+
+    owner.update_attribute_values(object_instance, {best_effort_attribute: b"restored-best-effort"}, b"restored-best-effort-tag")
+    _evoke_all_2025(owner, observer)
+    best_effort_reflect = observer_federate.last_callback("reflectAttributeValues")
+    assert best_effort_reflect is not None
+    assert _normalized_2025_callback_equal(best_effort_reflect.args[0], object_instance)
+    assert _normalized_2025_callback_equal(best_effort_reflect.args[1], {observer_best_effort_attribute: b"restored-best-effort"})
+    assert best_effort_reflect.args[2] == b"restored-best-effort-tag"
+    assert best_effort_reflect.args[8:] == (OrderType.RECEIVE, None)
+
+    owner.send_interaction(interaction, {parameter: b"restored-track"}, b"restored-track-tag")
+    _evoke_all_2025(owner, observer)
     received = observer_federate.last_callback("receiveInteraction")
     assert received is not None
     assert _normalized_2025_callback_equal(received.args[0], observer_interaction)
