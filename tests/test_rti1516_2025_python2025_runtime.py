@@ -5079,6 +5079,53 @@ def test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_
     assert summary["right_time"] == {"value": 0.0}
 
 
+@pytest.mark.requirements(
+    "HLA2025-FR-002",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-014",
+    "HLA2025-FI-SVC-015",
+    "HLA2025-FI-SVC-016",
+    "HLA2025-FI-SVC-017",
+)
+def test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAfloat64Time
+    from hla.verification import SuiteRecordingFederateAmbassador, run_suite_save_restore_scenario
+
+    left = create_rti_ambassador(backend="python2025")
+    right = create_rti_ambassador(backend="python2025")
+    summary = run_suite_save_restore_scenario(
+        left,
+        right,
+        config={
+            "federation_name": f"python2025-direct-suite-save-restore-{uuid.uuid4().hex[:8]}",
+            "fom_modules": ("resource:VendorSmokeFOM.xml",),
+            "logical_time_implementation_name": "HLAfloat64Time",
+            "save_name": f"python2025-direct-save-{uuid.uuid4().hex[:8]}",
+            "resume_time": HLAfloat64Time(5.0),
+        },
+        left_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-python2025-direct",
+            scenario="suite-save-restore",
+            role="left",
+        ),
+        right_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-python2025-direct",
+            scenario="suite-save-restore",
+            role="right",
+        ),
+    )
+
+    for ambassador in (left, right):
+        assert ambassador.backend_info.details["provider"] == "python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["federation_saved"] is True
+    assert summary["restore_completed"] is True
+    assert summary["left_time"]["value"] == 0.0
+    assert summary["right_time"]["value"] == 0.0
+
+
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-026")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_local_delete_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
