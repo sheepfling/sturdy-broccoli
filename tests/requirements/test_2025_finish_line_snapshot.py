@@ -378,7 +378,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-126"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 5
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"])
     assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 9
     assert any("test_2025_provider_filters_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
@@ -398,9 +398,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchor_count"] == 5
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchor_count"] == 7
     assert any("test_support_lookups_round_trip_class_handle_and_name" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema"
@@ -2170,8 +2170,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert save_restore_audit["proof_families"][0]["hosted_tests"][-1].endswith(
         "test_2025_transport_server_runs_restore_status_exception_scenario_over_fedpro_route"
     )
+    assert save_restore_audit["proof_families"][1]["direct_tests"][0].endswith(
+        "test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter"
+    )
     assert save_restore_audit["proof_families"][1]["hosted_tests"][0].endswith(
-        "test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route"
+        "test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route"
     )
     assert save_restore_audit["proof_families"][2]["direct_tests"][2].endswith(
         "test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter"
@@ -2211,6 +2214,18 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     )
     assert federation_management_audit["proof_families"][3]["hosted_tests"][-1].endswith(
         "test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema"
+    )
+    assert federation_management_audit["proof_families"][4]["direct_tests"][1].endswith(
+        "test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter"
+    )
+    assert federation_management_audit["proof_families"][4]["direct_tests"][3].endswith(
+        "test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter"
+    )
+    assert federation_management_audit["proof_families"][4]["direct_tests"][4].endswith(
+        "test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter"
+    )
+    assert federation_management_audit["proof_families"][4]["hosted_tests"][1].endswith(
+        "test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route"
     )
     assert federation_management_audit["proof_families"][5]["hosted_tests"][1].endswith(
         "test_2025_transport_server_completes_restore_after_peer_disconnect_over_fedpro_schema"
@@ -2407,6 +2422,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert ddm_audit["proof_families"][0]["direct_tests"] == [
         "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
     ]
+    assert ddm_audit["proof_families"][4]["direct_tests"][0].endswith(
+        "test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter"
+    )
     assert ddm_audit["proof_families"][5]["hosted_tests"][1].endswith(
         "test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema"
     )

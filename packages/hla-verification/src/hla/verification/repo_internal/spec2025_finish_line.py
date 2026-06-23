@@ -5624,13 +5624,13 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "shared-scenario-rollback",
             "focus": "shared two-federate save/restore, object-state rollback, and federate-local rollback",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter",
             ],
             "hosted_tests": [
-                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_object_state_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_federate_local_state_scenario_over_fedpro_route",
@@ -5910,14 +5910,14 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "focus": "request or initiate, status, fail, abort, and completion control flow for federation save or restore across direct and hosted ambassadors",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
-                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+                "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_queued_callback_scenario_over_fedpro_route",
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_scheduled_save_restore_time_state_scenario_over_fedpro_route",
@@ -6603,7 +6603,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "passive-alias-and-compat-scenarios",
             "focus": "passive region subscription aliases and backend-neutral compat DDM scenarios over the same semantics",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",

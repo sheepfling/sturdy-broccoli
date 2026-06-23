@@ -1522,7 +1522,7 @@
       },
       {
         "direct_tests": [
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
@@ -2881,16 +2881,16 @@
       {
         "direct_tests": [
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter",
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter"
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter"
         ],
         "family": "save-restore-lifecycle-control",
         "focus": "request or initiate, status, fail, abort, and completion control flow for federation save or restore across direct and hosted ambassadors",
         "hosted_tests": [
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_queued_callback_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_scheduled_save_restore_time_state_scenario_over_fedpro_route",
@@ -19809,7 +19809,7 @@
         "requirement_id": "HLA2025-BND-002"
       },
       {
-        "pytest_anchor_count": 235,
+        "pytest_anchor_count": 236,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_fedpro_transport_replaces_wsdl_without_cross_wiring_legacy_binding",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_tail_backlog_evidence.py::test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes",
@@ -20042,6 +20042,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_transportation_type_scenario_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_ddm_scenario_over_fedpro_route",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_lookahead_and_galt_per_federate_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_treats_callback_delivery_as_runtime_policy_not_saved_state_over_fedpro_route",
@@ -20050,7 +20051,7 @@
         "requirement_id": "HLA2025-BND-003"
       },
       {
-        "pytest_anchor_count": 145,
+        "pytest_anchor_count": 148,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers",
@@ -20059,6 +20060,8 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resign_controls",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_applies_resign_time_ownership_policies",
@@ -20196,7 +20199,8 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_synchronization_registration_failure_scenario_via_runner_over_fedpro_route",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_synchronization_scenario_via_runner_over_fedpro_route",
-          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_ddm_scenario_over_fedpro_route"
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_ddm_scenario_over_fedpro_route",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route"
         ],
         "requirement_id": "HLA2025-FI-001"
       },
@@ -20544,8 +20548,9 @@
         "requirement_id": "HLA2025-FI-SVC-013"
       },
       {
-        "pytest_anchor_count": 7,
+        "pytest_anchor_count": 8,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
@@ -20557,8 +20562,9 @@
         "requirement_id": "HLA2025-FI-SVC-014"
       },
       {
-        "pytest_anchor_count": 7,
+        "pytest_anchor_count": 8,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
@@ -20570,8 +20576,9 @@
         "requirement_id": "HLA2025-FI-SVC-015"
       },
       {
-        "pytest_anchor_count": 6,
+        "pytest_anchor_count": 7,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
@@ -20582,8 +20589,9 @@
         "requirement_id": "HLA2025-FI-SVC-016"
       },
       {
-        "pytest_anchor_count": 7,
+        "pytest_anchor_count": 8,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
@@ -20595,9 +20603,12 @@
         "requirement_id": "HLA2025-FI-SVC-017"
       },
       {
-        "pytest_anchor_count": 86,
+        "pytest_anchor_count": 89,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_explicit",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",
@@ -20687,8 +20698,10 @@
         "requirement_id": "HLA2025-FI-SVC-018"
       },
       {
-        "pytest_anchor_count": 22,
+        "pytest_anchor_count": 24,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_exchange_round_via_compat_adapter",
@@ -20765,8 +20778,10 @@
         "requirement_id": "HLA2025-FI-SVC-022"
       },
       {
-        "pytest_anchor_count": 45,
+        "pytest_anchor_count": 47,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
@@ -20827,8 +20842,10 @@
         "requirement_id": "HLA2025-FI-SVC-024"
       },
       {
-        "pytest_anchor_count": 35,
+        "pytest_anchor_count": 37,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_discovery_class_scenario_end_to_end",
@@ -20868,8 +20885,9 @@
         "requirement_id": "HLA2025-FI-SVC-025"
       },
       {
-        "pytest_anchor_count": 14,
+        "pytest_anchor_count": 15,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_local_delete_scenario_end_to_end",
@@ -20888,8 +20906,9 @@
         "requirement_id": "HLA2025-FI-SVC-026"
       },
       {
-        "pytest_anchor_count": 8,
+        "pytest_anchor_count": 9,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_save_abort_scenario_via_compat_adapter",
@@ -20950,8 +20969,10 @@
         "requirement_id": "HLA2025-FI-SVC-031"
       },
       {
-        "pytest_anchor_count": 43,
+        "pytest_anchor_count": 45,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
@@ -22176,9 +22197,10 @@
         "requirement_id": "HLA2025-FI-SVC-127"
       },
       {
-        "pytest_anchor_count": 4,
+        "pytest_anchor_count": 5,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_python_backend_object_ownership_extended.py::test_clause_9_services_are_observable_through_mom_service_invocation_reporting",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap"
@@ -22186,8 +22208,9 @@
         "requirement_id": "HLA2025-FI-SVC-128"
       },
       {
-        "pytest_anchor_count": 11,
+        "pytest_anchor_count": 12,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
@@ -22271,9 +22294,10 @@
         "requirement_id": "HLA2025-FI-SVC-136"
       },
       {
-        "pytest_anchor_count": 4,
+        "pytest_anchor_count": 5,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_python_backend_object_ownership_extended.py::test_clause_9_services_are_observable_through_mom_service_invocation_reporting",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap"
@@ -22281,9 +22305,10 @@
         "requirement_id": "HLA2025-FI-SVC-137"
       },
       {
-        "pytest_anchor_count": 6,
+        "pytest_anchor_count": 7,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_python_backend_support_services.py::test_support_lookups_round_trip_class_handle_and_name",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_keeps_decode_support_helpers_available_while_joined_identity_queries_stop_after_resign_over_fedpro_schema",
@@ -22867,19 +22892,21 @@
         "requirement_id": "HLA2025-FR-001"
       },
       {
-        "pytest_anchor_count": 2,
+        "pytest_anchor_count": 3,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter"
         ],
         "requirement_id": "HLA2025-FR-002"
       },
       {
-        "pytest_anchor_count": 24,
+        "pytest_anchor_count": 25,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
@@ -22905,11 +22932,12 @@
         "requirement_id": "HLA2025-FR-003"
       },
       {
-        "pytest_anchor_count": 22,
+        "pytest_anchor_count": 23,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
@@ -22975,7 +23003,7 @@
         "requirement_id": "HLA2025-FR-010"
       },
       {
-        "pytest_anchor_count": 40,
+        "pytest_anchor_count": 41,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
@@ -23014,6 +23042,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable"
@@ -23081,11 +23110,12 @@
         "requirement_id": "HLA2025-MIL-003"
       },
       {
-        "pytest_anchor_count": 61,
+        "pytest_anchor_count": 62,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_blocks_window_closure_until_future_inputs_are_excluded",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_delivers_post_closure_timestamped_output_to_consumer",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_ignores_receive_order_poison_after_window_close",
@@ -23148,11 +23178,12 @@
         "requirement_id": "HLA2025-MIL-004"
       },
       {
-        "pytest_anchor_count": 60,
+        "pytest_anchor_count": 61,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_blocks_window_closure_until_future_inputs_are_excluded",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_delivers_post_closure_timestamped_output_to_consumer",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_ignores_receive_order_poison_after_window_close",
@@ -29424,7 +29455,7 @@
       },
       {
         "direct_tests": [
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter",
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter"
@@ -29432,7 +29463,7 @@
         "family": "shared-scenario-rollback",
         "focus": "shared two-federate save/restore, object-state rollback, and federate-local rollback",
         "hosted_tests": [
-          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+          "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_object_state_scenario_over_fedpro_route",
           "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_federate_local_state_scenario_over_fedpro_route"
