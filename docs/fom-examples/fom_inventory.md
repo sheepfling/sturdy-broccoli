@@ -47,14 +47,14 @@ for repo-owned and third-party FOM XML modules.
 
 - `repo-2025-encoding-auth-smoke`: 2025-only encoding/auth smoke fixture.
 
-### omt-schema-baseline
-
-- `repo-2025-omt-schema-probe`: Positive 2025 OMT schema probe used by the dedicated XML schema baseline.
-
 ### netn-merged
 
 - `third-party-netn-mim`: Ordered family member of the NETN merged public baseline.
 - `third-party-netn-merged-with-rpr`: Ordered family member of the NETN merged public baseline.
+
+### omt-schema-baseline
+
+- `repo-2025-omt-schema-probe`: Positive 2025 OMT schema probe used by the dedicated XML schema baseline.
 
 ### portico-samples
 

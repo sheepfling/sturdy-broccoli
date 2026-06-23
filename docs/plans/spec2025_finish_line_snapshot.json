@@ -2519,14 +2519,14 @@
     "rows": [
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
-        "current_source_line_baseline": 4004,
+        "current_source_line_baseline": 4008,
         "current_source_method_baseline": 72,
         "proof_family_count": 5,
         "route_backed": true,
         "slice_id": "2025-save-restore-lifecycle",
         "source_families": [
           {
-            "current_line_count": 430,
+            "current_line_count": 432,
             "current_method_count": 13,
             "family": "save-restore-runtime",
             "present_in_runtime_backend": true
@@ -2544,7 +2544,7 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2161,
+            "current_line_count": 2163,
             "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
@@ -2554,7 +2554,7 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
-        "current_source_line_baseline": 3174,
+        "current_source_line_baseline": 3178,
         "current_source_method_baseline": 45,
         "proof_family_count": 6,
         "route_backed": true,
@@ -2567,13 +2567,13 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 430,
+            "current_line_count": 432,
             "current_method_count": 13,
             "family": "save-restore-runtime",
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2161,
+            "current_line_count": 2163,
             "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
@@ -2583,7 +2583,7 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py",
-        "current_source_line_baseline": 3266,
+        "current_source_line_baseline": 3268,
         "current_source_method_baseline": 53,
         "proof_family_count": 5,
         "route_backed": true,
@@ -2602,7 +2602,7 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2161,
+            "current_line_count": 2163,
             "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
@@ -2612,7 +2612,7 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py",
-        "current_source_line_baseline": 4713,
+        "current_source_line_baseline": 4715,
         "current_source_method_baseline": 135,
         "proof_family_count": 6,
         "route_backed": true,
@@ -2637,7 +2637,7 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 2161,
+            "current_line_count": 2163,
             "current_method_count": 21,
             "family": "callback-delivery-and-control",
             "present_in_runtime_backend": true
@@ -8007,7 +8007,7 @@
     "audit_status": "implementation-concentration-captured",
     "backend_shell_ratio": 0.0,
     "current_assessment": "The primary 2025 Python RTI lane still cites hla-backend-python2025/backend.py as a frequent evidence anchor, but semantic concentration is no longer material there: the ambassador shell is thin and most runtime behavior now lives in extracted python2025 modules. Remaining pressure is architectural hygiene, not proof that core 2025 semantics still live in one oversized backend class.",
-    "extracted_runtime_module_line_count": 11354,
+    "extracted_runtime_module_line_count": 11361,
     "extraction_pressure_boundary": "The main python2025 runtime should keep absorbing real RTI semantics, while wrapper-only compatibility logic should keep shrinking or moving outward into narrower adapters and reusable runtime modules.",
     "implemented_slice_count": 76,
     "leading_extracted_runtime_modules": [
@@ -18192,7 +18192,7 @@
     "audit_status": "python2025-source-responsibility-captured",
     "current_assessment": "The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python2025, while the substantive runtime behavior is spread across extracted python2025 modules and hla-backend-shim has been reduced to a compatibility wrapper. Save/restore lifecycle, directed-interaction routing, time management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery are now measurable as named source-owned families under the main python2025 runtime package.",
     "extracted_runtime_module_count": 50,
-    "extracted_runtime_module_line_count": 11354,
+    "extracted_runtime_module_line_count": 11361,
     "extracted_runtime_modules": [
       {
         "family": "misc-support",
@@ -18263,7 +18263,7 @@
           "deliver_queued_callback",
           "deliver_mom_service_report"
         ],
-        "line_count": 180,
+        "line_count": 182,
         "path": "packages/hla-backend-python2025/src/hla/backends/python2025/callback_runtime.py"
       },
       {
@@ -18586,7 +18586,7 @@
         "family": "mom-and-switch-services",
         "function_count": 0,
         "functions": [],
-        "line_count": 311,
+        "line_count": 314,
         "path": "packages/hla-backend-python2025/src/hla/backends/python2025/mom_surface_mixin.py"
       },
       {
@@ -18738,7 +18738,7 @@
           "abort_federation_restore",
           "query_federation_restore_status"
         ],
-        "line_count": 425,
+        "line_count": 427,
         "path": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py"
       },
       {
@@ -18918,7 +18918,7 @@
       },
       {
         "family": "callback-delivery-and-control",
-        "line_count": 2161,
+        "line_count": 2163,
         "method_count": 21,
         "sample_methods": [
           "deliver_forced_remove_callbacks",
@@ -18948,7 +18948,7 @@
       },
       {
         "family": "mom-and-switch-services",
-        "line_count": 1309,
+        "line_count": 1312,
         "method_count": 39,
         "sample_methods": [
           "mom_request_params_by_name",
@@ -19038,7 +19038,7 @@
       },
       {
         "family": "save-restore-runtime",
-        "line_count": 430,
+        "line_count": 432,
         "method_count": 13,
         "sample_methods": [
           "capture_federation_save_snapshot",

@@ -138,6 +138,12 @@ These are only useful when you provide a Java RTI configuration explicitly.
 
 ### Pitch
 
+- `java-pitch-202x-jpype`
+- `pitch-202x-jpype`
+
+- `java-pitch-202x-py4j`
+- `pitch-202x-py4j`
+
 - `java-pitch-jpype`
 - `pitch-jpype`
 
@@ -188,10 +194,6 @@ These are only useful when you provide a Java RTI configuration explicitly.
 
 - `java-shim-py4j`
 - `shim-py4j`
-
-### Spec Shim
-
-- `shim`
 
 <!-- GENERATED_BACKEND_ALIASES_END -->
 
