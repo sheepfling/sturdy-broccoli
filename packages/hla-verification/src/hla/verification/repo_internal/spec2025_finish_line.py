@@ -5883,7 +5883,7 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_lost_federate_mom_scenario_end_to_end",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_connection_lost_callback_tears_down_connection",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_resigned_federate_callback_silence_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_reports_federate_resigned_callback_with_reason_context",
             ],
             "hosted_tests": [
@@ -5923,7 +5923,7 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
             ],
@@ -6059,8 +6059,8 @@ def _build_support_services_decomposition_audit() -> dict[str, Any]:
             "family": "factory-decode-and-hosted-support-seam",
             "focus": "support handle factories, decode helpers, hosted direct support route execution, callback-backlog control around support seams, and preservation of support surfaces across transport",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_support_factory_and_decode_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_callback_control_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
             ],
             "hosted_tests": [

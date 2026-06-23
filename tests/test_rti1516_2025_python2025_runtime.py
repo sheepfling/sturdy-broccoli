@@ -8868,6 +8868,50 @@ def test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_comp
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-025",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_resigned_federate_callback_silence_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_resigned_federate_callback_silence_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-direct-resign-callback-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"POST-RESIGN-SAVE-DIRECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_resigned_federate_callback_silence_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert leader.backend_info.details["provider"] == "python2025"
+    assert leader.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert leader.backend_info.details["counts_as_python_2025_rti"] is True
+    assert wing.backend_info.details["provider"] == "python2025"
+    assert wing.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert wing.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["leader_initiate_save"].args == (config.save_name,)
+    assert summary["leader_saved"] is not None
+    assert summary["wing_record_count_after"] == summary["wing_record_count_before"]
+    assert summary["wing_post_resign_records"] == []
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
     "HLA2025-SS-043",
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
