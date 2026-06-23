@@ -3904,6 +3904,16 @@ def _build_python2025_exclusion_boundaries_audit(
         "`omt_xs_any_extension_tolerance.md`",
     ]
     missing_doc_markers = [marker for marker in required_doc_markers if marker not in doc_text]
+    finish_line_source_path = project_root / "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py"
+    finish_line_source_text = finish_line_source_path.read_text(encoding="utf-8") if finish_line_source_path.exists() else ""
+    direct_compat_anchor_matches = sorted(
+        set(
+            re.findall(
+                r'tests/test_rti1516_2025_python2025_runtime.py::([^"\n]+via_compat_adapter[^"\n]*)',
+                finish_line_source_text,
+            )
+        )
+    )
     duplicate_umbrella_row_count = requirement_coverage_disposition["by_disposition"]["duplicate/umbrella"]
     retired_row_count = requirement_coverage_disposition["by_disposition"]["retired/legacy-only"]
     doc_checks = [
@@ -3920,6 +3930,9 @@ def _build_python2025_exclusion_boundaries_audit(
         "required_area_labels": required_area_labels,
         "missing_area_labels": missing_area_labels,
         "missing_doc_markers": missing_doc_markers,
+        "finish_line_source_path": "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
+        "direct_compat_anchor_count": len(direct_compat_anchor_matches),
+        "direct_compat_anchor_examples": direct_compat_anchor_matches[:10],
         "duplicate_umbrella_row_count": duplicate_umbrella_row_count,
         "retired_row_count": retired_row_count,
         "doc_narrative_ready": all(doc_checks),
@@ -3927,6 +3940,7 @@ def _build_python2025_exclusion_boundaries_audit(
             doc_path.exists()
             and not missing_area_labels
             and not missing_doc_markers
+            and not direct_compat_anchor_matches
             and duplicate_umbrella_row_count == 22
             and retired_row_count == 24
             and all(doc_checks)
@@ -3935,7 +3949,8 @@ def _build_python2025_exclusion_boundaries_audit(
             "The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and "
             "generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the "
             "legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas "
-            "around the main python2025 implementation statement."
+            "around the main python2025 implementation statement, and the generated finish-line source no longer carries "
+            "compat-era direct runtime anchors for the python2025 proof lane."
         ),
         "residual_boundary": (
             "This audit makes the current non-claim map explicit and reviewable, but it does not by itself prove the "

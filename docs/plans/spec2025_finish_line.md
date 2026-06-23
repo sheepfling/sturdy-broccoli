@@ -279,7 +279,7 @@ Direct scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, sa
 - Retired row count: 24
 - Doc narrative ready: True
 - Ready for python2025 exclusion boundaries claim: True
-- Assessment: The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas around the main python2025 implementation statement.
+- Assessment: The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas around the main python2025 implementation statement, and the generated finish-line source no longer carries compat-era direct runtime anchors for the python2025 proof lane.
 - Residual boundary: This audit makes the current non-claim map explicit and reviewable, but it does not by itself prove the underlying direct or hosted runtime behavior; it documents the boundaries around those bounded claims.
 
 ## Hosted FedPro Bounded Proof Audit

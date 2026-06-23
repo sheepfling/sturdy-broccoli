@@ -1539,11 +1539,15 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     ]
     assert exclusion_boundaries_audit["missing_area_labels"] == []
     assert exclusion_boundaries_audit["missing_doc_markers"] == []
+    assert exclusion_boundaries_audit["finish_line_source_path"] == "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py"
+    assert exclusion_boundaries_audit["direct_compat_anchor_count"] == 0
+    assert exclusion_boundaries_audit["direct_compat_anchor_examples"] == []
     assert exclusion_boundaries_audit["duplicate_umbrella_row_count"] == 22
     assert exclusion_boundaries_audit["retired_row_count"] == 24
     assert exclusion_boundaries_audit["doc_narrative_ready"] is True
     assert exclusion_boundaries_audit["ready_for_python2025_exclusion_boundaries_claim"] is True
     assert "explicit requirement-facing boundary note" in exclusion_boundaries_audit["current_assessment"]
+    assert "no longer carries compat-era direct runtime anchors" in exclusion_boundaries_audit["current_assessment"]
     assert "does not by itself prove the underlying direct or hosted runtime behavior" in exclusion_boundaries_audit["residual_boundary"]
     hosted_fedpro_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
     assert hosted_fedpro_audit["audit_status"] == "hosted-fedpro-bounded-proof-captured"
