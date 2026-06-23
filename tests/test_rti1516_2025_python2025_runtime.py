@@ -8673,6 +8673,59 @@ def test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_
     "HLA2025-FR-003",
     "HLA2025-FR-004",
     "HLA2025-FI-001",
+    "HLA2025-FI-SVC-128",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-FI-SVC-137",
+    "HLA2025-FI-SVC-138",
+)
+def test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import (
+        DdmPassiveRegionScenarioConfig,
+        run_ddm_passive_region_subscription_scenario,
+    )
+
+    fom_path = tmp_path / "Proto2025PassiveRoutingDDM.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"python2025-ddm-passive-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = DdmPassiveRegionScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="DdmPassiveRegionFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"DDM-Passive-Direct-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_ddm_passive_region_subscription_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _normalized_2025_callback_equal(summary["discovery"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["received"].args[0], summary["subscriber_interaction"])
+    assert _normalized_2025_callback_equal(
+        summary["received"].args[1],
+        {summary["subscriber_parameter"]: config.interaction_payload},
+    )
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
     "HLA2025-FI-SVC-037",
     "HLA2025-FI-SVC-040",
     "HLA2025-FI-SVC-121",

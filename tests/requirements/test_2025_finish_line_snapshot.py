@@ -378,8 +378,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-126"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 6
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"])
+    assert any(
+        "test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"]
+    )
     assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 11
     assert any("test_2025_provider_filters_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
     assert any("test_2025_provider_filters_directed_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
@@ -408,10 +413,20 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchor_count"] == 6
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchor_count"] == 7
+    assert any(
+        "test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchors"]
+    )
+    assert pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchor_count"] == 8
     assert any("test_support_lookups_round_trip_class_handle_and_name" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchors"])
+    assert any(
+        "test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchors"]
+    )
     assert any(
         "test_2025_transport_server_routes_transportation_query_callbacks_only_to_requester_over_fedpro_schema"
         in anchor
