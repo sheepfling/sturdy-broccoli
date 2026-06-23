@@ -6285,8 +6285,8 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "focus": "unconditional and negotiated divestiture, requestDivestitureConfirmation, confirmDivestiture, and cancel-negotiated-offer handling",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_confirm_divestiture_negotiated_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
             ],
             "hosted_tests": [
@@ -6300,7 +6300,7 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "release-and-if-wanted-flows",
             "focus": "requestAttributeOwnershipRelease, attributeOwnershipReleaseDenied, and divestiture-if-wanted transfer behavior",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_release_request_ownership_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
             ],
@@ -6315,7 +6315,7 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "focus": "requestAttributeOwnershipAssumption, explicit acquisition requests, and ownership acquisition notification delivery",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_object_and_ownership_service_interactions",
             ],
             "hosted_tests": [
@@ -6328,7 +6328,7 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "acquisition-availability-and-cancellation",
             "focus": "attributeOwnershipAcquisitionIfAvailable, unavailable callbacks, acquisition cancellation, and cancel-confirmation flows",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
             ],

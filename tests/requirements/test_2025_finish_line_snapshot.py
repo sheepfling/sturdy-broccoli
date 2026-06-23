@@ -2364,7 +2364,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "rollback-and-restore-state",
     ]
     assert ownership_audit["proof_families"][0]["direct_tests"][1].endswith(
-        "test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_adapter"
+        "test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter"
     )
     assert ownership_audit["proof_families"][1]["hosted_tests"][2].endswith(
         "test_2025_transport_server_runs_attribute_ownership_scenario_over_fedpro_route"

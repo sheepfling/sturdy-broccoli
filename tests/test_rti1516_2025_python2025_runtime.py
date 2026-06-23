@@ -8396,6 +8396,50 @@ def test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-084",
+    "HLA2025-FI-SVC-085",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import OwnershipScenarioConfig, run_attribute_ownership_unavailable_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-direct-ownership-unavailable-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    acquirer = create_rti_ambassador(backend="python2025")
+    config = OwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"direct-unavailable-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_attribute_ownership_unavailable_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert acquirer.backend_info.details["provider"] == "python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
+    assert _normalized_2025_callback_equal(summary["unavailable"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["unavailable"].args[1], {summary["acquirer_attribute"]})
+    assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is True
+    assert acquirer.is_attribute_owned_by_federate(summary["object_instance"], summary["acquirer_attribute"]) is False
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-083",
     "HLA2025-FI-SVC-086",
 )
@@ -8483,6 +8527,61 @@ def test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapte
 
 
 @pytest.mark.requirements(
+    "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_release_request_ownership_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import ReleaseRequestOwnershipScenarioConfig, run_release_request_ownership_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-direct-release-request-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    acquirer = create_rti_ambassador(backend="python2025")
+    config = ReleaseRequestOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"direct-release-{uuid.uuid4().hex[:8]}",
+        request_tag=b"acquire-request",
+        owner_action="ifwanted",
+    )
+
+    summary = run_release_request_ownership_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert acquirer.backend_info.details["provider"] == "python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
+    assert _normalized_2025_callback_equal(summary["release"].args, (
+        summary["object_instance"],
+        {summary["owner_attribute"]},
+        b"acquire-request",
+    ))
+    assert summary["divested"] == {summary["owner_attribute"]}
+    assert _normalized_2025_callback_equal(summary["acquired"].args[0], summary["acquirer_object_instance"])
+    assert _normalized_2025_callback_equal(summary["acquired"].args[1], {summary["acquirer_attribute"]})
+    assert _normalized_2025_callback_equal(summary["informed"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["informed"].args[1], summary["owner_attribute"])
+    assert acquirer.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+    assert owner.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is False
+
+
+@pytest.mark.requirements(
     "HLA2025-FI-SVC-123",
     "HLA2025-FI-SVC-124",
     "HLA2025-FI-SVC-125",
@@ -8550,6 +8649,75 @@ def test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_a
 @pytest.mark.requirements(
     "HLA2025-FI-SVC-123",
     "HLA2025-FI-SVC-124",
+    "HLA2025-FI-SVC-125",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-direct-negotiated-route-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    acquirer = create_rti_ambassador(backend="python2025")
+    config = NegotiatedOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"direct-negotiated-{uuid.uuid4().hex[:8]}",
+        assumption_tag=b"offer-tag",
+        request_tag=b"request-tag",
+        cancel_tag=b"cancel-tag",
+    )
+
+    summary = run_negotiated_attribute_ownership_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert acquirer.backend_info.details["provider"] == "python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
+    if summary["assumption"] is not None:
+        assert _normalized_2025_callback_equal(summary["assumption"].args, (
+            summary["object_instance"],
+            {summary["acquirer_attribute"]},
+            config.assumption_tag,
+        ))
+    if summary["divestiture_confirmation"] is not None:
+        assert _normalized_2025_callback_equal(summary["divestiture_confirmation"].args, (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            config.request_tag,
+        ))
+    assert summary["release"].args[2] == config.cancel_tag
+    assert _normalized_2025_callback_equal(summary["cancellation"].args, (
+        summary["release_acquirer_object_instance"],
+        {summary["acquirer_attribute"]},
+    ))
+    assert summary["divested"] == {summary["owner_attribute"]}
+    assert _normalized_2025_callback_equal(summary["acquired"].args[0], summary["release_acquirer_object_instance"])
+    assert _normalized_2025_callback_equal(summary["acquired"].args[1], {summary["acquirer_attribute"]})
+    assert _normalized_2025_callback_equal(summary["informed"].args[0], summary["release_object_instance"])
+    assert _normalized_2025_callback_equal(summary["informed"].args[1], summary["owner_attribute"])
+    assert acquirer.is_attribute_owned_by_federate(summary["release_acquirer_object_instance"], summary["acquirer_attribute"]) is True
+    assert owner.is_attribute_owned_by_federate(summary["release_object_instance"], summary["owner_attribute"]) is False
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_adapter(
@@ -8584,6 +8752,62 @@ def test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_a
         acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
     )
 
+    assert _normalized_2025_callback_equal(summary["divestiture_confirmation"].args, (
+        summary["object_instance"],
+        {summary["owner_attribute"]},
+        config.request_tag,
+    ))
+    assert _normalized_2025_callback_equal(summary["acquired"].args, (
+        summary["acquirer_object_instance"],
+        {summary["acquirer_attribute"]},
+        summary["confirm_tag"],
+    ))
+    assert _normalized_2025_callback_equal(summary["informed"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["informed"].args[1], summary["owner_attribute"])
+    assert acquirer.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_confirm_divestiture_negotiated_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import NegotiatedOwnershipScenarioConfig, run_confirm_divestiture_negotiated_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-direct-confirm-negotiated-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    acquirer = create_rti_ambassador(backend="python2025")
+    config = NegotiatedOwnershipScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        federate_type="OwnershipFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"direct-confirm-negotiated-{uuid.uuid4().hex[:8]}",
+        assumption_tag=b"offer-tag",
+        request_tag=b"request-tag",
+        cancel_tag=b"cancel-tag",
+    )
+
+    summary = run_confirm_divestiture_negotiated_scenario(
+        owner,
+        acquirer,
+        config=config,
+        owner_federate=_OwnershipCompatRecordingFederateAmbassador(),
+        acquirer_federate=_OwnershipCompatRecordingFederateAmbassador(),
+    )
+
+    assert owner.backend_info.details["provider"] == "python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["counts_as_python_2025_rti"] is True
+    assert acquirer.backend_info.details["provider"] == "python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
     assert _normalized_2025_callback_equal(summary["divestiture_confirmation"].args, (
         summary["object_instance"],
         {summary["owner_attribute"]},
