@@ -3759,6 +3759,184 @@ def _build_hosted_fedpro_bounded_proof_audit(
     }
 
 
+def _build_python2025_direct_bounded_proof_audit(
+    project_root: Path,
+    route_parity_matrix: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    normalized_doc_text = " ".join(doc_text.split())
+    direct_rows = [row for row in route_parity_matrix["rows"] if row["route"] == "python-2025-inprocess"]
+    direct_rows.sort(key=lambda row: row["scenario"])
+    expected_scenarios = [
+        "ddm",
+        "federation_lifecycle",
+        "mom",
+        "object_exchange",
+        "ownership",
+        "save_restore",
+        "support_services",
+        "time_management",
+    ]
+    required_family_labels = [
+        "`federation_lifecycle`",
+        "`object_exchange`",
+        "`ownership`",
+        "`ddm`",
+        "`time_management`",
+        "`save_restore`",
+        "`mom`",
+        "`support_services`",
+        "`omt_validation`",
+    ]
+    missing_family_labels = [label for label in required_family_labels if label not in doc_text]
+    required_evidence_markers = [
+        "`tests/test_rti1516_2025_python2025_runtime.py`",
+        "`tests/scenarios/test_target_radar_scenario.py`",
+        "`tests/test_fom_target_radar_split_package.py`",
+        "`tests/test_rti1516_2025_validation.py`",
+        "`docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`",
+        "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`",
+    ]
+    missing_evidence_markers = [marker for marker in required_evidence_markers if marker not in doc_text]
+    all_rows_parity_covered = all(row["status"] == "parity-covered" for row in direct_rows)
+    identity_ready = all(
+        row["runtime_provider"] == "python2025"
+        and row["implementation_lane"] == "hla-backend-python2025"
+        and row["counts_as_python_2025_rti"] is True
+        and row["wrapper_only"] is False
+        for row in direct_rows
+    )
+    rows_missing_identity_note = sorted(
+        row["scenario"]
+        for row in direct_rows
+        if "Current Python 2025 RTI" not in row["notes"]
+        and "Primary Python 2025 RTI implementation" not in row["notes"]
+    )
+    rows_missing_direct_note = sorted(
+        row["scenario"]
+        for row in direct_rows
+        if "Current Python 2025 RTI" not in row["notes"]
+        and "Primary Python 2025 RTI implementation" not in row["notes"]
+    )
+    doc_narrative_ready = (
+        doc_path.exists()
+        and not missing_family_labels
+        and not missing_evidence_markers
+        and "`hla-backend-python2025`" in doc_text
+        and "sole repo-owned" in normalized_doc_text
+        and "Python RTI implementation lane" in normalized_doc_text
+        and "`./tools/python verify-main-2025`" in doc_text
+        and "`./tools/python verify-routes-2025`" in doc_text
+    )
+    return {
+        "audit_status": "python2025-direct-bounded-proof-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "route": "python-2025-inprocess",
+        "scenario_count": len(direct_rows),
+        "scenarios": [row["scenario"] for row in direct_rows],
+        "expected_scenarios": expected_scenarios,
+        "required_family_labels": required_family_labels,
+        "missing_family_labels": missing_family_labels,
+        "missing_evidence_markers": missing_evidence_markers,
+        "all_rows_parity_covered": all_rows_parity_covered,
+        "identity_ready": identity_ready,
+        "rows_missing_identity_note": rows_missing_identity_note,
+        "rows_missing_direct_note": rows_missing_direct_note,
+        "doc_narrative_ready": doc_narrative_ready,
+        "ready_for_python2025_direct_bounded_proof_claim": (
+            doc_path.exists()
+            and len(direct_rows) == len(expected_scenarios)
+            and [row["scenario"] for row in direct_rows] == expected_scenarios
+            and not missing_family_labels
+            and not missing_evidence_markers
+            and all_rows_parity_covered
+            and identity_ready
+            and not rows_missing_identity_note
+            and not rows_missing_direct_note
+            and doc_narrative_ready
+        ),
+        "current_assessment": (
+            "The direct python2025 lane is no longer only implied by architecture prose and the main runtime suite. "
+            "It now has an explicit requirement-facing proof note tied to the eight tracked in-process scenario "
+            "families, explicit python2025 runtime identity, the paired hosted companion note, and the operator-facing "
+            "verify-main-2025 versus verify-routes-2025 proof split."
+        ),
+        "residual_boundary": (
+            "This audit makes the direct bounded proof claim explicit and reviewable, but it does not convert the "
+            "direct lane into a full clause-by-clause 2025 conformance statement or erase the separate hosted, "
+            "binding, umbrella-row, retired-row, and OMT-extension boundaries."
+        ),
+    }
+
+
+def _build_python2025_exclusion_boundaries_audit(
+    project_root: Path,
+    requirement_coverage_disposition: Mapping[str, Any],
+) -> dict[str, Any]:
+    doc_rel = "docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md"
+    doc_path = project_root / doc_rel
+    doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+    normalized_doc_text = " ".join(doc_text.split())
+    required_area_labels = [
+        "Legacy aliases and shim imports",
+        "Java/C++ bindings",
+        "Hosted transport boundaries",
+        "Duplicate/umbrella rows",
+        "Retired/legacy-only rows",
+        "OMT extension semantics",
+    ]
+    missing_area_labels = [label for label in required_area_labels if label not in doc_text]
+    required_doc_markers = [
+        "`../../python_rti_backend.md`",
+        "`standard_binding_runtime_capability_bounded_proof.md`",
+        "`hosted_fedpro_bounded_proof.md`",
+        "`retired_legacy_mapping.md`",
+        "`omt_xs_any_extension_tolerance.md`",
+    ]
+    missing_doc_markers = [marker for marker in required_doc_markers if marker not in doc_text]
+    duplicate_umbrella_row_count = requirement_coverage_disposition["by_disposition"]["duplicate/umbrella"]
+    retired_row_count = requirement_coverage_disposition["by_disposition"]["retired/legacy-only"]
+    doc_checks = [
+        "`hla-backend-python2025` is the sole repo-owned Python RTI implementation lane" in doc_text,
+        "Legacy provider/import aliases are not part of the implementation-owner claim" in doc_text,
+        "not alternate Python RTIs and not exhaustive cross-binding behavior conformance" in doc_text,
+        "not a second full RTI implementation lane and not a blanket remote-semantics conformance claim" in doc_text,
+        "Arbitrary third-party extension execution semantics remain out of scope" in doc_text,
+    ]
+    return {
+        "audit_status": "python2025-exclusion-boundaries-captured",
+        "doc_path": doc_rel,
+        "doc_exists": doc_path.exists(),
+        "required_area_labels": required_area_labels,
+        "missing_area_labels": missing_area_labels,
+        "missing_doc_markers": missing_doc_markers,
+        "duplicate_umbrella_row_count": duplicate_umbrella_row_count,
+        "retired_row_count": retired_row_count,
+        "doc_narrative_ready": all(doc_checks),
+        "ready_for_python2025_exclusion_boundaries_claim": (
+            doc_path.exists()
+            and not missing_area_labels
+            and not missing_doc_markers
+            and duplicate_umbrella_row_count == 22
+            and retired_row_count == 24
+            and all(doc_checks)
+        ),
+        "current_assessment": (
+            "The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and "
+            "generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the "
+            "legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas "
+            "around the main python2025 implementation statement."
+        ),
+        "residual_boundary": (
+            "This audit makes the current non-claim map explicit and reviewable, but it does not by itself prove the "
+            "underlying direct or hosted runtime behavior; it documents the boundaries around those bounded claims."
+        ),
+    }
+
+
 def _build_lookahead_window_bounded_proof_audit(
     project_root: Path,
     route_parity_matrix: Mapping[str, Any],
@@ -8100,6 +8278,14 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         project_root,
         completion_rows,
     )
+    python2025_direct_bounded_proof_audit = _build_python2025_direct_bounded_proof_audit(
+        project_root,
+        route_parity_matrix,
+    )
+    python2025_exclusion_boundaries_audit = _build_python2025_exclusion_boundaries_audit(
+        project_root,
+        requirement_coverage_disposition,
+    )
     hosted_fedpro_bounded_proof_audit = _build_hosted_fedpro_bounded_proof_audit(
         project_root,
         route_parity_matrix,
@@ -8231,6 +8417,8 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         "retired_legacy_mapping_audit": retired_legacy_mapping_audit,
         "omt_xs_any_mapping_audit": omt_xs_any_mapping_audit,
         "binding_boundary_mapping_audit": binding_boundary_mapping_audit,
+        "python2025_direct_bounded_proof_audit": python2025_direct_bounded_proof_audit,
+        "python2025_exclusion_boundaries_audit": python2025_exclusion_boundaries_audit,
         "hosted_fedpro_bounded_proof_audit": hosted_fedpro_bounded_proof_audit,
         "save_restore_bounded_proof_audit": save_restore_bounded_proof_audit,
         "callback_bounded_proof_audit": callback_bounded_proof_audit,
@@ -8305,6 +8493,8 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     retired_legacy_mapping_audit = snapshot["retired_legacy_mapping_audit"]
     omt_xs_any_mapping_audit = snapshot["omt_xs_any_mapping_audit"]
     binding_boundary_mapping_audit = snapshot["binding_boundary_mapping_audit"]
+    python2025_direct_bounded_proof_audit = snapshot["python2025_direct_bounded_proof_audit"]
+    python2025_exclusion_boundaries_audit = snapshot["python2025_exclusion_boundaries_audit"]
     hosted_fedpro_bounded_proof_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
     save_restore_bounded_proof_audit = snapshot["save_restore_bounded_proof_audit"]
     callback_bounded_proof_audit = snapshot["callback_bounded_proof_audit"]
@@ -8636,6 +8826,34 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
         lines.append(f"- {boundary_role}: {len(row_ids)} rows ({', '.join(row_ids)})")
     lines.extend(
         [
+            "",
+            "## Python2025 Direct Bounded Proof Audit",
+            "",
+            f"- Audit status: {python2025_direct_bounded_proof_audit['audit_status']}",
+            f"- Doc path: {python2025_direct_bounded_proof_audit['doc_path']}",
+            f"- Doc exists: {python2025_direct_bounded_proof_audit['doc_exists']}",
+            f"- Route: {python2025_direct_bounded_proof_audit['route']}",
+            f"- Scenario count: {python2025_direct_bounded_proof_audit['scenario_count']}",
+            f"- All rows parity-covered: {python2025_direct_bounded_proof_audit['all_rows_parity_covered']}",
+            f"- Identity ready: {python2025_direct_bounded_proof_audit['identity_ready']}",
+            f"- Doc narrative ready: {python2025_direct_bounded_proof_audit['doc_narrative_ready']}",
+            f"- Ready for python2025 direct bounded proof claim: {python2025_direct_bounded_proof_audit['ready_for_python2025_direct_bounded_proof_claim']}",
+            f"- Assessment: {python2025_direct_bounded_proof_audit['current_assessment']}",
+            f"- Residual boundary: {python2025_direct_bounded_proof_audit['residual_boundary']}",
+            "",
+            f"Direct scenarios: {', '.join(python2025_direct_bounded_proof_audit['scenarios'])}",
+            "",
+            "## Python2025 Exclusion Boundaries Audit",
+            "",
+            f"- Audit status: {python2025_exclusion_boundaries_audit['audit_status']}",
+            f"- Doc path: {python2025_exclusion_boundaries_audit['doc_path']}",
+            f"- Doc exists: {python2025_exclusion_boundaries_audit['doc_exists']}",
+            f"- Duplicate/umbrella row count: {python2025_exclusion_boundaries_audit['duplicate_umbrella_row_count']}",
+            f"- Retired row count: {python2025_exclusion_boundaries_audit['retired_row_count']}",
+            f"- Doc narrative ready: {python2025_exclusion_boundaries_audit['doc_narrative_ready']}",
+            f"- Ready for python2025 exclusion boundaries claim: {python2025_exclusion_boundaries_audit['ready_for_python2025_exclusion_boundaries_claim']}",
+            f"- Assessment: {python2025_exclusion_boundaries_audit['current_assessment']}",
+            f"- Residual boundary: {python2025_exclusion_boundaries_audit['residual_boundary']}",
             "",
             "## Hosted FedPro Bounded Proof Audit",
             "",

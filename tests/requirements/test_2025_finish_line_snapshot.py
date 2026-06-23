@@ -1473,6 +1473,53 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert binding_boundary_audit["ready_for_binding_boundary_mapping_claim"] is True
     assert "explicit boundary note that enumerates all three rows" in binding_boundary_audit["current_assessment"]
     assert "does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance" in binding_boundary_audit["residual_boundary"]
+    direct_bounded_audit = snapshot["python2025_direct_bounded_proof_audit"]
+    assert direct_bounded_audit["audit_status"] == "python2025-direct-bounded-proof-captured"
+    assert direct_bounded_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md"
+    assert direct_bounded_audit["doc_exists"] is True
+    assert direct_bounded_audit["route"] == "python-2025-inprocess"
+    assert direct_bounded_audit["scenario_count"] == 8
+    assert direct_bounded_audit["scenarios"] == [
+        "ddm",
+        "federation_lifecycle",
+        "mom",
+        "object_exchange",
+        "ownership",
+        "save_restore",
+        "support_services",
+        "time_management",
+    ]
+    assert direct_bounded_audit["expected_scenarios"] == direct_bounded_audit["scenarios"]
+    assert direct_bounded_audit["missing_family_labels"] == []
+    assert direct_bounded_audit["missing_evidence_markers"] == []
+    assert direct_bounded_audit["all_rows_parity_covered"] is True
+    assert direct_bounded_audit["identity_ready"] is True
+    assert direct_bounded_audit["rows_missing_identity_note"] == []
+    assert direct_bounded_audit["rows_missing_direct_note"] == []
+    assert direct_bounded_audit["doc_narrative_ready"] is True
+    assert direct_bounded_audit["ready_for_python2025_direct_bounded_proof_claim"] is True
+    assert "paired hosted companion note" in direct_bounded_audit["current_assessment"]
+    assert "does not convert the direct lane into a full clause-by-clause 2025 conformance statement" in direct_bounded_audit["residual_boundary"]
+    exclusion_boundaries_audit = snapshot["python2025_exclusion_boundaries_audit"]
+    assert exclusion_boundaries_audit["audit_status"] == "python2025-exclusion-boundaries-captured"
+    assert exclusion_boundaries_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md"
+    assert exclusion_boundaries_audit["doc_exists"] is True
+    assert exclusion_boundaries_audit["required_area_labels"] == [
+        "Legacy aliases and shim imports",
+        "Java/C++ bindings",
+        "Hosted transport boundaries",
+        "Duplicate/umbrella rows",
+        "Retired/legacy-only rows",
+        "OMT extension semantics",
+    ]
+    assert exclusion_boundaries_audit["missing_area_labels"] == []
+    assert exclusion_boundaries_audit["missing_doc_markers"] == []
+    assert exclusion_boundaries_audit["duplicate_umbrella_row_count"] == 22
+    assert exclusion_boundaries_audit["retired_row_count"] == 24
+    assert exclusion_boundaries_audit["doc_narrative_ready"] is True
+    assert exclusion_boundaries_audit["ready_for_python2025_exclusion_boundaries_claim"] is True
+    assert "explicit requirement-facing boundary note" in exclusion_boundaries_audit["current_assessment"]
+    assert "does not by itself prove the underlying direct or hosted runtime behavior" in exclusion_boundaries_audit["residual_boundary"]
     hosted_fedpro_audit = snapshot["hosted_fedpro_bounded_proof_audit"]
     assert hosted_fedpro_audit["audit_status"] == "hosted-fedpro-bounded-proof-captured"
     assert hosted_fedpro_audit["doc_path"] == "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md"

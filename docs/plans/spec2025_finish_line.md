@@ -254,6 +254,34 @@ Binding boundary rows by role:
 - cpp-binding: 1 rows (HLA2025-BND-002)
 - hosted-fedpro: 1 rows (HLA2025-BND-003)
 
+## Python2025 Direct Bounded Proof Audit
+
+- Audit status: python2025-direct-bounded-proof-captured
+- Doc path: docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md
+- Doc exists: True
+- Route: python-2025-inprocess
+- Scenario count: 8
+- All rows parity-covered: True
+- Identity ready: True
+- Doc narrative ready: True
+- Ready for python2025 direct bounded proof claim: True
+- Assessment: The direct python2025 lane is no longer only implied by architecture prose and the main runtime suite. It now has an explicit requirement-facing proof note tied to the eight tracked in-process scenario families, explicit python2025 runtime identity, the paired hosted companion note, and the operator-facing verify-main-2025 versus verify-routes-2025 proof split.
+- Residual boundary: This audit makes the direct bounded proof claim explicit and reviewable, but it does not convert the direct lane into a full clause-by-clause 2025 conformance statement or erase the separate hosted, binding, umbrella-row, retired-row, and OMT-extension boundaries.
+
+Direct scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management
+
+## Python2025 Exclusion Boundaries Audit
+
+- Audit status: python2025-exclusion-boundaries-captured
+- Doc path: docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md
+- Doc exists: True
+- Duplicate/umbrella row count: 22
+- Retired row count: 24
+- Doc narrative ready: True
+- Ready for python2025 exclusion boundaries claim: True
+- Assessment: The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas around the main python2025 implementation statement.
+- Residual boundary: This audit makes the current non-claim map explicit and reviewable, but it does not by itself prove the underlying direct or hosted runtime behavior; it documents the boundaries around those bounded claims.
+
 ## Hosted FedPro Bounded Proof Audit
 
 - Audit status: hosted-fedpro-bounded-proof-captured
