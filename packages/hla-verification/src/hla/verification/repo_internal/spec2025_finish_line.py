@@ -2800,7 +2800,7 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "family": "save-restore-time-state-and-lookahead-rollback",
             "focus": "saved logical-time, lookahead, switch-control, queued-TSO, and open or closed window state rollback, including restore resumption without dirty post-save replay",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_restore_state_scenario_end_to_end",
