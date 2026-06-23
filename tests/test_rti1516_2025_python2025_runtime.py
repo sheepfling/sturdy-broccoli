@@ -5033,6 +5033,65 @@ def test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter(b
 
 
 @pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-128",
+    "HLA2025-FI-SVC-129",
+    "HLA2025-FI-SVC-137",
+    "HLA2025-FI-SVC-138",
+)
+def test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import SuiteRecordingFederateAmbassador, run_suite_ddm_scenario
+
+    sender = create_rti_ambassador(backend="python2025")
+    receiver = create_rti_ambassador(backend="python2025")
+    summary = run_suite_ddm_scenario(
+        sender,
+        receiver,
+        config={
+            "federation_name": f"python2025-direct-suite-ddm-{uuid.uuid4().hex[:8]}",
+            "fom_modules": ("resource:VendorSmokeFOM.xml",),
+            "logical_time_implementation_name": "HLAinteger64Time",
+            "lookahead": HLAinteger64Interval(1),
+            "source_near": RangeBounds(10, 20),
+            "source_far": RangeBounds(30, 40),
+            "target_bounds": RangeBounds(15, 25),
+            "interaction_class_name": "HLAinteractionRoot.SmokeInteraction",
+            "parameter_name": "Message",
+            "far_payload": b"far",
+            "far_tag": b"far-tag",
+            "far_time": HLAinteger64Time(2),
+            "near_payload": b"near",
+            "near_tag": b"near-tag",
+            "near_time": HLAinteger64Time(3),
+            "grant_time": HLAinteger64Time(10),
+            "next_request_time": HLAinteger64Time(10),
+        },
+        sender_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-python2025-direct",
+            scenario="suite-ddm",
+            role="sender",
+        ),
+        receiver_federate=SuiteRecordingFederateAmbassador(
+            profile="2025-python2025-direct",
+            scenario="suite-ddm",
+            role="receiver",
+        ),
+    )
+
+    for ambassador in (sender, receiver):
+        assert ambassador.backend_info.details["provider"] == "python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["received_count"] == 1
+    assert summary["received_payload"] == {"Message": "near"}
+
+
+@pytest.mark.requirements(
     "HLA2025-FR-002",
     "HLA2025-FI-001",
     "HLA2025-FI-SVC-014",
