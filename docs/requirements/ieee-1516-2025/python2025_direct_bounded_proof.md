@@ -13,6 +13,8 @@ unqualified conformance claim.
 
 - `python2025` is the direct main-surface runtime lane for
   `hla-backend-python2025`.
+- `hla-backend-python2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
+  implementation lane behind this direct proof surface.
 - The direct lane has executable proof across the tracked runtime families used
   by the current finish-line inventory.
 - The direct lane carries the main package-boundary, runtime-identity, time,
@@ -44,6 +46,8 @@ unqualified conformance claim.
 - `tests/test_rti1516_2025_validation.py`
 - `docs/test_surface.md`
 - `docs/python_rti_backend.md`
+- `docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
 
 ## Reading of the Evidence
 
@@ -63,6 +67,18 @@ unqualified conformance claim.
 - `docs/test_surface.md` captures the operator-facing boundary:
   `verify-main-2025` is the normal main-surface proof lane for the direct
   `python2025` runtime.
+- `docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md` is the
+  hosted companion note. It replays these runtime families over
+  `python-2025-fedpro-grpc` without turning the hosted route into a second RTI
+  owner.
+
+## Operator Lanes
+
+- `./tools/python verify-main-2025` is the default direct proof lane for this
+  note's claim.
+- `./tools/python verify-routes-2025` is the companion hosted hygiene lane
+  when the same bounded families must also remain green on
+  `python-2025-fedpro-grpc`.
 
 ## Explicit Non-Claim
 

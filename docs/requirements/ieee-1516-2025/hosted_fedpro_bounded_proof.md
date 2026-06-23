@@ -12,6 +12,8 @@ full remote-RTI semantics claim.
 
 - `python-2025-fedpro-grpc` is a hosted route variant over
   `hla-backend-python2025`, not a separate 2025 RTI owner.
+- `hla-backend-python2025` remains the sole repo-owned IEEE 1516.1-2025
+  Python RTI implementation lane behind this hosted replay surface.
 - The hosted route is parity-covered across the tracked scenario families used
   by the current finish-line inventory.
 - The hosted route preserves direct `python2025` RTI identity through the
@@ -38,6 +40,8 @@ full remote-RTI semantics claim.
 - `tests/scenarios/test_python_route_parity.py`
 - `docs/backend_route_inventory_remote.md`
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
+- `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
 
 ## Reading of the Evidence
 
@@ -55,6 +59,17 @@ full remote-RTI semantics claim.
 - `docs/backend_route_inventory_remote.md` captures the operator-facing
   boundary: the hosted FedPro route is real runtime evidence, but it is still a
   bounded runtime slice over `hla-backend-python2025`.
+- `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md` is
+  the direct companion note. It keeps the implementation-owner claim anchored
+  to the in-process `python2025` lane while this note records the hosted
+  replay.
+
+## Operator Lane
+
+- `./tools/python verify-routes-2025` is the maintained hosted hygiene lane
+  for this bounded route claim.
+- `./tools/python verify-main-2025` remains the paired direct proof lane for
+  the same runtime families on the in-process `python2025` surface.
 
 ## Explicit Non-Claim
 

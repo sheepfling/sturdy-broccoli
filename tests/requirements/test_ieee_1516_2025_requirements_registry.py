@@ -104,16 +104,21 @@ def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_bo
 
     assert "This note records the repo's current hosted-route claim for `python-2025-fedpro-grpc`." in normalized
     assert "bounded transport/runtime slice rather than a second RTI implementation family" in normalized
+    assert "sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane" in normalized
     assert "The hosted route is parity-covered across the tracked scenario families" in normalized
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/scenarios/test_python_route_parity.py`" in text
     assert "`docs/backend_route_inventory_remote.md`" in text
     assert "`packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`" in text
+    assert "`docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`" in text
+    assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in text
     assert "`federation_lifecycle`" in text
     assert "`time_management`" in text
     assert "`support_services`" in text
     assert "`hla-backend-python2025`" in text
     assert "shared Target/Radar example path" in normalized
+    assert "`./tools/python verify-routes-2025`" in text
+    assert "`./tools/python verify-main-2025`" in text
     assert "does not claim that `python-2025-fedpro-grpc` is a second full RTI implementation lane" in normalized
 
 
@@ -170,6 +175,7 @@ def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit
 
     assert "This note records the repo's current direct-lane claim for `python2025`." in normalized
     assert "The direct lane is the main executable bounded proof surface for the current 2025 Python RTI." in normalized
+    assert "sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane" in normalized
     assert "`hla-backend-python2025`" in text
     assert "`federation_lifecycle`" in text
     assert "`object_exchange`" in text
@@ -185,7 +191,10 @@ def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit
     assert "`tests/test_fom_target_radar_split_package.py`" in text
     assert "`tests/test_rti1516_2025_validation.py`" in text
     assert "`docs/test_surface.md`" in text
+    assert "`docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`" in text
+    assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in text
     assert "verify-main-2025" in text
+    assert "`./tools/python verify-routes-2025`" in text
     assert "not a wrapper-owned surface and not a full unqualified conformance claim" in normalized
     assert "does not treat `hla-backend-shim` as part of the implementation owner claim for this lane" in normalized
 
