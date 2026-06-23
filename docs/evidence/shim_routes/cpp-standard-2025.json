@@ -1,14 +1,13 @@
 {
   "artifact": "cpp-standard-2025",
-  "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/cpp-standard-2025/librti1516_2025_standard_cpp_shim.a",
+  "artifact_path": "build/shim_routes/cpp-standard-2025/librti1516_2025_standard_cpp_shim.a",
   "compile_status": "passed",
   "cpp_standard": "c++17",
   "implemented_services": [],
   "nested_api_source_path": "1516.1-2025_downloads/1516-2025_API_XML_2025_08_14.zip",
-  "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip",
+  "official_api_source_path": "specs/ieee-1516-2025/1516.1-2025_downloads.zip",
   "routes": {
     "cpp-standard-2025-grpc": {
-      "counts_as_python_2025_rti": false,
       "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
       "runtime_provider": "python2025",
@@ -18,7 +17,6 @@
       "wrapper_only": false
     },
     "cpp-standard-2025-pybind": {
-      "counts_as_python_2025_rti": false,
       "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
       "runtime_provider": "python2025",
@@ -29,7 +27,6 @@
     }
   },
   "scenario_evidence": {
-    "counts_as_python_2025_rti": false,
     "implementation_lane": "hla-backend-python2025",
     "runtime_provider": "python2025",
     "scenarios": [

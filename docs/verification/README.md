@@ -29,6 +29,7 @@ Keep verification docs in this order:
 - [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit 2025 non-claim map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics
 - [imported_packet_requirements_v1_0/README.md](imported_packet_requirements_v1_0/README.md): generated packet-style markdown views from the imported canonical v1.0 requirements catalog
 - [clause13_conformance_packet.md](clause13_conformance_packet.md): generated federate/RTI Clause 13 conformance packet
+- [clause13_conformance_packet.json](clause13_conformance_packet.json): machine-readable Clause 13 conformance packet
 - [verification_validation_split.md](verification_validation_split.md): canonical split between standards verification and operational validation
 - [verification_plan.md](verification_plan.md): layered conformance plan
 - [validation_plan.md](validation_plan.md): layered operational validation plan

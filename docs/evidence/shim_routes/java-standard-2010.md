@@ -1,7 +1,7 @@
 # Java Standard 2010 Shim Artifact
 
-- official API source: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip`
-- jar: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar`
+- official API source: `specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip`
+- jar: `build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar`
 - compile status: `passed`
 - factory: `Java 2010 Standard Shim`
 - status: `surface-backed + core-exchange-green`

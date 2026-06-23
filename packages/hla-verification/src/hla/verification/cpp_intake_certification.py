@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Sequence
@@ -74,6 +75,33 @@ class CppRtiCoreCertificationReport:
 
     def to_json_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def _portable_path_text(value: str, repo_root: Path) -> str:
+    temp_roots = {
+        f"{Path(tempfile.gettempdir()).as_posix().rstrip('/')}/",
+        f"{Path(tempfile.gettempdir()).resolve().as_posix().rstrip('/')}/",
+    }
+    for temp_root in temp_roots:
+        if value.startswith(temp_root):
+            return value.replace(temp_root, "$TMPDIR/", 1)
+    candidate = Path(value)
+    try:
+        return candidate.relative_to(repo_root).as_posix()
+    except ValueError:
+        return value
+
+
+def _portable_payload(value: Any, repo_root: Path) -> Any:
+    if isinstance(value, dict):
+        return {key: _portable_payload(item, repo_root) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_portable_payload(item, repo_root) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_portable_payload(item, repo_root) for item in value)
+    if isinstance(value, str) and value.startswith("/"):
+        return _portable_path_text(value, repo_root)
+    return value
 
 
 def _slug(value: str, edition: str, transport: str) -> str:
@@ -278,8 +306,14 @@ def write_certification_reports(report: CppRtiCoreCertificationReport, output_di
     slug = _slug(str(report.artifact.get("name") or "cpp-rti"), report.edition, report.transport)
     json_path = output / f"{slug}.json"
     md_path = output / f"{slug}.md"
-    json_path.write_text(json.dumps(report.to_json_dict(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    md_path.write_text(render_certification_markdown(report), encoding="utf-8")
+    payload = report.to_json_dict()
+    rendered_report = report
+    if output.resolve().parts[-3:] == ("docs", "evidence", "cpp-intake"):
+        repo_root = output.resolve().parents[2]
+        payload = _portable_payload(payload, repo_root)
+        rendered_report = CppRtiCoreCertificationReport(**payload)
+    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    md_path.write_text(render_certification_markdown(rendered_report), encoding="utf-8")
     return json_path, md_path
 
 

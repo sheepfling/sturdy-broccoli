@@ -21,12 +21,25 @@ Canonical order:
 Internal indexes:
 
 - [packet_index.md](packet_index.md)
+- [cpp-intake/README.md](cpp-intake/README.md)
+- [java-intake/README.md](java-intake/README.md)
+- [shim_routes/README.md](shim_routes/README.md)
 
 Current contents:
 
 - `hla2010_python_verification_evidence_v0_13/`
   imported verification packet with analysis matrices, traceability assets,
   and source-context copies from the supplied code drop
+- [cpp-intake/README.md](cpp-intake/README.md):
+  generated and retained C++ intake packets
+- [java-intake/README.md](java-intake/README.md):
+  generated Java intake and certification packets
+- [shim_routes/README.md](shim_routes/README.md):
+  generated standard-shim artifact packets and route traces
+- [pitch_crc_macos_2026-06-06.md](pitch_crc_macos_2026-06-06.md):
+  retained Pitch CRC repro note
+- [python_vs_pitch_overlap_2026-06-07.md](python_vs_pitch_overlap_2026-06-07.md):
+  retained Python-vs-Pitch overlap note
 
 Archive source:
 

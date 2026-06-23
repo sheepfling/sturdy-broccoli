@@ -21,6 +21,14 @@ Guard coverage for this boundary lives in
 `tests/test_package_split_scaffolds.py`, `tests/test_root_facade_policy.py`,
 `tests/test_namespace_policy.py`, and `tests/test_python_api_spec.py`.
 
+Retained package-side reports and metadata:
+
+- [`docs/README.md`](docs/README.md): package-local documentation front door
+- [`MIGRATION.md`](MIGRATION.md): retained split-package migration notes
+- [`MERGE_REPORT.md`](MERGE_REPORT.md): retained merge/import report
+- [`STRICT_DOC_REPORT.md`](STRICT_DOC_REPORT.md): retained strict-doc import report
+- [`src/hla/rti1516e/api_metadata.json`](src/hla/rti1516e/api_metadata.json): source-derived API metadata used by the spec layer
+
 If you want the user-facing package map, read
 [`../../docs/package_layout.md`](../../docs/package_layout.md) and
 [`../../docs/python_api_spec.md`](../../docs/python_api_spec.md).

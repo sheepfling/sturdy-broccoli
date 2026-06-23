@@ -71,7 +71,7 @@ def test_java_standard_2025_build_tool_reads_official_api_surface() -> None:
     assert "saveFederation" not in module.IMPLEMENTED
 
 
-def test_java_standard_2025_route_uses_python2025_runtime_lane() -> None:
+def test_java_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -> None:
     from hla.bridges.java.common.java_standard_2025 import JavaStandard2025Backend, discover_java_standard_2025
     from hla.rti.plugin_api import BackendRequest
     from hla.rti1516_2025.plugin import plugin as spec_plugin
@@ -86,7 +86,7 @@ def test_java_standard_2025_route_uses_python2025_runtime_lane() -> None:
     backend = JavaStandard2025Backend(
         route="jpype",
         request=BackendRequest(spec=spec_plugin().spec),
-        jar_path=Path("/tmp/java-standard-2025-test.jar"),
+        jar_path=tmp_path / "java-standard-2025-test.jar",
         report={"surface": "official IEEE 1516.1-2025 Java API"},
     )
 

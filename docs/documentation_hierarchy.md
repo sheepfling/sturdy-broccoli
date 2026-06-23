@@ -82,6 +82,7 @@ surfaces are:
 - [docs/specs/README.md](specs/README.md): spec-family index and artifact order
 - [docs/evidence/README.md](evidence/README.md): unpacked evidence packets
 - [docs/evidence/packet_index.md](evidence/packet_index.md): evidence packet index
+- [docs/compliance/README.md](compliance/README.md): retained 2010 compliance packet index
 - [docs/verification/README.md](verification/README.md): verification-family index
 - [docs/verification/requirements_hierarchy.md](verification/requirements_hierarchy.md): L1/L2/L3 requirements hierarchy
 - [docs/verification/verification_validation_split.md](verification/verification_validation_split.md): verification vs validation boundary

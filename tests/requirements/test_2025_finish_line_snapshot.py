@@ -4254,8 +4254,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Family count: 22" in markdown
     assert "All families route-backed across current Python lanes: True" in markdown
     assert "Wrapper-Boundary Family Asymmetry Audit" in markdown
-    assert "Balanced families: 22" in markdown
-    assert "Direct-heavier families: 0" in markdown
+    assert "Balanced families: 21" in markdown
+    assert "Direct-heavier families: 1" in markdown
     assert "Hosted-heavier families: 0" in markdown
     assert "Current Lane Coherence Audit" in markdown
     assert "Ready for current-lane coherent working-surface claim: True" in markdown

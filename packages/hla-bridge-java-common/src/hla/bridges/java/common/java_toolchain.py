@@ -58,6 +58,16 @@ class JavaToolchainInventory:
         return asdict(self)
 
 
+def _repo_rel(path: str | None, repo_root: Path) -> str | None:
+    if path is None:
+        return None
+    candidate = Path(path)
+    try:
+        return candidate.relative_to(repo_root).as_posix()
+    except ValueError:
+        return path
+
+
 def _artifact(key: str, label: str, path: Path, build_command: str) -> JavaToolchainArtifact:
     return JavaToolchainArtifact(
         key=key,
@@ -181,10 +191,48 @@ def render_java_toolchain_markdown(inventory: JavaToolchainInventory) -> str:
 def write_java_toolchain_reports(inventory: JavaToolchainInventory, output_dir: str | Path) -> tuple[Path, Path]:
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
+    payload = inventory.to_json_dict()
+    rendered_inventory = inventory
+    if output.resolve().parts[-3:] == ("docs", "evidence", "shim_routes"):
+        repo_root = output.resolve().parents[2]
+        payload["java_home"] = _repo_rel(inventory.java_home, repo_root)
+        payload["java"] = _repo_rel(inventory.java, repo_root)
+        payload["artifacts"] = [
+            {
+                **artifact,
+                "path": _repo_rel(str(artifact["path"]), repo_root),
+            }
+            for artifact in payload["artifacts"]
+        ]
+        rendered_inventory = JavaToolchainInventory(
+            java_home_env=inventory.java_home_env,
+            jdk_home_env=inventory.jdk_home_env,
+            discovery_source=inventory.discovery_source,
+            java_home=_repo_rel(inventory.java_home, repo_root),
+            java=_repo_rel(inventory.java, repo_root),
+            javac=inventory.javac,
+            jar=inventory.jar,
+            java_ok=inventory.java_ok,
+            javac_ok=inventory.javac_ok,
+            jar_ok=inventory.jar_ok,
+            status=inventory.status,
+            artifacts=tuple(
+                JavaToolchainArtifact(
+                    key=artifact.key,
+                    label=artifact.label,
+                    path=_repo_rel(artifact.path, repo_root) or artifact.path,
+                    exists=artifact.exists,
+                    build_command=artifact.build_command,
+                )
+                for artifact in inventory.artifacts
+            ),
+            notes=inventory.notes,
+            warnings=inventory.warnings,
+        )
     json_path = output / "java-toolchain.json"
     md_path = output / "java-toolchain.md"
-    json_path.write_text(json.dumps(inventory.to_json_dict(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    md_path.write_text(render_java_toolchain_markdown(inventory), encoding="utf-8")
+    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    md_path.write_text(render_java_toolchain_markdown(rendered_inventory), encoding="utf-8")
     return json_path, md_path
 
 

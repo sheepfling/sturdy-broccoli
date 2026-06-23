@@ -1,8 +1,8 @@
 # Java Standard 2025 Shim Artifact
 
-- official API source: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip`
+- official API source: `specs/ieee-1516-2025/1516.1-2025_downloads.zip`
 - nested API source: `1516.1-2025_downloads/1516-2025_API_XML_2025_08_14.zip`
-- jar: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar`
+- jar: `build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar`
 - compile status: `passed`
 - factory: `Java 2025 Standard Shim`
 - status: `surface-backed + bounded scenario-parity evidence`

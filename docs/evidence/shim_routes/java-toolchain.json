@@ -2,24 +2,24 @@
   "artifacts": [
     {
       "build_command": "./tools/shim-routes build java-standard-2010",
-      "exists": true,
+      "exists": false,
       "key": "java-standard-2010",
       "label": "Java 2010 standard shim jar",
-      "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar"
+      "path": "build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar"
     },
     {
       "build_command": "./tools/shim-routes build java-standard-2025",
       "exists": true,
       "key": "java-standard-2025",
       "label": "Java 2025 standard shim jar",
-      "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar"
+      "path": "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar"
     }
   ],
   "discovery_source": "jdk4py.JAVA_HOME",
   "jar": "/usr/bin/jar",
   "jar_ok": true,
-  "java": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.venv/lib/python3.12/site-packages/jdk4py/java-runtime/bin/java",
-  "java_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.venv/lib/python3.12/site-packages/jdk4py/java-runtime",
+  "java": "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/jdk4py/java-runtime/bin/java",
+  "java_home": "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/jdk4py/java-runtime",
   "java_home_env": null,
   "java_ok": true,
   "javac": "/usr/bin/javac",
@@ -28,6 +28,8 @@
   "notes": [
     "Java home discovered from jdk4py.JAVA_HOME"
   ],
-  "status": "ready",
-  "warnings": []
+  "status": "degraded",
+  "warnings": [
+    "one or more Java standard shim jars are missing; build them with ./tools/shim-routes build <target>"
+  ]
 }

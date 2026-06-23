@@ -10,12 +10,12 @@
     }
   ],
   "artifact": "cpp-standard-2010",
-  "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a",
+  "artifact_path": "build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a",
   "compile_status": "passed",
   "cpp_standard": "c++14",
   "implemented_services": [],
   "nested_api_source_path": null,
-  "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip",
+  "official_api_source_path": "specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip",
   "routes": {
     "cpp-standard-2010-grpc": {
       "scenario": "two-federate-core-exchange",

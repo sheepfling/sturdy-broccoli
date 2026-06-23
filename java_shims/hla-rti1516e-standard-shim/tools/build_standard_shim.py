@@ -90,6 +90,10 @@ class Method:
     throws: str
 
 
+def _repo_rel(path: Path) -> str:
+    return path.relative_to(ROOT).as_posix()
+
+
 def _run(command: list[str]) -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
@@ -712,8 +716,8 @@ def _write_report(methods: list[Method], compile_status: str, jar_path: Path) ->
     unsupported = sorted({method.name for method in methods if method.name not in IMPLEMENTED})
     report = {
         "artifact": "java-standard-2010",
-        "official_api_source_path": str(API_ZIP),
-        "jar_path": str(jar_path),
+        "official_api_source_path": _repo_rel(API_ZIP),
+        "jar_path": _repo_rel(jar_path),
         "compile_status": compile_status,
         "factory_name": "Java 2010 Standard Shim",
         "surface": "official IEEE 1516.1-2010 Java API",
@@ -737,8 +741,8 @@ def _write_report(methods: list[Method], compile_status: str, jar_path: Path) ->
             [
                 "# Java Standard 2010 Shim Artifact",
                 "",
-                f"- official API source: `{API_ZIP}`",
-                f"- jar: `{jar_path}`",
+                f"- official API source: `{_repo_rel(API_ZIP)}`",
+                f"- jar: `{_repo_rel(jar_path)}`",
                 f"- compile status: `{compile_status}`",
                 "- factory: `Java 2010 Standard Shim`",
                 "- status: `surface-backed + core-green`",

@@ -19,3 +19,8 @@ Current plans:
 - [PLN-003_requirements_authoring_plan.md](PLN-003_requirements_authoring_plan.md)
 - [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated repo-native work queues from the harmonized requirements ledgers
 - [requirements_finish_line.md](requirements_finish_line.md): the handoff note for finishing remaining requirement rows without overclaiming
+- [spec2025_finish_line.md](spec2025_finish_line.md): generated 2025 finish-line summary packet
+- [spec2025_finish_line_snapshot.json](spec2025_finish_line_snapshot.json): generated 2025 finish-line machine-readable snapshot
+- [spec2025_route_parity_matrix.md](spec2025_route_parity_matrix.md): generated 2025 route-parity markdown view
+- [2025_python_rti_backend_audit.md](2025_python_rti_backend_audit.md): generated backend-audit packet for the current 2025 Python RTI lane
+- [2025_requirement_by_requirement_audit.md](2025_requirement_by_requirement_audit.md): generated requirement-by-requirement audit packet

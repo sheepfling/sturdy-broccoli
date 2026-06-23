@@ -57,8 +57,8 @@
     "timeAdvanceRequest",
     "updateAttributeValues"
   ],
-  "jar_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar",
-  "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip",
+  "jar_path": "build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar",
+  "official_api_source_path": "specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip",
   "routes": {
     "java-standard-2010-jpype": {
       "status": "core-exchange-green",

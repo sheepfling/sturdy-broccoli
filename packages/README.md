@@ -93,6 +93,24 @@ Rules for the split:
   tree, and each package's `pyproject.toml` should declare only package-owned
   `source_roots`.
 
+## Package Docs
+
+Use one consistent front-door pattern for package-local documentation:
+
+- `packages/<name>/README.md`: package purpose, ownership, and install-facing
+  boundary
+- `packages/<name>/docs/README.md`: package-local runbooks, traceability
+  notes, and vendor/runtime findings
+- `packages/<name>/MIGRATION.md`: retained migration notes when that package
+  was split or moved
+
+Notable package-local doc families:
+
+- `packages/hla-backend-certi/docs/README.md`
+- `packages/hla-vendor-pitch/docs/README.md`
+- `packages/hla-vendor-portico/docs/README.md`
+- `packages/hla-verification/docs/README.md`
+
 ## Read Next
 
 1. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md)

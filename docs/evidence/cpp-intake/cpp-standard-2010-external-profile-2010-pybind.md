@@ -7,7 +7,7 @@
 - Callbacks: PASS
 - Core scenario: BLOCKED
 - Trace comparison: BLOCKED
-- Capsule directory: `/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile`
+- Capsule directory: `$TMPDIR/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile`
 - Blocked reason: full core scenario through generated C++ SDK runtime capsule is not implemented yet
 
 ## Missing Trace Events

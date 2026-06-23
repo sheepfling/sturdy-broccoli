@@ -6,6 +6,7 @@ import ast
 import csv
 import json
 import re
+import tempfile
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
@@ -8400,7 +8401,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         main_python2025_implementation_claim_audit,
     )
 
-    return {
+    snapshot = {
         "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
         "registry": {
             "initial_tranche_requirements": len(registry_requirements),
@@ -8497,6 +8498,28 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "or an explicit supported-subset/unsupported-boundary disposition before it can be counted as closed."
         ),
     }
+    return _portable_snapshot(snapshot, project_root)
+
+
+def _portable_snapshot(value: Any, project_root: Path) -> Any:
+    if isinstance(value, dict):
+        return {key: _portable_snapshot(item, project_root) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_portable_snapshot(item, project_root) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_portable_snapshot(item, project_root) for item in value)
+    if isinstance(value, str):
+        root_text = str(project_root)
+        if value.startswith(f"{root_text}/"):
+            return Path(value).relative_to(project_root).as_posix()
+        temp_roots = {
+            f"{Path(tempfile.gettempdir()).as_posix().rstrip('/')}/",
+            f"{Path(tempfile.gettempdir()).resolve().as_posix().rstrip('/')}/",
+        }
+        for temp_root in temp_roots:
+            if value.startswith(temp_root):
+                return value.replace(temp_root, "$TMPDIR/", 1)
+    return value
 
 
 def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:

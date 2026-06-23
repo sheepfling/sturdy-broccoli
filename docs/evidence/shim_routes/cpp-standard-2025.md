@@ -1,7 +1,7 @@
 # C++ Standard 2025 Artifact
 
-- official API source: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip`
-- artifact: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/cpp-standard-2025/librti1516_2025_standard_cpp_shim.a`
+- official API source: `specs/ieee-1516-2025/1516.1-2025_downloads.zip`
+- artifact: `build/shim_routes/cpp-standard-2025/librti1516_2025_standard_cpp_shim.a`
 - compile status: `passed`
 - surface: `official IEEE 1516.1-2025 C++ API`
 - status: `surface-backed + bounded scenario-parity evidence`

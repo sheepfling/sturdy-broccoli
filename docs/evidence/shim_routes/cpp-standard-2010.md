@@ -1,7 +1,7 @@
 # C++ Standard 2010 Artifact
 
-- official API source: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip`
-- artifact: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a`
+- official API source: `specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip`
+- artifact: `build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a`
 - compile status: `passed`
 - surface: `official IEEE 1516.1-2010 C++ API`
 - status: `surface-backed + core-green`

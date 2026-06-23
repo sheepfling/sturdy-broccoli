@@ -77,6 +77,10 @@ class Method:
     throws: str
 
 
+def _repo_rel(path: Path) -> str:
+    return path.relative_to(ROOT).as_posix()
+
+
 def _run(command: list[str]) -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
@@ -227,9 +231,9 @@ def _write_report(methods: list[Method]) -> None:
     unsupported = sorted({method.name for method in methods if method.name not in IMPLEMENTED})
     report = {
         "artifact": "java-standard-2025",
-        "official_api_source_path": str(API_ZIP),
+        "official_api_source_path": _repo_rel(API_ZIP),
         "nested_api_source_path": NESTED_API_ZIP,
-        "jar_path": str(JAR_PATH),
+        "jar_path": _repo_rel(JAR_PATH),
         "compile_status": "passed",
         "factory_name": FACTORY_NAME,
         "surface": "official IEEE 1516.1-2025 Java API",
@@ -269,9 +273,9 @@ def _write_report(methods: list[Method]) -> None:
             [
                 "# Java Standard 2025 Shim Artifact",
                 "",
-                f"- official API source: `{API_ZIP}`",
+                f"- official API source: `{_repo_rel(API_ZIP)}`",
                 f"- nested API source: `{NESTED_API_ZIP}`",
-                f"- jar: `{JAR_PATH}`",
+                f"- jar: `{_repo_rel(JAR_PATH)}`",
                 "- compile status: `passed`",
                 f"- factory: `{FACTORY_NAME}`",
                 "- status: `surface-backed + bounded scenario-parity evidence`",

@@ -82,6 +82,10 @@ CPP_2010_HELPER_PATCHES = (
 )
 
 
+def _repo_rel(path: Path) -> str:
+    return path.relative_to(ROOT).as_posix()
+
+
 def _run(command: list[str]) -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
@@ -157,9 +161,9 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
     routes = tuple(config["routes"])
     report = {
         "artifact": key,
-        "official_api_source_path": str(config["api_zip"]),
+        "official_api_source_path": _repo_rel(Path(config["api_zip"])),
         "nested_api_source_path": config["nested"],
-        "artifact_path": str(artifact_path),
+        "artifact_path": _repo_rel(artifact_path),
         "compile_status": "passed",
         "surface": config["surface"],
         "cpp_standard": config["std"],
@@ -214,8 +218,8 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
             [
                 f"# C++ Standard {edition} Artifact",
                 "",
-                f"- official API source: `{config['api_zip']}`",
-                f"- artifact: `{artifact_path}`",
+                f"- official API source: `{_repo_rel(Path(config['api_zip']))}`",
+                f"- artifact: `{_repo_rel(artifact_path)}`",
                 "- compile status: `passed`",
                 f"- surface: `{config['surface']}`",
                 f"- status: `{'surface-backed + core-green' if edition == '2010' else 'surface-backed + bounded scenario-parity evidence'}`",

@@ -7,7 +7,7 @@
   },
   "blocked_reason": "full core scenario through generated C++ SDK runtime capsule is not implemented yet",
   "callback_status": "callback-poll-green",
-  "capsule_dir": "/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile",
+  "capsule_dir": "$TMPDIR/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile",
   "connect_status": "connect-green",
   "core_scenario_status": "blocked",
   "discovery": {
@@ -17,7 +17,7 @@
       "name": "cpp-standard-2010-external-profile",
       "route": "cpp-2010-sdk-grpc"
     },
-    "capsule_dir": "/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile",
+    "capsule_dir": "$TMPDIR/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile",
     "checks": [
       {
         "details": {
@@ -138,7 +138,7 @@
     },
     "errors": [],
     "invocation_count": 3,
-    "library_path": "/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile/build/lib/libshim_routes_cpp_standard_2010_external_profile_capsule.dylib",
+    "library_path": "$TMPDIR/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile/build/lib/libshim_routes_cpp_standard_2010_external_profile_capsule.dylib",
     "process_pid": 77246,
     "status": "adapter-smoke-green",
     "trace": [

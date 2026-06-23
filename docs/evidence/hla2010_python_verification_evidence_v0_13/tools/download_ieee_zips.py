@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import tempfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 
@@ -32,7 +33,7 @@ def main() -> None:
     parser.add_argument(
         "--out",
         type=Path,
-        default=Path(os.environ.get("HLA2010_DOWNLOADS_DIR", "/private/tmp/hla-2010/downloads")),
+        default=Path(os.environ.get("HLA2010_DOWNLOADS_DIR", str(Path(tempfile.gettempdir()) / "hla-2010" / "downloads"))),
     )
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)

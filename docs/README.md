@@ -110,6 +110,7 @@ historical evidence. They are not the primary onboarding path.
 - [evidence/README.md](evidence/README.md): unpacked verification packets
 - [evidence/packet_index.md](evidence/packet_index.md): unpacked packet index
 - [verification/README.md](verification/README.md): verification family index
+- [compliance/README.md](compliance/README.md): retained 2010 compliance packet index
 - [verification/requirements_hierarchy.md](verification/requirements_hierarchy.md): requirements capability-feature-requirement hierarchy
 - [verification/callback_model_compliance.md](verification/callback_model_compliance.md): callback delivery behavior, compliance boundary, and proof anchors
 - [verification/time_model_compliance.md](verification/time_model_compliance.md): GALT, LITS, lookahead, and time-advance compliance proof

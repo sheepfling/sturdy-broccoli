@@ -5,12 +5,11 @@
   "implemented_services": [
     "getHLAversion"
   ],
-  "jar_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar",
+  "jar_path": "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar",
   "nested_api_source_path": "1516.1-2025_downloads/1516-2025_API_XML_2025_08_14.zip",
-  "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip",
+  "official_api_source_path": "specs/ieee-1516-2025/1516.1-2025_downloads.zip",
   "routes": {
     "java-standard-2025-jpype": {
-      "counts_as_python_2025_rti": false,
       "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
       "requirements_exercised": [
@@ -36,7 +35,6 @@
       "wrapper_only": false
     },
     "java-standard-2025-py4j": {
-      "counts_as_python_2025_rti": false,
       "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
       "requirements_exercised": [
@@ -63,7 +61,6 @@
     }
   },
   "scenario_evidence": {
-    "counts_as_python_2025_rti": false,
     "implementation_lane": "hla-backend-python2025",
     "requirements_exercised": [
       "HLA2025-BND-001",
