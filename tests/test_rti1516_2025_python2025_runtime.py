@@ -8559,6 +8559,66 @@ def test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter(
     "HLA2025-FR-003",
     "HLA2025-FR-004",
     "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
+    "HLA2025-FI-SVC-136",
+)
+def test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.verification import (
+        DdmDeclarationGatingScenarioConfig,
+        run_ddm_declaration_gating_scenario,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DefaultRoutingDDMGating.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"python2025-ddm-gating-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = DdmDeclarationGatingScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="DdmDeclarationGatingFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"DDM-Direct-Gating-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_ddm_declaration_gating_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["discovery_before_subscription"] is None
+    assert summary["reflection_before_subscription"] is None
+    assert summary["interaction_before_subscription"] is None
+    assert _normalized_2025_callback_equal(summary["discovery_after_subscription"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(
+        summary["reflection_after_subscription"].args[1],
+        {summary["subscriber_attribute"]: config.post_subscription_attribute_payload},
+    )
+    assert _normalized_2025_callback_equal(
+        summary["interaction_after_subscription"].args[1],
+        {summary["subscriber_parameter"]: config.post_subscription_interaction_payload},
+    )
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
     "HLA2025-FI-SVC-128",
     "HLA2025-FI-SVC-129",
     "HLA2025-FI-SVC-137",

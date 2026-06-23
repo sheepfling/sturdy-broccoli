@@ -6207,7 +6207,7 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "focus": "DDM object-region routing, attributesInScope and attributesOutOfScope advisories, passive region aliases, and DDM cleanup",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
@@ -6605,7 +6605,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
             ],
