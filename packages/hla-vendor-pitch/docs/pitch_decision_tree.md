@@ -67,6 +67,14 @@ Use them when you need to answer:
 - is the behavior changing between JPype and Py4J?
 - is the runtime issue in the bridge or in Pitch itself?
 
+Pitch also ships a vendor-specific Java `202X` surface in the bundled jars.
+That surface is currently discoverable and auditable, but it is not yet wired
+as a promoted backend lane because the bridge stack is still 2010-shaped.
+Use the evidence notes when you need that distinction:
+
+- [`evidence/pitch_202x_probe_2026-06-23.md`](evidence/pitch_202x_probe_2026-06-23.md)
+- [`evidence/pitch_202x_surface_audit_2026-06-23.md`](evidence/pitch_202x_surface_audit_2026-06-23.md)
+
 ## Install / Build / Run / Connect
 
 ### Install

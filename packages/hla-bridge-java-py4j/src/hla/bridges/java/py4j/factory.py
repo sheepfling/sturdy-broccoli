@@ -11,7 +11,9 @@ def create_py4j_backend(config: Py4JConfig = Py4JConfig()) -> Py4JRTIBackend:
 
     bridge = Py4JBridge(config)
     try:
-        factory_factory = bridge.gateway.jvm.hla.rti1516e.RtiFactoryFactory
+        factory_factory = bridge.gateway.jvm
+        for part in bridge.api_profile.factory_factory_class.split("."):
+            factory_factory = getattr(factory_factory, part)
         if config.rti_factory_name:
             factory = factory_factory.getRtiFactory(config.rti_factory_name)
         else:

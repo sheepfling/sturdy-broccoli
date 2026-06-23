@@ -1,0 +1,61 @@
+{
+  "adapter_readiness": "surface-close-bridge-blocked",
+  "blocker_findings": [
+    {
+      "path": "packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/factory.py",
+      "reason": "Factory selection is hardwired to hla.rti1516e.RtiFactoryFactory instead of a profile-driven package name."
+    },
+    {
+      "path": "packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j/factory.py",
+      "reason": "Factory selection is hardwired to hla.rti1516e.RtiFactoryFactory instead of a profile-driven package name."
+    },
+    {
+      "path": "packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/runtime.py",
+      "reason": "Federate ambassador proxy creation is hardwired to the 2010 Java interface package."
+    },
+    {
+      "path": "packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j/runtime.py",
+      "reason": "Federate ambassador proxy creation is hardwired to the 2010 Java interface package."
+    },
+    {
+      "path": "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py",
+      "reason": "Common conversion and callback dispatch code imports 2010 enums, exceptions, handles, time classes, and API metadata directly."
+    },
+    {
+      "path": "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_factory_selection.py",
+      "reason": "Generic Java RTI discovery is still implemented as a 2010-only factory probe."
+    }
+  ],
+  "federate_ambassador": {
+    "interface_name": "FederateAmbassador",
+    "overload_count_mismatches": [],
+    "repo_only_method_names": [],
+    "repo_overload_total": 62,
+    "shared_method_name_count": 56,
+    "vendor_only_method_names": [],
+    "vendor_overload_total": 62
+  },
+  "rti_ambassador": {
+    "interface_name": "RTIambassador",
+    "overload_count_mismatches": [],
+    "repo_only_method_names": [
+      "decodeAttributeHandle",
+      "decodeDimensionHandle",
+      "decodeFederateHandle",
+      "decodeInteractionClassHandle",
+      "decodeMessageRetractionHandle",
+      "decodeObjectClassHandle",
+      "decodeObjectInstanceHandle",
+      "decodeParameterHandle",
+      "decodeRegionHandle",
+      "getTimeFactory"
+    ],
+    "repo_overload_total": 215,
+    "shared_method_name_count": 178,
+    "vendor_only_method_names": [],
+    "vendor_overload_total": 205
+  },
+  "vendor_api_version": "202X-240403",
+  "vendor_bundle_version": "Pitch pRTI Free v 5.5.10",
+  "vendor_label": "Pitch pRTI Free"
+}

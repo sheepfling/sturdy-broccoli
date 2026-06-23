@@ -138,6 +138,7 @@ def _configured_bridge_factory(
     bridge: str,
     selected_implementation: str | None,
     config: Any | None,
+    edition: str,
     options: dict[str, Any],
 ) -> tuple[_BridgeFactory, Any, Any]:
     factory = _resolve_bridge_factory(bridge)
@@ -146,6 +147,8 @@ def _configured_bridge_factory(
     if config is not None:
         if selected_implementation is not None and getattr(config, "rti_factory_name", None) != selected_implementation:
             raise ValueError("config.rti_factory_name does not match the selected implementation")
+        if getattr(config, "java_api_profile", edition) != edition:
+            raise ValueError("config.java_api_profile does not match the selected edition")
         if options:
             names = ", ".join(sorted(options))
             raise ValueError(f"config cannot be combined with explicit bridge options: {names}")
@@ -154,6 +157,7 @@ def _configured_bridge_factory(
     config_cls = getattr(module, factory.config_name)
     if selected_implementation is not None:
         options["rti_factory_name"] = selected_implementation
+    options.setdefault("java_api_profile", edition)
     return factory, module, config_cls(**options)
 
 
@@ -163,6 +167,7 @@ def create_java_backend(
     *,
     config: Any | None = None,
     rti_factory_name: str | None = None,
+    edition: str = "2010",
     **options: Any,
 ) -> Any:
     """Create a Java RTI backend using a selected bridge and implementation.
@@ -183,7 +188,7 @@ def create_java_backend(
             raise ValueError("config is only supported for real Java bridge factories, not the in-process Java shim")
         return _create_java_shim_backend(shim_profile, dict(options))
 
-    factory, module, resolved_config = _configured_bridge_factory(bridge, selected_implementation, config, dict(options))
+    factory, module, resolved_config = _configured_bridge_factory(bridge, selected_implementation, config, edition, dict(options))
     create_backend = getattr(module, factory.create_backend_name)
     return create_backend(resolved_config)
 
@@ -240,19 +245,21 @@ def discover_java_rti(
 
     bridge_instance = None
     try:
-        factory, module, resolved_config = _configured_bridge_factory(bridge, selected_implementation, config, dict(options))
+        factory, module, resolved_config = _configured_bridge_factory(bridge, selected_implementation, config, edition, dict(options))
         bridge_cls_name = factory.config_name.replace("Config", "Bridge")
         bridge_cls = getattr(importlib.import_module(factory.module_name.replace(".factory", ".runtime")), bridge_cls_name)
         bridge_instance = bridge_cls(resolved_config)
         if _normalize_bridge_name(bridge) in {"jpype", "java-jpype"}:
-            factory_factory = bridge_instance.JClass("hla.rti1516e.RtiFactoryFactory")
+            factory_factory = bridge_instance.JClass(bridge_instance.api_profile.factory_factory_class)
             java_factory = (
                 factory_factory.getRtiFactory(selected_implementation)
                 if selected_implementation
                 else factory_factory.getRtiFactory()
             )
         else:
-            factory_factory = bridge_instance.gateway.jvm.hla.rti1516e.RtiFactoryFactory
+            factory_factory = bridge_instance.gateway.jvm
+            for part in bridge_instance.api_profile.factory_factory_class.split("."):
+                factory_factory = getattr(factory_factory, part)
             java_factory = (
                 factory_factory.getRtiFactory(selected_implementation)
                 if selected_implementation
@@ -308,6 +315,7 @@ def create_java_rti_ambassador(
     *,
     config: Any | None = None,
     rti_factory_name: str | None = None,
+    edition: str = "2010",
     **options: Any,
 ) -> DelegatingRTIAmbassador:
     """Create a backend-neutral RTI ambassador backed by a Java RTI."""
@@ -318,6 +326,7 @@ def create_java_rti_ambassador(
             implementation=implementation,
             config=config,
             rti_factory_name=rti_factory_name,
+            edition=edition,
             **options,
         )
     )

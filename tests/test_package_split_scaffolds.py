@@ -58,8 +58,8 @@ EXPECTED_PACKAGES = {
     "hla-bridge-java-jpype": PackageExpectation("java-bridge", frozenset({"jpype"}), "implementation-moved"),
     "hla-bridge-java-py4j": PackageExpectation("java-bridge", frozenset({"py4j"}), "implementation-moved"),
     "hla-vendor-pitch": PackageExpectation("runtime-common", frozenset(), "implementation-moved"),
-    "hla-vendor-pitch-jpype": PackageExpectation("rti-backend", frozenset({"pitch-jpype"}), "implementation-moved"),
-    "hla-vendor-pitch-py4j": PackageExpectation("rti-backend", frozenset({"pitch-py4j"}), "implementation-moved"),
+    "hla-vendor-pitch-jpype": PackageExpectation("rti-backend", frozenset({"pitch-jpype", "pitch-202x-jpype"}), "implementation-moved"),
+    "hla-vendor-pitch-py4j": PackageExpectation("rti-backend", frozenset({"pitch-py4j", "pitch-202x-py4j"}), "implementation-moved"),
     "hla-vendor-portico": PackageExpectation(
         "rti-backend",
         frozenset({"portico-jpype", "portico-py4j"}),
@@ -920,8 +920,10 @@ def test_package_split_pyprojects_have_expected_boundaries():
             assert entry_points["py4j"] == "hla.bridges.java.py4j.plugin:plugin"
         if package_name == "hla-vendor-pitch-jpype":
             assert entry_points["pitch-jpype"] == "hla.vendors.pitch.jpype.plugin:plugin"
+            assert entry_points["pitch-202x-jpype"] == "hla.vendors.pitch.jpype.plugin:pitch_202x_plugin"
         if package_name == "hla-vendor-pitch-py4j":
             assert entry_points["pitch-py4j"] == "hla.vendors.pitch.py4j.plugin:plugin"
+            assert entry_points["pitch-202x-py4j"] == "hla.vendors.pitch.py4j.plugin:pitch_202x_plugin"
         if package_name == "hla-vendor-portico":
             assert entry_points["portico-jpype"] == "hla.vendors.portico.plugin:portico_jpype_plugin"
             assert entry_points["portico-py4j"] == "hla.vendors.portico.plugin:portico_py4j_plugin"
@@ -1016,6 +1018,7 @@ def test_pitch_backend_packages_depend_on_common_runtime_package():
     for package_name in ("hla-vendor-pitch-jpype", "hla-vendor-pitch-py4j"):
         dependencies = set(_load_project(package_name)["project"].get("dependencies", ()))
         assert "hla-vendor-pitch==0.13.0" in dependencies
+        assert "hla-backend-python2025==0.13.0" in dependencies
 
 
 def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():

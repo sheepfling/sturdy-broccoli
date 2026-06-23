@@ -26,11 +26,15 @@ def test_split_pitch_common_package_exports_runtime_helpers():
 
 
 def test_pitch_plugins_import_common_runtime_helpers():
+    from hla.vendors.pitch.jpype.plugin import pitch_202x_plugin as jpype_202x_plugin
     from hla.vendors.pitch.jpype.plugin import plugin as jpype_plugin
+    from hla.vendors.pitch.py4j.plugin import pitch_202x_plugin as py4j_202x_plugin
     from hla.vendors.pitch.py4j.plugin import plugin as py4j_plugin
 
     assert jpype_plugin().name == "pitch-jpype"
     assert py4j_plugin().name == "pitch-py4j"
+    assert jpype_202x_plugin().name == "pitch-202x-jpype"
+    assert py4j_202x_plugin().name == "pitch-202x-py4j"
 
 
 def test_launch_pitch_py4j_gateway_can_return_process_handle(monkeypatch, tmp_path: Path):

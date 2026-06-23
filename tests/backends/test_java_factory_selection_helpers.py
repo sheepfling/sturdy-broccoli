@@ -48,6 +48,7 @@ def test_create_java_backend_forwards_implementation_to_jpype_config(monkeypatch
     assert captured["config"].rti_factory_name == "vendor.rti.Factory"
     assert tuple(captured["config"].classpath) == ("vendor.jar",)
     assert captured["config"].connect_local_settings_designator == "crcHost=localhost"
+    assert captured["config"].java_api_profile == "2010"
 
 
 def test_create_java_backend_forwards_implementation_to_py4j_config(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -65,6 +66,27 @@ def test_create_java_backend_forwards_implementation_to_py4j_config(monkeypatch:
 
     assert backend.backend_info.kind == "java/py4j"
     assert captured["config"].rti_factory_name == "vendor.rti.Factory"
+    assert captured["config"].java_api_profile == "2010"
+
+
+def test_create_java_backend_forwards_selected_edition_profile(monkeypatch: pytest.MonkeyPatch) -> None:
+    import hla.bridges.java.jpype.factory as jpype_factory
+
+    captured: dict[str, Any] = {}
+
+    def fake_create_backend(config: Any) -> _FakeBackend:
+        captured["config"] = config
+        return _FakeBackend(BackendInfo(name="fake", kind="java/jpype"))
+
+    monkeypatch.setattr(jpype_factory, "create_jpype_backend", fake_create_backend)
+
+    create_java_backend(
+        bridge="jpype",
+        implementation="vendor.rti.Factory",
+        edition="202X",
+    )
+
+    assert captured["config"].java_api_profile == "202X"
 
 
 def test_create_java_rti_ambassador_wraps_selected_java_backend(monkeypatch: pytest.MonkeyPatch) -> None:

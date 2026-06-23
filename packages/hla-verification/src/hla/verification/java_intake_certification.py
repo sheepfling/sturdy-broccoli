@@ -52,6 +52,7 @@ REQUIRED_2025_TRACE_EVENTS = {
     "destroyFederationExecution",
     "disconnect",
 }
+REQUIRED_202X_TRACE_EVENTS = REQUIRED_2025_TRACE_EVENTS
 
 CORE_SCENARIO_GREEN_STATUSES = {"core-green", "core-exchange-green"}
 JAVA_2025_STANDARD_FACTORY = "Java 2025 Standard Shim"
@@ -92,7 +93,10 @@ def _trace_event_names(trace: Sequence[dict[str, Any]]) -> tuple[str, ...]:
 
 def _status_from_trace(edition: str, trace: Sequence[dict[str, Any]]) -> tuple[str, tuple[str, ...]]:
     events = set(_trace_event_names(trace))
-    required = REQUIRED_2025_TRACE_EVENTS if edition == "2025" else REQUIRED_2010_TRACE_EVENTS
+    if edition == "2010":
+        required = REQUIRED_2010_TRACE_EVENTS
+    else:
+        required = REQUIRED_202X_TRACE_EVENTS if edition == "202X" else REQUIRED_2025_TRACE_EVENTS
     missing = tuple(sorted(required - events))
     return ("trace-green" if not missing else "core-green", missing)
 
@@ -173,6 +177,22 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
                 warnings=discovery.warnings,
                 blocked_reason="Java 2025 standard shim runtime evidence requires a built standard shim jar",
             )
+
+    if profile.edition == "202X":
+        return JavaRtiCoreCertificationReport(
+            edition=profile.edition,
+            bridge=request.bridge,
+            classpath=request.classpath,
+            factory_requested=request.rti_factory_name,
+            discovery=discovery_payload,
+            connect_status="blocked",
+            callback_status="blocked",
+            core_scenario_status="blocked",
+            trace_comparison_status="blocked",
+            status="behavior-blocked",
+            warnings=discovery.warnings,
+            blocked_reason="vendor Java 202X RTI behavior certification is not implemented yet",
+        )
 
     if profile.edition != "2010":
         return JavaRtiCoreCertificationReport(

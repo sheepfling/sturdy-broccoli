@@ -293,6 +293,7 @@ class ShimJavaBridge(JavaBridge):
     def __init__(self, profile: str = "jpype") -> None:
         if profile not in {"jpype", "py4j"}:
             raise ValueError("profile must be 'jpype' or 'py4j'")
+        super().__init__("2010")
         self.profile = profile
         self.name = f"{profile}-shim"
 

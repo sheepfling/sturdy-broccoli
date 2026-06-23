@@ -8,13 +8,14 @@ version = "0.13.0"
 description = "Pitch Java RTI JPype backend plugin for hla-rti1516e"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-bridge-java-common==0.13.0", "hla-bridge-java-jpype==0.13.0", "hla-vendor-pitch==0.13.0"]
+dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-bridge-java-common==0.13.0", "hla-bridge-java-jpype==0.13.0", "hla-vendor-pitch==0.13.0", "hla-backend-python2025==0.13.0"]
 
 [project.optional-dependencies]
 test = ["pytest"]
 
 [project.entry-points."hla.rti_backends"]
 pitch-jpype = "hla.vendors.pitch.jpype.plugin:plugin"
+pitch-202x-jpype = "hla.vendors.pitch.jpype.plugin:pitch_202x_plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -27,8 +28,8 @@ namespaces = true
 [tool.hla.package]
 status = "implementation-moved"
 role = "rti-backend"
-backend_names = ["pitch-jpype"]
-backend_aliases = ["java-pitch-jpype"]
+backend_names = ["pitch-jpype", "pitch-202x-jpype"]
+backend_aliases = ["java-pitch-jpype", "java-pitch-202x-jpype"]
 source_roots = [
   "packages/hla-vendor-pitch-jpype/src/hla/vendors/pitch/jpype",
 ]

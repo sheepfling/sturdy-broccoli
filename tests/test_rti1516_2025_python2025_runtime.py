@@ -2711,6 +2711,8 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
         "java-shim-py4j",
         "java-standard-2025-jpype",
         "java-standard-2025-py4j",
+        "pitch-202x-jpype",
+        "pitch-202x-py4j",
         "python2025",
     }
     assert backends["python2025"].supports == ("rti1516_2025",)
@@ -2726,6 +2728,8 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     assert backends["cpp-2025-sdk-grpc"].supports == ("rti1516_2025",)
     assert backends["java-2025-jpype"].supports == ("rti1516_2025",)
     assert backends["java-2025-py4j"].supports == ("rti1516_2025",)
+    assert backends["pitch-202x-jpype"].supports == ("rti1516_2025",)
+    assert backends["pitch-202x-py4j"].supports == ("rti1516_2025",)
 
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-003", "HLA2025-MIL-006")

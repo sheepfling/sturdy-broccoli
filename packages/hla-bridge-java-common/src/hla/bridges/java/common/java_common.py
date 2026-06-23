@@ -1,7 +1,7 @@
 """Shared Java RTI backend support.
 
-Concrete bridge packages, such as :mod:`hla.rti1516e.backends.jpype` and
-:mod:`hla.rti1516e.backends.py4j`, supply the mechanics for their Java bridge.
+Concrete bridge packages, such as the JPype and Py4J bridge packages, supply
+the mechanics for their Java bridge.
 This module supplies the bridge-independent policy: overload argument ordering,
 value conversion hooks, callback dispatching, Java collection conversion, and
 Java exception translation.
@@ -13,9 +13,6 @@ from collections.abc import Mapping as CollectionsMapping
 from enum import Enum
 from typing import Any, Iterable, Mapping, Protocol, Sequence, cast
 
-from hla.rti1516e import enums as hla_enums
-from hla.rti1516e import exceptions as hla_exceptions
-from hla.rti1516e import handles as hla_handles
 from hla.backends.common import (
     CALLBACK_METHOD_NAMES,
     BackendConversionError,
@@ -40,29 +37,13 @@ from hla.backends.common.invocation import (
     _JAVA_HANDLE_SET_TYPES,
     _JAVA_HANDLE_VALUE_MAP_TYPES,
 )
-from hla.rti1516e.exceptions import FederateInternalError, RTIexception, RTIinternalError
-from hla.rti1516e.fom import module_uri
-from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e import NullFederateAmbassador
-from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.datatypes import (
-    AttributeRegionAssociation,
-    FederationExecutionInformation,
-    FederateHandleSaveStatusPair,
-    FederateRestoreStatus,
-    MessageRetractionReturn,
-    RangeBounds,
-    SupplementalReceiveInfo,
-    SupplementalReflectInfo,
-    SupplementalRemoveInfo,
-    TimeQueryReturn,
-)
+from .java_binding_profile import PythonJavaBindingProfile, load_python_java_binding_profile
 
-_PYTHON_ENUM_BY_JAVA_SIMPLE_NAME: dict[str, type[Enum]] = {
-    name: value
-    for name, value in vars(hla_enums).items()
-    if isinstance(value, type) and issubclass(value, Enum)
-}
+_DEFAULT_BINDING = load_python_java_binding_profile("2010")
+hla_exceptions = _DEFAULT_BINDING.exceptions_module
+FederateInternalError = hla_exceptions.FederateInternalError
+RTIexception = hla_exceptions.RTIexception
+RTIinternalError = hla_exceptions.RTIinternalError
 
 
 class _JavaMapEntry(Protocol):
@@ -87,6 +68,10 @@ class JavaBridge(ABC):
     """
 
     name: str = "java"
+
+    def __init__(self, api_profile: str = "2010"):
+        self.python_binding = load_python_java_binding_profile(api_profile)
+        self.api_profile = self.python_binding.api_profile
 
     @abstractmethod
     def call(self, obj: Any, method_name: str, *args: Any) -> Any:
@@ -161,7 +146,7 @@ class JavaBridge(ABC):
 
     def fom_url(self, value: Any) -> Any:
         """Create a Java URL-like value for a FOM/MIM module designator."""
-        return module_uri(value)
+        return self.python_binding.fom_module.module_uri(value)
 
     def fom_url_array(self, values: Sequence[Any]) -> Any:
         """Create a Java URL[]-like value for FOM/MIM module designators."""
@@ -188,7 +173,7 @@ class JavaBridge(ABC):
         """
         return value
 
-    def range_bounds(self, value: RangeBounds) -> Any:
+    def range_bounds(self, value: Any) -> Any:
         """Convert Python RangeBounds to a Java RangeBounds-like object."""
         return value
 
@@ -305,10 +290,17 @@ class JavaValueConverter(ValueConverter):
     ):
         super().__init__(handle_registry=handle_registry)
         self.bridge = bridge
+        self.python_binding = bridge.python_binding
         self.rti_ambassador = rti_ambassador
 
     def to_backend(self, value: Any, *, expected_type_name: str | None = None) -> Any:  # noqa: D401 - inherited contract
-        from hla.rti1516e.handles import Handle
+        handle_type = self.python_binding.python_type_or_none("Handle")
+        range_bounds_type = self.python_binding.python_type("RangeBounds")
+        attribute_region_association_type = self.python_binding.python_type("AttributeRegionAssociation")
+        logical_time_types = tuple(
+            self.python_binding.python_type(name)
+            for name in ("HLAinteger64Time", "HLAinteger64Interval", "HLAfloat64Time", "HLAfloat64Interval")
+        )
 
         expected = _clean_java_type(expected_type_name)
 
@@ -318,7 +310,7 @@ class JavaValueConverter(ValueConverter):
             values = _sequence_for_java_array(value)
             return self.bridge.fom_url_array(values)
 
-        if isinstance(value, Handle):
+        if handle_type is not None and isinstance(value, handle_type):
             return self.handle_registry.to_native(value)
         if isinstance(value, Enum):
             return self.to_backend_enum(value)
@@ -341,9 +333,9 @@ class JavaValueConverter(ValueConverter):
                 rti_ambassador=self.rti_ambassador,
             )
 
-        if isinstance(value, RangeBounds):
+        if isinstance(value, range_bounds_type):
             return self.bridge.range_bounds(value)
-        if isinstance(value, AttributeRegionAssociation):
+        if isinstance(value, attribute_region_association_type):
             return (
                 self.to_backend(value.ahset, expected_type_name="AttributeHandleSet"),
                 self.to_backend(value.rhset, expected_type_name="RegionHandleSet"),
@@ -356,12 +348,12 @@ class JavaValueConverter(ValueConverter):
             return self.bridge.new_set([self.to_backend(item) for item in value])
         if isinstance(value, Mapping):
             return self.bridge.new_map([(self.to_backend(k), self.to_backend(v)) for k, v in value.items()])
-        if isinstance(value, (HLAinteger64Time, HLAinteger64Interval, HLAfloat64Time, HLAfloat64Interval)):
+        if isinstance(value, logical_time_types):
             return self.bridge.logical_time(value, rti_ambassador=self.rti_ambassador)
         return super().to_backend(value)
 
     def to_backend_enum(self, value: Enum) -> Any:
-        enum_class_name = f"hla.rti1516e.{value.__class__.__name__}"
+        enum_class_name = f"{self.bridge.api_profile.java_package}.{value.__class__.__name__}"
         return self.bridge.enum_constant(enum_class_name, value.name)
 
     def to_backend_bytes(self, value: bytes) -> Any:
@@ -424,7 +416,7 @@ class JavaValueConverter(ValueConverter):
             value,
             expected_type_name=expected,
             simple_name=simple_name,
-            info_type=SupplementalReflectInfo,
+            info_type=self.python_binding.python_type("SupplementalReflectInfo"),
         )
         if supplemental_reflect is not None:
             return supplemental_reflect
@@ -433,7 +425,7 @@ class JavaValueConverter(ValueConverter):
             value,
             expected_type_name=expected,
             simple_name=simple_name,
-            info_type=SupplementalReceiveInfo,
+            info_type=self.python_binding.python_type("SupplementalReceiveInfo"),
         )
         if supplemental_receive is not None:
             return supplemental_receive
@@ -451,12 +443,16 @@ class JavaValueConverter(ValueConverter):
         if inferred_handle_type is not None:
             return self.handle_registry.to_python(inferred_handle_type, value)
 
-        if expected in _PY_HANDLE_VALUE_MAP_BY_JAVA_TYPE:
+        handle_value_map_types = _py_handle_value_map_by_java_type(self.python_binding)
+        handle_set_types = _py_handle_set_by_java_type(self.python_binding)
+        python_enum_by_name = self.python_binding.enum_types_by_name()
+
+        if expected in handle_value_map_types:
             map_items = self.bridge.java_map_items(value)
             if map_items is None and isinstance(value, Mapping):
                 map_items = list(value.items())
             if map_items is not None:
-                map_type, key_type_name = _PY_HANDLE_VALUE_MAP_BY_JAVA_TYPE[expected]
+                map_type, key_type_name = handle_value_map_types[expected]
                 return map_type(
                     (
                         self.from_backend(key, expected_type_name=key_type_name),
@@ -465,12 +461,12 @@ class JavaValueConverter(ValueConverter):
                     for key, item_value in map_items
                 )
 
-        if expected in _PY_HANDLE_SET_BY_JAVA_TYPE:
+        if expected in handle_set_types:
             collection_values = self.bridge.java_collection_values(value)
             if collection_values is None and isinstance(value, (list, tuple, set, frozenset)):
                 collection_values = list(value)
             if collection_values is not None:
-                set_type, item_type_name = _PY_HANDLE_SET_BY_JAVA_TYPE[expected]
+                set_type, item_type_name = handle_set_types[expected]
                 return set_type(self.from_backend(item, expected_type_name=item_type_name) for item in collection_values)
 
         if expected == "FederationExecutionInformationSet":
@@ -483,10 +479,10 @@ class JavaValueConverter(ValueConverter):
                     for item in collection_values
                 }
 
-        if simple_name in _PYTHON_ENUM_BY_JAVA_SIMPLE_NAME:
+        if simple_name in python_enum_by_name:
             member_name = self.bridge.enum_member_name(value)
             if member_name:
-                enum_type = _PYTHON_ENUM_BY_JAVA_SIMPLE_NAME[simple_name]
+                enum_type = python_enum_by_name[simple_name]
                 try:
                     return enum_type[member_name]
                 except KeyError:
@@ -540,13 +536,13 @@ class JavaValueConverter(ValueConverter):
         if raw is None:
             return None
         if "HLAinteger64Time" in class_text:
-            return HLAinteger64Time(int(raw))
+            return self.python_binding.python_type("HLAinteger64Time")(int(raw))
         if "HLAinteger64Interval" in class_text:
-            return HLAinteger64Interval(int(raw))
+            return self.python_binding.python_type("HLAinteger64Interval")(int(raw))
         if "HLAfloat64Time" in class_text:
-            return HLAfloat64Time(float(raw))
+            return self.python_binding.python_type("HLAfloat64Time")(float(raw))
         if "HLAfloat64Interval" in class_text:
-            return HLAfloat64Interval(float(raw))
+            return self.python_binding.python_type("HLAfloat64Interval")(float(raw))
         return None
 
     def _from_backend_range_bounds(
@@ -555,7 +551,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> RangeBounds | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "RangeBounds" not in class_text:
             return None
@@ -564,7 +560,7 @@ class JavaValueConverter(ValueConverter):
         upper = _maybe_call_noarg(value, "getUpperBound", "upperBound", "upper", "getUpper")
         if lower is None or upper is None:
             return None
-        return RangeBounds(int(lower), int(upper))
+        return self.python_binding.python_type("RangeBounds")(int(lower), int(upper))
 
     def _from_backend_federation_execution_information(
         self,
@@ -572,7 +568,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> FederationExecutionInformation | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "FederationExecutionInformation" not in class_text:
             return None
@@ -581,7 +577,7 @@ class JavaValueConverter(ValueConverter):
         logical_time_name = self.bridge.public_field(value, "logicalTimeImplementationName")
         if federation_name is None:
             return None
-        return FederationExecutionInformation(
+        return self.python_binding.python_type("FederationExecutionInformation")(
             federationExecutionName=str(federation_name),
             logicalTimeImplementationName=str(logical_time_name) if logical_time_name is not None else "",
         )
@@ -592,7 +588,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> TimeQueryReturn | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "TimeQueryReturn" not in class_text:
             return None
@@ -611,7 +607,7 @@ class JavaValueConverter(ValueConverter):
             raw_time = self.bridge.public_field(value, "logicalTime")
         if raw_time is None:
             raw_time = _maybe_call_noarg(value, "getTime", "getLogicalTime")
-        return TimeQueryReturn(bool(valid), self.from_backend(raw_time) if raw_time is not None else None)
+        return self.python_binding.python_type("TimeQueryReturn")(bool(valid), self.from_backend(raw_time) if raw_time is not None else None)
 
     def _from_backend_message_retraction_return(
         self,
@@ -619,7 +615,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> MessageRetractionReturn | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "MessageRetractionReturn" not in class_text:
             return None
@@ -637,7 +633,7 @@ class JavaValueConverter(ValueConverter):
             handle = _maybe_call_noarg(value, "getHandle", "getMessageRetractionHandle")
         if valid is None or handle is None:
             return None
-        return MessageRetractionReturn(
+        return self.python_binding.python_type("MessageRetractionReturn")(
             bool(valid),
             self.from_backend(handle, expected_type_name="MessageRetractionHandle"),
         )
@@ -648,7 +644,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> FederateHandleSaveStatusPair | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "FederateHandleSaveStatusPair" not in class_text:
             return None
@@ -665,7 +661,7 @@ class JavaValueConverter(ValueConverter):
             status = _maybe_call_noarg(value, "getStatus", "getSaveStatus")
         if handle is None or status is None:
             return None
-        return FederateHandleSaveStatusPair(
+        return self.python_binding.python_type("FederateHandleSaveStatusPair")(
             self.from_backend(handle, expected_type_name="FederateHandle"),
             self.from_backend(status),
         )
@@ -676,7 +672,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> FederateRestoreStatus | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "FederateRestoreStatus" not in class_text:
             return None
@@ -694,7 +690,7 @@ class JavaValueConverter(ValueConverter):
             status = _maybe_call_noarg(value, "getStatus", "getRestoreStatus")
         if pre is None or post is None or status is None:
             return None
-        return FederateRestoreStatus(
+        return self.python_binding.python_type("FederateRestoreStatus")(
             self.from_backend(pre, expected_type_name="FederateHandle"),
             self.from_backend(post, expected_type_name="FederateHandle"),
             self.from_backend(status),
@@ -706,8 +702,10 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-        info_type: type[SupplementalReflectInfo] = SupplementalReflectInfo,
-    ) -> SupplementalReflectInfo | None:
+        info_type: type[Any] | None = None,
+    ) -> Any | None:
+        if info_type is None:
+            info_type = self.python_binding.python_type("SupplementalReflectInfo")
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if info_type.__name__ not in class_text:
             return None
@@ -757,7 +755,7 @@ class JavaValueConverter(ValueConverter):
         *,
         expected_type_name: str | None,
         simple_name: str | None,
-    ) -> SupplementalRemoveInfo | None:
+    ) -> Any | None:
         class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
         if "SupplementalRemoveInfo" not in class_text:
             return None
@@ -774,7 +772,7 @@ class JavaValueConverter(ValueConverter):
             producing = _maybe_call_noarg(value, "getProducingFederate")
         if has_producing is None:
             return None
-        return SupplementalRemoveInfo(
+        return self.python_binding.python_type("SupplementalRemoveInfo")(
             hasProducingFederateValue=bool(has_producing),
             producingFederate=(
                 self.from_backend(producing, expected_type_name="FederateHandle")
@@ -783,18 +781,21 @@ class JavaValueConverter(ValueConverter):
         )
 
 
-_PY_HANDLE_SET_BY_JAVA_TYPE = {
-    "AttributeHandleSet": (hla_handles.AttributeHandleSet, "AttributeHandle"),
-    "DimensionHandleSet": (hla_handles.DimensionHandleSet, "DimensionHandle"),
-    "FederateHandleSet": (hla_handles.FederateHandleSet, "FederateHandle"),
-    "InteractionClassHandleSet": (hla_handles.InteractionClassHandleSet, "InteractionClassHandle"),
-    "RegionHandleSet": (hla_handles.RegionHandleSet, "RegionHandle"),
-}
+def _py_handle_set_by_java_type(binding: PythonJavaBindingProfile) -> dict[str, tuple[type[Any], str]]:
+    return {
+        "AttributeHandleSet": (binding.handles_module.AttributeHandleSet, "AttributeHandle"),
+        "DimensionHandleSet": (binding.handles_module.DimensionHandleSet, "DimensionHandle"),
+        "FederateHandleSet": (binding.handles_module.FederateHandleSet, "FederateHandle"),
+        "InteractionClassHandleSet": (binding.handles_module.InteractionClassHandleSet, "InteractionClassHandle"),
+        "RegionHandleSet": (binding.handles_module.RegionHandleSet, "RegionHandle"),
+    }
 
-_PY_HANDLE_VALUE_MAP_BY_JAVA_TYPE = {
-    "AttributeHandleValueMap": (hla_handles.AttributeHandleValueMap, "AttributeHandle"),
-    "ParameterHandleValueMap": (hla_handles.ParameterHandleValueMap, "ParameterHandle"),
-}
+
+def _py_handle_value_map_by_java_type(binding: PythonJavaBindingProfile) -> dict[str, tuple[type[Any], str]]:
+    return {
+        "AttributeHandleValueMap": (binding.handles_module.AttributeHandleValueMap, "AttributeHandle"),
+        "ParameterHandleValueMap": (binding.handles_module.ParameterHandleValueMap, "ParameterHandle"),
+    }
 
 _JAVA_COMPOSITE_DATATYPE_NAMES = {
     "FederateHandleSaveStatusPair",
@@ -826,7 +827,12 @@ def expected_java_return_type(invocation: Invocation) -> str | None:
 
 
 
-def expected_java_callback_parameter_types(method_name: str, arg_count: int | None = None) -> tuple[str | None, ...]:
+def expected_java_callback_parameter_types(
+    method_name: str,
+    arg_count: int | None = None,
+    *,
+    binding: PythonJavaBindingProfile | None = None,
+) -> tuple[str | None, ...]:
     """Return Java parameter types for a FederateAmbassador callback overload.
 
     Callback conversion needs the expected Java shapes because vendors often
@@ -834,27 +840,22 @@ def expected_java_callback_parameter_types(method_name: str, arg_count: int | No
     names.  The metadata is source-derived from the uploaded Java binding.
     """
 
-    overloads = [
-        overload
-        for overload in API_METADATA.get("FederateAmbassador", {}).get(method_name, ())
-        if overload.get("language") == "java"
-    ]
-    if arg_count is not None:
-        overloads = [overload for overload in overloads if len(java_parameter_types(overload)) == arg_count]
-    if overloads:
-        return tuple(java_parameter_types(overloads[0]))
-    return ()
+    return (binding or _DEFAULT_BINDING).callback_parameter_types(method_name, arg_count)
 
 class PythonFederateAmbassadorDispatcher:
     """Dispatch Java FederateAmbassador callbacks to a Python ambassador."""
 
-    def __init__(self, ambassador: NullFederateAmbassador, converter: JavaValueConverter):
+    def __init__(self, ambassador: Any, converter: JavaValueConverter):
         self.ambassador = ambassador
         self.converter = converter
 
     def _invoke_callback(self, method_name: str, *backend_args: Any) -> Any:
         try:
-            expected = expected_java_callback_parameter_types(method_name, len(backend_args))
+            expected = expected_java_callback_parameter_types(
+                method_name,
+                len(backend_args),
+                binding=self.converter.python_binding,
+            )
             py_args = tuple(
                 self.converter.from_backend(
                     arg,

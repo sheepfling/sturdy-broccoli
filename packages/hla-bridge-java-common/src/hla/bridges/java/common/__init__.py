@@ -39,9 +39,11 @@ from .py4j_support import reset_py4j_callback_client
 from .java_shim_backend import InProcessJavaRTIShim, ShimJavaBridge
 from .java_shim_factory import create_java_shim_backend, create_shared_java_shim_backend
 from .java_factory_selection import JavaRTIDiscoveryReport, JavaRTIFactorySelection, create_java_backend, create_java_rti_ambassador, discover_java_rti
+from .java_binding_profile import PythonJavaBindingProfile, load_python_java_binding_profile
 from .java_intake import (
     JAVA_2010,
     JAVA_2025,
+    JAVA_202X,
     JavaApiProfile,
     JavaRtiIntakeReport,
     JavaRtiIntakeRequest,
@@ -84,9 +86,11 @@ __all__ = [
     "JavaRTIFactorySelection",
     "JAVA_2010",
     "JAVA_2025",
+    "JAVA_202X",
     "JavaApiProfile",
     "JavaRtiIntakeReport",
     "JavaRtiIntakeRequest",
+    "PythonJavaBindingProfile",
     "create_java_shim_backend",
     "create_java_backend",
     "create_java_rti_ambassador",
@@ -100,6 +104,7 @@ __all__ = [
     "JAVA_2010_JAR",
     "JAVA_2025_JAR",
     "java_api_profile",
+    "load_python_java_binding_profile",
     "java_parameter_names",
     "java_parameter_types",
     "make_rti_ambassador",

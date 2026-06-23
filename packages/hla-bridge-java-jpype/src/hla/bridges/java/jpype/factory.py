@@ -7,11 +7,11 @@ from .runtime import JPypeBridge, JPypeConfig
 
 
 def create_jpype_backend(config: JPypeConfig = JPypeConfig()) -> JPypeRTIBackend:
-    """Create a Java RTI backend using ``hla.rti1516e.RtiFactoryFactory``."""
+    """Create a Java RTI backend using the configured edition's ``RtiFactoryFactory``."""
 
     bridge = JPypeBridge(config)
     try:
-        factory_factory = bridge.JClass("hla.rti1516e.RtiFactoryFactory")
+        factory_factory = bridge.JClass(bridge.api_profile.factory_factory_class)
         if config.rti_factory_name:
             factory = factory_factory.getRtiFactory(config.rti_factory_name)
         else:

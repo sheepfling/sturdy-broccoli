@@ -26,6 +26,13 @@ Conclusion:
 - the absence of a `2025` route is not only a local Python registry decision
 - forcing `rti1516_2025` through Pitch would overclaim vendor capability because the `hla.rti1516_2025` classes are not present in the vendor jars
 
+Important follow-up:
+- this note is specifically about the absence of `hla.rti1516_2025`
+- a later probe on `2026-06-23` established that the same bundle does expose a separate vendor-specific `hla.rti1516_202X` surface
+- see:
+  - `pitch_202x_probe_2026-06-23.md`
+  - `pitch_202x_surface_audit_2026-06-23.md`
+
 ## Why this probe was needed
 
 The repo already rejects:

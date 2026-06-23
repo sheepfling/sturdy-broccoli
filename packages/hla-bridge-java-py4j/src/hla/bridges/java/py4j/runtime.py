@@ -4,10 +4,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from hla.rti1516e.fom import module_uri
 from hla.bridges.java.common import CALLBACK_METHOD_NAMES, BackendUnavailableError
-from hla.rti1516e.datatypes import RangeBounds
 from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla.bridges.java.common.java_intake import JavaApiProfile
 
 
 @dataclass(frozen=True)
@@ -20,13 +19,11 @@ class Py4JConfig:
     rti_factory_name: str | None = None
     connect_local_settings_designator: str | None = None
     shutdown_gateway_on_close: bool = False
+    java_api_profile: str | JavaApiProfile = "2010"
 
 
 class Py4JFederateAmbassadorProxy:
-    """Py4J callback object implementing hla.rti1516e.FederateAmbassador."""
-
-    class Java:
-        implements = ["hla.rti1516e.FederateAmbassador"]
+    """Py4J callback object implementing one configured Java FederateAmbassador."""
 
     def __init__(self, dispatcher: PythonFederateAmbassadorDispatcher):
         self._dispatcher = dispatcher
@@ -205,6 +202,7 @@ class Py4JBridge(JavaBridge):
     name = "py4j"
 
     def __init__(self, config: Py4JConfig = Py4JConfig()):
+        super().__init__(config.java_api_profile)
         self.config = config
         self.owns_gateway = False
 
@@ -229,7 +227,13 @@ class Py4JBridge(JavaBridge):
         return getattr(obj, method_name)(*args)
 
     def create_federate_proxy(self, dispatcher: PythonFederateAmbassadorDispatcher) -> Any:
-        return Py4JFederateAmbassadorProxy(dispatcher)
+        interface_name = self.api_profile.federate_ambassador_interface
+
+        class _ProfiledPy4JFederateAmbassadorProxy(Py4JFederateAmbassadorProxy):
+            class Java:
+                implements = [interface_name]
+
+        return _ProfiledPy4JFederateAmbassadorProxy(dispatcher)
 
     def enum_constant(self, enum_class_name: str, member_name: str) -> Any:
         current = self.gateway.jvm
@@ -266,7 +270,7 @@ class Py4JBridge(JavaBridge):
         return java_map
 
     def fom_url(self, value: Any) -> Any:
-        uri = module_uri(value)
+        uri = self.python_binding.fom_module.module_uri(value)
         return self.gateway.jvm.java.net.URI(uri).toURL()
 
     def fom_url_array(self, values: list[Any] | tuple[Any, ...]) -> Any:
@@ -369,9 +373,12 @@ class Py4JBridge(JavaBridge):
             return value
         return value
 
-    def range_bounds(self, value: RangeBounds) -> Any:
+    def range_bounds(self, value: Any) -> Any:
         try:
-            return self.gateway.jvm.hla.rti1516e.RangeBounds(int(value.lower_bound), int(value.upper_bound))
+            current = self.gateway.jvm
+            for part in f"{self.api_profile.java_package}.RangeBounds".split("."):
+                current = getattr(current, part)
+            return current(int(value.lower_bound), int(value.upper_bound))
         except Exception:
             return value
 

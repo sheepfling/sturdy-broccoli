@@ -462,7 +462,7 @@ def main(argv: list[str] | None = None) -> int:
     java_subparsers = java.add_subparsers(dest="java_command", required=True)
 
     java_discover = java_subparsers.add_parser("discover")
-    java_discover.add_argument("--edition", choices=("2010", "2025"), required=True)
+    java_discover.add_argument("--edition", choices=("2010", "2025", "202X"), required=True)
     java_discover.add_argument("--bridge", choices=("jpype", "py4j"), required=True)
     java_discover.add_argument("--classpath", required=True, help=f"Java classpath, separated with {os.pathsep!r}")
     java_discover.add_argument("--factory", default=None, help="Optional RTI factory name passed to RtiFactoryFactory.getRtiFactory")
@@ -482,7 +482,7 @@ def main(argv: list[str] | None = None) -> int:
     java_doctor.set_defaults(func=_java_doctor)
 
     java_certify = java_subparsers.add_parser("certify-core")
-    java_certify.add_argument("--edition", choices=("2010", "2025"), required=True)
+    java_certify.add_argument("--edition", choices=("2010", "2025", "202X"), required=True)
     java_certify.add_argument("--bridges", default="jpype,py4j")
     java_certify.add_argument("--classpath", required=True, help=f"Java classpath, separated with {os.pathsep!r}")
     java_certify.add_argument("--factory", default=None, help="Optional RTI factory name passed to RtiFactoryFactory.getRtiFactory")

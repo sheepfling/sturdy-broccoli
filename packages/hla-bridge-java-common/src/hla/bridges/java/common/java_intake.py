@@ -19,6 +19,7 @@ from typing import Any, Iterable, Sequence
 class JavaApiProfile:
     edition: str
     spec_name: str
+    python_package: str
     java_package: str
     factory_factory_class: str
     factory_interface: str
@@ -30,6 +31,7 @@ class JavaApiProfile:
 JAVA_2010 = JavaApiProfile(
     edition="2010",
     spec_name="rti1516e",
+    python_package="hla.rti1516e",
     java_package="hla.rti1516e",
     factory_factory_class="hla.rti1516e.RtiFactoryFactory",
     factory_interface="hla.rti1516e.RtiFactory",
@@ -40,12 +42,24 @@ JAVA_2010 = JavaApiProfile(
 JAVA_2025 = JavaApiProfile(
     edition="2025",
     spec_name="rti1516_2025",
+    python_package="hla.rti1516_2025",
     java_package="hla.rti1516_2025",
     factory_factory_class="hla.rti1516_2025.RtiFactoryFactory",
     factory_interface="hla.rti1516_2025.RtiFactory",
     rti_ambassador_interface="hla.rti1516_2025.RTIambassador",
     federate_ambassador_interface="hla.rti1516_2025.FederateAmbassador",
     callback_model_class="hla.rti1516_2025.CallbackModel",
+)
+JAVA_202X = JavaApiProfile(
+    edition="202X",
+    spec_name="rti1516_202x",
+    python_package="hla.rti1516_2025",
+    java_package="hla.rti1516_202X",
+    factory_factory_class="hla.rti1516_202X.RtiFactoryFactory",
+    factory_interface="hla.rti1516_202X.RtiFactory",
+    rti_ambassador_interface="hla.rti1516_202X.RTIambassador",
+    federate_ambassador_interface="hla.rti1516_202X.FederateAmbassador",
+    callback_model_class="hla.rti1516_202X.CallbackModel",
 )
 
 JAVA_API_PROFILES = {
@@ -55,6 +69,10 @@ JAVA_API_PROFILES = {
     "2025": JAVA_2025,
     "rti1516_2025": JAVA_2025,
     "rti1516-2025": JAVA_2025,
+    "202x": JAVA_202X,
+    "rti1516_202x": JAVA_202X,
+    "rti1516-202x": JAVA_202X,
+    "hla.rti1516_202x": JAVA_202X,
 }
 
 
@@ -101,7 +119,7 @@ def java_api_profile(edition: str) -> JavaApiProfile:
     try:
         return JAVA_API_PROFILES[key]
     except KeyError as exc:
-        raise ValueError("Java RTI edition must be one of: 2010, 2025") from exc
+        raise ValueError("Java RTI edition must be one of: 2010, 2025, 202X") from exc
 
 
 def split_classpath(value: str | Sequence[str]) -> tuple[str, ...]:

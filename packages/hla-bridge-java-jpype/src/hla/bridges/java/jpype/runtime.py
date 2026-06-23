@@ -4,11 +4,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Sequence
 
-from hla.rti1516e.fom import module_uri
-from hla.rti1516e.datatypes import RangeBounds
 from hla.bridges.java.common import BackendUnavailableError
 from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_runtime import ensure_java_home
+from hla.bridges.java.common.java_intake import JavaApiProfile
 
 
 @dataclass(frozen=True)
@@ -22,12 +21,14 @@ class JPypeConfig:
     start_jvm: bool = True
     shutdown_jvm_on_close: bool = False
     convert_strings: bool = False
+    java_api_profile: str | JavaApiProfile = "2010"
 
 
 class JPypeBridge(JavaBridge):
     name = "jpype"
 
     def __init__(self, config: JPypeConfig = JPypeConfig()):
+        super().__init__(config.java_api_profile)
         ensure_java_home()
         try:
             import jpype  # type: ignore
@@ -52,7 +53,7 @@ class JPypeBridge(JavaBridge):
         return getattr(obj, method_name)(*args)
 
     def create_federate_proxy(self, dispatcher: PythonFederateAmbassadorDispatcher) -> Any:
-        return self.jpype.JProxy("hla.rti1516e.FederateAmbassador", inst=dispatcher)
+        return self.jpype.JProxy(self.api_profile.federate_ambassador_interface, inst=dispatcher)
 
     def enum_constant(self, enum_class_name: str, member_name: str) -> Any:
         enum_class = self.JClass(enum_class_name)
@@ -82,7 +83,7 @@ class JPypeBridge(JavaBridge):
         return java_map
 
     def fom_url(self, value: Any) -> Any:
-        uri = module_uri(value)
+        uri = self.python_binding.fom_module.module_uri(value)
         return self.JClass("java.net.URI")(uri).toURL()
 
     def fom_url_array(self, values: Sequence[Any]) -> Any:
@@ -147,7 +148,10 @@ class JPypeBridge(JavaBridge):
 
     def logical_time(self, value: Any, *, rti_ambassador: Any | None = None) -> Any:
         try:
-            from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+            HLAfloat64Interval = self.python_binding.python_type("HLAfloat64Interval")
+            HLAfloat64Time = self.python_binding.python_type("HLAfloat64Time")
+            HLAinteger64Interval = self.python_binding.python_type("HLAinteger64Interval")
+            HLAinteger64Time = self.python_binding.python_type("HLAinteger64Time")
 
             if rti_ambassador is not None:
                 try:
@@ -165,20 +169,20 @@ class JPypeBridge(JavaBridge):
                 except Exception:
                     pass
             if isinstance(value, HLAinteger64Time):
-                return self.JClass("hla.rti1516e.HLAinteger64Time")(int(value.value))
+                return self.JClass(f"{self.api_profile.java_package}.HLAinteger64Time")(int(value.value))
             if isinstance(value, HLAinteger64Interval):
-                return self.JClass("hla.rti1516e.HLAinteger64Interval")(int(value.value))
+                return self.JClass(f"{self.api_profile.java_package}.HLAinteger64Interval")(int(value.value))
             if isinstance(value, HLAfloat64Time):
-                return self.JClass("hla.rti1516e.HLAfloat64Time")(float(value.value))
+                return self.JClass(f"{self.api_profile.java_package}.HLAfloat64Time")(float(value.value))
             if isinstance(value, HLAfloat64Interval):
-                return self.JClass("hla.rti1516e.HLAfloat64Interval")(float(value.value))
+                return self.JClass(f"{self.api_profile.java_package}.HLAfloat64Interval")(float(value.value))
         except Exception:
             return value
         return value
 
-    def range_bounds(self, value: RangeBounds) -> Any:
+    def range_bounds(self, value: Any) -> Any:
         try:
-            return self.JClass("hla.rti1516e.RangeBounds")(int(value.lower_bound), int(value.upper_bound))
+            return self.JClass(f"{self.api_profile.java_package}.RangeBounds")(int(value.lower_bound), int(value.upper_bound))
         except Exception:
             return value
 

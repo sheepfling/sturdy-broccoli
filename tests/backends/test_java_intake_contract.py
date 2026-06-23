@@ -17,11 +17,14 @@ from hla.rti import available_backend_plugins, create_rti_ambassador
 def test_java_intake_profiles_keep_2010_and_2025_packages_separate() -> None:
     profile_2010 = java_api_profile("2010")
     profile_2025 = java_api_profile("2025")
+    profile_202x = java_api_profile("202X")
 
     assert profile_2010.spec_name == "rti1516e"
     assert profile_2010.factory_factory_class == "hla.rti1516e.RtiFactoryFactory"
     assert profile_2025.spec_name == "rti1516_2025"
     assert profile_2025.factory_factory_class == "hla.rti1516_2025.RtiFactoryFactory"
+    assert profile_202x.spec_name == "rti1516_202x"
+    assert profile_202x.factory_factory_class == "hla.rti1516_202X.RtiFactoryFactory"
 
 
 def test_java_intake_discovery_reports_missing_classpath_without_stack_trace() -> None:
@@ -155,6 +158,37 @@ def test_java_certify_core_2025_generic_vendor_is_behavior_blocked_after_discove
     assert report.status == "behavior-blocked"
     assert report.core_scenario_status == "blocked"
     assert report.blocked_reason == "generic/vendor Java 2025 RTI invocation is not implemented yet"
+
+
+def test_java_certify_core_202x_vendor_is_behavior_blocked_after_discovery(monkeypatch) -> None:
+    from hla.bridges.java.common.java_intake import JavaRtiIntakeReport
+    from hla.verification import java_intake_certification as cert
+
+    def fake_discover(request):
+        return JavaRtiIntakeReport(
+            edition="202X",
+            bridge=request.bridge,
+            classpath=request.classpath,
+            factory_requested=request.rti_factory_name,
+            factory_found=True,
+            rti_ambassador_created=True,
+            edition_match=True,
+            status="ambassador-green",
+        )
+
+    monkeypatch.setattr(cert, "discover_java_rti_jar", fake_discover)
+    report = cert.certify_java_rti_core(
+        JavaRtiIntakeRequest(
+            edition="202X",
+            bridge="jpype",
+            classpath=("pyproject.toml",),
+            rti_factory_name="Federate Protocol",
+        )
+    )
+
+    assert report.status == "behavior-blocked"
+    assert report.core_scenario_status == "blocked"
+    assert report.blocked_reason == "vendor Java 202X RTI behavior certification is not implemented yet"
 
 
 def test_java_certify_core_2025_standard_shim_uses_runtime_capability_trace(monkeypatch) -> None:
