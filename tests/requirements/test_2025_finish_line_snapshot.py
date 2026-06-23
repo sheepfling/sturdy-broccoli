@@ -4084,6 +4084,10 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Callback Bounded Proof Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/callback_bounded_proof.md" in markdown
     assert "Ready for callback bounded proof claim: True" in markdown
+    assert "Python2025 Exclusion Boundaries Audit" in markdown
+    assert "Finish-line source path: packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py" in markdown
+    assert "Direct compat anchor count: 0" in markdown
+    assert "Ready for python2025 exclusion boundaries claim: True" in markdown
     assert "Lookahead Window Bounded Proof Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md" in markdown
     assert "Ready for lookahead window bounded proof claim: True" in markdown

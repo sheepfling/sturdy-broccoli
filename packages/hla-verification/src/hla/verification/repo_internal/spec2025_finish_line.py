@@ -8875,6 +8875,8 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Audit status: {python2025_exclusion_boundaries_audit['audit_status']}",
             f"- Doc path: {python2025_exclusion_boundaries_audit['doc_path']}",
             f"- Doc exists: {python2025_exclusion_boundaries_audit['doc_exists']}",
+            f"- Finish-line source path: {python2025_exclusion_boundaries_audit['finish_line_source_path']}",
+            f"- Direct compat anchor count: {python2025_exclusion_boundaries_audit['direct_compat_anchor_count']}",
             f"- Duplicate/umbrella row count: {python2025_exclusion_boundaries_audit['duplicate_umbrella_row_count']}",
             f"- Retired row count: {python2025_exclusion_boundaries_audit['retired_row_count']}",
             f"- Doc narrative ready: {python2025_exclusion_boundaries_audit['doc_narrative_ready']}",

@@ -275,6 +275,8 @@ Direct scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, sa
 - Audit status: python2025-exclusion-boundaries-captured
 - Doc path: docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md
 - Doc exists: True
+- Finish-line source path: packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py
+- Direct compat anchor count: 0
 - Duplicate/umbrella row count: 22
 - Retired row count: 24
 - Doc narrative ready: True
