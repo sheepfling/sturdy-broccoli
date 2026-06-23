@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from hla.rti1516_2025.datatypes import RangeBounds
-from hla.rti1516_2025.handles import DimensionHandle, ObjectInstanceHandle, RegionHandle
+from hla.rti1516_2025.handles import AttributeHandle, DimensionHandle, ObjectInstanceHandle, RegionHandle
 
 from .declaration_management_runtime import (
     publish_object_class_attributes,
@@ -33,6 +33,7 @@ from .interaction_runtime import (
     unsubscribe_interaction_class_with_regions,
     unsubscribe_object_class_directed_interactions,
 )
+from .object_instance_runtime import request_attribute_value_update
 from .object_region_runtime import (
     associate_regions_for_updates,
     change_attribute_order_type,
@@ -238,6 +239,28 @@ class DeclarationDdmSurfaceMixin:
         self._record("unassociateRegionsForUpdates", objectInstance, attributesAndRegions)
         self._require_joined("unassociateRegionsForUpdates")
         unassociate_regions_for_updates(self, objectInstance, attributesAndRegions)
+
+    def requestAttributeValueUpdateWithRegions(  # noqa: N802
+        self,
+        objectClassOrInstance: Any,
+        attributesAndRegions: Any,
+        userSuppliedTag: bytes,
+    ) -> None:
+        self._record("requestAttributeValueUpdateWithRegions", objectClassOrInstance, attributesAndRegions, userSuppliedTag)
+        self._require_joined("requestAttributeValueUpdateWithRegions")
+        self._require_no_save_or_restore("requestAttributeValueUpdateWithRegions")
+        try:
+            object_class_name = self._object_instance_record_known(objectClassOrInstance).object_class_name
+        except Exception:
+            object_class_name = self._object_class_name(objectClassOrInstance)
+        attribute_names: set[str] = set()
+        for names, _region_values in self._attribute_region_pairs(object_class_name, attributesAndRegions):
+            attribute_names.update(names)
+        attribute_handles = {
+            AttributeHandle(self._attribute_handles(object_class_name)[attribute_name])
+            for attribute_name in attribute_names
+        }
+        request_attribute_value_update(self, objectClassOrInstance, attribute_handles, userSuppliedTag)
 
     def changeDefaultAttributeTransportationType(  # noqa: N802
         self,

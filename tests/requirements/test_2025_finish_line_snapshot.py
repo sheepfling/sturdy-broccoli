@@ -380,9 +380,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     )
     assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 5
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 9
+    assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 10
     assert any("test_2025_provider_filters_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
     assert any("test_2025_provider_filters_directed_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
+    assert any(
+        "test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter"
+        in anchor
+        for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"]
+    )
     assert any(
         "test_2025_provider_restore_recovers_plain_interaction_subscriber_routing"
         in anchor

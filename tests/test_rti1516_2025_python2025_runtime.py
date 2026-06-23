@@ -8446,6 +8446,64 @@ def test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adap
     "HLA2025-FI-SVC-135",
     "HLA2025-FI-SVC-136",
 )
+def test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.verification import (
+        DdmObjectRegionLifecycleScenarioConfig,
+        run_ddm_object_region_lifecycle_scenario,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DefaultRoutingDDM.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"python2025-ddm-lifecycle-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = DdmObjectRegionLifecycleScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="DdmObjectRegionFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        interaction_class_name="HLAinteractionRoot.TrackReport",
+        parameter_name="TrackId",
+        object_instance_name=f"DDM-Direct-Region-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_ddm_object_region_lifecycle_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _normalized_2025_callback_equal(summary["discovery"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["discovery"].args[1], summary["subscriber_class"])
+    assert _normalized_2025_callback_equal(summary["provide"].args[0], summary["object_instance"])
+    assert summary["provide"].args[2] == config.request_tag
+    assert _normalized_2025_callback_equal(summary["received"].args[0], summary["subscriber_interaction"])
+    assert _normalized_2025_callback_equal(
+        summary["received"].args[1],
+        {summary["subscriber_parameter"]: config.interaction_payload},
+    )
+    assert summary["suppressed_receive"] is None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-126",
+    "HLA2025-FI-SVC-127",
+    "HLA2025-FI-SVC-134",
+    "HLA2025-FI-SVC-135",
+    "HLA2025-FI-SVC-136",
+)
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str

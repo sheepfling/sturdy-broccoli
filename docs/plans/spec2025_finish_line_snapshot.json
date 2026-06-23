@@ -1523,7 +1523,7 @@
       {
         "direct_tests": [
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adapter",
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery"
@@ -2583,7 +2583,7 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py",
-        "current_source_line_baseline": 3243,
+        "current_source_line_baseline": 3266,
         "current_source_method_baseline": 53,
         "proof_family_count": 5,
         "route_backed": true,
@@ -2596,7 +2596,7 @@
             "present_in_runtime_backend": true
           },
           {
-            "current_line_count": 454,
+            "current_line_count": 477,
             "current_method_count": 9,
             "family": "ddm-region-runtime",
             "present_in_runtime_backend": true
@@ -2612,14 +2612,14 @@
       },
       {
         "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py",
-        "current_source_line_baseline": 4690,
+        "current_source_line_baseline": 4713,
         "current_source_method_baseline": 135,
         "proof_family_count": 6,
         "route_backed": true,
         "slice_id": "2025-ddm-default-attribute-policy",
         "source_families": [
           {
-            "current_line_count": 454,
+            "current_line_count": 477,
             "current_method_count": 9,
             "family": "ddm-region-runtime",
             "present_in_runtime_backend": true
@@ -8007,7 +8007,7 @@
     "audit_status": "implementation-concentration-captured",
     "backend_shell_ratio": 0.0,
     "current_assessment": "The primary 2025 Python RTI lane still cites hla-backend-python2025/backend.py as a frequent evidence anchor, but semantic concentration is no longer material there: the ambassador shell is thin and most runtime behavior now lives in extracted python2025 modules. Remaining pressure is architectural hygiene, not proof that core 2025 semantics still live in one oversized backend class.",
-    "extracted_runtime_module_line_count": 11331,
+    "extracted_runtime_module_line_count": 11354,
     "extraction_pressure_boundary": "The main python2025 runtime should keep absorbing real RTI semantics, while wrapper-only compatibility logic should keep shrinking or moving outward into narrower adapters and reusable runtime modules.",
     "implemented_slice_count": 76,
     "leading_extracted_runtime_modules": [
@@ -18189,7 +18189,7 @@
     "audit_status": "python2025-source-responsibility-captured",
     "current_assessment": "The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python2025, while the substantive runtime behavior is spread across extracted python2025 modules and hla-backend-shim has been reduced to a compatibility wrapper. Save/restore lifecycle, directed-interaction routing, time management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery are now measurable as named source-owned families under the main python2025 runtime package.",
     "extracted_runtime_module_count": 50,
-    "extracted_runtime_module_line_count": 11331,
+    "extracted_runtime_module_line_count": 11354,
     "extracted_runtime_modules": [
       {
         "family": "misc-support",
@@ -18318,7 +18318,7 @@
         "family": "ddm-region-runtime",
         "function_count": 0,
         "functions": [],
-        "line_count": 299,
+        "line_count": 322,
         "path": "packages/hla-backend-python2025/src/hla/backends/python2025/declaration_ddm_surface_mixin.py"
       },
       {
@@ -19020,7 +19020,7 @@
       },
       {
         "family": "ddm-region-runtime",
-        "line_count": 454,
+        "line_count": 477,
         "method_count": 9,
         "sample_methods": [
           "ranges_overlap",
@@ -20051,7 +20051,7 @@
         "requirement_id": "HLA2025-BND-003"
       },
       {
-        "pytest_anchor_count": 153,
+        "pytest_anchor_count": 154,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers",
@@ -20059,6 +20059,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_compat_records_update_advisory_callback_shape",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
@@ -22179,8 +22180,9 @@
         "requirement_id": "HLA2025-FI-SVC-125"
       },
       {
-        "pytest_anchor_count": 18,
+        "pytest_anchor_count": 19,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
@@ -22203,8 +22205,9 @@
         "requirement_id": "HLA2025-FI-SVC-126"
       },
       {
-        "pytest_anchor_count": 9,
+        "pytest_anchor_count": 10,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
@@ -22279,8 +22282,9 @@
         "requirement_id": "HLA2025-FI-SVC-133"
       },
       {
-        "pytest_anchor_count": 9,
+        "pytest_anchor_count": 10,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
@@ -22294,8 +22298,9 @@
         "requirement_id": "HLA2025-FI-SVC-134"
       },
       {
-        "pytest_anchor_count": 5,
+        "pytest_anchor_count": 6,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
@@ -22305,8 +22310,9 @@
         "requirement_id": "HLA2025-FI-SVC-135"
       },
       {
-        "pytest_anchor_count": 4,
+        "pytest_anchor_count": 5,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter",
@@ -22924,11 +22930,12 @@
         "requirement_id": "HLA2025-FR-002"
       },
       {
-        "pytest_anchor_count": 26,
+        "pytest_anchor_count": 27,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
@@ -22956,11 +22963,12 @@
         "requirement_id": "HLA2025-FR-003"
       },
       {
-        "pytest_anchor_count": 24,
+        "pytest_anchor_count": 25,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",

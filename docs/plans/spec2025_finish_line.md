@@ -474,7 +474,7 @@ Leading extracted runtime owners:
 - Source path: packages/hla-backend-python2025/src/hla/backends/python2025/backend.py
 - Source line count: 488
 - Extracted runtime helper modules: 50
-- Extracted runtime helper lines: 11331
+- Extracted runtime helper lines: 11354
 - Runtime ambassador class: Python2025RTIAmbassador
 - Runtime ambassador line count: 18
 - Runtime ambassador methods: 0
@@ -496,7 +496,7 @@ Python 2025 source responsibility families:
 - time-management-runtime: 27 methods, 830 lines; sample=queue_tso_callback, register_retraction_group, resolve_retraction_group, drop_retraction_group_member, finalize_retraction_group_if_inactive, canonicalize_retraction_handles, deliver_due_tso_callbacks, has_attribute_candidate
 - interaction-routing-runtime: 23 methods, 628 lines; sample=matching_directed_interaction_targets, parameter_names_from_handles, interaction_class_names_from_handles, interaction_order_for, interaction_transportation_for, coerce_order_type, publish_interaction_class, unpublish_interaction_class
 - ownership-runtime: 11 methods, 583 lines; sample=unconditional_attribute_ownership_divestiture, negotiated_attribute_ownership_divestiture, confirm_divestiture, attribute_ownership_acquisition, attribute_ownership_acquisition_if_available, attribute_ownership_release_denied, attribute_ownership_divestiture_if_wanted, cancel_negotiated_attribute_ownership_divestiture
-- ddm-region-runtime: 9 methods, 454 lines; sample=ranges_overlap, region_owner_key, regions_overlap_pair, region_sets_overlap, reflectable_attribute_names_for_subscriber, default_transportation_for, attribute_transportation_for, default_order_for
+- ddm-region-runtime: 9 methods, 477 lines; sample=ranges_overlap, region_owner_key, regions_overlap_pair, region_sets_overlap, reflectable_attribute_names_for_subscriber, default_transportation_for, attribute_transportation_for, default_order_for
 - save-restore-runtime: 13 methods, 430 lines; sample=capture_federation_save_snapshot, restore_federation_save_snapshot, request_federation_save, start_federation_save, process_scheduled_save, federate_save_begun, complete_save, abort_federation_save
 - fom-catalog-and-handle-support: 18 methods, 213 lines; sample=normalize_handle, federation_record, catalog, stable_handles, object_class_handles, interaction_class_handles, dimension_handles, dimension_spec
 
@@ -512,7 +512,7 @@ Extracted Python 2025 runtime helper modules:
 - packages/hla-backend-python2025/src/hla/backends/python2025/catalog_access_runtime.py: fom-catalog-and-handle-support, 10 functions, 101 lines; functions=normalize_handle, federation_record, catalog, stable_handles, object_class_handles, interaction_class_handles, dimension_handles, dimension_spec, dimension_default_upper_bound, transportation_handles
 - packages/hla-backend-python2025/src/hla/backends/python2025/catalog_runtime.py: fom-catalog-and-handle-support, 8 functions, 112 lines; functions=attribute_handles, parameter_handles, object_class_name, interaction_class_name, transportation_handle_by_name, object_instance_record, object_instance_record_known, synchronization_required_federates
 - packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py: ddm-region-runtime, 9 functions, 155 lines; functions=ranges_overlap, region_owner_key, regions_overlap_pair, region_sets_overlap, reflectable_attribute_names_for_subscriber, default_transportation_for, attribute_transportation_for, default_order_for, attribute_order_for
-- packages/hla-backend-python2025/src/hla/backends/python2025/declaration_ddm_surface_mixin.py: ddm-region-runtime, 0 functions, 299 lines; functions=
+- packages/hla-backend-python2025/src/hla/backends/python2025/declaration_ddm_surface_mixin.py: ddm-region-runtime, 0 functions, 322 lines; functions=
 - packages/hla-backend-python2025/src/hla/backends/python2025/declaration_management.py: object-attribute-runtime, 0 functions, 5 lines; functions=
 - packages/hla-backend-python2025/src/hla/backends/python2025/declaration_management_runtime.py: object-attribute-runtime, 10 functions, 245 lines; functions=publish_object_class_attributes, unpublish_object_class, unpublish_object_class_attributes, subscribe_object_class_attributes, unsubscribe_object_class, unsubscribe_object_class_attributes, reserve_object_instance_name, release_object_instance_name, reserve_multiple_object_instance_names, release_multiple_object_instance_names
 - packages/hla-backend-python2025/src/hla/backends/python2025/delivery_state_runtime.py: time-management-runtime, 11 functions, 177 lines; functions=queue_tso_callback, register_retraction_group, resolve_retraction_group, drop_retraction_group_member, finalize_retraction_group_if_inactive, canonicalize_retraction_handles, deliver_due_tso_callbacks, has_attribute_candidate, add_attribute_candidate, remove_attribute_candidate, pop_attribute_candidate
@@ -1617,8 +1617,8 @@ Extraction impact rows:
 
 - 2025-save-restore-lifecycle: source families=4, baseline=4004 lines/72 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py; save-restore-runtime=430 lines/13 methods, time-management-runtime=830 lines/27 methods, ownership-runtime=583 lines/11 methods, callback-delivery-and-control=2161 lines/21 methods
 - 2025-ownership-proof-families: source families=3, baseline=3174 lines/45 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py; ownership-runtime=583 lines/11 methods, save-restore-runtime=430 lines/13 methods, callback-delivery-and-control=2161 lines/21 methods
-- 2025-directed-interaction-boundary: source families=3, baseline=3243 lines/53 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py; interaction-routing-runtime=628 lines/23 methods, ddm-region-runtime=454 lines/9 methods, callback-delivery-and-control=2161 lines/21 methods
-- 2025-ddm-default-attribute-policy: source families=4, baseline=4690 lines/135 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py; ddm-region-runtime=454 lines/9 methods, object-attribute-runtime=1447 lines/82 methods, interaction-routing-runtime=628 lines/23 methods, callback-delivery-and-control=2161 lines/21 methods
+- 2025-directed-interaction-boundary: source families=3, baseline=3266 lines/53 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py; interaction-routing-runtime=628 lines/23 methods, ddm-region-runtime=477 lines/9 methods, callback-delivery-and-control=2161 lines/21 methods
+- 2025-ddm-default-attribute-policy: source families=4, baseline=4713 lines/135 methods, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py; ddm-region-runtime=477 lines/9 methods, object-attribute-runtime=1447 lines/82 methods, interaction-routing-runtime=628 lines/23 methods, callback-delivery-and-control=2161 lines/21 methods
 
 ## Promotion Vs Split Audit
 
