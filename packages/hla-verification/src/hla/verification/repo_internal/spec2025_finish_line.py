@@ -2613,7 +2613,7 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "object-advisory-transport-and-name-reservation-callbacks",
             "focus": "scope advisories, update-rate advisories, transport change/query callbacks, and single or multiple object-instance name reservation callback flows",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
@@ -6173,7 +6173,7 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "focus": "turnUpdatesOn/off advisories, object-scope in-scope or out-of-scope transitions, update-rate routing, and rate alias parity",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_and_universal_subscription_aliases_match_active_exchange",
             ],
             "hosted_tests": [

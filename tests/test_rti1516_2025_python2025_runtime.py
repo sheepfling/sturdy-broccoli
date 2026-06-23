@@ -8641,6 +8641,94 @@ def test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter(
 
 
 @pytest.mark.requirements(
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-037",
+    "HLA2025-FI-SVC-040",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-126",
+)
+def test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.rti1516e.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import ObjectScopeScenarioConfig, run_object_scope_relevance_scenario
+
+    fom_path = tmp_path / "Proto2025ObjectScopeDDM.xml"
+    _write_proto2025_default_routing_ddm_fom(fom_path)
+
+    federation_name = f"python2025-object-scope-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    acquirer = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    config = ObjectScopeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path), "HLAstandardMIM.xml"),
+        owner_name="Owner",
+        acquirer_name="Acquirer",
+        observer_name="Observer",
+        federate_type="ObjectScopeFederate",
+        object_class_name="HLAobjectRoot.Target",
+        attribute_name="Position",
+        object_instance_name=f"Direct-Scope-{uuid.uuid4().hex[:8]}",
+    )
+
+    try:
+        summary = run_object_scope_relevance_scenario(
+            owner,
+            acquirer,
+            observer,
+            config=config,
+            owner_federate=_CompatRecordingFederateAmbassador(),
+            acquirer_federate=_CompatRecordingFederateAmbassador(),
+            observer_federate=_CompatRecordingFederateAmbassador(),
+        )
+
+        assert _normalized_2025_callback_equal(
+            summary["initial_in_scope"].args,
+            (summary["object_instance"], {summary["observer_attribute"]}),
+        )
+        assert _normalized_2025_callback_equal(
+            summary["out_of_scope"].args,
+            (summary["object_instance"], {summary["observer_attribute"]}),
+        )
+        assert _normalized_2025_callback_equal(
+            summary["reacquired_in_scope"].args,
+            (summary["object_instance"], {summary["observer_attribute"]}),
+        )
+        assert _normalized_2025_callback_equal(
+            summary["initial_reflection"].args[1],
+            {summary["observer_attribute"]: config.in_scope_payload},
+        )
+        assert summary["suppressed_reflection"] is None
+        assert _normalized_2025_callback_equal(
+            summary["acquired_reflection"].args[1],
+            {summary["observer_attribute"]: config.acquired_payload},
+        )
+    finally:
+        for rti, resign_action in (
+            (observer, ResignAction.NO_ACTION),
+            (owner, ResignAction.NO_ACTION),
+            (acquirer, ResignAction.DELETE_OBJECTS),
+        ):
+            try:
+                rti.resign_federation_execution(resign_action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (observer, acquirer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
     "HLA2025-FR-001",
     "HLA2025-FR-003",
     "HLA2025-FI-001",
