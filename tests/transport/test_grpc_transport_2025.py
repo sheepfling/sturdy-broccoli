@@ -169,6 +169,7 @@ from hla.verification import (
     run_synchronization_registration_failure_scenario,
     run_synchronization_scenario,
     run_suite_ddm_scenario,
+    run_suite_save_restore_scenario,
     run_transportation_type_rejection_scenario,
     run_transportation_type_restore_persistence_scenario,
     run_transportation_type_scenario,
@@ -11987,6 +11988,56 @@ def test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_rou
             except Exception:
                 pass
         for rti in (wing, leader):
+            if rti is not None:
+                _close_rti_ambassador(rti)
+        server.close()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
+def test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route():
+    server = start_2025_grpc_server()
+    left = None
+    right = None
+    federation_name = f"fedpro-2025-suite-save-restore-{uuid.uuid4().hex[:8]}"
+    save_name = f"fedpro-suite-save-{uuid.uuid4().hex[:8]}"
+    try:
+        left = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        right = _FedPro2025ScenarioAdapter(GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start())
+        left_fed = SuiteRecordingFederateAmbassador(profile="fedpro-2025", scenario="suite-save-restore", role="left")
+        right_fed = SuiteRecordingFederateAmbassador(profile="fedpro-2025", scenario="suite-save-restore", role="right")
+
+        summary = run_suite_save_restore_scenario(
+            left,
+            right,
+            config={
+                "federation_name": federation_name,
+                "fom_modules": ("resource:VendorSmokeFOM.xml",),
+                "logical_time_implementation_name": "HLAfloat64Time",
+                "save_name": save_name,
+                "resume_time": HLAfloat64Time(5.0),
+            },
+            left_federate=left_fed,
+            right_federate=right_fed,
+        )
+
+        assert summary["federation_saved"] is True
+        assert summary["restore_completed"] is True
+        assert summary["left_time"]["value"] == 0.0
+        assert summary["right_time"]["value"] == 0.0
+    finally:
+        for rti in (right, left):
+            if rti is None:
+                continue
+            try:
+                rti.resign_federation_execution(ResignAction.NO_ACTION)
+            except Exception:
+                pass
+        if left is not None:
+            try:
+                left.destroy_federation_execution(federation_name)
+            except Exception:
+                pass
+        for rti in (right, left):
             if rti is not None:
                 _close_rti_ambassador(rti)
         server.close()
