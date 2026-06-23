@@ -4141,6 +4141,35 @@ def test_2025_provider_runs_update_rate_scenario_via_compat_adapter(tmp_path: Pa
     assert summary["values"] == [b"t1", b"t16"]
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-019")
+def test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapter(tmp_path: Path) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
+
+    fom_path = tmp_path / "Proto2025DirectUpdateRateFOM.xml"
+    write_update_rate_fom(fom_path)
+
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = UpdateRateScenarioConfig(
+        federation_name=f"python2025-update-rate-direct-{uuid.uuid4().hex[:8]}",
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAfloat64Time",
+    )
+
+    summary = run_update_rate_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["publisher_handle"] is not None
+    assert summary["subscriber_handle"] is not None
+    assert summary["values"] == [b"t1", b"t16"]
+
+
 @pytest.mark.requirements(
     "HLA2025-FR-001",
     "HLA2025-FI-001",

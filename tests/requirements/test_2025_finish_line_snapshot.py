@@ -670,7 +670,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-NEW-003"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-NEW-005"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-NEW-005"]["pytest_anchor_count"] == 4
     assert any("test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert any("test_2025_transport_server_round_trips_support_services_over_fedpro_schema" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert pytest_rows["HLA2025-NEW-007"]["pytest_anchor_count"] >= 10

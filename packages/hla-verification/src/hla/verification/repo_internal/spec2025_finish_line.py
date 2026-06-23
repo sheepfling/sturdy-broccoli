@@ -6172,7 +6172,7 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "advisory-and-update-rate-callbacks",
             "focus": "turnUpdatesOn/off advisories, object-scope in-scope or out-of-scope transitions, update-rate routing, and rate alias parity",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_update_rate_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_and_universal_subscription_aliases_match_active_exchange",
             ],
