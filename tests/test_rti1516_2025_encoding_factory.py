@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+import inspect
 import struct
+from typing import get_type_hints
 
 import pytest
 from hla.rti1516_2025 import BasicEncoderFactory, create_encoder_factory
+from hla.rti1516_2025._byte_wrapper import BytesLike as BytesLike2025
+from hla.rti1516_2025._byte_wrapper import ByteWrapper as ByteWrapper2025
 from hla.rti1516_2025.encoding import (
     CallableDataElementFactory,
     SimpleByteWrapper,
     SimpleVariableLengthData,
 )
+from hla.rti1516e._byte_wrapper import BytesLike as BytesLike2010
+from hla.rti1516e._byte_wrapper import ByteWrapper as ByteWrapper2010
 
 
 @pytest.mark.requirements("HLA2025-FI-004")
@@ -57,6 +63,51 @@ def test_byte_wrapper_supports_java_style_put_get_and_slices() -> None:
     assert reader.getInt() == 7
     assert reader.slice(2).toByteArray() == b"ab"
     assert reader.remaining() == 2
+
+
+def test_2010_and_2025_byte_wrapper_put_signatures_and_mutables_stay_aligned() -> None:
+    expected_put_value = int | bytes | bytearray | memoryview
+
+    for byte_wrapper in (ByteWrapper2010, ByteWrapper2025):
+        put_hints = get_type_hints(byte_wrapper.put)
+        reassign_hints = get_type_hints(byte_wrapper.reassign)
+        get_hints = get_type_hints(byte_wrapper.get)
+        array_hints = get_type_hints(byte_wrapper.array)
+
+        assert put_hints["value"] == expected_put_value
+        assert put_hints["offset"] == (int | None)
+        assert put_hints["count"] == (int | None)
+        assert reassign_hints["buffer"] is bytearray
+        assert get_hints["dest"] == (bytearray | None)
+        assert get_hints["return"] == (int | None)
+        assert array_hints["return"] is bytearray
+
+    assert BytesLike2010.__args__ == BytesLike2025.__args__ == (bytes, bytearray, memoryview)
+
+    assert inspect.signature(ByteWrapper2010.put) == inspect.signature(ByteWrapper2025.put)
+
+
+def test_simple_byte_wrapper_supports_memoryview_inputs_and_offsets() -> None:
+    wrapper = SimpleByteWrapper()
+    wrapper.put(memoryview(b"\xAA\xCC"))
+    wrapper.put(memoryview(b"\xDD\xEE"), 1, 1)
+
+    assert wrapper.toByteArray() == b"\xAA\xCC\xEE"
+
+
+def test_simple_byte_wrapper_mutable_paths_return_bytearray() -> None:
+    wrapper = SimpleByteWrapper()
+    wrapper.put(b"\x00\x01\x02\x03\x04")
+    assert isinstance(wrapper.array(), bytearray)
+
+    reader = SimpleByteWrapper(wrapper.array())
+    target = bytearray(3)
+    assert reader.get(target) is None
+    assert target == b"\x00\x01\x02"
+
+    scratch = bytearray(10)
+    reader.reassign(scratch, 0, 4)
+    assert reader.array() is scratch
 
 
 @pytest.mark.requirements("HLA2025-FI-004", "HLA2025-OMT-002")
