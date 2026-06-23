@@ -4797,6 +4797,56 @@ def test_2025_provider_runs_section8_ordering_and_queries_via_compat_adapter(
     "HLA2025-FI-001",
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-113",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_ordering_and_queries_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_ordering_and_query_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-order-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+
+    summary = run_section8_ordering_and_query_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _time_query_is_valid_local(summary["initial_galt"]) is True
+    assert _time_query_is_valid_local(summary["initial_lits"]) is True
+    _assert_same_time_scalar(summary["sender_grant"].args[0], config.sender_advance_time)
+    assert _normalized_2025_callback_equal(summary["first_receive"].args[1], {summary["parameter"]: config.second_payload})
+    assert summary["first_receive"].args[2] == config.second_tag
+    assert summary["first_receive"].args[3] is OrderType.TIMESTAMP
+    _assert_same_time_scalar(summary["first_receive"].args[5], config.second_timestamp)
+    _assert_same_time_scalar(summary["first_grant"].args[0], config.second_timestamp)
+    assert _normalized_2025_callback_equal(summary["second_receive"].args[1], {summary["parameter"]: config.first_payload})
+    assert summary["second_receive"].args[2] == config.first_tag
+    assert summary["second_receive"].args[3] is OrderType.TIMESTAMP
+    _assert_same_time_scalar(summary["second_receive"].args[5], config.first_timestamp)
+    _assert_same_time_scalar(summary["second_grant"].args[0], config.first_timestamp)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
     "HLA2025-FI-SVC-107",
     "HLA2025-FI-SVC-108",
     "HLA2025-FI-SVC-110",
@@ -4815,6 +4865,42 @@ def test_2025_provider_runs_section8_available_and_flush_via_compat_adapter(
     )
     publisher = create_rti_ambassador(backend=backend_name)
     subscriber = create_rti_ambassador(backend=backend_name)
+
+    summary = run_section8_available_and_flush_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["available_grant"] is not None
+    assert summary["flush_grant"] is not None
+    assert summary["flushed_receive"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-110",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_available_and_flush_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_available_and_flush_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-available-flush-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
 
     summary = run_section8_available_and_flush_case(
         publisher,
@@ -4952,6 +5038,42 @@ def test_2025_provider_runs_section8_duplicate_enable_rejection_via_compat_adapt
     "HLA2025-FI-001",
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-102",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_duplicate_enable_rejection_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_duplicate_enable_rejection_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-duplicate-enable-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+
+    summary = run_section8_duplicate_enable_rejection_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["regulation_error"] is not None
+    assert summary["constrained_error"] is not None
+    assert summary["final_regulation_callback_count"] == summary["initial_regulation_callback_count"]
+    assert summary["final_constrained_callback_count"] == summary["initial_constrained_callback_count"]
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
     "HLA2025-FI-SVC-103",
     "HLA2025-FI-SVC-111",
     "HLA2025-FI-SVC-112",
@@ -4970,6 +5092,41 @@ def test_2025_provider_runs_section8_tar_galt_boundary_via_compat_adapter(
     )
     publisher = create_rti_ambassador(backend=backend_name)
     subscriber = create_rti_ambassador(backend=backend_name)
+
+    summary = run_section8_tar_galt_boundary_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    _assert_same_time_scalar(summary["equal_galt"].time, config.receiver_window_time)
+    assert summary["grant"] is None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_tar_galt_boundary_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_tar_galt_boundary_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-tar-galt-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
 
     summary = run_section8_tar_galt_boundary_case(
         publisher,
@@ -5026,6 +5183,43 @@ def test_2025_provider_runs_section8_available_and_retraction_via_compat_adapter
     "HLA2025-FI-001",
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-107",
+    "HLA2025-FI-SVC-108",
+    "HLA2025-FI-SVC-121",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_available_and_retraction_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_available_and_retraction_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-available-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+
+    summary = run_section8_available_and_retraction_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["available_grant"] is not None
+    _assert_same_time_scalar(summary["available_grant"].args[0], config.receiver_window_time)
+    assert not summary["after_retract_callbacks"]
+    assert summary["flush_grant"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
     "HLA2025-FI-SVC-123",
     "HLA2025-FI-SVC-124",
 )
@@ -5044,6 +5238,47 @@ def test_2025_provider_runs_section8_order_override_via_compat_adapter(
     )
     publisher = create_rti_ambassador(backend=backend_name)
     subscriber = create_rti_ambassador(backend=backend_name)
+
+    summary = run_section8_order_override_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["reflect"] is not None
+    assert _normalized_2025_callback_equal(summary["reflect"].args[1], {summary["attribute"]: config.first_payload})
+    assert summary["reflect"].args[3] is OrderType.RECEIVE
+    assert len(summary["reflect"].args) >= 5
+    assert summary["receive"] is not None
+    assert _normalized_2025_callback_equal(summary["receive"].args[1], {summary["parameter"]: config.second_payload})
+    assert summary["receive"].args[3] is OrderType.RECEIVE
+    assert len(summary["receive"].args) >= 5
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-123",
+    "HLA2025-FI-SVC-124",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_order_override_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_order_override_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-order-override-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
 
     summary = run_section8_order_override_case(
         publisher,

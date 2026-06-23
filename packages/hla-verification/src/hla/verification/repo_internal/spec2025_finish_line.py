@@ -2728,6 +2728,8 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_requires_valid_fom_modules_and_default_logical_time",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_state_services_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_time_bound_queries_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_available_and_flush_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_duplicate_enable_rejection_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_time_management_service_interactions",
             ],
             "hosted_tests": [
@@ -2742,6 +2744,7 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "focus": "queryLogicalTime, queryGALT, queryLITS, queryLookahead, modifyLookahead, and visible divergence or convergence of GALT/LITS under queued traffic and live lookahead changes",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_tar_galt_boundary_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
             ],
@@ -2759,7 +2762,10 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_targets",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_ordering_and_queries_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_available_and_retraction_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_request_retraction_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_order_override_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fedpro_schema",

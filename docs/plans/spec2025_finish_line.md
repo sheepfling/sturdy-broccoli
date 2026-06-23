@@ -854,19 +854,19 @@ Save/restore requirement families:
 ### time-management/factory-mode-enable-and-request-primitives
 
 - Focus: logical-time factory selection, regulation/constrained enablement, advance-request modes, MOM time-management control routing, and typed flush-queue request handling
-- Direct test count: 4
+- Direct test count: 6
 - Hosted test count: 4
 
 ### time-management/galt-lits-query-and-lookahead-observability
 
 - Focus: queryLogicalTime, queryGALT, queryLITS, queryLookahead, modifyLookahead, and visible divergence or convergence of GALT/LITS under queued traffic and live lookahead changes
-- Direct test count: 3
+- Direct test count: 4
 - Hosted test count: 4
 
 ### time-management/timestamped-delivery-retraction-and-ordering
 
 - Focus: queued timestamped delivery, requestRetraction fanout or suppression, lagging-subscriber behavior, and receive-order versus timestamp-order handling across direct and hosted routes
-- Direct test count: 4
+- Direct test count: 7
 - Hosted test count: 4
 
 ### time-management/lookahead-window-proof-ladder
