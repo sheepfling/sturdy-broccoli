@@ -8974,6 +8974,76 @@ def test_2025_provider_runs_orphan_object_lifecycle_scenario_via_compat_adapter(
     "HLA2025-FR-001",
     "HLA2025-FR-003",
     "HLA2025-FI-001",
+    "HLA2025-FI-SVC-008",
+    "HLA2025-FI-SVC-118",
+)
+def test_2025_primary_python_rti_runs_orphan_object_lifecycle_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.rti1516e.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import OrphanObjectScenarioConfig, run_orphan_object_lifecycle_scenario
+
+    fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
+    _write_proto2025_smoke_object_fom(fom_path)
+
+    federation_name = f"python2025-orphan-object-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    late = create_rti_ambassador(backend="python2025")
+    config = OrphanObjectScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        late_name="Late",
+        federate_type="OrphanObjectFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"Direct-Orphan-{uuid.uuid4().hex[:8]}",
+    )
+
+    try:
+        summary = run_orphan_object_lifecycle_scenario(
+            owner,
+            observer,
+            late,
+            config=config,
+            owner_federate=_CompatRecordingFederateAmbassador(),
+            observer_federate=_CompatRecordingFederateAmbassador(),
+            late_federate=_CompatRecordingFederateAmbassador(),
+        )
+
+        assert _normalized_2025_callback_equal(summary["late_discovery"].args[0], summary["object_instance"])
+        assert summary["observer_remove"] is None
+        assert _normalized_2025_callback_equal(summary["late_remove"].args[0], summary["object_instance"])
+        assert summary["late_remove"].args[1] == config.delete_tag
+    finally:
+        for rti, resign_action in (
+            (late, ResignAction.NO_ACTION),
+            (observer, ResignAction.NO_ACTION),
+            (owner, ResignAction.NO_ACTION),
+        ):
+            try:
+                rti.resign_federation_execution(resign_action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (late, observer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FR-003",
+    "HLA2025-FI-001",
     "HLA2025-FI-SVC-005",
     "HLA2025-FI-SVC-006",
     "HLA2025-FI-SVC-007",
