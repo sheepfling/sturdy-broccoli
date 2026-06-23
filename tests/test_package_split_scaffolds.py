@@ -946,13 +946,17 @@ def test_split_packages_publish_standalone_build_metadata() -> None:
 def test_2025_backend_package_readmes_match_promoted_runtime_split() -> None:
     python2025_readme = (PACKAGES / "hla-backend-python2025" / "README.md").read_text(encoding="utf-8")
     shim_readme = (PACKAGES / "hla-backend-shim" / "README.md").read_text(encoding="utf-8")
+    normalized_python2025 = " ".join(python2025_readme.split())
+    normalized_shim = " ".join(shim_readme.split())
 
     assert "owns the main full Python 2025 RTI runtime" in python2025_readme
+    assert "sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane" in normalized_python2025
     assert "promoted Python-owned 2025 RTI implementation lane" in python2025_readme
     assert "temporary import-compatibility scaffolding" in shim_readme
+    assert "not part of the repo-owned 2025 Python RTI implementation claim" in normalized_shim
     assert "main full Python 2025" in shim_readme
     assert "`hla-backend-python2025`" in shim_readme
-    assert "retains import-level wrapper-facing normalization" in shim_readme
+    assert "retains import-level wrapper-facing normalization" in normalized_shim
 
 
 def test_2025_grpc_transport_docs_keep_fedpro_route_boundary_explicit() -> None:

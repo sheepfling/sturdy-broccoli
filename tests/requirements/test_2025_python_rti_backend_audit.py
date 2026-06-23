@@ -1024,6 +1024,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     normalized_packages = " ".join(packages_readme.split()).lower()
 
     assert "the main full runtime now executes from `hla-backend-python2025`" in normalized_backend
+    assert "sole repo-owned ieee 1516.1-2025 python rti implementation lane" in normalized_backend
     assert 'use `backend="python2025"`' in normalized_backend
     assert "preserving legacy shim import paths" in normalized_backend
     assert "carrying only thin compatibility indirection while the executable runtime stays in `hla-backend-python2025`" in normalized_backend
@@ -1108,6 +1109,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "direct `python2025` time-window, save/restore, ownership, callback, support-service, and mom proof selectors" in normalized_networked
 
     assert "most shim helper modules are intentionally thin re-exports of `hla.backends.python2025.*` runtime modules" in normalized_migration
+    assert "not part of the repo-owned implementation claim" in normalized_migration
     assert "the shim package should not regain ownership of core rti semantics" in normalized_migration
     assert "retained only for explicit legacy import compatibility coverage and temporary scaffolding" in normalized_migration
     assert "use `hla.backends.shim` only when you need the temporary import-compatibility scaffolding or legacy compatibility-wrapper imports" in normalized_migration
@@ -1506,8 +1508,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "keep the main full ieee 1516.1-2025 runtime semantics under `hla.backends.python2025`" in normalized_workspace_layout
     assert "keep `hla.backends.shim` narrow and wrapper-only; it should not re-own the 2025 runtime" in normalized_workspace_layout
 
-    assert "`hla-backend-python2025` is the main full 2025 python rti backend" in normalized_dependency_tree
-    assert "`hla-backend-shim` is temporary import-compatibility scaffolding plus a legacy compatibility wrapper that depends on it" in normalized_dependency_tree
+    assert "`hla-backend-python2025` is the sole repo-owned ieee 1516.1-2025 python rti implementation lane" in normalized_dependency_tree
+    assert "`hla-backend-shim` is temporary import-compatibility scaffolding plus a legacy compatibility wrapper that depends on it rather than a peer rti lane or part of the implementation claim" in normalized_dependency_tree
     assert "`hla-transport-grpc` already carries the bounded 2025 fedpro transport/client/server surface" in normalized_dependency_tree
     assert "| `hla-fom-target-radar` | `hla-rti1516e, hla-rti1516-2025, hla-rti-core` | `-` |" in normalized_dependency_tree
     assert "the operator-facing hosted 2025 lane is `python2025`" in normalized_route_inventory_remote
@@ -1529,6 +1531,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
 
     assert "main full python rti backend package for ieee 1516.1-2025" in normalized_python2025_readme
     assert "this package now owns the main full python 2025 rti runtime" in normalized_python2025_readme
+    assert "sole repo-owned ieee 1516.1-2025 python rti implementation lane" in normalized_python2025_readme
     assert "public `hla.backends.python2025.backend` shell now fronts a split package layout" in normalized_python2025_readme
     assert "`backend_factory_runtime.py`" in python2025_readme
     assert "`runtime_state.py`" in python2025_readme
@@ -1537,7 +1540,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`*_surface_mixin.py`" in python2025_readme
     assert "`hla-backend-shim` package is deprecated compatibility scaffolding for older route and provider names that should be removed after migration" in normalized_python2025_readme
     assert "must not delegate back to `hla.backends.shim.backend.create_shim_backend`" in normalized_python2025_readme
-    assert "the architectural split that matters is already in place: `hla-backend-python2025` is the real 2025 rti runtime owner" in normalized_shim_readme
+    assert "not part of the repo-owned 2025 python rti implementation claim" in normalized_shim_readme
+    assert "the architectural split that matters is already in place: `hla-backend-python2025` is the real 2025 rti runtime owner and the sole repo-owned 2025 python rti lane" in normalized_shim_readme
     assert "kept only as temporary, test-backed import-compatibility scaffolding" in normalized_shim_readme
     assert "they should be removed once no callers depend on the legacy import paths" in normalized_shim_readme
     assert "the other `hla.backends.shim.*` modules outside the package root: they are forwarders, not implementation owners" in normalized_shim_readme
@@ -1549,7 +1553,8 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert 'status = "implementation-owned"' in normalized_python2025_pyproject
 
     assert "legacy-named `hla-backend-shim` package is deprecated temporary import-compatibility scaffolding and a compatibility wrapper over the main full python 2025 rti lane" in normalized_shim_docs_readme
-    assert "the executable runtime now lives in `hla-backend-python2025`" in normalized_shim_docs_readme
+    assert "not part of the repo-owned 2025 python rti implementation claim" in normalized_shim_docs_readme
+    assert "the executable runtime now lives in `hla-backend-python2025`, which is the sole repo-owned ieee 1516.1-2025 python rti implementation lane" in normalized_shim_docs_readme
     assert "only the `shim2025*` names represent the wrapper-only lane" in normalized_shim_docs_readme
     assert "test-backed legacy compatibility surface" in normalized_shim_docs_readme
     assert "deprecated and should be removed after migration" in normalized_shim_docs_readme

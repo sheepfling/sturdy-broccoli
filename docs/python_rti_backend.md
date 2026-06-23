@@ -38,7 +38,8 @@ The important distinction is architectural, not naming-based:
 
 - the 2010 lane is a direct pure-Python backend for `rti1516e`
 - the 2025 lane is now owned in practice by `hla-backend-python2025`, which is
-  the repo's real Python RTI implementation lane for `rti1516_2025`
+  the repo's real and sole repo-owned Python RTI implementation lane for
+  `rti1516_2025`
 - the main full runtime now executes from `hla-backend-python2025`
 - `hla-backend-shim` remains as a compatibility wrapper so legacy import paths
   and wrapper-facing normalization do not get confused with core RTI
@@ -76,6 +77,7 @@ canonical hosted runtime surface.
 That means the practical repo stance is:
 
 - current reality: `hla-backend-python2025` is the main full Python 2025 RTI implementation lane
+- ownership reality: `hla-backend-python2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane
 - compatibility reality: `hla-backend-shim` is a legacy wrapper over that lane
 - architectural caution: do not collapse shim concerns and RTI concerns so
   tightly that a later extraction becomes impossible

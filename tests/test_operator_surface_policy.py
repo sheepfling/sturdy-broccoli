@@ -226,9 +226,9 @@ def test_package_dependency_tree_generator_keeps_python2025_as_runtime_owner() -
     doc_text = _primary_text(ROOT / "docs" / "package_dependency_tree.md")
 
     expected = (
-        "`hla-backend-python2025` is the main full 2025 Python RTI backend, and "
+        "`hla-backend-python2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane, and "
         "`hla-backend-shim` is temporary import-compatibility scaffolding plus a "
-        "legacy compatibility wrapper that depends on it rather than a peer RTI lane."
+        "legacy compatibility wrapper that depends on it rather than a peer RTI lane or part of the implementation claim."
     )
     assert expected in script_text
     assert expected in doc_text

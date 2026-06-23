@@ -2,8 +2,8 @@
 
 `hla-backend-shim` is deprecated. It remains available only as temporary
 legacy import-level compatibility scaffolding for `rti1516_2025`, but it no
-longer owns the live Python 2025 RTI implementation and should be removed
-after callers migrate.
+longer owns the live Python 2025 RTI implementation, is not part of the
+repo-owned implementation claim, and should be removed after callers migrate.
 
 The executable runtime now lives in:
 
@@ -11,7 +11,8 @@ The executable runtime now lives in:
 
 This package exists to preserve temporary compatibility-facing entry points
 while the main 2025 RTI implementation is carried by
-`hla-backend-python2025`.
+`hla-backend-python2025`, the sole repo-owned IEEE 1516.1-2025 Python RTI
+implementation lane.
 
 In the current layout, most shim helper modules are intentionally thin
 re-exports of `hla.backends.python2025.*` runtime modules. The shim package

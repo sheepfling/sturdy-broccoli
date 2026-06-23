@@ -17,6 +17,8 @@ That means:
 
 - `hla-backend-python2025` is now the main full Python runtime package used for
   `rti1516_2025`
+- `hla-backend-python2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
+  implementation lane
 - `hla-backend-shim` remains only as temporary import-compatibility
   scaffolding and wrapper-only compatibility support
 - the repo is no longer relying on a shim-named package as the source of truth
@@ -44,6 +46,8 @@ So the practical 2025 story is:
 
 - the repo does have a working Python 2025 RTI lane
 - the repo now has a main full `hla-backend-python2025` backend package
+- that package is the sole repo-owned IEEE 1516.1-2025 Python RTI
+  implementation lane
 - the legacy `hla-backend-shim` package is being retained as temporary
   import-compatibility scaffolding rather than as the implementation owner
 - Java and C++ are segregated supporting binding lanes, not alternate Python

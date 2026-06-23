@@ -2,9 +2,11 @@
 
 The legacy-named `hla-backend-shim` package is deprecated temporary
 import-compatibility scaffolding and a compatibility wrapper over the main full
-Python 2025 RTI lane for `rti1516_2025`.
+Python 2025 RTI lane for `rti1516_2025`. It is not part of the repo-owned
+2025 Python RTI implementation claim.
 
-The executable runtime now lives in `hla-backend-python2025`. This package
+The executable runtime now lives in `hla-backend-python2025`, which is the
+sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane. This package
 retains temporary import-compatibility scaffolding, import-level
 wrapper-facing normalization, and compatibility aliases used by older routes
 and tests.

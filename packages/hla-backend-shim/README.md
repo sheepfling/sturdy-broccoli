@@ -2,11 +2,14 @@
 
 `hla-backend-shim` is deprecated. It provides only the legacy
 compatibility-wrapper package and temporary import-compatibility scaffolding
-for the IEEE 1516.1-2025 Python API surface.
+for the IEEE 1516.1-2025 Python API surface. It is not part of the repo-owned
+2025 Python RTI implementation claim.
 
 The package name is historical. In the current repo the main full Python 2025
-RTI implementation executes from `hla-backend-python2025`, while this package
-retains temporary import-compatibility scaffolding, retains import-level wrapper-facing normalization, and keeps legacy compatibility aliases.
+RTI implementation executes from `hla-backend-python2025`, which is the sole
+repo-owned IEEE 1516.1-2025 Python RTI implementation lane, while this package
+retains temporary import-compatibility scaffolding, retains import-level
+wrapper-facing normalization, and keeps legacy compatibility aliases.
 
 At the package root, the shim-specific surface is only
 `Shim2025Backend`, `Shim2025RTIAmbassador`, and `create_shim_backend`.
@@ -29,8 +32,9 @@ forwarders, not implementation owners.
 
 It is not a 2010 backend and it is not a vendor adapter. The architectural
 split that matters is already in place: `hla-backend-python2025` is the real
-2025 RTI runtime owner, and `hla-backend-shim` is deprecated, narrow,
-temporary, and compatibility-focused until it can be removed.
+2025 RTI runtime owner and the sole repo-owned 2025 Python RTI lane, and
+`hla-backend-shim` is deprecated, narrow, temporary, compatibility-focused,
+and outside the implementation claim until it can be removed.
 
 Future work here is boundary cleanup and removal, not deciding whether a
 dedicated Python 2025 backend should exist. That backend already exists in
