@@ -7371,6 +7371,52 @@ def test_2025_provider_runs_save_abort_scenario_via_compat_adapter(backend_name:
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-027",
+    "HLA2025-FI-SVC-029",
+)
+def test_2025_primary_python_rti_runs_save_abort_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_abort_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-2025-save-abort-direct-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-ABORT-DIRECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_save_abort_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["leader_initiate_save"].args == (config.save_name,)
+    assert summary["wing_initiate_save"].args == (config.save_name,)
+    assert summary["leader_not_saved"].args[0].name == "SAVE_ABORTED"
+    assert summary["wing_not_saved"].args[0].name == "SAVE_ABORTED"
+    cleared = {pair.federate_handle: pair.save_status for pair in summary["save_status_cleared"].args[0]}
+    assert {
+        int(getattr(handle, "value", handle)): status.name for handle, status in cleared.items()
+    } == {
+        int(getattr(summary["leader_handle"], "value", summary["leader_handle"])): "NO_SAVE_IN_PROGRESS",
+        int(getattr(summary["wing_handle"], "value", summary["wing_handle"])): "NO_SAVE_IN_PROGRESS",
+    }
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-025",
     "HLA2025-FI-SVC-026",
     "HLA2025-FI-SVC-028",
     "HLA2025-FI-SVC-029",
@@ -7643,6 +7689,43 @@ def test_2025_provider_runs_save_participant_exception_scenario_via_compat_adapt
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
 )
+def test_2025_primary_python_rti_runs_save_participant_exception_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_participant_exception_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    summary = run_save_participant_exception_scenario(
+        leader,
+        wing,
+        config=SaveRestoreScenarioConfig(
+            federation_name=f"python2025-2025-save-participant-direct-{uuid.uuid4().hex[:8]}",
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-PART-DIRECT-{uuid.uuid4().hex[:8]}",
+        ),
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _exception_matches_local(summary["begun_not_connected"], "NotConnected")
+    assert _exception_matches_local(summary["complete_not_connected"], "NotConnected")
+    assert _exception_matches_local(summary["not_complete_not_connected"], "NotConnected")
+    assert _exception_matches_local(summary["begun_not_joined"], "FederateNotExecutionMember")
+    assert _exception_matches_local(summary["complete_not_joined"], "FederateNotExecutionMember")
+    assert _exception_matches_local(summary["not_complete_not_joined"], "FederateNotExecutionMember")
+    assert _exception_matches_local(summary["begun_not_initiated"], "SaveNotInitiated")
+    assert _exception_matches_local(summary["complete_not_initiated"], "SaveNotInitiated")
+    assert _exception_matches_local(summary["not_complete_not_initiated"], "SaveNotInitiated")
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+)
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_abort_save_exception_scenario
@@ -7651,6 +7734,23 @@ def test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter(bac
 
     summary = run_abort_save_exception_scenario(
         create_rti_ambassador(backend=backend_name),
+        federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _exception_matches_local(summary["not_connected"], "NotConnected")
+    assert _exception_matches_local(summary["not_joined"], "FederateNotExecutionMember")
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+)
+def test_2025_primary_python_rti_runs_abort_save_exception_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import run_abort_save_exception_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    summary = run_abort_save_exception_scenario(
+        create_rti_ambassador(backend="python2025"),
         federate=_CompatRecordingFederateAmbassador(),
     )
 
@@ -7695,6 +7795,38 @@ def test_2025_provider_runs_restore_abort_exception_scenario_via_compat_adapter(
 @pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+)
+def test_2025_primary_python_rti_runs_restore_abort_exception_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_exception_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    summary = run_restore_abort_exception_scenario(
+        leader,
+        wing,
+        config=SaveRestoreScenarioConfig(
+            federation_name=f"python2025-2025-restore-abort-exc-direct-{uuid.uuid4().hex[:8]}",
+            fom_modules=("resource:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"RESTORE-ABORT-EXC-DIRECT-{uuid.uuid4().hex[:8]}",
+        ),
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _exception_matches_local(summary["not_connected"], "NotConnected")
+    assert _exception_matches_local(summary["not_joined"], "FederateNotExecutionMember")
+    assert _exception_matches_local(summary["restore_not_in_progress"], "RestoreNotInProgress")
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_status_exception_scenario_via_compat_adapter(backend_name: str) -> None:
@@ -7704,6 +7836,23 @@ def test_2025_provider_runs_save_status_exception_scenario_via_compat_adapter(ba
 
     summary = run_save_status_exception_scenario(
         create_rti_ambassador(backend=backend_name),
+        federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _exception_matches_local(summary["not_connected"], "NotConnected")
+    assert _exception_matches_local(summary["not_joined"], "FederateNotExecutionMember")
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-025",
+)
+def test_2025_primary_python_rti_runs_save_status_exception_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import run_save_status_exception_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    summary = run_save_status_exception_scenario(
+        create_rti_ambassador(backend="python2025"),
         federate=_CompatRecordingFederateAmbassador(),
     )
 

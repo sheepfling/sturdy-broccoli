@@ -681,7 +681,7 @@ OMT schema-constraint families:
 ### save-restore/lifecycle-control
 
 - Focus: save/restore request, initiate, completion, failure, abort, and precondition control flow
-- Direct test count: 9
+- Direct test count: 14
 - Hosted test count: 9
 
 ### save-restore/shared-scenario-rollback
@@ -1216,7 +1216,7 @@ DDM default-policy requirement families:
 - Assessment: The decomposed current-package pressure families are not in-process-only claims. Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof, which strengthens the current-lane working-RTI claim.
 - Residual boundary: This still does not prove full cross-binding conformance or full requirement-by-requirement closure; it proves that the main current-package pressure families are executable across the current Python 2025 lanes.
 
-- 2025-save-restore-lifecycle/lifecycle-control: direct=9, hosted=9, route-backed=True
+- 2025-save-restore-lifecycle/lifecycle-control: direct=14, hosted=9, route-backed=True
 - 2025-save-restore-lifecycle/shared-scenario-rollback: direct=4, hosted=4, route-backed=True
 - 2025-save-restore-lifecycle/routing-policy-rollback: direct=7, hosted=7, route-backed=True
 - 2025-save-restore-lifecycle/ownership-rollback: direct=4, hosted=4, route-backed=True
@@ -1243,13 +1243,13 @@ DDM default-policy requirement families:
 
 - Audit status: wrapper-boundary-family-asymmetry-captured
 - Family count: 22
-- Balanced families: 22
-- Direct-heavier families: 0
+- Balanced families: 21
+- Direct-heavier families: 1
 - Hosted-heavier families: 0
-- Assessment: The main current-package pressure families are route-backed across the current Python lanes and are now symmetric at the named proof-family level. The remaining work is no longer family-count parity; it is deeper behavioral expansion, stronger evidence quality, and architectural judgment about how far the repo should continue decomposing runtime semantics away from the remaining compatibility-wrapper seam.
+- Assessment: The main current-package pressure families are route-backed across the current Python lanes, but they are not perfectly symmetric. The remaining parity work is now clearer: close hosted-heavier and direct-heavier family imbalances rather than inventing new top-level proof areas.
 - Next parity boundary: Use the hosted-heavier and direct-heavier family rows as the next executable parity worklist for the current 2025 lane.
 
-- 2025-save-restore-lifecycle/lifecycle-control: balance=balanced, direct=9, hosted=9, delta=0
+- 2025-save-restore-lifecycle/lifecycle-control: balance=direct-heavier, direct=14, hosted=9, delta=5
 - 2025-save-restore-lifecycle/shared-scenario-rollback: balance=balanced, direct=4, hosted=4, delta=0
 - 2025-save-restore-lifecycle/routing-policy-rollback: balance=balanced, direct=7, hosted=7, delta=0
 - 2025-save-restore-lifecycle/ownership-rollback: balance=balanced, direct=4, hosted=4, delta=0
@@ -1592,7 +1592,7 @@ Shim responsibilities after extraction:
 
 Runtime semantics migration worklist:
 
-- 2025-save-restore-lifecycle: 5 proof families, direct=29, hosted=29, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py
+- 2025-save-restore-lifecycle: 5 proof families, direct=34, hosted=29, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py
 - 2025-ownership-proof-families: 6 proof families, direct=20, hosted=20, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py
 - 2025-directed-interaction-boundary: 5 proof families, direct=12, hosted=12, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py
 - 2025-ddm-default-attribute-policy: 6 proof families, direct=14, hosted=14, route-backed=True, target=packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py

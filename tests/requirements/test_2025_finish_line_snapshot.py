@@ -2190,7 +2190,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_provider_runs_federation_save_restore_lifecycle"
     )
     assert save_restore_audit["proof_families"][0]["direct_tests"][-1].endswith(
-        "test_2025_primary_python_rti_runs_restore_status_exception_scenario_without_wrapper_adapter"
+        "test_2025_primary_python_rti_runs_save_status_exception_scenario_without_wrapper_adapter"
     )
     assert save_restore_audit["proof_families"][0]["hosted_tests"][-1].endswith(
         "test_2025_transport_server_runs_restore_status_exception_scenario_over_fedpro_route"
@@ -2464,7 +2464,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {
             "slice_id": "2025-save-restore-lifecycle",
             "family": "lifecycle-control",
-            "direct_test_count": 9,
+            "direct_test_count": 14,
             "hosted_test_count": 9,
             "route_backed_across_current_python_lanes": True,
         },
@@ -2540,17 +2540,18 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert asymmetry_audit["audit_status"] == "wrapper-boundary-family-asymmetry-captured"
     assert asymmetry_audit["family_count"] == 22
     assert asymmetry_audit["by_balance"] == {
-        "balanced": 22,
+        "balanced": 21,
+        "direct-heavier": 1,
     }
     assert asymmetry_audit["families"][:5] == [
         {
             "slice_id": "2025-save-restore-lifecycle",
             "family": "lifecycle-control",
-            "direct_test_count": 9,
+            "direct_test_count": 14,
             "hosted_test_count": 9,
             "route_backed_across_current_python_lanes": True,
-            "balance": "balanced",
-            "count_delta": 0,
+            "balance": "direct-heavier",
+            "count_delta": 5,
         },
         {
             "slice_id": "2025-save-restore-lifecycle",
@@ -2589,13 +2590,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "count_delta": 0,
         },
     ]
-    assert all(family["balance"] == "balanced" for family in asymmetry_audit["families"])
-    assert "are now symmetric at the named proof-family level" in asymmetry_audit["current_assessment"]
-    assert "remaining work is no longer family-count parity" in asymmetry_audit["current_assessment"]
-    assert "deeper behavioral expansion, stronger evidence quality, and architectural judgment" in asymmetry_audit["current_assessment"]
+    assert sum(1 for family in asymmetry_audit["families"] if family["balance"] == "direct-heavier") == 1
+    assert sum(1 for family in asymmetry_audit["families"] if family["balance"] == "hosted-heavier") == 0
+    assert "are route-backed across the current Python lanes, but they are not perfectly symmetric" in asymmetry_audit["current_assessment"]
+    assert "remaining parity work is now clearer" in asymmetry_audit["current_assessment"]
+    assert "close hosted-heavier and direct-heavier family imbalances" in asymmetry_audit["current_assessment"]
     assert "current-package pressure families" in asymmetry_audit["current_assessment"]
-    assert "remain wrapper-fronted" not in asymmetry_audit["current_assessment"]
-    assert "remaining compatibility-wrapper seam" in asymmetry_audit["current_assessment"]
+    assert "remaining compatibility-wrapper seam" not in asymmetry_audit["current_assessment"]
     coherence_audit = snapshot["current_lane_coherence_audit"]
     assert coherence_audit["audit_status"] == "current-lane-coherence-captured"
     assert coherence_audit["coherence_claim"] == "bounded-working-RTI-surface"
@@ -3122,7 +3123,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
                 "ownership-rollback",
                 "time-window-and-time-state-rollback",
             ],
-            "direct_test_count": 29,
+            "direct_test_count": 34,
             "hosted_test_count": 29,
             "route_backed": True,
             "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
