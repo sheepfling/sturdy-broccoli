@@ -2303,7 +2303,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "directed-and-directed-ddm-interaction-routing",
     ]
     assert object_management_audit["proof_families"][0]["direct_tests"][-1].endswith(
-        "test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter"
+        "test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter"
     )
     assert object_management_audit["proof_families"][1]["hosted_tests"][4].endswith(
         "test_2025_transport_server_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing_over_fedpro_schema"

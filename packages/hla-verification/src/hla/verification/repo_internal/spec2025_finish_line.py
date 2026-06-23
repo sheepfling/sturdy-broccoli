@@ -2569,7 +2569,7 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
@@ -6117,7 +6117,7 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_end_to_end",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_schema",

@@ -263,7 +263,7 @@
         "direct_tests": [
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter"
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter"
         ],
         "family": "declaration-relevance-and-interest-advisories",
         "focus": "start or stop registration plus turnInteractionsOn/off callback delivery across declaration and time-managed declaration flows",
@@ -10425,7 +10425,7 @@
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_end_to_end",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end",
           "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
-          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter"
+          "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter"
         ],
         "family": "declaration-and-basic-exchange-gating",
         "focus": "publish and subscribe control, discovery metadata/class visibility, plain object exchange, and declaration gating or rejection paths",
@@ -20051,7 +20051,7 @@
         "requirement_id": "HLA2025-BND-003"
       },
       {
-        "pytest_anchor_count": 151,
+        "pytest_anchor_count": 152,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers",
@@ -20060,6 +20060,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
@@ -20702,8 +20703,9 @@
         "requirement_id": "HLA2025-FI-SVC-018"
       },
       {
-        "pytest_anchor_count": 26,
+        "pytest_anchor_count": 27,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wrapper_adapter",
@@ -20734,8 +20736,9 @@
         "requirement_id": "HLA2025-FI-SVC-019"
       },
       {
-        "pytest_anchor_count": 20,
+        "pytest_anchor_count": 21,
         "pytest_anchors": [
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
@@ -22849,7 +22852,7 @@
         "requirement_id": "HLA2025-FM-008"
       },
       {
-        "pytest_anchor_count": 51,
+        "pytest_anchor_count": 52,
         "pytest_anchors": [
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_proto2025_federate_examples.py::test_proto2025_2025_example_foms_drive_two_federate_exchange",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/factories/test_proto2025_fom_resources.py::test_each_proto2025_2025_scenario_fom_set_merges_with_standard_mim",
@@ -22857,6 +22860,7 @@
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary_explicit",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_framework_rules_markdown_maps_umbrella_rows_to_child_evidence",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_hla_factory_composition.py::test_2025_version_local_factory_uses_same_composition_layer",
+          "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wrapper_adapter",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_requires_valid_fom_modules_and_default_logical_time",
           "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interactions",

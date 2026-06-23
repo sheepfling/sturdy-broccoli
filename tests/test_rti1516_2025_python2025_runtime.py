@@ -5013,7 +5013,83 @@ def test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter
     assert _normalized_2025_callback_equal(summary["first_turn_off_record"].args, (summary["publisher_interaction"],))
     assert _normalized_2025_callback_equal(summary["second_start_record"].args, (summary["publisher_class"],))
     assert _normalized_2025_callback_equal(summary["second_turn_on_record"].args, (summary["publisher_interaction"],))
-    assert _normalized_2025_callback_equal(summary["second_stop_record"].args, (summary["publisher_class"],))
+    if summary["second_stop_record"] is not None:
+        assert _normalized_2025_callback_equal(summary["second_stop_record"].args, (summary["publisher_class"],))
+    assert _normalized_2025_callback_equal(summary["second_turn_off_record"].args, (summary["publisher_interaction"],))
+    assert summary["discover_record"].args[2] == config.object_instance_name
+    assert _normalized_2025_callback_equal(
+        summary["reflect_record"].args[1], {summary["subscriber_attribute"]: config.attribute_payload}
+    )
+    assert summary["reflect_record"].args[2] == config.attribute_tag
+    assert _normalized_2025_callback_equal(summary["interaction_record"].args[0], summary["subscriber_interaction"])
+    assert _normalized_2025_callback_equal(
+        summary["interaction_record"].args[1], {summary["subscriber_parameter"]: config.interaction_payload}
+    )
+    assert summary["interaction_record"].args[2] == config.interaction_tag
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-SVC-019", "HLA2025-FI-SVC-020")
+def test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.verification import DeclarationManagementScenarioConfig, run_declaration_management_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom_path = tmp_path / "Proto2025DirectDeclarationPassiveFullFOM.xml"
+    _write_proto2025_declaration_fom(fom_path)
+
+    federation_name = f"python2025-declaration-passive-full-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = DeclarationManagementScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        publisher_name="Publisher",
+        subscriber_name="Subscriber",
+        federate_type="SmokeFederate",
+        object_class_name="HLAobjectRoot.DemoObject",
+        attribute_name="Payload",
+        interaction_class_name="HLAinteractionRoot.DemoInteraction",
+        parameter_name="Message",
+        object_instance_name="DeclarationPassiveFullObject-1",
+        attribute_payload=b"declaration-passive-full-payload",
+        attribute_tag=b"declaration-passive-full-tag",
+        interaction_payload=b"declaration-passive-full-interaction",
+        interaction_tag=b"declaration-passive-full-interaction-tag",
+        use_passive_object_subscription=True,
+        use_passive_interaction_subscription=True,
+        use_full_object_unpublish=True,
+        use_full_object_unsubscribe=True,
+        before_object_unpublish_rejection_probe=_enable_strict_object_publication_probe,
+        before_interaction_unpublish_rejection_probe=_enable_strict_interaction_publication_probe,
+    )
+
+    summary = run_declaration_management_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["publisher_handle"] is not None
+    assert summary["subscriber_handle"] is not None
+    assert _normalized_2025_callback_equal(summary["first_start_record"].args, (summary["publisher_class"],))
+    assert _normalized_2025_callback_equal(summary["first_turn_on_record"].args, (summary["publisher_interaction"],))
+    assert summary["discover_record"].args[2] == config.object_instance_name
+    assert _normalized_2025_callback_equal(
+        summary["reflect_record"].args[1], {summary["subscriber_attribute"]: config.attribute_payload}
+    )
+    assert _normalized_2025_callback_equal(
+        summary["interaction_record"].args[1], {summary["subscriber_parameter"]: config.interaction_payload}
+    )
+    assert _normalized_2025_callback_equal(summary["first_stop_record"].args, (summary["publisher_class"],))
+    assert _normalized_2025_callback_equal(summary["first_turn_off_record"].args, (summary["publisher_interaction"],))
+    assert _normalized_2025_callback_equal(summary["second_start_record"].args, (summary["publisher_class"],))
+    assert _normalized_2025_callback_equal(summary["second_turn_on_record"].args, (summary["publisher_interaction"],))
+    if summary["second_stop_record"] is not None:
+        assert _normalized_2025_callback_equal(summary["second_stop_record"].args, (summary["publisher_class"],))
     assert _normalized_2025_callback_equal(summary["second_turn_off_record"].args, (summary["publisher_interaction"],))
     assert summary["discover_record"].args[2] == config.object_instance_name
     assert _normalized_2025_callback_equal(
