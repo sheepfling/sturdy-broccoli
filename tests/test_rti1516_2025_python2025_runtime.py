@@ -7943,6 +7943,64 @@ def test_2025_provider_runs_transportation_type_scenario_via_compat_adapter(back
     "HLA2025-FI-SVC-066",
     "HLA2025-FI-SVC-067",
     "HLA2025-FI-SVC-068",
+)
+def test_2025_primary_python_rti_runs_transportation_type_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_scenario
+
+    federation_name = f"python2025-transport-direct-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    config = TransportationTypeScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        federate_type="TransportationFederate",
+        object_class_name="HLAobjectRoot.Proto2025.MessageTest.TestSuite",
+        attribute_name="SuiteId",
+        interaction_class_name="HLAinteractionRoot.Proto2025.MessageTest.SendStimulus",
+        object_instance_name=f"transport-direct-{uuid.uuid4().hex[:8]}",
+        transportation_name="HLAbestEffort",
+        second_attribute_name="Name",
+        parameter_name="Payload",
+    )
+
+    summary = run_transportation_type_scenario(
+        owner,
+        observer,
+        config=config,
+        owner_federate=_CompatRecordingFederateAmbassador(),
+        observer_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _normalized_2025_callback_equal(summary["confirm_attribute"].args, (
+        summary["object_instance"],
+        {summary["attribute"]},
+        summary["transport"],
+    ))
+    assert _normalized_2025_callback_equal(summary["report_attribute"].args, (
+        summary["object_instance"],
+        summary["attribute"],
+        summary["transport"],
+    ))
+    assert _normalized_2025_callback_equal(summary["confirm_interaction"].args, (
+        summary["interaction"],
+        summary["transport"],
+    ))
+    assert _normalized_2025_callback_equal(summary["report_interaction"].args[1:], (
+        summary["interaction"],
+        summary["transport"],
+    ))
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-065",
+    "HLA2025-FI-SVC-066",
+    "HLA2025-FI-SVC-067",
+    "HLA2025-FI-SVC-068",
     "HLA2025-FI-SVC-069",
     "HLA2025-FI-SVC-070",
 )
