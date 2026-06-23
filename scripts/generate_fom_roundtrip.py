@@ -28,7 +28,7 @@ DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_roundtrip"
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Round-trip FOM XML through the year-specific FedPro protobuf JSON layer and back."
+        description="Round-trip FOM XML through the year-specific FedPro protobuf JSON layer and back, with edition-scope labels in the report."
     )
     parser.add_argument("year", choices=("2010", "2025"), help="FedPro schema year to exercise.")
     parser.add_argument(

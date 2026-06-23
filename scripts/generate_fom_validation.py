@@ -27,7 +27,7 @@ DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_validation"
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Validate one or more FOM/MIM XML sources with a human-readable report.")
+    parser = argparse.ArgumentParser(description="Validate one or more FOM/MIM XML sources with a human-readable report and edition-scope labels.")
     parser.add_argument("sources", nargs="*", help="XML file paths or repo-known FOM designators such as DemoFOMmodule.xml")
     parser.add_argument(
         "--family",

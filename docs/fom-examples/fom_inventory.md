@@ -16,6 +16,7 @@ for repo-owned and third-party FOM XML modules.
 | `repo-2025-proto-space-lite` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-space-lite` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_SpaceLite.xml` |
 | `repo-2025-proto-time-mgmt-test` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-time-mgmt-test` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_TimeMgmtTest.xml` |
 | `repo-2025-encoding-auth-smoke` | `2025` | `standalone` | `repo-owned` | `encoding-auth-smoke` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/encoding_auth/EncodingSmokeTest-2025.xml` |
+| `repo-2025-omt-schema-probe` | `2025` | `standalone` | `repo-owned` | `omt-schema-baseline` | `docs/requirements/ieee-1516-2025/encoding_auth_work_packet/05-example-foms/SchemaValidProbe-2025.xml` |
 | `third-party-rpr-foundation` | `2010` | `ordered-family` | `third-party` | `rpr-normative` | `third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Foundation_v2.0.xml` |
 | `third-party-rpr-enumerations` | `2010` | `ordered-family` | `third-party` | `rpr-normative` | `third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Enumerations_v2.0.xml` |
 | `third-party-rpr-switches` | `2010` | `ordered-family` | `third-party` | `rpr-normative` | `third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Switches_v2.0.xml` |
@@ -45,6 +46,10 @@ for repo-owned and third-party FOM XML modules.
 ### encoding-auth-smoke
 
 - `repo-2025-encoding-auth-smoke`: 2025-only encoding/auth smoke fixture.
+
+### omt-schema-baseline
+
+- `repo-2025-omt-schema-probe`: Positive 2025 OMT schema probe used by the dedicated XML schema baseline.
 
 ### netn-merged
 

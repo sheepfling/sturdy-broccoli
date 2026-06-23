@@ -77,6 +77,9 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/compliance" in text
     assert "./tools/fom-overview" in text
     assert "./tools/fom-validate" in text
+    assert "./tools/fom-roundtrip" in text
+    assert "./tools/fom-workbench" in text
+    assert "./tools/fom-stress" in text
     assert "./tools/package-deps" in text
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text
@@ -122,6 +125,10 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "./tools/vendor-green [profile]" in text
     assert "./tools/vendor-probe-review" in text
     assert "./tools/vendor-edge" in text
+    assert "./tools/fom-validate" in text
+    assert "./tools/fom-roundtrip" in text
+    assert "./tools/fom-workbench" in text
+    assert "./tools/fom-stress" in text
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text
     assert "./scripts/certi_easy.sh" in text
@@ -196,7 +203,7 @@ def test_operator_docs_keep_verify_main_and_routes_2025_on_python2025_main_lane(
     assert "./tools/python verify-main-2025" in tools_text
     assert "./tools/python verify-routes-2025" in tools_text
     assert "interpre these commands through the audited `hla-backend-python2025` runtime".replace("interpre", "interpret") in normalized_commands
-    assert "`hla-backend-shim` is only compatibility-wrapper/import-compatibility code" in normalized_commands
+    assert "`hla-backend-shim` is only temporary import-compatibility scaffolding plus compatibility-wrapper/import-compatibility code" in normalized_commands
     assert "the hosted 2025 grpc route is a bounded route variant rather than a separate rti family" in normalized_commands
     assert "`./tools/python verify-main-2025` is the default proof path for the real 2025 python rti" in normalized_commands
     assert "`./tools/python verify-routes-2025` extends that proof across the hosted fedpro route" in normalized_commands

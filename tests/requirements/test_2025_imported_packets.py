@@ -48,8 +48,10 @@ def test_imported_encoding_auth_packet_keeps_requirements_vectors_and_schemas() 
         "04-test-data/primitive_vectors.yaml",
         "04-test-data/fom_type_vectors.yaml",
         "05-example-foms/EncodingSmokeTest-2025.xml",
+        "05-example-foms/SchemaValidProbe-2025.xml",
         "08-evidence-templates/auth_capabilities.schema.json",
         "08-evidence-templates/encoding_capabilities.schema.json",
+        "09-standards-subset/IEEE1516-DIF-2025.xsd",
         "09-standards-subset/IEEE1516-OMT-2025.xsd",
     }
 

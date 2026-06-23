@@ -27,7 +27,7 @@ DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_overview"
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Generate an at-a-glance visual overview of one or more FOM modules.")
+    parser = argparse.ArgumentParser(description="Generate an at-a-glance visual overview of one or more FOM modules with edition-scope labels in the report chain.")
     parser.add_argument(
         "sources",
         nargs="*",

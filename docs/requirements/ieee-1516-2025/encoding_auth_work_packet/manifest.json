@@ -18,5 +18,5 @@
     "IEEE1516-OMT-2025.xsd",
     "IEEE1516-OMT-2010.xsd"
   ],
-  "validation_notes": "EncodingSmokeTest-2025.xml was checked as well-formed XML and validates against IEEE1516-DIF-2025.xsd."
+  "validation_notes": "EncodingSmokeTest-2025.xml and SchemaValidProbe-2025.xml were checked as well-formed XML and validate against their respective 2025 XSDs."
 }

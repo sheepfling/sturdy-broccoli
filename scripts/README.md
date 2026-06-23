@@ -43,9 +43,20 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/shim-routes` canonical language-shim route matrix and mixed-language demo flow
 - `./tools/java` canonical Java toolchain inventory front door
 - `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
-- `./tools/fom-validate` canonical XML schema + semantic validation packet flow
-- `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow
-- `./tools/fom-roundtrip` canonical FOM round-trip packet flow
+- `./tools/fom-validate` canonical XML schema + semantic validation packet flow, including `Edition Scope` reporting in JSON/markdown/HTML
+- `./tools/fom-schema-baseline` canonical positive XML/XSD baseline validation flow
+- `./tools/fom-schema-audit` canonical top-to-bottom schema-positive validation, JSON cycle, and workbench flow with `Edition Scope`
+- `./tools/fom-siso-audit` canonical top-to-bottom high-value SISO corpus validation, JSON cycle, and workbench flow with `Edition Scope`
+- `./tools/fom-corpus-classification` canonical corpus bucketing flow with `Edition Scope`
+- `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow with `Edition Scope`
+- `./tools/fom-roundtrip` canonical FOM round-trip packet flow with `Edition Scope`
+- `./tools/fom-stress` canonical public-baseline parser stress and refresh flow
+- `./tools/download-siso` canonical authenticated SISO DataFiles download flow
+- `scripts/generate_siso_inventory.py`: optional local SISO DataFiles corpus extractor and inventory generator
+- `scripts/generate_fom_corpus_classification.py`: validation-oriented corpus bucketing report generator with `Edition Scope`
+- `scripts/generate_fom_schema_baseline.py`: dedicated positive XML/XSD baseline report generator with `Edition Scope` in the surrounding report stack
+- `scripts/generate_fom_schema_audit.py`: end-to-end schema-positive validator/round-trip/workbench audit generator with `Edition Scope`
+- `scripts/generate_fom_siso_audit.py`: end-to-end high-value SISO validator/round-trip/workbench audit generator with `Edition Scope`
 - `./tools/package-deps` canonical split-package dependency tree flow
 - `./tools/section8-gate` canonical Section 8 backend-matrix gate
 - `./tools/target-radar` canonical target/radar proof and backend-matrix artifact flow

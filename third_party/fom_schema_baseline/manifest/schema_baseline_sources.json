@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "baseline": "hla-schema-validation-baseline",
+  "cases": [
+    {
+      "id": "encoding-smoke-2025",
+      "inventory_id": "repo-2025-encoding-auth-smoke",
+      "edition": "2025",
+      "xml_path": "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/05-example-foms/EncodingSmokeTest-2025.xml",
+      "schema_path": "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-DIF-2025.xsd",
+      "purpose": "Minimal 2025 encoding/auth smoke fixture that validates the DIF schema."
+    },
+    {
+      "id": "omt-schema-valid-probe-2025",
+      "inventory_id": "repo-2025-omt-schema-probe",
+      "edition": "2025",
+      "xml_path": "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/05-example-foms/SchemaValidProbe-2025.xml",
+      "schema_path": "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/09-standards-subset/IEEE1516-OMT-2025.xsd",
+      "purpose": "Minimal 2025 OMT-positive probe for dedicated schema validation."
+    }
+  ]
+}

@@ -10,9 +10,11 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from hla.rti1516e.fom import FOMCatalog, FOMResolutionError, FOMResolver, merge_fom_modules
+from hla.rti1516e.fom import FOMCatalog, FOMResolver, merge_fom_modules
 from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
+from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
 from hla.verification.repo_internal.fom_validate import write_fom_validation, write_fom_validation_html
+from hla.verification.repo_internal.siso_corpus import is_default_scope_record
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,6 +35,7 @@ class FOMWorkbenchNode:
 class FOMWorkbenchFamily:
     scenario_family: str
     edition_classes: tuple[str, ...]
+    edition_scope: str
     baseline_kinds: tuple[str, ...]
     load_mode: str
     member_ids: tuple[str, ...]
@@ -62,6 +65,7 @@ class FOMWorkbenchLoadSet:
     name: str
     member_ids: tuple[str, ...]
     member_paths: tuple[str, ...]
+    edition_scope: str
     parse_status: str
     parse_error: str | None
     module_names: tuple[str, ...]
@@ -90,6 +94,7 @@ class FOMWorkbenchSearchRow:
     lineage: tuple[str, ...]
     is_leaf: bool
     edition_classes: tuple[str, ...]
+    edition_scope: str
     baseline_kinds: tuple[str, ...]
     load_mode: str
 
@@ -157,11 +162,29 @@ def _entry_payload(record: FOMInventoryRecord) -> dict[str, object]:
         "path": record.path,
         "absolute_path": str(absolute_path),
         "edition_class": record.edition_class,
+        "edition_scope": classify_edition_scope(record),
         "load_mode": record.load_mode,
         "baseline_kind": record.baseline_kind,
         "scenario_family": record.scenario_family,
         "notes": record.notes,
     }
+
+
+def _edition_scope_for_records(records: tuple[FOMInventoryRecord, ...]) -> str:
+    scopes = {classify_edition_scope(record) for record in records}
+    if not scopes:
+        return "schema-only / support-only"
+    if scopes == {"schema-only / support-only"}:
+        return "schema-only / support-only"
+    if len(scopes) == 1:
+        return next(iter(scopes))
+    if scopes <= {"2010 only", "2025 only"}:
+        return "cross-edition / ambiguous"
+    if "cross-edition / ambiguous" in scopes:
+        return "cross-edition / ambiguous"
+    if "schema-only / support-only" in scopes and len(scopes) > 1:
+        return "cross-edition / ambiguous"
+    return "cross-edition / ambiguous"
 
 
 def _spec_datatype_hints(spec: Any) -> tuple[str, ...]:
@@ -268,13 +291,14 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
             validation_json_path = str((family_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
             validation_md_path = str((family_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
             validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
-    except FOMResolutionError as exc:
+    except Exception as exc:  # pragma: no cover - failure diagnostics only
         parse_status = "error"
         parse_error = str(exc)
 
     return FOMWorkbenchFamily(
         scenario_family=records[0].scenario_family,
         edition_classes=tuple(dict.fromkeys(record.edition_class for record in records)),
+        edition_scope=_edition_scope_for_records(records),
         baseline_kinds=tuple(dict.fromkeys(record.baseline_kind for record in records)),
         load_mode=records[0].load_mode,
         member_ids=tuple(record.id for record in records),
@@ -344,13 +368,14 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
             validation_json_path = str((load_set_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
             validation_md_path = str((load_set_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
             validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
-    except FOMResolutionError as exc:
+    except Exception as exc:  # pragma: no cover - failure diagnostics only
         parse_status = "error"
         parse_error = str(exc)
     return FOMWorkbenchLoadSet(
         name=name,
         member_ids=tuple(record.id for record in records),
         member_paths=tuple(record.path for record in records),
+        edition_scope=_edition_scope_for_records(records),
         parse_status=parse_status,
         parse_error=parse_error,
         module_names=module_names,
@@ -387,6 +412,7 @@ def _search_rows(
                     lineage=node.lineage,
                     is_leaf=node.is_leaf,
                     edition_classes=family.edition_classes,
+                    edition_scope=family.edition_scope,
                     baseline_kinds=family.baseline_kinds,
                     load_mode=family.load_mode,
                 )
@@ -402,6 +428,7 @@ def _search_rows(
                     lineage=node.lineage,
                     is_leaf=node.is_leaf,
                     edition_classes=family.edition_classes,
+                    edition_scope=family.edition_scope,
                     baseline_kinds=family.baseline_kinds,
                     load_mode=family.load_mode,
                 )
@@ -417,6 +444,7 @@ def _search_rows(
                     lineage=(name,),
                     is_leaf=True,
                     edition_classes=family.edition_classes,
+                    edition_scope=family.edition_scope,
                     baseline_kinds=family.baseline_kinds,
                     load_mode=family.load_mode,
                 )
@@ -433,6 +461,7 @@ def _search_rows(
                     lineage=node.lineage,
                     is_leaf=node.is_leaf,
                     edition_classes=(),
+                    edition_scope=load_set.edition_scope,
                     baseline_kinds=(),
                     load_mode="custom",
                 )
@@ -448,6 +477,7 @@ def _search_rows(
                     lineage=node.lineage,
                     is_leaf=node.is_leaf,
                     edition_classes=(),
+                    edition_scope=load_set.edition_scope,
                     baseline_kinds=(),
                     load_mode="custom",
                 )
@@ -463,6 +493,7 @@ def _search_rows(
                     lineage=(name,),
                     is_leaf=True,
                     edition_classes=(),
+                    edition_scope=load_set.edition_scope,
                     baseline_kinds=(),
                     load_mode="custom",
                 )
@@ -669,6 +700,7 @@ def build_fom_workbench_snapshot(
     validation_output_dir: str | Path | None = None,
 ) -> FOMWorkbenchSnapshot:
     records = inventory_records()
+    records = tuple(record for record in records if is_default_scope_record(record))
     grouped: dict[str, list[FOMInventoryRecord]] = defaultdict(list)
     for record in records:
         grouped[record.scenario_family].append(record)
@@ -1108,6 +1140,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     function hydratedBrowserLoadSet(row) {{
       const members = row.member_ids.map((id) => entryMap.get(id)).filter(Boolean);
       const editionClasses = [...new Set(members.map((entry) => entry.edition_class))].sort();
+      const editionScopes = [...new Set(members.map((entry) => entry.edition_scope))].sort();
       const baselineKinds = [...new Set(members.map((entry) => entry.baseline_kind))].sort();
       return {{
         name: row.name,
@@ -1130,6 +1163,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         validation_md_path: null,
         validation_html_path: null,
         edition_classes: editionClasses,
+        edition_scope: editionScopes.length === 1 ? editionScopes[0] : "cross-edition / ambiguous",
         baseline_kinds: baselineKinds,
         load_mode: "browser-saved",
         source_kind: "browser-saved-custom-load-set",
@@ -1156,6 +1190,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       return [
         family.scenario_family || family.name,
         (family.edition_classes || []).join(" "),
+        family.edition_scope || "",
         (family.baseline_kinds || []).join(" "),
         family.load_mode,
         family.member_ids.join(" "),
@@ -1173,7 +1208,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         card.className = "family-card" + (catalogName === selectedCatalogName ? " active" : "");
         card.innerHTML = `
           <strong>${{catalogName}}</strong><br>
-          <span class="muted">${{(family.edition_classes || ["custom"]).join(", ")}} | ${{family.load_mode}}</span><br>
+          <span class="muted">${{(family.edition_classes || ["custom"]).join(", ")}} | ${{family.edition_scope || "n/a"}} | ${{family.load_mode}}</span><br>
           <span class="muted">${{family.object_class_count}} objects, ${{family.interaction_class_count}} interactions, ${{family.datatype_count}} datatypes</span>
         `;
         card.onclick = () => {{
@@ -1199,6 +1234,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         <dl class="kv">
           <dt>Selection</dt><dd>${{title}}</dd>
           <dt>Edition classes</dt><dd>${{(family.edition_classes || ["custom"]).join(", ")}}</dd>
+          <dt>Edition scope</dt><dd>${{family.edition_scope || "n/a"}}</dd>
           <dt>Baseline kinds</dt><dd>${{(family.baseline_kinds || ["custom"]).join(", ")}}</dd>
           <dt>Load mode</dt><dd>${{family.load_mode}}</dd>
           <dt>Parse status</dt><dd>${{family.parse_status}}${{family.parse_error ? `: ${{family.parse_error}}` : ""}}</dd>
@@ -1230,7 +1266,10 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const rows = snapshot.search_index.filter((row) => {{
         if (selectedCatalogName && row.source_name !== selectedCatalogName) return false;
         if (!filter) return true;
-        return [row.kind, row.name, row.source_name, row.parent_name || "", row.lineage.join(" "), row.edition_classes.join(" ")].join(" ").toLowerCase().includes(filter);
+        return [row.kind, row.name, row.source_name, row.parent_name || "", row.lineage.join(" "), row.edition_classes.join(" "), row.edition_scope]
+          .join(" ")
+          .toLowerCase()
+          .includes(filter);
       }}).slice(0, 250);
       tbody.innerHTML = rows.map((row) => `
         <tr>
@@ -1343,14 +1382,14 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const commandHost = document.getElementById("builder-command");
       const rows = snapshot.entries.filter((entry) => {{
         if (!filter) return true;
-        return [entry.id, entry.scenario_family, entry.edition_class, entry.path, entry.load_mode, entry.baseline_kind]
+        return [entry.id, entry.scenario_family, entry.edition_class, entry.edition_scope, entry.path, entry.load_mode, entry.baseline_kind]
           .join(" ")
           .toLowerCase()
           .includes(filter);
       }});
       listHost.innerHTML = rows.map((entry) => {{
         const checked = builderSelectedMemberIds.has(entry.id) ? "checked" : "";
-        return `<label><input type="checkbox" data-entry-id="${{entry.id}}" ${{checked}}> <code>${{entry.id}}</code> <span class="muted">${{entry.scenario_family}} | ${{entry.edition_class}} | ${{entry.load_mode}}</span></label>`;
+        return `<label><input type="checkbox" data-entry-id="${{entry.id}}" ${{checked}}> <code>${{entry.id}}</code> <span class="muted">${{entry.scenario_family}} | ${{entry.edition_class}} | ${{entry.edition_scope}} | ${{entry.load_mode}}</span></label>`;
       }}).join("");
       listHost.querySelectorAll("input[type=checkbox]").forEach((node) => {{
         node.addEventListener("change", () => {{

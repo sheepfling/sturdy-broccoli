@@ -27,8 +27,14 @@ Core operator entrypoints:
 - `./tools/compliance`
 - `./tools/fom-overview`
 - `./tools/fom-validate`
+- `./tools/fom-schema-baseline`
+- `./tools/fom-schema-audit`
+- `./tools/fom-siso-audit`
+- `./tools/fom-corpus-classification`
 - `./tools/fom-workbench`
 - `./tools/fom-roundtrip`
+- `./tools/fom-stress`
+- `./tools/download-siso`
 - `./tools/package-deps`
 - `./tools/section8-gate`
 - `./tools/target-radar`
@@ -55,7 +61,14 @@ Shortest common paths:
 - inspect the language-shim route matrix: `./tools/shim-routes matrix --editions 2010,2025 --routes all`
 - inspect the Java toolchain inventory: `./tools/shim-routes java doctor`
 - inspect the Java toolchain inventory via the short front door: `./tools/java`
-- validate one FOM XML or an inventory family: `./tools/fom-validate DemoFOMmodule.xml` or `./tools/fom-validate --family rpr-normative`
+- validate one FOM XML or an inventory family: `./tools/fom-validate DemoFOMmodule.xml` or `./tools/fom-validate --family rpr-normative` and inspect the `Edition Scope` column in the JSON/markdown/HTML reports
+- validate the positive XML/XSD baseline: `./tools/fom-schema-baseline` and keep an eye on the matching `Edition Scope` labels in the surrounding report chain
+- run the schema-positive top-to-bottom audit: `./tools/fom-schema-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
+- run the high-value SISO top-to-bottom audit: `./tools/fom-siso-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
+- refresh the public baseline and generate a parser stress report: `./tools/fom-stress --refresh-baseline`
+- download authenticated SISO DataFiles packages: `./tools/download-siso`
+- catalog locally downloaded SISO packages into the shared inventory: `python3 scripts/generate_siso_inventory.py`
+- classify the current corpus into validation buckets: `./tools/fom-corpus-classification` and inspect the `Edition Scope` column in the bucket tables
 
 For 2025 runtime ownership and proof status behind those commands, read:
 

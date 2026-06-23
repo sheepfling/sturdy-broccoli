@@ -17,6 +17,7 @@ from hla.rti1516e.fom import FOMCatalog, FOMModule, FOMResolver, merge_fom_modul
 from hla.transports.grpc.fedpro2010 import datatypes_pb2 as fedpro2010_datatypes
 from hla.transports.grpc.fedpro2025 import datatypes_2025_pb2 as fedpro2025_datatypes
 from hla.verification.repo_internal.fom_inventory import lookup_fom_inventory
+from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
 
 
 TARGET_RADAR_FOM = Path(
@@ -55,6 +56,7 @@ class FOMRoundTripModuleReport:
     uri: str
     inventory_id: str | None
     edition_class: str | None
+    edition_scope: str
     baseline_kind: str | None
     load_mode: str | None
     scenario_family: str | None
@@ -97,6 +99,7 @@ class FOMRoundTripReport:
                         "uri": row.uri,
                         "inventory_id": row.inventory_id,
                         "edition_class": row.edition_class,
+                        "edition_scope": row.edition_scope,
                         "baseline_kind": row.baseline_kind,
                         "load_mode": row.load_mode,
                         "scenario_family": row.scenario_family,
@@ -182,6 +185,7 @@ def _module_reports(year: int, resolved_modules: Iterable[FOMModule]) -> tuple[F
         source_path = Path(str(module.path or module.source))
         file_ok, url_ok, compressed_ok = _protobuf_round_trip(year, source_path, xml_text, module.uri)
         inventory_record = lookup_fom_inventory(source_path, year=year)
+        edition_scope = classify_edition_scope(inventory_record) if inventory_record is not None else ("2025 only" if year == 2025 else "2010 only")
         reports.append(
             FOMRoundTripModuleReport(
                 source=str(module.source),
@@ -189,6 +193,7 @@ def _module_reports(year: int, resolved_modules: Iterable[FOMModule]) -> tuple[F
                 uri=module.uri,
                 inventory_id=inventory_record.id if inventory_record is not None else None,
                 edition_class=inventory_record.edition_class if inventory_record is not None else None,
+                edition_scope=edition_scope,
                 baseline_kind=inventory_record.baseline_kind if inventory_record is not None else None,
                 load_mode=inventory_record.load_mode if inventory_record is not None else None,
                 scenario_family=inventory_record.scenario_family if inventory_record is not None else None,
@@ -309,12 +314,12 @@ def write_fom_roundtrip(
         "",
         "## Module Results",
         "",
-        "| Source | Name | Edition | Scenario Family | XML | File JSON | URL JSON | Compressed JSON | Objects | Interactions | Datatypes |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: |",
+        "| Source | Name | Edition | Edition Scope | Scenario Family | XML | File JSON | URL JSON | Compressed JSON | Objects | Interactions | Datatypes |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: |",
     ]
     for row in report.module_reports:
         lines.append(
-            f"| {row.source} | {row.name or ''} | {row.edition_class or 'n/a'} | {row.scenario_family or 'n/a'} | {'yes' if row.xml_roundtrip_ok else 'no'} | "
+            f"| {row.source} | {row.name or ''} | {row.edition_class or 'n/a'} | {row.edition_scope} | {row.scenario_family or 'n/a'} | {'yes' if row.xml_roundtrip_ok else 'no'} | "
             f"{'yes' if row.protobuf_file_roundtrip_ok else 'no'} | "
             f"{'yes' if row.protobuf_url_roundtrip_ok else 'no'} | "
             f"{'yes' if row.protobuf_compressed_roundtrip_ok else 'no'} | "

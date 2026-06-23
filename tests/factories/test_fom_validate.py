@@ -29,6 +29,7 @@ def test_build_fom_validation_auto_detects_2010_path_for_cross_edition_target_ra
     row = report.source_reports[0]
     assert row.effective_edition == "2010"
     assert row.inventory_edition_class == "cross-edition"
+    assert row.inventory_edition_scope == "both"
     assert row.profile == "dif"
     assert row.passed is True
     assert row.verdict in {"conforming", "partially-conforming"}
@@ -44,6 +45,7 @@ def test_build_fom_validation_reports_conforming_2025_fixture(tmp_path: Path) ->
     assert row.schema_valid is True
     assert row.parsed is True
     assert row.semantic_valid is True
+    assert row.inventory_edition_scope == "2025 only"
     assert row.verdict == "conforming"
     assert row.passed is True
     assert row.issues == ()
@@ -79,6 +81,7 @@ def test_fom_validate_tool_returns_nonzero_and_writes_issue_report_for_invalid_2
     payload = json.loads((output_dir / "fom_validation_report.json").read_text(encoding="utf-8"))
     row = payload["source_reports"][0]
     assert row["effective_edition"] == "2025"
+    assert row["inventory_edition_scope"] == "2025 only"
     assert row["schema_valid"] is False
     assert row["passed"] is False
     assert row["verdict"] == "nonconforming"
@@ -96,6 +99,7 @@ def test_write_fom_validation_writes_json_and_markdown(tmp_path: Path) -> None:
     text = md_path.read_text(encoding="utf-8")
     assert "# FOM Validation Report" in text
     assert "Effective Edition" in text
+    assert "Edition Scope" in text
     assert "Recommended next step" in text
 
 
@@ -106,6 +110,7 @@ def test_build_fom_validation_adds_explicit_multi_source_load_set_report() -> No
     assert row.name == "explicit-load-set"
     assert row.kind == "explicit"
     assert row.effective_edition == "2010"
+    assert row.inventory_edition_scope == "cross-edition / ambiguous"
     assert row.parsed is True
     assert row.passed is True
     assert len(row.source_paths) == 2
@@ -119,6 +124,7 @@ def test_build_fom_validation_adds_family_load_set_report() -> None:
     assert row.name == "rpr-normative"
     assert row.kind == "family"
     assert row.load_mode == "ordered-family"
+    assert row.inventory_edition_scope == "2010 only"
     assert row.parsed is True
     assert row.passed is True
     assert len(row.source_paths) > 2
@@ -136,6 +142,7 @@ def test_write_fom_validation_html_writes_browser_report(tmp_path: Path) -> None
     assert "<title>Validator HTML | FOM Validate</title>" in text
     assert "load_set_reports" in text
     assert "Source reports" in text
+    assert "Edition scope" in text
 
 
 def test_write_fom_validation_html_renders_member_side_by_side_diff_for_multi_module_load_set(tmp_path: Path) -> None:
@@ -155,3 +162,4 @@ def test_write_fom_validation_html_renders_member_side_by_side_diff_for_multi_mo
     assert "inherited/total left-only" in text
     assert "datatype hints left-only" in text
     assert "dimension usage left-only" in text
+    assert "Edition scope" in text

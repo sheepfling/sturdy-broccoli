@@ -83,6 +83,15 @@
       "notes": "2025-only encoding/auth smoke fixture."
     },
     {
+      "id": "repo-2025-omt-schema-probe",
+      "path": "docs/requirements/ieee-1516-2025/encoding_auth_work_packet/05-example-foms/SchemaValidProbe-2025.xml",
+      "edition_class": "2025",
+      "load_mode": "standalone",
+      "baseline_kind": "repo-owned",
+      "scenario_family": "omt-schema-baseline",
+      "notes": "Positive 2025 OMT schema probe used by the dedicated XML schema baseline."
+    },
+    {
       "id": "third-party-rpr-foundation",
       "path": "third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Foundation_v2.0.xml",
       "edition_class": "2010",

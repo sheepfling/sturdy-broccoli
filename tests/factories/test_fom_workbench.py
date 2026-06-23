@@ -104,6 +104,7 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert "Node Drill-Down" in html_text
     assert "Guarded Edit Flow" in html_text
     assert "Custom Load Set Builder" in html_text
+    assert "Edition scope" in html_text
     assert "save in browser" in html_text
     assert "export saved sets" in html_text
     assert "import saved sets" in html_text

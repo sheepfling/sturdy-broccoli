@@ -13,6 +13,11 @@ HlaRuntimeFactory
 
 Encoding is a cross-edition core surface. Authentication is edition/provider/transport capability gated. The agent should not implement authentication as a peer RTI backend; it should implement a thin auth context that the runtime factory composes with the selected RTI provider.
 
+The packet also carries the checked-in positive schema baseline:
+
+- `05-example-foms/EncodingSmokeTest-2025.xml` against `09-standards-subset/IEEE1516-DIF-2025.xsd`
+- `05-example-foms/SchemaValidProbe-2025.xml` against `09-standards-subset/IEEE1516-OMT-2025.xsd`
+
 ## Immediate completion target
 
 The agent should stop only when these gates are satisfied:

@@ -14,6 +14,9 @@ Use this when you need one command that answers:
 - `./tools/fom-validate path/to/module.xml --edition 2025 --strict-identification`
 - `./tools/fom-validate --family rpr-normative`
 - `./tools/fom-validate DemoFOMmodule.xml TargetRadarFOMmodule.xml --html`
+- `./tools/fom-schema-baseline`
+- `./tools/fom-schema-audit`
+- `./tools/fom-siso-audit`
 
 Generated artifacts land under:
 
@@ -27,6 +30,7 @@ For each XML source the validator reports:
 
 - effective validator path: `2010` or `2025`
 - catalog classification when known: `2010`, `2025`, or `cross-edition`
+- edition scope: `2010 only`, `2025 only`, `both`, `cross-edition / ambiguous`, or `schema-only / support-only`
 - schema result
 - parse result
 - semantic validation result
@@ -46,6 +50,8 @@ This separates two ideas that are easy to confuse:
   - where the XML sits in the repo inventory
 - effective edition:
   - which validator path the tool actually used
+- edition scope:
+  - whether the source belongs to one edition, both editions, or is schema/support-only
 
 That matters for cross-edition files like `TargetRadarFOMmodule.xml`.
 
@@ -124,6 +130,25 @@ Use an explicit 2025 schema:
 - uses the supplied IEEE 1516.2-2025 OMT XSD
 - runs the structured semantic validator after parse
 - can enforce stricter identification-table checks with `--strict-identification`
+
+Dedicated schema baseline:
+
+- `./tools/fom-schema-baseline` validates the repo's positive XML/XSD pairs
+- the baseline currently uses `EncodingSmokeTest-2025.xml` against `IEEE1516-DIF-2025.xsd`
+- and `SchemaValidProbe-2025.xml` against `IEEE1516-OMT-2025.xsd`
+- keep this lane separate from the parser/merge stress corpus
+
+Schema audit:
+
+- `./tools/fom-schema-audit` runs the positive cases through validator, JSON cycle, and workbench HTML
+- it uses the same positive cases as the schema baseline, but exercises the full operator surface
+- it also preserves the `Edition Scope` column in every report surface
+
+SISO audit:
+
+- `./tools/fom-siso-audit` runs the high-value SISO families through validator, JSON cycle, and workbench HTML
+- it targets RPR 2.0, RPR 3.0, Link 16, Space FOM, standard MIM, and U-FOM when those downloads are present locally
+- it also preserves the `Edition Scope` column in every report surface
 
 ## Read Next
 

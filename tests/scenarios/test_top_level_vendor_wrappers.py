@@ -217,17 +217,17 @@ def test_fom_validate_top_level_wrapper_supports_family_html_mode(tmp_path: Path
     assert (output_dir / "fom_validation_report.html").exists()
 
 
-def test_rti_options_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
+def test_fom_workbench_top_level_wrapper_writes_snapshot_and_html(tmp_path: Path) -> None:
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
-    docs_dir = tmp_path / "docs"
-    docs_dir.mkdir(parents=True, exist_ok=True)
-    doc_path = docs_dir / "rti_options_and_test_matrix.md"
-    doc_path.write_text(
-        "<!-- GENERATED_BACKEND_ALIASES_START -->\nold\n<!-- GENERATED_BACKEND_ALIASES_END -->\n",
-        encoding="utf-8",
-    )
+    output_dir = tmp_path / "fom-workbench"
     result = subprocess.run(
-        ["bash", str(ROOT / "tools" / "rti-options"), "generate"],
+        [
+            "bash",
+            str(ROOT / "tools" / "fom-workbench"),
+            "--html",
+            "--output-dir",
+            str(output_dir),
+        ],
         cwd=tmp_path,
         env=env,
         capture_output=True,
@@ -236,9 +236,55 @@ def test_rti_options_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path
     )
 
     assert result.returncode == 0, result.stderr
-    text = doc_path.read_text(encoding="utf-8")
-    assert "Pure Python" in text
-    assert "Pitch" in text
+    assert (output_dir / "fom_workbench_snapshot.json").exists()
+    assert (output_dir / "fom_workbench.html").exists()
+
+
+def test_fom_stress_top_level_wrapper_writes_artifacts(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "fom-stress"
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "fom-stress"),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert (output_dir / "fom_stress_report.json").exists()
+    assert (output_dir / "fom_stress_report.md").exists()
+
+
+def test_rti_options_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    doc_path = ROOT / "docs" / "rti_options_and_test_matrix.md"
+    original = doc_path.read_text(encoding="utf-8")
+    doc_path.write_text(
+        "<!-- GENERATED_BACKEND_ALIASES_START -->\nold\n<!-- GENERATED_BACKEND_ALIASES_END -->\n",
+        encoding="utf-8",
+    )
+    try:
+        result = subprocess.run(
+            ["bash", str(ROOT / "tools" / "rti-options"), "generate"],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stderr
+        text = doc_path.read_text(encoding="utf-8")
+        assert "Pure Python" in text
+        assert "Pitch" in text
+    finally:
+        doc_path.write_text(original, encoding="utf-8")
 
 
 def test_package_deps_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:

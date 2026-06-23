@@ -28,5 +28,16 @@ Canonical files:
 - edition inventory: `docs/fom-examples/fom_inventory.json`
 - edition inventory view: `docs/fom-examples/fom_inventory.md`
 - refresh script: `scripts/fetch_public_fom_baseline.py`
+- optional local SISO corpus refresh: `scripts/generate_siso_inventory.py`
 - upstream XML root: `third_party/fom_baseline/upstream/`
 - tests: `tests/factories/test_public_fom_baseline.py`
+
+Optional add-on corpus:
+
+- locally downloaded SISO DataFiles packages under `analysis/siso_downloads/`
+- when present, those downloads are discovered by the shared inventory and
+  exercised by the same parser, validator, round-trip, workbench, and stress
+  entrypoints
+- the default stress/workbench scope is limited to the high-value SISO families
+  `siso-rpr-2.0`, `siso-rpr-3.0`, `siso-space-fom`, `siso-standard-mim`, and
+  `siso-u-fom`

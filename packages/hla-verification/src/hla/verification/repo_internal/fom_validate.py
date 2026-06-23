@@ -21,6 +21,7 @@ from hla.rti1516e.fom import (
     parse_fom_xml,
 )
 from hla.verification.repo_internal.fom_inventory import default_load_set_for_family, lookup_fom_inventory
+from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
 
 Edition = Literal["2010", "2025"]
 EditionArg = Literal["auto", "2010", "2025"]
@@ -52,6 +53,7 @@ class FOMValidationSourceReport:
     effective_edition: Edition
     inventory_id: str | None
     inventory_edition_class: str | None
+    inventory_edition_scope: str
     baseline_kind: str | None
     load_mode: str | None
     scenario_family: str | None
@@ -87,6 +89,7 @@ class FOMValidationLoadSetReport:
     source_paths: tuple[str, ...]
     effective_edition: Edition
     inventory_edition_classes: tuple[str, ...]
+    inventory_edition_scope: str
     baseline_kinds: tuple[str, ...]
     load_mode: str
     profile: str
@@ -143,6 +146,29 @@ class FOMValidationReport:
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[6]
+
+
+def _aggregate_edition_scope(scopes: Iterable[str]) -> str:
+    unique = {scope for scope in scopes if scope}
+    if not unique:
+        return "schema-only / support-only"
+    if unique == {"schema-only / support-only"}:
+        return "schema-only / support-only"
+    if len(unique) == 1:
+        return next(iter(unique))
+    if unique <= {"2010 only", "2025 only"}:
+        return "cross-edition / ambiguous"
+    if "cross-edition / ambiguous" in unique:
+        return "cross-edition / ambiguous"
+    if "schema-only / support-only" in unique and len(unique) > 1:
+        return "cross-edition / ambiguous"
+    return "cross-edition / ambiguous"
+
+
+def _inventory_edition_scope(inventory: Any | None, effective_edition: Edition) -> str:
+    if inventory is not None:
+        return classify_edition_scope(inventory)
+    return "2025 only" if effective_edition == "2025" else "2010 only"
 
 
 def _sniff_effective_edition(source: Path) -> Edition:
@@ -392,8 +418,8 @@ def _markdown(report: FOMValidationReport) -> str:
             "",
             "## Summary",
             "",
-            "| Source | Effective Edition | Catalog Class | Verdict | Passed | Schema | Parsed | Semantic | Scenario Family |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "| Source | Effective Edition | Catalog Class | Edition Scope | Verdict | Passed | Schema | Parsed | Semantic | Scenario Family |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
     for row in report.source_reports:
@@ -404,6 +430,7 @@ def _markdown(report: FOMValidationReport) -> str:
                     f"`{row.source}`",
                     row.effective_edition,
                     row.inventory_edition_class or "unclassified",
+                    row.inventory_edition_scope,
                     row.verdict,
                     "yes" if row.passed else "no",
                     "yes" if row.schema_valid else "no",
@@ -420,8 +447,8 @@ def _markdown(report: FOMValidationReport) -> str:
                 "",
                 "## Load Sets",
                 "",
-                "| Load Set | Kind | Effective Edition | Verdict | Passed | Parsed | Semantic | Members |",
-                "| --- | --- | --- | --- | --- | --- | --- | --- |",
+                "| Load Set | Kind | Effective Edition | Edition Scope | Verdict | Passed | Parsed | Semantic | Members |",
+                "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
             ]
         )
         for row in report.load_set_reports:
@@ -432,6 +459,7 @@ def _markdown(report: FOMValidationReport) -> str:
                         f"`{row.name}`",
                         row.kind,
                         row.effective_edition,
+                        row.inventory_edition_scope,
                         row.verdict,
                         "yes" if row.passed else "no",
                         "yes" if row.parsed else "no",
@@ -449,6 +477,7 @@ def _markdown(report: FOMValidationReport) -> str:
                 "",
                 f"- Effective edition: `{row.effective_edition}`",
                 f"- Catalog class: `{row.inventory_edition_class or 'unclassified'}`",
+                f"- Edition scope: `{row.inventory_edition_scope}`",
                 f"- Baseline kind: `{row.baseline_kind or 'n/a'}`",
                 f"- Load mode: `{row.load_mode or 'n/a'}`",
                 f"- Scenario family: `{row.scenario_family or 'n/a'}`",
@@ -503,6 +532,7 @@ def _markdown(report: FOMValidationReport) -> str:
                 "",
                 f"- Kind: `{row.kind}`",
                 f"- Effective edition: `{row.effective_edition}`",
+                f"- Edition scope: `{row.inventory_edition_scope}`",
                 f"- Load mode: `{row.load_mode}`",
                 f"- Catalog classes: `{', '.join(row.inventory_edition_classes)}`",
                 f"- Baseline kinds: `{', '.join(row.baseline_kinds)}`",
@@ -641,7 +671,9 @@ function renderList() {{
   if (!filtered.some(([, index]) => index === activeIndex)) activeIndex = filtered[0][1];
   listHost.innerHTML = filtered.map(([row, index]) => {{
     const title = viewMode.value === "loadset" ? row.name : row.source;
-    const subtitle = viewMode.value === "loadset" ? `${{row.kind}} | ${{row.effective_edition}}` : `${{row.scenario_family || "n/a"}} | ${{row.effective_edition}}`;
+    const subtitle = viewMode.value === "loadset"
+      ? `${{row.kind}} | ${{row.effective_edition}} | ${{row.inventory_edition_scope}}`
+      : `${{row.scenario_family || "n/a"}} | ${{row.effective_edition}} | ${{row.inventory_edition_scope}}`;
     return `<div class="card ${{index === activeIndex ? "active" : ""}}" data-index="${{index}}">
       <div><strong>${{title}}</strong></div>
       <div class="muted">${{subtitle}}</div>
@@ -844,6 +876,7 @@ function renderDetail() {{
       <p class="${{badgeClass(row.verdict)}}">${{row.verdict}}</p>
       <p>${{row.rationale}}</p>
       <p><strong>Next step:</strong> ${{row.recommended_next_step}}</p>
+      <p><strong>Edition scope:</strong> ${{row.inventory_edition_scope}}</p>
       <p><strong>Members:</strong></p>
       <ul>${{row.source_paths.map((path) => `<li><code>${{path}}</code></li>`).join("")}}</ul>
       <p><strong>Counts:</strong> objects=${{row.object_classes}}, interactions=${{row.interaction_classes}}, datatypes=${{row.datatype_names}}</p>
@@ -863,6 +896,7 @@ function renderDetail() {{
     <ul>
       <li><strong>Effective edition:</strong> ${{row.effective_edition}}</li>
       <li><strong>Catalog class:</strong> ${{row.inventory_edition_class || "unclassified"}}</li>
+      <li><strong>Edition scope:</strong> ${{row.inventory_edition_scope}}</li>
       <li><strong>Scenario family:</strong> ${{row.scenario_family || "n/a"}}</li>
       <li><strong>Profile:</strong> ${{row.profile}}</li>
       <li><strong>Schema:</strong> ${{row.schema_valid ? "ok" : "fail"}}</li>
@@ -935,6 +969,7 @@ def _assess_2010(source: Path, profile: str) -> FOMValidationSourceReport:
         effective_edition="2010",
         inventory_id=inventory.id if inventory is not None else None,
         inventory_edition_class=inventory.edition_class if inventory is not None else None,
+        inventory_edition_scope=_inventory_edition_scope(inventory, "2010"),
         baseline_kind=inventory.baseline_kind if inventory is not None else None,
         load_mode=inventory.load_mode if inventory is not None else None,
         scenario_family=inventory.scenario_family if inventory is not None else None,
@@ -1023,6 +1058,7 @@ def _assess_2025(source: Path, schema_path: Path, strict_identification: bool) -
         effective_edition="2025",
         inventory_id=inventory.id if inventory is not None else None,
         inventory_edition_class=inventory.edition_class if inventory is not None else None,
+        inventory_edition_scope=_inventory_edition_scope(inventory, "2025"),
         baseline_kind=inventory.baseline_kind if inventory is not None else None,
         load_mode=inventory.load_mode if inventory is not None else None,
         scenario_family=inventory.scenario_family if inventory is not None else None,
@@ -1137,6 +1173,9 @@ def _load_set_report(
         source_paths=tuple(str(path) for path in sources),
         effective_edition=effective_edition,
         inventory_edition_classes=tuple(dict.fromkeys(item.edition_class for item in inventories if item is not None)),
+        inventory_edition_scope=_aggregate_edition_scope(
+            _inventory_edition_scope(item, effective_edition) for item in inventories
+        ),
         baseline_kinds=tuple(dict.fromkeys(item.baseline_kind for item in inventories if item is not None)),
         load_mode=inventories[0].load_mode if inventories and inventories[0] is not None else "standalone",
         profile=profile,

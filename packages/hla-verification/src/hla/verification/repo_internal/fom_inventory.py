@@ -8,6 +8,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from hla.verification.repo_internal.siso_corpus import discover_siso_inventory_entries
+
 
 @dataclass(frozen=True, slots=True)
 class FOMInventoryRecord:
@@ -18,6 +20,7 @@ class FOMInventoryRecord:
     baseline_kind: str
     scenario_family: str
     notes: str
+    tags: tuple[str, ...] = ()
 
 
 def _repo_root() -> Path:
@@ -28,7 +31,9 @@ def _repo_root() -> Path:
 def _inventory_records() -> tuple[FOMInventoryRecord, ...]:
     inventory_path = _repo_root() / "docs" / "fom-examples" / "fom_inventory.json"
     payload = json.loads(inventory_path.read_text(encoding="utf-8"))
-    return tuple(FOMInventoryRecord(**entry) for entry in payload["entries"])
+    entries = list(payload["entries"])
+    entries.extend(discover_siso_inventory_entries())
+    return tuple(FOMInventoryRecord(**entry) for entry in entries)
 
 
 def inventory_records() -> tuple[FOMInventoryRecord, ...]:

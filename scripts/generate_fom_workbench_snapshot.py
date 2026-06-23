@@ -54,7 +54,7 @@ def _parse_diff_specs(values: list[str]) -> tuple[tuple[str, str], ...]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Generate the JSON and optional HTML artifacts backing the FOM workbench UI.")
+    parser = argparse.ArgumentParser(description="Generate the JSON and optional HTML artifacts backing the FOM workbench UI with edition-scope labels.")
     parser.add_argument(
         "--output-dir",
         default=str(DEFAULT_OUTPUT_DIR),
