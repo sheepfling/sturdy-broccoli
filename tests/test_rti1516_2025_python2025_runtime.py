@@ -4220,6 +4220,76 @@ def test_2025_provider_runs_two_federate_exchange_scenario_via_compat_adapter(
     "HLA2025-FI-SVC-104",
     "HLA2025-FI-SVC-105",
 )
+def test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wrapper_adapter(
+    tmp_path: Path,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
+    from hla.verification import (
+        TwoFederateExchangeConfig,
+        assert_two_federate_exchange_callback_history,
+        run_two_federate_exchange_scenario,
+    )
+
+    fom_path = tmp_path / "Proto2025DirectExchangeFOM.xml"
+    _write_proto2025_declaration_fom(fom_path)
+
+    publisher_federate = _CompatRecordingFederateAmbassador()
+    subscriber_federate = _CompatRecordingFederateAmbassador()
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = TwoFederateExchangeConfig(
+        federation_name=f"python2025-direct-exchange-{uuid.uuid4().hex[:8]}",
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_class_name="HLAobjectRoot.DemoObject",
+        attribute_name="Payload",
+        interaction_class_name="HLAinteractionRoot.DemoInteraction",
+        parameter_name="Message",
+        object_instance_name=f"DirectDemoObject-{uuid.uuid4().hex[:8]}",
+        enable_time_management=True,
+        lookahead=HLAinteger64Interval(1),
+        advance_time=HLAinteger64Time(10),
+        timestamped_attribute_time=HLAinteger64Time(5),
+        timestamped_interaction_time=HLAinteger64Time(6),
+    )
+
+    summary = run_two_federate_exchange_scenario(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    history = assert_two_federate_exchange_callback_history(
+        summary,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+        config=config,
+    )
+
+    assert summary["publisher_handle"] is not None
+    assert summary["subscriber_handle"] is not None
+    assert summary["discover"].args[2] == config.object_instance_name
+    assert _normalized_2025_callback_equal(
+        summary["reflect"].args[1], {summary["subscriber_attribute"]: config.attribute_payload}
+    )
+    assert _normalized_2025_callback_equal(
+        summary["interaction"].args[1], {summary["subscriber_parameter"]: config.interaction_payload}
+    )
+    assert history["timestamp_reflect"] is not None
+    assert history["timestamp_interaction"] is not None
+    assert summary["cleanup"] in {"delete", "delete-unconfirmed", "divest"}
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-104",
+    "HLA2025-FI-SVC-105",
+)
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_exchange_round_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -5944,6 +6014,87 @@ def test_2025_provider_runs_callback_control_scenario_via_compat_adapter(backend
         fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"callback-adapter-{uuid.uuid4().hex[:8]}",
+    )
+    publisher_federate = _CompatRecordingFederateAmbassador()
+    subscriber_federate = _CompatRecordingFederateAmbassador()
+
+    try:
+        summary = run_callback_control_scenario(
+            publisher,
+            subscriber,
+            config=config,
+            publisher_federate=publisher_federate,
+            subscriber_federate=subscriber_federate,
+        )
+
+        assert summary["first_queued_while_disabled"] is True
+        assert summary["first_evoke"] is False
+        assert summary["first_delivery"] is not None
+        assert summary["first_reflection"] is not None
+        assert _normalized_2025_callback_equal(summary["first_delivery"].args[0], summary["object_instance"])
+        assert _normalized_2025_callback_equal(summary["first_delivery"].args[1], summary["subscriber_object_class"])
+        assert summary["first_delivery"].args[2] == config.object_instance_name
+        assert _normalized_2025_callback_equal(
+            summary["first_reflection"].args[1],
+            {summary["subscriber_attribute"]: config.first_payload},
+        )
+        assert summary["first_reflection"].args[2] == config.first_tag
+        assert summary["second_batch_queued_while_disabled"] is True
+        assert summary["blocked_batch_evoke"] is False
+        assert summary["drained_deliveries"]
+        assert summary["drained_tags"] == [config.second_tag, config.third_tag]
+        assert [
+            _normalize_2025_callback_value(payload)
+            for payload in summary["drained_payloads"]
+        ] == [
+            _normalize_2025_callback_value({summary["subscriber_attribute"]: config.second_payload}),
+            _normalize_2025_callback_value({summary["subscriber_attribute"]: config.third_payload}),
+        ]
+        assert summary["post_drain"] is False
+    finally:
+        try:
+            subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        except Exception:
+            pass
+        try:
+            publisher.resign_federation_execution(ResignAction.NO_ACTION)
+        except Exception:
+            try:
+                publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+            except Exception:
+                pass
+        try:
+            publisher.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (subscriber, publisher):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
+@pytest.mark.requirements(
+    "HLA2025-NEW-005",
+    "HLA2025-SS-001",
+    "HLA2025-SS-002",
+    "HLA2025-SS-003",
+    "HLA2025-FI-001",
+    "HLA2025-FI-003",
+)
+def test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import CallbackControlScenarioConfig, run_callback_control_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import ResignAction
+
+    federation_name = f"python2025-callback-control-direct-{uuid.uuid4().hex[:8]}"
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+    config = CallbackControlScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_instance_name=f"callback-direct-{uuid.uuid4().hex[:8]}",
     )
     publisher_federate = _CompatRecordingFederateAmbassador()
     subscriber_federate = _CompatRecordingFederateAmbassador()
