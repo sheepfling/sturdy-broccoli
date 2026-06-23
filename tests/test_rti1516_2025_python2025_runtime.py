@@ -6042,6 +6042,103 @@ def test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_withou
 @pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-027",
+)
+def test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import SaveRestoreScenarioConfig, run_save_restore_queued_callback_scenario
+
+    federation_name = f"python2025-direct-save-restore-queued-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"PYTHON2025-DIRECT-QUEUED-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_save_restore_queued_callback_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    for ambassador in (leader, wing):
+        assert ambassador.backend_info.details["provider"] == "python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args == (config.save_name,)
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_saved"] is not None
+    assert summary["wing_saved"] is not None
+    assert summary["leader_restored"] is not None
+    assert summary["wing_restored"] is not None
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-MIL-004",
+    "HLA2025-MIL-005",
+)
+def test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Time
+    from hla.verification import SaveRestoreScenarioConfig, run_scheduled_save_restore_time_state_scenario
+
+    federation_name = f"python2025-direct-scheduled-save-restore-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("resource:VendorSmokeFOM.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"PYTHON2025-DIRECT-SCHEDULED-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_scheduled_save_restore_time_state_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+        save_time=HLAinteger64Time(5),
+        post_save_time=HLAinteger64Time(8),
+    )
+
+    for ambassador in (leader, wing):
+        assert ambassador.backend_info.details["provider"] == "python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args[0] == config.save_name
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert getattr(summary["leader_logical_time"], "value", summary["leader_logical_time"]) == 8
+    assert getattr(summary["wing_logical_time"], "value", summary["wing_logical_time"]) == 8
+    assert getattr(summary["restored_leader_time"], "value", summary["restored_leader_time"]) == 5
+    assert getattr(summary["restored_wing_time"], "value", summary["restored_wing_time"]) == 5
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-025",
     "HLA2025-FI-SVC-026",
