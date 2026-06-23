@@ -97,7 +97,7 @@ def enable_time_regulation(rti: Any, lookahead: Any) -> None:
     rti._lookahead = rti._coerce_interval(lookahead)
     rti._time_regulation_enabled = True
     if rti._federate_ambassador is not None and hasattr(rti._federate_ambassador, "timeRegulationEnabled"):
-        rti._deliver_callback("timeRegulationEnabled", rti._logical_time)
+        rti._deliver_callback_now("timeRegulationEnabled", rti._logical_time)
 
 
 def disable_time_regulation(rti: Any) -> None:
@@ -111,7 +111,7 @@ def enable_time_constrained(rti: Any) -> None:
         raise TimeConstrainedAlreadyEnabled("Time constrained mode is already enabled")
     rti._time_constrained_enabled = True
     if rti._federate_ambassador is not None and hasattr(rti._federate_ambassador, "timeConstrainedEnabled"):
-        rti._deliver_callback("timeConstrainedEnabled", rti._logical_time)
+        rti._deliver_callback_now("timeConstrainedEnabled", rti._logical_time)
     process_time_advances(rti)
 
 
@@ -220,13 +220,13 @@ def try_grant_pending_time_advance(rti: Any) -> bool:
     rti._logical_time = decision.grant_time
     rti._pending_time_advance = None
     if request.mode == "flushQueueRequest":
-        rti._deliver_callback(
+        rti._deliver_callback_now(
             "flushQueueGrant",
             decision.grant_time,
             decision.optimistic_time or decision.grant_time,
         )
     else:
-        rti._deliver_callback("timeAdvanceGrant", decision.grant_time)
+        rti._deliver_callback_now("timeAdvanceGrant", decision.grant_time)
     return True
 
 

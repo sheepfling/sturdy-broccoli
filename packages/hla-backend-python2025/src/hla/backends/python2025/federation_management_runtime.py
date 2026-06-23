@@ -225,19 +225,19 @@ def list_federation_executions(backend: Any) -> None:
         )
         for federation_name, record in sorted(backend._FEDERATION_REGISTRY.items())
     )
-    backend._deliver_callback("reportFederationExecutions", report)
+    backend._deliver_callback_now("reportFederationExecutions", report)
 
 
 def list_federation_execution_members(backend: Any, federation_name: str) -> None:
     federation = backend._FEDERATION_REGISTRY.get(federation_name)
     if federation is None:
-        backend._deliver_callback("reportFederationExecutionDoesNotExist", federation_name)
+        backend._deliver_callback_now("reportFederationExecutionDoesNotExist", federation_name)
         return
     report = FederationExecutionMemberInformationSet(
         FederationExecutionMemberInformation(federateName=name, federateType=federate_type)
         for name, federate_type in sorted(federation.members.items())
     )
-    backend._deliver_callback("reportFederationExecutionMembers", federation_name, report)
+    backend._deliver_callback_now("reportFederationExecutionMembers", federation_name, report)
 
 
 def join_federation_execution(backend: Any, *args: Any, **kwargs: Any) -> FederateHandle:

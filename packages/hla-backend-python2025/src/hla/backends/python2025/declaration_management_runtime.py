@@ -223,12 +223,12 @@ def reserve_multiple_object_instance_names(rti: Any, object_instance_names: Any)
     )
     federation = rti._federation_record()
     if any(name in federation.object_instance_names or name in federation.reserved_object_instance_names for name in names):
-        rti._deliver_callback("multipleObjectInstanceNameReservationFailed", names)
+        rti._deliver_callback_now("multipleObjectInstanceNameReservationFailed", names)
         return
     federate_key = rti._current_federate_key()
     for name in names:
         federation.reserved_object_instance_names[name] = federate_key
-    rti._deliver_callback("multipleObjectInstanceNameReservationSucceeded", names)
+    rti._deliver_callback_now("multipleObjectInstanceNameReservationSucceeded", names)
 
 
 def release_multiple_object_instance_names(rti: Any, object_instance_names: Any) -> None:

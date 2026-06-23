@@ -446,7 +446,7 @@ def request_interaction_transportation_type_change(
     rti._federation_record().interaction_transportation[
         (rti._current_federate_key(), interaction_class_name)
     ] = transportation_name
-    rti._deliver_callback("confirmInteractionTransportationTypeChange", interaction_class, transportation)
+    rti._deliver_callback_now("confirmInteractionTransportationTypeChange", interaction_class, transportation)
 
 
 def query_interaction_transportation_type(rti: Any, federate: Any, interaction_class: Any) -> None:
@@ -458,7 +458,7 @@ def query_interaction_transportation_type(rti: Any, federate: Any, interaction_c
         (federate_value, interaction_class_name),
         "HLAreliable",
     )
-    rti._deliver_callback(
+    rti._deliver_callback_now(
         "reportInteractionTransportationType",
         FederateHandle(federate_value),
         interaction_class,

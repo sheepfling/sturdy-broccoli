@@ -275,7 +275,7 @@ def request_attribute_transportation_type_change(
             raise AttributeNotOwned(attribute_name)
         record.attribute_transportation[attribute_name] = transportation_name
         attribute_handles.add(AttributeHandle(rti._attribute_handles(record.object_class_name)[attribute_name]))
-    rti._deliver_callback("confirmAttributeTransportationTypeChange", object_instance, attribute_handles, transportation)
+    rti._deliver_callback_now("confirmAttributeTransportationTypeChange", object_instance, attribute_handles, transportation)
 
 
 def query_attribute_transportation_type(rti: Any, object_instance: Any, attribute: Any) -> None:
@@ -285,7 +285,7 @@ def query_attribute_transportation_type(rti: Any, object_instance: Any, attribut
         attribute_name,
         rti._default_attribute_transportation.get((record.object_class_name, attribute_name), "HLAreliable"),
     )
-    rti._deliver_callback(
+    rti._deliver_callback_now(
         "reportAttributeTransportationType",
         object_instance,
         attribute,

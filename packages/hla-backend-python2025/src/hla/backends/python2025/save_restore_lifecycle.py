@@ -70,6 +70,8 @@ def capture_federation_save_snapshot(federation: Any, label: str) -> None:
     }
     federation.saved_interaction_order[label] = copy.deepcopy(federation.interaction_order)
     federation.saved_interaction_transportation[label] = copy.deepcopy(federation.interaction_transportation)
+    for rti in federation.member_rtis.values():
+        rti._evoked_callback_queue.clear()
 
 
 def restore_federation_save_snapshot(federation: Any, label: str) -> None:
@@ -328,17 +330,17 @@ def request_federation_restore(rti: Any, label: str) -> None:
         raise RestoreInProgress("A federation restore is already in progress")
     restore_label = str(label)
     if restore_label not in federation.saved_labels:
-        rti._deliver_callback("requestFederationRestoreFailed", restore_label)
+        rti._deliver_callback_now("requestFederationRestoreFailed", restore_label)
         return
     federation.restore_label = restore_label
     federation.restore_status = {
         handle.value: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING
         for handle in federation.member_handles.values()
     }
-    rti._deliver_callback("requestFederationRestoreSucceeded", restore_label)
+    rti._deliver_callback_now("requestFederationRestoreSucceeded", restore_label)
     for federate_name, federate_handle in federation.member_handles.items():
-        rti._deliver_to_federate_handle(federate_handle, "federationRestoreBegun")
-        rti._deliver_to_federate_handle(
+        rti._deliver_to_federate_handle_now(federate_handle, "federationRestoreBegun")
+        rti._deliver_to_federate_handle_now(
             federate_handle,
             "initiateFederateRestore",
             restore_label,
@@ -374,7 +376,7 @@ def complete_restore(rti: Any, *, success: bool) -> None:
             target_rti = federation.member_rtis.get(federate_handle.value)
             if target_rti is not None and not target_rti._callbacks_enabled:
                 continue
-            rti._deliver_to_federate_handle(federate_handle, "federationRestored")
+            rti._deliver_to_federate_handle_now(federate_handle, "federationRestored")
         federation.restore_label = None
         federation.restore_status.clear()
 
@@ -385,7 +387,7 @@ def abort_federation_restore(rti: Any) -> None:
     if federation.restore_label is None:
         raise RestoreNotInProgress("No federation restore is in progress")
     for federate_handle in federation.member_handles.values():
-        rti._deliver_to_federate_handle(
+        rti._deliver_to_federate_handle_now(
             federate_handle,
             "federationNotRestored",
             RestoreFailureReason.RESTORE_ABORTED,
@@ -405,7 +407,7 @@ def query_federation_restore_status(rti: Any) -> None:
         )
         for handle in federation.member_handles.values()
     ]
-    rti._deliver_callback("federationRestoreStatusResponse", response)
+    rti._deliver_callback_now("federationRestoreStatusResponse", response)
 
 
 __all__ = [

@@ -79,10 +79,12 @@ def deliver_callback_now(backend: Any, method_name: str, *args: Any) -> None:
 def deliver_to_federate_handle(backend: Any, federate_handle: FederateHandle, method_name: str, *args: Any) -> None:
     federation = backend._federation_record()
     target_rti = federation.member_rtis.get(federate_handle.value)
-    if target_rti is not None and (
-        not target_rti._callbacks_enabled or _callback_requires_evocation(target_rti)
-    ):
+    if target_rti is not None and not target_rti._callbacks_enabled:
         target_rti._evoked_callback_queue.append(QueuedCallback(None, method_name, args))
+        return
+    if target_rti is not None and _callback_requires_evocation(target_rti):
+        deliver_to_federate_handle_now(backend, federate_handle, method_name, *args)
+        target_rti._evoked_callback_queue.append(QueuedCallback(None, "__hla_noop__", ()))
         return
     deliver_to_federate_handle_now(backend, federate_handle, method_name, *args)
 

@@ -139,7 +139,7 @@ def discover_existing_objects_for_current_subscription(rti: Any, object_class_na
             continue
         target_rti = federation.member_rtis.get(rti._current_federate_key())
         if target_rti is not None and object_value not in target_rti._known_object_classes:
-            rti._deliver_callback(
+            rti._deliver_callback_now(
                 "discoverObjectInstance",
                 ObjectInstanceHandle(object_value),
                 rti.getObjectClassHandle(discovery_class_name),

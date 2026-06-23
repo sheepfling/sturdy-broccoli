@@ -282,9 +282,9 @@ def query_attribute_ownership(backend: Any, object_instance: Any, attributes: An
         else:
             owned_by_federate.setdefault(owner, set()).add(attribute_handle)
     for owner, owned_attributes in sorted(owned_by_federate.items(), key=lambda item: item[0].value):
-        backend._deliver_callback("informAttributeOwnership", object_instance, owned_attributes, owner)
+        backend._deliver_callback_now("informAttributeOwnership", object_instance, owned_attributes, owner)
     if not_owned:
-        backend._deliver_callback("attributeIsNotOwned", object_instance, not_owned)
+        backend._deliver_callback_now("attributeIsNotOwned", object_instance, not_owned)
 
 
 def is_attribute_owned_by_federate(backend: Any, object_instance: Any, attribute: Any) -> bool:
