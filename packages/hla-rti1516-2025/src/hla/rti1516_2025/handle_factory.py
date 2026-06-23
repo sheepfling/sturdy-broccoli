@@ -3,8 +3,10 @@
 Sources: Java *HandleFactory.java and *SetFactory.java files plus C++ handle decode conventions.
 """
 
-from typing import Generic, TypeVar
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 
 from .handles import (
     AttributeHandle,

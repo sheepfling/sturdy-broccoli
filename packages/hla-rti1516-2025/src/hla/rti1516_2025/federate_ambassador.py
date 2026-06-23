@@ -3,6 +3,8 @@
 Sources: Java FederateAmbassador.java and C++ FederateAmbassador.h.
 """
 
+from __future__ import annotations
+
 from typing import Protocol, Sequence, Set, runtime_checkable
 
 from .datatypes import (

@@ -3,6 +3,8 @@
 Sources: Java RTIambassador.java and C++ RTIambassador.h.
 """
 
+from __future__ import annotations
+
 from typing import Protocol, Sequence, Set
 
 from .datatypes import (
@@ -15,20 +17,20 @@ from .datatypes import (
 from .enums import CallbackModel, OrderType, ResignAction, ServiceGroup
 from .federate_ambassador import FederateAmbassador
 from .handle_factory import (
+    AttributeHandleFactory,
     AttributeHandleSetFactory,
     AttributeHandleValueMapFactory,
     AttributeSetRegionSetPairListFactory,
+    DimensionHandleFactory,
     DimensionHandleSetFactory,
     FederateHandleFactory,
     FederateHandleSetFactory,
-    InteractionClassHandleSetFactory,
-    ObjectClassHandleFactory,
     InteractionClassHandleFactory,
-    ObjectInstanceHandleFactory,
-    AttributeHandleFactory,
-    ParameterHandleFactory,
-    DimensionHandleFactory,
+    InteractionClassHandleSetFactory,
     MessageRetractionHandleFactory,
+    ObjectClassHandleFactory,
+    ObjectInstanceHandleFactory,
+    ParameterHandleFactory,
     ParameterHandleValueMapFactory,
     RegionHandleFactory,
     RegionHandleSetFactory,

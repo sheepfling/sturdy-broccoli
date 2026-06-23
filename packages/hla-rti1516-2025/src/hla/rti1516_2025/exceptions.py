@@ -3,6 +3,9 @@
 Sources: Java hla/rti1516_2025/exceptions/*.java plus C++ RTI/Exception.h advisory-switch compatibility exceptions.
 """
 
+from __future__ import annotations
+
+
 class RTIexception(Exception):
     def __init__(self, message: str | None = None):
         if message is not None:
