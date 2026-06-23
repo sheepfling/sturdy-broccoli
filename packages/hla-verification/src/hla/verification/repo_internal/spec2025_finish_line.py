@@ -6137,7 +6137,7 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_local_delete_scenario_end_to_end",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_orphan_object_lifecycle_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_timed_delete_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_timed_delete_scenario_without_wrapper_adapter",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_locally_deleted_object_known_state",
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",

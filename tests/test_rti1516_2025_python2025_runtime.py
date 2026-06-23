@@ -9105,6 +9105,68 @@ def test_2025_provider_runs_timed_delete_scenario_via_compat_adapter(tmp_path: P
                 pass
 
 
+@pytest.mark.requirements(
+    "HLA2025-FR-001",
+    "HLA2025-FR-003",
+    "HLA2025-FI-001",
+    "HLA2025-FI-SVC-111",
+)
+def test_2025_primary_python_rti_runs_timed_delete_scenario_without_wrapper_adapter(tmp_path: Path) -> None:
+    from hla.rti1516e.enums import ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import TimedDeleteScenarioConfig, run_timed_delete_scenario
+
+    fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
+    _write_proto2025_smoke_object_fom(fom_path)
+
+    federation_name = f"python2025-timed-delete-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    config = TimedDeleteScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(str(fom_path),),
+        logical_time_implementation_name="HLAinteger64Time",
+        owner_name="Owner",
+        observer_name="Observer",
+        federate_type="TimedDeleteFederate",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        object_instance_name=f"Direct-TimedDelete-{uuid.uuid4().hex[:8]}",
+        delete_tag=b"direct-delete-tag",
+    )
+
+    try:
+        summary = run_timed_delete_scenario(
+            owner,
+            observer,
+            config=config,
+            owner_federate=_CompatRecordingFederateAmbassador(),
+            observer_federate=_CompatRecordingFederateAmbassador(),
+        )
+
+        assert summary["remove_before_grant"] is None
+        assert _normalized_2025_callback_equal(summary["remove_after_grant"].args[0], summary["object_instance"])
+        assert summary["remove_after_grant"].args[1] == config.delete_tag
+    finally:
+        for rti, resign_action in (
+            (observer, ResignAction.NO_ACTION),
+            (owner, ResignAction.NO_ACTION),
+        ):
+            try:
+                rti.resign_federation_execution(resign_action)
+            except Exception:
+                pass
+        try:
+            owner.destroy_federation_execution(federation_name)
+        except Exception:
+            pass
+        for rti in (observer, owner):
+            try:
+                rti.disconnect()
+            except Exception:
+                pass
+
+
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_synchronization_scenario_end_to_end(backend_name: str) -> None:
