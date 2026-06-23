@@ -5632,9 +5632,9 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "focus": "shared two-federate save/restore, object-state rollback, and federate-local rollback",
             "direct_tests": [
                 "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_object_state_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",

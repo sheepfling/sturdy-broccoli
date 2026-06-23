@@ -81,6 +81,17 @@ def _factory_make_time(factory: Any, value: Any) -> Any:
     raise AttributeError(f"Unsupported logical time factory: {factory!r}")
 
 
+def _factory_make_interval(factory: Any, value: Any) -> Any:
+    scalar = _time_value(value)
+    make_interval = getattr(factory, "make_interval", None)
+    if callable(make_interval):
+        return make_interval(scalar)
+    makeInterval = getattr(factory, "makeInterval", None)
+    if callable(makeInterval):
+        return makeInterval(scalar)
+    raise AttributeError(f"Unsupported logical time factory: {factory!r}")
+
+
 def _encode_vec3(x: float, y: float, z: float) -> bytes:
     return struct.pack(">ddd", float(x), float(y), float(z))
 
@@ -1737,8 +1748,8 @@ def run_restore_object_state_scenario(
         drain_callbacks_pair(owner, acquirer, loops=16)
         informed = wait_for_callback(owner, leader_federate, "informAttributeOwnership", loops=120)
         assert informed is not None
-        assert informed.args[0] == object_instance
-        assert informed.args[1] == owner_attribute
+        assert _same_handle(informed.args[0], object_instance)
+        assert _same_handle(informed.args[1], owner_attribute)
         assert acquirer.is_attribute_owned_by_federate(acquirer_object_instance, acquirer_attribute)
         context["informed"] = informed
         context["informed_federate_name"] = owner.get_federate_name(informed.args[2])
@@ -1808,7 +1819,7 @@ def run_restore_federate_local_state_scenario(
         object_instance = r1.register_object_instance(leader_object_class, object_instance_name)
         drain_callbacks_pair(r1, r2, loops=8)
         wing_object_instance = r2.get_object_instance_handle(object_instance_name)
-        r1.enable_time_regulation(factory.make_interval(initial_lookahead))
+        r1.enable_time_regulation(_factory_make_interval(factory, initial_lookahead))
         r1.enable_asynchronous_delivery()
         r2.enable_time_constrained()
         r1.change_attribute_order_type(object_instance, {leader_attribute}, OrderType.TIMESTAMP)
@@ -1839,7 +1850,7 @@ def run_restore_federate_local_state_scenario(
         leader_interaction = context["leader_interaction"]
         factory = context["factory"]
         reliable_transport = r1.get_transportation_type_handle(reliable_transportation_name)
-        r1.modify_lookahead(factory.make_interval(modified_lookahead))
+        r1.modify_lookahead(_factory_make_interval(factory, modified_lookahead))
         r1.disable_asynchronous_delivery()
         r1.disable_time_regulation()
         r2.disable_time_constrained()
@@ -1861,7 +1872,7 @@ def run_restore_federate_local_state_scenario(
         factory = context["factory"]
         best_effort_transport = context["best_effort_transport"]
 
-        assert r1.query_lookahead() == factory.make_interval(initial_lookahead)
+        assert _time_value(r1.query_lookahead()) == _time_value(_factory_make_interval(factory, initial_lookahead))
 
         leader_federate.clear()
         r1.query_attribute_transportation_type(object_instance, leader_attribute)

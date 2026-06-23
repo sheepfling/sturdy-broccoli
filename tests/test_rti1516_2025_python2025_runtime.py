@@ -6652,39 +6652,147 @@ def test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_ada
         wing_federate=_CompatRecordingFederateAmbassador(),
     )
 
-    pending_save = {pair.federate_handle: pair.save_status for pair in summary["save_status_pending"].args[0]}
-    cleared_save = {pair.federate_handle: pair.save_status for pair in summary["save_status_cleared"].args[0]}
-    pending_restore = {pair.pre_restore_handle: pair.restore_status for pair in summary["restore_status_pending"].args[0]}
-    cleared_restore = {pair.pre_restore_handle: pair.restore_status for pair in summary["restore_status_cleared"].args[0]}
+    pending_save = {
+        int(getattr(pair.federate_handle, "value", pair.federate_handle)): pair.save_status
+        for pair in summary["save_status_pending"].args[0]
+    }
+    cleared_save = {
+        int(getattr(pair.federate_handle, "value", pair.federate_handle)): pair.save_status
+        for pair in summary["save_status_cleared"].args[0]
+    }
+    pending_restore = {
+        int(getattr(pair.pre_restore_handle, "value", pair.pre_restore_handle)): pair.restore_status
+        for pair in summary["restore_status_pending"].args[0]
+    }
+    cleared_restore = {
+        int(getattr(pair.pre_restore_handle, "value", pair.pre_restore_handle)): pair.restore_status
+        for pair in summary["restore_status_cleared"].args[0]
+    }
+    leader_handle = int(getattr(summary["leader_handle"], "value", summary["leader_handle"]))
+    wing_handle = int(getattr(summary["wing_handle"], "value", summary["wing_handle"]))
 
-    assert summary["leader_handle"] in pending_save
-    assert summary["wing_handle"] in pending_save
-    assert set(pending_save) == {summary["leader_handle"], summary["wing_handle"]}
-    assert pending_save[summary["leader_handle"]].name != "NO_SAVE_IN_PROGRESS"
-    assert pending_save[summary["wing_handle"]].name != "NO_SAVE_IN_PROGRESS"
+    assert leader_handle in pending_save
+    assert wing_handle in pending_save
+    assert set(pending_save) == {leader_handle, wing_handle}
+    assert pending_save[leader_handle].name != "NO_SAVE_IN_PROGRESS"
+    assert pending_save[wing_handle].name != "NO_SAVE_IN_PROGRESS"
     assert summary["leader_initiate_save"].args == (config.save_name,)
     assert summary["wing_initiate_save"].args == (config.save_name,)
     assert summary["leader_saved"].args == ()
     assert summary["wing_saved"].args == ()
     assert {handle: status.name for handle, status in cleared_save.items()} == {
-        summary["leader_handle"]: "NO_SAVE_IN_PROGRESS",
-        summary["wing_handle"]: "NO_SAVE_IN_PROGRESS",
+        leader_handle: "NO_SAVE_IN_PROGRESS",
+        wing_handle: "NO_SAVE_IN_PROGRESS",
     }
     assert summary["leader_restore_succeeded"].args == (config.save_name,)
     assert summary["leader_restore_begun"].args == ()
     assert summary["wing_initiate_restore"].args[0] == config.save_name
     assert summary["wing_initiate_restore"].args[1] == config.wing_name
     assert _normalized_2025_callback_equal(summary["wing_initiate_restore"].args[2], summary["wing_handle"])
-    assert summary["leader_handle"] in pending_restore
-    assert summary["wing_handle"] in pending_restore
-    assert set(pending_restore) == {summary["leader_handle"], summary["wing_handle"]}
-    assert pending_restore[summary["leader_handle"]].name != "NO_RESTORE_IN_PROGRESS"
-    assert pending_restore[summary["wing_handle"]].name != "NO_RESTORE_IN_PROGRESS"
+    assert leader_handle in pending_restore
+    assert wing_handle in pending_restore
+    assert set(pending_restore) == {leader_handle, wing_handle}
+    assert pending_restore[leader_handle].name != "NO_RESTORE_IN_PROGRESS"
+    assert pending_restore[wing_handle].name != "NO_RESTORE_IN_PROGRESS"
     assert summary["leader_restored"].args == ()
     assert summary["wing_restored"].args == ()
     assert {handle: status.name for handle, status in cleared_restore.items()} == {
-        summary["leader_handle"]: "NO_RESTORE_IN_PROGRESS",
-        summary["wing_handle"]: "NO_RESTORE_IN_PROGRESS",
+        leader_handle: "NO_RESTORE_IN_PROGRESS",
+        wing_handle: "NO_RESTORE_IN_PROGRESS",
+    }
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-002",
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-019",
+    "HLA2025-FI-SVC-020",
+    "HLA2025-FI-SVC-021",
+    "HLA2025-FI-SVC-022",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-024",
+    "HLA2025-FI-SVC-025",
+    "HLA2025-FI-SVC-026",
+    "HLA2025-FI-SVC-027",
+    "HLA2025-FI-SVC-028",
+    "HLA2025-FI-SVC-029",
+    "HLA2025-FI-SVC-030",
+    "HLA2025-FI-SVC-031",
+    "HLA2025-FI-SVC-032",
+)
+def test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_save_restore_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    federation_name = f"python2025-2025-save-restore-direct-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=tuple(scenario_fom_paths("message-test")),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name="SAVE-DIRECT-BACKEND",
+    )
+
+    summary = run_save_restore_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=_CompatRecordingFederateAmbassador(),
+        wing_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    pending_save = {
+        int(getattr(pair.federate_handle, "value", pair.federate_handle)): pair.save_status
+        for pair in summary["save_status_pending"].args[0]
+    }
+    cleared_save = {
+        int(getattr(pair.federate_handle, "value", pair.federate_handle)): pair.save_status
+        for pair in summary["save_status_cleared"].args[0]
+    }
+    pending_restore = {
+        int(getattr(pair.pre_restore_handle, "value", pair.pre_restore_handle)): pair.restore_status
+        for pair in summary["restore_status_pending"].args[0]
+    }
+    cleared_restore = {
+        int(getattr(pair.pre_restore_handle, "value", pair.pre_restore_handle)): pair.restore_status
+        for pair in summary["restore_status_cleared"].args[0]
+    }
+    leader_handle = int(getattr(summary["leader_handle"], "value", summary["leader_handle"]))
+    wing_handle = int(getattr(summary["wing_handle"], "value", summary["wing_handle"]))
+
+    assert leader_handle in pending_save
+    assert wing_handle in pending_save
+    assert set(pending_save) == {leader_handle, wing_handle}
+    assert pending_save[leader_handle].name != "NO_SAVE_IN_PROGRESS"
+    assert pending_save[wing_handle].name != "NO_SAVE_IN_PROGRESS"
+    assert summary["leader_initiate_save"].args == (config.save_name,)
+    assert summary["wing_initiate_save"].args == (config.save_name,)
+    assert summary["leader_saved"].args == ()
+    assert summary["wing_saved"].args == ()
+    assert {handle: status.name for handle, status in cleared_save.items()} == {
+        leader_handle: "NO_SAVE_IN_PROGRESS",
+        wing_handle: "NO_SAVE_IN_PROGRESS",
+    }
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["leader_restore_begun"].args == ()
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["wing_initiate_restore"].args[1] == config.wing_name
+    assert _normalized_2025_callback_equal(summary["wing_initiate_restore"].args[2], summary["wing_handle"])
+    assert leader_handle in pending_restore
+    assert wing_handle in pending_restore
+    assert set(pending_restore) == {leader_handle, wing_handle}
+    assert pending_restore[leader_handle].name != "NO_RESTORE_IN_PROGRESS"
+    assert pending_restore[wing_handle].name != "NO_RESTORE_IN_PROGRESS"
+    assert summary["leader_restored"].args == ()
+    assert summary["wing_restored"].args == ()
+    assert {handle: status.name for handle, status in cleared_restore.items()} == {
+        leader_handle: "NO_RESTORE_IN_PROGRESS",
+        wing_handle: "NO_RESTORE_IN_PROGRESS",
     }
 
 
@@ -7750,6 +7858,8 @@ def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_ada
         wing_parameter = context["wing_parameter"]
         leader_parameter = context["leader_parameter"]
         best_effort_transport = context["best_effort_transport"]
+        time_factory = r1.get_time_factory()
+        make_time = getattr(time_factory, "make_time", None) or getattr(time_factory, "makeTime")
 
         restored_lookahead = r1.query_lookahead()
         assert float(restored_lookahead.value) == 2.0
@@ -7763,11 +7873,11 @@ def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_ada
         interaction_report = wait_for_callback(r1, leader_federate, "reportInteractionTransportationType", loops=120)
         assert attribute_report is not None
         assert interaction_report is not None
-        assert attribute_report.args[0] == object_instance
-        assert attribute_report.args[1] == leader_attribute
-        assert attribute_report.args[2] == best_effort_transport
-        assert interaction_report.args[1] == leader_interaction
-        assert interaction_report.args[2] == best_effort_transport
+        assert _normalized_2025_callback_equal(attribute_report.args[0], object_instance)
+        assert _normalized_2025_callback_equal(attribute_report.args[1], leader_attribute)
+        assert _normalized_2025_callback_equal(attribute_report.args[2], best_effort_transport)
+        assert _normalized_2025_callback_equal(interaction_report.args[1], leader_interaction)
+        assert _normalized_2025_callback_equal(interaction_report.args[2], best_effort_transport)
 
         r1.update_attribute_values(
             object_instance,
@@ -7789,17 +7899,17 @@ def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_ada
         interaction = wait_for_callback(r2, wing_federate, "receiveInteraction", loops=120)
         assert reflect is not None
         assert interaction is not None
-        assert reflect.args[0] == wing_object_instance
-        assert reflect.args[1] == {wing_attribute: b"restored-attribute"}
+        assert _normalized_2025_callback_equal(reflect.args[0], wing_object_instance)
+        assert _normalized_2025_callback_equal(reflect.args[1], {wing_attribute: b"restored-attribute"})
         assert reflect.args[2] == b"restored-attribute-tag"
         assert order_value(reflect.args[3]) == OrderType.TIMESTAMP.value
-        assert reflect.args[4] == best_effort_transport
+        assert _normalized_2025_callback_equal(reflect.args[4], best_effort_transport)
         assert float(reflect.args[5].value) == 6.0
-        assert interaction.args[0] == context["wing_interaction"]
-        assert interaction.args[1] == {wing_parameter: b"restored-interaction"}
+        assert _normalized_2025_callback_equal(interaction.args[0], context["wing_interaction"])
+        assert _normalized_2025_callback_equal(interaction.args[1], {wing_parameter: b"restored-interaction"})
         assert interaction.args[2] == b"restored-interaction-tag"
         assert order_value(interaction.args[3]) == OrderType.TIMESTAMP.value
-        assert interaction.args[4] == best_effort_transport
+        assert _normalized_2025_callback_equal(interaction.args[4], best_effort_transport)
         assert float(interaction.args[5].value) == 7.0
         context["restored_lookahead"] = restored_lookahead
         context["post_restore_attribute_report"] = attribute_report
@@ -7828,15 +7938,165 @@ def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_ada
     assert summary["wing_initiate_restore"].args[0] == config.save_name
     assert summary["leader_restored"] is not None
     assert summary["wing_restored"] is not None
-    assert summary["post_restore_attribute_report"].args[2] == leader.get_transportation_type_handle("HLAbestEffort")
-    assert summary["post_restore_interaction_report"].args[2] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_attribute_report"].args[2], leader.get_transportation_type_handle("HLAbestEffort")
+    )
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_interaction_report"].args[2], leader.get_transportation_type_handle("HLAbestEffort")
+    )
     assert order_value(summary["post_restore_reflect"].args[3]) == OrderType.TIMESTAMP.value
-    assert summary["post_restore_reflect"].args[4] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_reflect"].args[4], leader.get_transportation_type_handle("HLAbestEffort")
+    )
     assert float(summary["post_restore_reflect"].args[5].value) == 6.0
     assert order_value(summary["post_restore_receive_interaction"].args[3]) == OrderType.TIMESTAMP.value
-    assert summary["post_restore_receive_interaction"].args[4] == leader.get_transportation_type_handle("HLAbestEffort")
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_receive_interaction"].args[4], leader.get_transportation_type_handle("HLAbestEffort")
+    )
     assert float(summary["post_restore_receive_interaction"].args[5].value) == 7.0
     assert float(summary["restored_lookahead"].value) == HLAfloat64Interval(2.0).value
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-051",
+    "HLA2025-FI-SVC-052",
+    "HLA2025-FI-SVC-053",
+    "HLA2025-FI-SVC-054",
+    "HLA2025-FI-SVC-055",
+    "HLA2025-FI-SVC-056",
+    "HLA2025-MIL-004",
+    "HLA2025-MIL-005",
+)
+def test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_federate_local_state_scenario
+    from hla.verification.scenario_support import drain_callbacks_pair, order_value, wait_for_callback
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516e.enums import OrderType
+
+    federation_name = f"python2025-2025-restore-local-state-direct-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    leader_federate = _CompatRecordingFederateAmbassador()
+    wing_federate = _CompatRecordingFederateAmbassador()
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAfloat64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-LOCAL-STATE-DIRECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    def assert_restored_state(r1, r2, context):  # noqa: ANN001
+        object_instance = context["object_instance"]
+        wing_object_instance = context["wing_object_instance"]
+        leader_attribute = context["leader_attribute"]
+        wing_attribute = context["wing_attribute"]
+        leader_interaction = context["leader_interaction"]
+        wing_parameter = context["wing_parameter"]
+        leader_parameter = context["leader_parameter"]
+        best_effort_transport = context["best_effort_transport"]
+        time_factory = r1.get_time_factory()
+        make_time = getattr(time_factory, "make_time", None) or getattr(time_factory, "makeTime")
+
+        restored_lookahead = r1.query_lookahead()
+        assert float(restored_lookahead.value) == 2.0
+
+        leader_federate.clear()
+        wing_federate.clear()
+        r1.query_attribute_transportation_type(object_instance, leader_attribute)
+        r1.query_interaction_transportation_type(leader_interaction)
+        drain_callbacks_pair(r1, r2, loops=16)
+        attribute_report = wait_for_callback(r1, leader_federate, "reportAttributeTransportationType", loops=120)
+        interaction_report = wait_for_callback(r1, leader_federate, "reportInteractionTransportationType", loops=120)
+        assert attribute_report is not None
+        assert interaction_report is not None
+        assert _normalized_2025_callback_equal(attribute_report.args[0], object_instance)
+        assert _normalized_2025_callback_equal(attribute_report.args[1], leader_attribute)
+        assert _normalized_2025_callback_equal(attribute_report.args[2], best_effort_transport)
+        assert _normalized_2025_callback_equal(interaction_report.args[1], leader_interaction)
+        assert _normalized_2025_callback_equal(interaction_report.args[2], best_effort_transport)
+
+        r1.update_attribute_values(
+            object_instance,
+            {leader_attribute: b"restored-attribute"},
+            b"restored-attribute-tag",
+            make_time(6.0),
+        )
+        r1.send_interaction(
+            leader_interaction,
+            {leader_parameter: b"restored-interaction"},
+            b"restored-interaction-tag",
+            make_time(7.0),
+        )
+        r1.time_advance_request(make_time(8.0))
+        r2.time_advance_request(make_time(8.0))
+        drain_callbacks_pair(r1, r2, loops=24)
+
+        reflect = wait_for_callback(r2, wing_federate, "reflectAttributeValues", loops=120)
+        interaction = wait_for_callback(r2, wing_federate, "receiveInteraction", loops=120)
+        assert reflect is not None
+        assert interaction is not None
+        assert _normalized_2025_callback_equal(reflect.args[0], wing_object_instance)
+        assert _normalized_2025_callback_equal(reflect.args[1], {wing_attribute: b"restored-attribute"})
+        assert reflect.args[2] == b"restored-attribute-tag"
+        assert order_value(reflect.args[3]) == OrderType.TIMESTAMP.value
+        assert _normalized_2025_callback_equal(reflect.args[4], best_effort_transport)
+        assert float(reflect.args[5].value) == 6.0
+        assert _normalized_2025_callback_equal(interaction.args[0], context["wing_interaction"])
+        assert _normalized_2025_callback_equal(interaction.args[1], {wing_parameter: b"restored-interaction"})
+        assert interaction.args[2] == b"restored-interaction-tag"
+        assert order_value(interaction.args[3]) == OrderType.TIMESTAMP.value
+        assert _normalized_2025_callback_equal(interaction.args[4], best_effort_transport)
+        assert float(interaction.args[5].value) == 7.0
+        context["restored_lookahead"] = restored_lookahead
+        context["post_restore_attribute_report"] = attribute_report
+        context["post_restore_interaction_report"] = interaction_report
+        context["post_restore_reflect"] = reflect
+        context["post_restore_receive_interaction"] = interaction
+        r1.disable_asynchronous_delivery()
+        r1.disable_time_regulation()
+        r2.disable_time_constrained()
+
+    summary = run_restore_federate_local_state_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=leader_federate,
+        wing_federate=wing_federate,
+        assert_restored_state=assert_restored_state,
+    )
+
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args[0] == config.save_name
+    assert summary["leader_saved"] is not None
+    assert summary["wing_saved"] is not None
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["leader_restore_begun"] is not None
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_restored"] is not None
+    assert summary["wing_restored"] is not None
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_attribute_report"].args[2], leader.get_transportation_type_handle("HLAbestEffort")
+    )
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_interaction_report"].args[2], leader.get_transportation_type_handle("HLAbestEffort")
+    )
+    assert order_value(summary["post_restore_reflect"].args[3]) == OrderType.TIMESTAMP.value
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_reflect"].args[4], leader.get_transportation_type_handle("HLAbestEffort")
+    )
+    assert float(summary["post_restore_reflect"].args[5].value) == 6.0
+    assert order_value(summary["post_restore_receive_interaction"].args[3]) == OrderType.TIMESTAMP.value
+    assert _normalized_2025_callback_equal(
+        summary["post_restore_receive_interaction"].args[4], leader.get_transportation_type_handle("HLAbestEffort")
+    )
+    assert float(summary["post_restore_receive_interaction"].args[5].value) == 7.0
+    assert float(summary["restored_lookahead"].value) == 2.0
 
 
 @pytest.mark.requirements(
@@ -7884,8 +8144,61 @@ def test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter(bac
     assert summary["wing_initiate_restore"].args[0] == config.save_name
     assert summary["leader_restored"] is not None
     assert summary["wing_restored"] is not None
-    assert summary["informed"].args[0] == summary["object_instance"]
-    assert summary["informed"].args[1] == summary["owner_attribute"]
+    assert _normalized_2025_callback_equal(summary["informed"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["informed"].args[1], summary["owner_attribute"])
+    assert summary["informed_federate_name"] == config.wing_name
+    assert leader.get_object_instance_name(summary["object_instance"]) == "Restore-State-Object"
+    assert wing.get_object_instance_name(summary["acquirer_object_instance"]) == "Restore-State-Object"
+    assert wing.is_attribute_owned_by_federate(summary["acquirer_object_instance"], summary["acquirer_attribute"]) is True
+    assert leader.is_attribute_owned_by_federate(summary["object_instance"], summary["owner_attribute"]) is False
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-FI-SVC-083",
+    "HLA2025-FI-SVC-087",
+    "HLA2025-FI-SVC-090",
+)
+def test_2025_primary_python_rti_runs_restore_object_state_scenario_without_wrapper_adapter() -> None:
+    from hla.verification import SaveRestoreScenarioConfig, run_restore_object_state_scenario
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"python2025-2025-restore-object-state-direct-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="python2025")
+    wing = create_rti_ambassador(backend="python2025")
+    leader_federate = _OwnershipCompatRecordingFederateAmbassador()
+    wing_federate = _OwnershipCompatRecordingFederateAmbassador()
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Leader",
+        wing_name="Wing",
+        federate_type="SaveRestoreFederate",
+        save_name=f"SAVE-OBJECT-STATE-DIRECT-{uuid.uuid4().hex[:8]}",
+    )
+
+    summary = run_restore_object_state_scenario(
+        leader,
+        wing,
+        config=config,
+        leader_federate=leader_federate,
+        wing_federate=wing_federate,
+    )
+
+    assert summary["leader_initiate_save"].args[0] == config.save_name
+    assert summary["wing_initiate_save"].args[0] == config.save_name
+    assert summary["leader_saved"] is not None
+    assert summary["wing_saved"] is not None
+    assert summary["leader_restore_succeeded"].args == (config.save_name,)
+    assert summary["leader_restore_begun"] is not None
+    assert summary["wing_initiate_restore"].args[0] == config.save_name
+    assert summary["leader_restored"] is not None
+    assert summary["wing_restored"] is not None
+    assert _normalized_2025_callback_equal(summary["informed"].args[0], summary["object_instance"])
+    assert _normalized_2025_callback_equal(summary["informed"].args[1], summary["owner_attribute"])
     assert summary["informed_federate_name"] == config.wing_name
     assert leader.get_object_instance_name(summary["object_instance"]) == "Restore-State-Object"
     assert wing.get_object_instance_name(summary["acquirer_object_instance"]) == "Restore-State-Object"
