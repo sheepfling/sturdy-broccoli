@@ -5982,6 +5982,65 @@ def test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_ada
 
 @pytest.mark.requirements(
     "HLA2025-FI-SVC-018",
+    "HLA2025-FI-SVC-023",
+    "HLA2025-FI-SVC-032",
+    "HLA2025-MIL-001",
+)
+def test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_without_wrapper_adapter() -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import SaveRestoreScenarioConfig, run_example_fom_save_restore_gauntlet_scenario
+
+    federation_name = f"python2025-direct-save-restore-gauntlet-{uuid.uuid4().hex[:8]}"
+    save_name = f"PYTHON2025-DIRECT-SAVE-{uuid.uuid4().hex[:8]}"
+    owner = create_rti_ambassador(backend="python2025")
+    mirror = create_rti_ambassador(backend="python2025")
+    sender = create_rti_ambassador(backend="python2025")
+    observer = create_rti_ambassador(backend="python2025")
+    owner_federate = _CompatRecordingFederateAmbassador()
+    mirror_federate = _CompatRecordingFederateAmbassador()
+    sender_federate = _CompatRecordingFederateAmbassador()
+    observer_federate = _CompatRecordingFederateAmbassador()
+    config = SaveRestoreScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=("TargetRadarFOMmodule.xml",),
+        logical_time_implementation_name="HLAinteger64Time",
+        leader_name="Owner",
+        wing_name="Mirror",
+        federate_type="SaveRestoreGauntletFederate",
+        save_name=save_name,
+    )
+
+    summary = run_example_fom_save_restore_gauntlet_scenario(
+        owner,
+        mirror,
+        sender,
+        observer,
+        config=config,
+        owner_federate=owner_federate,
+        mirror_federate=mirror_federate,
+        sender_federate=sender_federate,
+        observer_federate=observer_federate,
+    )
+
+    for ambassador in (owner, mirror, sender, observer):
+        assert ambassador.backend_info.details["provider"] == "python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
+    assert summary["dirty_fingerprints"] != summary["saved_fingerprints"]
+    assert summary["restored_fingerprints"] == summary["saved_fingerprints"]
+    for restored_time in summary["restored_times"].values():
+        assert getattr(restored_time, "value", restored_time) == 5
+    assert summary["baseline_reflect"].args[2] == b"baseline-attributes"
+    assert summary["dirty_reflect"].args[2] == b"dirty-attributes"
+    assert summary["branch_reflect"].args[2] == b"branch-attributes"
+    assert summary["baseline_interaction"].args[2] == b"baseline-track"
+    assert summary["dirty_interaction"].args[2] == b"dirty-track"
+    assert summary["branch_interaction"].args[2] == b"branch-track"
+    assert summary["dirty_remove"].args[1] == b"dirty-delete"
+
+
+@pytest.mark.requirements(
+    "HLA2025-FI-SVC-018",
     "HLA2025-FI-SVC-019",
     "HLA2025-FI-SVC-020",
     "HLA2025-FI-SVC-025",

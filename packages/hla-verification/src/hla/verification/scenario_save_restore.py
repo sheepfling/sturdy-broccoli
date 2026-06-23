@@ -66,6 +66,10 @@ def _handle_key(value: Any) -> int:
     return int(getattr(value, "value", value))
 
 
+def _normalize_handle_map(mapping: dict[Any, Any]) -> dict[int, Any]:
+    return {_handle_key(key): value for key, value in mapping.items()}
+
+
 def _factory_make_time(factory: Any, value: Any) -> Any:
     scalar = _time_value(value)
     make_time = getattr(factory, "make_time", None)
@@ -248,11 +252,11 @@ def run_example_fom_save_restore_gauntlet_scenario(
     baseline_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
     assert baseline_reflect is not None
     assert baseline_interaction is not None
-    assert baseline_reflect.args[0] == mirror_object_instance
-    assert _decode_vec3(baseline_reflect.args[1][mirror_position]) == saved_position
-    assert _decode_vec3(baseline_reflect.args[1][mirror_velocity]) == saved_velocity
-    assert baseline_interaction.args[0] == observer_interaction
-    assert baseline_interaction.args[1] == {observer_parameter: _encode_text("baseline-track")}
+    assert _same_handle(baseline_reflect.args[0], mirror_object_instance)
+    assert _decode_vec3(_normalize_handle_map(baseline_reflect.args[1])[_handle_key(mirror_position)]) == saved_position
+    assert _decode_vec3(_normalize_handle_map(baseline_reflect.args[1])[_handle_key(mirror_velocity)]) == saved_velocity
+    assert _same_handle(baseline_interaction.args[0], observer_interaction)
+    assert _normalize_handle_map(baseline_interaction.args[1]) == {_handle_key(observer_parameter): _encode_text("baseline-track")}
 
     for ledger in role_ledgers.values():
         _advance_ledger(ledger, phase="saved")
@@ -301,13 +305,13 @@ def run_example_fom_save_restore_gauntlet_scenario(
 
     dirty_reflect = mirror_federate.callbacks_named("reflectAttributeValues")[-1]
     dirty_interaction = observer_federate.callbacks_named("receiveInteraction")[-1]
-    assert _decode_vec3(dirty_reflect.args[1][mirror_position]) == dirty_position
-    assert dirty_interaction.args[1] == {observer_parameter: _encode_text("dirty-track")}
+    assert _decode_vec3(_normalize_handle_map(dirty_reflect.args[1])[_handle_key(mirror_position)]) == dirty_position
+    assert _normalize_handle_map(dirty_interaction.args[1]) == {_handle_key(observer_parameter): _encode_text("dirty-track")}
     owner_rti.delete_object_instance(object_instance, dirty_delete_tag)
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
     dirty_remove = wait_for_callback(mirror_rti, mirror_federate, "removeObjectInstance", loops=120)
     assert dirty_remove is not None
-    assert dirty_remove.args[0] == mirror_object_instance
+    assert _same_handle(dirty_remove.args[0], mirror_object_instance)
     assert dirty_remove.args[1] == dirty_delete_tag
 
     owner_rti.request_federation_restore(config.save_name)
@@ -331,7 +335,7 @@ def run_example_fom_save_restore_gauntlet_scenario(
         "observer": observer_rti.query_logical_time(),
     }
     for restored_time in restored_times.values():
-        assert restored_time == saved_time
+        assert _time_value(restored_time) == _time_value(saved_time)
 
     restored_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in role_ledgers.items()}
     assert restored_fingerprints == saved_fingerprints
@@ -363,9 +367,9 @@ def run_example_fom_save_restore_gauntlet_scenario(
     branch_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
     assert branch_reflect is not None
     assert branch_interaction is not None
-    assert branch_reflect.args[0] == mirror_object_instance
-    assert _decode_vec3(branch_reflect.args[1][mirror_position]) == branch_position
-    assert branch_interaction.args[1] == {observer_parameter: _encode_text("branch-track")}
+    assert _same_handle(branch_reflect.args[0], mirror_object_instance)
+    assert _decode_vec3(_normalize_handle_map(branch_reflect.args[1])[_handle_key(mirror_position)]) == branch_position
+    assert _normalize_handle_map(branch_interaction.args[1]) == {_handle_key(observer_parameter): _encode_text("branch-track")}
     branch_tags = {record.args[2] for record in mirror_federate.callbacks_named("reflectAttributeValues")}
     branch_tags.update(record.args[2] for record in observer_federate.callbacks_named("receiveInteraction"))
     assert b"dirty-attributes" not in branch_tags
@@ -493,9 +497,9 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
     baseline_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
     assert baseline_reflect is not None
     assert baseline_interaction is not None
-    assert baseline_reflect.args[0] == observer_object_instance
-    assert baseline_reflect.args[1] == {observer_attribute: saved_payload}
-    assert baseline_interaction.args[1] == {observer_parameter: b"baseline-message"}
+    assert _same_handle(baseline_reflect.args[0], observer_object_instance)
+    assert _normalize_handle_map(baseline_reflect.args[1]) == {_handle_key(observer_attribute): saved_payload}
+    assert _normalize_handle_map(baseline_interaction.args[1]) == {_handle_key(observer_parameter): b"baseline-message"}
     assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attribute) is True
     assert mirror_rti.is_attribute_owned_by_federate(mirror_object_instance, mirror_attribute) is False
 
@@ -560,9 +564,9 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
 
     dirty_reflect = observer_federate.callbacks_named("reflectAttributeValues")[-1]
     dirty_interaction = observer_federate.callbacks_named("receiveInteraction")[-1]
-    assert dirty_reflect.args[0] == observer_object_instance
-    assert dirty_reflect.args[1] == {observer_attribute: dirty_payload}
-    assert dirty_interaction.args[1] == {observer_parameter: b"dirty-message"}
+    assert _same_handle(dirty_reflect.args[0], observer_object_instance)
+    assert _normalize_handle_map(dirty_reflect.args[1]) == {_handle_key(observer_attribute): dirty_payload}
+    assert _normalize_handle_map(dirty_interaction.args[1]) == {_handle_key(observer_parameter): b"dirty-message"}
 
     owner_rti.request_federation_restore(config.save_name)
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=24)
@@ -585,7 +589,7 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
         "observer": observer_rti.query_logical_time(),
     }
     for restored_time in restored_times.values():
-        assert restored_time == saved_time
+        assert _time_value(restored_time) == _time_value(saved_time)
     restored_fingerprints = {role: _ledger_fingerprint(ledger) for role, ledger in role_ledgers.items()}
     assert restored_fingerprints == saved_fingerprints
 
@@ -596,8 +600,8 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
     drain_callbacks_pair(owner_rti, mirror_rti, sender_rti, observer_rti, loops=12)
     restored_informed = wait_for_callback(owner_rti, owner_federate, "informAttributeOwnership", loops=120)
     assert restored_informed is not None
-    assert restored_informed.args[0] == object_instance
-    assert restored_informed.args[1] == owner_attribute
+    assert _same_handle(restored_informed.args[0], object_instance)
+    assert _same_handle(restored_informed.args[1], owner_attribute)
     assert owner_rti.get_federate_name(restored_informed.args[2]) == config.leader_name
     assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attribute) is True
     assert mirror_rti.is_attribute_owned_by_federate(mirror_object_instance, mirror_attribute) is False
@@ -622,9 +626,9 @@ def run_smoke_fom_save_restore_ownership_gauntlet_scenario(
     branch_interaction = wait_for_callback(observer_rti, observer_federate, "receiveInteraction", loops=120)
     assert branch_reflect is not None
     assert branch_interaction is not None
-    assert branch_reflect.args[0] == observer_object_instance
-    assert branch_reflect.args[1] == {observer_attribute: branch_payload}
-    assert branch_interaction.args[1] == {observer_parameter: b"branch-message"}
+    assert _same_handle(branch_reflect.args[0], observer_object_instance)
+    assert _normalize_handle_map(branch_reflect.args[1]) == {_handle_key(observer_attribute): branch_payload}
+    assert _normalize_handle_map(branch_interaction.args[1]) == {_handle_key(observer_parameter): b"branch-message"}
     branch_tags = {record.args[2] for record in observer_federate.callbacks_named("reflectAttributeValues")}
     branch_tags.update(record.args[2] for record in observer_federate.callbacks_named("receiveInteraction"))
     assert b"dirty-attributes" not in branch_tags
