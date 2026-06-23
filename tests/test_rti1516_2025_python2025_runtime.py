@@ -4599,6 +4599,42 @@ def test_2025_provider_runs_section8_state_services_via_compat_adapter(
     "HLA2025-FI-009",
     "HLA2025-MOD-006",
     "HLA2025-FI-SVC-101",
+    "HLA2025-FI-SVC-112",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_state_services_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_state_services_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-state-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
+
+    summary = run_section8_state_services_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    _assert_same_time_scalar(summary["publisher_initial_time"], config.first_timestamp.__class__(0))
+    _assert_same_time_scalar(summary["subscriber_initial_time"], config.first_timestamp.__class__(0))
+    _assert_same_time_scalar(summary["initial_lookahead"], config.lookahead)
+    _assert_same_time_scalar(summary["modified_lookahead"], config.modified_lookahead)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-101",
     "HLA2025-FI-SVC-122",
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
@@ -4656,6 +4692,41 @@ def test_2025_provider_runs_section8_time_bound_queries_via_compat_adapter(
     )
     publisher = create_rti_ambassador(backend=backend_name)
     subscriber = create_rti_ambassador(backend=backend_name)
+
+    summary = run_section8_time_bound_query_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert _time_query_is_valid_local(summary["initial_galt"]) is True
+    assert _time_query_is_valid_local(summary["initial_lits"]) is True
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-111",
+    "HLA2025-FI-SVC-112",
+    "HLA2025-FI-SVC-113",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_time_bound_queries_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_time_bound_query_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-time-queries-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
 
     summary = run_section8_time_bound_query_case(
         publisher,
@@ -4783,6 +4854,46 @@ def test_2025_provider_runs_section8_request_retraction_via_compat_adapter(
     )
     publisher = create_rti_ambassador(backend=backend_name)
     subscriber = create_rti_ambassador(backend=backend_name)
+
+    summary = run_section8_request_retraction_case(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=_CompatRecordingFederateAmbassador(),
+        subscriber_federate=_CompatRecordingFederateAmbassador(),
+    )
+
+    assert summary["received"] is not None
+    assert _normalized_2025_callback_equal(summary["received"].args[1], {summary["parameter"]: config.first_payload})
+    assert summary["received"].args[3] is OrderType.TIMESTAMP
+    assert summary["request_retraction"] is not None
+    assert _normalized_2025_callback_equal(summary["request_retraction"].args[0], summary["sent"].handle)
+
+
+@pytest.mark.requirements(
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-006",
+    "HLA2025-FI-SVC-103",
+    "HLA2025-FI-SVC-105",
+    "HLA2025-FI-SVC-121",
+    "HLA2025-FI-SVC-122",
+)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_2025_primary_python_rti_runs_section8_request_retraction_without_wrapper_adapter(
+    time_factory_name: str,
+) -> None:
+    from hla.rti1516e.enums import OrderType
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.verification import run_section8_request_retraction_case, section8_matrix_config
+
+    config = section8_matrix_config(
+        f"python2025-2025-section8-request-retraction-direct-{time_factory_name}-{uuid.uuid4().hex[:8]}",
+        time_factory_name,
+    )
+    publisher = create_rti_ambassador(backend="python2025")
+    subscriber = create_rti_ambassador(backend="python2025")
 
     summary = run_section8_request_retraction_case(
         publisher,

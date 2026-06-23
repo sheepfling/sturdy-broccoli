@@ -854,7 +854,7 @@ Save/restore requirement families:
 ### time-management/factory-mode-enable-and-request-primitives
 
 - Focus: logical-time factory selection, regulation/constrained enablement, advance-request modes, MOM time-management control routing, and typed flush-queue request handling
-- Direct test count: 3
+- Direct test count: 4
 - Hosted test count: 4
 
 ### time-management/galt-lits-query-and-lookahead-observability
