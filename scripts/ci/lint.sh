@@ -3,6 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'EOF'
 lint.sh: run the required lint/syntax gate.
@@ -15,8 +19,7 @@ EOF
   exit 0
 fi
 
-# shellcheck disable=SC1091
-source "$ROOT_DIR/.venv/bin/activate"
+PYTHON_BIN="$(hla2010_shell_python_bin)"
 
 RUFF_CANDIDATE_TARGETS=(
   "src"
@@ -42,6 +45,6 @@ for target in "${RUFF_CANDIDATE_TARGETS[@]}"; do
     fi
 done
 
-python -m compileall -q "${COMPILE_TARGETS[@]}"
+"$PYTHON_BIN" -m compileall -q "${COMPILE_TARGETS[@]}"
 "$ROOT_DIR/scripts/ci/requirements_lint.sh"
 "$ROOT_DIR/scripts/ci/check_generated_docs.sh"

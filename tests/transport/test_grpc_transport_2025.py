@@ -49,6 +49,7 @@ from hla.rti1516e.exceptions import (
     SaveNotInitiated,
 )
 from hla.rti1516_2025.factory import create_rti_ambassador as create_2025_rti_ambassador
+from hla.rti1516_2025.enums import ResignAction as ResignAction2025
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,

@@ -11,7 +11,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Mapping as CollectionsMapping
 from enum import Enum
-from typing import Any, Iterable, Mapping, Protocol, Sequence, cast
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol, Sequence, cast
 
 from hla.backends.common import (
     CALLBACK_METHOD_NAMES,
@@ -38,6 +38,9 @@ from hla.backends.common.invocation import (
     _JAVA_HANDLE_VALUE_MAP_TYPES,
 )
 from .java_binding_profile import PythonJavaBindingProfile, load_python_java_binding_profile
+
+if TYPE_CHECKING:
+    from hla.rti1516e import NullFederateAmbassador
 
 _DEFAULT_BINDING = load_python_java_binding_profile("2010")
 hla_exceptions = _DEFAULT_BINDING.exceptions_module

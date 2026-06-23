@@ -81,9 +81,11 @@ ensure_python_test_env() {
 }
 
 run_pytest() {
+  local python_cmd
   ensure_python_test_env
+  python_cmd="$(python_bin)"
   if [[ "$VENDOR_PYTEST_TIMEOUT_SECONDS" == "0" ]]; then
-    python -m pytest "$@"
+    "$python_cmd" -m pytest "$@"
     return $?
   fi
 
@@ -92,14 +94,14 @@ run_pytest() {
   timeout_marker="$(mktemp "${TMPDIR:-/tmp}/hla2010_vendor_pytest_timeout.XXXXXX")"
   rm -f "$timeout_marker"
 
-  python -m pytest "$@" &
+  "$python_cmd" -m pytest "$@" &
   local pytest_pid=$!
 
   (
     sleep "$VENDOR_PYTEST_TIMEOUT_SECONDS"
     if kill -0 "$pytest_pid" 2>/dev/null; then
-      printf 'vendor pytest timed out after %s seconds: python -m pytest %s\n' \
-        "$VENDOR_PYTEST_TIMEOUT_SECONDS" "$*" >&2
+      printf 'vendor pytest timed out after %s seconds: %s -m pytest %s\n' \
+        "$VENDOR_PYTEST_TIMEOUT_SECONDS" "$python_cmd" "$*" >&2
       : >"$timeout_marker"
       terminate_process_tree "$pytest_pid" TERM
       sleep 5

@@ -117,10 +117,10 @@ class GrpcTransport(RTITransport):
             self._channel = None
 
     def capability_report(self) -> dict[str, object]:
-        adapter_report = {}
+        adapter_report: dict[str, object] = {}
         report_method = getattr(self.client_adapter, "capability_report", None)
         if callable(report_method):
-            adapter_report = dict(report_method())
+            adapter_report = dict(cast(Mapping[str, object], report_method()))
         return {
             **adapter_report,
             "target": self.config.target,

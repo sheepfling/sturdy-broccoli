@@ -463,6 +463,14 @@ def _callback_events(raw_events: Iterable[tuple[str, Any]]) -> list[dict[str, An
     return events
 
 
+def _evoke_all_callbacks(*rtis: Any) -> None:
+    for _ in range(20):
+        for rti in rtis:
+            evoke_many = getattr(rti, "evokeMultipleCallbacks", None)
+            if callable(evoke_many):
+                evoke_many(0.0, 0.0)
+
+
 def run_standard_2010_exchange_trace(backend_name: Any) -> dict[str, Any]:
     """Run the MVP 2010 object/interaction/time exchange and return a normalized trace."""
 
@@ -836,6 +844,7 @@ def run_standard_2025_runtime_capability_trace(backend_name: str) -> dict[str, A
                 serviceReportingEnabled=service_report["serviceReportingEnabled"],
             )
         )
+        _evoke_all_callbacks(rti)
         trace.extend(_callback_events(federate.events))
     finally:
         try:
@@ -981,6 +990,7 @@ def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
 
         acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"blocked")
         trace.append(_event("attributeOwnershipAcquisitionIfAvailable", objectInstance=object_instance, attributes={attribute}, tag=b"blocked"))
+        _evoke_all_callbacks(owner, acquirer)
         trace.extend(_callback_events(acquirer_fed.events))
 
         owner.unconditionalAttributeOwnershipDivestiture(object_instance, {attribute}, b"divest")
@@ -995,6 +1005,7 @@ def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
         )
         owner.queryAttributeOwnership(object_instance, {attribute})
         trace.append(_event("queryAttributeOwnership", objectInstance=object_instance, attributes={attribute}, requester="owner"))
+        _evoke_all_callbacks(owner, acquirer)
         trace.extend(_callback_events(owner_fed.events))
 
         acquirer_fed.events.clear()
@@ -1009,10 +1020,12 @@ def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
                 acquirerOwns=acquirer.isAttributeOwnedByFederate(object_instance, attribute),
             )
         )
+        _evoke_all_callbacks(owner, acquirer)
         trace.extend(_callback_events(acquirer_fed.events))
 
         owner.queryAttributeOwnership(object_instance, {attribute})
         trace.append(_event("queryAttributeOwnership", objectInstance=object_instance, attributes={attribute}, requester="owner-after-transfer"))
+        _evoke_all_callbacks(owner, acquirer)
         trace.extend(_callback_events(owner_fed.events))
     finally:
         try:
@@ -1482,6 +1495,7 @@ def run_standard_2025_mom_trace(backend_name: str) -> dict[str, Any]:
             arguments={"HLAserviceReporting": True, "HLAfederate": source_handle},
             result={"status": "serialized"},
         )
+        _evoke_all_callbacks(source, observer)
         trace.append(
             _event(
                 "serializeMOMServiceReport",
@@ -1503,6 +1517,7 @@ def run_standard_2025_mom_trace(backend_name: str) -> dict[str, Any]:
         observer.subscribeInteractionClass(fom_report)
         observer_fed.events.clear()
         observer.sendInteraction(fom_request, {request_indicator: b"0"}, b"mom-fom-module-request")
+        _evoke_all_callbacks(source, observer)
         fom_callback = next(payload for name, payload in reversed(observer_fed.events) if name == "interaction")
         trace.append(
             _event(
@@ -1523,6 +1538,7 @@ def run_standard_2025_mom_trace(backend_name: str) -> dict[str, Any]:
         observer.subscribeInteractionClass(mim_report)
         observer_fed.events.clear()
         observer.sendInteraction(mim_request, {}, b"mom-mim-request")
+        _evoke_all_callbacks(source, observer)
         mim_callback = next(payload for name, payload in reversed(observer_fed.events) if name == "interaction")
         trace.append(
             _event(

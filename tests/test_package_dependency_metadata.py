@@ -27,6 +27,7 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
         "hla-bridge-java-common",
         "hla-bridge-java-jpype",
         "hla-vendor-pitch",
+        "hla-backend-python2025",
     },
     "hla-vendor-pitch-py4j": {
         "hla-rti1516e",
@@ -34,6 +35,7 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
         "hla-bridge-java-common",
         "hla-bridge-java-py4j",
         "hla-vendor-pitch",
+        "hla-backend-python2025",
     },
     "hla-vendor-portico": {
         "hla-rti1516e",

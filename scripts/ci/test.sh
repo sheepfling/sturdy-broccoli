@@ -3,6 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'EOF'
 test.sh: run pytest for the full suite or the selected paths.
@@ -12,11 +16,10 @@ EOF
   exit 0
 fi
 
-# shellcheck disable=SC1091
-source "$ROOT_DIR/.venv/bin/activate"
+PYTHON_BIN="$(hla2010_shell_python_bin)"
 
 if [[ "$#" -eq 0 ]]; then
-  python -m pytest -q
+  "$PYTHON_BIN" -m pytest -q
 else
-  python -m pytest -q "$@"
+  "$PYTHON_BIN" -m pytest -q "$@"
 fi

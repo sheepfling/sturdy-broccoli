@@ -88,6 +88,7 @@ class RecordingBridge(JavaBridge):
     name = "recording-java"
 
     def __init__(self):
+        super().__init__()
         self.calls = []
 
     def call(self, obj, method_name, *args):
