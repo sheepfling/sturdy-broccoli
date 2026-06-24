@@ -23,7 +23,10 @@ def test_tools_test_focus_help_describes_inventory_run_and_resume() -> None:
     assert "./tools/test-focus run python-examples" in result.stdout
     assert "./tools/test-focus run jpype" in result.stdout
     assert "./tools/test-focus run target-radar" in result.stdout
+    assert "./tools/test-focus run fom-target-radar" in result.stdout
+    assert "./tools/test-focus run rti-factory" in result.stdout
     assert "./tools/test-focus run python-2025-time" in result.stdout
+    assert "./tools/test-focus run save-restore-2025" in result.stdout
     assert "./tools/test-focus run routes-2025" in result.stdout
     assert "./tools/test-focus resume python-2025-runtime" in result.stdout
 
@@ -62,6 +65,25 @@ def test_tools_test_focus_inventory_json_lists_expected_targets() -> None:
         "time",
         "vendors",
     ]
+    targets = {row["id"]: row for row in payload["targets"]}
+    assert "fom-target-radar" in targets["target-radar"]["aliases"]
+    assert "rti-factory" in targets["rti-core"]["aliases"]
+    assert "bridge-jpype" in targets["jpype"]["aliases"]
+    assert "save-restore-2025" in targets["python-2025-save-restore"]["aliases"]
+
+
+def test_tools_test_focus_run_accepts_alias_target_name() -> None:
+    result = subprocess.run(
+        ["bash", "tools/test-focus", "run", "fom-target-radar", "--dry-run", "--json"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["target"] == "target-radar"
 
 
 def test_tools_test_focus_run_dry_run_writes_summary_artifacts() -> None:

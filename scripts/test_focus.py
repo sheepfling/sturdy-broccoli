@@ -17,6 +17,7 @@ ARTIFACT_DIR = ROOT / "analysis" / "test_focus_status"
 @dataclass(frozen=True)
 class Target:
     target_id: str
+    aliases: tuple[str, ...]
     title: str
     description: str
     owner_packages: tuple[str, ...]
@@ -27,6 +28,7 @@ class Target:
     def from_mapping(cls, payload: dict[str, Any]) -> "Target":
         return cls(
             target_id=str(payload["id"]),
+            aliases=tuple(str(item) for item in payload.get("aliases", [])),
             title=str(payload["title"]),
             description=str(payload["description"]),
             owner_packages=tuple(str(item) for item in payload.get("owner_packages", [])),
@@ -41,7 +43,13 @@ def load_manifest() -> list[Target]:
 
 
 def target_by_id() -> dict[str, Target]:
-    return {target.target_id: target for target in load_manifest()}
+    targets: dict[str, Target] = {}
+    for target in load_manifest():
+        for name in (target.target_id, *target.aliases):
+            if name in targets:
+                raise SystemExit(f"duplicate test-focus target or alias: {name}")
+            targets[name] = target
+    return targets
 
 
 def _json_dump(payload: Any) -> str:
@@ -56,7 +64,7 @@ def _emit(payload: Any, *, as_json: bool) -> None:
         for target in payload["targets"]:
             sys.stdout.write(
                 f"{target['id']}: {target['title']} [{target['estimated_cost']}] "
-                f"owners={','.join(target['owner_packages'])}\n"
+                f"owners={','.join(target['owner_packages'])} aliases={','.join(target['aliases'])}\n"
             )
         return
     if isinstance(payload, dict) and "target" in payload and "status" in payload:
@@ -108,7 +116,10 @@ def print_usage() -> None:
                 "  ./tools/test-focus run java-bridges",
                 "  ./tools/test-focus run jpype",
                 "  ./tools/test-focus run target-radar",
+                "  ./tools/test-focus run fom-target-radar",
+                "  ./tools/test-focus run rti-factory",
                 "  ./tools/test-focus run python-2025-time",
+                "  ./tools/test-focus run save-restore-2025",
                 "  ./tools/test-focus run routes-2025",
                 "  ./tools/test-focus run python-2025-runtime -- --maxfail=1",
                 "  ./tools/test-focus resume python-2025-runtime",
@@ -129,6 +140,7 @@ def command_inventory(*, as_json: bool) -> int:
         "targets": [
             {
                 "id": target.target_id,
+                "aliases": list(target.aliases),
                 "title": target.title,
                 "description": target.description,
                 "owner_packages": list(target.owner_packages),

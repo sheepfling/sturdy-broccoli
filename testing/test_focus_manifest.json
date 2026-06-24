@@ -2,6 +2,7 @@
   "targets": [
     {
       "id": "foundation",
+      "aliases": ["policy", "boundaries"],
       "title": "Foundation policy and package-boundary tests",
       "description": "Cheap policy and package-structure checks for namespace, package boundaries, import hygiene, and metadata drift.",
       "owner_packages": [
@@ -32,6 +33,7 @@
     },
     {
       "id": "python-examples",
+      "aliases": ["examples-python"],
       "title": "Python example route tests",
       "description": "Focused direct Python example checks and wrapper contract tests.",
       "owner_packages": [
@@ -50,6 +52,7 @@
     },
     {
       "id": "java-bridges",
+      "aliases": ["bridges-java"],
       "title": "Java bridge wrapper tests",
       "description": "Focused JPype and Py4J example and wrapper tests.",
       "owner_packages": [
@@ -68,6 +71,7 @@
     },
     {
       "id": "jpype",
+      "aliases": ["bridge-jpype", "vendor-pitch-jpype"],
       "title": "JPype bridge and vendor tests",
       "description": "Focused JPype-facing bridge and Pitch JPype surface tests.",
       "owner_packages": [
@@ -88,6 +92,7 @@
     },
     {
       "id": "py4j",
+      "aliases": ["bridge-py4j", "vendor-pitch-py4j"],
       "title": "Py4J bridge and vendor tests",
       "description": "Focused Py4J-facing bridge and Pitch Py4J surface tests.",
       "owner_packages": [
@@ -108,6 +113,7 @@
     },
     {
       "id": "fom",
+      "aliases": ["foms"],
       "title": "FOM and factory tests",
       "description": "FOM parsing, schema, validation, workbench, and packaged scenario-factory checks.",
       "owner_packages": [
@@ -133,6 +139,7 @@
     },
     {
       "id": "target-radar",
+      "aliases": ["fom-target-radar", "radar"],
       "title": "Target/Radar scenario tests",
       "description": "Focused Target/Radar example, factory, and backend-matrix checks.",
       "owner_packages": [
@@ -151,6 +158,7 @@
     },
     {
       "id": "python-2025-runtime",
+      "aliases": ["runtime-2025", "python1516_2025"],
       "title": "Python 2025 runtime tests",
       "description": "Direct 2025 runtime semantics, compatibility adapter behavior, encoding, authentication context, and main-surface validation.",
       "owner_packages": [
@@ -172,6 +180,7 @@
     },
     {
       "id": "python-2025-time",
+      "aliases": ["time-2025", "window-2025"],
       "title": "Python 2025 time-window tests",
       "description": "Focused 2025 direct-runtime and shared time-window, lookahead, and restore-window proofs.",
       "owner_packages": [
@@ -194,6 +203,7 @@
     },
     {
       "id": "python-2025-save-restore",
+      "aliases": ["save-restore-2025", "restore-2025"],
       "title": "Python 2025 save/restore tests",
       "description": "Focused 2025 direct-runtime and hosted save/restore, rollback, and queued-callback proofs.",
       "owner_packages": [
@@ -217,6 +227,7 @@
     },
     {
       "id": "python-2025-ownership",
+      "aliases": ["ownership-2025"],
       "title": "Python 2025 ownership tests",
       "description": "Focused 2025 ownership, negotiation, and ownership-query proofs across direct and hosted routes.",
       "owner_packages": [
@@ -240,6 +251,7 @@
     },
     {
       "id": "python-2025-mom-callbacks",
+      "aliases": ["mom-2025", "callbacks-2025", "support-2025"],
       "title": "Python 2025 MOM and callback tests",
       "description": "Focused 2025 MOM, callback-control, and support-service proofs across direct and hosted routes.",
       "owner_packages": [
@@ -263,6 +275,7 @@
     },
     {
       "id": "transport",
+      "aliases": ["grpc", "rest"],
       "title": "Hosted transport tests",
       "description": "gRPC and REST transport tests for the hosted Python routes and shared transport boundary.",
       "owner_packages": [
@@ -280,6 +293,7 @@
     },
     {
       "id": "routes-2025",
+      "aliases": ["fedpro-2025", "grpc-2025", "route-parity-2025"],
       "title": "Hosted 2025 route tests",
       "description": "Focused 2025 hosted-route transport, parity, finish-line, and route-identity checks.",
       "owner_packages": [
@@ -303,6 +317,7 @@
     },
     {
       "id": "backends",
+      "aliases": ["backend-integration"],
       "title": "Backend integration tests",
       "description": "Backend adapters, shims, and backend-oriented scenario coverage.",
       "owner_packages": [
@@ -321,6 +336,7 @@
     },
     {
       "id": "rti-core",
+      "aliases": ["rti-factory", "core-factory"],
       "title": "RTI core factory and facade tests",
       "description": "Focused RTI core discovery, factory selection, and facade policy checks.",
       "owner_packages": [
@@ -338,6 +354,7 @@
     },
     {
       "id": "requirements-2025",
+      "aliases": ["finish-line-2025", "requirements", "parity-2025"],
       "title": "2025 requirements and finish-line tests",
       "description": "Requirement registry, route parity, finish-line, imported packet, and backlog evidence checks for 2025.",
       "owner_packages": [
@@ -355,6 +372,7 @@
     },
     {
       "id": "verification",
+      "aliases": ["verification-harness"],
       "title": "Verification harness tests",
       "description": "Detailed reconciliation, traceability, ledger, and verification harness checks.",
       "owner_packages": [
@@ -370,6 +388,7 @@
     },
     {
       "id": "time",
+      "aliases": ["time-suite"],
       "title": "Time-management tests",
       "description": "Focused time-management algorithm and backend matrix checks.",
       "owner_packages": [
@@ -386,6 +405,7 @@
     },
     {
       "id": "vendors",
+      "aliases": ["vendor-runtime"],
       "title": "Vendor runtime tests",
       "description": "Real-runtime vendor tests and vendor-specific runtime support checks.",
       "owner_packages": [

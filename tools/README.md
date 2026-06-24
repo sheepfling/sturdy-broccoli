@@ -63,6 +63,7 @@ Shortest common paths:
 - rerun one named focused target: `./tools/test-focus run foundation`
 - rerun one package-aligned target: `./tools/test-focus run jpype`, `./tools/test-focus run py4j`, `./tools/test-focus run target-radar`, or `./tools/test-focus run rti-core`
 - rerun one expensive 2025 concern directly: `./tools/test-focus run python-2025-time`, `./tools/test-focus run python-2025-save-restore`, `./tools/test-focus run python-2025-ownership`, `./tools/test-focus run python-2025-mom-callbacks`, or `./tools/test-focus run routes-2025`
+- use submodule-style aliases when that is easier to remember: `./tools/test-focus run fom-target-radar`, `./tools/test-focus run rti-factory`, `./tools/test-focus run bridge-jpype`, `./tools/test-focus run save-restore-2025`
 - resume only prior failures inside one focused target: `./tools/test-focus resume python-2025-runtime`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`

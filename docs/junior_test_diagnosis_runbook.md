@@ -29,6 +29,16 @@ or one concern. Use:
 
 This is the shortest restartable path in the repo right now.
 
+If you think in submodule names instead of target ids, use aliases:
+
+```bash
+./tools/test-focus run fom-target-radar
+./tools/test-focus run rti-factory
+./tools/test-focus run bridge-jpype
+./tools/test-focus run save-restore-2025
+./tools/test-focus run finish-line-2025
+```
+
 ## The Shortest Good Path
 
 From the repo root:

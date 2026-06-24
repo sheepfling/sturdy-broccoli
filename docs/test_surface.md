@@ -146,6 +146,17 @@ That gives you two things the lane commands do not:
 - a stable named target for a package/theme
 - a restart path that reuses pytest last-failed state through `resume`
 
+Aliases also work when the submodule name is easier to remember than the
+canonical target id. Examples:
+
+```bash
+./tools/test-focus run fom-target-radar
+./tools/test-focus run rti-factory
+./tools/test-focus run bridge-jpype
+./tools/test-focus run save-restore-2025
+./tools/test-focus run finish-line-2025
+```
+
 If you need machine-readable output for automation or agent selection:
 
 ```bash
