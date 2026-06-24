@@ -19,7 +19,7 @@ dependencies = [
 test = ["pytest"]
 
 [project.entry-points."hla.rti_backends"]
-python2025 = "hla.backends.python2025.plugin:plugin"
+python1516_2025 = "hla.backends.python2025.plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -32,8 +32,8 @@ namespaces = true
 [tool.hla.package]
 status = "implementation-owned"
 role = "rti-backend"
-backend_names = ["python2025"]
-backend_aliases = ["python-2025", "python-2025-backend"]
+backend_names = ["python1516_2025"]
+backend_aliases = ["python-1516-2025"]
 source_roots = [
   "packages/hla-backend-python2025/src/hla/backends/python2025",
 ]

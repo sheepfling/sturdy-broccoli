@@ -29,7 +29,7 @@
         "HLA2025-NEW-004",
         "HLA2025-NEW-007"
       ],
-      "runtime_provider": "python2025",
+      "runtime_provider": "python1516_2025",
       "scenario": "runtime-capability",
       "status": "trace-green",
       "surface": "official Java 2025 API",
@@ -55,7 +55,7 @@
         "HLA2025-NEW-004",
         "HLA2025-NEW-007"
       ],
-      "runtime_provider": "python2025",
+      "runtime_provider": "python1516_2025",
       "scenario": "runtime-capability",
       "status": "trace-green",
       "surface": "official Java 2025 API",
@@ -81,7 +81,7 @@
       "HLA2025-NEW-004",
       "HLA2025-NEW-007"
     ],
-    "runtime_provider": "python2025",
+    "runtime_provider": "python1516_2025",
     "scenarios": [
       "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
       "2025 standard route object exchange: two-federate publish/subscribe, discover, reflect, receive, and unsubscribe suppression",

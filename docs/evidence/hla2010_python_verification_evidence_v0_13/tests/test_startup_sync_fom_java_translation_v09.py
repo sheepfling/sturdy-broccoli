@@ -15,7 +15,7 @@ from hla.rti1516e.testing.java_shim_types import JavaByteArray, JavaLikeObject
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
-    return create_rti_ambassador("python", engine=engine, config=config)
+    return create_rti_ambassador("python1516e", engine=engine, config=config)
 
 
 def test_whole_federation_synchronization_announces_late_joiner_before_completion():

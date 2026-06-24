@@ -16,7 +16,7 @@ Use these 2025 evidence anchors instead:
 - [`../plans/spec2025_finish_line.md`](../plans/spec2025_finish_line.md)
 
 Use that exclusion note when you need the explicit non-claim boundary around
-the bounded 2025 direct and hosted `python2025` validation story, especially
+the bounded 2025 direct and hosted `python1516_2025` validation story, especially
 for legacy aliases, Java/C++ bindings, hosted transport boundaries,
 duplicate/umbrella rows, retired rows, and out-of-scope OMT extension
 semantics.

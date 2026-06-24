@@ -1,16 +1,43 @@
 # hla-backend-python2025
 
-Main full Python RTI backend package for IEEE 1516.1-2025.
+## What This Is
 
-This package now owns the main full Python 2025 RTI runtime and is the sole
-repo-owned IEEE 1516.1-2025 Python RTI implementation lane. Core 2025 backend
-semantics execute from `hla.backends.python2025`, and the legacy
-`hla-backend-shim` package is deprecated compatibility scaffolding for older
-route and provider names that should be removed after migration.
+`hla-backend-python2025` owns the main full Python 2025 RTI runtime.
 
-The runtime is no longer one monolithic backend module. The public
-`hla.backends.python2025.backend` shell now fronts a split package layout with
-focused runtime/state/surface modules such as:
+It is the main full Python RTI backend for IEEE 1516.1-2025.
+
+This is the promoted Python-owned 2025 RTI implementation lane where 2025
+runtime semantics actually execute.
+
+## What This Is Not
+
+It is not:
+
+- the 2025 standard API package
+- a compatibility shim
+- a transport package
+- an alternate route family beside itself
+
+`hla-rti1516-2025` owns the standard-facing API surface.
+`hla-backend-shim` is compatibility scaffolding and should stay wrapper-only.
+
+## When To Open It
+
+Open this package when you need to:
+
+- change executable 2025 RTI behavior
+- trace the main repo-owned 2025 runtime lane
+- understand the runtime/state/surface split behind the 2025 backend
+
+If you only need the public API shape, do not start here.
+
+## Key Entrypoints
+
+The main implementation root is:
+
+- `hla.backends.python2025`
+
+The public shell fronts focused modules such as:
 
 - `backend_factory_runtime.py`
 - `runtime_state.py`
@@ -19,18 +46,16 @@ focused runtime/state/surface modules such as:
 - `support_services_runtime.py`
 - `*_surface_mixin.py`
 
-That split is intentional: new executable RTI semantics should keep landing in
-the main `hla-backend-python2025` lane, while the public shell stays a stable
-front door and the shim package stays wrapper-only.
+## Related Docs
+
+- [`../../docs/repo_mental_model.md`](../../docs/repo_mental_model.md)
+- [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
+- [`../../docs/python_rti_reading_map.md`](../../docs/python_rti_reading_map.md)
+- [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)
 
 Current status:
 
-- discoverable as backend `python2025`
-- executes the main full 2025 runtime directly
+- discoverable as backend `python1516_2025`
+- executes the main 2025 runtime directly
 - is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane
-- must not delegate back to `hla.backends.shim.backend.create_shim_backend`
-- is the promoted Python-owned 2025 RTI implementation lane in the repo
-
-The remaining architectural work is to remove `hla-backend-shim` after callers
-migrate, while preserving proof parity across the direct and hosted 2025
-routes.
+- must not delegate runtime ownership back to `hla-backend-shim`

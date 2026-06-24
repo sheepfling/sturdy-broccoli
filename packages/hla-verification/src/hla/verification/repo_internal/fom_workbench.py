@@ -1573,6 +1573,74 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       font-size: 0.86rem;
       color: var(--muted);
     }}
+    .focus-advanced {{
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.72);
+    }}
+    .focus-advanced summary {{
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }}
+    .focus-advanced summary::-webkit-details-marker {{
+      display: none;
+    }}
+    .focus-advanced-body {{
+      padding: 0 12px 12px;
+      display: grid;
+      gap: 10px;
+    }}
+    .focus-advanced-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }}
+    .focus-advanced-grid input,
+    .focus-advanced-grid select {{
+      margin-bottom: 0;
+    }}
+    .focus-actions {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }}
+    .focus-actions input {{
+      margin-bottom: 0;
+      min-width: 200px;
+      flex: 1 1 220px;
+    }}
+    .focus-presets {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }}
+    .focus-preset-chip {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.82);
+      color: var(--ink);
+      font-size: 0.84rem;
+    }}
+    .focus-preset-chip.active {{
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }}
+    .focus-preset-chip button {{
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      min-height: 0;
+    }}
     .family-card {{
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1861,6 +1929,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       .hero, .grid, .split, .builder-grid, .summary-grid, .summary-stats, .count-grid {{ grid-template-columns: 1fr; }}
       .family-list {{ max-height: none; }}
       .workspace-tabs {{ overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }}
+      .focus-advanced-grid {{ grid-template-columns: 1fr; }}
     }}
   </style>
 </head>
@@ -1978,6 +2047,43 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
             </div>
             <input id="workspace-focus-filter" class="focus-input" type="search" placeholder="Focus symbol or selector: Track kind:object owner:repo-owned changed:true">
             <div id="workspace-focus-status" class="focus-status">Focus: all workspace rows</div>
+            <details class="focus-advanced" id="workspace-focus-advanced">
+              <summary>Advanced focus</summary>
+              <div class="focus-advanced-body">
+                <div class="focus-advanced-grid">
+                  <select id="focus-kind-select">
+                    <option value="all">all kinds</option>
+                    <option value="object">objects</option>
+                    <option value="interaction">interactions</option>
+                    <option value="datatype">datatypes</option>
+                    <option value="dimension">dimensions</option>
+                  </select>
+                  <select id="focus-owner-select">
+                    <option value="">all owners</option>
+                    <option value="repo-owned">repo-owned</option>
+                    <option value="third-party">third-party</option>
+                    <option value="external">external</option>
+                  </select>
+                  <select id="focus-issues-select">
+                    <option value="">all issue states</option>
+                    <option value="true">issues only</option>
+                  </select>
+                  <select id="focus-changed-select">
+                    <option value="">all change states</option>
+                    <option value="true">changed only</option>
+                  </select>
+                  <input id="focus-symbol-input" type="search" placeholder="symbol">
+                  <input id="focus-terms-input" type="search" placeholder="plain terms">
+                </div>
+                <div class="focus-actions">
+                  <button id="focus-apply" type="button">apply focus</button>
+                  <button id="focus-clear" type="button">clear focus</button>
+                  <input id="focus-preset-name" type="text" placeholder="saved view name">
+                  <button id="focus-save-preset" type="button">save view</button>
+                </div>
+                <div id="focus-presets" class="focus-presets"></div>
+              </div>
+            </details>
           </div>
           <div id="workspace-overview" class="workspace-pane active">
             <div class="section-title">
@@ -2064,6 +2170,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
   <script>
     const snapshot = {payload};
     const browserStorageKey = "hla2010-fom-workbench-custom-load-sets";
+    const focusPresetStorageKey = "hla2010-fom-workbench-focus-presets";
     const familyMap = new Map(snapshot.families.map((family) => [family.scenario_family, family]));
     const diffMap = new Map(snapshot.diffs.map((diff) => [`${{diff.left_family}}::${{diff.right_family}}`, diff]));
     const entryMap = new Map(snapshot.entries.map((entry) => [entry.id, entry]));
@@ -2078,6 +2185,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     let currentWorkspaceMode = "overview";
     let focusKind = "all";
     let focusSelector = "";
+    let focusPresets = loadFocusPresets();
     let recentSelections = [];
     let recentComparisons = [];
 
@@ -2173,6 +2281,18 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       return parsed;
     }}
 
+    function serializeFocusSelector(parts) {{
+      const tokens = [];
+      if (parts.owner) tokens.push(`owner:${{parts.owner}}`);
+      if (parts.symbol) tokens.push(`symbol:${{parts.symbol}}`);
+      if (parts.issue) tokens.push("issue:true");
+      if (parts.changed) tokens.push("changed:true");
+      if (parts.terms) {{
+        for (const term of parts.terms.split(/\\s+/).filter(Boolean)) tokens.push(term);
+      }}
+      return tokens.join(" ").trim();
+    }}
+
     function focusIsActive() {{
       return focusKind !== "all" || Boolean(focusSelector.trim());
     }}
@@ -2202,6 +2322,96 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       return parsed.terms.every((term) => haystack.includes(term));
     }}
 
+    function loadFocusPresets() {{
+      try {{
+        const raw = window.localStorage.getItem(focusPresetStorageKey);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((row) => row && typeof row.name === "string" && typeof row.kind === "string" && typeof row.selector === "string");
+      }} catch (_error) {{
+        return [];
+      }}
+    }}
+
+    function saveFocusPresets() {{
+      window.localStorage.setItem(focusPresetStorageKey, JSON.stringify(focusPresets));
+    }}
+
+    function populateAdvancedFocusForm() {{
+      const parsed = parsedFocusSelector();
+      document.getElementById("focus-kind-select").value = focusKind;
+      document.getElementById("focus-owner-select").value = parsed.owner || "";
+      document.getElementById("focus-issues-select").value = parsed.issue ? "true" : "";
+      document.getElementById("focus-changed-select").value = parsed.changed ? "true" : "";
+      document.getElementById("focus-symbol-input").value = parsed.symbol || "";
+      document.getElementById("focus-terms-input").value = (parsed.terms || []).join(" ");
+    }}
+
+    function renderFocusPresets() {{
+      const host = document.getElementById("focus-presets");
+      if (!host) return;
+      if (!focusPresets.length) {{
+        host.innerHTML = emptyState("Saved focus views appear here.");
+        return;
+      }}
+      host.innerHTML = focusPresets.map((preset) => `
+        <div class="focus-preset-chip${{preset.kind === focusKind && preset.selector === focusSelector ? " active" : ""}}">
+          <button type="button" data-focus-preset="${{preset.name}}">${{preset.name}}</button>
+          <button type="button" data-delete-focus-preset="${{preset.name}}" aria-label="delete saved focus">x</button>
+        </div>
+      `).join("");
+      host.querySelectorAll("button[data-focus-preset]").forEach((button) => {{
+        button.onclick = () => {{
+          const preset = focusPresets.find((row) => row.name === button.dataset.focusPreset);
+          if (!preset) return;
+          focusKind = preset.kind;
+          focusSelector = preset.selector;
+          populateAdvancedFocusForm();
+          rerenderFocusedViews();
+        }};
+      }});
+      host.querySelectorAll("button[data-delete-focus-preset]").forEach((button) => {{
+        button.onclick = () => {{
+          focusPresets = focusPresets.filter((row) => row.name !== button.dataset.deleteFocusPreset);
+          saveFocusPresets();
+          renderFocusPresets();
+        }};
+      }});
+    }}
+
+    function applyAdvancedFocusForm() {{
+      focusKind = document.getElementById("focus-kind-select").value || "all";
+      focusSelector = serializeFocusSelector({{
+        owner: document.getElementById("focus-owner-select").value.trim(),
+        symbol: document.getElementById("focus-symbol-input").value.trim(),
+        issue: document.getElementById("focus-issues-select").value === "true",
+        changed: document.getElementById("focus-changed-select").value === "true",
+        terms: document.getElementById("focus-terms-input").value.trim(),
+      }});
+      rerenderFocusedViews();
+    }}
+
+    function clearFocus() {{
+      focusKind = "all";
+      focusSelector = "";
+      populateAdvancedFocusForm();
+      rerenderFocusedViews();
+    }}
+
+    function saveCurrentFocusPreset() {{
+      const name = document.getElementById("focus-preset-name").value.trim();
+      if (!name) {{
+        renderFocusPresets();
+        return;
+      }}
+      focusPresets = focusPresets.filter((row) => row.name !== name);
+      focusPresets.push({{ name, kind: focusKind, selector: focusSelector }});
+      focusPresets.sort((left, right) => left.name.localeCompare(right.name));
+      saveFocusPresets();
+      renderFocusPresets();
+    }}
+
     function renderFocusControls() {{
       document.querySelectorAll(".focus-chip").forEach((button) => {{
         button.classList.toggle("active", button.dataset.focusKind === focusKind);
@@ -2210,6 +2420,8 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       if (input && input.value !== focusSelector) input.value = focusSelector;
       const status = document.getElementById("workspace-focus-status");
       if (status) status.textContent = focusSummary();
+      populateAdvancedFocusForm();
+      renderFocusPresets();
     }}
 
     function rerenderFocusedViews() {{
@@ -2966,7 +3178,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       }});
     }}
 
-    function validationGroupsBlock(groups) {{
+    function validationGroupsBlock(groups, owners = []) {{
       if (!groups || !groups.length) return "<span class='muted'>No grouped validation issues are recorded for this selection.</span>";
       const filteredGroups = groups.filter((group) => {{
         const messages = group.messages || [];
@@ -2974,7 +3186,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         return matchesFocus(
           "issue",
           [group.layer, messages, symbols],
-          {{ ignoreKind: true, issue: true, changed: true }},
+          {{ ignoreKind: true, issue: true, changed: true, owners }},
         );
       }});
       if (!filteredGroups.length) return "<span class='muted'>No validation issues match the workspace focus.</span>";
@@ -3118,7 +3330,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
           ])
         }}
         <p><strong>Issue layers:</strong> ${{(family.validation_issue_layers || []).join(", ") || "none"}}</p>
-        <div><strong>Issue groups:</strong>${{validationGroupsBlock(family.validation_issue_groups || [])}}</div>
+        <div><strong>Issue groups:</strong>${{validationGroupsBlock(family.validation_issue_groups || [], family.baseline_kinds || [])}}</div>
         ${{
           renderCommandDrawer("Technical commands", commandItems, "Validation command unavailable for this selection.")
         }}
@@ -3886,6 +4098,9 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       focusSelector = event.target.value;
       rerenderFocusedViews();
     }});
+    document.getElementById("focus-apply").addEventListener("click", applyAdvancedFocusForm);
+    document.getElementById("focus-clear").addEventListener("click", clearFocus);
+    document.getElementById("focus-save-preset").addEventListener("click", saveCurrentFocusPreset);
     setCapabilities();
     renderBuilder();
     setDiffSelectors();

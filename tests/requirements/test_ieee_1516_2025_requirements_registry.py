@@ -87,13 +87,13 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         assert f"`{filename}`" in text
 
     assert "bounded requirement-facing proof note" in normalized
-    assert "main `python2025` lane plus hosted replay" in normalized
-    assert "tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python2025` lanes" in normalized
+    assert "main `python1516_2025` lane plus hosted replay" in normalized
+    assert "tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python1516_2025` lanes" in normalized
     assert "save/restore lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback" in normalized
-    assert "callback-delivery families, callback-control hygiene, and direct-versus-hosted callback surface boundaries over the main `python2025` runtime" in normalized
+    assert "callback-delivery families, callback-control hygiene, and direct-versus-hosted callback surface boundaries over the main `python1516_2025` runtime" in normalized
     assert "Target/Radar lookahead ladder, including future-exclusion, output ordering, pipeline overlap, negative-oracle guards, and bounded save/restore window rollback" in normalized
-    assert "direct `python2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
-    assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime" in text
+    assert "direct `python1516_2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
+    assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python1516_2025` runtime" in text
     assert "explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics" in normalized
 
 
@@ -102,7 +102,7 @@ def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_bo
     text = (REGISTRY_DIR / "hosted_fedpro_bounded_proof.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
-    assert "This note records the repo's current hosted-route claim for `python-2025-fedpro-grpc`." in normalized
+    assert "This note records the repo's current hosted-route claim for `python1516_2025-fedpro-grpc`." in normalized
     assert "bounded transport/runtime slice rather than a second RTI implementation family" in normalized
     assert "sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane" in normalized
     assert "The hosted route is parity-covered across the tracked scenario families" in normalized
@@ -119,7 +119,7 @@ def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_bo
     assert "shared Target/Radar example path" in normalized
     assert "`./tools/python verify-routes-2025`" in text
     assert "`./tools/python verify-main-2025`" in text
-    assert "does not claim that `python-2025-fedpro-grpc` is a second full RTI implementation lane" in normalized
+    assert "does not claim that `python1516_2025-fedpro-grpc` is a second full RTI implementation lane" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -128,15 +128,15 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
     normalized = " ".join(text.split())
 
     assert "## Current Technical Lane" in text
-    assert "deeper runtime-proof expansion over the promoted `python2025` RTI surface" in normalized
+    assert "deeper runtime-proof expansion over the promoted `python1516_2025` RTI surface" in normalized
     assert "the tracked example/FOM-backed scenario bounded proof note" in normalized
     assert "the dedicated save/restore bounded proof note" in normalized
     assert "the dedicated callback bounded proof note" in normalized
     assert "the dedicated lookahead-window bounded proof note" in normalized
-    assert "the dedicated direct `python2025` bounded proof note" in normalized
+    assert "the dedicated direct `python1516_2025` bounded proof note" in normalized
     assert "the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime families" in normalized
     assert "wrapper-only shim boundaries" in normalized
-    assert "one explicit exclusion map that gathers the non-claim areas around the main `python2025` runtime lane" in normalized
+    assert "one explicit exclusion map that gathers the non-claim areas around the main `python1516_2025` runtime lane" in normalized
     assert "FOM/OMT validation still matters inside that lane" in normalized
     assert "one proof family inside the broader 2025 runtime-evidence closeout" in normalized
 
@@ -173,7 +173,7 @@ def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit
     text = (REGISTRY_DIR / "python2025_direct_bounded_proof.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
-    assert "This note records the repo's current direct-lane claim for `python2025`." in normalized
+    assert "This note records the repo's current direct-lane claim for `python1516_2025`." in normalized
     assert "The direct lane is the main executable bounded proof surface for the current 2025 Python RTI." in normalized
     assert "sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane" in normalized
     assert "`hla-backend-python2025`" in text
@@ -271,18 +271,18 @@ def test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_ro
     worklist_text = HARMONIZATION_WORKLIST.read_text(encoding="utf-8")
     executable_text = EXECUTABLE_REQUIREMENTS.read_text(encoding="utf-8")
 
-    assert "primary-`python2025` runtime plus binding/hosted-route scenario mapping" in (
+    assert "primary-`python1516_2025` runtime plus binding/hosted-route scenario mapping" in (
         REGISTRY_DIR / "README.md"
     ).read_text(encoding="utf-8")
-    assert "| HLA2025-FR-003 | python2025 runtime + binding routes |" in traceability_text
-    assert "| HLA2025-FR-004 | python2025 runtime + binding routes |" in traceability_text
+    assert "| HLA2025-FR-003 | python1516_2025 runtime + binding routes |" in traceability_text
+    assert "| HLA2025-FR-004 | python1516_2025 runtime + binding routes |" in traceability_text
     assert "| HLA2025-FI-004 | binding/intake routes |" in traceability_text
     assert "language shim routes" not in traceability_normalized
     assert "language shim intake" not in traceability_normalized
-    assert "Map service to the primary python2025 runtime lane, Java surface, C++ surface, and FedPro/vendor route" in worklist_text
+    assert "Map service to the primary python1516_2025 runtime lane, Java surface, C++ surface, and FedPro/vendor route" in worklist_text
     assert "Map service to Python shim route" not in worklist_text
-    assert "python2025-plus-binding route scenario" in executable_text
-    assert "route-matrix scenario runner can produce normalized route traces and requirement-tagged evidence across the primary python2025 runtime lane" in executable_text
+    assert "python1516_2025-plus-binding route scenario" in executable_text
+    assert "route-matrix scenario runner can produce normalized route traces and requirement-tagged evidence across the primary python1516_2025 runtime lane" in executable_text
     assert "language-shim route scenario" not in executable_text
 
 

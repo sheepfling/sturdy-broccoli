@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Run the backend-neutral Target/Radar HLA scenario.
 
-Default backend is the dependency-free Python in-memory RTI.
+Default backend is the direct Python 1516e RTI.
 
-For IEEE 1516.1-2025, treat ``python2025`` as the main full Python RTI
+For IEEE 1516.1-2025, treat ``python1516_2025`` as the main full Python RTI
 implementation lane. Legacy ``hla.backends.shim`` imports remain
 compatibility-wrapper code around that same runtime and do not define a
 separate RTI family or public backend-selection lane.
@@ -22,28 +22,28 @@ from hla.foms.target_radar._internal import (
 )
 
 _BACKEND_CHOICES = [
-    "python",
-    "python2025",
-    "python-2025",
-    "python-2025-backend",
+    "python1516e",
+    "python-1516e",
+    "python1516_2025",
+    "python-1516-2025",
     "java-shim-jpype",
     "java-shim-py4j",
     "jpype",
     "py4j",
 ]
 _BACKEND_HELP = (
-    "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI."
+    "Backend/provider name. Use 'python1516_2025' for the primary IEEE 1516.1-2025 Python RTI."
 )
 _PACKAGED_FOM_BACKENDS = {
-    "python2025",
-    "python-2025",
-    "python-2025-backend",
+    "python1516_2025",
+    "python-1516-2025",
+    "python-1516-2025",
 }
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--backend", choices=_BACKEND_CHOICES, default="python", help=_BACKEND_HELP)
+    parser.add_argument("--backend", choices=_BACKEND_CHOICES, default="python1516e", help=_BACKEND_HELP)
     parser.add_argument("--steps", type=int, default=5)
     parser.add_argument("--dt", type=float, default=1.0)
     parser.add_argument("--federation-name", default="TargetRadarFederation")

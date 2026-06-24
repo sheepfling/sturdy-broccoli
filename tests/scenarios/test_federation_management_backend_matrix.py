@@ -64,8 +64,8 @@ _VENDOR_SMOKE_FOM = str(resources.files("hla.fom").joinpath("resources", "foms",
 
 def test_python_backend_synchronization_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -104,8 +104,8 @@ def test_python_connection_lost_callback_matrix():
 
 def test_python_backend_lost_federate_mom_matrix():
     engine = InMemoryRTIEngine()
-    observer = create_rti_ambassador("python", engine=engine)
-    victim = create_rti_ambassador("python", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
+    victim = create_rti_ambassador("python1516e", engine=engine)
     config = LostFederateScenarioConfig(
         federation_name=f"python-lost-federate-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -132,8 +132,8 @@ def test_python_backend_lost_federate_mom_matrix():
 
 def test_python_backend_synchronization_registration_failure_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-failure-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -162,8 +162,8 @@ def test_python_backend_synchronization_registration_failure_matrix():
 
 def test_python_backend_failed_federate_synchronization_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-failed-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -192,9 +192,9 @@ def test_python_backend_failed_federate_synchronization_matrix():
 
 def test_python_backend_late_join_synchronization_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
-    late = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
+    late = create_rti_ambassador("python1516e", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-late-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -225,8 +225,8 @@ def test_python_backend_late_join_synchronization_matrix():
 
 def test_python_backend_multiple_synchronization_points_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-multi-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -258,8 +258,8 @@ def test_python_backend_multiple_synchronization_points_matrix():
 
 def test_python_backend_save_restore_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-restore-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -294,8 +294,8 @@ def test_python_backend_save_restore_matrix():
 
 def test_python_backend_save_restore_queued_callback_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-restore-queued-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -326,8 +326,8 @@ def test_python_backend_save_restore_queued_callback_matrix():
 
 def test_python_backend_scheduled_save_restore_time_state_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-scheduled-save-restore-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -356,8 +356,8 @@ def test_python_backend_scheduled_save_restore_time_state_matrix():
 
 def test_python_backend_restore_object_state_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     leader_fed = RecordingFederateAmbassador()
     wing_fed = RecordingFederateAmbassador()
     config = SaveRestoreScenarioConfig(
@@ -385,8 +385,8 @@ def test_python_backend_restore_object_state_matrix():
 
 def test_python_backend_restore_federate_local_state_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     leader_fed = RecordingFederateAmbassador()
     wing_fed = RecordingFederateAmbassador()
     config = SaveRestoreScenarioConfig(
@@ -413,8 +413,8 @@ def test_python_backend_restore_federate_local_state_matrix():
 
 def test_python_backend_save_failure_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-failure-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -443,8 +443,8 @@ def test_python_backend_save_failure_matrix():
 
 def test_python_backend_restore_request_failure_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-restore-request-failure-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -473,8 +473,8 @@ def test_python_backend_restore_request_failure_matrix():
 
 def test_python_backend_restore_failure_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-restore-failure-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -503,8 +503,8 @@ def test_python_backend_restore_failure_matrix():
 
 def test_python_backend_save_abort_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-abort-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -533,8 +533,8 @@ def test_python_backend_save_abort_matrix():
 
 def test_python_backend_restore_abort_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-restore-abort-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -563,8 +563,8 @@ def test_python_backend_restore_abort_matrix():
 
 def test_python_backend_restore_abort_exception_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-status-negative-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -589,7 +589,7 @@ def test_python_backend_restore_abort_exception_matrix():
 
 
 def test_python_backend_save_status_exception_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
 
     summary = run_save_status_exception_scenario(
         rti,
@@ -601,7 +601,7 @@ def test_python_backend_save_status_exception_matrix():
 
 
 def test_python_backend_restore_status_exception_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
 
     summary = run_restore_status_exception_scenario(
         rti,
@@ -614,8 +614,8 @@ def test_python_backend_restore_status_exception_matrix():
 
 def test_python_backend_save_request_precondition_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
 
     summary = run_save_request_precondition_scenario(
         leader,
@@ -641,8 +641,8 @@ def test_python_backend_save_request_precondition_matrix():
 
 def test_python_backend_restore_request_precondition_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
 
     summary = run_restore_request_precondition_scenario(
         leader,
@@ -668,8 +668,8 @@ def test_python_backend_restore_request_precondition_matrix():
 
 def test_python_backend_save_participant_exception_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
 
     summary = run_save_participant_exception_scenario(
         leader,
@@ -696,7 +696,7 @@ def test_python_backend_save_participant_exception_matrix():
 
 
 def test_python_backend_abort_save_exception_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
 
     summary = run_abort_save_exception_scenario(
         rti,
@@ -709,8 +709,8 @@ def test_python_backend_abort_save_exception_matrix():
 
 def test_python_backend_restore_participant_exception_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
 
     summary = run_restore_participant_exception_scenario(
         leader,
@@ -736,8 +736,8 @@ def test_python_backend_restore_participant_exception_matrix():
 
 def test_python_backend_resigned_federate_callback_silence_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-resign-callback-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -764,8 +764,8 @@ def test_python_backend_resigned_federate_callback_silence_matrix():
 
 def test_python_backend_resign_precondition_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = ResignScenarioConfig(
         federation_name=f"python-resign-negative-{uuid.uuid4().hex[:8]}",
         fom_modules=(_VENDOR_SMOKE_FOM,),
@@ -793,8 +793,8 @@ def test_python_backend_resign_precondition_matrix():
 
 def test_python_backend_resign_mom_cleanup_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = ResignScenarioConfig(
         federation_name=f"python-resign-mom-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -819,8 +819,8 @@ def test_python_backend_resign_mom_cleanup_matrix():
 
 def test_python_backend_disconnect_mom_cleanup_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = ResignScenarioConfig(
         federation_name=f"python-disconnect-mom-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -845,9 +845,9 @@ def test_python_backend_disconnect_mom_cleanup_matrix():
 
 def test_python_backend_join_precondition_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
-    late = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
+    late = create_rti_ambassador("python1516e", engine=engine)
     config = JoinScenarioConfig(
         federation_name=f"python-join-negative-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),

@@ -26,10 +26,10 @@ Source anchors for modal terms:
 - `framework_rules.md`: Framework and Rules requirements, including Rules 1-10.
 - `federate_interface.md`: Federate Interface service, conformance, callback, FDD, exception, and time requirements.
 - `omt.md`: OMT/FOM naming, DIF, component, identification, conformance, and merge requirements.
-- `traceability_matrix.md`: initial requirement-to-project-lane and primary-`python2025` runtime plus binding/hosted-route scenario mapping.
-- `fom_backed_scenario_bounded_proof.md`: bounded requirement-facing note for the tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python2025` lanes.
-- `federation_management_bounded_proof.md`: bounded requirement-facing proof note for federation lifecycle, synchronization, and save/restore control families over the main `python2025` lane plus hosted replay.
-- `python2025_direct_bounded_proof.md`: bounded requirement-facing proof note for the direct `python2025` main-surface runtime lane over `hla-backend-python2025`.
+- `traceability_matrix.md`: initial requirement-to-project-lane and primary-`python1516_2025` runtime plus binding/hosted-route scenario mapping.
+- `fom_backed_scenario_bounded_proof.md`: bounded requirement-facing note for the tracked Proto2025 and Target/Radar example/FOM-backed scenario suite over the main `python1516_2025` lanes.
+- `federation_management_bounded_proof.md`: bounded requirement-facing proof note for federation lifecycle, synchronization, and save/restore control families over the main `python1516_2025` lane plus hosted replay.
+- `python2025_direct_bounded_proof.md`: bounded requirement-facing proof note for the direct `python1516_2025` main-surface runtime lane over `hla-backend-python2025`.
 - `declaration_management_bounded_proof.md`: bounded requirement-facing proof note for publication, subscription, advisory, and name-reservation families.
 - `object_management_bounded_proof.md`: bounded requirement-facing proof note for object registration, updates, interactions, routing, and delete/remove families.
 - `ownership_management_bounded_proof.md`: bounded requirement-facing proof note for divestiture, acquisition, release, query, and resign-time ownership policies.
@@ -38,11 +38,11 @@ Source anchors for modal terms:
 - `support_services_bounded_proof.md`: bounded requirement-facing proof note for support-service traceability, handle/name lookup, callback-control, and switch/control inquiry families.
 - `time_management_bounded_proof.md`: bounded requirement-facing proof note for time-mode control, grants, GALT/LITS/lookahead observability, and Target/Radar window proofs.
 - `lookahead_window_bounded_proof.md`: bounded requirement-facing proof note for the Target/Radar lookahead ladder, including future-exclusion, output ordering, pipeline overlap, negative-oracle guards, and bounded save/restore window rollback.
-- `standard_binding_runtime_capability_bounded_proof.md`: bounded requirement-facing proof note for Java/C++ standard-route artifact-gated runtime-capability traces over the main `python2025` runtime.
-- `hosted_fedpro_bounded_proof.md`: bounded requirement-facing proof note for the hosted `python-2025-fedpro-grpc` transport/runtime slice over the main `python2025` RTI lane.
-- `binding_and_hosted_route_boundaries.md`: bounded requirement-facing note for Java, C++, and hosted FedPro binding/route boundaries over the main `python2025` runtime.
-- `python2025_exclusion_boundaries.md`: explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics around the main `python2025` claim.
-- `callback_bounded_proof.md`: bounded requirement-facing proof note for callback-delivery families, callback-control hygiene, and direct-versus-hosted callback surface boundaries over the main `python2025` runtime.
+- `standard_binding_runtime_capability_bounded_proof.md`: bounded requirement-facing proof note for Java/C++ standard-route artifact-gated runtime-capability traces over the main `python1516_2025` runtime.
+- `hosted_fedpro_bounded_proof.md`: bounded requirement-facing proof note for the hosted `python1516_2025-fedpro-grpc` transport/runtime slice over the main `python1516_2025` RTI lane.
+- `binding_and_hosted_route_boundaries.md`: bounded requirement-facing note for Java, C++, and hosted FedPro binding/route boundaries over the main `python1516_2025` runtime.
+- `python2025_exclusion_boundaries.md`: explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics around the main `python1516_2025` claim.
+- `callback_bounded_proof.md`: bounded requirement-facing proof note for callback-delivery families, callback-control hygiene, and direct-versus-hosted callback surface boundaries over the main `python1516_2025` runtime.
 - `callback_binding_deltas.md`: bounded requirement-facing note for callback/configuration/binding delta rows.
 - `omt_xs_any_extension_tolerance.md`: bounded requirement-facing note for OMT `xs:any` extension preservation and schema-tolerant round-trip behavior.
 - `executable_tests/`: imported v3 executable-test backlog with 1117 candidate test rows.
@@ -71,7 +71,7 @@ Allowed project evidence vocabulary:
 ## Current Technical Lane
 
 The current high-value implementation lane is deeper runtime-proof expansion
-over the promoted `python2025` RTI surface. The repo has already moved past the
+over the promoted `python1516_2025` RTI surface. The repo has already moved past the
 initial FOM/OMT validation bootstrapping stage and now uses this directory as a
 requirement-facing evidence map for:
 
@@ -80,7 +80,7 @@ requirement-facing evidence map for:
 - the tracked example/FOM-backed scenario bounded proof note that makes the
   repo-owned Proto2025 and Target/Radar suite explicit without overclaiming
   every possible FOM composition
-- the dedicated direct `python2025` bounded proof note that treats the main
+- the dedicated direct `python1516_2025` bounded proof note that treats the main
   in-process lane as its own requirement-facing executable surface instead of
   only as architecture prose
 - the dedicated hosted FedPro bounded proof plus route-parity evidence that replays those runtime
@@ -99,7 +99,7 @@ requirement-facing evidence map for:
 - explicit bounded-extension, legacy-only, and wrapper-only shim boundaries so
   the main 2025 Python RTI claim stays narrow enough to defend
 - one explicit exclusion map that gathers the non-claim areas around the main
-  `python2025` runtime lane so those boundaries stay auditable outside the
+  `python1516_2025` runtime lane so those boundaries stay auditable outside the
   generated finish-line bundle
 
 For code ownership, read those proof notes against the extracted

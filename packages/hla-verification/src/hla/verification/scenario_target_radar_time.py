@@ -87,7 +87,7 @@ def _spawn_like_rti(template_rti: Any) -> Any:
 
     engine = getattr(backend, "engine", None)
     if engine is not None:
-        return create_rti_ambassador("python", engine=engine)
+        return create_rti_ambassador("python1516e", engine=engine)
 
     config = getattr(backend, "config", None)
     transport = getattr(config, "transport", None)

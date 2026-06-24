@@ -62,7 +62,7 @@ Use these before anything vendor-specific:
 ./tools/bootstrap python
 source .venv/bin/activate
 python examples/backend_recording.py
-python examples/target_radar_simulation.py --backend python --steps 5
+python examples/target_radar_simulation.py --backend python1516e --steps 5
 ./tools/test
 ```
 

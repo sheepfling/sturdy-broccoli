@@ -98,7 +98,7 @@ class PythonRTIRestServer(_BaseRestServer):
         super().__init__(
             request_path=config.request_path,
             processor=HostedRTICommandProcessor(
-                create_rti_ambassador("python", engine=config.engine, config=config.python_config)
+                create_rti_ambassador("python1516e", engine=config.engine, config=config.python_config)
             ),
             host=config.host,
             port=config.port,

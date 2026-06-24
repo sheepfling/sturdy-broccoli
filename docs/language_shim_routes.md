@@ -56,7 +56,7 @@ standard-backed route wiring and a bounded behavior slice:
   exchange through the Python reference behavior model.
 - 2025 Java and C++ standard routes run bounded lifecycle, object exchange,
   ownership, DDM, time-management, support-services, save/restore, MOM, and
-  runtime-capability traces over the primary `python2025` runtime lane.
+  runtime-capability traces over the primary `python1516_2025` runtime lane.
 - Full standard conformance, DDM, ownership, save/restore, MOM, and complete
   2025 object exchange remain outside the MVP.
 
@@ -94,7 +94,7 @@ the route matrix remains grounded in executable route behavior.
 For 2025 standard routes, the checked-in trace and aggregate evidence also
 record:
 
-- `runtimeProvider = python2025`
+- `runtimeProvider = python1516_2025`
 - `implementationLane = hla-backend-python2025`
 - `wrapperOnly = false`
 

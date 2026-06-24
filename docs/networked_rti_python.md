@@ -67,7 +67,7 @@ That route is the documented Python RTI over gRPC path in
 The 2025 hosted path is narrower and more explicit.
 
 It is not documented as a generic "remote Python RTI" abstraction. It is the
-current transport-hosted FedPro route over the main full `python2025` Python RTI
+current transport-hosted FedPro route over the main full `python1516_2025` Python RTI
 lane.
 
 In other words, the hosted 2025 route is evidence over the primary
@@ -85,14 +85,14 @@ The relevant pieces are:
   typed FedPro 2025 client path
 
 The repo now exposes this hosted 2025 path through
-`create_rti_ambassador("python2025", transport=...)`. That factory spelling
+`create_rti_ambassador("python1516_2025", transport=...)`. That factory spelling
 resolves onto the same hosted FedPro route over `hla-backend-python2025`, so
 the explicit server-plus-typed-transport path and the factory spelling now
 describe one runtime lane rather than separate ownership paths.
 
 Keep the ownership wording strict here:
 
-- use `python2025` when naming the hosted 2025 route
+- use `python1516_2025` when naming the hosted 2025 route
 - treat `hla.backends.shim` as compatibility-wrapper code, not as the hosted
   runtime lane
 - do not describe historical `shim`-named compatibility paths as the main 2025
@@ -161,10 +161,10 @@ Those lanes are split by ownership:
   2010 Python route parity matrix artifact, and reruns the tracked hosted
   Python example paths.
 - `./tools/python verify-routes-2025` runs the bounded hosted 2025 FedPro
-  transport suite, direct `python2025` time-window, save/restore, ownership,
+  transport suite, direct `python1516_2025` time-window, save/restore, ownership,
   callback, support-service, and MOM proof selectors, the 2025 route-parity
   ledger checks, refreshes the checked-in 2025 finish-line bundle (including
-  the route-parity artifacts), and reruns the `python2025` Target/Radar
+  the route-parity artifacts), and reruns the `python1516_2025` Target/Radar
   example path.
 
 Treat it as regular hygiene after changes to:

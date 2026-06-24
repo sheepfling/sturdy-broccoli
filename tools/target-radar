@@ -12,13 +12,13 @@ usage: ./tools/target-radar [matrix|proof|help] [args...]
 Canonical target/radar operator flows:
   ./tools/target-radar matrix
   ./tools/target-radar proof
-  ./tools/target-radar proof --backend python --proof-backend python
-  ./tools/target-radar proof --backend python2025 --proof-backend python2025
+  ./tools/target-radar proof --backend python1516e --proof-backend python1516e
+  ./tools/target-radar proof --backend python1516_2025 --proof-backend python1516_2025
 
 This is the human-facing wrapper over the target/radar backend matrix and proof
 artifact generators under `scripts/`.
 
-For IEEE 1516.1-2025, use `python2025` as the primary Python RTI lane.
+For IEEE 1516.1-2025, use `python1516_2025` as the primary Python RTI lane.
 `hla-backend-shim` remains compatibility-wrapper/import-level code around that
 same runtime and is not a separate RTI family.
 EOF
@@ -33,7 +33,7 @@ case "${1:-help}" in
   matrix)
     shift
     if [[ "$#" -eq 0 ]]; then
-      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" --backend python
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" --backend python1516e
     else
       "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" "$@"
     fi
@@ -41,7 +41,7 @@ case "${1:-help}" in
   proof)
     shift
     if [[ "$#" -eq 0 ]]; then
-      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_proof.py" --backend python --proof-backend python
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_proof.py" --backend python1516e --proof-backend python1516e
     else
       "$python_bin" "$ROOT_DIR/scripts/run_target_radar_proof.py" "$@"
     fi

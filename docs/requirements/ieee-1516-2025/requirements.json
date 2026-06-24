@@ -269,7 +269,7 @@
       "project_area": ["callbacks", "shim_routes", "verification"],
       "status": "extracted",
       "tests": ["HLA_EVOKED evidence", "HLA_IMMEDIATE evidence"],
-      "implementation": ["Keep `HLA_EVOKED` and `HLA_IMMEDIATE` evidence separate; prove direct `python2025` inline immediate delivery explicitly and treat hosted/binding callback-model limits as boundary evidence where applicable."]
+      "implementation": ["Keep `HLA_EVOKED` and `HLA_IMMEDIATE` evidence separate; prove direct `python1516_2025` inline immediate delivery explicitly and treat hosted/binding callback-model limits as boundary evidence where applicable."]
     },
     {
       "id": "HLA2025-FI-007",

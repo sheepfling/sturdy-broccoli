@@ -69,8 +69,8 @@ Commands that require that authorization:
 Hosted-route meaning in this guide:
 
 - `./tools/python verify-routes` is the hosted 2010 Python direct-vs-gRPC lane
-- `./tools/python verify-routes-2025` is the bounded hosted `python2025` plus
-  `python-2025-fedpro-grpc` lane
+- `./tools/python verify-routes-2025` is the bounded hosted `python1516_2025` plus
+  `python1516_2025-fedpro-grpc` lane
 - both need the same local loopback authorization, but only the second one is
   the current IEEE 1516.1-2025 hosted-route hygiene lane
 

@@ -51,12 +51,12 @@ Example:
   - Python/Java interaction: none exposed to the caller
   - transport surface: `grpc`
 
-- `hla.rti.create_rti_ambassador("python")`
+- `hla.rti.create_rti_ambassador("python1516e")`
   - RTI runtime: in-memory Python reference RTI
   - Python/Java interaction: none
   - transport surface: none
 
-- `hla.rti1516_2025.create_rti_ambassador("python2025")`
+- `hla.rti1516_2025.create_rti_ambassador("python1516_2025")`
   - RTI runtime: primary Python IEEE 1516.1-2025 RTI implementation
   - Python/Java interaction: none
   - transport surface: none
@@ -66,7 +66,7 @@ Example:
 | Runtime family | What it is | Primary backend names | Current status |
 |---|---|---|---|
 | Python RTI 2010 | in-process reference RTI implemented in Python for IEEE 1516.1-2010 | `python` | strongest reference path for local 2010 semantics and clause work |
-| Python RTI 2025 | in-process Python RTI implemented in Python for IEEE 1516.1-2025 | `python2025`, `python-2025`, `python-2025-backend` | main executable 2025 Python RTI lane in this repo |
+| Python RTI 2025 | in-process Python RTI implemented in Python for IEEE 1516.1-2025 | `python1516_2025`, `python-1516-2025`, `python-1516-2025` | main executable 2025 Python RTI lane in this repo |
 | Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
 | CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
 | Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
@@ -204,7 +204,7 @@ Use this simpler classification in practice:
 | Operational bucket | Backend names |
 |---|---|
 | Python reference RTI 2010 | `python` |
-| Python RTI 2025 | `python2025`, `python-2025`, `python-2025-backend` |
+| Python RTI 2025 | `python1516_2025`, `python-1516-2025`, `python-1516-2025` |
 | Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
 | Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
 | Real Pitch | `pitch-jpype`, `pitch-py4j` |

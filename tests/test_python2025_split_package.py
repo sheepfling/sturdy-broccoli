@@ -24,9 +24,9 @@ def test_split_python2025_rti_package_exports_backend_surface() -> None:
     import hla.backends.python2025
 
     backend = hla.backends.python2025.create_python2025_backend(_backend_request())
-    assert backend.info.name == "python2025-rti"
+    assert backend.info.name == "python1516_2025-rti"
     assert backend.info.kind == "python/2025"
-    assert backend.info.details["provider"] == "python2025"
+    assert backend.info.details["provider"] == "python1516_2025"
     assert backend.info.details["implementation_lane"] == "hla-backend-python2025"
     assert backend.info.details["counts_as_python_2025_rti"] is True
 
@@ -53,36 +53,36 @@ def test_split_python2025_rti_package_plugin_descriptor_creates_backend() -> Non
     backend = descriptor.create_backend(_backend_request())
 
     assert isinstance(descriptor, RTIBackendPlugin)
-    assert descriptor.name == "python2025"
+    assert descriptor.name == "python1516_2025"
     assert descriptor.family == "python-rti-2025"
-    assert descriptor.aliases == ("python-2025", "python-2025-backend")
+    assert descriptor.aliases == ("python-1516-2025", "python-1516-2025")
     assert descriptor.description == "Primary Python 2025 RTI implementation package."
-    assert discovery.name == "python2025"
+    assert discovery.name == "python1516_2025"
     assert discovery.info.kind == "python/2025"
     assert discovery.info.details["implementation_lane"] == "hla-backend-python2025"
     assert discovery.info.details["counts_as_python_2025_rti"] is True
     assert "wrapper_only" not in discovery.info.details
     assert backend.info.kind == "python/2025"
-    assert backend.info.details["provider"] == "python2025"
+    assert backend.info.details["provider"] == "python1516_2025"
     assert tuple(item.name for item in backend_plugins()) == (descriptor.name,)
 
 
 def test_split_python2025_runtime_can_spawn_verification_sibling_without_shim_route() -> None:
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
-    runtime_rti = create_rti_ambassador(backend="python2025")
+    runtime_rti = create_rti_ambassador(backend="python1516_2025")
     sibling = runtime_rti._verification_spawn_like()
 
     assert type(sibling) is type(runtime_rti)
     assert sibling is not runtime_rti
-    assert sibling.backend_info.details["provider"] == "python2025"
+    assert sibling.backend_info.details["provider"] == "python1516_2025"
     assert sibling.backend_info.details["implementation_lane"] == "hla-backend-python2025"
     assert sibling.backend_info.details["counts_as_python_2025_rti"] is True
     assert sibling._logical_time_implementation_name == runtime_rti._logical_time_implementation_name
 
 
 def test_split_python2025_rti_package_does_not_import_back_through_shim_modules() -> None:
-    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
 
     violations: list[tuple[str, str]] = []
     for path in sorted(runtime_root.rglob("*.py")):
@@ -108,7 +108,7 @@ def test_split_python2025_runtime_backend_imports_runtime_modules_directly() -> 
         / "src"
         / "hla"
         / "backends"
-        / "python2025"
+        / "python1516_2025"
         / "backend.py"
     )
     tree = ast.parse(backend_path.read_text(encoding="utf-8"), filename=str(backend_path))
@@ -160,7 +160,7 @@ def test_split_python2025_runtime_backend_imports_runtime_modules_directly() -> 
 
 
 def test_split_python2025_runtime_modules_do_not_import_compatibility_export_modules() -> None:
-    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
     compatibility_export_modules = {
         "attribute_policy",
         "attribute_scope",
@@ -251,7 +251,7 @@ def test_split_shim_helper_modules_remain_thin_python2025_reexports() -> None:
 
 
 def test_split_python2025_compatibility_export_modules_remain_thin_runtime_reexports() -> None:
-    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
     expected_targets = {
         "attribute_policy.py": "attribute_policy_runtime",
         "attribute_scope.py": "attribute_scope_runtime",
@@ -309,7 +309,7 @@ def test_split_python2025_compatibility_export_modules_remain_thin_runtime_reexp
 
 
 def test_split_python2025_runtime_centralizes_shim_specific_ownership_in_compatibility_wrapper() -> None:
-    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    runtime_root = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
     wrapper_path = runtime_root / "compatibility_wrapper.py"
     violations: list[str] = []
     shim_markers = ("Shim2025", "create_shim_backend", '"provider": "shim"', '"wrapper_only": True')
@@ -393,13 +393,13 @@ def test_split_python2025_packages_publish_primary_runtime_and_wrapper_metadata(
         "hla-transport-common==0.13.0",
     ]
     assert python2025_pyproject["project"]["entry-points"]["hla.rti_backends"] == {
-        "python2025": "hla.backends.python2025.plugin:plugin"
+        "python1516_2025": "hla.backends.python2025.plugin:plugin"
     }
     assert python2025_pyproject["tool"]["hla"]["package"] == {
         "status": "implementation-owned",
         "role": "rti-backend",
-        "backend_names": ["python2025"],
-        "backend_aliases": ["python-2025", "python-2025-backend"],
+        "backend_names": ["python1516_2025"],
+        "backend_aliases": ["python-1516-2025", "python-1516-2025"],
         "source_roots": ["packages/hla-backend-python2025/src/hla/backends/python2025"],
     }
 

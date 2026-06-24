@@ -10,9 +10,8 @@ from .target_radar_2025_adapter import TargetRadar2025RTIAdapter
 
 
 _TARGET_RADAR_2025_BACKENDS = {
-    "python2025",
-    "python-2025",
-    "python-2025-backend",
+    "python1516_2025",
+    "python-1516-2025",
 }
 
 
@@ -36,7 +35,7 @@ def make_target_radar_factory(
 
     normalized = backend.strip().lower()
     backend_options = dict(backend_options or {})
-    if normalized in {"python", "inmemory", "in-memory"}:
+    if normalized in {"python1516e", "python-1516e"}:
         pair_by_role: dict[str, Any] = {}
         create_python_pair = import_module("hla.backends.inmemory").create_python_pair
 

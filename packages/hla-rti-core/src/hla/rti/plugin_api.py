@@ -62,7 +62,7 @@ class BackendRequest:
 class RTIBackendSpec:
     """Legacy backend selection value accepted by compatibility call sites."""
 
-    kind: str = "python"
+    kind: str = "python1516e"
     options: Mapping[str, Any] = field(default_factory=dict)
 
 

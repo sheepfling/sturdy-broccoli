@@ -26,7 +26,7 @@ hla2010_shell_log "running target/radar proof packet"
 hla2010_shell_log "python: $PYTHON_BIN"
 
 if [[ "$#" -eq 0 ]]; then
-  "$PYTHON_BIN" scripts/run_target_radar_proof.py --backend python --proof-backend python
+  "$PYTHON_BIN" scripts/run_target_radar_proof.py --backend python1516e --proof-backend python1516e
 else
   "$PYTHON_BIN" scripts/run_target_radar_proof.py "$@"
 fi

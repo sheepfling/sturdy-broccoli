@@ -48,8 +48,8 @@ from tests.vendors.runtime_support import cleanup_federation
 
 def test_python_backend_exchange_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     publisher_fed = RecordingFederateAmbassador()
     subscriber_fed = RecordingFederateAmbassador()
     config = TwoFederateExchangeConfig(
@@ -128,8 +128,8 @@ def test_python_discovery_metadata_callback_matrix():
 def test_python_discovery_class_matrix(tmp_path: Path):
     hierarchy_fom = write_hierarchy_fom(tmp_path / "hierarchy-fom.xml")
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     config = DiscoveryClassScenarioConfig(
         federation_name=f"python-discovery-class-{uuid.uuid4().hex[:8]}",
         fom_modules=(hierarchy_fom,),
@@ -158,8 +158,8 @@ def test_python_discovery_class_matrix(tmp_path: Path):
 
 def test_python_name_reservation_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    rival = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    rival = create_rti_ambassador("python1516e", engine=engine)
     config = NameReservationScenarioConfig(
         federation_name=f"python-name-reservation-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -197,8 +197,8 @@ def test_python_name_reservation_matrix():
 
 def test_python_backend_declaration_management_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -252,8 +252,8 @@ def test_python_backend_declaration_management_matrix():
 
 def test_python_backend_declaration_management_overload_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-overloads-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -310,7 +310,7 @@ def test_python_backend_declaration_management_overload_matrix():
 
 def test_python_backend_declaration_invalid_attribute_publication_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-invalid-attr-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -337,8 +337,8 @@ def test_python_backend_declaration_invalid_attribute_publication_matrix():
 
 def test_python_backend_time_managed_declaration_independence_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-time-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -378,7 +378,7 @@ def test_python_backend_time_managed_declaration_independence_matrix():
 
 def test_python_backend_declaration_unpublish_rejection_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
 
     def _enable_strict_object_publication(rti):
         rti.backend.config.strict_object_publication = True
@@ -436,9 +436,9 @@ def test_python_update_advisory_callback_matrix():
 
 def test_python_object_scope_relevance_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = ObjectScopeScenarioConfig(
         federation_name=f"python-object-scope-{uuid.uuid4().hex[:8]}",
         fom_modules=("TargetRadarFOMmodule.xml",),
@@ -477,8 +477,8 @@ def test_python_object_scope_relevance_matrix():
 
 def test_python_transportation_type_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = TransportationTypeScenarioConfig(
         federation_name=f"python-transport-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -518,8 +518,8 @@ def test_python_transportation_type_matrix():
 
 def test_python_transportation_type_restore_persistence_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = TransportationTypeScenarioConfig(
         federation_name=f"python-transport-restore-{uuid.uuid4().hex[:8]}",
         fom_modules=("TargetRadarFOMmodule.xml",),
@@ -560,8 +560,8 @@ def test_python_transportation_type_restore_persistence_matrix():
 
 def test_python_transportation_type_rejection_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = TransportationTypeScenarioConfig(
         federation_name=f"python-transport-reject-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -594,8 +594,8 @@ def test_python_transportation_type_rejection_matrix():
 def test_python_update_rate_matrix(tmp_path: Path):
     update_rate_fom = write_update_rate_fom(tmp_path / "update-rate-fom.xml")
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     config = UpdateRateScenarioConfig(
         federation_name=f"python-update-rate-{uuid.uuid4().hex[:8]}",
         fom_modules=(update_rate_fom,),
@@ -624,8 +624,8 @@ def test_python_update_rate_matrix(tmp_path: Path):
 
 def test_python_request_attribute_value_update_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    requester = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    requester = create_rti_ambassador("python1516e", engine=engine)
     config = RequestAttributeValueUpdateScenarioConfig(
         federation_name=f"python-ravu-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -659,9 +659,9 @@ def test_python_request_attribute_value_update_matrix():
 
 def test_python_request_attribute_value_update_routing_matrix():
     engine = InMemoryRTIEngine()
-    owner_a = create_rti_ambassador("python", engine=engine)
-    owner_b = create_rti_ambassador("python", engine=engine)
-    requester = create_rti_ambassador("python", engine=engine)
+    owner_a = create_rti_ambassador("python1516e", engine=engine)
+    owner_b = create_rti_ambassador("python1516e", engine=engine)
+    requester = create_rti_ambassador("python1516e", engine=engine)
     config = RequestAttributeValueUpdateScenarioConfig(
         federation_name=f"python-ravu-routing-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -696,9 +696,9 @@ def test_python_request_attribute_value_update_routing_matrix():
 
 def test_python_orphan_object_lifecycle_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
-    late = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
+    late = create_rti_ambassador("python1516e", engine=engine)
     config = OrphanObjectScenarioConfig(
         federation_name=f"python-orphan-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -732,8 +732,8 @@ def test_python_orphan_object_lifecycle_matrix():
 
 def test_python_timed_delete_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = TimedDeleteScenarioConfig(
         federation_name=f"python-timed-delete-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -764,8 +764,8 @@ def test_python_timed_delete_matrix():
 
 def test_python_local_delete_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = LocalDeleteScenarioConfig(
         federation_name=f"python-local-delete-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),

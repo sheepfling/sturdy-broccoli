@@ -40,7 +40,7 @@ runtime too:
   honors `HLA_EVOKED` by queueing until explicit drain and honors
   `HLA_IMMEDIATE` by delivering inline when callbacks are enabled
 - [`hla.backends.python2025.federation_management_runtime`](../../packages/hla-backend-python2025/src/hla/backends/python2025/federation_management_runtime.py)
-  stores the selected callback model on the connected `python2025` federate
+  stores the selected callback model on the connected `python1516_2025` federate
 - [`hla.backends.python2025.federation_time_surface_mixin`](../../packages/hla-backend-python2025/src/hla/backends/python2025/federation_time_surface_mixin.py)
   exposes the public drain/enable/disable services over that runtime
 
@@ -69,7 +69,7 @@ The strongest executable evidence lives in the Python backend tests:
 For the main 2025 RTI lane, executable evidence now also includes:
 
 - [`tests/test_rti1516_2025_python2025_runtime.py`](../../tests/test_rti1516_2025_python2025_runtime.py)
-  proves raw callback-control queueing on the direct `python2025` surface and
+  proves raw callback-control queueing on the direct `python1516_2025` surface and
   proves inline `HLA_IMMEDIATE` object-callback delivery without explicit
   evocation
 - [`tests/transport/test_grpc_transport_2025.py`](../../tests/transport/test_grpc_transport_2025.py)

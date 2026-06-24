@@ -26,7 +26,7 @@ class JavaRouteShim2025Backend:
                 "profile": profile,
                 "spec": "rti1516_2025",
                 "implementation": "2025 Python RTI lane",
-                "runtime_provider": "python2025",
+                "runtime_provider": "python1516_2025",
                 "implementation_lane": "hla-backend-python2025",
                 "counts_as_python_2025_rti": False,
                 "wrapper_only": False,

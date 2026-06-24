@@ -11,7 +11,7 @@
       "counts_as_python_2025_rti": false,
       "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
-      "runtime_provider": "python2025",
+      "runtime_provider": "python1516_2025",
       "scenario": "lifecycle-core",
       "status": "core-green",
       "surface": "official IEEE 1516.1-2025 C++ API",
@@ -21,7 +21,7 @@
       "counts_as_python_2025_rti": false,
       "implementation_lane": "hla-backend-python2025",
       "parity_scope": "bounded scenario-parity evidence",
-      "runtime_provider": "python2025",
+      "runtime_provider": "python1516_2025",
       "scenario": "lifecycle-core",
       "status": "core-green",
       "surface": "official IEEE 1516.1-2025 C++ API",
@@ -31,7 +31,7 @@
   "scenario_evidence": {
     "counts_as_python_2025_rti": false,
     "implementation_lane": "hla-backend-python2025",
-    "runtime_provider": "python2025",
+    "runtime_provider": "python1516_2025",
     "scenarios": [
       "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
       "2025 standard route object exchange: two-federate publish/subscribe, discover, reflect, receive, and unsubscribe suppression",

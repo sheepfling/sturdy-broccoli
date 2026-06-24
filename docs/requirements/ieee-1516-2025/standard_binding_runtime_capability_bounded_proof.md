@@ -23,7 +23,7 @@ evidence rather than exhaustive cross-binding behavior-conformance proof.
 
 | Scenario family | Java standard routes | C++ standard routes | Evidence anchors | Current bounded reading |
 | --- | --- | --- | --- | --- |
-| `federation_lifecycle` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py`, `docs/evidence/shim_routes/java-standard-2025.json`, `docs/evidence/shim_routes/cpp-standard-2025.json` | Standard routes cover artifact-gated lifecycle connect/create/join/resign/destroy flows and callback polling over the main `python2025` runtime. |
+| `federation_lifecycle` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py`, `docs/evidence/shim_routes/java-standard-2025.json`, `docs/evidence/shim_routes/cpp-standard-2025.json` | Standard routes cover artifact-gated lifecycle connect/create/join/resign/destroy flows and callback polling over the main `python1516_2025` runtime. |
 | `object_exchange` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py`, `docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json`, `docs/evidence/shim_routes/route_traces/cpp-standard-2025-pybind.json` | Standard routes cover two-federate publish/subscribe, discovery, reflection, interaction receive, and unsubscribe suppression. |
 | `ownership` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py` | Standard routes cover bounded divestiture/acquisition/query callback traces and owner-state visibility over the main runtime lane. |
 | `ddm` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py` | Standard routes cover bounded DDM region overlap filtering, rediscovery, and in-region reflection traces. |
@@ -54,7 +54,7 @@ evidence rather than exhaustive cross-binding behavior-conformance proof.
   save/restore, MOM, and support-service traces.
 - The shim-route evidence artifacts and route traces are the route-facing
   records that show those standard bindings replay bounded traces over the main
-  `python2025` runtime owner.
+  `python1516_2025` runtime owner.
 
 ## Explicit Non-Claim
 

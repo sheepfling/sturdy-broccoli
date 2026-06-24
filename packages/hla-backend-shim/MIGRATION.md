@@ -29,6 +29,6 @@ use `hla.backends.shim.runtime_aliases` explicitly. The package root and
 surface and shim-routing helpers. Use the explicit `Shim2025*` symbols when
 you intentionally want the compatibility-wrapper lane.
 
-Use `python2025` when you want the direct 2025 backend lane.
+Use `python1516_2025` when you want the direct 2025 backend lane.
 Use `hla.backends.shim` only when you need the temporary
 import-compatibility scaffolding or legacy compatibility-wrapper imports.

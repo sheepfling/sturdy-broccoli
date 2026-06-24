@@ -22,7 +22,7 @@ Start with the Python RTI first:
 ```bash
 ./tools/bootstrap python
 source .venv/bin/activate
-python examples/target_radar_simulation.py --backend python --steps 5
+python examples/target_radar_simulation.py --backend python1516e --steps 5
 ```
 
 Then add the JPype bridge extras:

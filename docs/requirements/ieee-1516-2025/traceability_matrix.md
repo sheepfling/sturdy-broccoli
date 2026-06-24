@@ -9,8 +9,8 @@ evidence scenarios. It is not a conformance claim.
 | HLA2025-REQ-002 | evidence | Status vocabulary forbids local `HLA Conforming` claims. |
 | HLA2025-FR-001 | FOM validation | Target/Radar FOM-backed demo evidence. |
 | HLA2025-FR-002 | RTI architecture | RTI state model review; federate-owned semantic object state. |
-| HLA2025-FR-003 | python2025 runtime + binding routes | `two-federate-core-exchange`, route callback traces. |
-| HLA2025-FR-004 | python2025 runtime + binding routes | Java/C++/Python HLA-shaped service and callback evidence. |
+| HLA2025-FR-003 | python1516_2025 runtime + binding routes | `two-federate-core-exchange`, route callback traces. |
+| HLA2025-FR-004 | python1516_2025 runtime + binding routes | Java/C++/Python HLA-shaped service and callback evidence. |
 | HLA2025-FR-005 | Ownership | Attribute ownership matrix and negative tests. |
 | HLA2025-FR-006 | SOM tooling | SOM generation backlog. |
 | HLA2025-FR-007 | Object management | Object update reflection and interaction receive evidence. |
@@ -22,7 +22,7 @@ evidence scenarios. It is not a conformance claim.
 | HLA2025-FI-003 | Language evidence | Java 2025, C++ 2025, Python mapping split. |
 | HLA2025-FI-004 | binding/intake routes | Java standard jars and C++ standard capsules. |
 | HLA2025-FI-005 | Negative tests | Structured RTI exceptions for illegal operations. |
-| HLA2025-FI-006 | Callback model | Direct `python2025` evidence now proves both `HLA_EVOKED` and inline `HLA_IMMEDIATE`; hosted and binding rows still describe their callback-model boundaries separately. |
+| HLA2025-FI-006 | Callback model | Direct `python1516_2025` evidence now proves both `HLA_EVOKED` and inline `HLA_IMMEDIATE`; hosted and binding rows still describe their callback-model boundaries separately. |
 | HLA2025-FI-007 | FOM validation | Required FDD tables and case-sensitive names. |
 | HLA2025-FI-008 | FOM validation | Create/join reject invalid FOM modules. |
 | HLA2025-FI-009 | Time | Default integer/float time factories and timestamp ordering. |

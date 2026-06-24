@@ -49,11 +49,11 @@ and generated guidance should point at `tools/`.
 Shortest common paths:
 
 - bootstrap and activate: `./tools/bootstrap python`
-- run one 2010 example: `python examples/target_radar_simulation.py --backend python --steps 5`
-- run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python2025 --steps 5`
+- run one 2010 example: `python examples/target_radar_simulation.py --backend python1516e --steps 5`
+- run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python1516_2025 --steps 5`
 - run the default test wrapper: `./tools/test`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
-- run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python2025` surface: `./tools/python verify-main-2025`
+- run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - run bounded hosted 2025 Python/FedPro route checks: `./tools/python verify-routes-2025`
 - regenerate the checked-in 2025 finish-line and route-parity evidence bundle after proof-lane changes: `python3 scripts/run_spec2025_finish_line.py`
@@ -79,6 +79,6 @@ For 2025 runtime ownership and proof status behind those commands, read:
 Useful direct example entrypoints:
 
 `python examples/backend_recording.py`
-`python examples/rti_factory_selection.py --name in-memory --probe`
-`python examples/target_radar_simulation.py --backend python --steps 5`
-`python examples/target_radar_simulation.py --backend python2025 --steps 5`
+`python examples/rti_factory_selection.py --name python1516e --probe`
+`python examples/target_radar_simulation.py --backend python1516e --steps 5`
+`python examples/target_radar_simulation.py --backend python1516_2025 --steps 5`

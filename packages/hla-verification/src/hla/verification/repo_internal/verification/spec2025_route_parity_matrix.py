@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import Any
 
 ROUTE_IDS_2025 = (
-    "python-2025-inprocess",
-    "python-2025-fedpro-grpc",
+    "python1516_2025-inprocess",
+    "python1516_2025-fedpro-grpc",
     "java-standard-2025-jpype",
     "java-standard-2025-py4j",
     "cpp-standard-2025-pybind",
@@ -49,7 +49,7 @@ _FINISH_LINE_TESTS = ("tests/requirements/test_2025_finish_line_snapshot.py",)
 _PYTHON_ROUTE_PARITY_TESTS = ("tests/scenarios/test_python_route_parity.py",)
 
 _STANDARD_ROUTE_BACKING_NOTE = (
-    "These binding/wrapper routes are executed over the primary python2025 runtime lane in "
+    "These binding/wrapper routes are executed over the primary python1516_2025 runtime lane in "
     "hla-backend-python2025, with the Java/C++ packages limited to compatibility and API adaptation."
 )
 
@@ -60,7 +60,7 @@ _STANDARD_ROUTE_SEAM_NOTE = (
 
 _HOSTED_PYTHON2025_IDENTITY_NOTE = (
     "Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify "
-    "python2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with "
+    "python1516_2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with "
     "counts_as_python_2025_rti=true and wrapper_only=false where those fields apply."
 )
 
@@ -77,7 +77,7 @@ def _normalized_notes(route: str, notes: str) -> str:
             additions.append(_STANDARD_ROUTE_BACKING_NOTE)
         if _STANDARD_ROUTE_SEAM_NOTE not in notes:
             additions.append(_STANDARD_ROUTE_SEAM_NOTE)
-    if route == "python-2025-fedpro-grpc":
+    if route == "python1516_2025-fedpro-grpc":
         if _HOSTED_PYTHON2025_IDENTITY_NOTE not in notes:
             additions.append(_HOSTED_PYTHON2025_IDENTITY_NOTE)
         if _HOSTED_PYTHON2025_SEAM_NOTE not in notes:
@@ -92,7 +92,7 @@ def _evidence_scope(scenario: str, route: str, status: str) -> str:
         return "scenario-parity"
     if status == MISSING:
         return "gap-record"
-    if route == "python-2025-fedpro-grpc":
+    if route == "python1516_2025-fedpro-grpc":
         return "fedpro-slice"
     if scenario == "federation_lifecycle" and route.startswith("java-standard-2025"):
         return "runtime-capability"
@@ -114,19 +114,19 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
             "docs/evidence/shim_routes/cpp-standard-2025.json",
             f"docs/evidence/shim_routes/route_traces/{route}.json",
         )
-    if route == "python-2025-fedpro-grpc":
+    if route == "python1516_2025-fedpro-grpc":
         return (
             "tests/transport/test_grpc_transport_2025.py",
             "docs/plans/spec2025_finish_line_snapshot.json",
         )
-    if route == "python-2025-inprocess":
+    if route == "python1516_2025-inprocess":
         return ("tests/test_rti1516_2025_python2025_runtime.py",)
     return ()
 
 
 def _normalized_evidence_tests(route: str, evidence_tests: tuple[str, ...]) -> tuple[str, ...]:
     normalized = list(evidence_tests)
-    if route == "python-2025-fedpro-grpc":
+    if route == "python1516_2025-fedpro-grpc":
         for test_path in _PYTHON_ROUTE_PARITY_TESTS:
             if test_path not in normalized:
                 normalized.append(test_path)
@@ -141,9 +141,9 @@ def _row(
     evidence_tests: tuple[str, ...],
     notes: str,
 ) -> Spec2025RouteParityRow:
-    runtime_provider = "python2025" if route in ROUTE_IDS_2025 else ""
+    runtime_provider = "python1516_2025" if route in ROUTE_IDS_2025 else ""
     implementation_lane = "hla-backend-python2025" if route in ROUTE_IDS_2025 else ""
-    counts_as_python_2025_rti = True if route.startswith("python-2025") else False if route in ROUTE_IDS_2025 else None
+    counts_as_python_2025_rti = True if route.startswith("python-1516-2025") else False if route in ROUTE_IDS_2025 else None
     wrapper_only = False if route in ROUTE_IDS_2025 else None
     return Spec2025RouteParityRow(
         scenario=scenario,
@@ -164,7 +164,7 @@ def _row(
 _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "federation_lifecycle",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FI-005", "HLA2025-FI-006"),
         _PYTHON_CORE_TESTS,
@@ -173,13 +173,13 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "federation_lifecycle",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers the same lifecycle session through typed protobuf calls plus real "
         "shared federation listing plus real listFederationExecutions/listFederationExecutionMembers callback flow, "
-        "explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of direct federation "
+        "explicit factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of direct federation "
         "listing and member-report callbacks through the hosted 2025 ambassador surface, "
         "shared join-precondition rejection for not-connected, missing-federation, duplicate-name, already-joined, "
         "save-in-progress, and restore-in-progress cases, shared resign-precondition rejection for not-connected, not-joined, invalid-action, owned-attribute, and pending-acquisition cases, "
@@ -224,7 +224,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "object_exchange",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -233,12 +233,12 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "object_exchange",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers passive object and interaction subscribe aliases, universal directed subscribe alias, "
-        "object discovery, attribute reflection, interaction receipt, explicit factory-hosted create_rti_ambassador('python2025', "
+        "object discovery, attribute reflection, interaction receipt, explicit factory-hosted create_rti_ambassador('python1516_2025', "
         "transport=...) execution of direct object discovery, reflection, and interaction receipt through the hosted 2025 ambassador surface, "
         "directed interaction receipt, time-managed declaration independence, "
         "selective directed set unsubscribe/unpublish, invalid attribute-publication rejection, post-unpublish object/interaction send rejection, "
@@ -282,7 +282,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "ownership",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -291,14 +291,14 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "ownership",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers unavailable acquisition, basic divest/acquire/query callbacks, non-owner update rejection, "
         "negotiated divestiture, confirm-divestiture completion, release requests, release denial, acquisition cancellation, "
         "divestiture-if-wanted, RTI-owned MOM attribute ownership query callbacks, "
-        "and cancel-negotiated-offer callbacks, explicit factory-hosted create_rti_ambassador('python2025', transport=...) "
+        "and cancel-negotiated-offer callbacks, explicit factory-hosted create_rti_ambassador('python1516_2025', transport=...) "
         "execution of the smoke save/restore ownership rollback gauntlet plus owned-attribute reacquisition rejection, "
         "non-owner divestiture rejection, unowned query callbacks, fresh acquisition notification, informed-owner "
         "query callbacks, restored in-flight ownership negotiation state, and restored cross-federate "
@@ -347,7 +347,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "ddm",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -356,7 +356,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "ddm",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
@@ -403,7 +403,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "time_management",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
         _PYTHON_CORE_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
@@ -418,17 +418,17 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "time_management",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-003"),
         _FEDPRO_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
         "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
         "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, bounded logical time/GALT/LITS/lookahead query "
-        "evidence, explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM "
+        "evidence, explicit factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of MOM "
         "time-management service interactions through the direct 2025 ambassador surface, queued-TSO GALT/LITS "
         "divergence after a live lookahead change, a hosted Target/Radar "
-        "proof-ladder replay over the main python2025-backed FedPro route, explicit factory-hosted "
-        "create_rti_ambassador('python2025', transport=...) execution of the package-owned shared Target/Radar "
+        "proof-ladder replay over the main python1516_2025-backed FedPro route, explicit factory-hosted "
+        "create_rti_ambassador('python1516_2025', transport=...) execution of the package-owned shared Target/Radar "
         "example scenario plus the package-owned future-exclusion, output-delivery, consumer-order, integrated "
         "lookahead-processing-window gauntlet, and restore-state scenario adapter paths, the Target/Radar "
         "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
@@ -475,7 +475,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "save_restore",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
@@ -488,7 +488,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "save_restore",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
@@ -498,7 +498,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "object registry rollback, logical-time rollback, time/switch-control rollback, plain object/interaction "
         "subscriber-routing rollback, directed DDM subscriber-routing rollback, local-delete object-known-state recovery, "
         "transportation-type restore persistence, queued-TSO redelivery after restore, explicit factory-hosted "
-        "create_rti_ambassador('python2025', transport=...) execution of the package-owned restore-state, "
+        "create_rti_ambassador('python1516_2025', transport=...) execution of the package-owned restore-state, "
         "restore-output-resume, and pipeline-resume scenario adapter paths, and bounded radar-window state rollback.",
     ),
     _row(
@@ -541,7 +541,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "mom",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -557,7 +557,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "mom",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
@@ -566,7 +566,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object "
         "instance information and object-instance counts, reports activity counts for updates/reflections/interactions, "
         "reports synchronization points/status, proves direct synchronization registration/announce/achieved/federation-synchronized callbacks, "
-        "proves explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM federation-management "
+        "proves explicit factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of MOM federation-management "
         "save/restore service interactions plus MOM time-management service interactions through the direct 2025 ambassador surface, "
         "proves requestRetraction callback delivery after delivered timestamp-order receipt, round-trips 2025 switch services, emits HLAreportMOMexception "
         "for failed routed MOM actions, and routes all hosted MOM manager adjust/service command leaves with "
@@ -610,7 +610,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "support_services",
-        "python-2025-inprocess",
+        "python1516_2025-inprocess",
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-MOD-007"),
         _PYTHON_CORE_TESTS,
@@ -623,13 +623,13 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "support_services",
-        "python-2025-fedpro-grpc",
+        "python1516_2025-fedpro-grpc",
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route over the primary Python 2025 RTI implementation covers FOM handle/name round trips, dimension/range, transportation/order, "
         "update-rate, normalization, logical-time query, callback-delivery enable/disable control with queued reflection release plus reconnect-safe discard of a disconnected peer's disabled callback backlog before later reconnect, "
-        "explicit factory-hosted create_rti_ambassador('python2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks, "
+        "explicit factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks, "
         "single and multiple object-instance name reservation/release callback flow, turnUpdatesOn/turnUpdatesOff advisory callback flow for object-class subscriptions, direct "
         "attribute and interaction transportation change/query callback flow, automatic resign directive get/set, "
         "and 2025 switch get/set plus read-only switch inquiry services.",
@@ -690,7 +690,7 @@ def _binding_requirement(route: str) -> str:
         return "HLA2025-BND-001"
     if route.startswith("cpp-"):
         return "HLA2025-BND-002"
-    if route == "python-2025-fedpro-grpc":
+    if route == "python1516_2025-fedpro-grpc":
         return "HLA2025-BND-003"
     return "HLA2025-FI-004"
 
@@ -700,7 +700,7 @@ def _missing_route_note(scenario: str, route: str) -> str:
         return f"No executable Java 2025 {scenario} parity scenario is recorded yet."
     if route.startswith("cpp-"):
         return f"No executable C++ 2025 {scenario} parity scenario is recorded yet."
-    if route == "python-2025-fedpro-grpc":
+    if route == "python1516_2025-fedpro-grpc":
         return f"No executable FedPro 2025 {scenario} route scenario is recorded yet."
     return f"No executable Python 2025 {scenario} route scenario is recorded yet."
 
@@ -743,7 +743,7 @@ def summarize_spec2025_route_parity(rows: tuple[Spec2025RouteParityRow, ...] = S
         "scenario_count": len({row.scenario for row in rows}),
         "row_count": len(rows),
         "primary_runtime_lane": {
-            "runtime_provider": "python2025",
+            "runtime_provider": "python1516_2025",
             "implementation_lane": "hla-backend-python2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
@@ -829,7 +829,7 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "",
         "For the primary 2025 Python RTI claim, read the route identities narrowly:",
         "",
-        "- `python-2025-inprocess` and `python-2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`.",
+        "- `python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`.",
         "- `hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`; it is not a route runtime owner.",
         "- Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations.",
         "- Hosted FedPro rows are transport-seam evidence over that same runtime, not a separate 2025 implementation family.",
@@ -876,13 +876,13 @@ def validate_spec2025_route_parity_evidence(
     errors: list[str] = []
     for row in rows:
         if row.route in ROUTE_IDS_2025:
-            if row.runtime_provider != "python2025":
-                errors.append(f"{row.scenario}/{row.route}: parity row must record runtime_provider=python2025")
+            if row.runtime_provider != "python1516_2025":
+                errors.append(f"{row.scenario}/{row.route}: parity row must record runtime_provider=python1516_2025")
             if row.implementation_lane != "hla-backend-python2025":
                 errors.append(
                     f"{row.scenario}/{row.route}: parity row must record implementation_lane=hla-backend-python2025"
                 )
-            expected_counts_as_primary = row.route.startswith("python-2025")
+            expected_counts_as_primary = row.route.startswith("python-1516-2025")
             if row.counts_as_python_2025_rti is not expected_counts_as_primary:
                 errors.append(
                     f"{row.scenario}/{row.route}: parity row must record counts_as_python_2025_rti="
@@ -916,9 +916,9 @@ def validate_spec2025_route_parity_evidence(
                 if route_selected is None:
                     errors.append(f"{row.scenario}/{row.route}: trace artifact missing routeSelected event in {artifact}")
                 else:
-                    if route_selected.get("runtimeProvider") != "python2025":
+                    if route_selected.get("runtimeProvider") != "python1516_2025":
                         errors.append(
-                            f"{row.scenario}/{row.route}: route trace must record runtimeProvider=python2025 in {artifact}"
+                            f"{row.scenario}/{row.route}: route trace must record runtimeProvider=python1516_2025 in {artifact}"
                         )
                     if route_selected.get("implementationLane") != "hla-backend-python2025":
                         errors.append(
@@ -936,8 +936,8 @@ def validate_spec2025_route_parity_evidence(
                     errors.append(f"{row.scenario}/{row.route}: lifecycle trace must be lifecycle-green in {artifact}")
             elif artifact == "docs/evidence/shim_routes/java-standard-2025.json":
                 scenario_evidence = payload.get("scenario_evidence", {})
-                if scenario_evidence.get("runtime_provider") != "python2025":
-                    errors.append(f"{row.scenario}/{row.route}: Java aggregate route evidence must record runtime_provider=python2025")
+                if scenario_evidence.get("runtime_provider") != "python1516_2025":
+                    errors.append(f"{row.scenario}/{row.route}: Java aggregate route evidence must record runtime_provider=python1516_2025")
                 if scenario_evidence.get("implementation_lane") != "hla-backend-python2025":
                     errors.append(
                         f"{row.scenario}/{row.route}: Java aggregate route evidence must record implementation_lane=hla-backend-python2025"
@@ -949,8 +949,8 @@ def validate_spec2025_route_parity_evidence(
                         f"{row.scenario}/{row.route}: Java aggregate route evidence must record counts_as_python_2025_rti=false"
                     )
                 route_payload = payload.get("routes", {}).get(row.route, {})
-                if route_payload.get("runtime_provider") != "python2025":
-                    errors.append(f"{row.scenario}/{row.route}: Java route evidence must record runtime_provider=python2025")
+                if route_payload.get("runtime_provider") != "python1516_2025":
+                    errors.append(f"{row.scenario}/{row.route}: Java route evidence must record runtime_provider=python1516_2025")
                 if route_payload.get("implementation_lane") != "hla-backend-python2025":
                     errors.append(
                         f"{row.scenario}/{row.route}: Java route evidence must record implementation_lane=hla-backend-python2025"
@@ -975,8 +975,8 @@ def validate_spec2025_route_parity_evidence(
                         )
             elif artifact == "docs/evidence/shim_routes/cpp-standard-2025.json":
                 scenario_evidence = payload.get("scenario_evidence", {})
-                if scenario_evidence.get("runtime_provider") != "python2025":
-                    errors.append(f"{row.scenario}/{row.route}: C++ aggregate route evidence must record runtime_provider=python2025")
+                if scenario_evidence.get("runtime_provider") != "python1516_2025":
+                    errors.append(f"{row.scenario}/{row.route}: C++ aggregate route evidence must record runtime_provider=python1516_2025")
                 if scenario_evidence.get("implementation_lane") != "hla-backend-python2025":
                     errors.append(
                         f"{row.scenario}/{row.route}: C++ aggregate route evidence must record implementation_lane=hla-backend-python2025"
@@ -988,8 +988,8 @@ def validate_spec2025_route_parity_evidence(
                         f"{row.scenario}/{row.route}: C++ aggregate route evidence must record counts_as_python_2025_rti=false"
                     )
                 route_payload = payload.get("routes", {}).get(row.route, {})
-                if route_payload.get("runtime_provider") != "python2025":
-                    errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record runtime_provider=python2025")
+                if route_payload.get("runtime_provider") != "python1516_2025":
+                    errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record runtime_provider=python1516_2025")
                 if route_payload.get("implementation_lane") != "hla-backend-python2025":
                     errors.append(
                         f"{row.scenario}/{row.route}: C++ route evidence must record implementation_lane=hla-backend-python2025"

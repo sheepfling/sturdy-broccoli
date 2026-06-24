@@ -278,7 +278,7 @@ def test_clause4_and_clause6_compliance_harness_refs_are_exported_from_root_pack
     import hla.verification
 
     refs = (
-        _compliance_harness_refs(backend="python", clauses=("4", "6"))
+        _compliance_harness_refs(backend="python1516e", clauses=("4", "6"))
         | _compliance_harness_refs(backend="pitch", clauses=("4", "6"))
         | _pitch_profile_compliance_harness_refs(clauses=("4", "6"))
     )
@@ -293,7 +293,7 @@ def test_clause4_and_clause6_compliance_harness_refs_resolve_to_expected_package
     import hla.verification
 
     refs = (
-        _compliance_harness_refs(backend="python", clauses=("4", "6"))
+        _compliance_harness_refs(backend="python1516e", clauses=("4", "6"))
         | _compliance_harness_refs(backend="pitch", clauses=("4", "6"))
         | _pitch_profile_compliance_harness_refs(clauses=("4", "6"))
     )

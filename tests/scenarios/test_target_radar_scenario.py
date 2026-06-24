@@ -28,10 +28,10 @@ def test_target_radar_runs_on_python_rti():
     engine = InMemoryRTIEngine()
 
     def factory(role):
-        return create_rti_ambassador("python", engine=engine)
+        return create_rti_ambassador("python1516e", engine=engine)
 
     result = run_target_radar_scenario(factory, federation_name="target-radar-python", steps=3)
-    assert result.backend_kinds == ("python/in-memory", "python/in-memory")
+    assert result.backend_kinds == ("python/1516e", "python/1516e")
     assert len(result.track_reports) == 3
     assert any(name == "provide_attribute_value_update" for name, _ in result.target_events)
     assert [name for name, _ in result.radar_events].count("track") == 3
@@ -47,16 +47,16 @@ def test_target_radar_example_keeps_python2025_as_primary_2025_lane_and_shim_as_
 
     assert module.__doc__ is not None
     normalized_doc = " ".join(module.__doc__.split()).lower()
-    assert "treat ``python2025`` as the main full python rti implementation lane" in normalized_doc
+    assert "treat ``python1516_2025`` as the main full python rti implementation lane" in normalized_doc
     assert "legacy ``hla.backends.shim`` imports remain compatibility-wrapper code around that same runtime" in normalized_doc
     assert module._BACKEND_HELP == (
-        "Backend/provider name. Use 'python2025' for the primary IEEE 1516.1-2025 Python RTI."
+        "Backend/provider name. Use 'python1516_2025' for the primary IEEE 1516.1-2025 Python RTI."
     )
 
 
 @pytest.mark.parametrize(
     ("backend_name", "expected_backend_kind"),
-    [("python2025", "python/2025")],
+    [("python1516_2025", "python/2025")],
 )
 def test_target_radar_example_supports_2025_backends(backend_name: str, expected_backend_kind: str, capsys) -> None:
     module = _load_target_radar_example_module()

@@ -22,8 +22,8 @@ from tests.vendors.runtime_support import cleanup_federation
 
 def test_python_backend_ddm_matrix():
     engine = InMemoryRTIEngine()
-    sender = create_rti_ambassador("python", engine=engine)
-    receiver = create_rti_ambassador("python", engine=engine)
+    sender = create_rti_ambassador("python1516e", engine=engine)
+    receiver = create_rti_ambassador("python1516e", engine=engine)
     federation_name = f"python-ddm-{uuid.uuid4().hex[:8]}"
     sender_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-probe", role="sender")
     receiver_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-probe", role="receiver")
@@ -68,8 +68,8 @@ def test_python_backend_ddm_matrix():
 
 def test_python_backend_ddm_object_region_lifecycle_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     federation_name = f"python-ddm-object-{uuid.uuid4().hex[:8]}"
     publisher_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-object-lifecycle", role="publisher")
     subscriber_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-object-lifecycle", role="subscriber")
@@ -101,8 +101,8 @@ def test_python_backend_ddm_object_region_lifecycle_matrix():
 
 def test_python_backend_ddm_declaration_gating_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     federation_name = f"python-ddm-declaration-{uuid.uuid4().hex[:8]}"
     publisher_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-declaration-gating", role="publisher")
     subscriber_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-declaration-gating", role="subscriber")
@@ -136,8 +136,8 @@ def test_python_backend_ddm_declaration_gating_matrix():
 
 def test_python_backend_ddm_passive_region_subscription_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     federation_name = f"python-ddm-passive-{uuid.uuid4().hex[:8]}"
     publisher_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-passive", role="publisher")
     subscriber_fed = SuiteRecordingFederateAmbassador(profile="python", scenario="ddm-passive", role="subscriber")

@@ -964,38 +964,38 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert unanchored_audit["sample_requirement_ids"] == []
     route_matrix = snapshot["route_parity_matrix"]
     assert route_matrix["scenario_count"] >= 8
-    assert "python-2025-fedpro-grpc" in route_matrix["routes"]
+    assert "python1516_2025-fedpro-grpc" in route_matrix["routes"]
     assert route_matrix["by_route"]["java-standard-2025-jpype"]["parity-covered"] == 8
     assert route_matrix["by_route"]["cpp-standard-2025-grpc"]["parity-covered"] == 8
     route_rows = {(row["scenario"], row["route"]): row for row in route_matrix["rows"]}
-    for route in ("python-2025-inprocess", "python-2025-fedpro-grpc"):
+    for route in ("python1516_2025-inprocess", "python1516_2025-fedpro-grpc"):
         for scenario in {row["scenario"] for row in route_matrix["rows"] if row["route"] == route}:
             row = route_rows[(scenario, route)]
-            assert row["runtime_provider"] == "python2025"
+            assert row["runtime_provider"] == "python1516_2025"
             assert row["implementation_lane"] == "hla-backend-python2025"
             assert row["counts_as_python_2025_rti"] is True
             assert row["wrapper_only"] is False
-    assert "lookahead query/modify" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "GALT/LITS/logical-time queries" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "save-restore lookahead rollback with queued-TSO redelivery" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "oracle-rejection guards" in route_rows[("time_management", "python-2025-inprocess")]["notes"]
-    assert "bounded logical time/GALT/LITS/lookahead query evidence" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
-    assert "factory-hosted create_rti_ambassador('python2025', transport=...) execution of the package-owned shared Target/Radar example scenario plus the package-owned future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, and restore-state scenario adapter paths" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
-    assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
-    assert "factory-hosted create_rti_ambassador('python2025', transport=...) execution of MOM federation-management save/restore service interactions plus MOM time-management service interactions through the direct 2025 ambassador surface" in route_rows[("mom", "python-2025-fedpro-grpc")]["notes"]
-    assert "factory-hosted create_rti_ambassador('python2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks" in route_rows[("support_services", "python-2025-fedpro-grpc")]["notes"]
+    assert "lookahead query/modify" in route_rows[("time_management", "python1516_2025-inprocess")]["notes"]
+    assert "GALT/LITS/logical-time queries" in route_rows[("time_management", "python1516_2025-inprocess")]["notes"]
+    assert "time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in route_rows[("time_management", "python1516_2025-inprocess")]["notes"]
+    assert "save-restore lookahead rollback with queued-TSO redelivery" in route_rows[("time_management", "python1516_2025-inprocess")]["notes"]
+    assert "oracle-rejection guards" in route_rows[("time_management", "python1516_2025-inprocess")]["notes"]
+    assert "bounded logical time/GALT/LITS/lookahead query evidence" in route_rows[("time_management", "python1516_2025-fedpro-grpc")]["notes"]
+    assert "factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of the package-owned shared Target/Radar example scenario plus the package-owned future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, and restore-state scenario adapter paths" in route_rows[("time_management", "python1516_2025-fedpro-grpc")]["notes"]
+    assert "Target/Radar output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in route_rows[("time_management", "python1516_2025-fedpro-grpc")]["notes"]
+    assert "factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of MOM federation-management save/restore service interactions plus MOM time-management service interactions through the direct 2025 ambassador surface" in route_rows[("mom", "python1516_2025-fedpro-grpc")]["notes"]
+    assert "factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks" in route_rows[("support_services", "python1516_2025-fedpro-grpc")]["notes"]
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_rows[
-        ("support_services", "python-2025-inprocess")
+        ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_rows[
-        ("support_services", "python-2025-inprocess")
+        ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_rows[
-        ("support_services", "python-2025-inprocess")
+        ("support_services", "python1516_2025-inprocess")
     ]["notes"]
-    assert "save-restore lookahead rollback with queued-TSO redelivery" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
-    assert "oracle-rejection guards" in route_rows[("time_management", "python-2025-fedpro-grpc")]["notes"]
+    assert "save-restore lookahead rollback with queued-TSO redelivery" in route_rows[("time_management", "python1516_2025-fedpro-grpc")]["notes"]
+    assert "oracle-rejection guards" in route_rows[("time_management", "python1516_2025-fedpro-grpc")]["notes"]
     fi_service_audit = snapshot["fi_service_proof_audit"]
     assert fi_service_audit["row_count"] == 196
     assert fi_service_audit["fully_traceable_service_count"] == 196
@@ -1079,7 +1079,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert set(binding_rows["HLA2025-BND-002"]["routes"]) == {"cpp-standard-2025-pybind", "cpp-standard-2025-grpc"}
     assert binding_rows["HLA2025-BND-002"]["route_parity_counts"]["parity-covered"] == 16
     assert "2025-cpp-binding-source-trace" in binding_rows["HLA2025-BND-002"]["supporting_slice_ids"]
-    assert binding_rows["HLA2025-BND-003"]["routes"] == ["python-2025-fedpro-grpc"]
+    assert binding_rows["HLA2025-BND-003"]["routes"] == ["python1516_2025-fedpro-grpc"]
     assert binding_rows["HLA2025-BND-003"]["route_parity_counts"]["parity-covered"] == 8
     assert "2025-fedpro-typed-transport-surface" in binding_rows["HLA2025-BND-003"]["supporting_slice_ids"]
     assert "2025-fedpro-hosted-runtime-core" in binding_rows["HLA2025-BND-003"]["supporting_slice_ids"]
@@ -1147,14 +1147,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert milestone_audit["audit_status"] == "bounded-python-rti-milestones"
     assert milestone_audit["milestone_count"] == 6
     assert milestone_audit["row_count"] == 12
-    assert milestone_audit["routes"] == ["python-2025-inprocess", "python-2025-fedpro-grpc"]
+    assert milestone_audit["routes"] == ["python1516_2025-inprocess", "python1516_2025-fedpro-grpc"]
     assert "bounded-evidence milestones" in milestone_audit["current_assessment"]
     assert "negative-oracle rejection guards" in milestone_audit["current_assessment"]
-    assert milestone_audit["by_route"]["python-2025-inprocess"]["milestone_count"] == 6
-    assert milestone_audit["by_route"]["python-2025-fedpro-grpc"]["milestone_count"] == 6
-    assert milestone_audit["by_route"]["python-2025-inprocess"]["all_route_parity_covered"] is True
-    assert milestone_audit["by_route"]["python-2025-fedpro-grpc"]["all_route_parity_covered"] is True
-    assert milestone_audit["by_route"]["python-2025-inprocess"]["status_counts"] == {
+    assert milestone_audit["by_route"]["python1516_2025-inprocess"]["milestone_count"] == 6
+    assert milestone_audit["by_route"]["python1516_2025-fedpro-grpc"]["milestone_count"] == 6
+    assert milestone_audit["by_route"]["python1516_2025-inprocess"]["all_route_parity_covered"] is True
+    assert milestone_audit["by_route"]["python1516_2025-fedpro-grpc"]["all_route_parity_covered"] is True
+    assert milestone_audit["by_route"]["python1516_2025-inprocess"]["status_counts"] == {
         "bounded-lookahead-evidence": 1,
         "bounded-query-evidence": 1,
         "bounded-working-slice": 1,
@@ -1171,67 +1171,67 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "galt_lits_queries",
         "lookahead_windows",
     }
-    assert milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["status"] == "bounded-working-slice"
-    assert milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["milestone_label"] == (
+    assert milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["status"] == "bounded-working-slice"
+    assert milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["milestone_label"] == (
         "Best-attempt Python RTI 2025 working surface"
     )
-    assert milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["scenario_count"] == 8
-    assert milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_parity_statuses"] == {"parity-covered": 8}
-    assert "best-attempt bounded working surface" in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["summary"]
-    assert "full-fledged RTI" in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["boundary"]
-    assert "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery." in milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"]
-    assert "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries" in " ".join(milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"])
-    assert "save-restore lookahead rollback with queued-TSO redelivery" in " ".join(milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"])
-    assert "MOM switch/report serialization slices" in " ".join(milestone_rows[("python-2025-inprocess", "best_attempt_working_surface")]["route_notes"])
-    assert milestone_rows[("python-2025-fedpro-grpc", "example_fom_scenarios")]["status"] == "covered-scenario-slice"
-    assert "tracked FOM-backed runtime scenarios" in milestone_rows[("python-2025-fedpro-grpc", "example_fom_scenarios")]["summary"]
-    assert tuple(milestone_rows[("python-2025-fedpro-grpc", "example_fom_scenarios")]["supporting_scenarios"]) == (
+    assert milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["scenario_count"] == 8
+    assert milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["route_parity_statuses"] == {"parity-covered": 8}
+    assert "best-attempt bounded working surface" in milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["summary"]
+    assert "full-fledged RTI" in milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["boundary"]
+    assert "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery." in milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["route_notes"]
+    assert "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries" in " ".join(milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["route_notes"])
+    assert "save-restore lookahead rollback with queued-TSO redelivery" in " ".join(milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["route_notes"])
+    assert "MOM switch/report serialization slices" in " ".join(milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["route_notes"])
+    assert milestone_rows[("python1516_2025-fedpro-grpc", "example_fom_scenarios")]["status"] == "covered-scenario-slice"
+    assert "tracked FOM-backed runtime scenarios" in milestone_rows[("python1516_2025-fedpro-grpc", "example_fom_scenarios")]["summary"]
+    assert tuple(milestone_rows[("python1516_2025-fedpro-grpc", "example_fom_scenarios")]["supporting_scenarios"]) == (
         "object_exchange",
         "save_restore",
         "mom",
     )
-    assert "2025-fom-showcase" in milestone_rows[("python-2025-fedpro-grpc", "example_fom_scenarios")]["supporting_slice_ids"]
-    assert milestone_rows[("python-2025-fedpro-grpc", "example_fom_scenarios")]["boundary"] == (
+    assert "2025-fom-showcase" in milestone_rows[("python1516_2025-fedpro-grpc", "example_fom_scenarios")]["supporting_slice_ids"]
+    assert milestone_rows[("python1516_2025-fedpro-grpc", "example_fom_scenarios")]["boundary"] == (
         "This is scenario-suite evidence, not a universal claim for every possible FOM composition."
     )
-    assert milestone_rows[("python-2025-fedpro-grpc", "messaging_and_routing")]["status"] == "covered-routing-slice"
-    assert "typed transport surface" in milestone_rows[("python-2025-fedpro-grpc", "messaging_and_routing")]["summary"]
-    assert tuple(milestone_rows[("python-2025-fedpro-grpc", "messaging_and_routing")]["supporting_scenarios"]) == (
+    assert milestone_rows[("python1516_2025-fedpro-grpc", "messaging_and_routing")]["status"] == "covered-routing-slice"
+    assert "typed transport surface" in milestone_rows[("python1516_2025-fedpro-grpc", "messaging_and_routing")]["summary"]
+    assert tuple(milestone_rows[("python1516_2025-fedpro-grpc", "messaging_and_routing")]["supporting_scenarios"]) == (
         "object_exchange",
         "ddm",
         "mom",
     )
-    assert "2025-directed-interaction-boundary" in milestone_rows[("python-2025-fedpro-grpc", "messaging_and_routing")]["supporting_slice_ids"]
-    assert "2025-ddm-default-attribute-policy" in milestone_rows[("python-2025-fedpro-grpc", "messaging_and_routing")]["supporting_slice_ids"]
-    assert milestone_rows[("python-2025-inprocess", "time_sync_and_advances")]["status"] == "covered-time-advance-slice"
-    assert "restore rollback of logical time" in milestone_rows[("python-2025-inprocess", "time_sync_and_advances")]["summary"]
-    assert tuple(milestone_rows[("python-2025-inprocess", "time_sync_and_advances")]["supporting_scenarios"]) == (
+    assert "2025-directed-interaction-boundary" in milestone_rows[("python1516_2025-fedpro-grpc", "messaging_and_routing")]["supporting_slice_ids"]
+    assert "2025-ddm-default-attribute-policy" in milestone_rows[("python1516_2025-fedpro-grpc", "messaging_and_routing")]["supporting_slice_ids"]
+    assert milestone_rows[("python1516_2025-inprocess", "time_sync_and_advances")]["status"] == "covered-time-advance-slice"
+    assert "restore rollback of logical time" in milestone_rows[("python1516_2025-inprocess", "time_sync_and_advances")]["summary"]
+    assert tuple(milestone_rows[("python1516_2025-inprocess", "time_sync_and_advances")]["supporting_scenarios"]) == (
         "time_management",
         "save_restore",
     )
-    assert "2025-time-advance-request-modes" in milestone_rows[("python-2025-inprocess", "time_sync_and_advances")]["supporting_slice_ids"]
-    assert "2025-save-restore-lifecycle" in milestone_rows[("python-2025-inprocess", "time_sync_and_advances")]["supporting_slice_ids"]
-    assert milestone_rows[("python-2025-inprocess", "galt_lits_queries")]["status"] == "bounded-query-evidence"
-    assert "not strong enough to claim a fully proven or universally correct GALT/LITS algorithm" in milestone_rows[("python-2025-inprocess", "galt_lits_queries")]["boundary"]
-    assert "negative-oracle guards rejecting mismatched LITS boundaries" in milestone_rows[("python-2025-inprocess", "galt_lits_queries")]["summary"]
+    assert "2025-time-advance-request-modes" in milestone_rows[("python1516_2025-inprocess", "time_sync_and_advances")]["supporting_slice_ids"]
+    assert "2025-save-restore-lifecycle" in milestone_rows[("python1516_2025-inprocess", "time_sync_and_advances")]["supporting_slice_ids"]
+    assert milestone_rows[("python1516_2025-inprocess", "galt_lits_queries")]["status"] == "bounded-query-evidence"
+    assert "not strong enough to claim a fully proven or universally correct GALT/LITS algorithm" in milestone_rows[("python1516_2025-inprocess", "galt_lits_queries")]["boundary"]
+    assert "negative-oracle guards rejecting mismatched LITS boundaries" in milestone_rows[("python1516_2025-inprocess", "galt_lits_queries")]["summary"]
     assert "lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries" in " ".join(
-        milestone_rows[("python-2025-inprocess", "galt_lits_queries")]["route_notes"]
+        milestone_rows[("python1516_2025-inprocess", "galt_lits_queries")]["route_notes"]
     )
-    assert "future-exclusion proof" in milestone_rows[("python-2025-fedpro-grpc", "galt_lits_queries")]["summary"]
-    assert "negative-oracle guards rejecting mismatched LITS boundaries" in milestone_rows[("python-2025-fedpro-grpc", "galt_lits_queries")]["summary"]
-    assert milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["status"] == "bounded-lookahead-evidence"
-    assert "future-message exclusion" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["boundary"]
-    assert "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
-    assert "save-restore lookahead rollback with queued-TSO redelivery" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
-    assert "negative-oracle guards" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["summary"]
-    assert tuple(milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["supporting_scenarios"]) == (
+    assert "future-exclusion proof" in milestone_rows[("python1516_2025-fedpro-grpc", "galt_lits_queries")]["summary"]
+    assert "negative-oracle guards rejecting mismatched LITS boundaries" in milestone_rows[("python1516_2025-fedpro-grpc", "galt_lits_queries")]["summary"]
+    assert milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["status"] == "bounded-lookahead-evidence"
+    assert "future-message exclusion" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["boundary"]
+    assert "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["summary"]
+    assert "save-restore lookahead rollback with queued-TSO redelivery" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["summary"]
+    assert "negative-oracle guards" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["summary"]
+    assert tuple(milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["supporting_scenarios"]) == (
         "time_management",
     )
-    assert "2025-lookahead-window-proofs" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["supporting_slice_ids"]
-    assert "tests/test_rti1516_2025_python2025_runtime.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
-    assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-inprocess", "lookahead_windows")]["evidence_tests"]
-    assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
-    assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python-2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
+    assert "2025-lookahead-window-proofs" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["supporting_slice_ids"]
+    assert "tests/test_rti1516_2025_python2025_runtime.py" in milestone_rows[("python1516_2025-inprocess", "lookahead_windows")]["evidence_tests"]
+    assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python1516_2025-inprocess", "lookahead_windows")]["evidence_tests"]
+    assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
+    assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
     assert pytest_rows["HLA2025-OMT-001"]["pytest_anchor_count"] == 5
     assert pytest_rows["HLA2025-OMT-002"]["pytest_anchor_count"] >= 6
     assert pytest_rows["HLA2025-OMT-005"]["pytest_anchor_count"] == 4
@@ -1499,10 +1499,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "explicit boundary note that enumerates all three rows" in binding_boundary_audit["current_assessment"]
     assert "does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance" in binding_boundary_audit["residual_boundary"]
     direct_bounded_audit = snapshot["python2025_direct_bounded_proof_audit"]
-    assert direct_bounded_audit["audit_status"] == "python2025-direct-bounded-proof-captured"
+    assert direct_bounded_audit["audit_status"] == "python1516_2025-direct-bounded-proof-captured"
     assert direct_bounded_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md"
     assert direct_bounded_audit["doc_exists"] is True
-    assert direct_bounded_audit["route"] == "python-2025-inprocess"
+    assert direct_bounded_audit["route"] == "python1516_2025-inprocess"
     assert direct_bounded_audit["scenario_count"] == 8
     assert direct_bounded_audit["scenarios"] == [
         "ddm",
@@ -1526,7 +1526,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "paired hosted companion note" in direct_bounded_audit["current_assessment"]
     assert "does not convert the direct lane into a full clause-by-clause 2025 conformance statement" in direct_bounded_audit["residual_boundary"]
     exclusion_boundaries_audit = snapshot["python2025_exclusion_boundaries_audit"]
-    assert exclusion_boundaries_audit["audit_status"] == "python2025-exclusion-boundaries-captured"
+    assert exclusion_boundaries_audit["audit_status"] == "python1516_2025-exclusion-boundaries-captured"
     assert exclusion_boundaries_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md"
     assert exclusion_boundaries_audit["doc_exists"] is True
     assert exclusion_boundaries_audit["required_area_labels"] == [
@@ -1553,7 +1553,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert hosted_fedpro_audit["audit_status"] == "hosted-fedpro-bounded-proof-captured"
     assert hosted_fedpro_audit["doc_path"] == "docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md"
     assert hosted_fedpro_audit["doc_exists"] is True
-    assert hosted_fedpro_audit["route"] == "python-2025-fedpro-grpc"
+    assert hosted_fedpro_audit["route"] == "python1516_2025-fedpro-grpc"
     assert hosted_fedpro_audit["scenario_count"] == 8
     assert hosted_fedpro_audit["scenarios"] == [
         "ddm",
@@ -1642,17 +1642,17 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert lookahead_window_audit["missing_proof_levels"] == []
     assert lookahead_window_audit["route_row_count"] == 4
     assert lookahead_window_audit["routes"] == [
-        "save_restore:python-2025-fedpro-grpc",
-        "save_restore:python-2025-inprocess",
-        "time_management:python-2025-fedpro-grpc",
-        "time_management:python-2025-inprocess",
+        "save_restore:python1516_2025-fedpro-grpc",
+        "save_restore:python1516_2025-inprocess",
+        "time_management:python1516_2025-fedpro-grpc",
+        "time_management:python1516_2025-inprocess",
     ]
     assert lookahead_window_audit["required_evidence_tests"] == {
-        "time_management:python-2025-fedpro-grpc": [
+        "time_management:python1516_2025-fedpro-grpc": [
             "tests/scenarios/test_python_route_parity.py",
             "tests/transport/test_grpc_transport_2025.py",
         ],
-        "time_management:python-2025-inprocess": [
+        "time_management:python1516_2025-inprocess": [
             "tests/scenarios/test_python_route_parity.py",
             "tests/test_rti1516_2025_python2025_runtime.py",
         ],
@@ -1908,7 +1908,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "cross-route-scenario-parity-ledger",
     ]
     assert "named binding and hosted-route families" in binding_route_decomposition_audit["current_assessment"]
-    assert "bounded adapter evidence and the main python2025 runtime owner explicit" in binding_route_decomposition_audit["current_assessment"]
+    assert "bounded adapter evidence and the main python1516_2025 runtime owner explicit" in binding_route_decomposition_audit["current_assessment"]
     assert binding_route_decomposition_audit["proof_families"][2]["route_groups"] == [
         "java-standard-2025-jpype",
         "java-standard-2025-py4j",
@@ -1976,10 +1976,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert evidence_runs["target-radar-time-window-proof-ladder"]["result"] == "26 passed, 8 deselected in 4.78s"
     assert "future-exclusion" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
     assert "save/restore time-window proofs" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
-    assert evidence_runs["python2025-split-package-surface"]["result"] == "71 passed in 0.67s"
-    assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python2025-split-package-surface"]["scope"]
-    assert evidence_runs["python2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
-    assert "explicit no-backflow proof" in evidence_runs["python2025-import-boundary-guardrails"]["scope"]
+    assert evidence_runs["python1516_2025-split-package-surface"]["result"] == "71 passed in 0.67s"
+    assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python1516_2025-split-package-surface"]["scope"]
+    assert evidence_runs["python1516_2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
+    assert "explicit no-backflow proof" in evidence_runs["python1516_2025-import-boundary-guardrails"]["scope"]
     assert (
         evidence_runs["combined-2025-verification-slice"]["result"]
         == "targeted finish-line/backend-owner audit slice ran green on current tree"
@@ -2031,9 +2031,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/hosted_fedpro.py" in leading_paths
     assert "packages/hla-backend-python2025/src/hla/backends/python2025/runtime_helper_surface_mixin.py" in leading_paths
     python2025_source_audit = snapshot["python2025_source_responsibility_audit"]
-    python2025_backend_path = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025" / "backend.py"
+    python2025_backend_path = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
     current_python2025_line_count = sum(1 for _ in python2025_backend_path.open(encoding="utf-8"))
-    assert python2025_source_audit["audit_status"] == "python2025-source-responsibility-captured"
+    assert python2025_source_audit["audit_status"] == "python1516_2025-source-responsibility-captured"
     assert python2025_source_audit["source_path"] == "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
     assert python2025_source_audit["source_line_count"] == current_python2025_line_count
     assert python2025_source_audit["shim_wrapper_path"] == (
@@ -2541,7 +2541,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "route_backed_across_current_python_lanes": True,
         },
     ]
-    assert "Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof" in route_backing_audit["current_assessment"]
+    assert "Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python1516_2025 proof and hosted FedPro proof" in route_backing_audit["current_assessment"]
     asymmetry_audit = snapshot["wrapper_boundary_family_asymmetry_audit"]
     assert snapshot["shim_pressure_family_asymmetry_audit"] == asymmetry_audit
     assert asymmetry_audit["audit_status"] == "wrapper-boundary-family-asymmetry-captured"
@@ -2637,14 +2637,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert len(current_lane_statement["non_claims"]) == 4
     assert any("full requirement-by-requirement IEEE 1516.1-2025 conformance claim" in item for item in current_lane_statement["non_claims"])
     main_impl_claim = snapshot["main_python2025_implementation_claim_audit"]
-    assert main_impl_claim["audit_status"] == "main-python2025-implementation-claim-captured"
-    assert main_impl_claim["claim_shape"] == "bounded-main-python2025-rti-implementation"
+    assert main_impl_claim["audit_status"] == "main-python1516_2025-implementation-claim-captured"
+    assert main_impl_claim["claim_shape"] == "bounded-main-python1516_2025-rti-implementation"
     assert main_impl_claim["ready_for_main_python2025_implementation_claim"] is True
     assert main_impl_claim["ready_for_full_2025_conformance_claim"] is False
     assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
     assert main_impl_claim["compatibility_wrapper"] == "hla-backend-shim"
-    assert main_impl_claim["default_operator_lane"] == "python-main-2025"
-    assert main_impl_claim["hosted_extension_lane"] == "python-routes-2025"
+    assert main_impl_claim["default_operator_lane"] == "python1516_2025-main"
+    assert main_impl_claim["hosted_extension_lane"] == "python1516_2025-routes"
     assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
     assert "direct plus hosted Python 2025 proof lanes are sufficiently green" in main_impl_claim["claim"]
     assert len(main_impl_claim["promotion_basis"]) == 5
@@ -2656,7 +2656,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("artifact/runtime-capability evidence" in item for item in main_impl_claim["full_conformance_blockers"])
     assert any("hosted FedPro route remains a bounded runtime slice" in item for item in main_impl_claim["full_conformance_blockers"])
     assert "separates the two judgments cleanly" in main_impl_claim["current_assessment"]
-    assert "main python2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
+    assert "main python1516_2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
     blocker_partition = snapshot["full_claim_blocker_partition_audit"]
     assert blocker_partition["audit_status"] == "full-claim-blocker-partition-captured"
     assert blocker_partition["full_claim_blocker_count"] == 4
@@ -2698,7 +2698,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             ),
         },
     ]
-    assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
+    assert "all sit outside direct main-lane python1516_2025 runtime completeness" in blocker_partition["current_assessment"]
     assert "missing core executable behavior in hla-backend-python2025" in blocker_partition["current_assessment"]
     assert "does not convert those external boundaries into a full 2025 conformance pass" in blocker_partition["residual_boundary"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
@@ -2741,7 +2741,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
-            "name": "python2025",
+            "name": "python1516_2025",
             "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }
@@ -2752,14 +2752,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         (record["package"], record["name"], record["family"])
         for record in backend_scan["rti1516_2025_plugin_records"]
     }
-    assert ("hla-backend-python2025", "python2025", "python-rti-2025") in rti2025_plugins
+    assert ("hla-backend-python2025", "python1516_2025", "python-rti-2025") in rti2025_plugins
     assert ("hla-backend-shim", "shim", "shim") not in rti2025_plugins
     assert ("hla-backend-cpp-shim", "cpp-standard-2025-pybind", "standard/cpp") in rti2025_plugins
     assert ("hla-backend-inmemory", "inmemory", "inmemory") not in rti2025_plugins
     hosted_identity = implementation_lane_audit["hosted_runtime_identity_evidence"]
     assert hosted_identity == {
         "audit_status": "direct-server-client-identity-aligned",
-        "route": "python-2025-fedpro-grpc",
+        "route": "python1516_2025-fedpro-grpc",
         "claim": (
             "The hosted 2025 FedPro route is explicitly evidenced as a route variant over "
             "hla-backend-python2025 rather than a separate shim or RTI family."
@@ -2769,14 +2769,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "tests/test_rti1516_2025_python2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
         ],
         "direct_runtime_report": {
-            "backend_name": "python2025-rti",
+            "backend_name": "python1516_2025-rti",
             "backend_kind": "python/2025",
-            "runtime_provider": "python2025",
+            "runtime_provider": "python1516_2025",
             "implementation_lane": "hla-backend-python2025",
             "counts_as_python_2025_rti": True,
         },
         "hosted_server_report": {
-            "runtime_provider": "python2025",
+            "runtime_provider": "python1516_2025",
             "implementation_lane": "hla-backend-python2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
@@ -2784,7 +2784,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "transport_kind": "grpc",
         },
         "hosted_client_report": {
-            "runtime_provider": "python2025",
+            "runtime_provider": "python1516_2025",
             "implementation_lane": "hla-backend-python2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
@@ -2794,7 +2794,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         },
         "current_assessment": (
             "Hosted-client and hosted-server capability surfaces now agree with the direct 2025 ambassador "
-            "that python-2025-fedpro-grpc is a route variant over the primary python2025 RTI lane in "
+            "that python1516_2025-fedpro-grpc is a route variant over the primary python1516_2025 RTI lane in "
             "hla-backend-python2025 rather than a wrapper-defined implementation family."
         ),
     }
@@ -2802,7 +2802,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert hosted_factory_boundary["audit_status"] == "factory-boundary-explicit"
     assert hosted_factory_boundary["supported_hosted_creation_surface"] == (
         "start_2025_grpc_server(...) plus GrpcTransport(..., schema='rti1516_2025') plus "
-        "create_rti_ambassador(backend='python2025'|'python-2025'|'python-2025-backend', "
+        "create_rti_ambassador(backend='python1516_2025'|'python-1516-2025'|'python-1516-2025', "
         "transport={'kind': 'grpc', ...})"
     )
     assert hosted_factory_boundary["unsupported_factory_surfaces"] == [
@@ -2877,13 +2877,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "audit_status": "package-owned-target-radar-2025-path-captured",
         "claim": (
             "The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, "
-            "where one package-owned compatibility adapter wraps the primary python2025 backend lane without "
+            "where one package-owned compatibility adapter wraps the primary python1516_2025 backend lane without "
             "moving implementation ownership back into hla-backend-shim."
         ),
         "current_assessment": (
-            "The README-advertised Target/Radar python2025 example path is now executable under package-owned "
+            "The README-advertised Target/Radar python1516_2025 example path is now executable under package-owned "
             "2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, "
-            "and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute "
+            "and the same package-owned adapter now also proves that the factory-hosted python1516_2025 FedPro route can execute "
             "the shared Target/Radar example scenario plus the shared future-exclusion, output-delivery, "
             "consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, "
             "and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers."
@@ -2901,7 +2901,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario",
         ],
-        "example_entrypoint": "python examples/target_radar_simulation.py --backend python2025 --steps 5",
+        "example_entrypoint": "python examples/target_radar_simulation.py --backend python1516_2025 --steps 5",
         "python2025_runtime_report": {
             "backend_kind": "python/2025",
             "counts_as_python_2025_rti": True,
@@ -2917,9 +2917,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "wrapper_only": True,
         },
         "supported_backend_names": [
-            "python2025",
-            "python-2025",
-            "python-2025-backend",
+            "python1516_2025",
+            "python-1516-2025",
+            "python-1516-2025",
         ],
     }
     assert "hosted FedPro route is a route variant" in implementation_lane_audit["current_assessment"]
@@ -2953,10 +2953,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "docs/python_rti_backend.md",
     ]
     proof_lane_audit = snapshot["python2025_proof_lane_audit"]
-    assert proof_lane_audit["audit_status"] == "python2025-proof-lanes-captured"
+    assert proof_lane_audit["audit_status"] == "python1516_2025-proof-lanes-captured"
     assert proof_lane_audit["ready_for_main_implementation_operator_lane_claim"] is True
     assert proof_lane_audit["default_direct_lane"] == {
-        "lane_id": "python-main-2025",
+        "lane_id": "python1516_2025-main",
         "title": "Python 2025 main-surface lane",
         "owner_command": ["./tools/python", "verify-main-2025"],
         "estimated_cost": "medium",
@@ -2968,12 +2968,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ],
         "preflight_kind": "always-ready",
         "description": (
-            "Primary python2025 main-surface verification lane for direct runtime proofs across time, save/restore, "
+            "Primary python1516_2025 main-surface verification lane for direct runtime proofs across time, save/restore, "
             "ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence."
         ),
     }
     assert proof_lane_audit["hosted_extension_lane"] == {
-        "lane_id": "python-routes-2025",
+        "lane_id": "python1516_2025-routes",
         "title": "Hosted Python 2025 route lane",
         "owner_command": ["./tools/python", "verify-routes-2025"],
         "estimated_cost": "medium",
@@ -2985,7 +2985,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ],
         "preflight_kind": "aggregate",
         "description": (
-            "python2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, "
+            "python1516_2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, "
             "ownership, callback, support-service, and MOM proofs, transport-route behavior, route-parity artifacts, "
             "and the package-owned Target/Radar example path."
         ),
@@ -2994,20 +2994,20 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "./tools/python verify-routes-2025 as the bounded hosted FedPro extension" in proof_lane_audit["shared_claim"]
     assert proof_lane_audit["current_operator_runs"] == [
         {
-            "lane_id": "python-main-2025",
+            "lane_id": "python1516_2025-main",
             "command": "./tools/python verify-main-2025",
             "result": "324 passed across wrapper subcommands plus Target/Radar example",
             "scope": (
-                "current-tree direct python2025 package-boundary, federation/object/DDM, support/ownership/MOM, "
+                "current-tree direct python1516_2025 package-boundary, federation/object/DDM, support/ownership/MOM, "
                 "time-window, save/restore, callback, OMT, and example-scenario proof lane"
             ),
         },
         {
-            "lane_id": "python-routes-2025",
+            "lane_id": "python1516_2025-routes",
             "command": "./tools/python verify-routes-2025",
             "result": "434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example",
             "scope": (
-                "current-tree direct python2025 plus bounded hosted FedPro route verification lane, including "
+                "current-tree direct python1516_2025 plus bounded hosted FedPro route verification lane, including "
                 "transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay"
             ),
         },
@@ -3061,7 +3061,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_audit["audit_status"] == "extraction-readiness-map-captured"
     assert extraction_audit["extraction_needed_now"] is False
     assert extraction_audit["dedicated_python_2025_backend_present"] is True
-    assert extraction_audit["recommended_current_action"] == "promote-python2025-as-live-lane-and-keep-shim-wrapper-narrowing-map"
+    assert extraction_audit["recommended_current_action"] == "promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map"
     assert extraction_audit["future_backend_package_target"] == "hla-backend-python2025"
     assert extraction_audit["future_backend_plugin_family"] == "python-rti-2025"
     assert extraction_audit["extraction_package_contract"] == {
@@ -3069,7 +3069,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "target_distribution": "hla-backend-python2025",
         "target_import_root": "hla.backends.python2025",
         "target_plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
-        "target_backend_name": "python2025",
+        "target_backend_name": "python1516_2025",
         "target_plugin_family": "python-rti-2025",
         "target_supports": ["rti1516_2025"],
         "must_not_delegate_to": ["hla.backends.shim.backend.create_shim_backend"],
@@ -3083,9 +3083,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ),
     }
     assert extraction_audit["extraction_cutover_invariants"] == [
-        "python-2025-inprocess and python-2025-fedpro-grpc parity rows remain green for every migrated slice",
+        "python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
         "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior",
-        "the dedicated python2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
+        "the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
         "backend plugin discovery reports hla-backend-python2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
     ]
     assert extraction_audit["runtime_semantics_to_extract_first_count"] == 4
@@ -3237,13 +3237,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "line baselines are intentionally overlapping" in extraction_impact_audit["non_claim"]
     assert implementation_lane_audit["python_2025_routes"] == [
         {
-            "route": "python-2025-inprocess",
+            "route": "python1516_2025-inprocess",
             "kind": "in-process-backend-route",
             "is_separate_rti_family": False,
             "all_route_parity_covered": True,
         },
         {
-            "route": "python-2025-fedpro-grpc",
+            "route": "python1516_2025-fedpro-grpc",
             "kind": "hosted-transport-route",
             "is_separate_rti_family": False,
             "all_route_parity_covered": True,
@@ -3353,7 +3353,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "tests/test_rti1516_2025_python2025_runtime.py" in dimensions["time_management"]["evidence_tests"]
     assert dimensions["time_management"]["evidence_level"] == "decomposed-query-and-window-proof-backed"
     assert dimensions["time_management"]["evidence_basis"] == [
-        "python_rti_milestone_audit bounded time rows=python-2025-fedpro-grpc:bounded-lookahead-evidence,python-2025-fedpro-grpc:bounded-query-evidence,python-2025-inprocess:bounded-lookahead-evidence,python-2025-inprocess:bounded-query-evidence",
+        "python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025-inprocess:bounded-lookahead-evidence,python1516_2025-inprocess:bounded-query-evidence",
         "time_window_vendor_parity_audit.audit_status=time-window-vendor-parity-captured",
         "time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion",
         "time_management_decomposition.slice_id=2025-time-management-proof-families",
@@ -3463,13 +3463,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert closeout["ready_for_slice_closeout"] is True
     assert closeout["ready_for_full_completion_claim"] is False
     assert "FI per-service runtime traceability" in closeout["current_assessment"]
-    assert "outside the already-green primary python2025 runtime lane" in closeout["current_assessment"]
+    assert "outside the already-green primary python1516_2025 runtime lane" in closeout["current_assessment"]
     assert len(closeout["conformance_blockers"]) >= 4
     assert any("row-level requirement-by-requirement disposition audit across all 2025 rows" in blocker for blocker in closeout["conformance_blockers"])
-    assert any("requirement-closeout limit rather than evidence that the main python2025 runtime lane is behaviorally incomplete" in blocker for blocker in closeout["conformance_blockers"])
+    assert any("requirement-closeout limit rather than evidence that the main python1516_2025 runtime lane is behaviorally incomplete" in blocker for blocker in closeout["conformance_blockers"])
     assert any("Java and C++ standard-route evidence" in blocker for blocker in closeout["conformance_blockers"])
     assert any("hosted FedPro route is verified as a runtime slice" in blocker for blocker in closeout["conformance_blockers"])
-    assert any("hosted/cross-binding proof limit rather than evidence that the direct python2025 runtime lane lacks those semantics" in blocker for blocker in closeout["conformance_blockers"])
+    assert any("hosted/cross-binding proof limit rather than evidence that the direct python1516_2025 runtime lane lacks those semantics" in blocker for blocker in closeout["conformance_blockers"])
     closeout_partition = snapshot["closeout_blocker_partition_audit"]
     assert closeout_partition["audit_status"] == "closeout-blocker-partition-captured"
     assert closeout_partition["closeout_blocker_count"] == 6
@@ -3529,7 +3529,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     ]
     assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_partition["current_assessment"]
     assert "missing core executable behavior in the main hla-backend-python2025 runtime lane" in closeout_partition["current_assessment"]
-    assert "without treating the main python2025 runtime as behaviorally unfinished" in closeout_partition["residual_boundary"]
+    assert "without treating the main python1516_2025 runtime as behaviorally unfinished" in closeout_partition["residual_boundary"]
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")
@@ -3537,7 +3537,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     snapshot = build_spec2025_finish_line_snapshot(ROOT)
     slices = {row["id"]: row for row in snapshot["implemented_evidence_slices"]}
     python2025_backend_path = (
-        ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025" / "backend.py"
+        ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
     )
     current_python2025_line_count = sum(1 for _ in python2025_backend_path.open(encoding="utf-8"))
 
@@ -3584,7 +3584,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-FI-SVC-018" in slices["2025-save-restore-lifecycle"]["requirements"]
     assert "HLA2025-FI-SVC-034" in slices["2025-save-restore-lifecycle"]["requirements"]
     assert "federation save/restore lifecycle callbacks" in slices["2025-save-restore-lifecycle"]["supported_scope"]
-    assert "direct execution of the shared two-federate save/restore suite on the main python2025 runtime plus hosted replay over the FedPro route" in slices["2025-save-restore-lifecycle"]["supported_scope"]
+    assert "direct execution of the shared two-federate save/restore suite on the main python1516_2025 runtime plus hosted replay over the FedPro route" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert "requestFederationSave and requestFederationRestore" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert "object registry rollback" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert "joined-federate logical-time rollback" in slices["2025-save-restore-lifecycle"]["supported_scope"]
@@ -3806,7 +3806,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-FI-SVC-071" in slices["2025-object-attribute-update-request-callbacks"]["requirements"]
     assert "requestAttributeValueUpdate by object instance and object class" in slices["2025-object-attribute-update-request-callbacks"]["supported_scope"]
     assert "provideAttributeValueUpdate callback delivery" in slices["2025-object-attribute-update-request-callbacks"]["supported_scope"]
-    assert "region-scoped requestAttributeValueUpdate callbacks across the live python2025 runtime lane and hosted FedPro route" in slices["2025-object-attribute-update-request-callbacks"]["supported_scope"]
+    assert "region-scoped requestAttributeValueUpdate callbacks across the live python1516_2025 runtime lane and hosted FedPro route" in slices["2025-object-attribute-update-request-callbacks"]["supported_scope"]
 
     assert slices["2025-object-scope-advisory-callbacks"]["status"] == "implemented-slice"
     assert "HLA2025-FI-SVC-068" in slices["2025-object-scope-advisory-callbacks"]["requirements"]
@@ -4057,8 +4057,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Python RTI Milestone Audit" in markdown
     assert "Audit status: bounded-python-rti-milestones" in markdown
     assert "Milestones per route: 6" in markdown
-    assert "python-2025-inprocess" in markdown
-    assert "python-2025-fedpro-grpc" in markdown
+    assert "python1516_2025-inprocess" in markdown
+    assert "python1516_2025-fedpro-grpc" in markdown
     assert "Best-attempt Python RTI 2025 working surface: bounded-working-slice" in markdown
     assert "Message exchange and routing: covered-routing-slice" in markdown
     assert "Time synchronization and advance flow: covered-time-advance-slice" in markdown
@@ -4090,7 +4090,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Python2025 Exclusion Boundaries Audit" in markdown
     assert "Finish-line source path: packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py" in markdown
     assert "Direct compat anchor count: 0" in markdown
-    assert "Ready for python2025 exclusion boundaries claim: True" in markdown
+    assert "Ready for python1516_2025 exclusion boundaries claim: True" in markdown
     assert "Lookahead Window Bounded Proof Audit" in markdown
     assert "Doc path: docs/requirements/ieee-1516-2025/lookahead_window_bounded_proof.md" in markdown
     assert "Ready for lookahead window bounded proof claim: True" in markdown
@@ -4290,8 +4290,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Direct lane: ./tools/python verify-main-2025" in markdown
     assert "Hosted extension lane: ./tools/python verify-routes-2025" in markdown
     assert "Current operator runs:" in markdown
-    assert "python-main-2025 / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example" in markdown
-    assert "python-routes-2025 / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example" in markdown
+    assert "python1516_2025-main / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example" in markdown
+    assert "python1516_2025-routes / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example" in markdown
     assert "Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md" in markdown
     assert "Reference 2010 backend package: hla-backend-inmemory" in markdown
     assert "Backend packages discovered: 6" in markdown
@@ -4300,7 +4300,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "hla-backend-cpp-shim" in markdown
     assert "shim (shim): hla-backend-shim supports rti1516_2025" not in markdown
     assert "Dedicated 2025 backend package present: True" in markdown
-    assert "python-2025-fedpro-grpc: hosted-transport-route" in markdown
+    assert "python1516_2025-fedpro-grpc: hosted-transport-route" in markdown
     assert "Time-Window Vendor Parity Audit" in markdown
     assert (
         "Trial-Pitch-safe routes: "
@@ -4334,7 +4334,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Extraction package contract:" in markdown
     assert "Current package state: live-runtime-present" in markdown
     assert "Target import root: hla.backends.python2025" in markdown
-    assert "Target backend name: python2025" in markdown
+    assert "Target backend name: python1516_2025" in markdown
     assert "Must not delegate to: hla.backends.shim.backend.create_shim_backend" in markdown
     assert "Extraction cutover invariants:" in markdown
     assert "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior" in markdown
@@ -4393,14 +4393,14 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
         (row["scenario"], row["route"]): row
         for row in payload["route_parity_matrix"]["rows"]
     }
-    assert payload_route_rows[("federation_lifecycle", "python-2025-inprocess")]["runtime_provider"] == "python2025"
-    assert payload_route_rows[("federation_lifecycle", "python-2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
-    assert payload_route_rows[("federation_lifecycle", "python-2025-inprocess")]["counts_as_python_2025_rti"] is True
-    assert payload_route_rows[("federation_lifecycle", "python-2025-inprocess")]["wrapper_only"] is False
-    assert payload_route_rows[("time_management", "python-2025-fedpro-grpc")]["runtime_provider"] == "python2025"
-    assert payload_route_rows[("time_management", "python-2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python2025"
-    assert payload_route_rows[("time_management", "python-2025-fedpro-grpc")]["counts_as_python_2025_rti"] is True
-    assert payload_route_rows[("time_management", "python-2025-fedpro-grpc")]["wrapper_only"] is False
+    assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["runtime_provider"] == "python1516_2025"
+    assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
+    assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["counts_as_python_2025_rti"] is True
+    assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["wrapper_only"] is False
+    assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["runtime_provider"] == "python1516_2025"
+    assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python2025"
+    assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["counts_as_python_2025_rti"] is True
+    assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["wrapper_only"] is False
     assert payload["fi_service_proof_audit"]["row_count"] == 196
     assert payload["fi_service_proof_audit"]["ready_for_per_service_runtime_traceability_claim"] is True
     assert payload["delta_requirement_proof_audit"]["row_count"] == 20
@@ -4412,7 +4412,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["python_rti_milestone_audit"]["audit_status"] == "bounded-python-rti-milestones"
     assert payload["python_rti_milestone_audit"]["milestone_count"] == 6
     assert payload["python_rti_milestone_audit"]["row_count"] == 12
-    assert payload["python_rti_milestone_audit"]["by_route"]["python-2025-fedpro-grpc"]["all_route_parity_covered"] is True
+    assert payload["python_rti_milestone_audit"]["by_route"]["python1516_2025-fedpro-grpc"]["all_route_parity_covered"] is True
     assert payload["requirement_by_requirement_audit"]["audit_status"] == "row-level-requirement-disposition-audit-captured"
     assert payload["requirement_by_requirement_audit"]["ready_for_row_level_requirement_audit_claim"] is True
     assert payload["completion_claim_audit"]["ready_for_supported-boundary_statement"] is True
@@ -4422,8 +4422,8 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["implementation_lane_audit"]["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
     assert payload["implementation_lane_audit"]["reference_2010_lane"]["backend_package"] == "hla-backend-inmemory"
     assert payload["implementation_lane_audit"]["dedicated_2025_backend_package_present"] is True
-    assert payload["implementation_lane_audit"]["python_2025_routes"][1]["route"] == "python-2025-fedpro-grpc"
-    assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["route"] == "python-2025-fedpro-grpc"
+    assert payload["implementation_lane_audit"]["python_2025_routes"][1]["route"] == "python1516_2025-fedpro-grpc"
+    assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["route"] == "python1516_2025-fedpro-grpc"
     assert payload["implementation_lane_audit"]["hosted_factory_boundary_evidence"]["audit_status"] == (
         "factory-boundary-explicit"
     )
@@ -4487,20 +4487,20 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "object_exchange,java-standard-2025-jpype,parity-covered,scenario-parity" in route_matrix
     assert "federation_lifecycle,java-standard-2025-jpype,parity-covered,scenario-parity" in route_matrix
     assert "federation_lifecycle,cpp-standard-2025-grpc,parity-covered,scenario-parity" in route_matrix
-    assert "federation_lifecycle,python-2025-inprocess,parity-covered,scenario-parity" in route_matrix
-    assert ",python2025,hla-backend-python2025,true,false," in route_matrix
+    assert "federation_lifecycle,python1516_2025-inprocess,parity-covered,scenario-parity" in route_matrix
+    assert ",python1516_2025,hla-backend-python2025,true,false," in route_matrix
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_matrix
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_matrix
     assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_matrix
     assert route_matrix_markdown.startswith("# IEEE 1516-2025 Route Parity Matrix")
-    assert "python-2025-inprocess` and `python-2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`" in route_matrix_markdown
+    assert "python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`" in route_matrix_markdown
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations." in route_matrix_markdown
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in route_matrix_markdown
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in route_matrix_markdown
     assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in route_matrix_markdown
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in route_matrix_markdown
-    assert "| federation_lifecycle | python-2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
-    assert "| time_management | python-2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
+    assert "| federation_lifecycle | python1516_2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
+    assert "| time_management | python1516_2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_matrix_markdown
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_matrix_markdown
     assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_matrix_markdown
@@ -4585,32 +4585,32 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert main_impl_claim["ready_for_full_2025_conformance_claim"] is False
     assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
     assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
-    assert "main python2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
+    assert "main python1516_2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
     blocker_partition = payload["full_claim_blocker_partition_audit"]
     assert blocker_partition["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
     assert blocker_partition["direct_runtime_incompleteness_blocker_count"] == 0
-    assert "all sit outside direct main-lane python2025 runtime completeness" in blocker_partition["current_assessment"]
+    assert "all sit outside direct main-lane python1516_2025 runtime completeness" in blocker_partition["current_assessment"]
     closeout_partition = payload["closeout_blocker_partition_audit"]
     assert closeout_partition["all_current_closeout_blockers_are_external_to_main_python2025_runtime"] is True
     assert closeout_partition["direct_runtime_incompleteness_blocker_count"] == 0
     assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_partition["current_assessment"]
 
-    assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["runtime_provider"] == "python2025"
-    assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
-    assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["counts_as_python_2025_rti"] is True
-    assert route_rows[("federation_lifecycle", "python-2025-inprocess")]["wrapper_only"] is False
-    assert route_rows[("time_management", "python-2025-fedpro-grpc")]["runtime_provider"] == "python2025"
-    assert route_rows[("time_management", "python-2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python2025"
-    assert route_rows[("time_management", "python-2025-fedpro-grpc")]["counts_as_python_2025_rti"] is True
-    assert route_rows[("time_management", "python-2025-fedpro-grpc")]["wrapper_only"] is False
+    assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["runtime_provider"] == "python1516_2025"
+    assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
+    assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["counts_as_python_2025_rti"] is True
+    assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["wrapper_only"] is False
+    assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["runtime_provider"] == "python1516_2025"
+    assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python2025"
+    assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["counts_as_python_2025_rti"] is True
+    assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["wrapper_only"] is False
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_rows[
-        ("support_services", "python-2025-inprocess")
+        ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_rows[
-        ("support_services", "python-2025-inprocess")
+        ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_rows[
-        ("support_services", "python-2025-inprocess")
+        ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["audit_status"] == (
         "direct-server-client-identity-aligned"
@@ -4619,7 +4619,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert hosted_factory_boundary["audit_status"] == "factory-boundary-explicit"
     assert hosted_factory_boundary["supported_hosted_creation_surface"] == (
         "start_2025_grpc_server(...) plus GrpcTransport(..., schema='rti1516_2025') plus "
-        "create_rti_ambassador(backend='python2025'|'python-2025'|'python-2025-backend', "
+        "create_rti_ambassador(backend='python1516_2025'|'python-1516-2025'|'python-1516-2025', "
         "transport={'kind': 'grpc', ...})"
     )
     assert hosted_factory_boundary["unsupported_factory_surfaces"] == [
@@ -4690,7 +4690,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
     ]
     assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["hosted_client_report"] == {
-        "runtime_provider": "python2025",
+        "runtime_provider": "python1516_2025",
         "implementation_lane": "hla-backend-python2025",
         "counts_as_python_2025_rti": True,
         "wrapper_only": False,
@@ -4703,13 +4703,13 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "audit_status": "package-owned-target-radar-2025-path-captured",
         "claim": (
             "The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, "
-            "where one package-owned compatibility adapter wraps the primary python2025 backend lane without "
+            "where one package-owned compatibility adapter wraps the primary python1516_2025 backend lane without "
             "moving implementation ownership back into hla-backend-shim."
         ),
         "current_assessment": (
-            "The README-advertised Target/Radar python2025 example path is now executable under package-owned "
+            "The README-advertised Target/Radar python1516_2025 example path is now executable under package-owned "
             "2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, "
-            "and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute "
+            "and the same package-owned adapter now also proves that the factory-hosted python1516_2025 FedPro route can execute "
             "the shared Target/Radar example scenario plus the shared future-exclusion, output-delivery, "
             "consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, "
             "and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers."
@@ -4727,7 +4727,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_scenario",
             "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restore_scenario",
         ],
-        "example_entrypoint": "python examples/target_radar_simulation.py --backend python2025 --steps 5",
+        "example_entrypoint": "python examples/target_radar_simulation.py --backend python1516_2025 --steps 5",
         "python2025_runtime_report": {
             "backend_kind": "python/2025",
             "counts_as_python_2025_rti": True,
@@ -4743,9 +4743,9 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
             "wrapper_only": True,
         },
         "supported_backend_names": [
-            "python2025",
-            "python-2025",
-            "python-2025-backend",
+            "python1516_2025",
+            "python-1516-2025",
+            "python-1516-2025",
         ],
     }
     assert payload["implementation_lane_audit"]["evidence_anchors"] == [
@@ -4774,20 +4774,20 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "docs/python_rti_backend.md",
     ]
 
-    assert "python-2025-inprocess: in-process-backend-route" in markdown
-    assert "python-2025-fedpro-grpc: hosted-transport-route" in markdown
+    assert "python1516_2025-inprocess: in-process-backend-route" in markdown
+    assert "python1516_2025-fedpro-grpc: hosted-transport-route" in markdown
     assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in markdown
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in markdown
     assert "disciplined ownership across the extracted hla-backend-python2025 runtime/state/surface modules" in markdown
     assert "transport-seam evidence over hla-backend-python2025 rather than missing core runtime ownership" in markdown
-    assert "binding/adaptation-seam proof over the main python2025 runtime" in markdown
+    assert "binding/adaptation-seam proof over the main python1516_2025 runtime" in markdown
     assert "Hosted runtime identity evidence:" in markdown
     assert "Hosted factory boundary evidence:" in markdown
     assert "Package-owned shared scenario evidence:" in markdown
     assert "Scenario package: hla-fom-target-radar" in markdown
-    assert "Example entrypoint: python examples/target_radar_simulation.py --backend python2025 --steps 5" in markdown
+    assert "Example entrypoint: python examples/target_radar_simulation.py --backend python1516_2025 --steps 5" in markdown
     assert "Adapter class: hla.foms.target_radar._internal.target_radar_2025_adapter.TargetRadar2025RTIAdapter" in markdown
-    assert "python2025: python/2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False" in markdown
+    assert "python1516_2025: python/2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False" in markdown
     assert "shim: shim/2025 / hla-backend-python2025 / counts_as_python_2025_rti=False / wrapper_only=True" in markdown
     assert "test_target_radar_example_supports_2025_backends" in markdown
     assert (
@@ -4796,8 +4796,8 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     )
     assert "test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane" in markdown
     assert "test_2025_version_local_factory_rejects_legacy_shim_provider_name" in markdown
-    assert "Direct ambassador: python2025-rti / python/2025 / python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True" in markdown
-    assert "Hosted client: python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro" in markdown
+    assert "Direct ambassador: python1516_2025-rti / python/2025 / python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True" in markdown
+    assert "Hosted client: python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro" in markdown
     assert "test_2025_transport_server_reports_python2025_main_lane_identity" in markdown
     assert "::test_2025_shim_" not in json.dumps(payload, sort_keys=True)
     assert "test_2025_shim_" not in markdown
@@ -4807,7 +4807,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
 
 
 def test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend(tmp_path: Path) -> None:
-    plugin_dir = tmp_path / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    plugin_dir = tmp_path / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
     plugin_dir.mkdir(parents=True)
     (plugin_dir / "plugin.py").write_text(
         '''"""Synthetic dedicated Python 2025 backend plugin for scanner regression tests."""
@@ -4816,8 +4816,8 @@ from hla.rti.plugin_api import RTIBackendPlugin
 
 def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
-        name="python2025",
-        aliases=("python-2025",),
+        name="python1516_2025",
+        aliases=("python-1516-2025",),
         family="python-rti-2025",
         supports=("rti1516_2025",),
         description="Dedicated Python 2025 RTI backend.",
@@ -4854,13 +4854,13 @@ def plugin() -> RTIBackendPlugin:
         (record["package"], record["name"], record["family"])
         for record in scan["rti1516_2025_plugin_records"]
     } == {
-        ("hla-backend-python2025", "python2025", "python-rti-2025"),
+        ("hla-backend-python2025", "python1516_2025", "python-rti-2025"),
     }
     assert scan["dedicated_python_2025_backend_candidates"] == [
         {
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
-            "name": "python2025",
+            "name": "python1516_2025",
             "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }
@@ -4870,7 +4870,7 @@ def plugin() -> RTIBackendPlugin:
 
 
 def test_2025_backend_plugin_scan_rejects_shim_delegating_python_2025_candidate(tmp_path: Path) -> None:
-    plugin_dir = tmp_path / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python2025"
+    plugin_dir = tmp_path / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
     plugin_dir.mkdir(parents=True)
     (plugin_dir / "plugin.py").write_text(
         '''"""Synthetic invalid Python 2025 backend that delegates to the shim."""
@@ -4880,8 +4880,8 @@ from hla.rti.plugin_api import RTIBackendPlugin
 
 def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
-        name="python2025",
-        aliases=("python-2025",),
+        name="python1516_2025",
+        aliases=("python-1516-2025",),
         family="python-rti-2025",
         supports=("rti1516_2025",),
         description="Invalid shim-delegating Python 2025 RTI backend.",
@@ -4897,7 +4897,7 @@ def plugin() -> RTIBackendPlugin:
         {
             "package": "hla-backend-python2025",
             "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
-            "name": "python2025",
+            "name": "python1516_2025",
             "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
         }

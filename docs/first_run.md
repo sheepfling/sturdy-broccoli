@@ -32,7 +32,7 @@ From the repository root:
 source .venv/bin/activate
 python -m pip install --no-build-isolation -e packages/hla-rti1516e -e packages/hla-backend-common -e packages/hla-backend-inmemory -e packages/hla-rti-core -e packages/hla-fom-target-radar -e packages/hla-verification
 python examples/backend_recording.py
-python examples/target_radar_simulation.py --backend python --steps 5
+python examples/target_radar_simulation.py --backend python1516e --steps 5
 ```
 
 If those commands succeed, your base environment is working.
@@ -44,7 +44,7 @@ For the primary 2025 Python RTI lane, switch next to:
 - [`python_rti_reading_map.md`](python_rti_reading_map.md) for the shortest
   edit path through that runtime
 - [`networked_rti_python.md`](networked_rti_python.md) for the bounded hosted
-  `python-2025-fedpro-grpc` route
+  `python1516_2025-fedpro-grpc` route
 
 ## What This Does
 
@@ -57,12 +57,12 @@ For the primary 2025 Python RTI lane, switch next to:
   tooling-only and is not installed as a package
 - `python examples/backend_recording.py`
   proves the lightweight backend path works
-- `python examples/target_radar_simulation.py --backend python --steps 5`
+- `python examples/target_radar_simulation.py --backend python1516e --steps 5`
   proves a real example federate path works
 
 The 2025 runtime story is intentionally separate:
 
-- `python2025` is the main IEEE 1516.1-2025 RTI lane
+- `python1516_2025` is the main IEEE 1516.1-2025 RTI lane
 - `hla-backend-shim` is only a compatibility-wrapper/import-compatibility package over that runtime
 
 ## What Not To Do First

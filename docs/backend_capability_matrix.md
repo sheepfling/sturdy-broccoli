@@ -46,8 +46,8 @@ The repo now treats the 2025 Python RTI as a primary implementation lane:
 
 - `hla-backend-python2025` for the main executable `rti1516_2025` backend
 - `hla-backend-shim` for legacy compatibility-wrapper/import-level support
-- `python-2025-inprocess` for the direct runtime proof lane
-- `python-2025-fedpro-grpc` for the hosted FedPro route variant
+- `python1516_2025-inprocess` for the direct runtime proof lane
+- `python1516_2025-fedpro-grpc` for the hosted FedPro route variant
 
 Current evidence does support a bounded claim for that lane:
 
@@ -73,8 +73,8 @@ Legend:
 | Runtime / Route | Common Exchange | Timed Exchange | Sync Scenario | Ownership Scenario | Real RTI Process |
 |---|---|---:|---:|---:|---:|
 | `python` | yes | yes | yes | yes | no |
-| `python2025` | yes | yes | yes | yes | no |
-| `python-2025-fedpro-grpc` | yes | yes | yes | yes | no |
+| `python1516_2025` | yes | yes | yes | yes | no |
+| `python1516_2025-fedpro-grpc` | yes | yes | yes | yes | no |
 | `java-shim-jpype` | yes | partial | yes | yes | no |
 | `java-shim-py4j` | yes | partial | yes | yes | no |
 | `certi` | yes | partial | yes | yes | yes |
@@ -91,7 +91,7 @@ This repo also has a narrower transport seam under the backend layer. That seam 
 |---|---|---:|
 | `subprocess-line` | primary local CERTI transport path | yes |
 | `rest` / `http-json` | typed remote transport exercised through the CERTI adapter path and through a transport-hosted pure-Python 2010 RTI server | yes |
-| `grpc` | typed remote transport exercised through the CERTI adapter path, through a transport-hosted pure-Python 2010 RTI server, and through the bounded `python-2025-fedpro-grpc` route over `hla-backend-python2025` | yes |
+| `grpc` | typed remote transport exercised through the CERTI adapter path, through a transport-hosted pure-Python 2010 RTI server, and through the bounded `python1516_2025-fedpro-grpc` route over `hla-backend-python2025` | yes |
 
 These transport kinds are not separate RTI backends today. They are transport
 choices used under the backend-neutral Python HLA surface, with the current
@@ -118,13 +118,13 @@ Primary anchors:
 - `certi`, `certi-jpype`, and `certi-py4j` are covered by real synchronization and ownership smoke tests, but the current shared timed-exchange route is only partial because CERTI does not implement `changeAttributeOrderType`.
 - `rest` remains a transport seam, not an additional runtime family. It now has a transport-hosted pure-Python RTI proving server and uses the same polling callback contract as gRPC.
 - `grpc` now goes one step further: a transport-hosted pure-Python RTI server proves that the existing backend-neutral exchange path can run end to end over the gRPC wire without changing federate code.
-- `python2025` is a first-class operator-facing runtime family in this repo,
+- `python1516_2025` is a first-class operator-facing runtime family in this repo,
   not a provisional alias. Use it as the primary IEEE 1516.1-2025 Python RTI
   lane.
 - `hla-backend-shim` remains only as compatibility-wrapper/import-level code
-  around `python2025`; it is not a separate 2025 RTI family or public runtime
+  around `python1516_2025`; it is not a separate 2025 RTI family or public runtime
   lane.
-- `python-2025-fedpro-grpc` is the bounded hosted route over the same
+- `python1516_2025-fedpro-grpc` is the bounded hosted route over the same
   `hla-backend-python2025` runtime lane. Treat its green status as hosted
   transport-seam proof over the main 2025 RTI, not as evidence of a distinct
   hosted RTI implementation.

@@ -16,7 +16,7 @@
       "countsAsPython2025Rti": false,
       "event": "routeSelected",
       "implementationLane": "hla-backend-python2025",
-      "runtimeProvider": "python2025",
+      "runtimeProvider": "python1516_2025",
       "spec": "rti1516_2025",
       "standardBacked": true,
       "wrapperOnly": false

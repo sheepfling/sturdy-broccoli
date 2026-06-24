@@ -23,7 +23,7 @@ from hla.rti1516e.ambassadors import RecordingFederateAmbassador
 from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
 
-rti = create_rti_ambassador("python")
+rti = create_rti_ambassador("python1516e")
 fed = RecordingFederateAmbassador()
 config = FederationStartupConfig.target_radar(
     federation_name="TargetRadarFederation",

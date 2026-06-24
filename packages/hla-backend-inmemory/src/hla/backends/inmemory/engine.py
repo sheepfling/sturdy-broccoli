@@ -34,7 +34,7 @@ class InMemoryRTIEngine:
     def __init__(
         self,
         *,
-        name: str = "python-inmemory-rti",
+        name: str = "python1516e-rti",
         fom_resolver: FOMResolver | None = None,
         time_factories: TimeFactoryRegistry | None = None,
     ) -> None:

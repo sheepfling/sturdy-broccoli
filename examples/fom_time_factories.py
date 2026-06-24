@@ -21,7 +21,7 @@ FOM = target_radar_fom_path()
 
 
 def main() -> None:
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     fed = PrinterFederate()
 
     rti.connect(fed, CallbackModel.HLA_EVOKED)

@@ -60,10 +60,10 @@ def _showcase_profile_name(backend_options: Mapping[str, Any]) -> str:
     if isinstance(transport, Mapping):
         kind = str(transport.get("kind", "")).strip().lower()
         if kind == "grpc":
-            return "python2025-fedpro-grpc"
+            return "python1516_2025-fedpro-grpc"
         if kind:
-            return f"python2025-{kind}"
-    return "python2025-direct"
+            return f"python1516_2025-{kind}"
+    return "python1516_2025-direct"
 
 
 def _run_target_radar_showcase(
@@ -71,7 +71,7 @@ def _run_target_radar_showcase(
     target_radar_steps: int,
     target_radar_factory: Callable[[str], Any] | None = None,
 ) -> dict[str, Any]:
-    factory = target_radar_factory or make_target_radar_factory("python2025")
+    factory = target_radar_factory or make_target_radar_factory("python1516_2025")
     result = run_target_radar_scenario(
         factory,
         federation_name=f"Proto2025TargetRadarShowcase-{uuid.uuid4().hex[:8]}",
@@ -123,7 +123,7 @@ def run_proto2025_fom_showcase(
         _run_target_radar_showcase(
             target_radar_steps=target_radar_steps,
             target_radar_factory=make_target_radar_factory(
-                "python2025",
+                "python1516_2025",
                 backend_options=resolved_backend_options,
             ),
         )

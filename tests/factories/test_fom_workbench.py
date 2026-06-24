@@ -161,8 +161,12 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert '<option value="custom-load-set">custom load sets</option>' in html_text
     assert 'id="workspace-focus-controls"' in html_text
     assert 'id="workspace-focus-filter"' in html_text
+    assert 'id="workspace-focus-advanced"' in html_text
     assert 'data-focus-kind="object"' in html_text
     assert 'data-focus-kind="changed"' in html_text
+    assert 'id="focus-kind-select"' in html_text
+    assert 'id="focus-save-preset"' in html_text
+    assert "Advanced focus" in html_text
     assert "kind:object owner:repo-owned changed:true" in html_text
 
 

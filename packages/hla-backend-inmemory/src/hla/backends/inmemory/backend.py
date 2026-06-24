@@ -124,7 +124,7 @@ class PythonRTIBackend(
         self.service_report_files = PythonRTIServiceReportFiles(directory=self.config.service_report_directory)
         self.info = BackendInfo(
             name=self.config.name,
-            kind="python/in-memory",
+            kind="python/1516e",
             version=self.config.version,
             details={"engine": self.engine.name, "backend_id": self.state.backend_id},
         )

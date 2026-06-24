@@ -22,7 +22,7 @@ boundary in mind:
 
 - `hla-backend-python2025` is the main executable RTI lane
 - `hla-backend-shim` is only the compatibility wrapper around that lane
-- direct `python2025` proof comes first
+- direct `python1516_2025` proof comes first
 - hosted FedPro proof is a bounded extension over the same runtime
 
 ### Start Here
@@ -61,12 +61,12 @@ For the current 2025 Python RTI closeout path, the most important reference
 surfaces are:
 
 - [docs/python_rti_backend.md](python_rti_backend.md): current 2025 runtime-lane ownership and bounded working-surface claim
-- [docs/python_rti_reading_map.md](python_rti_reading_map.md): shortest path for editing the main `python2025` RTI lane
-- `./tools/python verify-main-2025`: normal direct `python2025` proof lane for the main implementation surface
+- [docs/python_rti_reading_map.md](python_rti_reading_map.md): shortest path for editing the main `python1516_2025` RTI lane
+- `./tools/python verify-main-2025`: normal direct `python1516_2025` proof lane for the main implementation surface
 - [docs/verification/time_model_compliance.md](verification/time_model_compliance.md): current GALT/LITS/lookahead proof ladder for the 2025 lane
 - [docs/requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): requirement index and bounded proof-note map for the 2025 runtime/support/binding evidence surface
 - [docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit excluded-area map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics
-- `./tools/python verify-routes-2025`: bounded hosted `python-2025-fedpro-grpc` hygiene lane over that same runtime
+- `./tools/python verify-routes-2025`: bounded hosted `python1516_2025-fedpro-grpc` hygiene lane over that same runtime
 - `python3 scripts/run_spec2025_finish_line.py`: regenerate the checked-in 2025 finish-line snapshot, verification matrix, and route-parity artifacts after proof-lane changes
 - [docs/plans/spec2025_finish_line.md](plans/spec2025_finish_line.md): generated 2025 finish-line evidence snapshot
 - [docs/plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md): generated route-parity evidence for the main 2025 RTI lane
@@ -144,7 +144,7 @@ For 2025 readers, note the boundary explicitly:
 
 - `backend_conformance_matrix.md` and `verification/verification_plan.md` are
   2010-specific reference surfaces
-- the current `python2025` RTI evidence path runs through the 2025 finish-line,
+- the current `python1516_2025` RTI evidence path runs through the 2025 finish-line,
   route-parity, backend-audit, and time-model documents listed above
 
 ### Install / Run / Verify

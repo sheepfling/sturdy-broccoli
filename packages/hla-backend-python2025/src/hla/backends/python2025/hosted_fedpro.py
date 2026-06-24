@@ -1,4 +1,4 @@
-"""Hosted FedPro 2025 ambassador over the main python2025 runtime lane."""
+"""Hosted FedPro 2025 ambassador over the main python1516_2025 runtime lane."""
 from __future__ import annotations
 
 from importlib.resources import files
@@ -349,7 +349,7 @@ def dispatch_fedpro_helper_callback(ambassador: Any, parts: list[str], *, logica
 
 
 class FedPro2025RTIAmbassador:
-    """Hosted RTI ambassador over the main python2025 transport route."""
+    """Hosted RTI ambassador over the main python1516_2025 transport route."""
 
     backend_info: Any = None
     _CAMELCASE_ALIAS_OVERRIDES = {

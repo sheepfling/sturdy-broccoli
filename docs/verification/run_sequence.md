@@ -28,7 +28,7 @@ Canonical order of the underlying steps:
 4. `scripts/ci/test.sh`
 5. `scripts/ci/vendor_runtime_smoke.sh matrix`
 6. `scripts/run_two_federate_suite.py`
-7. `scripts/ci/target_radar_backend_matrix.sh --backend python --backend java-shim-jpype --backend java-shim-py4j`
+7. `scripts/ci/target_radar_backend_matrix.sh --backend python1516e --backend java-shim-jpype --backend java-shim-py4j`
 8. `scripts/ci/target_radar_proof.sh`
 9. `scripts/ci/section8_backend_matrix_gate.sh`
 10. `scripts/ci/vendor_runtime_smoke.sh all`
@@ -54,7 +54,7 @@ the whole vendor matrix, use:
 
 Those commands add bounded vendor credence for the two-federate 2025
 future-exclusion and restore-state routes. They do not replace the direct
-`python2025` proof lane or the hosted `python-2025-fedpro-grpc` replay.
+`python1516_2025` proof lane or the hosted `python1516_2025-fedpro-grpc` replay.
 
 Use this page when you want the sequence without chasing individual wrapper
 names.

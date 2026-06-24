@@ -201,7 +201,7 @@ What it proves today is narrower and more honest:
   GALT/LITS and lookahead state make it safe
 - the same lane can process after closure, publish legal output, and deliver it
   in order
-- the same proof ladder is replayed over the hosted `python-2025-fedpro-grpc`
+- the same proof ladder is replayed over the hosted `python1516_2025-fedpro-grpc`
   route
 - matching negative-oracle tests reject premature closure, mismatched LITS
   boundaries, premature output, reversed consumer order, cross-window
@@ -219,7 +219,7 @@ The matching requirement-facing note for that ladder is:
 The main 2025 runtime evidence is:
 
 - [`../../tests/test_rti1516_2025_python2025_runtime.py`](../../tests/test_rti1516_2025_python2025_runtime.py)
-  - direct in-process `python2025` time-management services plus the
+  - direct in-process `python1516_2025` time-management services plus the
     Target/Radar time-window proof ladder and negative-oracle guards
 - [`../../tests/scenarios/test_python_route_parity.py`](../../tests/scenarios/test_python_route_parity.py)
   - route-level replay of the proof ladder over the in-process and hosted 2025

@@ -1827,7 +1827,7 @@ def test_2025_python2025_rejects_fom_with_invalid_hla_user_defined_names(tmp_pat
         encoding="utf-8",
     )
 
-    factory = create_hla_factory(provider="python2025")
+    factory = create_hla_factory(provider="python1516_2025")
     result = factory.load_fom([invalid_fom])
     assert result.status == "invalid"
     assert any(entry == "validation_issues=1" for entry in result.diagnostics)
@@ -1875,7 +1875,7 @@ def test_2025_factory_load_fom_reports_strict_identification_failures(tmp_path: 
         encoding="utf-8",
     )
 
-    result = create_hla_factory(provider="python2025").load_fom(
+    result = create_hla_factory(provider="python1516_2025").load_fom(
         [invalid_fom],
         strict_identification=True,
     )

@@ -66,7 +66,7 @@ Rules for the split:
   discovery and selection.
 - `hla-backend-python2025` is the main full Python 2025 RTI backend and the
   main full Python 2025 RTI implementation lane. It registers
-  `python2025` for `rti1516_2025`.
+  `python1516_2025` for `rti1516_2025`.
 - `hla-backend-shim` is deprecated temporary import-compatibility scaffolding.
   Its helper modules should remain wrapper-only compatibility aliases over
   `hla.backends.python2025.*`, without reclaiming public runtime-selection
@@ -103,6 +103,23 @@ Use one consistent front-door pattern for package-local documentation:
   notes, and vendor/runtime findings
 - `packages/<name>/MIGRATION.md`: retained migration notes when that package
   was split or moved
+
+For `packages/<name>/README.md`, prefer this order:
+
+1. `What This Is`
+2. `What This Is Not`
+3. `When To Open It`
+4. `Key Imports` or `Key Entrypoints`
+5. `Related Docs`
+
+That pattern matters more than perfect detail. The goal is that a reader can
+tell in under a minute whether a package is:
+
+- a standard surface
+- shared support
+- a concrete backend
+- an integration layer
+- or a leaf package
 
 Notable package-local doc families:
 

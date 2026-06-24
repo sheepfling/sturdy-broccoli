@@ -124,11 +124,11 @@ def write_csvs(tests_by_requirement: dict[str, list[tuple[str, str]]]) -> None:
         for requirement in TIME_REQUIREMENTS:
             writer.writerow(
                 {
-                    "backend": "python",
+                    "backend": "python1516e",
                     "behavior": requirement.service,
                     "status": "PASS",
                     "evidence": str(MATRIX_CSV),
-                    "notes": "Pure Python backend covered by closeout unit/API/scenario gates.",
+                    "notes": "Primary Python 1516e backend covered by closeout unit/API/scenario gates.",
                 }
             )
             writer.writerow(

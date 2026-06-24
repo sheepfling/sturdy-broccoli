@@ -11,7 +11,7 @@ If you only need the supported import ladder, use:
 - `from hla.runtime.rti1516e_ambassador import RTIambassador`
 - `from hla.rti1516e.federate_ambassador import FederateAmbassador`
 - `from hla.backends.inmemory import rti_ambassador`
-- `python examples/target_radar_simulation.py --backend python --steps 5`
+- `python examples/target_radar_simulation.py --backend python1516e --steps 5`
 
 ## Package Reality
 
@@ -39,7 +39,7 @@ modules. Cross-version discovery and factory selection live under `hla.rti`.
 |---|---|
 | Canonical 2010 spec contracts | `from hla.rti1516e import RTIambassador, FederateAmbassador` |
 | No-op callback base | `from hla.rti1516e import NullFederateAmbassador` |
-| Target/Radar example flow | `./tools/target-radar matrix --backend python` |
+| Target/Radar example flow | `./tools/target-radar matrix --backend python1516e` |
 | Verification harness | `from hla.verification import run_basic_federate_scenario` |
 
 ## Recommended Imports

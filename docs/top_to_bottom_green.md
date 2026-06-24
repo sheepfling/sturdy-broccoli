@@ -41,11 +41,11 @@ Canonical commands:
 ./tools/bootstrap python
 source .venv/bin/activate
 python examples/backend_recording.py
-python examples/target_radar_simulation.py --backend python --steps 5
-python examples/target_radar_simulation.py --backend python2025 --steps 5
+python examples/target_radar_simulation.py --backend python1516e --steps 5
+python examples/target_radar_simulation.py --backend python1516_2025 --steps 5
 ```
 
-For IEEE 1516.1-2025 specifically, treat `python2025` as the main executable
+For IEEE 1516.1-2025 specifically, treat `python1516_2025` as the main executable
 runtime lane. Do not treat `shim` as a separate RTI family; it remains a
 wrapper-only compatibility surface over `hla-backend-python2025`.
 
@@ -56,9 +56,9 @@ Routine 2025 proof commands:
 ./tools/python verify-routes-2025
 ```
 
-Use `verify-main-2025` as the default direct `python2025` proof lane. Use
+Use `verify-main-2025` as the default direct `python1516_2025` proof lane. Use
 `verify-routes-2025` when you also need the bounded hosted
-`python-2025-fedpro-grpc` hygiene lane.
+`python1516_2025-fedpro-grpc` hygiene lane.
 
 ### 2. Repo Green
 
@@ -70,7 +70,7 @@ Required outcome:
 - generated status and parity artifacts are produced
 - vendor prerequisites are still checked
 - blocked CERTI or Pitch runtime prerequisites do not fail the whole lane
-- the direct and hosted `python2025` route evidence remains aligned with the
+- the direct and hosted `python1516_2025` route evidence remains aligned with the
   main 2025 Python RTI lane
 
 If you need to inspect the Java toolchain that backs language-shim route evidence,

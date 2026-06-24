@@ -23,9 +23,9 @@ class BackendCase:
 
 
 BACKEND_CASES = (
-    BackendCase("python"),
-    BackendCase("rest-hosted-python", loopback_required=True),
-    BackendCase("grpc-hosted-python", loopback_required=True),
+    BackendCase("python1516e"),
+    BackendCase("rest-hosted-python1516e", loopback_required=True),
+    BackendCase("grpc-hosted-python1516e", loopback_required=True),
 )
 
 
@@ -38,13 +38,13 @@ def _case_param(case: BackendCase):
 def backend_pair(request):
     case: BackendCase = request.param
     with ExitStack() as stack:
-        if case.id == "python":
+        if case.id == "python1516e":
             engine = InMemoryRTIEngine()
-            left = create_rti_ambassador("python", engine=engine)
-            right = create_rti_ambassador("python", engine=engine)
+            left = create_rti_ambassador("python1516e", engine=engine)
+            right = create_rti_ambassador("python1516e", engine=engine)
             yield case.id, left, right
             return
-        if case.id == "rest-hosted-python":
+        if case.id == "rest-hosted-python1516e":
             engine = InMemoryRTIEngine()
             left_server = start_python_rest_server(engine=engine)
             right_server = start_python_rest_server(engine=engine)
@@ -54,7 +54,7 @@ def backend_pair(request):
             right = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": right_server.base_url})
             yield case.id, left, right
             return
-        if case.id == "grpc-hosted-python":
+        if case.id == "grpc-hosted-python1516e":
             engine = InMemoryRTIEngine()
             left_server = start_python_grpc_server(engine=engine)
             right_server = start_python_grpc_server(engine=engine)

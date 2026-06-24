@@ -25,7 +25,7 @@ Use these 2025 front doors instead:
 - [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md)
 - [`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
 
-Those pages carry the bounded direct/hosted `python2025` executable-behavior
+Those pages carry the bounded direct/hosted `python1516_2025` executable-behavior
 claim plus the explicit excluded-area map for legacy aliases, Java/C++
 bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows,
 and out-of-scope OMT extension semantics.

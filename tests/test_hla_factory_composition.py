@@ -4,8 +4,8 @@ import uuid
 
 import pytest
 
-_PROVIDER_ROUTES = ("python2025",)
-_PYTHON2025_PROVIDER_ALIASES = ("python2025", "python-2025", "python-2025-backend")
+_PROVIDER_ROUTES = ("python1516_2025",)
+_PYTHON1516_2025_PROVIDER_ALIASES = ("python1516_2025", "python-1516-2025")
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003", "HLA2025-FI-004")
@@ -96,14 +96,14 @@ def test_2025_factory_can_run_strict_identification_validation_on_packaged_foms(
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003")
-def test_2025_version_local_factory_defaults_to_python2025_provider() -> None:
+def test_2025_version_local_factory_defaults_to_python1516_2025_provider() -> None:
     from hla.runtime.rti1516_2025_factory import create_hla_factory, create_rti_ambassador
 
     factory = create_hla_factory()
-    assert factory.provider == "python2025"
+    assert factory.provider == "python1516_2025"
 
     default_rti = create_rti_ambassador()
-    explicit_rti = create_rti_ambassador(backend="python2025")
+    explicit_rti = create_rti_ambassador(backend="python1516_2025")
 
     assert type(default_rti) is type(explicit_rti)
     assert default_rti.backend_info.details["spec"] == "rti1516_2025"
@@ -111,15 +111,15 @@ def test_2025_version_local_factory_defaults_to_python2025_provider() -> None:
 
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-BND-003")
-@pytest.mark.parametrize("backend_name", _PYTHON2025_PROVIDER_ALIASES)
-def test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane(backend_name: str) -> None:
+@pytest.mark.parametrize("backend_name", _PYTHON1516_2025_PROVIDER_ALIASES)
+def test_2025_version_local_factory_accepts_hosted_transport_creation_on_python1516_2025_lane(backend_name: str) -> None:
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.backends.python2025.hosted_fedpro import FedPro2025RTIAmbassador
 
     rti = create_rti_ambassador(backend=backend_name, transport={"kind": "grpc", "target": "127.0.0.1:15164"})
 
     assert isinstance(rti, FedPro2025RTIAmbassador)
-    assert rti.backend_info.details["provider"] == "python2025"
+    assert rti.backend_info.details["provider"] == "python1516_2025"
     assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
     assert rti.backend_info.details["counts_as_python_2025_rti"] is True
     rti.close()
@@ -144,8 +144,8 @@ def test_2025_direct_runtime_accepts_semantically_equivalent_2010_resign_action(
     from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516e.enums import ResignAction as ResignAction2010
 
-    federation_name = f"python2025-resign-normalization-{uuid.uuid4().hex[:8]}"
-    rti = create_rti_ambassador(backend="python2025")
+    federation_name = f"python1516_2025-resign-normalization-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="python1516_2025")
 
     try:
         rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
@@ -178,7 +178,7 @@ def test_2025_version_local_factory_rejects_unknown_backend_specific_options() -
 
     with pytest.raises(
         ValueError,
-        match="unsupported backend option\\(s\\) for backend='python2025': engine",
+        match="unsupported backend option\\(s\\) for backend='python1516_2025': engine",
     ):
         create_rti_ambassador(engine="not-supported-for-2025")
 
@@ -200,7 +200,7 @@ def test_hla_factory_rejects_mismatched_spec_provider_combinations() -> None:
     from hla.rti import HlaFactoryRegistry
 
     with pytest.raises(ValueError, match="does not support HLA spec 'rti1516_2025'"):
-        HlaFactoryRegistry.get("2025", provider="inmemory")
+        HlaFactoryRegistry.get("2025", provider="python1516e")
 
     with pytest.raises(ValueError, match="Unknown RTI provider: 'shim'"):
         HlaFactoryRegistry.get("rti1516e", provider="shim")

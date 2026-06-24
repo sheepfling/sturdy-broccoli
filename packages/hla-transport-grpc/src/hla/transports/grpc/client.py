@@ -596,7 +596,7 @@ _CALLBACK_RESPONSE_FIELDS = {
 class FedPro2010ClientAdapter:
     """Map internal backend transport envelopes onto FedPro 2010 protobuf calls."""
 
-    runtime_provider = "python"
+    runtime_provider = "python1516e"
     implementation_lane = "hla-backend-inmemory"
     wrapper_only = False
     spec = "rti1516e"

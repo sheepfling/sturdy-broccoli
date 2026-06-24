@@ -71,7 +71,7 @@ def _save_restore_rows(*, summary: Mapping[str, Any]) -> list[dict[str, Any]]:
     return [
         {
             "scenario": "save_restore",
-            "backend": "python/in-memory",
+            "backend": "python/1516e",
             "callbacks": len(summary["save_restore"]["left_callbacks"]) + len(summary["save_restore"]["right_callbacks"]),
             "artifacts": ["typed summary", "callback timeline"],
             "key_outcome": "federationSaved and restore callbacks with restored logical time",
@@ -83,7 +83,7 @@ def _ddm_rows(*, summary: Mapping[str, Any]) -> list[dict[str, Any]]:
     return [
         {
             "scenario": "ddm",
-            "backend": "python/in-memory",
+            "backend": "python/1516e",
             "callbacks": len(summary["ddm"]["receiver_callbacks"]),
             "artifacts": ["typed summary", "callback timeline"],
             "key_outcome": "region-filtered timestamped delivery",
@@ -93,7 +93,7 @@ def _ddm_rows(*, summary: Mapping[str, Any]) -> list[dict[str, Any]]:
 
 def _profile_summary_rows(profile: str, profile_summary: Mapping[str, Any]) -> list[dict[str, Any]]:
     rows = list(profile_summary["scenario_rows"])
-    if profile == "python":
+    if profile == "python1516e":
         rows.extend(_save_restore_rows(summary=profile_summary))
         rows.extend(_ddm_rows(summary=profile_summary))
     return rows

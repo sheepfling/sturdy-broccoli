@@ -1,46 +1,62 @@
-# hla1516_2025 Python spec model
+# hla-rti1516-2025
 
-This package is a curated union of the initial modular Python draft and the newer
-monolithic Python model package. It is an abstract interface/typing layer for the
-IEEE 1516.1-2025 HLA Java and C++ API surfaces, not an RTI implementation.
+## What This Is
 
-## Merge policy
+`hla-rti1516-2025` is the IEEE 1516.1-2025 standard-facing Python spec
+package.
 
-Kept from the initial draft:
+It is a typing and abstract-interface layer for the 2025 HLA surface. It owns
+the public API shape, not runtime execution.
 
-- modular package layout
-- strict `RTIambassador` and `FederateAmbassador` signatures
-- explicit `IntEnum` values
-- fuller Java-like `ByteWrapper`
-- `RtiFactoryFactory`
-- `UnimplementedRTIambassador`
+## What This Is Not
 
-Added from the newer model:
+It is not:
+
+- a concrete RTI backend
+- the main 2025 Python runtime lane
+- a compatibility shim
+- a transport or vendor integration package
+
+If you need executable 2025 behavior, open `hla-backend-python2025` instead.
+
+## When To Open It
+
+Open this package when you need:
+
+- the 2025 standard API surface
+- strict ambassador signatures
+- enums, exceptions, handles, datatypes, time, encoding, and auth types
+- typing artifacts and source-trace-backed contract files
+
+## Key Imports
+
+The main import root is:
+
+- `hla.rti1516_2025`
+
+Notable owned modules include:
 
 - `auth.py`
 - `encoding.py`
-- `AuthorizationResultCode`
-- C++-only advisory-switch exceptions plus `InternalError`
-- `HLAtransportationTypeHandle` encoding protocol
-- Java/C++ naming fix: `logicalTimeImplementationName`
-- Java-style `RtiConfiguration` getter methods
-- Java-style logical-time methods alongside Pythonic operators
+- `rti_ambassador.py`
+- `federate_ambassador.py`
+- `enums.py`
+- `exceptions.py`
+- `handles.py`
+- `datatypes.py`
+- `logical_time.py`
+- `time.py`
 
-## Notes
+## Related Docs
 
-The package intentionally preserves HLA camelCase names for direct comparison
-with Java and C++ spec documents. Concrete RTI vendors can implement these ABCs
-and protocols or use them as type-checking stubs.
+- [`../../docs/repo_mental_model.md`](../../docs/repo_mental_model.md)
+- [`../../docs/package_layout.md`](../../docs/package_layout.md)
+- [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
+- [`../../requirements/2025/SOURCE_TRACE.md`](../../requirements/2025/SOURCE_TRACE.md)
+- [`../../requirements/2025/NOTICE.md`](../../requirements/2025/NOTICE.md)
 
+This package intentionally preserves HLA camelCase names where the standard
+surface requires them.
 
-## Strict typing and source trace
-
-This build includes `.pyi` stub files for `rti_ambassador`, `federate_ambassador`, and `encoding`.
-Those stubs carry the strict overload sets derived from the Java/C++ 1516.1-2025 APIs while the `.py` files remain runtime-importable abstract/protocol surfaces.
-
-See [`../../requirements/2025/SOURCE_TRACE.md`](../../requirements/2025/SOURCE_TRACE.md) for per-method Java/C++ source linkage, service section numbers, overload counts, and Java throws summaries.
-
-
-## Notice and source attribution
-
-See [`../../requirements/2025/NOTICE.md`](../../requirements/2025/NOTICE.md). Source trace and overload provenance are in [`../../requirements/2025/SOURCE_TRACE.md`](../../requirements/2025/SOURCE_TRACE.md).
+It also ships strict typing artifacts, including `.pyi` files for
+`rti_ambassador`, `federate_ambassador`, and `encoding`.

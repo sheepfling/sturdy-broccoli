@@ -21,9 +21,9 @@ def test_tools_test_surface_help_describes_inventory_and_run_lanes() -> None:
     assert "./tools/test-surface inventory" in result.stdout
     assert "./tools/test-surface recommend" in result.stdout
     assert "./tools/test-surface run fast" in result.stdout
-    assert "./tools/test-surface run python-main-2025" in result.stdout
+    assert "./tools/test-surface run python1516_2025-main" in result.stdout
     assert "./tools/test-surface run python-routes" in result.stdout
-    assert "./tools/test-surface run python-routes-2025" in result.stdout
+    assert "./tools/test-surface run python1516_2025-routes" in result.stdout
     assert "./tools/test-surface run matrix" in result.stdout
 
 
@@ -39,7 +39,7 @@ def test_tools_test_surface_inventory_json_lists_canonical_lanes() -> None:
     assert result.returncode == 0, result.stdout or result.stderr
     payload = json.loads(result.stdout)
     lane_ids = [row["id"] for row in payload["lanes"]]
-    assert lane_ids == ["fast", "repo-green", "python-main-2025", "python-routes", "python-routes-2025", "vendor", "matrix"]
+    assert lane_ids == ["fast", "repo-green", "python1516_2025-main", "python-routes", "python1516_2025-routes", "vendor", "matrix"]
 
 
 def test_tools_test_surface_run_fast_dry_run_writes_summary_artifacts() -> None:
@@ -84,7 +84,7 @@ def test_tools_test_surface_run_python_routes_dry_run_writes_summary_artifacts()
 
 def test_tools_test_surface_run_python_main_2025_dry_run_writes_summary_artifacts() -> None:
     result = subprocess.run(
-        ["bash", "tools/test-surface", "run", "python-main-2025", "--dry-run", "--json"],
+        ["bash", "tools/test-surface", "run", "python1516_2025-main", "--dry-run", "--json"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -93,7 +93,7 @@ def test_tools_test_surface_run_python_main_2025_dry_run_writes_summary_artifact
 
     assert result.returncode == 0, result.stdout or result.stderr
     payload = json.loads(result.stdout)
-    assert payload["lane"] == "python-main-2025"
+    assert payload["lane"] == "python1516_2025-main"
     assert payload["status"] == "passed"
     assert payload["dry_run"] is True
     assert payload["steps"][0]["argv"] == ["./tools/python", "verify-main-2025"]
@@ -104,7 +104,7 @@ def test_tools_test_surface_run_python_main_2025_dry_run_writes_summary_artifact
 
 def test_tools_test_surface_run_python_routes_2025_dry_run_writes_summary_artifacts() -> None:
     result = subprocess.run(
-        ["bash", "tools/test-surface", "run", "python-routes-2025", "--dry-run", "--json"],
+        ["bash", "tools/test-surface", "run", "python1516_2025-routes", "--dry-run", "--json"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -113,7 +113,7 @@ def test_tools_test_surface_run_python_routes_2025_dry_run_writes_summary_artifa
 
     assert result.returncode == 0, result.stdout or result.stderr
     payload = json.loads(result.stdout)
-    assert payload["lane"] == "python-routes-2025"
+    assert payload["lane"] == "python1516_2025-routes"
     assert payload["status"] == "passed"
     assert payload["dry_run"] is True
     assert payload["steps"][0]["argv"] == ["./tools/python", "verify-routes-preflight"]

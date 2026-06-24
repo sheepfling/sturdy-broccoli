@@ -3,7 +3,7 @@
 Source: IEEE 1516.1-2025 direct-runtime evidence over the repo-owned
 `hla-backend-python2025` implementation lane.
 
-This note records the repo's current direct-lane claim for `python2025`.
+This note records the repo's current direct-lane claim for `python1516_2025`.
 The direct lane is the main executable bounded proof surface for the current
 2025 Python RTI. It is requirement-facing runtime evidence over
 `hla-backend-python2025`, not a wrapper-owned surface and not a full
@@ -11,7 +11,7 @@ unqualified conformance claim.
 
 ## Current Bounded Claim
 
-- `python2025` is the direct main-surface runtime lane for
+- `python1516_2025` is the direct main-surface runtime lane for
   `hla-backend-python2025`.
 - `hla-backend-python2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
   implementation lane behind this direct proof surface.
@@ -28,7 +28,7 @@ unqualified conformance claim.
 
 | Scenario family | Status | Evidence anchors | Current direct reading |
 | --- | --- | --- | --- |
-| `federation_lifecycle` | `direct-runtime-covered` | `tests/test_rti1516_2025_python2025_runtime.py` | Direct lifecycle covers connect/create/join/list/resign/destroy/disconnect, synchronization, and save/restore control over the primary `python2025` lane. |
+| `federation_lifecycle` | `direct-runtime-covered` | `tests/test_rti1516_2025_python2025_runtime.py` | Direct lifecycle covers connect/create/join/list/resign/destroy/disconnect, synchronization, and save/restore control over the primary `python1516_2025` lane. |
 | `object_exchange` | `direct-runtime-covered` | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/scenarios/test_target_radar_scenario.py` | Direct object exchange covers discovery, reflection, interaction delivery, directed routing, and package-owned FOM-backed scenario replay. |
 | `ownership` | `direct-runtime-covered` | `tests/test_rti1516_2025_python2025_runtime.py` | Direct ownership covers acquisition/divestiture/query callback flow, owner visibility, resign policy, and bounded save/restore ownership rollback. |
 | `ddm` | `direct-runtime-covered` | `tests/test_rti1516_2025_python2025_runtime.py` | Direct DDM covers region overlap filtering, scope advisories, passive routing, directed DDM routing, and restore/disconnect cleanup. |
@@ -52,11 +52,11 @@ unqualified conformance claim.
 ## Reading of the Evidence
 
 - `tests/test_rti1516_2025_python2025_runtime.py` is the main direct runtime
-  anchor. It proves the package-owned `python2025` lane directly rather than
+  anchor. It proves the package-owned `python1516_2025` lane directly rather than
   routing the claim through `hla-backend-shim`.
 - `tests/scenarios/test_target_radar_scenario.py` is the shared-scenario time
   and exchange anchor. It proves the package-owned Target/Radar path runs on
-  the direct `python2025` lane, including the bounded lookahead-window ladder.
+  the direct `python1516_2025` lane, including the bounded lookahead-window ladder.
 - `tests/test_fom_target_radar_split_package.py` is the package-ownership
   anchor for the direct example/FOM lane. It keeps the shared Target/Radar
   adapter under the FOM package while preserving `hla-backend-python2025` as
@@ -66,10 +66,10 @@ unqualified conformance claim.
   repo-native Python surface.
 - `docs/test_surface.md` captures the operator-facing boundary:
   `verify-main-2025` is the normal main-surface proof lane for the direct
-  `python2025` runtime.
+  `python1516_2025` runtime.
 - `docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md` is the
   hosted companion note. It replays these runtime families over
-  `python-2025-fedpro-grpc` without turning the hosted route into a second RTI
+  `python1516_2025-fedpro-grpc` without turning the hosted route into a second RTI
   owner.
 
 ## Operator Lanes
@@ -78,7 +78,7 @@ unqualified conformance claim.
   note's claim.
 - `./tools/python verify-routes-2025` is the companion hosted hygiene lane
   when the same bounded families must also remain green on
-  `python-2025-fedpro-grpc`.
+  `python1516_2025-fedpro-grpc`.
 
 ## Explicit Non-Claim
 

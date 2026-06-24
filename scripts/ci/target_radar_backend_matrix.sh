@@ -26,7 +26,7 @@ hla2010_shell_log "running target/radar backend matrix"
 
 hla2010_shell_log "python: $PYTHON_BIN"
 if [[ "$#" -eq 0 ]]; then
-  "$PYTHON_BIN" scripts/run_target_radar_backend_matrix.py --backend python
+  "$PYTHON_BIN" scripts/run_target_radar_backend_matrix.py --backend python1516e
 else
   "$PYTHON_BIN" scripts/run_target_radar_backend_matrix.py "$@"
 fi

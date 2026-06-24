@@ -25,7 +25,7 @@ def _assert_route_selected_uses_python2025_main_lane(
     assert route_selected["backend"] == route
     assert route_selected["spec"] == "rti1516_2025"
     assert route_selected["standardBacked"] is standard_backed
-    assert route_selected["runtimeProvider"] == "python2025"
+    assert route_selected["runtimeProvider"] == "python1516_2025"
     assert route_selected["implementationLane"] == "hla-backend-python2025"
     assert route_selected["countsAsPython2025Rti"] is counts_as_python_2025_rti
     assert route_selected["wrapperOnly"] is wrapper_only
@@ -102,7 +102,7 @@ def test__2025_time_management_trace_exercises_selected_logical_time_runtime() -
     )
     _assert_route_selected_uses_python2025_main_lane(
         evidence,
-        "python2025",
+        "python1516_2025",
         standard_backed=None,
         counts_as_python_2025_rti=True,
         wrapper_only=None,

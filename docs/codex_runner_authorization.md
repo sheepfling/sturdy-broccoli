@@ -131,8 +131,8 @@ Expected preflight result:
 Expected parity result:
 
 - the `python-grpc` route passes the same semantic assertions as `python-direct`
-- the bounded `python-2025-fedpro-grpc` route passes the same hosted-route
-  identity and parity assertions as the direct `python2025` lane
+- the bounded `python1516_2025-fedpro-grpc` route passes the same hosted-route
+  identity and parity assertions as the direct `python1516_2025` lane
 
 ## Copyable Change Request
 

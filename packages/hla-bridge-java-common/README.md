@@ -1,63 +1,55 @@
 # hla-bridge-java-common
 
-Shared Java RTI support package for `hla-rti1516e`.
+## What This Is
 
-This package owns the bridge-independent Java adapter policy used by JPype,
-Py4J, CERTI Java-profile code, and the in-process Java shim: callback
-dispatching, overload resolution, Java value conversion, and the shared
-`JavaRTIBackend` base.
-Import the canonical implementation from `hla.bridges.java.common`.
-Boundary and import-isolation guard coverage lives in
-`tests/test_rti_java_common_split_package.py`,
-`tests/test_rti_java_runtime_split_package.py`, and
-`tests/test_package_boundary.py`.
+`hla-bridge-java-common` is shared Java bridge support code.
 
-This package does not own human operator entrypoints; repo-local operator flows
-stay under `./tools/`.
+It owns bridge-independent Java adapter policy used by JPype, Py4J, CERTI
+Java-profile code, and the in-process Java shim.
 
-## Bridge-neutral factory selection
+## What This Is Not
 
-Use `create_java_rti_ambassador` when caller code should choose the Java bridge
-and vendor RTI implementation at runtime:
+It is not:
 
-```python
-from hla.bridges.java.common import create_java_rti_ambassador, discover_java_rti
+- a concrete backend
+- a standard HLA API package
+- a vendor-specific package
+- a human operator command surface
 
-rti = create_java_rti_ambassador(
-    bridge="jpype",
-    implementation="com.vendor.hla.RtiFactory",
-    classpath=("vendor-rti.jar",),
-    connect_local_settings_designator="crcHost=localhost",
-)
+## When To Open It
 
-report = discover_java_rti(
-    bridge="jpype",
-    implementation="com.vendor.hla.RtiFactory",
-    classpath=("vendor-rti.jar",),
-)
-```
+Open this package when you need:
 
-The `implementation` string is forwarded to
-`hla.rti1516e.RtiFactoryFactory.getRtiFactory(implementation)` by the selected
-bridge package. Use `bridge="py4j"` with Py4J gateway options to select the
-Py4J-backed adapter instead. `discover_java_rti` returns a
-`JavaRTIDiscoveryReport` with factory name/version, reported HLA version,
-runtime class name, visible Java interface names, warnings, and any bridge
-failure details.
+- callback dispatching across Java bridge paths
+- Java overload resolution or value conversion
+- shared Java RTI bridge abstractions
 
-For the in-process Java-shaped 2010 shim, use the same entry point with the
-reserved shim implementation name:
+If you are working on a specific bridge implementation, the JPype or Py4J
+package may be the better starting point.
 
-```python
-rti = create_java_rti_ambassador(
-    bridge="jpype",  # or "py4j"
-    implementation="java-shim",
-)
-```
+## Key Imports
 
-The shorthand bridge names `java-shim-jpype` and `java-shim-py4j` select the
-same shim profiles without requiring a separate vendor factory string.
+The canonical import surface is:
 
-The `java-standard-*` route names are reserved for future standard-backed
-shim jars that compile against the official IEEE Java API bundles. They are not
-aliases for the in-process Java-shaped test shim.
+- `hla.bridges.java.common`
+
+Bridge-neutral factory selection uses:
+
+- `create_java_rti_ambassador(...)`
+- `discover_java_rti(...)`
+
+## Related Docs
+
+- [`../../docs/repo_mental_model.md`](../../docs/repo_mental_model.md)
+- [`../../docs/language_shim_routes.md`](../../docs/language_shim_routes.md)
+- [`../../docs/java_toolchain.md`](../../docs/java_toolchain.md)
+- [`docs/README.md`](docs/README.md)
+
+This package does not own human operator entrypoints; those live under
+`./tools/`.
+
+Guard coverage lives in:
+
+- `tests/test_rti_java_common_split_package.py`
+- `tests/test_rti_java_runtime_split_package.py`
+- `tests/test_package_boundary.py`

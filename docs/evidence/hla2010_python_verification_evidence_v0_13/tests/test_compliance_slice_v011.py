@@ -15,7 +15,7 @@ from hla.rti1516e.datatypes import RangeBounds
 
 
 def _rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
-    return create_rti_ambassador("python", engine=engine, config=config)
+    return create_rti_ambassador("python1516e", engine=engine, config=config)
 
 
 def _drain(*rtis) -> None:

@@ -11,7 +11,7 @@ def test_target_radar_runs_on_python_rti():
     engine = InMemoryRTIEngine()
 
     def factory(role):
-        return create_rti_ambassador("python", engine=engine)
+        return create_rti_ambassador("python1516e", engine=engine)
 
     result = run_target_radar_scenario(factory, federation_name="target-radar-python", steps=3)
     assert result.backend_kinds == ("python/in-memory", "python/in-memory")

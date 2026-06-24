@@ -17,7 +17,7 @@ from tests.vendors.runtime_support import cleanup_federation
 
 def test_python_backend_support_factory_and_decode_matrix():
     engine = InMemoryRTIEngine()
-    rti = create_rti_ambassador("python", engine=engine)
+    rti = create_rti_ambassador("python1516e", engine=engine)
     config = SupportServicesScenarioConfig(
         federation_name=f"python-support-factory-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -60,8 +60,8 @@ def test_python_backend_support_factory_and_decode_matrix():
 
 def test_python_backend_callback_control_matrix():
     engine = InMemoryRTIEngine()
-    publisher = create_rti_ambassador("python", engine=engine)
-    subscriber = create_rti_ambassador("python", engine=engine)
+    publisher = create_rti_ambassador("python1516e", engine=engine)
+    subscriber = create_rti_ambassador("python1516e", engine=engine)
     config = CallbackControlScenarioConfig(
         federation_name=f"python-callback-control-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),

@@ -12,7 +12,7 @@ from hla.rti1516_2025.exceptions import ConnectionFailed, InvalidCredentials, Un
 from hla.fom.proto2025 import FomTypeRepository, encoding_smoke_fom_path
 from hla.fom import FOMResolver
 
-_PROVIDER_ROUTES = ("python2025",)
+_PROVIDER_ROUTES = ("python1516_2025",)
 
 @pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-004")
 @pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
@@ -92,14 +92,14 @@ def test_encoding_registry_resolves_required_builtin_codecs_and_rejects_unknowns
 @pytest.mark.parametrize(
     ("provider", "codec", "value", "expected_hex"),
     [
-        ("python2025", "HLAinteger16BE", -32768, "8000"),
-        ("python2025", "HLAinteger16LE", 1, "0100"),
-        ("python2025", "HLAinteger32BE", 2147483647, "7fffffff"),
-        ("python2025", "HLAinteger32LE", -1, "ffffffff"),
-        ("python2025", "HLAinteger64BE", 1, "0000000000000001"),
-        ("python2025", "HLAunsignedInteger64BE", 18446744073709551615, "ffffffffffffffff"),
-        ("python2025", "HLAfloat32BE", 1.0, "3f800000"),
-        ("python2025", "HLAfloat64BE", -2.5, "c004000000000000"),
+        ("python1516_2025", "HLAinteger16BE", -32768, "8000"),
+        ("python1516_2025", "HLAinteger16LE", 1, "0100"),
+        ("python1516_2025", "HLAinteger32BE", 2147483647, "7fffffff"),
+        ("python1516_2025", "HLAinteger32LE", -1, "ffffffff"),
+        ("python1516_2025", "HLAinteger64BE", 1, "0000000000000001"),
+        ("python1516_2025", "HLAunsignedInteger64BE", 18446744073709551615, "ffffffffffffffff"),
+        ("python1516_2025", "HLAfloat32BE", 1.0, "3f800000"),
+        ("python1516_2025", "HLAfloat64BE", -2.5, "c004000000000000"),
     ],
 )
 def test_primitive_codecs_match_imported_golden_vectors(
@@ -132,7 +132,7 @@ def test_auth_context_supports_2025_credentials_and_rejects_2010_standard_creden
     assert "secret-value" not in repr(password_auth)
     assert password_auth.capability_report()["credential"]["data"] == "<redacted:HLAplainTextPassword>"
 
-    factory_2010 = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+    factory_2010 = HlaFactoryRegistry.get("rti1516e", provider="python1516e")
     with pytest.raises(ValueError, match="unsupported for the 1516e-2010 profile"):
         factory_2010.create_authentication_context({"mode": "PlainTextPassword", "password": "secret"})
 
@@ -218,8 +218,8 @@ def test_authorizer_and_custom_credentials_are_provider_gated() -> None:
                 }
             )
 
-    factory_2010 = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
-    with pytest.raises(ValueError, match="2025 python2025 RTI provider"):
+    factory_2010 = HlaFactoryRegistry.get("rti1516e", provider="python1516e")
+    with pytest.raises(ValueError, match="2025 python1516_2025 RTI provider"):
         factory_2010.create_authentication_context({"mode": "NoAuth", "authorizer_mode": "Fake"})
 
 
@@ -227,9 +227,9 @@ def test_authorizer_and_custom_credentials_are_provider_gated() -> None:
 @pytest.mark.parametrize(
     ("provider", "auth_config", "expected_exc"),
     [
-        ("python2025", {"mode": "PlainTextPassword", "password": "bad", "authorizer_mode": "Fake"}, InvalidCredentials),
-        ("python2025", {"mode": "NoAuth", "authorizer_mode": "Fake", "allow_rti": False}, Unauthorized),
-        ("python2025", {"mode": "NoAuth", "authorizer_mode": "Fake", "fail_mode": "error"}, ConnectionFailed),
+        ("python1516_2025", {"mode": "PlainTextPassword", "password": "bad", "authorizer_mode": "Fake"}, InvalidCredentials),
+        ("python1516_2025", {"mode": "NoAuth", "authorizer_mode": "Fake", "allow_rti": False}, Unauthorized),
+        ("python1516_2025", {"mode": "NoAuth", "authorizer_mode": "Fake", "fail_mode": "error"}, ConnectionFailed),
     ],
 )
 def test_runtime_connect_maps_authorizer_failures_before_federation_lifecycle(
@@ -312,7 +312,7 @@ def test_2025_encoding_auth_factory_surface_rejects_legacy_shim_provider() -> No
 def test_2010_profile_does_not_gain_2025_auth_or_repository_surface() -> None:
     import hla.rti1516e as rti1516e
 
-    factory = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+    factory = HlaFactoryRegistry.get("rti1516e", provider="python1516e")
     encoding = factory.create_encoding_context()
     auth = factory.create_authentication_context({"mode": "NoAuth"})
 
@@ -326,27 +326,27 @@ def test_2010_profile_does_not_gain_2025_auth_or_repository_surface() -> None:
 
 @pytest.mark.requirements("AUTH-004")
 def test_2010_runtime_context_keeps_auth_out_of_backend_options() -> None:
-    factory = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+    factory = HlaFactoryRegistry.get("rti1516e", provider="python1516e")
 
     runtime = factory.create_runtime_context(auth_config={"mode": "NoAuth"})
 
-    assert runtime.provider == "inmemory"
+    assert runtime.provider == "python1516e"
     assert runtime.authentication_context.credentials() is None
     assert hasattr(runtime.rti_ambassador, "connect")
 
 
 @pytest.mark.requirements("AUTH-004", "HLA2025-REQ-001")
-def test_2010_runtime_context_does_not_forward_auth_context_to_inmemory_backend() -> None:
-    factory = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+def test_2010_runtime_context_does_not_forward_auth_context_to_python1516e_backend() -> None:
+    factory = HlaFactoryRegistry.get("rti1516e", provider="python1516e")
 
     runtime = factory.create_runtime_context(
         auth_config={"mode": "NoAuth"},
         transport="inproc",
     )
 
-    assert runtime.provider == "inmemory"
+    assert runtime.provider == "python1516e"
     assert runtime.authentication_context.credentials() is None
-    assert runtime.rti_ambassador.backend_info.kind == "python/in-memory"
+    assert runtime.rti_ambassador.backend_info.kind == "python/1516e"
 
 
 @pytest.mark.requirements("HLA2025-OMT-002", "HLA2025-OMT-006")

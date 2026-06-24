@@ -43,7 +43,7 @@ binding and hosted seam.
 ## Reading of the Evidence
 
 - The direct Python runtime tests prove that support-service behavior exists on
-  the main `python2025` implementation lane without routing through the wrapper
+  the main `python1516_2025` implementation lane without routing through the wrapper
   lane.
 - The hosted FedPro tests prove that the same support-service families survive
   the typed transport seam, including callback-backlog and reconnect-sensitive

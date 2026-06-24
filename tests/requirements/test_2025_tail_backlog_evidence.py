@@ -726,7 +726,7 @@ def test_2025_standard_route_artifact_reports_record_bounded_scenario_parity() -
 
         assert scenario_evidence["status"] == "scenario-parity-green"
         assert "bounded scenario-parity evidence" in scenario_evidence["scope"]
-        assert scenario_evidence["runtime_provider"] == "python2025"
+        assert scenario_evidence["runtime_provider"] == "python1516_2025"
         assert scenario_evidence["implementation_lane"] == "hla-backend-python2025"
         assert scenario_evidence["counts_as_python_2025_rti"] is False
         assert scenario_evidence["wrapper_only"] is False
@@ -744,14 +744,14 @@ def test_2025_standard_route_artifact_reports_record_bounded_scenario_parity() -
 
     for route, row in java_report["routes"].items():
         assert route.startswith("java-standard-2025-")
-        assert row["runtime_provider"] == "python2025"
+        assert row["runtime_provider"] == "python1516_2025"
         assert row["implementation_lane"] == "hla-backend-python2025"
         assert row["counts_as_python_2025_rti"] is False
         assert row["wrapper_only"] is False
 
     for route, row in cpp_report["routes"].items():
         assert route.startswith("cpp-standard-2025-")
-        assert row["runtime_provider"] == "python2025"
+        assert row["runtime_provider"] == "python1516_2025"
         assert row["implementation_lane"] == "hla-backend-python2025"
         assert row["counts_as_python_2025_rti"] is False
         assert row["wrapper_only"] is False

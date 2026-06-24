@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_target_radar_proof_artifacts_are_generated(tmp_path):
     paths = write_target_radar_proof_artifacts(
         tmp_path,
-        ["python", "java-shim-jpype", "java-shim-py4j"],
+        ["python1516e", "java-shim-jpype", "java-shim-py4j"],
         target_radar_steps=3,
     )
 
@@ -78,9 +78,9 @@ def test_target_radar_proof_ci_wrapper_bootstraps_source_checkout(tmp_path):
             "bash",
             str(ROOT / "scripts" / "ci" / "target_radar_proof.sh"),
             "--backend",
-            "python",
+            "python1516e",
             "--proof-backend",
-            "python",
+            "python1516e",
             "--output-dir",
             str(output_dir),
         ],

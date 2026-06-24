@@ -189,6 +189,8 @@ def test_fom_workbench_browser_symbol_jump_paths(tmp_path: Path, monkeypatch: py
         try:
             page = browser.new_page()
             page.goto(html_path.resolve().as_uri())
+            page.evaluate("window.localStorage.clear()")
+            page.reload()
 
             page.select_option("#catalog-mode", "custom-load-set")
             page.locator("#family-list .family-card", has_text="conflict-set").click()
@@ -239,10 +241,14 @@ def test_fom_workbench_browser_symbol_jump_paths(tmp_path: Path, monkeypatch: py
             assert page.locator("#active-symbol-summary").inner_text() == "Pinned symbol: HLAobjectRoot.Target"
             page.fill("#workspace-focus-filter", "symbol:NoSuchSymbol")
             assert "No validation issues match the workspace focus." in page.locator("#validation-panel").inner_text()
-            page.fill("#workspace-focus-filter", "symbol:HLAobjectRoot.Target")
+            page.locator("#workspace-focus-advanced").evaluate("(node) => { node.open = true; }")
+            page.select_option("#focus-owner-select", "repo-owned")
+            page.select_option("#focus-issues-select", "true")
+            page.fill("#focus-symbol-input", "HLAobjectRoot.Target")
+            page.click("#focus-apply")
             assert "Symbol HLAobjectRoot.Target has inconsistent semantics." in page.locator("#validation-panel").inner_text()
-            assert page.locator("#workspace-focus-status").inner_text() == "Focus: symbol:HLAobjectRoot.Target"
-            page.fill("#workspace-focus-filter", "")
+            assert page.locator("#workspace-focus-status").inner_text() == "Focus: owner:repo-owned symbol:HLAobjectRoot.Target issue:true"
+            page.click("#focus-clear")
             page.fill("#search-filter", "")
             page.keyboard.press("ArrowDown")
             assert page.locator("#search-results .search-row.active").count() == 1
@@ -256,12 +262,23 @@ def test_fom_workbench_browser_symbol_jump_paths(tmp_path: Path, monkeypatch: py
             page.select_option("#left-family", "target-radar")
             page.select_option("#right-family", "proto2025-message-test")
             assert "Object deltas" in page.locator("#diff-panel").inner_text()
-            page.click('button[data-focus-kind="object"]')
-            assert page.locator("#workspace-focus-status").inner_text() == "Focus: object"
-            assert "Only Left Objects" in page.locator("#diff-panel").inner_text()
-            assert "Only Left Interactions" not in page.locator("#diff-panel").inner_text()
-            page.fill("#workspace-focus-filter", "Target")
-            assert "HLAobjectRoot.Target" in page.locator("#diff-panel").inner_text()
+            page.locator("#workspace-focus-advanced").evaluate("(node) => { node.open = true; }")
+            page.select_option("#focus-kind-select", "interaction")
+            page.select_option("#focus-changed-select", "true")
+            page.fill("#focus-terms-input", "HLAinteractionRoot")
+            page.click("#focus-apply")
+            assert page.locator("#workspace-focus-status").inner_text() == "Focus: interaction + changed:true HLAinteractionRoot"
+            assert "Only Left Objects" not in page.locator("#diff-panel").inner_text()
+            assert "Only Left Interactions" in page.locator("#diff-panel").inner_text()
+            page.fill("#focus-preset-name", "interaction changes")
+            page.click("#focus-save-preset")
+            assert "interaction changes" in page.locator("#focus-presets").inner_text()
+            page.click("#focus-clear")
+            assert page.locator("#workspace-focus-status").inner_text() == "Focus: all workspace rows"
+            page.locator('#focus-presets button[data-focus-preset="interaction changes"]').click()
+            assert page.locator("#workspace-focus-status").inner_text() == "Focus: interaction + changed:true HLAinteractionRoot"
+            assert "Only Left Interactions" in page.locator("#diff-panel").inner_text()
+            page.click("#focus-clear")
             page.fill("#workspace-focus-filter", "Track")
             assert "HLAobjectRoot.Track" in page.locator("#search-results").inner_text()
             page.click('button[data-focus-kind="all"]')

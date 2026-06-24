@@ -13,7 +13,7 @@ generated finish-line bundle or the more general callback-model explainer.
 
 | Family | Current repo evidence anchors | Current bounded reading |
 | --- | --- | --- |
-| Declaration relevance and interest advisories | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for `startRegistrationForObjectClass`, `stopRegistrationForObjectClass`, `turnInteractionsOn`, and `turnInteractionsOff` callback delivery across direct and hosted `python2025` routes. |
+| Declaration relevance and interest advisories | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for `startRegistrationForObjectClass`, `stopRegistrationForObjectClass`, `turnInteractionsOn`, and `turnInteractionsOff` callback delivery across direct and hosted `python1516_2025` routes. |
 | Federation sync, save/restore, and reporting callbacks | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_federation_management_backend_matrix.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for synchronization registration/announce flow, `federationSynchronized`, save/restore lifecycle callbacks, connection-lost teardown, and federation reporting callbacks. |
 | Object discovery, delivery, and removal | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for `discoverObjectInstance`, `reflectAttributeValues`, `receiveInteraction`, `provideAttributeValueUpdate`, and `removeObjectInstance` delivery across plain, timed, restore, and requester-only routing paths. |
 | Object advisory, transport, and name-reservation callbacks | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for scope advisories, update-rate advisories, transport change/query callbacks, and single/multiple object-instance name reservation callback flows. |
@@ -27,11 +27,11 @@ generated finish-line bundle or the more general callback-model explainer.
 - The direct executable owner behind these callback proof families is
   `hla-backend-python2025`. `hla-backend-shim` is not an implementation owner
   for this bounded callback claim.
-- The hosted `python-2025-fedpro-grpc` route replays every current callback
+- The hosted `python1516_2025-fedpro-grpc` route replays every current callback
   proof family above, but it remains a bounded hosted route over
   `hla-backend-python2025`, not a second RTI implementation lane.
 - The strongest current proof for raw callback-control semantics and inline
-  callback behavior remains the direct `python2025` lane; the hosted route is
+  callback behavior remains the direct `python1516_2025` lane; the hosted route is
   still primarily a transport-seam and callback-polling proof surface.
 
 ## Bounded Reading
@@ -43,7 +43,7 @@ generated finish-line bundle or the more general callback-model explainer.
   exhaustive callback ordering equivalence across every binding, or blanket
   cross-binding callback conformance beyond the current Python lanes.
 - Java and C++ bindings remain cross-binding and artifact/runtime-capability
-  evidence over the same `python2025` runtime lane rather than independent
+  evidence over the same `python1516_2025` runtime lane rather than independent
   callback conformance owners.
 - Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`
   rather than a second full callback semantics owner.

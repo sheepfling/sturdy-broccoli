@@ -1,29 +1,60 @@
 # hla-transport-grpc
 
-Canonical gRPC transport package for the HLA 1516e-2010 FedPro-style
-protobuf profile, plus the bounded IEEE 1516.1-2025 FedPro hosted route
-variant.
+## What This Is
 
-This package owns:
+`hla-transport-grpc` is the canonical gRPC transport package.
 
-- the typed gRPC transport client/runtime
-- the supplied 2010 FedPro-style protobuf schema and checked-in Python stubs
-- hosted Python and CERTI gRPC transport servers
+It owns client/server transport wiring, protobuf schemas, and hosted gRPC
+runtime surfaces for the HLA transport routes in this repo.
 
-Use this package when you need the networked RTI route:
-
-- `start_python_grpc_server(...)` to host the in-memory Python RTI behind gRPC
-- `start_certi_grpc_server(...)` to host CERTI behind the same transport route
-- `GrpcTransportConfig` and `create_grpc_transport(...)` for client-side transport wiring
-
-Schema imports are under `hla.transports.grpc.fedpro2010`.
-The IEEE 1516.1-2025 FedPro schema is also checked in under
-`hla.transports.grpc.fedpro2025`, with a separate 2025 hosted server path.
-
-Use `start_2025_grpc_server(...)` when you need the 2025 schema path.
-That 2025 server is a bounded hosted route variant over the current Python
-2025 lane, not a separate RTI family and not the main in-process
+The bounded FedPro hosted route lives here as transport wiring over the main
+2025 runtime lane. It is not a separate RTI family and not the main in-process
 implementation lane.
+
+## What This Is Not
+
+It is not:
+
+- a standard HLA API package
+- a concrete RTI backend
+- the main 2025 runtime lane
+- the main in-process implementation lane
+
+Transport is the wire layer. It is not the backend that executes HLA service
+semantics.
+
+## When To Open It
+
+Open this package when you need:
+
+- networked RTI routes
+- gRPC client or hosted server wiring
+- protobuf schema or stub generation work
+
+If you are changing runtime semantics, you probably want a backend package
+instead.
+
+## Key Entrypoints
+
+Use these when working on the gRPC route:
+
+- `start_python_grpc_server(...)`
+- `start_certi_grpc_server(...)`
+- `start_2025_grpc_server(...)`
+- `GrpcTransportConfig`
+- `create_grpc_transport(...)`
+
+Schema imports live under:
+
+- `hla.transports.grpc.fedpro2010`
+- `hla.transports.grpc.fedpro2025`
+
+## Related Docs
+
+- [`../../docs/repo_mental_model.md`](../../docs/repo_mental_model.md)
+- [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)
+- [`../../docs/import_boundary_rules.md`](../../docs/import_boundary_rules.md)
+- [`docs/README.md`](docs/README.md)
 
 Regenerate stubs with:
 
@@ -31,9 +62,11 @@ Regenerate stubs with:
 python packages/hla-transport-grpc/scripts/generate_fedpro2010_stubs.py
 ```
 
-Boundary, import-isolation, and thin-wrapper guard coverage lives in
-`tests/test_rti_transport_grpc_split_package.py`,
-`tests/test_package_boundary.py`, and `tests/test_backend_wrapper_policy.py`.
+This package does not own human operator entrypoints; those live under
+`./tools/`.
 
-This package does not own human operator entrypoints; repo-local operator flows
-stay under `./tools/`.
+Guard coverage lives in:
+
+- `tests/test_rti_transport_grpc_split_package.py`
+- `tests/test_package_boundary.py`
+- `tests/test_backend_wrapper_policy.py`

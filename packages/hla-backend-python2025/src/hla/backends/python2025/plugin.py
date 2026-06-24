@@ -8,18 +8,18 @@ from .backend import Python2025BackendInfo, create_python2025_backend
 
 def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
-        name="python2025",
-        aliases=("python-2025", "python-2025-backend"),
-        family="python-rti-2025",
+        name="python1516_2025",
+        aliases=("python-1516-2025",),
+        family="python-rti-1516-2025",
         supports=("rti1516_2025",),
-        description="Primary Python 2025 RTI implementation package.",
+        description="Primary Python 1516.1-2025 RTI implementation package.",
         create_backend=create_python2025_backend,
         discover=lambda: RTIBackendDiscovery(
-            name="python2025",
-            aliases=("python-2025", "python-2025-backend"),
-            family="python-rti-2025",
+            name="python1516_2025",
+            aliases=("python-1516-2025",),
+            family="python-rti-1516-2025",
             supports=("rti1516_2025",),
-            description="Primary Python 2025 RTI implementation package.",
+            description="Primary Python 1516.1-2025 RTI implementation package.",
             available=True,
             info=Python2025BackendInfo(),
         ),

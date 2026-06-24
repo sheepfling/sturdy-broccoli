@@ -31,7 +31,7 @@ def test_split_grpc_transport_package_exposes_2025_server_as_hosted_route_surfac
     assert "RTI2025GrpcServerConfig" in hla.transports.grpc.__all__
     assert "create_rti_ambassador" not in hla.transports.grpc.__all__
     assert "create_python2025_backend" not in hla.transports.grpc.__all__
-    assert "python2025" not in hla.transports.grpc.__all__
+    assert "python1516_2025" not in hla.transports.grpc.__all__
     assert "shim" not in hla.transports.grpc.__all__
 
 

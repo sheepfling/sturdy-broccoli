@@ -28,7 +28,7 @@ from hla.verification import (
 
 
 def test_python_backend_federation_lifecycle_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-lifecycle-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -46,7 +46,7 @@ def test_python_backend_federation_lifecycle_matrix():
 
 
 def test_python_backend_federation_lifecycle_with_mim_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-lifecycle-mim-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -65,7 +65,7 @@ def test_python_backend_federation_lifecycle_with_mim_matrix():
 
 
 def test_python_backend_federation_listing_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-listing-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -83,7 +83,7 @@ def test_python_backend_federation_listing_matrix():
 
 
 def test_python_backend_fom_module_visibility_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-fom-visibility-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -102,8 +102,8 @@ def test_python_backend_fom_module_visibility_matrix():
 
 def test_python_backend_federation_lifecycle_negative_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-lifecycle-negative-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -127,9 +127,9 @@ def test_python_backend_federation_lifecycle_negative_matrix():
 
 def test_python_backend_multi_participation_matrix():
     engine = InMemoryRTIEngine()
-    leader = create_rti_ambassador("python", engine=engine)
-    wing = create_rti_ambassador("python", engine=engine)
-    shadow = create_rti_ambassador("python", engine=engine)
+    leader = create_rti_ambassador("python1516e", engine=engine)
+    wing = create_rti_ambassador("python1516e", engine=engine)
+    shadow = create_rti_ambassador("python1516e", engine=engine)
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-multi-participation-{uuid.uuid4().hex[:8]}",
         secondary_federation_name=f"python-multi-participation-secondary-{uuid.uuid4().hex[:8]}",
@@ -196,7 +196,7 @@ def test_python_backend_fom_integrity_negative_matrix():
 
 
 def test_python_backend_multi_module_fom_visibility_matrix():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-fom-multi-{uuid.uuid4().hex[:8]}",
         federate_name="Leader",

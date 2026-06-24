@@ -17,10 +17,10 @@ cross-version factory entrypoint.
 
 Routine proof commands behind that selection story:
 
-- `./tools/python verify-main-2025` for the normal direct `python2025`
+- `./tools/python verify-main-2025` for the normal direct `python1516_2025`
   factory/runtime proof lane
 - `./tools/python verify-routes-2025` when factory or route changes must stay
-  aligned with the bounded hosted `python-2025-fedpro-grpc` lane
+  aligned with the bounded hosted `python1516_2025-fedpro-grpc` lane
 
 ## Core Factory Files
 
@@ -62,7 +62,7 @@ If you want to know how the 2025 backend is selected:
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
 3. `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`
 
-If you want to know why `python2025` is the selected 2025 provider today and
+If you want to know why `python1516_2025` is the selected 2025 provider today and
 why `hla.backends.shim` is now compatibility-only:
 
 1. [python_rti_backend.md](python_rti_backend.md)
@@ -75,27 +75,27 @@ why `hla.backends.shim` is now compatibility-only:
 Today the repo's practical Python RTI selection story is:
 
 - `inmemory` is the real pure-Python backend for `rti1516e`
-- `python2025` is the main full executable backend lane for `rti1516_2025`
+- `python1516_2025` is the main full executable backend lane for `rti1516_2025`
 - `hla.backends.shim` is import-level compatibility code over that runtime rather than the implementation owner
 - hosted routes such as the 2025 FedPro gRPC path are route variants layered
   over the selected backend/factory surface, not independent RTI families
 
-That means new 2025 runtime work should select `backend="python2025"`. The
+That means new 2025 runtime work should select `backend="python1516_2025"`. The
 legacy `shim` spelling is intentionally rejected on the public factory surface.
 
 So if you create a 2025 RTI ambassador through the current factory stack, you
 should expect to land on the `hla-backend-python2025` lane by default. The
 legacy shim provider spelling is no longer part of the supported public
-factory surface. The main `python2025` factory path now does accept hosted
+factory surface. The main `python1516_2025` factory path now does accept hosted
 2025 creation through `transport=...`. The same hosted FedPro route can therefore be reached
 either through the explicit FedPro server plus typed `GrpcTransport` surface
-or through `create_rti_ambassador(backend="python2025", transport=...)`.
+or through `create_rti_ambassador(backend="python1516_2025", transport=...)`.
 
 For evidence that this is not just naming policy, follow the default-selection
 proof first and only then inspect the wrapper alias:
 
 1. `tests/test_hla_factory_composition.py`
-2. `tests/test_rti1516_2025_python2025_runtime.py` (main in-process `python2025` proof suite)
+2. `tests/test_rti1516_2025_python2025_runtime.py` (main in-process `python1516_2025` proof suite)
 3. `tests/requirements/test_2025_finish_line_snapshot.py`
 
 In practice, `./tools/python verify-main-2025` is the normal proof command for
@@ -108,7 +108,7 @@ The main tests that prove the current factory composition and 2025 selection
 behavior are:
 
 - [../tests/test_hla_factory_composition.py](../tests/test_hla_factory_composition.py)
-- [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py) (main in-process `python2025` proof suite)
+- [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py) (main in-process `python1516_2025` proof suite)
 - [../tests/requirements/test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)
 
 Use those when changing:

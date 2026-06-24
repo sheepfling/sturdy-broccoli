@@ -528,7 +528,7 @@ def _write_trajectory_svg(path: Path, summary: Mapping[str, Any]) -> Path:
 def run_target_radar_proof(
     backends: Sequence[str],
     *,
-    proof_backend: str = "python",
+    proof_backend: str = "python1516e",
     target_radar_steps: int = 4,
     dt: float = 1.0,
     backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None = None,
@@ -567,7 +567,7 @@ def write_target_radar_proof_artifacts(
     output_dir: Path | str,
     backends: Sequence[str],
     *,
-    proof_backend: str = "python",
+    proof_backend: str = "python1516e",
     target_radar_steps: int = 4,
     dt: float = 1.0,
     backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None = None,

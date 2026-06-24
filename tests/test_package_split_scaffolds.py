@@ -25,8 +25,8 @@ class PackageExpectation:
 EXPECTED_PACKAGES = {
     "hla-rti1516e": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-rti1516-2025": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
-    "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"inmemory"}), "implementation-moved"),
-    "hla-backend-python2025": PackageExpectation("rti-backend", frozenset({"python2025"}), "implementation-owned"),
+    "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"python1516e"}), "implementation-moved"),
+    "hla-backend-python2025": PackageExpectation("rti-backend", frozenset({"python1516_2025"}), "implementation-owned"),
     "hla-backend-cpp-shim": PackageExpectation(
         "rti-backend",
         frozenset(
@@ -909,7 +909,7 @@ def test_package_split_pyprojects_have_expected_boundaries():
         entry_points = data.get("project", {}).get("entry-points", {}).get("hla.rti_backends", {})
         assert set(entry_points) == expected["entry_points"]
         if package_name == "hla-backend-inmemory":
-            assert entry_points["inmemory"] == "hla.backends.inmemory.plugin:plugin"
+            assert entry_points["python1516e"] == "hla.backends.inmemory.plugin:plugin"
         if package_name == "hla-backend-certi":
             assert entry_points["certi"] == "hla.backends.certi.certi.plugin:plugin"
         if package_name == "hla-bridge-java-jpype":

@@ -15,8 +15,8 @@ def test_split_python_rti_package_exports_backend_surface():
     import hla.backends.inmemory
 
     backend = hla.backends.inmemory.create_python_backend()
-    assert backend.info.kind == "python/in-memory"
-    assert hla.backends.inmemory.rti_ambassador().backend_info.name == "python-inmemory-rti"
+    assert backend.info.kind == "python/1516e"
+    assert hla.backends.inmemory.rti_ambassador().backend_info.name == "python1516e-rti"
     assert hla.backends.inmemory.prepare_python_two_federate_profile().__class__.__name__ == "InMemoryRTIEngine"
 
 
@@ -44,7 +44,7 @@ def test_split_python_rti_package_submodules_are_public():
 
     backend = create_python_backend(engine=InMemoryRTIEngine(), config=PythonRTIConfig())
     assert isinstance(backend, PythonRTIBackend)
-    assert backend.info.kind == "python/in-memory"
+    assert backend.info.kind == "python/1516e"
     assert isinstance(prepare_python_two_federate_profile(), InMemoryRTIEngine)
 
 
@@ -53,9 +53,8 @@ def test_split_python_rti_package_plugin_descriptor_creates_backend():
 
     descriptor = plugin()
     assert isinstance(descriptor, RTIBackendPlugin)
-    assert descriptor.name == "inmemory"
-    assert "python" in descriptor.aliases
-    assert "in-memory" in descriptor.aliases
-    assert descriptor.discover().kind == "python/in-memory"
-    assert descriptor.create_backend({}).info.kind == "python/in-memory"
+    assert descriptor.name == "python1516e"
+    assert "python-1516e" in descriptor.aliases
+    assert descriptor.discover().kind == "python/1516e"
+    assert descriptor.create_backend({}).info.kind == "python/1516e"
     assert tuple(item.name for item in backend_plugins()) == (descriptor.name,)

@@ -6449,7 +6449,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
     for row in rows:
         row["python_runtime_disposition"] = _normalized_runtime_disposition(
             row,
-            backend="python",
+            backend="python1516e",
             legacy_status=str(row.get("python_runtime_status", "")),
         )
         row["certi_runtime_disposition"] = _normalized_runtime_disposition(

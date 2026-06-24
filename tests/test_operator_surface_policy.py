@@ -91,8 +91,8 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/human-editability" not in text
     assert "./tools/new-fom-package" not in text
     assert "./tools/rti-factories" not in text
-    assert "python examples/target_radar_simulation.py --backend python --steps 5" in text
-    assert "python examples/target_radar_simulation.py --backend python2025 --steps 5" in text
+    assert "python examples/target_radar_simulation.py --backend python1516e --steps 5" in text
+    assert "python examples/target_radar_simulation.py --backend python1516_2025 --steps 5" in text
 
 
 def test_tools_readme_inventory_matches_actual_top_level_tool_wrappers() -> None:
@@ -180,8 +180,8 @@ def test_target_radar_tool_usage_keeps_python2025_primary_and_shim_wrapper_only(
     text = _read(ROOT / "tools" / "target-radar")
     normalized = " ".join(text.split()).lower()
 
-    assert "./tools/target-radar proof --backend python2025 --proof-backend python2025" in text
-    assert "for ieee 1516.1-2025, use `python2025` as the primary python rti lane." in normalized
+    assert "./tools/target-radar proof --backend python1516_2025 --proof-backend python1516_2025" in text
+    assert "for ieee 1516.1-2025, use `python1516_2025` as the primary python rti lane." in normalized
     assert "`hla-backend-shim` remains compatibility-wrapper/import-level code around that same runtime" in normalized
 
 

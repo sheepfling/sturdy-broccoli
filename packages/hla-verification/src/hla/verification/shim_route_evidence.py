@@ -873,7 +873,7 @@ def run_standard_2025_runtime_capability_trace(backend_name: str) -> dict[str, A
     }
 
 
-def run_2025_time_management_trace(backend_name: str = "python2025") -> dict[str, Any]:
+def run_2025_time_management_trace(backend_name: str = "python1516_2025") -> dict[str, Any]:
     """Run a focused 2025 logical-time trace and return normalized evidence."""
 
     from hla.rti import create_rti_ambassador

@@ -18,14 +18,14 @@ This inventory is deliberately conservative. It records implemented slices, part
 - Route parity missing rows: 0
 - Ready for slice closeout: True
 - Ready for full completion claim: False
-- Assessment: Executable slice coverage, route parity, FI per-service runtime traceability, and bounded working-RTI milestone evidence are in strong shape for the primary 2025 Python RTI lane, and the repo now has a row-level requirement-by-requirement disposition audit across the full 2025 universe. The remaining retired, umbrella, cross-binding, bounded-extension, and bounded-route limits still block a complete 2025 claim, but those limits now sit outside the already-green primary python2025 runtime lane: hla-backend-python2025 is the repo's main 2025 Python RTI lane and hla-backend-shim is treated as a compatibility wrapper.
+- Assessment: Executable slice coverage, route parity, FI per-service runtime traceability, and bounded working-RTI milestone evidence are in strong shape for the primary 2025 Python RTI lane, and the repo now has a row-level requirement-by-requirement disposition audit across the full 2025 universe. The remaining retired, umbrella, cross-binding, bounded-extension, and bounded-route limits still block a complete 2025 claim, but those limits now sit outside the already-green primary python1516_2025 runtime lane: hla-backend-python2025 is the repo's main 2025 Python RTI lane and hla-backend-shim is treated as a compatibility wrapper.
 
 Conformance blockers:
 
-- The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass; this is a requirement-closeout limit rather than evidence that the main python2025 runtime lane is behaviorally incomplete.
+- The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass; this is a requirement-closeout limit rather than evidence that the main python1516_2025 runtime lane is behaviorally incomplete.
 - Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually; that remaining gap is about requirement granularity, not about whether hla-backend-python2025 has the underlying executable behavior.
 - Java and C++ standard-route evidence remains artifact-gated/runtime-capability evidence, not a full cross-binding behavior-conformance pass.
-- The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full cross-binding conformance; the remaining route boundary is a hosted/cross-binding proof limit rather than evidence that the direct python2025 runtime lane lacks those semantics.
+- The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full cross-binding conformance; the remaining route boundary is a hosted/cross-binding proof limit rather than evidence that the direct python1516_2025 runtime lane lacks those semantics.
 - OMT component coverage includes foreign xs:any extension payload preservation, but arbitrary third-party extension execution semantics remain out of scope.
 - Legacy-only rows remain explicit exclusions, so overall completion cannot be promoted to an unconditional 2025 conformance claim.
 
@@ -36,9 +36,9 @@ Conformance blockers:
 - Partitioned blocker count: 6
 - Direct-runtime incompleteness blocker count: 0
 - Boundary-only blocker count: 6
-- All current closeout blockers external to main python2025 runtime: True
+- All current closeout blockers external to main python1516_2025 runtime: True
 - Assessment: The broader closeout blockers are now explicitly partitioned too. On the current tree they all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits rather than missing core executable behavior in the main hla-backend-python2025 runtime lane.
-- Residual boundary: This partition audit clarifies why closeout remains incomplete without treating the main python2025 runtime as behaviorally unfinished.
+- Residual boundary: This partition audit clarifies why closeout remains incomplete without treating the main python1516_2025 runtime as behaviorally unfinished.
 
 Partitioned blockers:
 
@@ -152,7 +152,7 @@ Support-service negative-path status counts:
 ## Python RTI Milestone Audit
 
 - Audit status: bounded-python-rti-milestones
-- Routes: python-2025-inprocess, python-2025-fedpro-grpc
+- Routes: python1516_2025-inprocess, python1516_2025-fedpro-grpc
 - Milestones per route: 6
 - Assessment: Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. The time milestones now explicitly include Target/Radar future-exclusion, output-delivery, consumer-order, pipeline, receive-order poison, save/restore window-state, save/restore output resume, save/restore pipeline resume, and time-window proof, paired with negative-oracle rejection guards, but the last four remain bounded-evidence milestones rather than blanket correctness claims.
 
@@ -257,23 +257,23 @@ Binding boundary rows by role:
 
 ## Python2025 Direct Bounded Proof Audit
 
-- Audit status: python2025-direct-bounded-proof-captured
+- Audit status: python1516_2025-direct-bounded-proof-captured
 - Doc path: docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md
 - Doc exists: True
-- Route: python-2025-inprocess
+- Route: python1516_2025-inprocess
 - Scenario count: 8
 - All rows parity-covered: True
 - Identity ready: True
 - Doc narrative ready: True
-- Ready for python2025 direct bounded proof claim: True
-- Assessment: The direct python2025 lane is no longer only implied by architecture prose and the main runtime suite. It now has an explicit requirement-facing proof note tied to the eight tracked in-process scenario families, explicit python2025 runtime identity, the paired hosted companion note, and the operator-facing verify-main-2025 versus verify-routes-2025 proof split.
+- Ready for python1516_2025 direct bounded proof claim: True
+- Assessment: The direct python1516_2025 lane is no longer only implied by architecture prose and the main runtime suite. It now has an explicit requirement-facing proof note tied to the eight tracked in-process scenario families, explicit python1516_2025 runtime identity, the paired hosted companion note, and the operator-facing verify-main-2025 versus verify-routes-2025 proof split.
 - Residual boundary: This audit makes the direct bounded proof claim explicit and reviewable, but it does not convert the direct lane into a full clause-by-clause 2025 conformance statement or erase the separate hosted, binding, umbrella-row, retired-row, and OMT-extension boundaries.
 
 Direct scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management
 
 ## Python2025 Exclusion Boundaries Audit
 
-- Audit status: python2025-exclusion-boundaries-captured
+- Audit status: python1516_2025-exclusion-boundaries-captured
 - Doc path: docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md
 - Doc exists: True
 - Finish-line source path: packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py
@@ -281,8 +281,8 @@ Direct scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, sa
 - Duplicate/umbrella row count: 22
 - Retired row count: 24
 - Doc narrative ready: True
-- Ready for python2025 exclusion boundaries claim: True
-- Assessment: The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas around the main python2025 implementation statement, and the generated finish-line source no longer carries compat-era direct runtime anchors for the python2025 proof lane.
+- Ready for python1516_2025 exclusion boundaries claim: True
+- Assessment: The excluded-area map is no longer only scattered across the backend audit, route-parity notes, and generated finish-line prose. It now has an explicit requirement-facing boundary note that enumerates the legacy-alias, binding, hosted-route, duplicate/umbrella, retired-row, and OMT-extension non-claim areas around the main python1516_2025 implementation statement, and the generated finish-line source no longer carries compat-era direct runtime anchors for the python1516_2025 proof lane.
 - Residual boundary: This audit makes the current non-claim map explicit and reviewable, but it does not by itself prove the underlying direct or hosted runtime behavior; it documents the boundaries around those bounded claims.
 
 ## Hosted FedPro Bounded Proof Audit
@@ -290,13 +290,13 @@ Direct scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, sa
 - Audit status: hosted-fedpro-bounded-proof-captured
 - Doc path: docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md
 - Doc exists: True
-- Route: python-2025-fedpro-grpc
+- Route: python1516_2025-fedpro-grpc
 - Scenario count: 8
 - All rows parity-covered: True
 - Identity ready: True
 - Doc narrative ready: True
 - Ready for hosted FedPro bounded proof claim: True
-- Assessment: The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python2025 runtime identity, per-scenario transport-plus-parity test anchors, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.
+- Assessment: The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit python1516_2025 runtime identity, per-scenario transport-plus-parity test anchors, and an auditable statement that the route is a bounded transport/runtime slice over hla-backend-python2025.
 - Residual boundary: This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted FedPro lane into full remote-RTI semantics or exhaustive cross-binding conformance.
 
 Hosted scenarios: ddm, federation_lifecycle, mom, object_exchange, ownership, save_restore, support_services, time_management
@@ -326,7 +326,7 @@ Pitch probe routes: ./tools/pitch time-window-probe, ./tools/pitch time-window-r
 - Requirement-family count: 5
 - Doc narrative ready: True
 - Ready for save/restore bounded proof claim: True
-- Assessment: The save/restore surface is no longer only captured as one generated decomposition plus family-map pair. It now has an explicit requirement-facing proof note tied to lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback over the main python2025 runtime lane and hosted replay.
+- Assessment: The save/restore surface is no longer only captured as one generated decomposition plus family-map pair. It now has an explicit requirement-facing proof note tied to lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback over the main python1516_2025 runtime lane and hosted replay.
 - Residual boundary: This audit makes the current save/restore rollback claim explicit and reviewable, but it does not turn every save/restore requirement into its own standalone clause-by-clause conformance proof.
 
 ## Callback Bounded Proof Audit
@@ -339,7 +339,7 @@ Pitch probe routes: ./tools/pitch time-window-probe, ./tools/pitch time-window-r
 - Hosted/direct route-backed callback count: 55
 - Doc narrative ready: True
 - Ready for callback bounded proof claim: True
-- Assessment: The callback surface is no longer only captured as a callback ledger plus decomposition audit. It now has an explicit requirement-facing proof note tied to the current callback proof families, direct callback anchors, and hosted replay over the main python2025 runtime lane.
+- Assessment: The callback surface is no longer only captured as a callback ledger plus decomposition audit. It now has an explicit requirement-facing proof note tied to the current callback proof families, direct callback anchors, and hosted replay over the main python1516_2025 runtime lane.
 - Residual boundary: This audit makes the current callback claim explicit and reviewable, but it does not turn the repo into an exhaustive callback signature/ordering equivalence proof across every binding.
 
 ## Standard Binding Runtime-Capability Audit
@@ -386,7 +386,7 @@ Requirement universe:
 
 Full-claim blockers:
 
-### python-2025-inprocess
+### python1516_2025-inprocess
 
 - Milestone count: 6
 - All milestone parity-covered: True
@@ -399,7 +399,7 @@ Full-claim blockers:
 - GALT and LITS behavior: bounded-query-evidence (The in-process route has executable GALT/LITS query evidence inside the logical-time slice and the Target/Radar future-exclusion proof, with the integrated lookahead-processing-window gauntlet exercising the combined closure/output/consumer-order/pipeline ladder on the actual current Python 2025 RTI lane, plus negative-oracle guards rejecting mismatched LITS boundaries, premature output, reversed consumer order, cross-window contamination, and dirty post-restore replay while save/restore evidence still shows that dirty lookahead changes are rolled back and a pre-save queued TSO is redelivered after restore.)
 - Lookahead handling and windows: bounded-lookahead-evidence (The in-process route exercises lookahead query/modify behavior, queued timestamped delivery, the integrated Target/Radar lookahead-processing-window gauntlet, and the time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, save-restore-output-resume, and save-restore-pipeline-resume scenarios together with matching negative-oracle guards.)
 
-### python-2025-fedpro-grpc
+### python1516_2025-fedpro-grpc
 
 - Milestone count: 6
 - All milestone parity-covered: True
@@ -434,7 +434,7 @@ Explicit boundaries:
 
 - Foreign OMT xs:any extension payloads are preserved for XML round-trip but not interpreted as repo-native runtime semantics.
 - Retired or legacy-only rows remain excluded from the supported 2025 working surface.
-- Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof over the main python2025 runtime rather than full behavior-conformance proof.
+- Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof over the main python1516_2025 runtime rather than full behavior-conformance proof.
 - FedPro remains a hosted runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.
 
 ## Implementation Concentration Audit
@@ -447,8 +447,8 @@ Explicit boundaries:
 - 2025 spec-package-backed slices: 12
 - Transport-backed slices: 11
 - Semantic concentration is material: False
-- Assessment: The primary 2025 Python RTI lane still cites hla-backend-python2025/backend.py as a frequent evidence anchor, but semantic concentration is no longer material there: the ambassador shell is thin and most runtime behavior now lives in extracted python2025 modules. Remaining pressure is architectural hygiene, not proof that core 2025 semantics still live in one oversized backend class.
-- Extraction pressure boundary: The main python2025 runtime should keep absorbing real RTI semantics, while wrapper-only compatibility logic should keep shrinking or moving outward into narrower adapters and reusable runtime modules.
+- Assessment: The primary 2025 Python RTI lane still cites hla-backend-python2025/backend.py as a frequent evidence anchor, but semantic concentration is no longer material there: the ambassador shell is thin and most runtime behavior now lives in extracted python1516_2025 modules. Remaining pressure is architectural hygiene, not proof that core 2025 semantics still live in one oversized backend class.
+- Extraction pressure boundary: The main python1516_2025 runtime should keep absorbing real RTI semantics, while wrapper-only compatibility logic should keep shrinking or moving outward into narrower adapters and reusable runtime modules.
 
 Top evidence anchors:
 
@@ -473,7 +473,7 @@ Leading extracted runtime owners:
 
 ## Python 2025 Source Responsibility Audit
 
-- Audit status: python2025-source-responsibility-captured
+- Audit status: python1516_2025-source-responsibility-captured
 - Source path: packages/hla-backend-python2025/src/hla/backends/python2025/backend.py
 - Source line count: 488
 - Extracted runtime helper modules: 50
@@ -486,7 +486,7 @@ Leading extracted runtime owners:
 - Shim wrapper ambassador line count: 2
 - Responsibility families: 11
 - Largest family: misc-support (2300 lines)
-- Assessment: The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python2025, while the substantive runtime behavior is spread across extracted python2025 modules and hla-backend-shim has been reduced to a compatibility wrapper. Save/restore lifecycle, directed-interaction routing, time management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery are now measurable as named source-owned families under the main python2025 runtime package.
+- Assessment: The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python2025, while the substantive runtime behavior is spread across extracted python1516_2025 modules and hla-backend-shim has been reduced to a compatibility wrapper. Save/restore lifecycle, directed-interaction routing, time management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery are now measurable as named source-owned families under the main python1516_2025 runtime package.
 - Extraction use: Use these families as the source ownership baseline while continuing to shrink hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities; new runtime movement should reduce compatibility-surface pressure without weakening direct or hosted route evidence.
 
 Python 2025 source responsibility families:
@@ -565,7 +565,7 @@ Extracted Python 2025 runtime helper modules:
 - Aggregated slices >=20 requirements: 7
 - Aggregated slices >=20 requirements and runtime-backed: 2
 - Assessment: Most implemented 2025 slices are not huge aggregations, but a small set of large slices still carry a lot of requirement mass. The runtime-heavy DDM/default-policy, save/restore, and directed-interaction slices now have explicit requirement-family maps, so the remaining pressure is no longer about unnamed large bundles; it is about whether the repo wants leaf-level implemented slices rather than larger family-mapped aggregates.
-- Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits inside the main python2025 backend lane.
+- Next decomposition boundary: If deeper proof is needed, start by splitting the largest runtime-heavy slices into narrower service- or behavior-family audits inside the main python1516_2025 backend lane.
 
 Largest implemented slices:
 
@@ -893,24 +893,24 @@ Save/restore requirement families:
 - Requirement count: 16
 - Proof families: 6
 - Route-group coverage count: 16
-- Assessment: Binding and hosted-route proof is no longer just one bounded route bucket. Its current evidence now separates into named binding and hosted-route families: Java intake/source traces, C++ intake/source traces, artifact-gated standard runtime-capability traces, the typed FedPro schema surface, the hosted FedPro runtime slices, and the cross-route scenario parity ledger, while keeping the distinction between bounded adapter evidence and the main python2025 runtime owner explicit.
+- Assessment: Binding and hosted-route proof is no longer just one bounded route bucket. Its current evidence now separates into named binding and hosted-route families: Java intake/source traces, C++ intake/source traces, artifact-gated standard runtime-capability traces, the typed FedPro schema surface, the hosted FedPro runtime slices, and the cross-route scenario parity ledger, while keeping the distinction between bounded adapter evidence and the main python1516_2025 runtime owner explicit.
 - Next split boundary: If this area needs further tightening, split it first by these route families before attempting any stronger behavior-equivalence or hosted-conformance claim.
 
 ### binding-routes/java-binding-source-and-intake-evidence
 
-- Focus: Java package inventory, source trace, intake manifests, and the distinction between Java wrapper surfaces and the main python2025 runtime owner
+- Focus: Java package inventory, source trace, intake manifests, and the distinction between Java wrapper surfaces and the main python1516_2025 runtime owner
 - Evidence test count: 2
 - Route groups: java-standard-2025-jpype, java-standard-2025-py4j
 
 ### binding-routes/cpp-binding-source-and-intake-evidence
 
-- Focus: C++ namespace/source trace, intake evidence, and wrapper-surface separation from the main python2025 runtime lane
+- Focus: C++ namespace/source trace, intake evidence, and wrapper-surface separation from the main python1516_2025 runtime lane
 - Evidence test count: 2
 - Route groups: cpp-standard-2025-pybind, cpp-standard-2025-grpc
 
 ### binding-routes/standard-java-cpp-runtime-capability-traces
 
-- Focus: artifact-gated standard-route lifecycle, object, ownership, time, MOM, DDM, support-service, and save/restore capability traces executed over the primary python2025 runtime lane
+- Focus: artifact-gated standard-route lifecycle, object, ownership, time, MOM, DDM, support-service, and save/restore capability traces executed over the primary python1516_2025 runtime lane
 - Evidence test count: 3
 - Route groups: java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
 
@@ -918,19 +918,19 @@ Save/restore requirement families:
 
 - Focus: typed RTI request oneofs, typed callback oneofs, schema-tagged client selection, federation-list plus create-with-MIM transport commands, and executable FedPro transport-schema proof
 - Evidence test count: 3
-- Route groups: python-2025-fedpro-grpc
+- Route groups: python1516_2025-fedpro-grpc
 
 ### binding-routes/fedpro-hosted-runtime-core-and-extended-state
 
-- Focus: hosted 2025 runtime lifecycle, object, ownership, time, save/restore, callback, MOM, support-service, and example-FOM replay over create_rti_ambassador('python2025', transport=...)
+- Focus: hosted 2025 runtime lifecycle, object, ownership, time, save/restore, callback, MOM, support-service, and example-FOM replay over create_rti_ambassador('python1516_2025', transport=...)
 - Evidence test count: 3
-- Route groups: python-2025-fedpro-grpc
+- Route groups: python1516_2025-fedpro-grpc
 
 ### binding-routes/cross-route-scenario-parity-ledger
 
 - Focus: the explicit parity ledger across federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, and support_services for all current 2025 routes
 - Evidence test count: 3
-- Route groups: python-2025-inprocess, python-2025-fedpro-grpc, java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
+- Route groups: python1516_2025-inprocess, python1516_2025-fedpro-grpc, java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
 
 
 ## Support-Services Decomposition Audit
@@ -1216,7 +1216,7 @@ DDM default-policy requirement families:
 - Family count: 22
 - Fully route-backed family count: 22
 - All families route-backed across current Python lanes: True
-- Assessment: The decomposed current-package pressure families are not in-process-only claims. Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python2025 proof and hosted FedPro proof, which strengthens the current-lane working-RTI claim.
+- Assessment: The decomposed current-package pressure families are not in-process-only claims. Every currently named family across save/restore, ownership, directed interaction, and DDM/default-policy has both direct python1516_2025 proof and hosted FedPro proof, which strengthens the current-lane working-RTI claim.
 - Residual boundary: This still does not prove full cross-binding conformance or full requirement-by-requirement closure; it proves that the main current-package pressure families are executable across the current Python 2025 lanes.
 
 - 2025-save-restore-lifecycle/lifecycle-control: direct=14, hosted=9, route-backed=True
@@ -1309,24 +1309,24 @@ Non-claims:
 
 ## Main Python2025 Implementation Claim Audit
 
-- Audit status: main-python2025-implementation-claim-captured
-- Claim shape: bounded-main-python2025-rti-implementation
-- Ready for main python2025 implementation claim: True
+- Audit status: main-python1516_2025-implementation-claim-captured
+- Claim shape: bounded-main-python1516_2025-rti-implementation
+- Ready for main python1516_2025 implementation claim: True
 - Ready for full 2025 conformance claim: False
 - Implementation owner: hla-backend-python2025
 - Compatibility wrapper: hla-backend-shim
-- Default operator lane: python-main-2025
-- Hosted extension lane: python-routes-2025
+- Default operator lane: python1516_2025-main
+- Hosted extension lane: python1516_2025-routes
 - Claim: The repo can now make a distinct bounded claim for the main Python 2025 RTI implementation lane: hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface, hla-backend-shim is compatibility-wrapper-only, and the direct plus hosted Python 2025 proof lanes are sufficiently green to promote that lane as the main bounded working RTI implementation.
-- Assessment: The repo now separates the two judgments cleanly: the main python2025 RTI implementation claim is ready as a bounded working-surface statement, while the broader full-2025 conformance claim remains blocked by row-granularity, cross-binding, hosted-route, xs:any-extension, and legacy-only boundaries.
+- Assessment: The repo now separates the two judgments cleanly: the main python1516_2025 RTI implementation claim is ready as a bounded working-surface statement, while the broader full-2025 conformance claim remains blocked by row-granularity, cross-binding, hosted-route, xs:any-extension, and legacy-only boundaries.
 
 Promotion basis:
 
 - hla-backend-python2025 is the discovered dedicated rti1516_2025 backend package and current implementation owner.
-- The canonical operator lane marks verify-main-2025 as the default direct proof route for the real python2025 runtime.
+- The canonical operator lane marks verify-main-2025 as the default direct proof route for the real python1516_2025 runtime.
 - All tracked objective dimensions are bounded-ready for the Python-centered 2025 working surface.
 - The current-lane working-surface statement is ready without relying on shim-owned runtime semantics.
-- The promotion-vs-split audit already says the current python2025 lane can be promoted as the working surface while keeping future extraction optional.
+- The promotion-vs-split audit already says the current python1516_2025 lane can be promoted as the working surface while keeping future extraction optional.
 
 Non-claims:
 
@@ -1349,8 +1349,8 @@ Full-conformance blockers:
 - Partitioned blocker count: 4
 - Direct-runtime incompleteness blocker count: 0
 - Boundary-only blocker count: 4
-- All current full-claim blockers external to main python2025 runtime: True
-- Assessment: The remaining blockers in the full-2025 claim are now explicitly partitioned. On the current tree they all sit outside direct main-lane python2025 runtime completeness: they are OMT extension-scope, Java/C++ binding, hosted-route, or row-granularity boundaries rather than missing core executable behavior in hla-backend-python2025.
+- All current full-claim blockers external to main python1516_2025 runtime: True
+- Assessment: The remaining blockers in the full-2025 claim are now explicitly partitioned. On the current tree they all sit outside direct main-lane python1516_2025 runtime completeness: they are OMT extension-scope, Java/C++ binding, hosted-route, or row-granularity boundaries rather than missing core executable behavior in hla-backend-python2025.
 - Residual boundary: This partition audit clarifies blocker ownership. It does not convert those external boundaries into a full 2025 conformance pass.
 
 Partitioned blockers:
@@ -1400,30 +1400,30 @@ Discovered 2025-capable backend plugin records:
 - cpp-standard-2025-grpc (standard/cpp): hla-backend-cpp-shim supports rti1516_2025
 - cpp-2025-sdk-pybind (intake/cpp): hla-backend-cpp-shim supports rti1516_2025
 - cpp-2025-sdk-grpc (intake/cpp): hla-backend-cpp-shim supports rti1516_2025
-- python2025 (python-rti-2025): hla-backend-python2025 supports rti1516_2025
+- python1516_2025 (python-rti-2025): hla-backend-python2025 supports rti1516_2025
 
 Python 2025 route variants:
 
-- python-2025-inprocess: in-process-backend-route (separate RTI family: False, all milestone parity-covered: True)
-- python-2025-fedpro-grpc: hosted-transport-route (separate RTI family: False, all milestone parity-covered: True)
+- python1516_2025-inprocess: in-process-backend-route (separate RTI family: False, all milestone parity-covered: True)
+- python1516_2025-fedpro-grpc: hosted-transport-route (separate RTI family: False, all milestone parity-covered: True)
 
 ## Python2025 Proof-Lane Audit
 
-- Audit status: python2025-proof-lanes-captured
+- Audit status: python1516_2025-proof-lanes-captured
 - Ready for main-implementation operator-lane claim: True
 - Direct lane: ./tools/python verify-main-2025
-- Direct lane id: python-main-2025
+- Direct lane id: python1516_2025-main
 - Direct lane cost: medium
 - Hosted extension lane: ./tools/python verify-routes-2025
-- Hosted extension lane id: python-routes-2025
+- Hosted extension lane id: python1516_2025-routes
 - Hosted extension lane cost: medium
-- Claim: The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real python2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over that same runtime.
+- Claim: The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real python1516_2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over that same runtime.
 - Residual boundary: This lane audit now proves command identity, operator-facing proof-lane ownership, and one current-tree green execution of both canonical wrapper commands. It still does not replace the need to keep those proof lanes green as the tree changes.
 
 Current operator runs:
 
-- python-main-2025 / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example (current-tree direct python2025 package-boundary, federation/object/DDM, support/ownership/MOM, time-window, save/restore, callback, OMT, and example-scenario proof lane)
-- python-routes-2025 / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example (current-tree direct python2025 plus bounded hosted FedPro route verification lane, including transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay)
+- python1516_2025-main / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example (current-tree direct python1516_2025 package-boundary, federation/object/DDM, support/ownership/MOM, time-window, save/restore, callback, OMT, and example-scenario proof lane)
+- python1516_2025-routes / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example (current-tree direct python1516_2025 plus bounded hosted FedPro route verification lane, including transport suite, route-parity bundle, finish-line artifact generation, and package-owned example replay)
 
 Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md
 
@@ -1431,15 +1431,15 @@ Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_su
 Hosted runtime identity evidence:
 
 - Audit status: direct-server-client-identity-aligned
-- Route: python-2025-fedpro-grpc
+- Route: python1516_2025-fedpro-grpc
 - Claim: The hosted 2025 FedPro route is explicitly evidenced as a route variant over hla-backend-python2025 rather than a separate shim or RTI family.
-- Assessment: Hosted-client and hosted-server capability surfaces now agree with the direct 2025 ambassador that python-2025-fedpro-grpc is a route variant over the primary python2025 RTI lane in hla-backend-python2025 rather than a wrapper-defined implementation family.
+- Assessment: Hosted-client and hosted-server capability surfaces now agree with the direct 2025 ambassador that python1516_2025-fedpro-grpc is a route variant over the primary python1516_2025 RTI lane in hla-backend-python2025 rather than a wrapper-defined implementation family.
 
 Hosted runtime identity reports:
 
-- Direct ambassador: python2025-rti / python/2025 / python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True
-- Hosted server: python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc
-- Hosted client: python2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro
+- Direct ambassador: python1516_2025-rti / python/2025 / python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True
+- Hosted server: python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc
+- Hosted client: python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro
 
 Hosted runtime identity evidence tests:
 
@@ -1449,9 +1449,9 @@ Hosted runtime identity evidence tests:
 Hosted factory boundary evidence:
 
 - Audit status: factory-boundary-explicit
-- Supported hosted creation surface: start_2025_grpc_server(...) plus GrpcTransport(..., schema='rti1516_2025') plus create_rti_ambassador(backend='python2025'|'python-2025'|'python-2025-backend', transport={'kind': 'grpc', ...})
+- Supported hosted creation surface: start_2025_grpc_server(...) plus GrpcTransport(..., schema='rti1516_2025') plus create_rti_ambassador(backend='python1516_2025'|'python-1516-2025'|'python-1516-2025', transport={'kind': 'grpc', ...})
 - Unsupported factory surfaces: create_rti_ambassador(backend='shim', transport=...)
-- Policy: The primary python2025 backend path and its supported runtime aliases now accept transport=... and create the hosted FedPro 2025 ambassador over the main hla-backend-python2025 lane, while the legacy shim provider spelling is no longer part of the supported public backend-selection surface and therefore rejects hosted ownership and other backend-specific factory transport routing. The same factory-hosted python2025 path now also runs a direct federation listing/member-report slice, the package-owned Target/Radar future-exclusion, output-delivery, consumer-order, and integrated lookahead-processing-window gauntlet time-window proofs, restore-state, restore-output-resume, and pipeline-resume save/restore proofs, a direct restore-control negative slice, a direct local-delete restore slice, a direct plain-callback restore cleanup slice, a direct timed-remove restore cleanup slice, a direct plain-object restore routing slice, a direct plain-interaction restore routing slice, a direct directed-DDM restore routing slice, a direct restore time/switch-control slice, and a direct restore lookahead/queued-TSO slice, direct MOM federation-management and time-management service interactions, a direct MOM request/report slice, a direct MOM object/ownership service slice, a direct support-service slice, the shared support factory/decode scenario, a direct object-exchange slice, a direct timestamped delivery/retraction slice, a direct directed-interaction slice, a direct callback-backlog disconnect/rejoin slice, and a direct ownership slice instead of stopping at ambassador-construction evidence.
+- Policy: The primary python1516_2025 backend path and its supported runtime aliases now accept transport=... and create the hosted FedPro 2025 ambassador over the main hla-backend-python2025 lane, while the legacy shim provider spelling is no longer part of the supported public backend-selection surface and therefore rejects hosted ownership and other backend-specific factory transport routing. The same factory-hosted python1516_2025 path now also runs a direct federation listing/member-report slice, the package-owned Target/Radar future-exclusion, output-delivery, consumer-order, and integrated lookahead-processing-window gauntlet time-window proofs, restore-state, restore-output-resume, and pipeline-resume save/restore proofs, a direct restore-control negative slice, a direct local-delete restore slice, a direct plain-callback restore cleanup slice, a direct timed-remove restore cleanup slice, a direct plain-object restore routing slice, a direct plain-interaction restore routing slice, a direct directed-DDM restore routing slice, a direct restore time/switch-control slice, and a direct restore lookahead/queued-TSO slice, direct MOM federation-management and time-management service interactions, a direct MOM request/report slice, a direct MOM object/ownership service slice, a direct support-service slice, the shared support factory/decode scenario, a direct object-exchange slice, a direct timestamped delivery/retraction slice, a direct directed-interaction slice, a direct callback-backlog disconnect/rejoin slice, and a direct ownership slice instead of stopping at ambassador-construction evidence.
 
 Hosted factory boundary evidence tests:
 
@@ -1504,15 +1504,15 @@ Package-owned shared scenario evidence:
 - Audit status: package-owned-target-radar-2025-path-captured
 - Scenario package: hla-fom-target-radar
 - Shared route: target-radar-shared-scenario
-- Example entrypoint: python examples/target_radar_simulation.py --backend python2025 --steps 5
+- Example entrypoint: python examples/target_radar_simulation.py --backend python1516_2025 --steps 5
 - Adapter class: hla.foms.target_radar._internal.target_radar_2025_adapter.TargetRadar2025RTIAdapter
-- Supported backend names: python2025, python-2025, python-2025-backend
-- Claim: The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, where one package-owned compatibility adapter wraps the primary python2025 backend lane without moving implementation ownership back into hla-backend-shim.
-- Assessment: The README-advertised Target/Radar python2025 example path is now executable under package-owned 2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, and the same package-owned adapter now also proves that the factory-hosted python2025 FedPro route can execute the shared Target/Radar example scenario plus the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers.
+- Supported backend names: python1516_2025, python-1516-2025, python-1516-2025
+- Claim: The shared Target/Radar 2025 execution seam is now owned by the hla-fom-target-radar package, where one package-owned compatibility adapter wraps the primary python1516_2025 backend lane without moving implementation ownership back into hla-backend-shim.
+- Assessment: The README-advertised Target/Radar python1516_2025 example path is now executable under package-owned 2025 adapter coverage. The legacy shim package is no longer treated as a backend-selection route, and the same package-owned adapter now also proves that the factory-hosted python1516_2025 FedPro route can execute the shared Target/Radar example scenario plus the shared future-exclusion, output-delivery, consumer-order, integrated lookahead-processing-window gauntlet, restore-state, restore-output-resume, and pipeline-resume scenarios without falling back to shim-owned semantics or raw transport-only wrappers.
 
 Package-owned shared scenario runtime reports:
 
-- python2025: python/2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False
+- python1516_2025: python/2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False
 - shim: shim/2025 / hla-backend-python2025 / counts_as_python_2025_rti=False / wrapper_only=True
 
 Package-owned shared scenario evidence tests:
@@ -1535,7 +1535,7 @@ Hosted shared-scenario coverage audit:
 - Shared hosted FedPro scenarios: 36
 - Shared hosted scenarios represented in conformance evidence: 36
 - Ready for full shared-scenario representation claim: True
-- Assessment: Every shared hosted FedPro 2025 scenario is now represented in the conformance evidence ledger, so the hosted route summary is no longer silently under-counting the main python2025 runtime surface.
+- Assessment: Every shared hosted FedPro 2025 scenario is now represented in the conformance evidence ledger, so the hosted route summary is no longer silently under-counting the main python1516_2025 runtime surface.
 
 ## Time-Window Vendor Parity Audit
 
@@ -1559,7 +1559,7 @@ Time-window vendor parity routes:
 - Audit status: extraction-readiness-map-captured
 - Extraction needed now: False
 - Dedicated Python 2025 backend present: True
-- Recommended current action: promote-python2025-as-live-lane-and-keep-shim-wrapper-narrowing-map
+- Recommended current action: promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map
 - Future backend package target: hla-backend-python2025
 - Future backend plugin family: python-rti-2025
 - Runtime semantics to extract first: 4
@@ -1573,7 +1573,7 @@ Extraction package contract:
 - Target distribution: hla-backend-python2025
 - Target import root: hla.backends.python2025
 - Target plugin path: packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py
-- Target backend name: python2025
+- Target backend name: python1516_2025
 - Target plugin family: python-rti-2025
 - Target supports: rti1516_2025
 - Must not delegate to: hla.backends.shim.backend.create_shim_backend
@@ -1582,9 +1582,9 @@ Extraction package contract:
 
 Extraction cutover invariants:
 
-- python-2025-inprocess and python-2025-fedpro-grpc parity rows remain green for every migrated slice
+- python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice
 - hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior
-- the dedicated python2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics
+- the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics
 - backend plugin discovery reports hla-backend-python2025 as a dedicated rti1516_2025 candidate before any promotion claim changes
 
 Shim responsibilities after extraction:
@@ -1638,7 +1638,7 @@ Promotion basis:
 - The primary 2025 Python RTI lane has green executable runtime coverage in the main in-process suite.
 - Both Python 2025 routes clear the tracked bounded working-surface milestones.
 - The extracted hla-backend-python2025 package now has direct split-package proof instead of relying only on legacy shim-facing package evidence.
-- The python2025 runtime lane is protected by explicit import-boundary guardrails that forbid runtime backflow into hla.backends.shim modules.
+- The python1516_2025 runtime lane is protected by explicit import-boundary guardrails that forbid runtime backflow into hla.backends.shim modules.
 - The repo can make a supported-boundary statement over the primary 2025 Python RTI lane without hiding legacy-only or bounded-extension areas.
 - Route parity partial and missing counts are both zero for the tracked 2025 matrix.
 - The callback ledger is fully route-backed across the current Python 2025 lanes, eliminating callback-helper-only gaps in the promotion surface.
@@ -1649,7 +1649,7 @@ Split triggers:
 - Adapter concerns begin to obscure or distort core RTI semantics.
 - Callback or route normalization grows more complex than the underlying RTI behavior it wraps.
 - New 2025 behavior is materially harder to implement because shim and RTI state management are too tightly mixed.
-- The row-level requirement-by-requirement audit cannot be promoted from bounded disposition evidence to cleaner all-covered runtime proof without further shrinking wrapper-only compatibility logic around the main python2025 runtime.
+- The row-level requirement-by-requirement audit cannot be promoted from bounded disposition evidence to cleaner all-covered runtime proof without further shrinking wrapper-only compatibility logic around the main python1516_2025 runtime.
 
 Permanent-decision blockers:
 
@@ -1688,7 +1688,7 @@ Permanent-decision blockers:
 - Bounded working-surface ready: True
 - Ready for full claim: False
 - Route scenarios: object_exchange, ownership, ddm
-- Assessment: The current repo proves a coherent object-management surface and the finish-line now separates that proof into named families instead of leaving it as one large bucket: declaration and exchange gating, delete/local-known-state lifecycle, attribute-value-update routing, advisory/update-rate callbacks, transportation policy callbacks, object-region scope routing, and directed or directed-DDM routing. Hosted FedPro replay now also covers rollback-sensitive object state including plain and directed routing restore, stale timed-remove cleanup, and restored local-known-state after local delete, plus hosted shared scenario replay for request-attribute-value-update routing and object-scope relevance over the main python2025 runtime.
+- Assessment: The current repo proves a coherent object-management surface and the finish-line now separates that proof into named families instead of leaving it as one large bucket: declaration and exchange gating, delete/local-known-state lifecycle, attribute-value-update routing, advisory/update-rate callbacks, transportation policy callbacks, object-region scope routing, and directed or directed-DDM routing. Hosted FedPro replay now also covers rollback-sensitive object state including plain and directed routing restore, stale timed-remove cleanup, and restored local-known-state after local delete, plus hosted shared scenario replay for request-attribute-value-update routing and object-scope relevance over the main python1516_2025 runtime.
 
 - Evidence basis: route_summary.scenario_count=3
 - Evidence basis: route_summary.row_count=18
@@ -1706,7 +1706,7 @@ Permanent-decision blockers:
 - Route scenarios: time_management, save_restore
 - Assessment: Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, the Target/Radar lookahead-window proof ladder, matching negative-oracle guards across the current Python 2025 lanes, and named runtime proof families instead of one flat bounded time bucket.
 
-- Evidence basis: python_rti_milestone_audit bounded time rows=python-2025-fedpro-grpc:bounded-lookahead-evidence,python-2025-fedpro-grpc:bounded-query-evidence,python-2025-inprocess:bounded-lookahead-evidence,python-2025-inprocess:bounded-query-evidence
+- Evidence basis: python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025-inprocess:bounded-lookahead-evidence,python1516_2025-inprocess:bounded-query-evidence
 - Evidence basis: time_window_vendor_parity_audit.audit_status=time-window-vendor-parity-captured
 - Evidence basis: time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion
 - Evidence basis: time_management_decomposition.slice_id=2025-time-management-proof-families

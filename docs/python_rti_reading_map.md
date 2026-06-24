@@ -36,10 +36,10 @@ wrapper-only imports, or compatibility-surface behavior.
 
 Routine proof commands behind that reading order:
 
-- `./tools/python verify-main-2025` for the normal direct `python2025`
+- `./tools/python verify-main-2025` for the normal direct `python1516_2025`
   main-surface proof lane
 - `./tools/python verify-routes-2025` when you also need the bounded hosted
-  `python-2025-fedpro-grpc` hygiene lane
+  `python1516_2025-fedpro-grpc` hygiene lane
 
 ## Public API Roots
 
@@ -74,7 +74,7 @@ Important distinction:
 - `hla-backend-inmemory` is the 2010 backend implementation lane
 - `hla-backend-python2025` is the main full 2025 Python RTI implementation lane
 - `hla-backend-shim` is a wrapper-only compatibility alias over that runtime
-- main 2025 runtime selection should use `backend="python2025"`, not
+- main 2025 runtime selection should use `backend="python1516_2025"`, not
   `backend="shim"`
 
 ## 2025 Runtime Proof Surface
@@ -95,7 +95,7 @@ are:
 - [../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py](../packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py):
   source of truth for the finish-line snapshot
 - [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py):
-  main in-process `python2025` runtime suite
+  main in-process `python1516_2025` runtime suite
 - [../tests/transport/test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py):
   hosted 2025 FedPro route coverage
 - [../packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py](../packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py):
@@ -141,7 +141,7 @@ If you are changing hosted 2025 transport behavior:
 
 For a 2025 runtime bug:
 
-1. `tests/test_rti1516_2025_python2025_runtime.py` (main `python2025` proof suite)
+1. `tests/test_rti1516_2025_python2025_runtime.py` (main `python1516_2025` proof suite)
 2. `packages/hla-backend-python2025/src/hla/backends/python2025/backend.py`
 3. `packages/hla-backend-python2025/src/hla/backends/python2025/*_runtime.py`,
    `*_surface_mixin.py`, and `runtime_state.py` when the behavior has already
@@ -159,11 +159,11 @@ For a 2025 route-parity question:
 3. `tests/requirements/test_2025_route_parity_matrix.py`
 
 Run `./tools/python verify-routes-2025` when the change must stay aligned with
-the bounded hosted `python-2025-fedpro-grpc` route.
+the bounded hosted `python1516_2025-fedpro-grpc` route.
 
 For a time-management or lookahead question:
 
-1. `tests/test_rti1516_2025_python2025_runtime.py` (main `python2025` proof suite)
+1. `tests/test_rti1516_2025_python2025_runtime.py` (main `python1516_2025` proof suite)
 2. `packages/hla-verification/src/hla/verification/scenario_target_radar_time.py`
 3. `packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py`
 4. `packages/hla-backend-python2025/src/hla/backends/python2025/federation_time_surface_mixin.py`

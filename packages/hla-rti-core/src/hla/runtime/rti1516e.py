@@ -11,7 +11,7 @@ from hla.rti import discover_rti_backends as _discover_rti_backends
 from .factory import create_rti_ambassador
 
 
-def create_backend(backend="inmemory", **options):
+def create_backend(backend="python1516e", **options):
     return _create_backend(backend, spec="rti1516e", **options)
 
 

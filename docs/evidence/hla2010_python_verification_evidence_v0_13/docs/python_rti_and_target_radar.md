@@ -12,8 +12,8 @@ from hla.rti1516e.backends.python_rti import InMemoryRTIEngine
 
 # Multiple federates in the same local Python RTI share one engine.
 engine = InMemoryRTIEngine()
-target_rti = create_rti_ambassador("python", engine=engine)
-radar_rti = create_rti_ambassador("python", engine=engine)
+target_rti = create_rti_ambassador("python1516e", engine=engine)
+radar_rti = create_rti_ambassador("python1516e", engine=engine)
 
 # Real Java RTI through JPype.
 java_rti = create_rti_ambassador(
@@ -53,7 +53,7 @@ The new scenario has two federates:
 Run it with the Python RTI:
 
 ```bash
-PYTHONPATH=. python examples/target_radar_simulation.py --backend python --steps 5 --dt 1.0
+PYTHONPATH=. python examples/target_radar_simulation.py --backend python1516e --steps 5 --dt 1.0
 ```
 
 Run the same federate code through the Java adapter path using the in-process

@@ -10,7 +10,11 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--backend", default="python", help="python, java-shim-jpype, java-shim-py4j, jpype, or py4j")
+    parser.add_argument(
+        "--backend",
+        default="python1516e",
+        help="python1516e, python1516_2025, java-shim-jpype, java-shim-py4j, jpype, or py4j",
+    )
     parser.add_argument("--steps", type=int, default=3)
     parser.add_argument("--dt", type=float, default=1.0)
     args = parser.parse_args()

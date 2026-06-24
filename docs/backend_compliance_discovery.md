@@ -20,7 +20,7 @@ For the main 2025 Python RTI lane, start instead with:
 - [plans/spec2025_route_parity_matrix.md](plans/spec2025_route_parity_matrix.md)
 
 Use that exclusion note when you need the explicit non-claim boundary around
-the bounded `python2025` working-surface statement, especially for legacy
+the bounded `python1516_2025` working-surface statement, especially for legacy
 aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella
 rows, retired rows, and out-of-scope OMT extension semantics.
 
@@ -38,7 +38,7 @@ Filter to one backend when needed:
 ```bash
 ./tools/compliance discover --backend certi-native
 ./tools/compliance discover --backend vendor-certi-java-bridge
-./tools/compliance discover --backend python-inmemory
+./tools/compliance discover --backend python1516e-inmemory
 ```
 
 Read machine-friendly output:

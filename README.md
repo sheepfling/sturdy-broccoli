@@ -1,316 +1,74 @@
 # Sturdy Broccoli
 
-This repository is an unofficial Python-first IEEE HLA workspace for
-1516.1-2010 and 1516.1-2025 APIs, pluggable RTI backends, and route-by-route
-verification evidence.
-
-The flag-plant direction is:
-
-> One HLA behavior model, three languages, two standards, reproducible evidence.
-
-The supported front door is:
-
-- `hla.rti1516e` for the 2010 API package
-- `hla.rti1516_2025` for the 2025 API package
-- `hla.rti` for cross-version discovery and ambassador creation
-- `hla.backends.inmemory` for the local in-memory RTI backend
-- `hla.backends.python2025` for the main Python RTI backend for IEEE 1516.1-2025
-- `hla.transports.grpc` for networked transport-hosted RTI routes
-- `./tools/target-radar` and `examples/target_radar_simulation.py` for the Target/Radar example flow
-
-If you want the shortest path to "something runs", start with the pure Python
-backend and the Target/Radar example.
-
-If you want to understand the package split, start here:
-
-- [`docs/package_layout.md`](docs/package_layout.md)
-- [`docs/package_hierarchy_and_versioning.md`](docs/package_hierarchy_and_versioning.md)
-- [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md)
-- [`docs/language_shim_routes.md`](docs/language_shim_routes.md)
-- [`packages/README.md`](packages/README.md)
-
-This root `README` owns only three jobs:
-
-- show the shortest runnable path
-- point to the primary edit and trace lanes
-- name the supported operator entrypoints
-
-It is not the full architecture catalog, backend inventory, or package-family
-map. Those live under `docs/` and `packages/`.
-
-The repo is organized as a monorepo workspace:
+This repository is a Python-first IEEE HLA workspace.
 
 - `hla.rti1516e` is the IEEE 1516.1-2010 API package
 - `hla.rti1516_2025` is the IEEE 1516.1-2025 API package
-- `hla.rti` owns cross-version discovery and backend selection
-- `packages/*/src/` holds package-owned backend, FOM, transport, and support implementations
-- `tools/` is the canonical home for human-facing operator entrypoints
-- `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
+- `hla.rti` owns cross-version discovery and ambassador creation
+- multiple backend, transport, vendor, bridge, FOM, and verification packages
+
+The repo is large. The right way to approach it is by lane, not by reading
+everything.
 
 ## Start Here
 
-1. Bootstrap the Python environment:
-
-```bash
-./tools/bootstrap python
-source .venv/bin/activate
-```
-
-That creates or refreshes the repo-local virtual environment and installs the
-workspace in editable mode.
-
-If you want the broader local QA environment instead of the lean operator
-bootstrap, use:
-
-```bash
-HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
-source .venv/bin/activate
-```
-
-For the full environment and install order, read
-[`docs/python_environment.md`](docs/python_environment.md).
-
-If you want the shortest single walkthrough, use
-[`docs/first_run.md`](docs/first_run.md).
-
-If you want the networked Python RTI guide, use
-[`docs/networked_rti_python.md`](docs/networked_rti_python.md).
-
-If you want the Target/Radar package guide, use
-[`packages/hla-fom-target-radar/README.md`](packages/hla-fom-target-radar/README.md).
-
-If you want an executable setup check first, run:
+If you want the shortest path to something running:
 
 ```bash
 ./tools/bootstrap doctor
-```
-
-2. Run the simplest scenario:
-
-```bash
-python examples/target_radar_simulation.py --backend python --steps 5
-```
-
-If you want the shortest runnable IEEE 1516.1-2025 path on the main Python
-2025 RTI lane, run:
-
-```bash
-python examples/target_radar_simulation.py --backend python2025 --steps 5
-```
-
-Treat `python2025` as the real 2025 runtime lane here. `hla-backend-shim`
-remains only as compatibility-wrapper/import-compatibility code around that
-runtime.
-
-For the routine 2025 proof lanes behind that runtime:
-
-```bash
-./tools/python verify-main-2025
-./tools/python verify-routes-2025
-```
-
-Use `verify-main-2025` as the default direct `python2025` proof lane. Use
-`verify-routes-2025` when you also need the bounded hosted
-`python-2025-fedpro-grpc` hygiene lane over `hla-backend-python2025`.
-
-3. Run the backend smoke example:
-
-```bash
+./tools/bootstrap python
+source .venv/bin/activate
 python examples/backend_recording.py
-```
-
-4. Run the default test wrapper:
-
-```bash
+python examples/target_radar_simulation.py --backend python1516e --steps 5
 ./tools/test
 ```
 
-If you need the vendor flows, stay on the `tools/` operator surface:
+If you want the main follow-on guides, use:
 
-```bash
-./tools/certi-easy preflight
-./tools/certi-easy install
-./tools/certi-easy smoke compare
+- [`docs/onboarding.md`](docs/onboarding.md): choose the right path for your goal
+- [`docs/first_run.md`](docs/first_run.md): shortest fresh-checkout walkthrough
+- [`docs/python_environment.md`](docs/python_environment.md): fuller environment and install story
+- [`docs/README.md`](docs/README.md): docs index by task
 
-./tools/pitch preflight
-./tools/pitch install
-./tools/pitch smoke
-./tools/pitch verify
+If you need a specific lane:
 
-./tools/test-surface recommend
-./tools/python verify-routes-preflight
-./tools/python verify-routes
-./tools/python verify-fast
-./tools/python verify
-./tools/vendor-green matrix
-```
+- repo mental model: [`docs/repo_mental_model.md`](docs/repo_mental_model.md)
+- runtime editing: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
+- package structure: [`docs/package_layout.md`](docs/package_layout.md)
+- import rules: [`docs/import_boundary_rules.md`](docs/import_boundary_rules.md)
+- FOM tooling: [`docs/fom_workbench.md`](docs/fom_workbench.md)
+- two-federate flow: [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md)
+- package inventory: [`packages/README.md`](packages/README.md)
 
-## Concrete Lanes
+## What Lives Where
 
-These are the primary newcomer lanes:
+- `packages/`: installable workspace packages
+- `docs/`: operator guides, architecture notes, and reference material
+- `examples/`: runnable examples
+- `tools/`: supported operator entrypoints
+- `tests/`: verification and regression surface
 
-- run something: [`docs/first_run.md`](docs/first_run.md)
-- understand the language-shim route experiments: [`docs/language_shim_routes.md`](docs/language_shim_routes.md)
-- inspect the Java toolchain inventory: [`./tools/java`](tools/java)
-- edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
-- create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
-- trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
-- understand ownership: [`packages/README.md`](packages/README.md)
+The architectural namespace root is `hla`, contributed by split packages. The
+main operator front doors are the versioned API packages, `hla.rti`, and the
+`tools/` wrappers.
 
-## What This Repo Is For
+## Working Rule
 
-The main 2010 import surface is `hla.rti1516e`, with cross-version discovery
-and factory selection under `hla.rti`.
+Do not try to understand the whole repo at once.
 
-Concrete backend implementations now live in package-owned source trees such as:
+Pick one of these and stay in it:
 
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/`
-- `packages/hla-backend-certi/src/hla/backends/certi/`
-- `packages/hla-bridge-java-jpype/src/hla.bridges.java.jpype/`
-- `packages/hla-bridge-java-py4j/src/hla.bridges.java.py4j/`
-- `packages/hla-vendor-portico/src/hla/vendors/portico/`
+1. run an example
+2. edit one package
+3. trace one service
+4. work on FOM tooling
+5. run one verification lane
 
-Namespace policy:
-
-- `hla` is the supported runtime namespace root
-- `hla.verification` is the only supported public verification namespace
-- `hla.foms.target_radar` owns package assets, not a supported public Python API surface
-- `hla.rti1516e.testing` is not public API and is intentionally removed
-- repo-only proof, report, and suite orchestration helpers live under `packages/hla-verification/src/hla/verification/repo_internal/verification/`
-
-The repo is intended to make it easy to:
-
-- write federates against one API
-- swap backends without rewriting application logic
-- validate behavior against local, bridged, and real vendor runtimes
-- generate the evidence needed to understand what is supported today
-
-For the 2025 lane specifically:
-
-- `hla-backend-python2025` is the main full executable Python RTI implementation lane
-- `hla-backend-shim` is a compatibility-wrapper package over that runtime, not a separate RTI family
-- Java and C++ 2025 binding routes are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs
-
-## Example Federates
-
-The `examples/` directory is the fastest way to see the API in action.
-
-Good starting points:
-
-- `examples/target_radar_simulation.py` - backend-neutral Target/Radar scenario runner
-- `examples/target_radar.py` - JSON-formatted Target/Radar scenario output
-- `examples/backend_recording.py` - tiny backend abstraction smoke example
-- `examples/minimal_federate.py` - minimal callback skeleton
-- `examples/java_shim_federate.py` - Java-bridge demo through the repo verification shim or a real bridge
-- `examples/jpype_java_rti.py` - JPype vendor-RTI skeleton
-- `examples/py4j_java_rti.py` - Py4J vendor-RTI skeleton
-- `examples/fom_time_factories.py` - FOM/time factory example
-
-For the Target/Radar example, the bundled FOM lives at:
-
-- `packages/hla-fom-target-radar/src/hla.foms.target_radar/resources/foms/TargetRadarFOMmodule.xml`
-
-The `examples/` tree is for runnable entrypoints and thin example-only assets.
-Reusable runtime assets belong under their owning package roots. For
-Target/Radar that canonical owner is `hla-fom-target-radar`.
-
-## Two-Federate Starter
-
-If you want a focused starting note for the two-federate example, use
-[`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md).
-
-## Backend Surface
-
-This workspace has a lot more than just the pure Python RTI.
-
-Current backend names include:
-
-- `python`, `in-memory`, `python-in-memory`
-- `python2025`, `python-2025`, `python-2025-backend`
-- `jpype`, `py4j`
-- `pitch-jpype`, `pitch-py4j`
-- `certi`, `certi-jpype`, `certi-py4j`
-- `portico`, `portico-jpype`, `portico-py4j`
-- transport surfaces under `grpc`, `rest`, and `http-json`
-
-The important part is that these are not all the same level of maturity:
-
-- `python` is the strongest local reference path
-- `python2025` is the main Python RTI implementation lane for IEEE 1516.1-2025
-- `hla.backends.shim` is compatibility-wrapper/import-compatibility code over `python2025`, not a public backend selection lane
-- the Java shims are repo verification backends, not part of the public runtime surface
-- `java-standard-*` and `cpp-standard-*` route names are reserved for future
-  language-shim artifacts that compile against the matching official Java/C++
-  API bundles
-- CERTI and Pitch are real vendor paths with their own launch and smoke flows
-- Portico wiring exists, but local evidence depends on installed runtime
-- `grpc` and `rest` are transport surfaces, not separate RTI families
-
-For the current route inventory and support status, read:
-
-- [`docs/backend_route_inventory.md`](docs/backend_route_inventory.md)
-- [`docs/backend_capability_matrix.md`](docs/backend_capability_matrix.md)
-- [`docs/backend_conformance_matrix.md`](docs/backend_conformance_matrix.md)
-- [`docs/rti_options_and_test_matrix.md`](docs/rti_options_and_test_matrix.md)
-- [`docs/networked_rti_python.md`](docs/networked_rti_python.md)
-
-If you only need the shortest "what works right now?" answer, use:
-
-```bash
-./tools/compliance generate
-./tools/compliance discover --show-backlog
-```
-
-## Repository Layout
-
-```text
-packages/hla-rti1516e/src/hla/rti1516e/    2010 API package
-packages/hla-rti-core/src/hla/rti/         cross-version discovery and ambassador creation
-packages/hla-verification/src/hla/verification/repo_internal/ verification/proof/report helpers kept out of public API
-packages/*/src/       package-owned backend and support implementation roots
-examples/             runnable example federates and scenario entrypoints
-tests/                pytest coverage and smoke tests
-tools/                human-facing operator entrypoints
-scripts/              implementation helpers, CI wrappers, and plumbing
-docs/                 route inventories, runbooks, and verification docs
-packages/             installable workspace packages
-specs/ieee-1516-2010/  retained IEEE reference PDFs and source ZIPs
-CERTI/                vendored CERTI source tree
-java_shims/           Java shim source for bridge validation
-analysis/             generated compliance and verification artifacts
-```
+The repo becomes manageable once the scope is that small.
 
 ## Read Next
 
-1. [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
-2. [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
-3. [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md) for the first artifact-producing two-federate flow
-4. [`docs/README.md`](docs/README.md) for the full documentation map
-
-## Reference
-
-- [`docs/README.md`](docs/README.md) for the documentation index
-- [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
-- [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
-- [`docs/top_to_bottom_green.md`](docs/top_to_bottom_green.md) for the explicit finish definition and green acceptance contract
-- [`docs/install_matrix.md`](docs/install_matrix.md) for extras, bridge deps, and vendor-runtime ordering
-- [`docs/agent_runbook.md`](docs/agent_runbook.md) for the agent/automation startup sequence
-- [`docs/workspace_layout.md`](docs/workspace_layout.md) for the top-level workspace area split
-- [`docs/python_api_spec.md`](docs/python_api_spec.md) for the clean Python spec package
-- [`tools/README.md`](tools/README.md) for the supported operator command surface
-- [`scripts/README.md`](scripts/README.md) for implementation helpers and wrappers
-- [`docs/documentation_hierarchy.md`](docs/documentation_hierarchy.md) for the doc structure
-- [`requirements/README.md`](requirements/README.md) for the seeded requirements catalog
-- [`packages/hla-backend-certi/docs/certi_section8_runbook.md`](packages/hla-backend-certi/docs/certi_section8_runbook.md) for the CERTI operator runbook
-- [`packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](packages/hla-vendor-pitch/docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
-
-## Historical / Provenance
-
-These are kept for audit and provenance, not for onboarding:
-
-- [`docs/source_documents.md`](docs/source_documents.md)
-- [`docs/reference/README.md`](docs/reference/README.md)
-- [`docs/reference/hla_interface_contracts.md`](docs/reference/hla_interface_contracts.md) for the generated interface-contract snapshot
-- [`docs/evidence/README.md`](docs/evidence/README.md)
-
-The repository intentionally keeps generated artifacts out of version control when they can be reproduced from source.
+1. [`docs/onboarding.md`](docs/onboarding.md)
+2. [`docs/first_run.md`](docs/first_run.md)
+3. [`docs/python_environment.md`](docs/python_environment.md)
+4. [`packages/README.md`](packages/README.md)

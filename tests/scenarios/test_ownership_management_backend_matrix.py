@@ -25,8 +25,8 @@ from tests.vendors.runtime_support import cleanup_federation
 
 def test_python_backend_ownership_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = OwnershipScenarioConfig(
         federation_name=f"python-ownership-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -65,8 +65,8 @@ def test_python_backend_ownership_matrix():
 
 def test_python_negotiated_divesting_offer_probe_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = NegotiatedOwnershipScenarioConfig(
         federation_name=f"python-negotiated-offer-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -111,8 +111,8 @@ def test_python_negotiated_divesting_offer_probe_matrix():
 
 def test_python_backend_negotiated_ownership_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = NegotiatedOwnershipScenarioConfig(
         federation_name=f"python-negotiated-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -164,8 +164,8 @@ def test_python_backend_negotiated_ownership_matrix():
 
 def test_python_backend_confirm_divestiture_negotiated_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = NegotiatedOwnershipScenarioConfig(
         federation_name=f"python-confirm-negotiated-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -213,8 +213,8 @@ def test_python_backend_confirm_divestiture_negotiated_matrix():
 
 def test_python_backend_release_request_ownership_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = ReleaseRequestOwnershipScenarioConfig(
         federation_name=f"python-release-request-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -259,8 +259,8 @@ def test_python_backend_release_request_ownership_matrix():
 
 def test_python_backend_ownership_unavailable_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = OwnershipScenarioConfig(
         federation_name=f"python-ownership-unavailable-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -295,8 +295,8 @@ def test_python_backend_ownership_unavailable_matrix():
 
 def test_python_backend_release_denied_ownership_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    acquirer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    acquirer = create_rti_ambassador("python1516e", engine=engine)
     config = ReleaseRequestOwnershipScenarioConfig(
         federation_name=f"python-release-denied-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),
@@ -337,8 +337,8 @@ def test_python_backend_release_denied_ownership_matrix():
 
 def test_python_backend_non_owner_update_rejection_matrix():
     engine = InMemoryRTIEngine()
-    owner = create_rti_ambassador("python", engine=engine)
-    observer = create_rti_ambassador("python", engine=engine)
+    owner = create_rti_ambassador("python1516e", engine=engine)
+    observer = create_rti_ambassador("python1516e", engine=engine)
     config = NonOwnerUpdateScenarioConfig(
         federation_name=f"python-non-owner-update-{uuid.uuid4().hex[:8]}",
         fom_modules=("resource:VendorSmokeFOM.xml",),

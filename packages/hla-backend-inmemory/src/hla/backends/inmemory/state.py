@@ -43,7 +43,7 @@ class SupplementalRemoveInfo:
 
 @dataclass
 class PythonRTIConfig:
-    name: str = "python-inmemory-rti"
+    name: str = "python1516e-rti"
     version: str = "0.12"
     strict_object_publication: bool = False
     strict_interaction_publication: bool = False

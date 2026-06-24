@@ -1,50 +1,57 @@
 # hla-backend-shim
 
-`hla-backend-shim` is deprecated. It provides only the legacy
-compatibility-wrapper package and temporary import-compatibility scaffolding
-for the IEEE 1516.1-2025 Python API surface. It is not part of the repo-owned
-2025 Python RTI implementation claim.
+## What This Is
 
-The package name is historical. In the current repo the main full Python 2025
-RTI implementation executes from `hla-backend-python2025`, which is the sole
-repo-owned IEEE 1516.1-2025 Python RTI implementation lane, while this package
-retains temporary import-compatibility scaffolding, retains import-level
-wrapper-facing normalization, and keeps legacy compatibility aliases.
+`hla-backend-shim` is deprecated compatibility scaffolding for the 2025 Python
+runtime lane.
 
-At the package root, the shim-specific surface is only
-`Shim2025Backend`, `Shim2025RTIAmbassador`, and `create_shim_backend`.
-If older code still needs runtime-class compatibility aliases, use the
-explicit module path `hla.backends.shim.runtime_aliases`, where
-`Python2025Backend`, `Python2025RTIAmbassador`, and
-`create_python2025_backend` still point through to the real runtime lane.
+It remains temporary import-compatibility scaffolding only.
 
-The remaining helper modules under `hla.backends.shim.*` are deliberately
-thin compatibility forwarders into `hla.backends.python2025.*`. They are kept
-only as temporary, test-backed import-compatibility scaffolding and should not
-be treated as the preferred surface for new runtime work or new internal
-imports. They should be removed once no callers depend on the legacy import
-paths.
+It exists to preserve older imports and wrapper-facing compatibility while the
+real implementation lives in `hla-backend-python2025`.
 
-That includes helper files such as `time_management.py`,
-`federation_management.py`, `support_lookup.py`, `save_restore.py`, and the
-other `hla.backends.shim.*` modules outside the package root: they are
-forwarders, not implementation owners.
+It is not part of the repo-owned 2025 Python RTI implementation claim.
+It is not the main full Python 2025 RTI runtime.
+It retains import-level wrapper-facing normalization only.
 
-It is not a 2010 backend and it is not a vendor adapter. The architectural
-split that matters is already in place: `hla-backend-python2025` is the real
-2025 RTI runtime owner and the sole repo-owned 2025 Python RTI lane, and
-`hla-backend-shim` is deprecated, narrow, temporary, compatibility-focused,
-and outside the implementation claim until it can be removed.
+## What This Is Not
 
-Future work here is boundary cleanup and removal, not deciding whether a
-dedicated Python 2025 backend should exist. That backend already exists in
-`hla-backend-python2025`.
+It is not:
 
-When adding or reviewing 2025 runtime behavior, default to the `python2025`
-lane. Only use `hla.backends.shim` when you explicitly need the deprecated
-import-compatibility scaffolding or legacy compatibility-wrapper surface.
+- the main 2025 Python RTI implementation
+- a standard API package
+- a vendor adapter
+- a preferred place for new runtime work
 
-For the current evidence-based decision point, see
-[`docs/plans/2025_python_rti_backend_audit.md`](../../docs/plans/2025_python_rti_backend_audit.md)
-and
-[`docs/python_rti_backend.md`](../../docs/python_rti_backend.md).
+## When To Open It
+
+Open this package only when you explicitly need to:
+
+- preserve legacy imports
+- inspect wrapper-only compatibility behavior
+- remove or tighten remaining compatibility forwarders
+
+If you are changing 2025 runtime behavior, do not start here.
+
+## Key Entrypoints
+
+The package-root compatibility surface is:
+
+- `Shim2025Backend`
+- `Shim2025RTIAmbassador`
+- `create_shim_backend`
+
+Older compatibility aliases still exist under:
+
+- `hla.backends.shim.runtime_aliases`
+
+The remaining `hla.backends.shim.*` modules should stay thin forwarders into
+`hla.backends.python2025.*`.
+
+## Related Docs
+
+- [`../../docs/repo_mental_model.md`](../../docs/repo_mental_model.md)
+- [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
+- [`../../docs/plans/2025_python_rti_backend_audit.md`](../../docs/plans/2025_python_rti_backend_audit.md)
+
+Future work here is cleanup and removal, not feature growth.

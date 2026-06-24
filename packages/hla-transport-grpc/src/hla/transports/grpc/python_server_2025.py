@@ -5570,7 +5570,7 @@ class RTI2025GrpcServer:
         if grpc is None:  # pragma: no cover - optional dependency guard
             raise RuntimeError("gRPC server requested, but grpcio is not installed") from _GRPC_IMPORT_ERROR
         self.config = config
-        self.runtime_provider = "python2025"
+        self.runtime_provider = "python1516_2025"
         self.implementation_lane = "hla-backend-python2025"
         self.counts_as_python_2025_rti = True
         self.wrapper_only = False

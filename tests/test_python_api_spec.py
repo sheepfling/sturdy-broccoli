@@ -13,7 +13,8 @@ from hla.rti1516e import FederateAmbassador, NullFederateAmbassador, RTIambassad
 from hla.rti1516e.federate_ambassador import UnimplementedFederateAmbassador
 from hla.runtime.rti1516e_ambassador import UnimplementedRTIambassador
 
-_PYTHON2025_PROVIDER_ALIASES = ("python2025", "python-2025", "python-2025-backend")
+_PYTHON1516E_PROVIDER_ALIASES = ("python1516e", "python-1516e")
+_PYTHON1516_2025_PROVIDER_ALIASES = ("python1516_2025", "python-1516-2025")
 
 
 def _public_callables(cls: type) -> dict[str, object]:
@@ -63,63 +64,63 @@ def test_runtime_rti_alias_routes_through_pythonic_method():
 
 def test_runtime_backends_are_discovered_as_plugins():
     plugins = available_backend_plugins()
-    assert plugins["python"].name == "inmemory"
-    assert plugins["in-memory"].name == "inmemory"
+    assert plugins["python1516e"].name == "python1516e"
+    assert plugins["python-1516e"].name == "python1516e"
     assert plugins["pitch-jpype"].family == "pitch/java"
     assert plugins["portico-jpype"].family == "portico/java"
     assert plugins["portico"].name == "portico-jpype"
 
-    rti = create_rti_ambassador("in-memory")
-    assert rti.backend_info.name == "python-inmemory-rti"
+    rti = create_rti_ambassador("python-1516e")
+    assert rti.backend_info.name == "python1516e-rti"
 
 
 def test_runtime_backend_listing_is_deduplicated_and_probeable():
     plugins = iter_rti_backend_plugins()
     names = {plugin.name for plugin in plugins}
-    assert "inmemory" in names
+    assert "python1516e" in names
     assert "certi" in names
     assert "pitch-jpype" in names
     assert "portico-jpype" in names
     assert len(plugins) == len(names)
 
     registered = {row.name: row for row in discover_rti_backends()}
-    assert registered["inmemory"].available is None
-    assert registered["inmemory"].family == "inmemory"
+    assert registered["python1516e"].available is None
+    assert registered["python1516e"].family == "python-rti-1516e"
 
     probed = {row.name: row for row in discover_rti_backends(probe=True)}
-    assert probed["inmemory"].available is True
-    assert probed["inmemory"].info.kind == "python/in-memory"
+    assert probed["python1516e"].available is True
+    assert probed["python1516e"].info.kind == "python/1516e"
 
 
-def test_runtime_backend_listing_exposes_python2025_as_primary_2025_lane() -> None:
+def test_runtime_backend_listing_exposes_python1516_2025_as_primary_2025_lane() -> None:
     from hla.rti import discover_rti_backends as discover_runtime_backends
 
     registered = {row.name: row for row in discover_runtime_backends(spec="2025")}
     probed = {row.name: row for row in discover_runtime_backends(spec="2025", probe=True)}
 
-    assert registered["python2025"].family == "python-rti-2025"
-    assert registered["python2025"].aliases == _PYTHON2025_PROVIDER_ALIASES[1:]
-    assert registered["python2025"].supports == ("rti1516_2025",)
-    assert registered["python2025"].description == "Primary Python 2025 RTI implementation package."
-    assert registered["python2025"].available is None
-    assert registered["python2025"].info is None
-    assert probed["python2025"].available is True
-    assert probed["python2025"].aliases == _PYTHON2025_PROVIDER_ALIASES[1:]
-    assert probed["python2025"].info.kind == "python/2025"
-    assert probed["python2025"].info.details["implementation_lane"] == "hla-backend-python2025"
-    assert probed["python2025"].info.details["counts_as_python_2025_rti"] is True
-    assert "wrapper_only" not in probed["python2025"].info.details
+    assert registered["python1516_2025"].family == "python-rti-1516-2025"
+    assert registered["python1516_2025"].aliases == _PYTHON1516_2025_PROVIDER_ALIASES[1:]
+    assert registered["python1516_2025"].supports == ("rti1516_2025",)
+    assert registered["python1516_2025"].description == "Primary Python 1516.1-2025 RTI implementation package."
+    assert registered["python1516_2025"].available is None
+    assert registered["python1516_2025"].info is None
+    assert probed["python1516_2025"].available is True
+    assert probed["python1516_2025"].aliases == _PYTHON1516_2025_PROVIDER_ALIASES[1:]
+    assert probed["python1516_2025"].info.kind == "python/2025"
+    assert probed["python1516_2025"].info.details["implementation_lane"] == "hla-backend-python2025"
+    assert probed["python1516_2025"].info.details["counts_as_python_2025_rti"] is True
+    assert "wrapper_only" not in probed["python1516_2025"].info.details
 
 
-@pytest.mark.parametrize("backend_name", _PYTHON2025_PROVIDER_ALIASES)
-def test_generic_runtime_creation_for_2025_accepts_python2025_aliases_and_keeps_primary_identity(
+@pytest.mark.parametrize("backend_name", _PYTHON1516_2025_PROVIDER_ALIASES)
+def test_generic_runtime_creation_for_2025_accepts_python1516_2025_aliases_and_keeps_primary_identity(
     backend_name: str,
 ) -> None:
     from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
 
     runtime_rti = create_runtime_rti_ambassador(spec="2025", backend=backend_name)
 
-    assert runtime_rti.backend_info.details["provider"] == "python2025"
+    assert runtime_rti.backend_info.details["provider"] == "python1516_2025"
     assert runtime_rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
     assert runtime_rti.backend_info.details["counts_as_python_2025_rti"] is True
     assert runtime_rti.backend_info.kind == "python/2025"
@@ -133,8 +134,8 @@ def test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name() -
         create_runtime_rti_ambassador(spec="2025", backend="shim")
 
 
-@pytest.mark.parametrize("backend_name", _PYTHON2025_PROVIDER_ALIASES)
-def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python2025_aliases(backend_name: str) -> None:
+@pytest.mark.parametrize("backend_name", _PYTHON1516_2025_PROVIDER_ALIASES)
+def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python1516_2025_aliases(backend_name: str) -> None:
     from hla.backends.python2025.hosted_fedpro import FedPro2025RTIAmbassador
     from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
 
@@ -145,7 +146,7 @@ def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python202
     )
 
     assert isinstance(rti, FedPro2025RTIAmbassador)
-    assert rti.backend_info.details["provider"] == "python2025"
+    assert rti.backend_info.details["provider"] == "python1516_2025"
     assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
     assert rti.backend_info.details["counts_as_python_2025_rti"] is True
     assert rti.backend_info.details["wrapper_only"] is False
@@ -209,7 +210,7 @@ def test_runtime_factory_falls_back_to_source_checkout_plugins(monkeypatch):
 
     plugins = runtime_factory._iter_source_checkout_backend_plugins()
     names = {plugin.name for plugin in plugins}
-    assert "inmemory" in names
+    assert "python1516e" in names
 
 
 def test_top_level_package_defaults_to_the_clean_spec_layer():

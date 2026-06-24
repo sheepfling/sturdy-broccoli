@@ -384,7 +384,7 @@ class HlaFactory:
     def create_authentication_context(self, config: Any = None, *, transport: str = "inproc") -> AuthenticationContext:
         mode = _auth_config_value(config, "mode", "NoAuth")
         supports_standard = self.spec.name == "rti1516_2025"
-        supports_custom_credentials = supports_standard and self.provider == "python2025"
+        supports_custom_credentials = supports_standard and self.provider == "python1516_2025"
         supported_custom_credential_types = tuple(_auth_config_value(config, "supported_custom_credential_types", ()))
         if mode != "NoAuth" and not supports_standard:
             raise ValueError("Standard credentials are unsupported for the 1516e-2010 profile")
@@ -422,8 +422,8 @@ class HlaFactory:
         authorizer_provider = None
         authorizer_mode = _auth_config_value(config, "authorizer_mode", None)
         if authorizer_mode is not None:
-            if not (supports_standard and self.provider == "python2025"):
-                raise ValueError("Authorizer providers are available only for the 2025 python2025 RTI provider")
+            if not (supports_standard and self.provider == "python1516_2025"):
+                raise ValueError("Authorizer providers are available only for the 2025 python1516_2025 RTI provider")
             if authorizer_mode != "Fake":
                 raise ValueError(f"Unsupported authorizer mode: {authorizer_mode!r}")
             allowed_federations = _auth_config_value(config, "allowed_federations", None)
@@ -560,7 +560,7 @@ class HlaFactory:
 
 class HlaFactoryRegistry:
     @staticmethod
-    def get(spec: str | HLASpec, *, provider: str = "inmemory", **options: Any) -> HlaFactory:
+    def get(spec: str | HLASpec, *, provider: str = "python1516e", **options: Any) -> HlaFactory:
         return create_hla_factory(spec=spec, provider=provider, **options)
 
 
@@ -794,7 +794,7 @@ def discover_rti_backends(*, spec: str | HLASpec | None = None, probe: bool = Fa
 
 
 def create_backend(
-    backend: str | RTIBackendSpec = "inmemory",
+    backend: str | RTIBackendSpec = "python1516e",
     *,
     spec: str | HLASpec,
     **options: Any,
@@ -822,7 +822,7 @@ def create_backend(
 def create_hla_factory(
     *,
     spec: str | HLASpec,
-    provider: str = "inmemory",
+    provider: str = "python1516e",
     **options: Any,
 ) -> HlaFactory:
     resolved_spec = resolve_spec(spec)
@@ -834,7 +834,7 @@ def create_hla_factory(
 def create_rti_ambassador(
     *,
     spec: str | HLASpec,
-    backend: str | RTIBackendSpec = "inmemory",
+    backend: str | RTIBackendSpec = "python1516e",
     **options: Any,
 ) -> Any:
     """Create a backend-neutral RTI ambassador."""

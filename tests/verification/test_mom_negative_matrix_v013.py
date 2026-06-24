@@ -30,7 +30,7 @@ PLANNED_SERVICE_CASES = tuple(case for case in MOM_NEGATIVE_CASES if not case.ex
 
 def _make_strict_mom_rti(name: str):
     engine = InMemoryRTIEngine()
-    rti = create_rti_ambassador("python", engine=engine, config=PythonRTIConfig(strict_mom_parameter_decoding=True))
+    rti = create_rti_ambassador("python1516e", engine=engine, config=PythonRTIConfig(strict_mom_parameter_decoding=True))
     fed = RecordingFederateAmbassador()
     rti.connect(fed, CallbackModel.HLA_EVOKED)
     rti.create_federation_execution(name, "TargetRadarFOMmodule.xml")

@@ -12,7 +12,7 @@ from hla.runtime.rti1516e import create_rti_ambassador
 
 def _joined(name: str, *, config: PythonRTIConfig | None = None):
     engine = InMemoryRTIEngine()
-    rti = create_rti_ambassador("python", engine=engine, config=config)
+    rti = create_rti_ambassador("python1516e", engine=engine, config=config)
     fed = RecordingFederateAmbassador()
     rti.connect(fed, CallbackModel.HLA_EVOKED)
     rti.create_federation_execution(name, "TargetRadarFOMmodule.xml")

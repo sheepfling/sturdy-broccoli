@@ -576,7 +576,7 @@ def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path
         [
             sys.executable,
             "-c",
-            "import hla.rti1516e; import hla.runtime.rti1516e as rti; from hla.backends.inmemory.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
+            "import hla.rti1516e; import hla.runtime.rti1516e as rti; from hla.backends.inmemory.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python1516e'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
         ],
         cwd=tmp_path,
         env=env,
@@ -585,7 +585,7 @@ def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "python/in-memory" in result.stdout
+    assert "python/1516e" in result.stdout
 
 
 def test_top_level_hla2010_import_is_lightweight(tmp_path: Path):

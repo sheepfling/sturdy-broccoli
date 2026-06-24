@@ -55,7 +55,7 @@ class JavaStandard2025Backend:
                 "route": route,
                 "spec": "rti1516_2025",
                 "standard_backed": True,
-                "runtime_provider": "python2025",
+                "runtime_provider": "python1516_2025",
                 "implementation_lane": "hla-backend-python2025",
                 "counts_as_python_2025_rti": False,
                 "wrapper_only": False,
@@ -104,7 +104,7 @@ def discover_java_standard_2025(route: str) -> BackendInfo:
         details={
             "route": route,
             "spec": "rti1516_2025",
-            "runtime_provider": "python2025",
+            "runtime_provider": "python1516_2025",
             "implementation_lane": "hla-backend-python2025",
             "counts_as_python_2025_rti": False,
             "standard_backed": jar_path.exists() and DEFAULT_REPORT.exists(),

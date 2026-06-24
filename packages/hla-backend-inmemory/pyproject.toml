@@ -16,7 +16,7 @@ typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 
 [project.entry-points."hla.rti_backends"]
-inmemory = "hla.backends.inmemory.plugin:plugin"
+python1516e = "hla.backends.inmemory.plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -29,8 +29,8 @@ namespaces = true
 [tool.hla.package]
 status = "implementation-moved"
 role = "rti-backend"
-backend_names = ["inmemory"]
-backend_aliases = ["python", "in-memory", "python-inmemory", "python-in-memory"]
+backend_names = ["python1516e"]
+backend_aliases = ["python-1516e"]
 source_roots = [
   "packages/hla-backend-inmemory/src/hla/backends/inmemory",
 ]

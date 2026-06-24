@@ -26,7 +26,7 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.verification.target_radar_proof import write_target_radar_proof_artifacts
 
 DEFAULT_BACKENDS = [
-    "python",
+    "python1516e",
     "java-shim-jpype",
     "java-shim-py4j",
 ]
@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Directory for generated artifacts",
     )
     parser.add_argument("--backend", action="append", default=[], help="Backend kind to include in the matrix; repeat as needed")
-    parser.add_argument("--proof-backend", default="python", help="Backend to use for the detailed proof trace")
+    parser.add_argument("--proof-backend", default="python1516e", help="Backend to use for the detailed proof trace")
     parser.add_argument("--steps", type=int, default=4)
     parser.add_argument("--dt", type=float, default=1.0)
     parser.add_argument(

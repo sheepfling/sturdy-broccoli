@@ -63,7 +63,7 @@ def test_cpp_shim_routes_create_2025_native_ambassadors() -> None:
         assert rti.__class__.__name__ == "Python2025RTIAmbassador"
         assert rti.backend_info.kind == expected_kind
         assert rti.backend_info.details["spec"] == "rti1516_2025"
-        assert rti.backend_info.details["runtime_provider"] == "python2025"
+        assert rti.backend_info.details["runtime_provider"] == "python1516_2025"
         assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
         assert rti.backend_info.details["counts_as_python_2025_rti"] is False
         assert rti.backend_info.details["wrapper_only"] is False

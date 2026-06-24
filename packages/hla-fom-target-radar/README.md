@@ -1,42 +1,51 @@
 # hla-fom-target-radar
 
-Concrete Target/Radar FOM and internal example-support package for the `hla2010` workspace.
+## What This Is
 
-This package now owns:
+`hla-fom-target-radar` is the concrete Target/Radar FOM and example-support
+package.
 
-- the packaged `TargetRadarFOMmodule.xml` resource
-- repo-internal target/radar scenario helpers
-- target/radar example runner factory helpers
-- target/radar backend-matrix and proof artifact generators
-- target/radar-owned two-federate suite helper slices
-- target/radar-owned two-federate suite artifact formatting
-- target/radar-owned two-federate vendor profile policy
+It owns the packaged Target/Radar FOM resource plus the repo-local scenario and
+artifact helpers used by examples and verification flows.
 
-This package does not expose a supported public Python import surface. The old
-root-level `hla.rti1516e.scenarios.target_radar` compatibility path remains
-removed, and the package-owned scenario helpers now live under a private
-namespace.
+## What This Is Not
 
-The `hla.foms.target_radar` namespace remains the owning package root for the
-bundled FOM resources and repo-internal example implementation.
+It is not:
 
-Use this package when you want:
+- a public standard API package
+- a concrete RTI backend
+- a generic runtime support package
 
-- the bundled Target/Radar FOM path
+This is a leaf package. It owns concrete model assets and scenario support.
+It does not expose a supported public Python import surface.
+
+## When To Open It
+
+Open this package when you want:
+
+- the bundled `TargetRadarFOMmodule.xml` resource
 - the internal scenario runner used by repo examples and verification flows
-- a backend factory that can target local Python, JPype, Py4J, or the split
-  runtime helper defaults
-- a stable place to extend the example without touching the generic HLA
-  interface package
+- a stable place to extend the Target/Radar example without changing core
+  runtime packages
 
-This package depends on `hla-rti1516e` and may optionally be combined with
-backend plugin packages for runnable examples, but it does not own RTI backend
-implementations.
-Split-package guard coverage lives in
-`tests/test_fom_target_radar_split_package.py`.
+## Key Entrypoints
 
-The human operator surface for Target/Radar stays `./tools/target-radar`; this
-package does not add a package-local command.
+The owning namespace root is:
+
+- `hla.foms.target_radar`
+
+The human-facing entrypoints stay outside the package:
+
+- `./tools/target-radar`
+- `examples/target_radar_simulation.py`
+- `examples/target_radar.py`
+
+## Related Docs
+
+- [`../../docs/repo_mental_model.md`](../../docs/repo_mental_model.md)
+- [`../../docs/python_environment.md`](../../docs/python_environment.md)
+- [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)
+- [`docs/README.md`](docs/README.md)
 
 For setup, bootstrap the repo root first:
 
@@ -45,13 +54,9 @@ For setup, bootstrap the repo root first:
 source .venv/bin/activate
 ```
 
-Then run the scenario entrypoints. Full install order lives in
-[`../../docs/python_environment.md`](../../docs/python_environment.md).
+If you are extending the example, keep human-facing usage on `./tools` or
+`examples/` and treat package-owned helpers as implementation detail.
 
-If you are extending the example, keep human-facing usage on
-`./tools/target-radar` or the `examples/target_radar*` scripts and treat the
-package-owned helpers as repo-internal implementation detail.
+Guard coverage lives in:
 
-The package-local docs page is
-[`docs/README.md`](docs/README.md), and the broader walkthrough is in
-[`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md).
+- `tests/test_fom_target_radar_split_package.py`

@@ -20,13 +20,13 @@ def _create_backend(request: BackendRequest):
 
 def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
-        name="inmemory",
-        aliases=("python", "in-memory", "python-inmemory", "python-in-memory"),
-        family="inmemory",
+        name="python1516e",
+        aliases=("python-1516e",),
+        family="python-rti-1516e",
         supports=("rti1516e",),
-        description="Pure in-memory Python RTI backend.",
+        description="Primary Python 1516e RTI backend.",
         create_backend=_create_backend,
-        discover=lambda: BackendInfo(name="python-inmemory-rti", kind="python/in-memory"),
+        discover=lambda: BackendInfo(name="python1516e-rti", kind="python/1516e"),
     )
 
 

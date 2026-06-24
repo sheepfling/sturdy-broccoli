@@ -22,7 +22,7 @@ It contains:
 - a 2010 pure Python RTI backend: `hla-backend-inmemory`
 - a primary 2025 Python RTI backend: `hla-backend-python2025`
 - a legacy 2025 compatibility-wrapper package: `hla-backend-shim`
-- hosted 2025 transport routes, such as `python-2025-fedpro-grpc`, that are
+- hosted 2025 transport routes, such as `python1516_2025-fedpro-grpc`, that are
   route variants over the 2025 lane rather than a separate RTI
 
 Relevant package anchors:
@@ -70,7 +70,7 @@ surface now exercises the primary runtime in `hla-backend-python2025`, while
 retaining `hla-backend-shim` as a compatibility surface.
 
 That separation applies to hosted operator paths too: the maintained 2025
-transport-hosted lane is named and evidenced as `python2025`, while
+transport-hosted lane is named and evidenced as `python1516_2025`, while
 `hla.backends.shim` stays import-level compatibility code rather than the
 canonical hosted runtime surface.
 
@@ -82,9 +82,9 @@ That means the practical repo stance is:
 - architectural caution: do not collapse shim concerns and RTI concerns so
   tightly that a later extraction becomes impossible
 
-In repo terms, `python2025` is the RTI lane. `shim` is not.
+In repo terms, `python1516_2025` is the RTI lane. `shim` is not.
 
-For runtime selection and verification, use `backend="python2025"`. Treat
+For runtime selection and verification, use `backend="python1516_2025"`. Treat
 `backend="shim"` as a compatibility-only legacy alias path, not as a supported
 main 2025 RTI selection surface.
 
@@ -92,7 +92,7 @@ The important clarification is that the dedicated runtime already exists. The
 remaining architectural question is how narrow the compatibility wrapper should
 be, not whether the repo still needs to create a real Python 2025 RTI backend.
 
-For day-to-day implementation work, use `python2025` as the 2025 backend lane
+For day-to-day implementation work, use `python1516_2025` as the 2025 backend lane
 and treat `hla.backends.shim` as compatibility-only. Do not describe new 2025
 runtime work as if the shim package were still the implementation owner.
 
@@ -101,10 +101,10 @@ runtime work as if the shim package were still the implementation owner.
 Use these two commands as the normal operator-facing proof lanes behind the
 current 2025 claim:
 
-- `./tools/python verify-main-2025` for the direct main-surface `python2025`
+- `./tools/python verify-main-2025` for the direct main-surface `python1516_2025`
   proof lane over `hla-backend-python2025`
 - `./tools/python verify-routes-2025` when you also need the bounded hosted
-  `python-2025-fedpro-grpc` hygiene lane over that same runtime
+  `python1516_2025-fedpro-grpc` hygiene lane over that same runtime
 
 Treat `verify-main-2025` as the default 2025 proof path. Reach for
 `verify-routes-2025` when the change touches hosted transport behavior,
@@ -114,7 +114,7 @@ surfaces.
 Those two commands now name the current proof families explicitly instead of
 leaving them buried inside broad keyword slices:
 
-- package-boundary and runtime-identity guards that keep `python2025` as the
+- package-boundary and runtime-identity guards that keep `python1516_2025` as the
   owned RTI lane and `shim` as wrapper-only
 - federation, object, and DDM runtime proofs across lifecycle, listing,
   exchange, region gating, scope relevance, and directed routing
@@ -147,7 +147,7 @@ Primary evidence anchors:
 - `examples/target_radar_simulation.py`
 - `tests/scenarios/test_target_radar_scenario.py`
 - `tests/test_fom_target_radar_split_package.py`
-- `tests/test_rti1516_2025_python2025_runtime.py` (main in-process python2025 proof suite)
+- `tests/test_rti1516_2025_python2025_runtime.py` (main in-process python1516_2025 proof suite)
 - `tests/requirements/test_2025_finish_line_snapshot.py`
 - `tests/requirements/test_2025_route_parity_matrix.py`
 - `tests/backends/test_shim_route_trace_evidence.py`
@@ -213,9 +213,9 @@ What that currently includes:
   targeting, retraction, and bounded lookahead-window proofs
 - support-service lookups, handle normalization, switch inquiry/set flows, and
   name reservation flows
-- raw `python2025` support-service handle-factory and decode-helper proof
+- raw `python1516_2025` support-service handle-factory and decode-helper proof
   without routing through the compatibility wrapper
-- snake-case alias acceptance on the primary direct `python2025` runtime
+- snake-case alias acceptance on the primary direct `python1516_2025` runtime
   surface
 - raw callback-control proof on the main lane:
   `disableCallbacks`, `enableCallbacks`, `evokeCallback`, and
@@ -224,28 +224,28 @@ What that currently includes:
   re-enabled
 - OMT parser, serializer, validation, and explicit unsupported-boundary rows
 - the backend-neutral Target/Radar example route as a package-owned shared
-  scenario path: `examples/target_radar_simulation.py --backend python2025 --steps 5`
+  scenario path: `examples/target_radar_simulation.py --backend python1516_2025 --steps 5`
   now runs through `hla.foms.target_radar._internal.TargetRadar2025RTIAdapter`,
-  which is owned by `hla-fom-target-radar` and wraps both `python2025` and the
+  which is owned by `hla-fom-target-radar` and wraps both `python1516_2025` and the
   wrapper-only `shim` alias without moving runtime ownership back into
   `hla-backend-shim`; the same package-owned adapter now also runs the shared
   Target/Radar example path plus the shared future-exclusion time-window proof
   and restore-state save/restore proof over the factory-hosted
-  `create_rti_ambassador("python2025", transport=...)` FedPro route
+  `create_rti_ambassador("python1516_2025", transport=...)` FedPro route
 - hosted FedPro route behavior as a bounded runtime slice
 
 Recent 2025 suite state:
 
 - `tests/test_rti1516_2025_python2025_runtime.py`: full green; this is the main executable in-process proof suite for `hla-backend-python2025`
 - the direct in-process 2025 suite now explicitly proves partial-delivery TSO
-  retraction semantics on the main `python2025` lane: an interaction can be
+  retraction semantics on the main `python1516_2025` lane: an interaction can be
   delivered to one constrained subscriber, retracted, and withheld from a
   lagging subscriber that later advances to the same timestamp
 - the hosted FedPro route now replays that partial-delivery retraction
   invariant too: a delivered subscriber receives `REQUEST_RETRACTION`, while a
   lagging subscriber later advanced to the same logical time does not receive
   the retracted interaction
-- the factory-hosted `create_rti_ambassador("python2025", transport=...)`
+- the factory-hosted `create_rti_ambassador("python1516_2025", transport=...)`
   route now also proves direct MOM federation-management save/restore service
   interactions on the hosted 2025 ambassador surface, and the hosted FedPro
   2025 ambassador now accepts camelCase 2025 API entrypoints as aliases over
@@ -254,24 +254,24 @@ Recent 2025 suite state:
   service interactions on the hosted 2025 ambassador surface: regulation and
   constrained mode enable/disable, lookahead modification/query, TAR/TARA,
   NMR/NMRA, flushQueueRequest, and async-delivery toggles all execute through
-  the direct `python2025` hosted ambassador with the expected 2025 exception
+  the direct `python1516_2025` hosted ambassador with the expected 2025 exception
   surface
 - that same factory-hosted route now also proves a direct MOM request/report
   slice on the hosted 2025 ambassador surface: publication/subscription
   reports, interaction publication/subscription reports, object-instance
   information reports, and basic activity-count reports now execute through the
-  direct `python2025` hosted ambassador rather than only through lower-level
+  direct `python1516_2025` hosted ambassador rather than only through lower-level
   transport-only FedPro tests
 - that same factory-hosted route now also proves a direct MOM
   object/ownership-service slice on the hosted 2025 ambassador surface:
   transportation-type change requests, unconditional ownership divestiture,
   hosted delete-object service routing, and hosted local-delete service routing
-  now execute through the direct `python2025` hosted ambassador rather than
+  now execute through the direct `python1516_2025` hosted ambassador rather than
   only through lower-level transport-only FedPro tests
 - that same factory-hosted route now also proves a direct federation
   listing/member-report slice on the hosted 2025 ambassador surface:
   `listFederationExecutions`, `listFederationExecutionMembers`, and
-  missing-federation reporting now execute through the direct `python2025`
+  missing-federation reporting now execute through the direct `python1516_2025`
   hosted ambassador with real 2025 callback datatypes rather than raw transport
   payload dicts
 - that same factory-hosted route now also proves a direct support-service slice
@@ -286,22 +286,22 @@ Recent 2025 suite state:
 - that same factory-hosted route now also proves a direct restore-control
   negative slice on the hosted 2025 ambassador surface: missing-label restore
   failure, restore-not-requested rejection, save abort, and restore abort all
-  execute through the direct hosted `python2025` ambassador rather than being
+  execute through the direct hosted `python1516_2025` ambassador rather than being
   left only to lower-level FedPro control-path tests
 - that same factory-hosted route now also proves a direct local-delete restore
   slice on the hosted 2025 ambassador surface: after a subscriber locally
   deletes a discovered object, restore returns the saved known-object state and
   a fresh post-restore reflection routes again on the restored handle through
-  the direct hosted `python2025` ambassador
+  the direct hosted `python1516_2025` ambassador
 - that same factory-hosted route now also proves a direct object-exchange slice
   on the hosted 2025 ambassador surface: publish/subscribe wiring, object
   discovery, attribute reflection, and interaction receipt all execute through
-  the direct `python2025` hosted ambassador on the package-owned Target/Radar
+  the direct `python1516_2025` hosted ambassador on the package-owned Target/Radar
   FOM rather than only through broader hosted scenario replay
 - that same factory-hosted route now also proves a direct timestamped
   delivery/retraction slice on the hosted 2025 ambassador surface:
   timestamped updates and interactions now return retraction handles on the
-  direct hosted `python2025` ambassador, a delivered constrained subscriber can
+  direct hosted `python1516_2025` ambassador, a delivered constrained subscriber can
   observe the timestamped callbacks and later receive `requestRetraction`, and
   a lagging constrained subscriber advanced afterward does not receive the
   retracted timestamped traffic

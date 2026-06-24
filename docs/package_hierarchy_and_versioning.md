@@ -1,153 +1,131 @@
 # Package Hierarchy And Versioning
 
-Use this page when you need the shortest answer to two questions:
+Use this page for the short answer to:
 
-1. how do the installable packages depend on each other?
-2. are the packages independently versioned?
+1. what are the layers?
+2. how do the installable packages fit into those layers?
+3. are the packages versioned independently?
 
-For the deeper package ownership guide, use
-[`package_layout.md`](package_layout.md).
-
-For the generated dependency evidence, use
+For the deeper ownership guide, use [`package_layout.md`](package_layout.md).
+For the stricter import rules, use
+[`import_boundary_rules.md`](import_boundary_rules.md).
+For the generated dependency graph, use
 [`package_dependency_tree.md`](package_dependency_tree.md).
 
-## Quick Dependency Tree
+## The Layer Model
 
-Read the package families from top to bottom:
+Read the repo from top to bottom like this:
+
+| Layer | What it owns | Main packages |
+| --- | --- | --- |
+| 1. Standard surfaces | public HLA-facing Python APIs | `hla-rti1516e`, `hla-rti1516-2025` |
+| 2. Shared support | factories, registries, shared codecs, common helpers | `hla-rti-core`, `hla-backend-common`, `hla-transport-common`, `hla-bridge-java-common` |
+| 3. Concrete backends | actual HLA service behavior | `hla-backend-inmemory`, `hla-backend-python2025`, `hla-backend-certi`, `hla-backend-shim`, `hla-backend-cpp-shim` |
+| 4. Integrations | transport, vendor, and bridge routes | `hla-transport-grpc`, `hla-transport-rest`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-vendor-pitch`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`, `hla-vendor-portico` |
+| 5. Leaves | concrete FOMs, scenarios, and proof harnesses | `hla-fom-target-radar`, `hla-fom-proto2025-message-test`, `hla-fom-proto2025-space-lite`, `hla-fom-proto2025-time-mgmt-test`, `hla-verification` |
+
+This is the hierarchy that matters most.
+
+## The Package Families
+
+Use this as the quick family map:
+
+- `hla-rti1516e`
+  - 2010 standard API package
+- `hla-rti1516-2025`
+  - 2025 standard API package
+- `hla-rti-core`
+  - cross-version runtime discovery and factory support through `hla.rti`
+- `hla-backend-common`
+  - shared backend-neutral support code
+- `hla-transport-common`
+  - shared transport-neutral hosted request support
+- `hla-bridge-java-common`
+  - shared Java bridge support
+- `hla-backend-*`
+  - concrete runtime behavior engines
+- `hla-transport-*`
+  - concrete network and hosted transport layers
+- `hla-vendor-*`
+  - vendor-specific runtime integrations
+- `hla-bridge-*`
+  - JPype/Py4J bridge implementations
+- `hla-fom-*`
+  - concrete FOM resources and showcase packages
+- `hla-verification`
+  - public verification surface plus repo-internal proof helpers
+
+## The Dependency Story
+
+The intended direction is simple:
 
 ```text
-hla-rti1516e
-└── shared support
-    ├── hla-backend-common
-    ├── hla-transport-common
-    ├── hla-bridge-java-common
-    ├── hla-rti-core
-    └── hla-verification
-        ├── hla-fom-target-radar
-        ├── hla-fom-proto2025-message-test
-        ├── hla-fom-proto2025-space-lite
-        └── hla-fom-proto2025-time-mgmt-test
-
-hla-rti1516e
-└── hla-backend-common
-    ├── hla-backend-inmemory
-    ├── hla-transport-common
-    │   ├── hla-rti-core
-    │   │   ├── hla-backend-certi
-    │   │   ├── hla-vendor-pitch
-    │   │   ├── hla-transport-grpc
-    │   │   ├── hla-transport-rest
-    │   │   ├── hla-fom-target-radar
-    │   │   ├── hla-fom-proto2025-message-test
-    │   │   ├── hla-fom-proto2025-space-lite
-    │   │   └── hla-fom-proto2025-time-mgmt-test
-    │   └── hla-backend-inmemory
-    └── hla-bridge-java-common
-        ├── hla-bridge-java-jpype
-        │   ├── hla-vendor-pitch-jpype
-        │   └── hla-vendor-portico
-        ├── hla-bridge-java-py4j
-        │   ├── hla-vendor-pitch-py4j
-        │   └── hla-vendor-portico
-        ├── hla-vendor-pitch
-        └── hla-backend-certi
-
-hla-rti1516-2025
-└── hla-rti-core
-    ├── hla-backend-python2025
-    ├── hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python2025)
-    ├── hla-bridge-java-common
-    ├── hla-backend-cpp-shim
-    ├── hla-transport-grpc (bounded FedPro 2025 hosted route)
-    ├── hla-fom-proto2025-message-test
-    ├── hla-fom-proto2025-space-lite
-    ├── hla-fom-proto2025-time-mgmt-test
-    └── hla-verification
+standard surface
+  -> shared support
+  -> concrete backend
+  -> transport / vendor / bridge integration
+  -> FOM / scenario / verification leaves
 ```
 
-That tree is intentionally simplified. It is meant to answer:
+That does not mean every package depends on every lower layer. It means the
+repo should become easier to reason about as you move downward from abstract
+surface to concrete execution.
 
-- what is the root package?
-- which packages are shared support?
-- which packages are backend families?
-- which packages are transport families?
-- which packages are leaves?
+The most important rules are:
 
-It is not the authoritative graph. The authoritative graph is the generated
-one in [`package_dependency_tree.md`](package_dependency_tree.md).
+- standard packages should stay small
+- shared support should not quietly become a backend
+- transport is not a backend
+- vendor packages are integrations, not standard surfaces
+- FOM/example packages are leaves, not core runtime layers
 
-## Current Layers
+## What Makes The Hierarchy Feel Confusing
 
-The current machine-generated layer model is:
+There are three different structures at once:
 
-- Layer 0: `hla-rti-core`, `hla-rti1516e`
-- Layer 1: `hla-backend-common`, `hla-fom-target-radar`, `hla-rti1516-2025`
-- Layer 2: `hla-backend-inmemory`, `hla-backend-python2025`, `hla-bridge-java-common`, `hla-transport-common`
-- Layer 3: `hla-backend-certi`, `hla-backend-cpp-shim`, `hla-backend-shim`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-fom-proto2025-message-test`, `hla-fom-proto2025-space-lite`, `hla-fom-proto2025-time-mgmt-test`, `hla-transport-grpc`, `hla-transport-rest`, `hla-vendor-pitch`
-- Layer 4: `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`, `hla-vendor-portico`, `hla-verification`
+1. distribution names
+   - `hla-backend-inmemory`
+2. import paths
+   - `hla.backends.inmemory`
+3. runtime role
+   - standard surface, support, backend, integration, leaf
 
-Regenerate and check the dependency evidence with:
-
-```bash
-./tools/package-deps generate
-./tools/package-deps check
-```
+The runtime role is the one to optimize for when reading the repo.
 
 ## Versioning Status
 
 Every installable package has its own `project.version` field in its own
-`pyproject.toml`.
+`pyproject.toml`, so the workspace is structurally capable of independent
+versioning.
 
-So the repo is structurally capable of per-package version numbers.
-
-But the repo is not currently using true independent versioning.
+But it is not operating that way today.
 
 Current state:
 
 - every package is at `0.13.0`
-- internal package dependencies are pinned with exact versions such as
-  `hla-rti1516e==0.13.0`
-- that means the workspace behaves as a lockstep versioned package set
-
-Examples of the current policy:
-
-- `hla-backend-inmemory` depends on:
-  - `hla-rti1516e==0.13.0`
-  - `hla-backend-common==0.13.0`
-  - `hla-transport-common==0.13.0`
-- `hla-fom-target-radar` depends on:
-  - `hla-rti1516e==0.13.0`
-  - `hla-rti-core==0.13.0`
+- internal dependencies are pinned exactly
+- the workspace behaves like a lockstep versioned package set
 
 So the accurate answer is:
 
-- `separate version fields`: yes
-- `independently releasable today`: not cleanly
+- separate version fields: yes
+- independently releasable today: not cleanly
 
 ## What True Independent Versioning Would Require
 
-To move from lockstep to real per-package versioning, the repo would need:
+To move away from lockstep versioning, the repo would need:
 
-1. a compatibility policy for shared support packages
-2. internal dependency ranges instead of exact `==` pins where appropriate
-3. release tooling that can publish one package without forcing a full workspace bump
-4. explicit rules for when a shared support package bump forces dependent package bumps
+1. compatibility policy for shared support packages
+2. dependency ranges instead of exact `==` pins where appropriate
+3. release tooling that can publish one package intentionally
+4. explicit bump rules for dependent packages
 
-If the repo ever moves in that direction, the safest starting point is the
-leaf packages first:
+The safest place to start would be the leaf packages.
+The riskiest place to start would be the standard surfaces and shared core.
 
-- `hla-fom-*`
-- possibly transport leaf packages with limited reverse dependencies
+## Read Next
 
-The riskiest place to start is the shared core:
-
-- `hla-rti1516e`
-- `hla-backend-common`
-- `hla-rti-core`
-
-## Recommended Reading Order
-
-1. [`package_layout.md`](package_layout.md)
-2. [`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md)
+1. [`repo_mental_model.md`](repo_mental_model.md)
+2. [`package_layout.md`](package_layout.md)
 3. [`package_dependency_tree.md`](package_dependency_tree.md)
 4. [`import_boundary_rules.md`](import_boundary_rules.md)

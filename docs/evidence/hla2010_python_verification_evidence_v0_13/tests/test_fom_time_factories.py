@@ -14,7 +14,7 @@ TARGET_RADAR_FOM = PROJECT_ROOT / "examples" / "target_radar" / "TargetRadarFOMm
 
 
 def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
     rti.create_federation_execution("fom-time-fed", TARGET_RADAR_FOM, "HLAfloat64Time")
     rti.join_federation_execution("tester", "test", "fom-time-fed")
@@ -46,7 +46,7 @@ def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
 
 
 def test_python_rti_exposes_handle_set_and_map_factories():
-    rti = create_rti_ambassador("python")
+    rti = create_rti_ambassador("python1516e")
     rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
     rti.create_federation_execution("factory-fed", "TargetRadarFOMmodule.xml")
     rti.join_federation_execution("tester", "test", "factory-fed")

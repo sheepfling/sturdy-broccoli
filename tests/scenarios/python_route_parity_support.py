@@ -62,8 +62,8 @@ def python_rti_pair(route: PythonRoute) -> Iterator[RtiPair]:
     with ExitStack() as stack:
         if route == "python-direct":
             engine = InMemoryRTIEngine()
-            left = _attach_spawn_hook(create_rti_ambassador("python", engine=engine), lambda: create_rti_ambassador("python", engine=engine))
-            right = _attach_spawn_hook(create_rti_ambassador("python", engine=engine), lambda: create_rti_ambassador("python", engine=engine))
+            left = _attach_spawn_hook(create_rti_ambassador("python1516e", engine=engine), lambda: create_rti_ambassador("python1516e", engine=engine))
+            right = _attach_spawn_hook(create_rti_ambassador("python1516e", engine=engine), lambda: create_rti_ambassador("python1516e", engine=engine))
             stack.callback(_close_rti, right)
             stack.callback(_close_rti, left)
             yield RtiPair(left=left, right=right)
@@ -107,7 +107,7 @@ def python_rti_group(route: PythonRoute, count: int) -> Iterator[RtiGroup]:
         if route == "python-direct":
             engine = InMemoryRTIEngine()
             members = tuple(
-                _attach_spawn_hook(create_rti_ambassador("python", engine=engine), lambda: create_rti_ambassador("python", engine=engine))
+                _attach_spawn_hook(create_rti_ambassador("python1516e", engine=engine), lambda: create_rti_ambassador("python1516e", engine=engine))
                 for _ in range(count)
             )
             for member in reversed(members):

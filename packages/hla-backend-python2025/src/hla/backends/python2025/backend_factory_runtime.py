@@ -12,13 +12,13 @@ from hla.rti.plugin_api import BackendRequest
 
 @dataclass(frozen=True, slots=True)
 class Python2025BackendInfo(BackendInfo):
-    name: str = "python2025-rti"
+    name: str = "python1516_2025-rti"
     kind: str = "python/2025"
     version: str = "0.13.0"
     details: dict[str, Any] = field(
         default_factory=lambda: {
             "spec": "rti1516_2025",
-            "provider": "python2025",
+            "provider": "python1516_2025",
             "implementation_lane": "hla-backend-python2025",
             "counts_as_python_2025_rti": True,
         }
@@ -86,12 +86,12 @@ def create_python2025_backend(request: BackendRequest) -> Python2025Backend:
                 transport_spec.setdefault("schema", "rti1516_2025")
         transport = coerce_transport_spec(transport_spec)
         if transport is None:
-            raise ValueError("backend='python2025' received an empty transport specification")
+            raise ValueError("backend='python1516_2025' received an empty transport specification")
         return HostedPython2025Backend(request, transport)
     if options:
         unsupported = ", ".join(sorted(options))
         raise ValueError(
-            f"unsupported backend option(s) for backend='python2025': {unsupported}; "
+            f"unsupported backend option(s) for backend='python1516_2025': {unsupported}; "
             "the in-process 2025 backend does not currently accept backend-specific factory options"
         )
     return Python2025Backend(request)

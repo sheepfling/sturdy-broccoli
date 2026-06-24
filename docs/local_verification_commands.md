@@ -42,13 +42,13 @@ Use this operator rule consistently:
   implementation lane
 
 `./tools/python verify-main-2025` is the regular main-surface lane for the
-current `python2025` backend claim. It runs the direct in-process runtime proof
+current `python1516_2025` backend claim. It runs the direct in-process runtime proof
 selectors, the package/runtime boundary guardrails that keep `shim`
 compatibility-only, the 2025 requirements-registry and bounded proof-note
 surface, plus the dedicated OMT validation/parsing evidence surface, without
 mixing that claim into hosted-route hygiene.
 
-That main-surface lane also includes the explicit raw `python2025` proofs for
+That main-surface lane also includes the explicit raw `python1516_2025` proofs for
 support-service handle-factory/decode behavior, snake-case direct-surface
 aliases, and callback-control services on `hla-backend-python2025` itself.
 It also names the Target/Radar time-window ladder explicitly: the integrated
@@ -65,11 +65,11 @@ restore-output / restore-pipeline replay guards.
 It now also names the service-heavy proof family explicitly: direct automatic
 resign support-service state, callback-control over live object reflection,
 ownership acquire/query/negotiation flows, and direct MOM report/control/action
-routing on the `python2025` surface.
+routing on the `python1516_2025` surface.
 It now also names the federation/object/DDM proof family explicitly: lifecycle,
 listing, object-and-interaction exchange, name reservation, region/DDM
 lifecycle and declaration gating, object-scope relevance, and directed-routing
-checks on the direct `python2025` surface.
+checks on the direct `python1516_2025` surface.
 
 Direct real-runtime pytest paths are now secondary diagnostics. Use the vendor
 operator path first so preflight is confirmed before the runtime tests start.
@@ -83,13 +83,13 @@ Python RTI surface. Run it after changes to `hla.backends.inmemory`,
 2010 Target/Radar example path.
 
 `./tools/python verify-routes-2025` is the regular hygiene lane for the main
-`python2025` RTI plus the bounded hosted `python-2025-fedpro-grpc` route. Run
+`python1516_2025` RTI plus the bounded hosted `python1516_2025-fedpro-grpc` route. Run
 it after changes to 2025 transport-hosted client/server wiring, hosted-route
 examples, the in-process Target/Radar time-window proof ladder, direct
-`python2025` save/restore, ownership, callback, support-service, or MOM
+`python1516_2025` save/restore, ownership, callback, support-service, or MOM
 proofs, the checked-in 2025 finish-line bundle, the 2025 route-parity ledger,
 the 2025 requirements-registry and bounded proof-note surface, or other route-level behavior that must
-stay aligned between the direct `python2025` lane and the hosted FedPro route.
+stay aligned between the direct `python1516_2025` lane and the hosted FedPro route.
 It also names the hosted Target/Radar time-window family explicitly through the
 factory-hosted and shared FedPro Target/Radar example, future-exclusion,
 output-delivery, consumer-order, integrated-gauntlet, receive-order-poison,

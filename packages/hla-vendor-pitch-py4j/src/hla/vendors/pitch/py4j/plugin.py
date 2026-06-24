@@ -36,7 +36,7 @@ class _Pitch202XPy4JAdapterBackend:
                 "vendor_surface": "hla.rti1516_202X",
                 "bridge": "py4j",
                 "pitch_home": home,
-                "adapter_status": "python2025-wrapped",
+                "adapter_status": "python1516_2025-wrapped",
                 "bridge_ready": False,
                 "counts_as_vendor_runtime": False,
                 "evidence_artifacts": [
@@ -83,7 +83,7 @@ def _discover_pitch_202x_runtime() -> BackendInfo | None:
             **dict(runtime.details),
             "spec": "rti1516_2025",
             "vendor_surface": "hla.rti1516_202X",
-            "adapter_status": "python2025-wrapped",
+            "adapter_status": "python1516_2025-wrapped",
             "bridge_ready": False,
             "counts_as_vendor_runtime": False,
         },

@@ -354,7 +354,7 @@ class PythonRTIGrpcServer:
             raise RuntimeError("gRPC server requested, but grpcio is not installed") from _GRPC_IMPORT_ERROR
         self.config = config
         self.servicer = _FedPro2010GatewayServicer(
-            create_rti_ambassador("python", engine=config.engine, config=config.python_config)
+            create_rti_ambassador("python1516e", engine=config.engine, config=config.python_config)
         )
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         pb2_grpc.add_HLA2010FedProGatewayServicer_to_server(self.servicer, self.server)

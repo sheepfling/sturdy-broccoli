@@ -24,8 +24,8 @@ def test_target_radar_fom_helper_points_to_package_owned_resource() -> None:
 
 
 def test_target_radar_verification_helpers_are_repo_internal() -> None:
-    matrix_summary = run_target_radar_backend_matrix(["python"], target_radar_steps=2)
-    proof_summary = run_target_radar_proof(["python"], target_radar_steps=2)
+    matrix_summary = run_target_radar_backend_matrix(["python1516e"], target_radar_steps=2)
+    proof_summary = run_target_radar_proof(["python1516e"], target_radar_steps=2)
 
     assert matrix_summary["suite_name"] == "target-radar-backend-matrix"
     assert proof_summary["suite_name"] == "target-radar-proof"
@@ -33,7 +33,7 @@ def test_target_radar_verification_helpers_are_repo_internal() -> None:
 
 
 def test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter() -> None:
-    runtime_factory = make_target_radar_factory("python2025")
+    runtime_factory = make_target_radar_factory("python1516_2025")
     runtime_rti = runtime_factory("target")
 
     assert isinstance(runtime_rti, TargetRadar2025RTIAdapter)
@@ -82,15 +82,15 @@ def test_target_radar_package_owned_2025_adapter_covers_shared_scenario_service_
     assert required_methods <= adapter_methods
 
 
-def test_target_radar_factory_supports_hosted_python2025_route_with_package_owned_adapter() -> None:
+def test_target_radar_factory_supports_hosted_python1516_2025_route_with_package_owned_adapter() -> None:
     server = start_2025_grpc_server()
     try:
         result = internal_run_target_radar_scenario(
             make_target_radar_factory(
-                "python2025",
+                "python1516_2025",
                 backend_options={"transport": {"kind": "grpc", "target": server.target}},
             ),
-            federation_name="target-radar-python2025-hosted",
+            federation_name="target-radar-python1516_2025-hosted",
             steps=2,
             fom_modules=["TargetRadarFOMmodule.xml"],
         )

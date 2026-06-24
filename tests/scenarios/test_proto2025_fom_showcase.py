@@ -18,7 +18,7 @@ def test_proto2025_fom_showcase_completes_all_example_federations() -> None:
     summary = run_proto2025_fom_showcase(target_radar_steps=2)
 
     assert summary["suite_name"] == "proto2025-fom-simulation-showcase"
-    assert summary["profile"] == "python2025-direct"
+    assert summary["profile"] == "python1516_2025-direct"
     assert summary["status"] == "lifecycle-green"
     assert {row["scenario"] for row in summary["scenarios"]} == {
         "message-test",
@@ -41,7 +41,7 @@ def test_proto2025_fom_showcase_artifacts_are_generated(tmp_path) -> None:
     paths = write_proto2025_fom_showcase_artifacts(tmp_path, target_radar_steps=1)
 
     summary = json.loads(paths.summary_json.read_text(encoding="utf-8"))
-    assert summary["profile"] == "python2025-direct"
+    assert summary["profile"] == "python1516_2025-direct"
     assert summary["status"] == "lifecycle-green"
     assert len(summary["scenarios"]) == 4
 
@@ -124,7 +124,7 @@ def test_proto2025_fom_showcase_ci_wrapper_bootstraps_source_checkout(tmp_path: 
     assert summary_path.exists()
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     assert summary["suite_name"] == "proto2025-fom-simulation-showcase"
-    assert summary["profile"] == "python2025-direct"
+    assert summary["profile"] == "python1516_2025-direct"
     assert summary["status"] == "lifecycle-green"
     assert all(row["execution_complete"] for row in summary["scenarios"])
     assert (output_dir / "chart_data" / "chart_manifest.json").exists()
