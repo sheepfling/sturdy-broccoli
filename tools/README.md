@@ -49,8 +49,14 @@ and generated guidance should point at `tools/`.
 Shortest common paths:
 
 - bootstrap and activate: `./tools/bootstrap python`
+- get the default recommended verification lane: `./tools/test-surface recommend`
+- get the junior-friendly rerun and failure-diagnosis workflow: `docs/junior_test_diagnosis_runbook.md`
 - run one 2010 example: `python examples/target_radar_simulation.py --backend python1516e --steps 5`
 - run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python1516_2025 --steps 5`
+- run the isolated 2010 direct Python route example: `./tools/python smoke-examples --edition 2010`
+- run the isolated 2025 direct Python route example: `./tools/python smoke-examples --edition 2025`
+- run both isolated direct Python route examples: `./tools/python smoke-examples --all`
+- run the focused direct Python example test: `./tools/python test-examples`
 - run the default test wrapper: `./tools/test`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`
@@ -61,6 +67,13 @@ Shortest common paths:
 - inspect the language-shim route matrix: `./tools/shim-routes matrix --editions 2010,2025 --routes all`
 - inspect the Java toolchain inventory: `./tools/shim-routes java doctor`
 - inspect the Java toolchain inventory via the short front door: `./tools/java`
+- run one isolated Java bridge smoke example without a vendor RTI: `./tools/java smoke --bridge jpype --edition 2010`
+- run the full local 2010/2025 x JPype/Py4J isolated smoke matrix: `./tools/java smoke --all`
+- build the tiny shim jar and run a real bridge route in isolation: `./tools/java smoke --bridge py4j --edition 2025 --real-shim`
+- run the focused bridge example tests: `./tools/java test-bridges`
+- read the shortest Java bridge wrapping recipe: `docs/java_bridge_minimal_protocol_recipe.md`
+- read the Java bridge quick guide: `docs/java_bridge_wrapping_guide.md`
+- read the Java bridge architecture guide: `docs/java_rti_adaptation_architecture.md`
 - validate one FOM XML or an inventory family: `./tools/fom-validate DemoFOMmodule.xml` or `./tools/fom-validate --family rpr-normative` and inspect the `Edition Scope` column in the JSON/markdown/HTML reports
 - validate the positive XML/XSD baseline: `./tools/fom-schema-baseline` and keep an eye on the matching `Edition Scope` labels in the surrounding report chain
 - run the schema-positive top-to-bottom audit: `./tools/fom-schema-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs

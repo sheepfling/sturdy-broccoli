@@ -3,6 +3,12 @@
 Use this guide when you want one place that shows how Python wraps the HLA
 surface for both Java bridge routes and both supported editions.
 
+If you need the architecture-level explanation of how the adaptation works,
+read `docs/java_rti_adaptation_architecture.md` next.
+
+If you need the shortest possible "how do I minimally wrap this?" teaching
+version, start with `docs/java_bridge_minimal_protocol_recipe.md`.
+
 ## What To Open
 
 For minimal direct bridge skeletons:
@@ -112,4 +118,6 @@ rti = implementation.create_rti_ambassador()
 2. one of the four minimal bridge skeletons
 3. `packages/hla-bridge-java-jpype/README.md`
 4. `packages/hla-bridge-java-py4j/README.md`
-5. `docs/language_shim_routes.md`
+5. `docs/java_bridge_minimal_protocol_recipe.md`
+6. `docs/java_rti_adaptation_architecture.md`
+7. `docs/language_shim_routes.md`

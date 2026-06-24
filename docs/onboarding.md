@@ -30,9 +30,12 @@ Pick the closest match:
    - then read [`fom_workbench.md`](fom_workbench.md)
 6. I need to run verification
    - read [`local_verification_commands.md`](local_verification_commands.md)
+   - read [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
    - then use [`../tools/python`](../tools/python) or [`../tools/test`](../tools/test)
 7. I need vendor or Java routes
    - read [`java_toolchain.md`](java_toolchain.md)
+   - read [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
+   - then read [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
    - then read [`vendor_runtime_runner_guide.md`](vendor_runtime_runner_guide.md)
 
 ## What To Ignore At First
@@ -69,7 +72,8 @@ For the cleaner version of that model, use
 - operator:
   [`../README.md`](../README.md),
   [`first_run.md`](first_run.md),
-  [`local_verification_commands.md`](local_verification_commands.md)
+  [`local_verification_commands.md`](local_verification_commands.md),
+  [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - runtime engineer:
   [`python_rti_edit_one_service.md`](python_rti_edit_one_service.md),
   [`package_layout.md`](package_layout.md)
@@ -85,5 +89,6 @@ For the cleaner version of that model, use
 
 1. [`first_run.md`](first_run.md)
 2. [`python_environment.md`](python_environment.md)
-3. [`repo_mental_model.md`](repo_mental_model.md)
-4. [`package_layout.md`](package_layout.md)
+3. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+4. [`repo_mental_model.md`](repo_mental_model.md)
+5. [`package_layout.md`](package_layout.md)

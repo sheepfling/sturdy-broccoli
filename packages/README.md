@@ -14,6 +14,9 @@ environment from the repo root:
 The canonical environment and install-order guide is
 [`../docs/python_environment.md`](../docs/python_environment.md).
 
+If you need the shortest package-failure diagnosis path, use
+[`../docs/junior_test_diagnosis_runbook.md`](../docs/junior_test_diagnosis_runbook.md).
+
 For the quickest package hierarchy and versioning answer, use
 [`../docs/package_hierarchy_and_versioning.md`](../docs/package_hierarchy_and_versioning.md).
 
@@ -127,6 +130,32 @@ Notable package-local doc families:
 - `packages/hla-vendor-pitch/docs/README.md`
 - `packages/hla-vendor-portico/docs/README.md`
 - `packages/hla-verification/docs/README.md`
+
+## Package Failure Triage
+
+When a test failure seems package-specific, use this order:
+
+1. identify the failing test file or node
+2. identify the implementation file it exercises
+3. map that file into the owning `packages/<name>/src/...` tree
+4. rerun the smallest useful scope
+5. inspect package boundaries and dependencies only if the ownership is still unclear
+
+Useful commands:
+
+```bash
+./tools/test tests/test_java_bridge_examples.py
+./tools/test tests/test_python_route_examples.py
+./tools/test -k java_bridge
+./tools/package-deps generate
+```
+
+Useful docs:
+
+- [`../docs/junior_test_diagnosis_runbook.md`](../docs/junior_test_diagnosis_runbook.md)
+- [`../docs/package_layout.md`](../docs/package_layout.md)
+- [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md)
+- [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md)
 
 ## Read Next
 
