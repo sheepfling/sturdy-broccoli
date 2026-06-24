@@ -51,8 +51,11 @@ machine/workspace readiness check.
 ## Rules Of Thumb
 
 - If you are unsure, start with the pure-Python backend.
+- If you want the smallest direct 2010/2025 Python comparison first, use `./tools/python smoke-examples --all`.
 - For the primary 2025 Python RTI lane, read [`python_rti_backend.md`](python_rti_backend.md)
   after bootstrap rather than inferring runtime ownership from bridge or shim tooling.
+- If you want the easiest isolated Java bridge run, use `./tools/java smoke --all` before touching a vendor RTI.
+- If you want the real JPype or Py4J path without a vendor RTI, use `./tools/java smoke --bridge jpype --edition 2010 --real-shim` or the Py4J equivalent after installing the bridge extra.
 - If you only need to read or modify the API surface, do not install vendor runtimes.
 - If you need Java-backed routes, install bridge extras before touching vendor runtimes.
 - If you need CERTI or Pitch, treat them as a second phase after Python setup, not as the starting point.

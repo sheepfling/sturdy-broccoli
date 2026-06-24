@@ -4511,7 +4511,18 @@ def _scan_for_shim_delegation(project_root: Path, package_name: str) -> list[dic
 
 def _discover_backend_plugin_records(project_root: Path) -> dict[str, Any]:
     package_root = project_root / "packages"
-    backend_package_dirs = sorted(path.name for path in package_root.glob("hla-backend-*") if path.is_dir())
+    preferred_backend_order = {
+        "hla-backend-certi": 0,
+        "hla-backend-common": 1,
+        "hla-backend-cpp-shim": 2,
+        "hla-backend-python1516e": 3,
+        "hla-backend-python1516-2025": 4,
+        "hla-backend-shim": 5,
+    }
+    backend_package_dirs = sorted(
+        (path.name for path in package_root.glob("hla-backend-*") if path.is_dir()),
+        key=lambda name: (preferred_backend_order.get(name, 999), name),
+    )
     plugin_records: list[dict[str, Any]] = []
 
     for package_name in backend_package_dirs:
@@ -4585,7 +4596,7 @@ def _build_implementation_lane_audit(
         "audit_status": "current-lane-architecture-captured",
         "current_2025_lane": {
             "backend_package": "hla-backend-python1516-2025",
-            "plugin_family": "python-rti-2025",
+            "plugin_family": "python-rti-1516-2025",
             "supports": ["rti1516_2025"],
             "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
             "spec_package": "hla-rti1516-2025",
@@ -6992,14 +7003,14 @@ def _build_extraction_readiness_audit(
         "dedicated_python_2025_backend_present": implementation_lane_audit["dedicated_2025_backend_package_present"],
         "recommended_current_action": "promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map",
         "future_backend_package_target": "hla-backend-python1516-2025",
-        "future_backend_plugin_family": "python-rti-2025",
+        "future_backend_plugin_family": "python-rti-1516-2025",
         "extraction_package_contract": {
             "current_package_state": current_package_state,
             "target_distribution": "hla-backend-python1516-2025",
             "target_import_root": "hla.backends.python1516_2025",
             "target_plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "target_backend_name": "python1516_2025",
-            "target_plugin_family": "python-rti-2025",
+            "target_plugin_family": "python-rti-1516-2025",
             "target_supports": ["rti1516_2025"],
             "must_not_delegate_to": ["hla.backends.shim.backend.create_shim_backend"],
             "scanner_regression_test": (

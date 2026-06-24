@@ -43,7 +43,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
             row = rows[(scenario, route)]
             assert row.runtime_provider == "python1516_2025"
             assert row.implementation_lane == "hla-backend-python1516-2025"
-            assert row.counts_as_python_2025_rti is route.startswith("python-1516-2025")
+            assert row.counts_as_python_2025_rti is route.startswith("python1516_2025")
             assert row.wrapper_only is False
 
     assert rows[("object_exchange", "python1516_2025-inprocess")].status == PARITY_COVERED

@@ -2670,7 +2670,7 @@
       "target_backend_name": "python1516_2025",
       "target_distribution": "hla-backend-python1516-2025",
       "target_import_root": "hla.backends.python1516_2025",
-      "target_plugin_family": "python-rti-2025",
+      "target_plugin_family": "python-rti-1516-2025",
       "target_plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
       "target_supports": [
         "rti1516_2025"
@@ -2682,7 +2682,7 @@
       "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the remaining compatibility-wrapper layer can provide"
     ],
     "future_backend_package_target": "hla-backend-python1516-2025",
-    "future_backend_plugin_family": "python-rti-2025",
+    "future_backend_plugin_family": "python-rti-1516-2025",
     "migrated_runtime_modules": [
       "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/attribute_scope_runtime.py",
       "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/callback_runtime.py",
@@ -8165,7 +8165,7 @@
       ],
       "dedicated_python_2025_backend_candidates": [
         {
-          "family": "python-rti-2025",
+          "family": "python-rti-1516-2025",
           "name": "python1516_2025",
           "package": "hla-backend-python1516-2025",
           "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
@@ -8270,8 +8270,8 @@
           ]
         },
         {
-          "family": "inmemory",
-          "name": "inmemory",
+          "family": "python-rti-1516e",
+          "name": "python1516e",
           "package": "hla-backend-python1516e",
           "plugin_path": "packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py",
           "supports": [
@@ -8279,7 +8279,7 @@
           ]
         },
         {
-          "family": "python-rti-2025",
+          "family": "python-rti-1516-2025",
           "name": "python1516_2025",
           "package": "hla-backend-python1516-2025",
           "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
@@ -8355,7 +8355,7 @@
           ]
         },
         {
-          "family": "python-rti-2025",
+          "family": "python-rti-1516-2025",
           "name": "python1516_2025",
           "package": "hla-backend-python1516-2025",
           "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
@@ -8375,7 +8375,7 @@
     },
     "current_2025_lane": {
       "backend_package": "hla-backend-python1516-2025",
-      "plugin_family": "python-rti-2025",
+      "plugin_family": "python-rti-1516-2025",
       "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
       "spec_package": "hla-rti1516-2025",
       "supports": [
@@ -19820,7 +19820,7 @@
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_boundary_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas",
           "tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer",
-          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
+          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python1516_2025_lane",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_unknown_backend_specific_options",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_preserves_other_federate_directed_publication_after_unpublish",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
@@ -20261,7 +20261,7 @@
           "tests/requirements/test_2025_imported_packets.py::test_imported_encoding_auth_packet_keeps_requirements_vectors_and_schemas",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_cpp_binding_source_trace_is_separate_from_common_behavior_rows",
           "tests/requirements/test_2025_tail_backlog_evidence.py::test_2025_java_binding_source_trace_is_separate_from_common_behavior_rows",
-          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_defaults_to_python2025_provider",
+          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_defaults_to_python1516_2025_provider",
           "tests/test_hla_factory_composition.py::test_hla_factory_registry_composes_2025_helpers_without_ambassador_ownership",
           "tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation",
           "tests/test_rti1516_2025_encoding_auth_contexts.py::test_2025_encoding_auth_factory_surface_rejects_legacy_shim_provider",
@@ -23252,7 +23252,7 @@
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit",
           "tests/test_hla_factory_composition.py::test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer",
           "tests/test_hla_factory_composition.py::test_2025_direct_runtime_accepts_semantically_equivalent_2010_resign_action",
-          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane",
+          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_accepts_hosted_transport_creation_on_python1516_2025_lane",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_unknown_backend_specific_options",
           "tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation",
@@ -23272,7 +23272,7 @@
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable"
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable"
         ],
         "requirement_id": "HLA2025-MIL-001"
       },
@@ -23332,7 +23332,7 @@
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_state",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable"
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable"
         ],
         "requirement_id": "HLA2025-MIL-003"
       },
@@ -23522,7 +23522,7 @@
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_restore_output_scenario_end_to_end",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_restore_state_scenario_end_to_end",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python1516_2025_backend_is_discoverable_and_executable",
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_scenario",
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusion_scenario",
           "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery_scenario",
@@ -27067,13 +27067,13 @@
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_support_services_bounded_proof_markdown_keeps_python_lane_and_bounded_route_claim_explicit",
           "tests/requirements/test_ieee_1516_2025_requirements_registry.py::test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_route",
-          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_defaults_to_python2025_provider",
+          "tests/test_hla_factory_composition.py::test_2025_version_local_factory_defaults_to_python1516_2025_provider",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_uses_same_composition_layer",
           "tests/test_hla_factory_composition.py::test_hla_factory_registry_composes_2025_helpers_without_ambassador_ownership",
           "tests/test_hla_factory_composition.py::test_hla_factory_registry_strips_composition_only_options_before_2025_backend_creation",
           "tests/test_hla_factory_composition.py::test_hla_factory_rejects_mismatched_spec_provider_combinations",
           "tests/test_rti1516_2025_encoding_auth_contexts.py::test_2010_profile_does_not_gain_2025_auth_or_repository_surface",
-          "tests/test_rti1516_2025_encoding_auth_contexts.py::test_2010_runtime_context_does_not_forward_auth_context_to_inmemory_backend",
+          "tests/test_rti1516_2025_encoding_auth_contexts.py::test_2010_runtime_context_does_not_forward_auth_context_to_python1516e_backend",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2010_and_2025_backend_selection_do_not_cross_wire",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_spec_aliases_and_backend_discovery_are_spec_aware",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010"

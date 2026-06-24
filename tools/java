@@ -7,14 +7,147 @@ hla2010_shell_init "tools/java"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/java [doctor|help]
+usage: ./tools/java [doctor|smoke|test-bridges|help]
 
-Short front door for the Java toolchain inventory.
+Short front door for Java toolchain inventory and isolated bridge examples.
 
 Commands:
-  ./tools/java           # show the local Java toolchain inventory
-  ./tools/java doctor    # same as above, explicitly
+  ./tools/java                                   # show the local Java toolchain inventory
+  ./tools/java doctor                            # same as above, explicitly
+  ./tools/java smoke --bridge jpype --edition 2010
+  ./tools/java smoke --bridge py4j --edition 2025
+  ./tools/java smoke --all                       # run all 2010/2025 x jpype/py4j in-process shim smokes
+  ./tools/java smoke --bridge jpype --real-shim # build the tiny shim jar and run the real JPype route
+  ./tools/java test-bridges                      # run focused bridge example tests
+
+Options for smoke:
+  --bridge {jpype,py4j}
+  --edition {2010,2025}
+  --all
+  --real-shim
+  --dry-run
 EOF
+}
+
+run_workspace_python() {
+  local python_bin
+  python_bin="$(hla2010_shell_python_bin)"
+  hla2010_shell_run_workspace_python "$python_bin" "$@"
+}
+
+run_or_print() {
+  local dry_run="$1"
+  shift
+  if [[ "$dry_run" == "1" ]]; then
+    printf '+'
+    printf ' %q' "$@"
+    printf '\n'
+    return 0
+  fi
+  "$@"
+}
+
+smoke_one() {
+  local bridge="$1"
+  local edition="$2"
+  local real_shim="$3"
+  local dry_run="$4"
+  local example="$ROOT_DIR/examples/java_shim_federate.py"
+  local build_script="$ROOT_DIR/java_shims/hla-rti1516e-shim/tools/build_java_shim.py"
+  local shim_jar
+  shim_jar="${TMPDIR:-/tmp}/hla-java-bridge-${bridge}-${edition}.jar"
+
+  if [[ "$real_shim" == "1" ]]; then
+    run_or_print "$dry_run" run_workspace_python "$build_script" --output "$shim_jar"
+    run_or_print "$dry_run" run_workspace_python "$example" --edition "$edition" --bridge "$bridge" --real-java-shim "$shim_jar"
+    return 0
+  fi
+
+  run_or_print "$dry_run" run_workspace_python "$example" --edition "$edition" --bridge "$bridge"
+}
+
+smoke_cmd() {
+  local bridge="jpype"
+  local edition="2010"
+  local run_all="0"
+  local real_shim="0"
+  local dry_run="0"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --bridge)
+        [[ $# -ge 2 ]] || hla2010_shell_die "--bridge requires a value"
+        bridge="$2"
+        shift 2
+        ;;
+      --edition)
+        [[ $# -ge 2 ]] || hla2010_shell_die "--edition requires a value"
+        edition="$2"
+        shift 2
+        ;;
+      --all)
+        run_all="1"
+        shift
+        ;;
+      --real-shim)
+        real_shim="1"
+        shift
+        ;;
+      --dry-run)
+        dry_run="1"
+        shift
+        ;;
+      *)
+        hla2010_shell_die "unknown smoke option: $1"
+        ;;
+    esac
+  done
+
+  case "$bridge" in
+    jpype|py4j) ;;
+    *) hla2010_shell_die "--bridge must be jpype or py4j" ;;
+  esac
+  case "$edition" in
+    2010|2025) ;;
+    *) hla2010_shell_die "--edition must be 2010 or 2025" ;;
+  esac
+
+  if [[ "$run_all" == "1" ]]; then
+    local route_bridge route_edition
+    for route_edition in 2010 2025; do
+      for route_bridge in jpype py4j; do
+        smoke_one "$route_bridge" "$route_edition" "$real_shim" "$dry_run"
+      done
+    done
+    return 0
+  fi
+
+  smoke_one "$bridge" "$edition" "$real_shim" "$dry_run"
+}
+
+test_bridges_cmd() {
+  local include_real="0"
+  local dry_run="0"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --real-shim)
+        include_real="1"
+        shift
+        ;;
+      --dry-run)
+        dry_run="1"
+        shift
+        ;;
+      *)
+        hla2010_shell_die "unknown test-bridges option: $1"
+        ;;
+    esac
+  done
+
+  run_or_print "$dry_run" run_workspace_python -m pytest -q tests/test_java_bridge_examples.py
+  if [[ "$include_real" == "1" ]]; then
+    run_or_print "$dry_run" run_workspace_python -m pytest -q tests/runtime/test_optional_real_java_bridges.py
+  fi
 }
 
 case "${1:-doctor}" in
@@ -24,6 +157,14 @@ case "${1:-doctor}" in
   doctor)
     shift
     exec "$ROOT_DIR/tools/shim-routes" java doctor "$@"
+    ;;
+  smoke)
+    shift
+    smoke_cmd "$@"
+    ;;
+  test-bridges)
+    shift
+    test_bridges_cmd "$@"
     ;;
   *)
     echo "error: unknown subcommand: $1" >&2

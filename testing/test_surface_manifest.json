@@ -59,9 +59,9 @@
       }
     },
     {
-      "id": "python-main-2025",
+      "id": "python1516_2025-main",
       "title": "Python 2025 main-surface lane",
-      "description": "Primary python2025 main-surface verification lane for direct runtime proofs across time, save/restore, ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence.",
+      "description": "Primary python1516_2025 main-surface verification lane for direct runtime proofs across time, save/restore, ownership, callbacks, support services, MOM behavior, and OMT validation/parsing evidence.",
       "owner_command": [
         "./tools/python",
         "verify-main-2025"
@@ -132,9 +132,9 @@
       }
     },
     {
-      "id": "python-routes-2025",
+      "id": "python1516_2025-routes",
       "title": "Hosted Python 2025 route lane",
-      "description": "python2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, transport-route behavior, route-parity artifacts, and the package-owned Target/Radar example path.",
+      "description": "python1516_2025 plus bounded FedPro 2025 hosted-route verification lane for direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, transport-route behavior, route-parity artifacts, and the package-owned Target/Radar example path.",
       "owner_command": [
         "./tools/python",
         "verify-routes-2025"
@@ -165,7 +165,7 @@
         "policy": "all-ready",
         "checks": [
           {
-            "id": "python-routes-2025",
+            "id": "python1516_2025-routes",
             "argv": [
               "./tools/python",
               "verify-routes-preflight",

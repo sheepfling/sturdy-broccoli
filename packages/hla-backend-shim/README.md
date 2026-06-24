@@ -6,6 +6,7 @@
 runtime lane.
 
 It remains temporary import-compatibility scaffolding only.
+It is kept only as temporary, test-backed import-compatibility scaffolding.
 
 It exists to preserve older imports and wrapper-facing compatibility while the
 real implementation lives in `hla-backend-python1516-2025`.
@@ -17,6 +18,7 @@ It is the legacy compatibility-wrapper package and temporary import-compatibilit
 The main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`.
 In short, the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`.
 This means the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`, not here.
+The architectural split that matters is already in place: `hla-backend-python1516-2025` is the real 2025 RTI runtime owner and the sole repo-owned 2025 Python RTI lane.
 
 ## What This Is Not
 
@@ -57,6 +59,7 @@ The remaining `hla.backends.shim.*` modules should stay thin forwarders into
 
 Treat the other `hla.backends.shim.*` modules outside the package root: they
 are forwarders, not implementation owners.
+They should be removed once no callers depend on the legacy import paths.
 
 ## Related Docs
 
@@ -64,4 +67,4 @@ are forwarders, not implementation owners.
 - [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
 - [`../../docs/plans/2025_python_rti_backend_audit.md`](../../docs/plans/2025_python_rti_backend_audit.md)
 
-Future work here is cleanup and removal, not feature growth.
+Future work here is boundary cleanup and removal, not deciding whether a dedicated Python 2025 backend should exist.

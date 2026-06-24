@@ -579,8 +579,8 @@ raise SystemExit(0)
         ["-m", "pytest", "-q", "tests/scenarios/test_python_route_parity.py"],
         ["-m", "pytest", "-q", "tests/transport/test_grpc_transport_python_server.py"],
         ["scripts/run_python_route_parity_matrix.py"],
-        ["examples/target_radar_simulation.py", "--backend", "python", "--steps", "5"],
-        ["examples/target_radar_simulation.py", "--backend", "python-grpc", "--steps", "5"],
+        ["examples/target_radar_simulation.py", "--backend", "python1516e", "--steps", "5"],
+        ["examples/target_radar_simulation.py", "--backend", "python1516e-grpc", "--steps", "5"],
     ]
     for call, expected_argv in zip(calls, expected_suffixes, strict=True):
         assert call["argv"] == expected_argv

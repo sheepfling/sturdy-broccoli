@@ -23,8 +23,8 @@ API_PREFIX = "1516-2025_API_XML_2025_08_14"
 PACKAGE = "com.sheepfling.hla.shimroutes.rti1516_2025"
 FACTORY_NAME = "Java 2025 Standard Shim"
 BACKING_RUNTIME = {
-    "runtime_provider": "python2025",
-    "implementation_lane": "hla-backend-python2025",
+    "runtime_provider": "python1516_2025",
+    "implementation_lane": "hla-backend-python1516-2025",
     "counts_as_python_2025_rti": False,
     "wrapper_only": False,
 }

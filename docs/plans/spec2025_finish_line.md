@@ -1365,7 +1365,7 @@ Partitioned blockers:
 - Audit status: current-lane-architecture-captured
 - Current 2025 backend package: hla-backend-python1516-2025
 - Primary 2025 RTI role: main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)
-- Current 2025 plugin family: python-rti-2025
+- Current 2025 plugin family: python-rti-1516-2025
 - Current 2025 spec support: rti1516_2025
 - Compatibility wrapper package: hla-backend-shim
 - Compatibility wrapper status: compatibility-maintained
@@ -1400,7 +1400,7 @@ Discovered 2025-capable backend plugin records:
 - cpp-standard-2025-grpc (standard/cpp): hla-backend-cpp-shim supports rti1516_2025
 - cpp-2025-sdk-pybind (intake/cpp): hla-backend-cpp-shim supports rti1516_2025
 - cpp-2025-sdk-grpc (intake/cpp): hla-backend-cpp-shim supports rti1516_2025
-- python1516_2025 (python-rti-2025): hla-backend-python1516-2025 supports rti1516_2025
+- python1516_2025 (python-rti-1516-2025): hla-backend-python1516-2025 supports rti1516_2025
 
 Python 2025 route variants:
 
@@ -1561,7 +1561,7 @@ Time-window vendor parity routes:
 - Dedicated Python 2025 backend present: True
 - Recommended current action: promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map
 - Future backend package target: hla-backend-python1516-2025
-- Future backend plugin family: python-rti-2025
+- Future backend plugin family: python-rti-1516-2025
 - Runtime semantics to extract first: 4
 - Route-backed runtime semantics: 4
 - All candidate runtime semantics route-backed: True
@@ -1574,7 +1574,7 @@ Extraction package contract:
 - Target import root: hla.backends.python1516_2025
 - Target plugin path: packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py
 - Target backend name: python1516_2025
-- Target plugin family: python-rti-2025
+- Target plugin family: python-rti-1516-2025
 - Target supports: rti1516_2025
 - Must not delegate to: hla.backends.shim.backend.create_shim_backend
 - Scanner regression test: tests/requirements/test_2025_finish_line_snapshot.py::test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend

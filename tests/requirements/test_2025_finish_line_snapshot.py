@@ -2705,7 +2705,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert implementation_lane_audit["audit_status"] == "current-lane-architecture-captured"
     assert implementation_lane_audit["current_2025_lane"] == {
         "backend_package": "hla-backend-python1516-2025",
-        "plugin_family": "python-rti-2025",
+        "plugin_family": "python-rti-1516-2025",
         "supports": ["rti1516_2025"],
         "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
         "spec_package": "hla-rti1516-2025",
@@ -2742,7 +2742,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "package": "hla-backend-python1516-2025",
             "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "name": "python1516_2025",
-            "family": "python-rti-2025",
+            "family": "python-rti-1516-2025",
             "supports": ["rti1516_2025"],
         }
     ]
@@ -2752,7 +2752,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         (record["package"], record["name"], record["family"])
         for record in backend_scan["rti1516_2025_plugin_records"]
     }
-    assert ("hla-backend-python1516-2025", "python1516_2025", "python-rti-2025") in rti2025_plugins
+    assert ("hla-backend-python1516-2025", "python1516_2025", "python-rti-1516-2025") in rti2025_plugins
     assert ("hla-backend-shim", "shim", "shim") not in rti2025_plugins
     assert ("hla-backend-cpp-shim", "cpp-standard-2025-pybind", "standard/cpp") in rti2025_plugins
     assert ("hla-backend-python1516e", "inmemory", "inmemory") not in rti2025_plugins
@@ -3063,14 +3063,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_audit["dedicated_python_2025_backend_present"] is True
     assert extraction_audit["recommended_current_action"] == "promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map"
     assert extraction_audit["future_backend_package_target"] == "hla-backend-python1516-2025"
-    assert extraction_audit["future_backend_plugin_family"] == "python-rti-2025"
+    assert extraction_audit["future_backend_plugin_family"] == "python-rti-1516-2025"
     assert extraction_audit["extraction_package_contract"] == {
         "current_package_state": "live-runtime-present",
         "target_distribution": "hla-backend-python1516-2025",
         "target_import_root": "hla.backends.python1516_2025",
         "target_plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
         "target_backend_name": "python1516_2025",
-        "target_plugin_family": "python-rti-2025",
+        "target_plugin_family": "python-rti-1516-2025",
         "target_supports": ["rti1516_2025"],
         "must_not_delegate_to": ["hla.backends.shim.backend.create_shim_backend"],
         "scanner_regression_test": (
@@ -4818,7 +4818,7 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="python1516_2025",
         aliases=("python-1516-2025",),
-        family="python-rti-2025",
+        family="python-rti-1516-2025",
         supports=("rti1516_2025",),
         description="Dedicated Python 2025 RTI backend.",
         create_backend=lambda request: request,
@@ -4854,14 +4854,14 @@ def plugin() -> RTIBackendPlugin:
         (record["package"], record["name"], record["family"])
         for record in scan["rti1516_2025_plugin_records"]
     } == {
-        ("hla-backend-python1516-2025", "python1516_2025", "python-rti-2025"),
+        ("hla-backend-python1516-2025", "python1516_2025", "python-rti-1516-2025"),
     }
     assert scan["dedicated_python_2025_backend_candidates"] == [
         {
             "package": "hla-backend-python1516-2025",
             "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "name": "python1516_2025",
-            "family": "python-rti-2025",
+            "family": "python-rti-1516-2025",
             "supports": ["rti1516_2025"],
         }
     ]
@@ -4882,7 +4882,7 @@ def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="python1516_2025",
         aliases=("python-1516-2025",),
-        family="python-rti-2025",
+        family="python-rti-1516-2025",
         supports=("rti1516_2025",),
         description="Invalid shim-delegating Python 2025 RTI backend.",
         create_backend=create_shim_backend,
@@ -4898,7 +4898,7 @@ def plugin() -> RTIBackendPlugin:
             "package": "hla-backend-python1516-2025",
             "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "name": "python1516_2025",
-            "family": "python-rti-2025",
+            "family": "python-rti-1516-2025",
             "supports": ["rti1516_2025"],
         }
     ]

@@ -10,6 +10,10 @@ runtime surfaces for the HLA transport routes in this repo.
 The bounded FedPro hosted route lives here as transport wiring over the main
 2025 runtime lane. It is not a separate RTI family and not the main in-process
 implementation lane.
+For IEEE 1516.1-2025 specifically, this package carries the bounded IEEE
+1516.1-2025 FedPro hosted route variant.
+That 2025 server is a bounded hosted route variant over the current Python 2025
+lane.
 
 ## What This Is Not
 

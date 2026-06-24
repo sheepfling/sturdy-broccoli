@@ -120,11 +120,9 @@ This section is generated from `create_backend(...)` by
 
 ### Pure Python
 
-- `in-memory`
-- `inmemory`
 - `python`
-- `python-in-memory`
-- `python-inmemory`
+- `python-1516e`
+- `python1516e`
 
 ### Generic Java Adapter Paths
 

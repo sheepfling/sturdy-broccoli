@@ -65,8 +65,8 @@ SCENARIO_PARITY_SUMMARY_2025 = [
     "2025 standard route runtime capability: FOM handles, default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization",
 ]
 BACKING_RUNTIME_2025 = {
-    "runtime_provider": "python2025",
-    "implementation_lane": "hla-backend-python2025",
+    "runtime_provider": "python1516_2025",
+    "implementation_lane": "hla-backend-python1516-2025",
     "counts_as_python_2025_rti": False,
     "wrapper_only": False,
 }

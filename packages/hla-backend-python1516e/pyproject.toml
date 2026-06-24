@@ -30,7 +30,7 @@ namespaces = true
 status = "implementation-moved"
 role = "rti-backend"
 backend_names = ["python1516e"]
-backend_aliases = ["python-1516e"]
+backend_aliases = ["python", "python-1516e"]
 source_roots = [
   "packages/hla-backend-python1516e/src/hla/backends/python1516e",
 ]

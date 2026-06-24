@@ -26,6 +26,21 @@ Read the repo from top to bottom like this:
 
 This is the hierarchy that matters most.
 
+Concrete 2025 hierarchy anchors:
+
+```text
+hla-rti1516-2025
+└── hla-rti-core
+    ├── hla-backend-common
+    ├── hla-backend-python1516-2025
+    ├── hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python1516-2025)
+    ├── hla-transport-grpc (bounded FedPro 2025 hosted route)
+    └── hla-fom-target-radar
+```
+
+- Layer 1: `hla-backend-common`, `hla-fom-target-radar`, `hla-rti1516-2025`
+- Layer 2: `hla-backend-python1516e`, `hla-backend-python1516-2025`, `hla-bridge-java-common`, `hla-transport-common`
+
 ## The Package Families
 
 Use this as the quick family map:

@@ -21,7 +21,7 @@ def _create_backend(request: BackendRequest):
 def plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
         name="python1516e",
-        aliases=("python-1516e",),
+        aliases=("python", "python-1516e"),
         family="python-rti-1516e",
         supports=("rti1516e",),
         description="Primary Python 1516e RTI backend.",

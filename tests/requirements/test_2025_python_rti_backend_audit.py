@@ -854,8 +854,8 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     assert runtime_plugin.name == "python1516_2025"
     assert runtime_plugin.family == "python-rti-1516-2025"
     assert runtime_plugin.supports == ("rti1516_2025",)
-    assert runtime_plugin.aliases == ("python-1516-2025", "python-1516-2025")
-    assert runtime_plugin.description == "Primary Python 2025 RTI implementation package."
+    assert runtime_plugin.aliases == ("python-1516-2025",)
+    assert runtime_plugin.description == "Primary Python 1516.1-2025 RTI implementation package."
     assert runtime_plugin.create_backend.__module__ == "hla.backends.python1516_2025.backend"
     assert runtime_plugin.create_backend.__name__ == "create_python2025_backend"
     runtime_discovery = runtime_plugin.discover()
@@ -1548,7 +1548,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "future work here is boundary cleanup and removal, not deciding whether a dedicated python 2025 backend should exist" in normalized_shim_readme
     assert 'description = "main full python rti backend package for hla 1516.1-2025"' in normalized_python2025_pyproject
     assert 'backend_names = ["python1516_2025"]' in normalized_python2025_pyproject
-    assert 'backend_aliases = ["python-1516-2025", "python-1516-2025"]' in normalized_python2025_pyproject
+    assert 'backend_aliases = ["python-1516-2025"]' in normalized_python2025_pyproject
     assert 'role = "rti-backend"' in normalized_python2025_pyproject
     assert 'status = "implementation-owned"' in normalized_python2025_pyproject
 

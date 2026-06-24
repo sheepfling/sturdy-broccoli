@@ -143,7 +143,7 @@ def _row(
 ) -> Spec2025RouteParityRow:
     runtime_provider = "python1516_2025" if route in ROUTE_IDS_2025 else ""
     implementation_lane = "hla-backend-python1516-2025" if route in ROUTE_IDS_2025 else ""
-    counts_as_python_2025_rti = True if route.startswith("python-1516-2025") else False if route in ROUTE_IDS_2025 else None
+    counts_as_python_2025_rti = True if route.startswith("python1516_2025") else False if route in ROUTE_IDS_2025 else None
     wrapper_only = False if route in ROUTE_IDS_2025 else None
     return Spec2025RouteParityRow(
         scenario=scenario,
@@ -882,7 +882,7 @@ def validate_spec2025_route_parity_evidence(
                 errors.append(
                     f"{row.scenario}/{row.route}: parity row must record implementation_lane=hla-backend-python1516-2025"
                 )
-            expected_counts_as_primary = row.route.startswith("python-1516-2025")
+            expected_counts_as_primary = row.route.startswith("python1516_2025")
             if row.counts_as_python_2025_rti is not expected_counts_as_primary:
                 errors.append(
                     f"{row.scenario}/{row.route}: parity row must record counts_as_python_2025_rti="
