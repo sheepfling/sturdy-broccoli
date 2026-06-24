@@ -30,11 +30,11 @@ The workbench needs to support:
     - `base-plus-extension`
     - `ordered-family`
 - overlay:
-  - not implemented yet
-  - planned as a comparison view over two or more family snapshots
+  - precomputed comparison view over generated family and named load-set pairs
+  - highlights added/removed objects, interactions, datatypes, and dimensions
 - edit:
-  - not implemented yet
-  - planned as a guarded edit surface over repo-owned XML only
+  - guarded repo-owned metadata edit flow
+  - supported simple-datatype repair staging for repo-owned merge conflicts
 
 ## Current Operator Path
 
@@ -138,6 +138,9 @@ The current HTML slice implements:
 - pairwise family overlay/diff over precomputed default load sets
 - hierarchy-aware object/interaction drill-down
 - guarded edit command generation for repo-owned XML only
+- symbol jump paths across conflict, validation, diff, search, and tree views
+- repo-owned repair suggestions for supported simple datatype conflicts
+- copyable command bundles and clearer operator empty states
 
 Browser-saved custom load sets are intentionally lightweight:
 
@@ -178,8 +181,20 @@ The workbench now connects directly to the validator surface:
   - datatype-hint deltas on shared nodes
   - dimension-usage deltas on shared nodes
 
-## Next Implementation Slices
+## Completion Status
 
-1. expand guarded repo-owned edit flows into selected safe structural edits
-2. add richer semantic merge-repair guidance when a browser-saved load set is regenerated and fails to merge
-3. add browser-side validation command synthesis for imported sets with multiple candidate diff partners
+The planned workbench finish-line slices are complete and the supporting FOM
+test gates are green. Ongoing changes should be treated as normal feature
+evolution rather than unfinished baseline work.
+
+## Execution Plan
+
+The active implementation backlog for turning the current HTML packet into a
+real operator-facing console lives in:
+
+- [`docs/plans/fom_ui_work_plan.md`](plans/fom_ui_work_plan.md)
+
+The follow-on polish plan for taking that console to a product-grade
+application experience lives in:
+
+- [`docs/plans/fom_ui_polish_plan.md`](plans/fom_ui_polish_plan.md)

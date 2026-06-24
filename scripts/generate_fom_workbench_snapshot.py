@@ -53,6 +53,16 @@ def _parse_diff_specs(values: list[str]) -> tuple[tuple[str, str], ...]:
     return tuple(rows)
 
 
+def _parse_name_value_specs(values: list[str], *, flag: str) -> tuple[tuple[str, str], ...]:
+    rows: list[tuple[str, str]] = []
+    for value in values:
+        name, separator, payload = value.partition("=")
+        if not separator or not name.strip() or not payload.strip():
+            raise ValueError(f"Invalid {flag} value {value!r}; expected NAME=value")
+        rows.append((name.strip(), payload.strip()))
+    return tuple(rows)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate the JSON and optional HTML artifacts backing the FOM workbench UI with edition-scope labels.")
     parser.add_argument(
@@ -81,6 +91,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--set-description", default=None, help="Replacement modelIdentification description for guarded edit flow.")
     parser.add_argument("--add-keyword", action="append", default=[], help="Keyword to append in guarded edit flow. Repeatable.")
     parser.add_argument("--add-note", action="append", default=[], help="Note to append in guarded edit flow. Repeatable.")
+    parser.add_argument(
+        "--set-simple-datatype-representation",
+        action="append",
+        default=[],
+        help="Set a repo-owned simple datatype representation in the form NAME=REPRESENTATION. Repeatable.",
+    )
+    parser.add_argument(
+        "--set-simple-datatype-semantics",
+        action="append",
+        default=[],
+        help="Set repo-owned simple datatype semantics in the form NAME=TEXT. Repeatable.",
+    )
     parser.add_argument("--in-place", action="store_true", help="Apply guarded edit directly to the repo-owned XML instead of writing a copy.")
     parser.add_argument("--edit-output", default=None, help="Optional output path for guarded edit copies.")
     args = parser.parse_args(argv)
@@ -90,6 +112,14 @@ def main(argv: list[str] | None = None) -> int:
             description=args.set_description,
             add_keywords=tuple(args.add_keyword),
             add_notes=tuple(args.add_note),
+            set_simple_datatype_representations=_parse_name_value_specs(
+                args.set_simple_datatype_representation,
+                flag="--set-simple-datatype-representation",
+            ),
+            set_simple_datatype_semantics=_parse_name_value_specs(
+                args.set_simple_datatype_semantics,
+                flag="--set-simple-datatype-semantics",
+            ),
             output_path=args.edit_output,
             in_place=args.in_place,
         )

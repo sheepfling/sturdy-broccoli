@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 import os
 import html
+import ast
+import re
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -14,6 +16,7 @@ from hla.fom.validation import ValidationIssue, validate_fom_module, validate_om
 from hla.fom import (
     merge_fom_modules,
     FOMResolver,
+    FOMMergeError,
     FOMModule,
     FOMResolutionError,
     OMTConformanceAssessment,
@@ -106,10 +109,15 @@ class FOMValidationLoadSetReport:
     dimensions: tuple[str, ...]
     rationale: str
     recommended_next_step: str
+    merge_conflict_kind: str | None
+    merge_conflict_symbol: str | None
+    merge_conflict_members: tuple[str, ...]
+    merge_conflict_member_details: tuple[dict[str, Any], ...]
     issues: tuple[FOMValidationIssueRow, ...]
 
     def as_dict(self) -> dict[str, Any]:
         payload = asdict(self)
+        payload["merge_conflict_members"] = list(self.merge_conflict_members)
         payload["issues"] = [issue.as_dict() for issue in self.issues]
         return payload
 
@@ -353,12 +361,152 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
         "source": str(module.source),
         "name": module.name,
         "object_classes": tuple(sorted(spec.full_name for spec in module.object_classes)),
+        "object_parent_map": {spec.full_name: spec.parent_name for spec in module.object_classes},
         "interaction_classes": tuple(sorted(spec.full_name for spec in module.interaction_classes)),
+        "interaction_parent_map": {spec.full_name: spec.parent_name for spec in module.interaction_classes},
         "object_nodes": tuple(object_nodes),
         "interaction_nodes": tuple(interaction_nodes),
         "datatype_names": tuple(sorted(module.datatype_names)),
+        "datatype_specs": {
+            name: {"category": "basic", "encoding": spec.encoding, "size": spec.size, "interpretation": spec.interpretation, "endian": spec.endian, "semantics": spec.semantics}
+            for name, spec in sorted(module.basic_datatypes.items())
+        }
+        | {
+            name: {"category": "simple", "representation": spec.representation, "units": spec.units, "resolution": spec.resolution, "accuracy": spec.accuracy, "semantics": spec.semantics}
+            for name, spec in sorted(module.simple_datatypes.items())
+        }
+        | {
+            name: {"category": "reference", "representation": spec.representation, "reference_class": spec.reference_class, "referenced_attribute": spec.referenced_attribute, "semantics": spec.semantics}
+            for name, spec in sorted(module.reference_datatypes.items())
+        }
+        | {
+            name: {"category": "enumerated", "representation": spec.representation, "enumerators": tuple({"name": item.name, "values": tuple(item.values)} for item in spec.enumerators), "semantics": spec.semantics}
+            for name, spec in sorted(module.enumerated_datatypes.items())
+        }
+        | {
+            name: {"category": "array", "data_type": spec.data_type, "cardinality": spec.cardinality, "encoding": spec.encoding, "semantics": spec.semantics}
+            for name, spec in sorted(module.array_datatypes.items())
+        }
+        | {
+            name: {"category": "fixed-record", "encoding": spec.encoding, "fields": tuple({"name": field.name, "data_type": field.data_type, "semantics": field.semantics} for field in spec.fields), "semantics": spec.semantics}
+            for name, spec in sorted(module.fixed_record_datatypes.items())
+        }
+        | {
+            name: {"category": "variant-record", "discriminant": spec.discriminant, "data_type": spec.data_type, "encoding": spec.encoding, "alternatives": tuple({"enumerator": alt.enumerator, "name": alt.name, "data_type": alt.data_type, "semantics": alt.semantics} for alt in spec.alternatives), "semantics": spec.semantics}
+            for name, spec in sorted(module.variant_record_datatypes.items())
+        },
+        "transportation_names": tuple(sorted(module.transportation_names)),
+        "transportation_specs": {
+            name: {"reliable": spec.reliable, "semantics": spec.semantics}
+            for name, spec in sorted(module.transportation_specs.items())
+        },
+        "update_rate_names": tuple(sorted(module.update_rates)),
+        "update_rate_specs": {
+            name: {"rate": spec.rate, "semantics": spec.semantics}
+            for name, spec in sorted(module.update_rate_specs.items())
+        },
         "dimensions": tuple(module.dimensions),
+        "logical_time_implementation": module.inferred_time_implementation,
     }
+
+
+def _member_label(summary: dict[str, Any]) -> str:
+    return str(summary.get("name") or summary.get("source") or "unknown-member")
+
+
+def _safe_literal(value: str) -> Any:
+    try:
+        return ast.literal_eval(value)
+    except Exception:
+        return value
+
+
+def _extract_merge_conflict(
+    message: str,
+    member_summaries: tuple[dict[str, Any], ...],
+) -> tuple[str | None, str | None, tuple[str, ...], tuple[dict[str, Any], ...]]:
+    definition_match = re.match(r"^Conflicting (?P<kind>.+) definition (?P<name>.+) across FOM modules$", message)
+    if definition_match:
+        kind = str(definition_match.group("kind"))
+        symbol = str(_safe_literal(definition_match.group("name")))
+        if "object class" in kind:
+            details = tuple(
+                {
+                    "member": _member_label(summary),
+                    "object_class": symbol,
+                    "parent_name": summary.get("object_parent_map", {}).get(symbol),
+                }
+                for summary in member_summaries
+                if symbol in summary.get("object_classes", ())
+            )
+        elif "interaction class" in kind:
+            details = tuple(
+                {
+                    "member": _member_label(summary),
+                    "interaction_class": symbol,
+                    "parent_name": summary.get("interaction_parent_map", {}).get(symbol),
+                }
+                for summary in member_summaries
+                if symbol in summary.get("interaction_classes", ())
+            )
+        elif "transportation reliability" in kind:
+            details = tuple(
+                {
+                    "member": _member_label(summary),
+                    "transportation": symbol,
+                    "declaration": summary.get("transportation_specs", {}).get(symbol),
+                }
+                for summary in member_summaries
+                if symbol in summary.get("transportation_names", ())
+            )
+        else:
+            details = tuple(
+                {
+                    "member": _member_label(summary),
+                    "symbol": symbol,
+                    "declaration": summary.get("datatype_specs", {}).get(symbol) or summary.get("update_rate_specs", {}).get(symbol),
+                }
+                for summary in member_summaries
+                if symbol in summary.get("datatype_names", ())
+                or symbol in summary.get("update_rate_names", ())
+            )
+        return kind, symbol, tuple(detail["member"] for detail in details), details
+
+    superclass_match = re.match(
+        r"^(?P<kind>Object class|Interaction class) (?P<name>.+) has conflicting superclasses: .+$",
+        message,
+    )
+    if superclass_match:
+        kind = str(superclass_match.group("kind")).lower().replace(" ", "-")
+        symbol = str(_safe_literal(superclass_match.group("name")))
+        key = "object_classes" if superclass_match.group("kind") == "Object class" else "interaction_classes"
+        parent_key = "object_parent_map" if superclass_match.group("kind") == "Object class" else "interaction_parent_map"
+        details = tuple(
+            {
+                "member": _member_label(summary),
+                "symbol": symbol,
+                "parent_name": summary.get(parent_key, {}).get(symbol),
+            }
+            for summary in member_summaries
+            if symbol in summary.get(key, ())
+        )
+        return kind, symbol, tuple(detail["member"] for detail in details), details
+
+    logical_time_match = re.match(r"^Conflicting logical time implementations in FOM modules: (?P<values>\[.+\])$", message)
+    if logical_time_match:
+        values = _safe_literal(logical_time_match.group("values"))
+        implementations = tuple(str(value) for value in values) if isinstance(values, (list, tuple)) else ()
+        details = tuple(
+            {
+                "member": _member_label(summary),
+                "logical_time_implementation": summary.get("logical_time_implementation"),
+            }
+            for summary in member_summaries
+            if summary.get("logical_time_implementation") in implementations
+        )
+        return "logical-time-implementation", ", ".join(implementations), tuple(detail["member"] for detail in details), details
+
+    return None, None, (), ()
 
 
 def _recommendation(verdict: str, issues: tuple[FOMValidationIssueRow, ...], unsupported: tuple[str, ...]) -> str:
@@ -387,6 +535,19 @@ def _load_set_recommendation(verdict: str, issues: tuple[FOMValidationIssueRow, 
     if any(issue.layer == "semantic" for issue in issues):
         return "Fix the merged semantic validation findings, then rerun the load-set validation."
     return "Review the merged load-set issues and rerun validation."
+
+
+def _merge_guidance(message: str) -> str:
+    lowered = message.lower()
+    if "conflicting logical time implementations" in lowered:
+        return "Align the logical time section across all members before rerunning the load-set validation."
+    if "conflicting" in lowered and "datatype definition" in lowered:
+        return "Unify the duplicate datatype definition across the load-set members before rerunning validation."
+    if "conflicting transportation reliability definition" in lowered:
+        return "Normalize the transportation reliability definition across the load-set members before rerunning validation."
+    if "conflicting" in lowered:
+        return "Resolve the conflicting member definitions in this load set, then rerun validation."
+    return "Fix the merge conflict or member ordering, then rerun the load-set validation."
 
 
 class _working_directory:
@@ -540,6 +701,10 @@ def _markdown(report: FOMValidationReport) -> str:
                 f"- Verdict: `{row.verdict}`",
                 f"- Recommended next step: {row.recommended_next_step}",
                 f"- Rationale: {row.rationale}",
+                f"- Conflict kind: `{row.merge_conflict_kind or 'n/a'}`",
+                f"- Conflict symbol: `{row.merge_conflict_symbol or 'n/a'}`",
+                f"- Conflict members: `{', '.join(row.merge_conflict_members) if row.merge_conflict_members else 'n/a'}`",
+                f"- Conflict details: `{json.dumps(list(row.merge_conflict_member_details), sort_keys=True) if row.merge_conflict_member_details else '[]'}`",
                 "",
                 "### Members",
                 "",
@@ -690,6 +855,22 @@ function renderList() {{
 function issueTable(issues) {{
   if (!issues.length) return '<p class="muted">No issues.</p>';
   return `<table><thead><tr><th>Layer</th><th>Requirement</th><th>Field</th><th>Message</th></tr></thead><tbody>${{issues.map((issue) => `<tr><td>${{issue.layer}}</td><td>${{issue.requirement || "n/a"}}</td><td>${{issue.field || "n/a"}}</td><td>${{issue.message}}</td></tr>`).join("")}}</tbody></table>`;
+}}
+function formatValue(value) {{
+  if (Array.isArray(value)) return value.length ? value.join(", ") : "none";
+  if (value && typeof value === "object") return Object.entries(value).map(([key, inner]) => `${{key}}=${{formatValue(inner)}}`).join("; ");
+  if (value === null || value === undefined || value === "") return "n/a";
+  return String(value);
+}}
+function conflictDetailsBlock(details) {{
+  if (!details || !details.length) return '<p class="muted">No member-level conflict detail.</p>';
+  return `<div class="cards">${{details.map((detail) => {{
+    const rows = Object.entries(detail)
+      .filter(([key]) => key !== "member")
+      .map(([key, value]) => `<div class="muted"><strong>${{key.replaceAll("_", " ")}}:</strong> ${{formatValue(value)}}</div>`)
+      .join("");
+    return `<div class="card"><div><strong>${{detail.member || "unknown-member"}}</strong></div>${{rows}}</div>`;
+  }}).join("")}}</div>`;
 }}
 function diffLists(left, right) {{
   const leftSet = new Set(left);
@@ -876,6 +1057,11 @@ function renderDetail() {{
       <p class="${{badgeClass(row.verdict)}}">${{row.verdict}}</p>
       <p>${{row.rationale}}</p>
       <p><strong>Next step:</strong> ${{row.recommended_next_step}}</p>
+      <p><strong>Conflict kind:</strong> ${{row.merge_conflict_kind || "n/a"}}</p>
+      <p><strong>Conflict symbol:</strong> ${{row.merge_conflict_symbol || "n/a"}}</p>
+      <p><strong>Conflict members:</strong> ${{row.merge_conflict_members && row.merge_conflict_members.length ? row.merge_conflict_members.join(", ") : "n/a"}}</p>
+      <h3>Conflict Details</h3>
+      ${{conflictDetailsBlock(row.merge_conflict_member_details || [])}}
       <p><strong>Edition scope:</strong> ${{row.inventory_edition_scope}}</p>
       <p><strong>Members:</strong></p>
       <ul>${{row.source_paths.map((path) => `<li><code>${{path}}</code></li>`).join("")}}</ul>
@@ -1114,6 +1300,10 @@ def _load_set_report(
     interaction_classes = 0
     datatype_names = 0
     dimensions: tuple[str, ...] = ()
+    merge_conflict_kind: str | None = None
+    merge_conflict_symbol: str | None = None
+    merge_conflict_members: tuple[str, ...] = ()
+    merge_conflict_member_details: tuple[dict[str, Any], ...] = ()
     try:
         resolved_modules = resolver.resolve_many(sources)
         module_names = tuple(module.name or str(module.source) for module in resolved_modules)
@@ -1156,6 +1346,22 @@ def _load_set_report(
         interaction_classes = len(merged_catalog.interaction_classes)
         datatype_names = len(merged_catalog.datatype_names)
         dimensions = tuple(merged_catalog.dimensions)
+    except FOMMergeError as exc:
+        merge_conflict_kind, merge_conflict_symbol, merge_conflict_members, merge_conflict_member_details = _extract_merge_conflict(
+            str(exc),
+            member_summaries,
+        )
+        issues.append(
+            FOMValidationIssueRow(
+                layer="merge",
+                requirement=None,
+                table=None,
+                field=None,
+                value=None,
+                message=str(exc),
+            )
+        )
+        rationale = "The load set members resolved, but they could not be merged into a single repo-native catalog."
     except FOMResolutionError as exc:
         issues.append(
             FOMValidationIssueRow(
@@ -1167,6 +1373,19 @@ def _load_set_report(
                 message=str(exc),
             )
         )
+        rationale = "One or more load-set members could not be resolved on the current validator path."
+    except Exception as exc:
+        issues.append(
+            FOMValidationIssueRow(
+                layer="merge",
+                requirement=None,
+                table=None,
+                field=None,
+                value=None,
+                message=str(exc),
+            )
+        )
+        rationale = "The load set failed before a merged catalog could be constructed."
     return FOMValidationLoadSetReport(
         name=name,
         kind=kind,
@@ -1191,7 +1410,11 @@ def _load_set_report(
         datatype_names=datatype_names,
         dimensions=dimensions,
         rationale=rationale,
-        recommended_next_step=_load_set_recommendation(verdict, tuple(issues)),
+        recommended_next_step=_merge_guidance(issues[0].message) if any(issue.layer == "merge" for issue in issues) else _load_set_recommendation(verdict, tuple(issues)),
+        merge_conflict_kind=merge_conflict_kind,
+        merge_conflict_symbol=merge_conflict_symbol,
+        merge_conflict_members=merge_conflict_members,
+        merge_conflict_member_details=merge_conflict_member_details,
         issues=tuple(issues),
     )
 

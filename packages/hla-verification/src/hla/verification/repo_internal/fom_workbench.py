@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
+import ast
 import html
 import json
+import re
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from hla.fom import FOMCatalog, FOMResolver, merge_fom_modules
+from hla.fom import FOMCatalog, FOMMergeError, FOMResolutionError, FOMResolver, merge_fom_modules
 from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
 from hla.verification.repo_internal.fom_validate import write_fom_validation, write_fom_validation_html
@@ -43,7 +45,13 @@ class FOMWorkbenchFamily:
     default_load_set_ids: tuple[str, ...]
     default_load_set_paths: tuple[str, ...]
     parse_status: str
+    parse_error_kind: str | None
     parse_error: str | None
+    recommended_next_step: str
+    merge_conflict_kind: str | None
+    merge_conflict_symbol: str | None
+    merge_conflict_members: tuple[str, ...]
+    merge_conflict_member_details: tuple[dict[str, Any], ...]
     module_names: tuple[str, ...]
     object_class_count: int
     interaction_class_count: int
@@ -58,6 +66,12 @@ class FOMWorkbenchFamily:
     validation_json_path: str | None
     validation_md_path: str | None
     validation_html_path: str | None
+    catalog_status: str = "ok"
+    validation_verdict: str | None = None
+    validation_passed: bool | None = None
+    validation_issue_count: int = 0
+    validation_issue_layers: tuple[str, ...] = ()
+    validation_issue_groups: tuple[dict[str, Any], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,7 +81,13 @@ class FOMWorkbenchLoadSet:
     member_paths: tuple[str, ...]
     edition_scope: str
     parse_status: str
+    parse_error_kind: str | None
     parse_error: str | None
+    recommended_next_step: str
+    merge_conflict_kind: str | None
+    merge_conflict_symbol: str | None
+    merge_conflict_members: tuple[str, ...]
+    merge_conflict_member_details: tuple[dict[str, Any], ...]
     module_names: tuple[str, ...]
     object_class_count: int
     interaction_class_count: int
@@ -82,6 +102,12 @@ class FOMWorkbenchLoadSet:
     validation_json_path: str | None
     validation_md_path: str | None
     validation_html_path: str | None
+    catalog_status: str = "ok"
+    validation_verdict: str | None = None
+    validation_passed: bool | None = None
+    validation_issue_count: int = 0
+    validation_issue_layers: tuple[str, ...] = ()
+    validation_issue_groups: tuple[dict[str, Any], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,6 +131,22 @@ class FOMWorkbenchDiff:
     right_family: str
     comparable: bool
     reason: str | None
+    left_parse_status: str
+    right_parse_status: str
+    left_parse_error_kind: str | None
+    right_parse_error_kind: str | None
+    left_parse_error: str | None
+    right_parse_error: str | None
+    left_recommended_next_step: str | None
+    right_recommended_next_step: str | None
+    left_merge_conflict_kind: str | None
+    right_merge_conflict_kind: str | None
+    left_merge_conflict_symbol: str | None
+    right_merge_conflict_symbol: str | None
+    left_merge_conflict_members: tuple[str, ...]
+    right_merge_conflict_members: tuple[str, ...]
+    left_merge_conflict_member_details: tuple[dict[str, Any], ...]
+    right_merge_conflict_member_details: tuple[dict[str, Any], ...]
     shared_dimensions: tuple[str, ...]
     only_left_dimensions: tuple[str, ...]
     only_right_dimensions: tuple[str, ...]
@@ -246,10 +288,269 @@ def _resolve_catalog(records: tuple[FOMInventoryRecord, ...]) -> tuple[tuple[str
     return module_names, catalog
 
 
+def _safe_literal(value: str) -> Any:
+    try:
+        return ast.literal_eval(value)
+    except Exception:
+        return value
+
+
+def _member_label(name: str | None, source: object) -> str:
+    return str(name or source or "unknown-member")
+
+
+def _record_by_source(
+    records: tuple[FOMInventoryRecord, ...],
+) -> dict[str, FOMInventoryRecord]:
+    return {str((_repo_root() / record.path).resolve()): record for record in records}
+
+
+def _detail_base(module: Any, records_by_source: Mapping[str, FOMInventoryRecord]) -> dict[str, Any]:
+    source_path = str(Path(str(module.source)).resolve())
+    record = records_by_source.get(source_path)
+    return {
+        "member": _member_label(module.name, module.source),
+        "entry_id": record.id if record else None,
+        "entry_path": record.path if record else None,
+        "baseline_kind": record.baseline_kind if record else None,
+    }
+
+
+def _merge_conflict_from_modules(
+    message: str,
+    resolved_modules: tuple[Any, ...],
+    records: tuple[FOMInventoryRecord, ...],
+) -> tuple[str | None, str | None, tuple[str, ...], tuple[dict[str, Any], ...]]:
+    records_by_source = _record_by_source(records)
+    definition_match = re.match(r"^Conflicting (?P<kind>.+) definition (?P<name>.+) across FOM modules$", message)
+    if definition_match:
+        kind = str(definition_match.group("kind"))
+        symbol = str(_safe_literal(definition_match.group("name")))
+        if "object class" in kind:
+            details = tuple(
+                {
+                    **_detail_base(module, records_by_source),
+                    "object_class": symbol,
+                    "parent_name": next((spec.parent_name for spec in module.object_classes if spec.full_name == symbol), None),
+                }
+                for module in resolved_modules
+                if any(spec.full_name == symbol for spec in module.object_classes)
+            )
+        elif "interaction class" in kind:
+            details = tuple(
+                {
+                    **_detail_base(module, records_by_source),
+                    "interaction_class": symbol,
+                    "parent_name": next((spec.parent_name for spec in module.interaction_classes if spec.full_name == symbol), None),
+                }
+                for module in resolved_modules
+                if any(spec.full_name == symbol for spec in module.interaction_classes)
+            )
+        elif "transportation reliability" in kind:
+            details = tuple(
+                {
+                    **_detail_base(module, records_by_source),
+                    "transportation": symbol,
+                    "declaration": next(
+                        (
+                            {"reliable": spec.reliable, "semantics": spec.semantics}
+                            for name, spec in module.transportation_specs.items()
+                            if name == symbol
+                        ),
+                        None,
+                    ),
+                }
+                for module in resolved_modules
+                if symbol in module.transportation_names
+            )
+        else:
+            details = tuple(
+                {
+                    **_detail_base(module, records_by_source),
+                    "symbol": symbol,
+                    "declaration": (
+                        next(
+                            (
+                                {"category": "basic", "encoding": spec.encoding, "size": spec.size, "interpretation": spec.interpretation, "endian": spec.endian, "semantics": spec.semantics}
+                                for name, spec in module.basic_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "simple", "representation": spec.representation, "units": spec.units, "resolution": spec.resolution, "accuracy": spec.accuracy, "semantics": spec.semantics}
+                                for name, spec in module.simple_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "reference", "representation": spec.representation, "reference_class": spec.reference_class, "referenced_attribute": spec.referenced_attribute, "semantics": spec.semantics}
+                                for name, spec in module.reference_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "enumerated", "representation": spec.representation, "semantics": spec.semantics}
+                                for name, spec in module.enumerated_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "array", "data_type": spec.data_type, "cardinality": spec.cardinality, "encoding": spec.encoding, "semantics": spec.semantics}
+                                for name, spec in module.array_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "fixed-record", "encoding": spec.encoding, "semantics": spec.semantics}
+                                for name, spec in module.fixed_record_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "variant-record", "discriminant": spec.discriminant, "data_type": spec.data_type, "encoding": spec.encoding, "semantics": spec.semantics}
+                                for name, spec in module.variant_record_datatypes.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                        or next(
+                            (
+                                {"category": "update-rate", "rate": spec.rate, "semantics": spec.semantics}
+                                for name, spec in module.update_rate_specs.items()
+                                if name == symbol
+                            ),
+                            None,
+                        )
+                    ),
+                }
+                for module in resolved_modules
+                if symbol in module.datatype_names or symbol in module.update_rates
+            )
+        return kind, symbol, tuple(detail["member"] for detail in details), details
+
+    superclass_match = re.match(
+        r"^(?P<kind>Object class|Interaction class) (?P<name>.+) has conflicting superclasses: .+$",
+        message,
+    )
+    if superclass_match:
+        symbol = str(_safe_literal(superclass_match.group("name")))
+        object_kind = superclass_match.group("kind") == "Object class"
+        details = tuple(
+            {
+                "member": _member_label(module.name, module.source),
+                "symbol": symbol,
+                "parent_name": next(
+                    (
+                        spec.parent_name
+                        for spec in (module.object_classes if object_kind else module.interaction_classes)
+                        if spec.full_name == symbol
+                    ),
+                    None,
+                ),
+            }
+            for module in resolved_modules
+            if any(
+                spec.full_name == symbol
+                for spec in (module.object_classes if object_kind else module.interaction_classes)
+            )
+        )
+        return superclass_match.group("kind").lower().replace(" ", "-"), symbol, tuple(detail["member"] for detail in details), details
+
+    logical_time_match = re.match(r"^Conflicting logical time implementations in FOM modules: (?P<values>\[.+\])$", message)
+    if logical_time_match:
+        values = _safe_literal(logical_time_match.group("values"))
+        implementations = tuple(str(value) for value in values) if isinstance(values, (list, tuple)) else ()
+        details = tuple(
+            {
+                "member": _member_label(module.name, module.source),
+                "logical_time_implementation": getattr(module, "inferred_time_implementation", None),
+            }
+            for module in resolved_modules
+            if getattr(module, "inferred_time_implementation", None) in implementations
+        )
+        return "logical-time-implementation", ", ".join(implementations), tuple(detail["member"] for detail in details), details
+
+    return None, None, (), ()
+
+
+def _workbench_failure(exc: Exception) -> tuple[str, str]:
+    message = str(exc)
+    if isinstance(exc, FOMMergeError):
+        lowered = message.lower()
+        if "conflicting logical time implementations" in lowered:
+            return "merge", "Align the logical time section across the selected members, then regenerate the workbench snapshot."
+        if "conflicting" in lowered and "datatype definition" in lowered:
+            return "merge", "Unify the duplicate datatype definition across the selected members, then regenerate the workbench snapshot."
+        if "conflicting transportation reliability definition" in lowered:
+            return "merge", "Normalize the transportation reliability definition across the selected members, then regenerate the workbench snapshot."
+        return "merge", "Resolve the conflicting member definitions in this selection, then regenerate the workbench snapshot."
+    if isinstance(exc, FOMResolutionError):
+        return "resolution", "Fix the unresolved member path or resolver mapping, then regenerate the workbench snapshot."
+    return "error", "Fix the reported catalog construction failure, then regenerate the workbench snapshot."
+
+
+def _validation_summary(report: Any | None) -> tuple[str | None, bool | None, int, tuple[str, ...], tuple[dict[str, Any], ...]]:
+    if report is None:
+        return None, None, 0, (), ()
+    issues = tuple(getattr(report, "issues", ()))
+    layers = tuple(sorted({issue.layer for issue in issues if getattr(issue, "layer", None)}))
+    grouped: dict[str, list[str]] = defaultdict(list)
+    for issue in issues:
+        layer = getattr(issue, "layer", None) or "unknown"
+        message = str(getattr(issue, "message", "")).strip()
+        if message and message not in grouped[layer]:
+            grouped[layer].append(message)
+    issue_groups = tuple(
+        {
+            "layer": layer,
+            "count": sum(1 for issue in issues if getattr(issue, "layer", None) == layer),
+            "messages": tuple(messages[:3]),
+        }
+        for layer, messages in sorted(grouped.items())
+    )
+    return getattr(report, "verdict", None), getattr(report, "passed", None), len(issues), layers, issue_groups
+
+
+def _catalog_status(
+    *,
+    parse_status: str,
+    parse_error_kind: str | None,
+    validation_verdict: str | None,
+    validation_passed: bool | None,
+) -> str:
+    if parse_status == "browser-pending":
+        return "browser-pending"
+    if parse_status != "ok":
+        return "merge-failed" if parse_error_kind == "merge" else "error"
+    if validation_passed is False:
+        return "validation-failed"
+    if validation_verdict and validation_verdict != "conforming":
+        return "warning"
+    return "ok"
+
+
 def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_output_dir: Path | None = None) -> FOMWorkbenchFamily:
     load_set = _default_load_set(records)
     parse_status = "ok"
+    parse_error_kind: str | None = None
     parse_error: str | None = None
+    recommended_next_step = "Open the validation packet or inspect the merged tree for this family."
+    merge_conflict_kind: str | None = None
+    merge_conflict_symbol: str | None = None
+    merge_conflict_members: tuple[str, ...] = ()
+    merge_conflict_member_details: tuple[dict[str, Any], ...] = ()
     module_names: tuple[str, ...] = ()
     object_class_count = 0
     interaction_class_count = 0
@@ -263,9 +564,17 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
     validation_json_path: str | None = None
     validation_md_path: str | None = None
     validation_html_path: str | None = None
+    validation_verdict: str | None = None
+    validation_passed: bool | None = None
+    validation_issue_count = 0
+    validation_issue_layers: tuple[str, ...] = ()
+    validation_issue_groups: tuple[dict[str, Any], ...] = ()
     validation_command = f"./tools/fom-validate --family {records[0].scenario_family} --html"
     try:
-        module_names, catalog = _resolve_catalog(load_set)
+        resolver = FOMResolver()
+        resolved = resolver.resolve_many(tuple((_repo_root() / record.path) for record in load_set))
+        module_names = tuple(module.name or str(module.source) for module in resolved)
+        catalog = merge_fom_modules(resolved)
         object_class_count = len(catalog.object_classes)
         interaction_class_count = len(catalog.interaction_classes)
         datatype_count = len(catalog.datatype_names)
@@ -288,12 +597,21 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
                 families=(records[0].scenario_family,),
                 title=report.title,
             )
+            load_set_report = report.load_set_reports[0] if report.load_set_reports else None
+            validation_verdict, validation_passed, validation_issue_count, validation_issue_layers, validation_issue_groups = _validation_summary(load_set_report)
             validation_json_path = str((family_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
             validation_md_path = str((family_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
             validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
     except Exception as exc:  # pragma: no cover - failure diagnostics only
         parse_status = "error"
+        parse_error_kind, recommended_next_step = _workbench_failure(exc)
         parse_error = str(exc)
+        if 'resolved' in locals() and isinstance(exc, FOMMergeError):
+            merge_conflict_kind, merge_conflict_symbol, merge_conflict_members, merge_conflict_member_details = _merge_conflict_from_modules(
+                str(exc),
+                tuple(resolved),
+                load_set,
+            )
 
     return FOMWorkbenchFamily(
         scenario_family=records[0].scenario_family,
@@ -306,7 +624,24 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
         default_load_set_ids=tuple(record.id for record in load_set),
         default_load_set_paths=tuple(record.path for record in load_set),
         parse_status=parse_status,
+        parse_error_kind=parse_error_kind,
         parse_error=parse_error,
+        recommended_next_step=recommended_next_step,
+        merge_conflict_kind=merge_conflict_kind,
+        merge_conflict_symbol=merge_conflict_symbol,
+        merge_conflict_members=merge_conflict_members,
+        merge_conflict_member_details=merge_conflict_member_details,
+        catalog_status=_catalog_status(
+            parse_status=parse_status,
+            parse_error_kind=parse_error_kind,
+            validation_verdict=validation_verdict,
+            validation_passed=validation_passed,
+        ),
+        validation_verdict=validation_verdict,
+        validation_passed=validation_passed,
+        validation_issue_count=validation_issue_count,
+        validation_issue_layers=validation_issue_layers,
+        validation_issue_groups=validation_issue_groups,
         module_names=module_names,
         object_class_count=object_class_count,
         interaction_class_count=interaction_class_count,
@@ -326,7 +661,13 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
 
 def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, validation_output_dir: Path | None = None) -> FOMWorkbenchLoadSet:
     parse_status = "ok"
+    parse_error_kind: str | None = None
     parse_error: str | None = None
+    recommended_next_step = "Run the validation command or inspect the merged tree for this load set."
+    merge_conflict_kind: str | None = None
+    merge_conflict_symbol: str | None = None
+    merge_conflict_members: tuple[str, ...] = ()
+    merge_conflict_member_details: tuple[dict[str, Any], ...] = ()
     module_names: tuple[str, ...] = ()
     object_class_count = 0
     interaction_class_count = 0
@@ -341,8 +682,16 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
     validation_json_path: str | None = None
     validation_md_path: str | None = None
     validation_html_path: str | None = None
+    validation_verdict: str | None = None
+    validation_passed: bool | None = None
+    validation_issue_count = 0
+    validation_issue_layers: tuple[str, ...] = ()
+    validation_issue_groups: tuple[dict[str, Any], ...] = ()
     try:
-        module_names, catalog = _resolve_catalog(records)
+        resolver = FOMResolver()
+        resolved = resolver.resolve_many(tuple((_repo_root() / record.path) for record in records))
+        module_names = tuple(module.name or str(module.source) for module in resolved)
+        catalog = merge_fom_modules(resolved)
         object_class_count = len(catalog.object_classes)
         interaction_class_count = len(catalog.interaction_classes)
         datatype_count = len(catalog.datatype_names)
@@ -365,19 +714,45 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
                 output_dir=load_set_dir,
                 title=report.title,
             )
+            load_set_report = report.load_set_reports[0] if report.load_set_reports else None
+            validation_verdict, validation_passed, validation_issue_count, validation_issue_layers, validation_issue_groups = _validation_summary(load_set_report)
             validation_json_path = str((load_set_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
             validation_md_path = str((load_set_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
             validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
     except Exception as exc:  # pragma: no cover - failure diagnostics only
         parse_status = "error"
+        parse_error_kind, recommended_next_step = _workbench_failure(exc)
         parse_error = str(exc)
+        if 'resolved' in locals() and isinstance(exc, FOMMergeError):
+            merge_conflict_kind, merge_conflict_symbol, merge_conflict_members, merge_conflict_member_details = _merge_conflict_from_modules(
+                str(exc),
+                tuple(resolved),
+                records,
+            )
     return FOMWorkbenchLoadSet(
         name=name,
         member_ids=tuple(record.id for record in records),
         member_paths=tuple(record.path for record in records),
         edition_scope=_edition_scope_for_records(records),
         parse_status=parse_status,
+        parse_error_kind=parse_error_kind,
         parse_error=parse_error,
+        recommended_next_step=recommended_next_step,
+        merge_conflict_kind=merge_conflict_kind,
+        merge_conflict_symbol=merge_conflict_symbol,
+        merge_conflict_members=merge_conflict_members,
+        merge_conflict_member_details=merge_conflict_member_details,
+        catalog_status=_catalog_status(
+            parse_status=parse_status,
+            parse_error_kind=parse_error_kind,
+            validation_verdict=validation_verdict,
+            validation_passed=validation_passed,
+        ),
+        validation_verdict=validation_verdict,
+        validation_passed=validation_passed,
+        validation_issue_count=validation_issue_count,
+        validation_issue_layers=validation_issue_layers,
+        validation_issue_groups=validation_issue_groups,
         module_names=module_names,
         object_class_count=object_class_count,
         interaction_class_count=interaction_class_count,
@@ -510,6 +885,20 @@ def _summary_diff(
     right_member_ids: tuple[str, ...],
     left_parse_status: str,
     right_parse_status: str,
+    left_parse_error_kind: str | None,
+    right_parse_error_kind: str | None,
+    left_parse_error: str | None,
+    right_parse_error: str | None,
+    left_recommended_next_step: str | None,
+    right_recommended_next_step: str | None,
+    left_merge_conflict_kind: str | None,
+    right_merge_conflict_kind: str | None,
+    left_merge_conflict_symbol: str | None,
+    right_merge_conflict_symbol: str | None,
+    left_merge_conflict_members: tuple[str, ...],
+    right_merge_conflict_members: tuple[str, ...],
+    left_merge_conflict_member_details: tuple[dict[str, Any], ...],
+    right_merge_conflict_member_details: tuple[dict[str, Any], ...],
     left_dimensions: tuple[str, ...],
     right_dimensions: tuple[str, ...],
     left_object_classes: tuple[str, ...],
@@ -526,6 +915,22 @@ def _summary_diff(
             right_family=right_name,
             comparable=False,
             reason=f"left={left_parse_status}, right={right_parse_status}",
+            left_parse_status=left_parse_status,
+            right_parse_status=right_parse_status,
+            left_parse_error_kind=left_parse_error_kind,
+            right_parse_error_kind=right_parse_error_kind,
+            left_parse_error=left_parse_error,
+            right_parse_error=right_parse_error,
+            left_recommended_next_step=left_recommended_next_step,
+            right_recommended_next_step=right_recommended_next_step,
+            left_merge_conflict_kind=left_merge_conflict_kind,
+            right_merge_conflict_kind=right_merge_conflict_kind,
+            left_merge_conflict_symbol=left_merge_conflict_symbol,
+            right_merge_conflict_symbol=right_merge_conflict_symbol,
+            left_merge_conflict_members=left_merge_conflict_members,
+            right_merge_conflict_members=right_merge_conflict_members,
+            left_merge_conflict_member_details=left_merge_conflict_member_details,
+            right_merge_conflict_member_details=right_merge_conflict_member_details,
             shared_dimensions=(),
             only_left_dimensions=(),
             only_right_dimensions=(),
@@ -556,6 +961,22 @@ def _summary_diff(
         right_family=right_name,
         comparable=True,
         reason=None,
+        left_parse_status=left_parse_status,
+        right_parse_status=right_parse_status,
+        left_parse_error_kind=left_parse_error_kind,
+        right_parse_error_kind=right_parse_error_kind,
+        left_parse_error=left_parse_error,
+        right_parse_error=right_parse_error,
+        left_recommended_next_step=left_recommended_next_step,
+        right_recommended_next_step=right_recommended_next_step,
+        left_merge_conflict_kind=left_merge_conflict_kind,
+        right_merge_conflict_kind=right_merge_conflict_kind,
+        left_merge_conflict_symbol=left_merge_conflict_symbol,
+        right_merge_conflict_symbol=right_merge_conflict_symbol,
+        left_merge_conflict_members=left_merge_conflict_members,
+        right_merge_conflict_members=right_merge_conflict_members,
+        left_merge_conflict_member_details=left_merge_conflict_member_details,
+        right_merge_conflict_member_details=right_merge_conflict_member_details,
         shared_dimensions=tuple(sorted(left_dims & right_dims)),
         only_left_dimensions=tuple(sorted(left_dims - right_dims)),
         only_right_dimensions=tuple(sorted(right_dims - left_dims)),
@@ -585,6 +1006,20 @@ def _family_diff(left: FOMWorkbenchFamily, right: FOMWorkbenchFamily) -> FOMWork
         right.default_load_set_ids,
         left.parse_status,
         right.parse_status,
+        left.parse_error_kind,
+        right.parse_error_kind,
+        left.parse_error,
+        right.parse_error,
+        left.recommended_next_step,
+        right.recommended_next_step,
+        left.merge_conflict_kind,
+        right.merge_conflict_kind,
+        left.merge_conflict_symbol,
+        right.merge_conflict_symbol,
+        left.merge_conflict_members,
+        right.merge_conflict_members,
+        left.merge_conflict_member_details,
+        right.merge_conflict_member_details,
         left.dimensions,
         right.dimensions,
         left.object_classes,
@@ -617,6 +1052,13 @@ def _diff_rows(
                 left_fields = (
                     left.default_load_set_ids,
                     left.parse_status,
+                    left.parse_error_kind,
+                    left.parse_error,
+                    left.recommended_next_step,
+                    left.merge_conflict_kind,
+                    left.merge_conflict_symbol,
+                    left.merge_conflict_members,
+                    left.merge_conflict_member_details,
                     left.dimensions,
                     left.object_classes,
                     left.interaction_classes,
@@ -627,6 +1069,13 @@ def _diff_rows(
                 left_fields = (
                     left.member_ids,
                     left.parse_status,
+                    left.parse_error_kind,
+                    left.parse_error,
+                    left.recommended_next_step,
+                    left.merge_conflict_kind,
+                    left.merge_conflict_symbol,
+                    left.merge_conflict_members,
+                    left.merge_conflict_member_details,
                     left.dimensions,
                     left.object_classes,
                     left.interaction_classes,
@@ -637,6 +1086,13 @@ def _diff_rows(
                 right_fields = (
                     right.default_load_set_ids,
                     right.parse_status,
+                    right.parse_error_kind,
+                    right.parse_error,
+                    right.recommended_next_step,
+                    right.merge_conflict_kind,
+                    right.merge_conflict_symbol,
+                    right.merge_conflict_members,
+                    right.merge_conflict_member_details,
                     right.dimensions,
                     right.object_classes,
                     right.interaction_classes,
@@ -647,6 +1103,13 @@ def _diff_rows(
                 right_fields = (
                     right.member_ids,
                     right.parse_status,
+                    right.parse_error_kind,
+                    right.parse_error,
+                    right.recommended_next_step,
+                    right.merge_conflict_kind,
+                    right.merge_conflict_symbol,
+                    right.merge_conflict_members,
+                    right.merge_conflict_member_details,
                     right.dimensions,
                     right.object_classes,
                     right.interaction_classes,
@@ -657,8 +1120,8 @@ def _diff_rows(
                 _summary_diff(
                     left_name,
                     right_name,
-                    left_fields[6],
-                    right_fields[6],
+                    left_fields[13],
+                    right_fields[13],
                     left_fields[0],
                     right_fields[0],
                     left_fields[1],
@@ -671,6 +1134,20 @@ def _diff_rows(
                     right_fields[4],
                     left_fields[5],
                     right_fields[5],
+                    left_fields[6],
+                    right_fields[6],
+                    left_fields[7],
+                    right_fields[7],
+                    left_fields[8],
+                    right_fields[8],
+                    left_fields[9],
+                    right_fields[9],
+                    left_fields[10],
+                    right_fields[10],
+                    left_fields[11],
+                    right_fields[11],
+                    left_fields[12],
+                    right_fields[12],
                 )
             )
     return tuple(rows)
@@ -759,6 +1236,8 @@ def apply_repo_owned_fom_edits(
     description: str | None = None,
     add_keywords: tuple[str, ...] = (),
     add_notes: tuple[str, ...] = (),
+    set_simple_datatype_representations: tuple[tuple[str, str], ...] = (),
+    set_simple_datatype_semantics: tuple[tuple[str, str], ...] = (),
     output_path: str | Path | None = None,
     in_place: bool = False,
 ) -> Path:
@@ -785,6 +1264,34 @@ def apply_repo_owned_fom_edits(
         if description_node is None:
             description_node = ET.SubElement(model_identification, qname("description"))
         description_node.text = description
+
+    for datatype_name, representation in set_simple_datatype_representations:
+        target_node = None
+        for candidate in root.findall(f".//{qname('simpleData')}"):
+            name_node = next((child for child in list(candidate) if child.tag == qname("name")), None)
+            if name_node is not None and (name_node.text or "").strip() == datatype_name:
+                target_node = candidate
+                break
+        if target_node is None:
+            raise ValueError(f"Simple datatype {datatype_name!r} not found in entry {entry_id!r}")
+        representation_node = next((child for child in list(target_node) if child.tag == qname("representation")), None)
+        if representation_node is None:
+            representation_node = ET.SubElement(target_node, qname("representation"))
+        representation_node.text = representation
+
+    for datatype_name, semantics in set_simple_datatype_semantics:
+        target_node = None
+        for candidate in root.findall(f".//{qname('simpleData')}"):
+            name_node = next((child for child in list(candidate) if child.tag == qname("name")), None)
+            if name_node is not None and (name_node.text or "").strip() == datatype_name:
+                target_node = candidate
+                break
+        if target_node is None:
+            raise ValueError(f"Simple datatype {datatype_name!r} not found in entry {entry_id!r}")
+        semantics_node = next((child for child in list(target_node) if child.tag == qname("semantics")), None)
+        if semantics_node is None:
+            semantics_node = ET.SubElement(target_node, qname("semantics"))
+        semantics_node.text = semantics
 
     for keyword in add_keywords:
         if keyword.strip():
@@ -832,23 +1339,28 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
   <title>{html.escape(snapshot.title)}</title>
   <style>
     :root {{
-      --bg: #f2efe6;
-      --panel: rgba(255,255,255,0.78);
-      --ink: #10212b;
-      --muted: #5c6a73;
-      --line: rgba(16,33,43,0.12);
-      --accent: #006d77;
-      --accent-soft: rgba(0,109,119,0.10);
+      --bg: #f5f4ef;
+      --panel: rgba(255,255,255,0.94);
+      --ink: #15232c;
+      --muted: #60707a;
+      --line: rgba(21,35,44,0.10);
+      --line-strong: rgba(21,35,44,0.18);
+      --accent: #0f766e;
+      --accent-soft: rgba(15,118,110,0.08);
+      --healthy: #2f6b4f;
+      --healthy-soft: rgba(47,107,79,0.10);
+      --warning: #8b6b1e;
+      --warning-soft: rgba(139,107,30,0.10);
+      --danger: #8a3434;
+      --danger-soft: rgba(138,52,52,0.10);
+      --neutral-soft: rgba(21,35,44,0.05);
     }}
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
       font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(circle at 20% 0%, rgba(255,196,61,0.18), transparent 32%),
-        radial-gradient(circle at 100% 20%, rgba(0,109,119,0.16), transparent 28%),
-        linear-gradient(180deg, #faf7f0 0%, var(--bg) 100%);
+      background: var(--bg);
     }}
     .wrap {{ max-width: 1400px; margin: 0 auto; padding: 28px; }}
     .hero {{
@@ -860,13 +1372,19 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     .panel {{
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 20px;
+      border-radius: 8px;
       padding: 20px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 14px 40px rgba(16,33,43,0.08);
+      box-shadow: 0 8px 24px rgba(21,35,44,0.04);
     }}
     h1,h2,h3 {{ margin-top: 0; }}
     .muted {{ color: var(--muted); }}
+    .surface-kicker {{
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }}
     .pill {{
       display: inline-block;
       padding: 4px 10px;
@@ -875,17 +1393,113 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       color: var(--accent);
       border: 1px solid rgba(0,109,119,0.16);
       margin: 0 8px 8px 0;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
     }}
+    .pill.status-ok,
+    .pill.status-conforming,
+    .pill.status-supported {{ background: var(--healthy-soft); color: var(--healthy); border-color: rgba(47,107,79,0.18); }}
+    .pill.status-warning,
+    .pill.status-blocked {{ background: var(--warning-soft); color: var(--warning); border-color: rgba(139,107,30,0.18); }}
+    .pill.status-validation-failed,
+    .pill.status-merge-failed,
+    .pill.status-error,
+    .pill.status-unsupported {{ background: var(--danger-soft); color: var(--danger); border-color: rgba(138,52,52,0.18); }}
+    .pill.status-browser-pending {{ background: var(--neutral-soft); color: #42505a; border-color: rgba(16,33,43,0.16); }}
     .grid {{
       display: grid;
-      grid-template-columns: 320px minmax(0, 1.15fr) minmax(0, 1fr);
+      grid-template-columns: 300px minmax(0, 1.25fr) 380px;
       gap: 20px;
+    }}
+    .workspace-stack {{
+      display: grid;
+      gap: 16px;
+    }}
+    .summary-panel {{
+      padding: 18px 20px;
+    }}
+    .summary-grid {{
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.95fr);
+      gap: 16px;
+      align-items: start;
+    }}
+    .summary-title {{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }}
+    .summary-title h2 {{
+      overflow-wrap: anywhere;
+    }}
+    .summary-stats {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }}
+    .stat-box {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.82);
+    }}
+    .stat-box.healthy {{ border-color: rgba(47,107,79,0.20); background: rgba(47,107,79,0.05); }}
+    .stat-box.warning {{ border-color: rgba(139,107,30,0.20); background: rgba(139,107,30,0.05); }}
+    .stat-box.failure {{ border-color: rgba(138,52,52,0.20); background: rgba(138,52,52,0.05); }}
+    .stat-box.pending {{ border-color: var(--line-strong); background: var(--neutral-soft); }}
+    .stat-label {{
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }}
+    .workspace-tabs {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }}
+    .workspace-tab {{
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.82);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }}
+    .workspace-tab.active {{
+      background: rgba(0,109,119,0.10);
+      color: var(--accent);
+      border-color: rgba(0,109,119,0.18);
+    }}
+    .workspace-pane {{
+      display: none;
+    }}
+    .workspace-pane.active {{
+      display: block;
+    }}
+    .section-title {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }}
+    .quiet-list {{
+      display: grid;
+      gap: 10px;
+    }}
+    .rail-section + .rail-section {{
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
     }}
     input, select {{
       width: 100%;
       padding: 12px 14px;
-      border-radius: 12px;
+      border-radius: 8px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.82);
       color: var(--ink);
@@ -893,7 +1507,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     }}
     button {{
       padding: 10px 14px;
-      border-radius: 12px;
+      border-radius: 8px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.82);
       color: var(--ink);
@@ -905,17 +1519,96 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       display: grid;
       gap: 10px;
     }}
+    .history-list {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }}
+    .history-chip {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.82);
+      color: var(--ink);
+      font-size: 0.84rem;
+      cursor: pointer;
+    }}
+    .history-chip.active {{
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }}
+    .focus-bar {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.62);
+      padding: 10px;
+      margin-bottom: 14px;
+    }}
+    .focus-chips {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }}
+    .focus-chip {{
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }}
+    .focus-chip.active {{
+      background: var(--accent-soft);
+      border-color: rgba(0,109,119,0.20);
+      color: var(--accent);
+    }}
+    .focus-input {{
+      margin-bottom: 0;
+    }}
+    .focus-status {{
+      margin-top: 8px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }}
     .family-card {{
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 8px;
       padding: 14px;
       cursor: pointer;
-      background: rgba(255,255,255,0.62);
+      background: rgba(255,255,255,0.78);
+      border-left: 3px solid transparent;
     }}
     .family-card.active {{
       border-color: var(--accent);
       box-shadow: inset 0 0 0 1px var(--accent);
       background: rgba(0,109,119,0.06);
+    }}
+    .family-card[data-status="ok"] {{ border-left-color: var(--healthy); }}
+    .family-card[data-status="warning"] {{ border-left-color: var(--warning); }}
+    .family-card[data-status="validation-failed"],
+    .family-card[data-status="merge-failed"],
+    .family-card[data-status="error"] {{ border-left-color: var(--danger); }}
+    .family-card[data-status="browser-pending"] {{ border-left-color: #53616b; }}
+    .family-card-head {{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }}
+    .family-card-meta {{
+      display: grid;
+      gap: 6px;
+      font-size: 0.9rem;
+    }}
+    .family-card-foot {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
     }}
     .kv {{ display: grid; grid-template-columns: 180px 1fr; gap: 10px 14px; }}
     .kv dt {{ color: var(--muted); }}
@@ -923,16 +1616,49 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       max-height: 220px;
       overflow: auto;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 10px 14px;
       background: rgba(255,255,255,0.6);
     }}
     .list code {{ display: block; padding: 3px 0; }}
+    .empty-state {{
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.34);
+    }}
+    .command-list {{
+      display: grid;
+      gap: 10px;
+    }}
+    .command-row {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.6);
+    }}
+    .command-head {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }}
+    .command-label {{
+      color: var(--muted);
+      font-size: 0.9rem;
+    }}
+    .mini-button {{
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }}
     .tree-list {{
       max-height: 260px;
       overflow: auto;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 10px 14px;
       background: rgba(255,255,255,0.6);
     }}
@@ -944,6 +1670,22 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     .tree-row.active {{
       background: rgba(0,109,119,0.08);
     }}
+    .search-row {{
+      cursor: pointer;
+    }}
+    .search-row.active {{
+      background: rgba(0,109,119,0.08);
+    }}
+    .symbol-link {{
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(255,255,255,0.82);
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+      margin: 0 6px 6px 0;
+    }}
     .toolbar {{
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -954,7 +1696,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       width: 100%;
       min-height: 80px;
       padding: 12px 14px;
-      border-radius: 12px;
+      border-radius: 8px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.82);
       color: var(--ink);
@@ -988,9 +1730,137 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       margin-bottom: 8px;
       cursor: pointer;
     }}
+    .next-step-box {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.82);
+    }}
+    .summary-status-line {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }}
+    .summary-meta {{
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }}
+    .cards {{
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }}
+    .card {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.82);
+    }}
+    .card.healthy,
+    .card.supported {{ border-color: rgba(47,107,79,0.18); background: rgba(47,107,79,0.05); }}
+    .card.warning,
+    .card.blocked {{ border-color: rgba(139,107,30,0.18); background: rgba(139,107,30,0.05); }}
+    .card.failure,
+    .card.unsupported {{ border-color: rgba(138,52,52,0.18); background: rgba(138,52,52,0.05); }}
+    .card.pending {{ border-color: var(--line-strong); background: var(--neutral-soft); }}
+    .card-head {{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }}
+    .card-meta {{
+      display: grid;
+      gap: 6px;
+      font-size: 0.92rem;
+    }}
+    .count-grid {{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 14px;
+    }}
+    .count-box {{
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.82);
+    }}
+    .count-box strong {{
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }}
+    .ownership-note {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.82);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }}
+    .action-bar {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 14px;
+    }}
+    .action-button {{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+    }}
+    .action-button.primary {{
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }}
+    .action-button.secondary {{
+      background: rgba(255,255,255,0.82);
+      color: var(--ink);
+    }}
+    .command-drawer {{
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.72);
+    }}
+    .command-drawer summary {{
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }}
+    .command-drawer summary::-webkit-details-marker {{
+      display: none;
+    }}
+    .command-drawer-body {{
+      padding: 0 12px 12px;
+    }}
+    @media (max-width: 1320px) {{
+      .grid {{
+        grid-template-columns: 280px minmax(0, 1fr);
+      }}
+      .grid > section.panel:last-child {{
+        grid-column: 1 / -1;
+      }}
+      .summary-grid {{
+        grid-template-columns: 1fr;
+      }}
+    }}
     @media (max-width: 1100px) {{
-      .hero, .grid, .split, .builder-grid {{ grid-template-columns: 1fr; }}
+      .hero, .grid, .split, .builder-grid, .summary-grid, .summary-stats, .count-grid {{ grid-template-columns: 1fr; }}
       .family-list {{ max-height: none; }}
+      .workspace-tabs {{ overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }}
     }}
   </style>
 </head>
@@ -1020,63 +1890,174 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
           <option value="custom-load-set">custom load sets</option>
         </select>
         <input id="family-filter" type="search" placeholder="Filter families, custom load sets, editions, or load modes">
-        <div id="family-list" class="family-list"></div>
+        <select id="status-filter">
+          <option value="">all statuses</option>
+          <option value="ok">ok</option>
+          <option value="warning">warning</option>
+          <option value="merge-failed">merge failed</option>
+          <option value="validation-failed">validation failed</option>
+          <option value="browser-pending">browser pending</option>
+          <option value="error">error</option>
+        </select>
+        <select id="edition-filter">
+          <option value="">all edition scopes</option>
+          <option value="2010 only">2010 only</option>
+          <option value="2025 only">2025 only</option>
+          <option value="cross-edition / ambiguous">cross-edition / ambiguous</option>
+          <option value="both">both</option>
+        </select>
+        <select id="baseline-filter">
+          <option value="">all baselines</option>
+          <option value="repo-owned">repo-owned</option>
+          <option value="third-party">third-party</option>
+          <option value="external">external</option>
+        </select>
+        <select id="load-mode-filter">
+          <option value="">all load modes</option>
+          <option value="standalone">standalone</option>
+          <option value="base-plus-extension">base-plus-extension</option>
+          <option value="ordered-family">ordered-family</option>
+          <option value="browser-saved">browser-saved</option>
+          <option value="custom">custom</option>
+        </select>
+        <div id="family-list" class="family-list" tabindex="0"></div>
+        <div class="rail-section">
+          <div class="section-title">
+            <h3 style="margin: 0;">Recent Selections</h3>
+            <span class="muted">session memory</span>
+          </div>
+          <div id="recent-selections" class="history-list"></div>
+        </div>
         <div class="edit-box" style="margin-top: 14px;">
           <h3>Custom Load Set Builder</h3>
           <input id="builder-name" type="text" placeholder="saved load set name">
           <input id="builder-filter" type="search" placeholder="Filter baseline entries by id, family, edition, or path">
+          <div id="builder-health" class="list" style="margin-bottom: 10px;"></div>
+          <div id="builder-selected" class="list" style="margin-bottom: 10px;"></div>
           <div id="builder-entry-list" class="list checkbox-list"></div>
           <div class="builder-grid">
-            <button id="builder-save" type="button">save in browser</button>
+            <button id="builder-save" type="button">save set</button>
             <button id="builder-clear" type="button">clear selection</button>
           </div>
           <div class="builder-grid">
-            <button id="builder-export" type="button">export saved sets</button>
-            <button id="builder-import" type="button">import saved sets</button>
+            <button id="builder-export" type="button">export sets</button>
+            <button id="builder-import" type="button">import sets</button>
           </div>
           <textarea id="builder-transfer" placeholder="paste exported custom load set JSON here"></textarea>
           <div id="builder-saved" class="list" style="margin-top: 10px;"></div>
           <div id="builder-command" class="list" style="margin-top: 10px;"></div>
         </div>
       </section>
+      <div class="workspace-stack">
+        <section class="panel summary-panel">
+          <div id="selection-summary" class="summary-grid">
+            <div class="empty-state">Select a family or custom load set to begin.</div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="section-title">
+            <h2 style="margin: 0;">Workspace</h2>
+            <span class="muted">one active task at a time</span>
+          </div>
+          <div class="workspace-tabs" id="workspace-tabs">
+            <button class="workspace-tab active" type="button" data-workspace="overview">Overview</button>
+            <button class="workspace-tab" type="button" data-workspace="conflict">Conflict</button>
+            <button class="workspace-tab" type="button" data-workspace="validation">Validation</button>
+            <button class="workspace-tab" type="button" data-workspace="diff">Diff</button>
+            <button class="workspace-tab" type="button" data-workspace="repair">Repair</button>
+          </div>
+          <div class="focus-bar" id="workspace-focus-controls">
+            <div class="focus-chips">
+              <button class="focus-chip active" type="button" data-focus-kind="all">All</button>
+              <button class="focus-chip" type="button" data-focus-kind="object">Objects</button>
+              <button class="focus-chip" type="button" data-focus-kind="interaction">Interactions</button>
+              <button class="focus-chip" type="button" data-focus-kind="datatype">Datatypes</button>
+              <button class="focus-chip" type="button" data-focus-kind="dimension">Dimensions</button>
+              <button class="focus-chip" type="button" data-focus-kind="issues">Issues</button>
+              <button class="focus-chip" type="button" data-focus-kind="changed">Changed</button>
+            </div>
+            <input id="workspace-focus-filter" class="focus-input" type="search" placeholder="Focus symbol or selector: Track kind:object owner:repo-owned changed:true">
+            <div id="workspace-focus-status" class="focus-status">Focus: all workspace rows</div>
+          </div>
+          <div id="workspace-overview" class="workspace-pane active">
+            <div class="section-title">
+              <h3 style="margin: 0;">Overview</h3>
+              <span class="muted">selection, merged shape, and validation entry points</span>
+            </div>
+            <div id="inspect-panel" class="muted">Select a family or custom load set.</div>
+          </div>
+          <div id="workspace-conflict" class="workspace-pane">
+            <div class="section-title">
+              <h3 style="margin: 0;">Conflict</h3>
+              <span class="muted">why merge failed and who owns the declaration</span>
+            </div>
+            <div id="conflict-panel" class="muted">Select a family or custom load set to inspect conflict state.</div>
+          </div>
+          <div id="workspace-validation" class="workspace-pane">
+            <div class="section-title">
+              <h3 style="margin: 0;">Validation</h3>
+              <span class="muted">issue groups, severity, and report entry points</span>
+            </div>
+            <div id="validation-panel" class="muted">Select a family or custom load set to inspect validation state.</div>
+          </div>
+          <div id="workspace-diff" class="workspace-pane">
+            <div class="section-title">
+              <h3 style="margin: 0;">Diff</h3>
+              <span class="muted">compare the active selection against another family or load set</span>
+            </div>
+            <div class="split">
+              <select id="left-family"></select>
+              <select id="right-family"></select>
+            </div>
+            <div class="toolbar" style="margin-top: 10px;">
+              <input id="custom-left" type="text" placeholder="custom left set: id1,id2">
+              <input id="custom-right" type="text" placeholder="custom right set: id1,id2">
+            </div>
+            <div id="recent-comparisons" class="history-list" style="margin: 0 0 14px;"></div>
+            <div id="diff-panel" class="muted" style="margin-top: 14px;">Select two families to compare.</div>
+          </div>
+          <div id="workspace-repair" class="workspace-pane">
+            <div class="section-title">
+              <h3 style="margin: 0;">Repair</h3>
+              <span class="muted">repo-owned fixes, guarded edits, and regeneration steps</span>
+            </div>
+            <div class="edit-box">
+              <div id="edit-summary" class="muted"></div>
+              <textarea id="edit-description" placeholder="Proposed description"></textarea>
+              <input id="edit-keywords" type="text" placeholder="Keywords to append, comma-separated">
+              <input id="edit-notes" type="text" placeholder="Notes to append, comma-separated">
+              <div id="edit-command" class="list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
       <section class="panel">
-        <h2>Inspect</h2>
-        <div id="inspect-panel" class="muted">Select a family or custom load set.</div>
-        <div class="toolbar">
-          <select id="tree-kind">
-            <option value="object">object classes</option>
-            <option value="interaction">interaction classes</option>
-          </select>
-          <input id="tree-filter" type="search" placeholder="Filter hierarchy">
+        <div class="rail-section">
+          <div class="section-title">
+            <h2 style="margin: 0;">Investigation</h2>
+            <span id="active-symbol-summary" class="muted">No symbol pinned.</span>
+          </div>
+          <div class="toolbar">
+            <select id="tree-kind">
+              <option value="object">object classes</option>
+              <option value="interaction">interaction classes</option>
+            </select>
+            <input id="tree-filter" type="search" placeholder="Filter hierarchy">
+          </div>
+          <div id="tree-panel" class="tree-list"></div>
+          <div id="node-panel" class="panel" style="padding: 14px; margin-top: 12px;"></div>
         </div>
-        <div id="tree-panel" class="tree-list"></div>
-        <div id="node-panel" class="panel" style="padding: 14px; margin-top: 12px;"></div>
-        <h3>Search Merged Names</h3>
-        <input id="search-filter" type="search" placeholder="Search object, interaction, or datatype names">
-        <table>
-          <thead><tr><th>Kind</th><th>Name</th><th>Family</th></tr></thead>
-          <tbody id="search-results"></tbody>
-        </table>
-        <div class="edit-box" style="margin-top: 14px;">
-          <h3>Guarded Edit Flow</h3>
-          <div id="edit-summary" class="muted"></div>
-          <textarea id="edit-description" placeholder="Proposed description"></textarea>
-          <input id="edit-keywords" type="text" placeholder="Keywords to append, comma-separated">
-          <input id="edit-notes" type="text" placeholder="Notes to append, comma-separated">
-          <div id="edit-command" class="list"></div>
+        <div class="rail-section">
+          <div class="section-title">
+            <h3 style="margin: 0;">Search</h3>
+            <span class="muted">merged names in current scope</span>
+          </div>
+          <input id="search-filter" type="search" placeholder="Search object, interaction, or datatype names">
+          <table>
+            <thead><tr><th>Kind</th><th>Name</th><th>Family</th></tr></thead>
+            <tbody id="search-results"></tbody>
+          </table>
         </div>
-      </section>
-      <section class="panel">
-        <h2>Overlay / Diff</h2>
-        <div class="split">
-          <select id="left-family"></select>
-          <select id="right-family"></select>
-        </div>
-        <div class="toolbar" style="margin-top: 10px;">
-          <input id="custom-left" type="text" placeholder="custom left set: id1,id2">
-          <input id="custom-right" type="text" placeholder="custom right set: id1,id2">
-        </div>
-        <div id="diff-panel" class="muted" style="margin-top: 14px;">Select two families to compare.</div>
       </section>
     </div>
   </div>
@@ -1089,16 +2070,418 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     const fixedCustomLoadSetNames = new Set(snapshot.custom_load_sets.map((loadSet) => loadSet.name));
     const fixedFamilyNames = new Set(snapshot.families.map((family) => family.scenario_family));
     let browserCustomLoadSets = loadBrowserCustomLoadSets();
-    let builderSelectedMemberIds = new Set();
+    let builderSelectedMemberIds = [];
     let selectedCatalogKind = snapshot.families[0] ? "family" : "custom-load-set";
     let selectedCatalogName = snapshot.families[0]?.scenario_family || customLoadSets()[0]?.name || null;
     let selectedNodeName = null;
+    let selectedSearchName = null;
+    let currentWorkspaceMode = "overview";
+    let focusKind = "all";
+    let focusSelector = "";
+    let recentSelections = [];
+    let recentComparisons = [];
 
     function setCapabilities() {{
       const host = document.getElementById("capabilities");
       host.innerHTML = Object.entries(snapshot.capabilities)
         .map(([key, value]) => `<span class="pill">${{key}}: ${{String(value)}}</span>`)
         .join("");
+    }}
+
+    function escapeHtml(value) {{
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }}
+
+    function emptyState(message) {{
+      return `<div class="empty-state">${{escapeHtml(message)}}</div>`;
+    }}
+
+    function sourceLabel(item) {{
+      if (!item) return "selection";
+      if (item.source_kind === "browser-saved-custom-load-set") return "browser-saved load set";
+      if (item.source_kind === "snapshot-custom-load-set") return "generated load set";
+      if (item.name) return "custom load set";
+      return "family";
+    }}
+
+    function ownershipLabel(item) {{
+      const baselines = item?.baseline_kinds || [];
+      if (!baselines.length) return "custom";
+      if (baselines.length === 1) return baselines[0];
+      return baselines.join(" + ");
+    }}
+
+    function severityClass(status, verdict = null) {{
+      if (status === "ok" && verdict === "conforming") return "healthy";
+      if (status === "ok") return "healthy";
+      if (status === "warning" || status === "blocked") return "warning";
+      if (status === "browser-pending") return "pending";
+      if (status === "merge-failed" || status === "validation-failed" || status === "error" || status === "unsupported") return "failure";
+      if (status === "supported") return "healthy";
+      return "pending";
+    }}
+
+    function issueSummaryLabel(item) {{
+      if (!item) return "No selection";
+      if (catalogStatus(item) === "browser-pending") return "Snapshot refresh required";
+      if (item.validation_issue_count) return `${{item.validation_issue_count}} issue${{item.validation_issue_count === 1 ? "" : "s"}}`;
+      if (item.merge_conflict_symbol) return `Conflict: ${{item.merge_conflict_symbol}}`;
+      return "No active issue";
+    }}
+
+    function displayText(value, fallback = "not available") {{
+      if (Array.isArray(value)) return value.length ? value.join(", ") : fallback;
+      if (value === null || value === undefined || value === "") return fallback;
+      return String(value);
+    }}
+
+    function parsedFocusSelector() {{
+      const parsed = {{
+        terms: [],
+        kind: null,
+        owner: null,
+        symbol: null,
+        changed: null,
+        issue: null,
+      }};
+      for (const token of focusSelector.trim().split(/\\s+/).filter(Boolean)) {{
+        const parts = token.split(":");
+        const key = parts[0].toLowerCase();
+        const value = parts.slice(1).join(":").toLowerCase();
+        if (parts.length > 1 && ["kind", "owner", "symbol", "name", "changed", "issue"].includes(key)) {{
+          if (key === "kind") parsed.kind = value;
+          else if (key === "owner") parsed.owner = value;
+          else if (key === "symbol" || key === "name") parsed.symbol = value;
+          else if (key === "changed") parsed.changed = value !== "false" && value !== "0";
+          else if (key === "issue") parsed.issue = value !== "false" && value !== "0";
+        }} else {{
+          parsed.terms.push(token.toLowerCase());
+        }}
+      }}
+      if (focusKind === "object" || focusKind === "interaction" || focusKind === "datatype" || focusKind === "dimension") {{
+        parsed.kind = focusKind;
+      }} else if (focusKind === "issues") {{
+        parsed.issue = true;
+      }} else if (focusKind === "changed") {{
+        parsed.changed = true;
+      }}
+      return parsed;
+    }}
+
+    function focusIsActive() {{
+      return focusKind !== "all" || Boolean(focusSelector.trim());
+    }}
+
+    function focusSummary() {{
+      const parts = [];
+      if (focusKind !== "all") parts.push(focusKind);
+      if (focusSelector.trim()) parts.push(focusSelector.trim());
+      return parts.length ? `Focus: ${{parts.join(" + ")}}` : "Focus: all workspace rows";
+    }}
+
+    function matchesFocus(kind, values, options = {{}}) {{
+      const parsed = parsedFocusSelector();
+      const haystack = values
+        .flatMap((value) => Array.isArray(value) ? value : [value])
+        .filter((value) => value !== null && value !== undefined)
+        .join(" ")
+        .toLowerCase();
+      if (parsed.kind && !options.ignoreKind && kind !== parsed.kind) return false;
+      if (parsed.owner) {{
+        const owners = (options.owners || []).join(" ").toLowerCase();
+        if (!owners.includes(parsed.owner)) return false;
+      }}
+      if (parsed.symbol && !haystack.includes(parsed.symbol)) return false;
+      if (parsed.issue && options.issue === false) return false;
+      if (parsed.changed && options.changed === false) return false;
+      return parsed.terms.every((term) => haystack.includes(term));
+    }}
+
+    function renderFocusControls() {{
+      document.querySelectorAll(".focus-chip").forEach((button) => {{
+        button.classList.toggle("active", button.dataset.focusKind === focusKind);
+      }});
+      const input = document.getElementById("workspace-focus-filter");
+      if (input && input.value !== focusSelector) input.value = focusSelector;
+      const status = document.getElementById("workspace-focus-status");
+      if (status) status.textContent = focusSummary();
+    }}
+
+    function rerenderFocusedViews() {{
+      renderFocusControls();
+      renderSelectionSummary();
+      renderSearch();
+      renderTree();
+      renderValidationWorkspace();
+      renderDiff();
+    }}
+
+    function selectionKey(kind, name) {{
+      return `${{kind}}::${{name}}`;
+    }}
+
+    function rememberSelection(kind, name) {{
+      if (!name) return;
+      const item = currentCatalogItem();
+      const entry = {{
+        kind,
+        name,
+        source: item ? sourceLabel(item) : kind,
+        status: item ? catalogStatus(item) : "unknown",
+      }};
+      recentSelections = [entry, ...recentSelections.filter((row) => selectionKey(row.kind, row.name) !== selectionKey(kind, name))].slice(0, 6);
+    }}
+
+    function renderRecentSelections() {{
+      const host = document.getElementById("recent-selections");
+      if (!host) return;
+      if (!recentSelections.length) {{
+        host.innerHTML = emptyState("Recent selections appear here during this session.");
+        return;
+      }}
+      host.innerHTML = recentSelections.map((entry) => `
+        <button class="history-chip${{entry.kind === selectedCatalogKind && entry.name === selectedCatalogName ? " active" : ""}}" type="button" data-recent-kind="${{entry.kind}}" data-recent-name="${{entry.name}}">
+          <span>${{entry.name}}</span>
+          <span class="muted">${{entry.source}}</span>
+        </button>
+      `).join("");
+      host.querySelectorAll("button[data-recent-kind]").forEach((button) => {{
+        button.onclick = () => {{
+          document.getElementById("catalog-mode").value = button.dataset.recentKind;
+          selectedCatalogKind = button.dataset.recentKind;
+          selectedCatalogName = button.dataset.recentName;
+          selectedNodeName = null;
+          selectedSearchName = null;
+          setDiffSelectors();
+          refreshSelectionViews({{ preserveMode: true }});
+        }};
+      }});
+    }}
+
+    function rememberComparison(left, right) {{
+      if (!left || !right || left === right) return;
+      const key = `${{left}}::${{right}}`;
+      recentComparisons = [{{ left, right, key }}, ...recentComparisons.filter((row) => row.key !== key)].slice(0, 6);
+    }}
+
+    function renderRecentComparisons() {{
+      const host = document.getElementById("recent-comparisons");
+      if (!host) return;
+      if (!recentComparisons.length) {{
+        host.innerHTML = emptyState("Recent comparisons appear after you compare two selections.");
+        return;
+      }}
+      const activeLeft = document.getElementById("left-family")?.value || "";
+      const activeRight = document.getElementById("right-family")?.value || "";
+      host.innerHTML = recentComparisons.map((entry) => `
+        <button class="history-chip${{entry.left === activeLeft && entry.right === activeRight ? " active" : ""}}" type="button" data-left="${{entry.left}}" data-right="${{entry.right}}">
+          <span>${{entry.left}}</span>
+          <span class="muted">vs</span>
+          <span>${{entry.right}}</span>
+        </button>
+      `).join("");
+      host.querySelectorAll("button[data-left]").forEach((button) => {{
+        button.onclick = () => {{
+          currentWorkspaceMode = "diff";
+          renderWorkspaceMode();
+          document.getElementById("left-family").value = button.dataset.left;
+          document.getElementById("right-family").value = button.dataset.right;
+          renderSelectionSummary();
+          renderDiff();
+        }};
+      }});
+    }}
+
+    function preferredWorkspaceMode(item) {{
+      if (!item) return "overview";
+      const status = catalogStatus(item);
+      if (status === "merge-failed" || item.parse_error_kind === "merge") return "conflict";
+      if (status === "validation-failed" || status === "warning") return "validation";
+      if ((item.merge_conflict_member_details || []).length) return "repair";
+      return "overview";
+    }}
+
+    function activeSymbolLabel() {{
+      return selectedNodeName || selectedSearchName || null;
+    }}
+
+    function renderWorkspaceMode() {{
+      document.querySelectorAll(".workspace-tab").forEach((button) => {{
+        button.classList.toggle("active", button.dataset.workspace === currentWorkspaceMode);
+      }});
+      document.querySelectorAll(".workspace-pane").forEach((pane) => {{
+        pane.classList.toggle("active", pane.id === `workspace-${{currentWorkspaceMode}}`);
+      }});
+      const symbolSummary = document.getElementById("active-symbol-summary");
+      if (symbolSummary) {{
+        const symbol = activeSymbolLabel();
+        symbolSummary.textContent = symbol ? `Pinned symbol: ${{symbol}}` : "No symbol pinned.";
+      }}
+    }}
+
+    function renderSelectionSummary() {{
+      const host = document.getElementById("selection-summary");
+      const item = currentCatalogItem();
+      if (!item) {{
+        host.innerHTML = emptyState("Select a family or custom load set to begin.");
+        return;
+      }}
+      const status = catalogStatus(item);
+      const severity = severityClass(status, item.validation_verdict);
+      const nextAction = currentWorkspaceMode === "conflict"
+        ? "Inspect the conflicting declaration and move toward repair."
+        : currentWorkspaceMode === "validation"
+          ? "Review issue groups and jump into the affected symbol."
+          : currentWorkspaceMode === "diff"
+            ? "Compare this selection against a peer and inspect the deltas."
+            : currentWorkspaceMode === "repair"
+              ? "Stage a repo-owned fix or copy the guarded command bundle."
+              : item.recommended_next_step || "Inspect the merged shape and validation entry points.";
+      host.innerHTML = `
+        <div>
+          <div class="surface-kicker">${{sourceLabel(item)}}</div>
+          <div class="summary-title">
+            <h2 style="margin: 0;">${{selectionLabel(item)}}</h2>
+          </div>
+          <div class="summary-status-line">
+            ${{statusPill(status)}}
+            ${{item.validation_verdict ? statusPill(item.validation_verdict.replaceAll(" ", "-")) : ""}}
+            <span class="ownership-note">ownership: ${{ownershipLabel(item)}}</span>
+          </div>
+          <div class="next-step-box">
+            <div class="stat-label">Next action</div>
+            <div>${{nextAction}}</div>
+          </div>
+          <div class="summary-meta">
+            <div class="muted">${{(item.edition_classes || ["custom"]).join(", ")}} | ${{displayText(item.edition_scope)}} | ${{item.load_mode}}</div>
+            <div class="muted">Members: ${{displayText(item.member_ids, "none")}}</div>
+          </div>
+        </div>
+        <div class="summary-stats">
+          <div class="stat-box">
+            <div class="stat-label">Merged shape</div>
+            <div>${{item.object_class_count}} objects</div>
+            <div>${{item.interaction_class_count}} interactions</div>
+            <div>${{item.datatype_count}} datatypes</div>
+          </div>
+          <div class="stat-box ${{severity}}">
+            <div class="stat-label">Current state</div>
+            <div>${{issueSummaryLabel(item)}}</div>
+            <div>Validation: ${{displayText(item.validation_verdict)}}</div>
+            <div>Conflict: ${{displayText(item.merge_conflict_symbol, "none")}}</div>
+          </div>
+        </div>
+      `;
+    }}
+
+    function refreshSelectionViews(options = {{}}) {{
+      const preserveMode = options.preserveMode === true;
+      if (!preserveMode) {{
+        currentWorkspaceMode = preferredWorkspaceMode(currentCatalogItem());
+      }}
+      rememberSelection(selectedCatalogKind, selectedCatalogName);
+      renderFocusControls();
+      renderWorkspaceMode();
+      renderSelectionSummary();
+      renderFamilyList();
+      renderRecentSelections();
+      renderInspect();
+      renderConflictWorkspace();
+      renderValidationWorkspace();
+      renderSearch();
+      syncDiffSelectionToCatalog();
+      renderDiff();
+    }}
+
+    function renderCommandList(items, emptyMessage = "No command available.") {{
+      if (!items || !items.length) return emptyState(emptyMessage);
+      return `<div class="command-list">${{items.map((item, index) => `
+        <div class="command-row">
+          <div class="command-head">
+            <span class="command-label">${{escapeHtml(item.label || `command ${{index + 1}}`)}}</span>
+            <button class="mini-button" type="button" data-copy-text="${{escapeHtml(item.command || "")}}">${{item.copyLabel || "copy"}}</button>
+          </div>
+          <code>${{escapeHtml(item.command || "")}}</code>
+        </div>
+      `).join("")}}</div>`;
+    }}
+
+    function renderActionBar(actions) {{
+      const valid = (actions || []).filter((action) => action && action.label);
+      if (!valid.length) return "";
+      return `<div class="action-bar">${{valid.map((action) => {{
+        const kind = action.kind || "secondary";
+        const disabled = action.disabled ? "disabled" : "";
+        const attrs = [
+          action.command ? `data-copy-text="${{escapeHtml(action.command)}}"` : "",
+          action.href ? `data-open-href="${{escapeHtml(action.href)}}"` : "",
+          action.workspace ? `data-workspace-target="${{escapeHtml(action.workspace)}}"` : "",
+          action.symbol ? `data-jump-symbol="${{escapeHtml(action.symbol)}}"` : "",
+          action.symbolKind ? `data-jump-kind="${{escapeHtml(action.symbolKind)}}"` : "",
+        ].filter(Boolean).join(" ");
+        return `<button class="action-button ${{kind}}" type="button" ${{attrs}} ${{disabled}}>${{escapeHtml(action.label)}}</button>`;
+      }}).join("")}}</div>`;
+    }}
+
+    function renderCommandDrawer(title, commands, emptyMessage = "No command available.") {{
+      if (!commands || !commands.length) return "";
+      return `
+        <details class="command-drawer">
+          <summary>${{escapeHtml(title)}}</summary>
+          <div class="command-drawer-body">
+            ${{renderCommandList(commands, emptyMessage)}}
+          </div>
+        </details>
+      `;
+    }}
+
+    function wireCopyButtons(host = document) {{
+      host.querySelectorAll("button[data-copy-text]").forEach((element) => {{
+        element.onclick = async () => {{
+          const value = element.dataset.copyText || "";
+          try {{
+            if (navigator.clipboard && navigator.clipboard.writeText) {{
+              await navigator.clipboard.writeText(value);
+            }}
+          }} catch (_error) {{
+          }}
+          const prior = element.textContent;
+          element.textContent = "copied";
+          window.setTimeout(() => {{
+            element.textContent = prior;
+          }}, 1200);
+        }};
+      }});
+    }}
+
+    function wireActionButtons(host = document) {{
+      host.querySelectorAll("button[data-open-href]").forEach((element) => {{
+        element.onclick = () => {{
+          const href = element.dataset.openHref;
+          if (!href) return;
+          window.open(href, "_blank", "noopener");
+        }};
+      }});
+      host.querySelectorAll("button[data-workspace-target]").forEach((element) => {{
+        element.onclick = () => {{
+          currentWorkspaceMode = element.dataset.workspaceTarget;
+          renderWorkspaceMode();
+          renderSelectionSummary();
+        }};
+      }});
+      host.querySelectorAll("button[data-jump-symbol]").forEach((element) => {{
+        element.onclick = () => {{
+          jumpToSymbol(element.dataset.jumpSymbol, {{
+            kind: element.dataset.jumpKind || null,
+            setFilter: true,
+          }});
+        }};
+      }});
     }}
 
     function loadBrowserCustomLoadSets() {{
@@ -1124,7 +2507,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         if (!row || typeof row.name !== "string" || !Array.isArray(row.member_ids)) continue;
         const name = row.name.trim();
         if (!name || fixedFamilyNames.has(name) || fixedCustomLoadSetNames.has(name)) continue;
-        const memberIds = [...new Set(row.member_ids.filter((id) => entryMap.has(id)))].sort();
+        const memberIds = [...new Set(row.member_ids.filter((id) => entryMap.has(id)))];
         if (!memberIds.length) continue;
         normalized.push({{ name, member_ids: memberIds }});
       }}
@@ -1137,6 +2520,28 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       return `./tools/fom-workbench --html --custom-load-set ${{name}}=${{memberIds.join(",")}}`;
     }}
 
+    function builderHas(id) {{
+      return builderSelectedMemberIds.includes(id);
+    }}
+
+    function builderAdd(id) {{
+      if (!builderHas(id)) builderSelectedMemberIds.push(id);
+    }}
+
+    function builderRemove(id) {{
+      builderSelectedMemberIds = builderSelectedMemberIds.filter((value) => value !== id);
+    }}
+
+    function builderMove(id, delta) {{
+      const index = builderSelectedMemberIds.indexOf(id);
+      if (index < 0) return;
+      const next = index + delta;
+      if (next < 0 || next >= builderSelectedMemberIds.length) return;
+      const copy = [...builderSelectedMemberIds];
+      [copy[index], copy[next]] = [copy[next], copy[index]];
+      builderSelectedMemberIds = copy;
+    }}
+
     function hydratedBrowserLoadSet(row) {{
       const members = row.member_ids.map((id) => entryMap.get(id)).filter(Boolean);
       const editionClasses = [...new Set(members.map((entry) => entry.edition_class))].sort();
@@ -1147,7 +2552,13 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         member_ids: [...row.member_ids],
         member_paths: members.map((entry) => entry.path),
         parse_status: "browser-pending",
+        parse_error_kind: "snapshot-required",
         parse_error: "Regenerate the workbench snapshot with the command below to compute parsed trees, diffs, and validation packets.",
+        recommended_next_step: "Regenerate the workbench snapshot with this custom load set to compute parsed trees, diffs, and validation packets.",
+        merge_conflict_kind: null,
+        merge_conflict_symbol: null,
+        merge_conflict_members: [],
+        merge_conflict_member_details: [],
         module_names: members.map((entry) => entry.path.split("/").slice(-1)[0]),
         object_class_count: 0,
         interaction_class_count: 0,
@@ -1162,6 +2573,12 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         validation_json_path: null,
         validation_md_path: null,
         validation_html_path: null,
+        catalog_status: "browser-pending",
+        validation_verdict: null,
+        validation_passed: null,
+        validation_issue_count: 0,
+        validation_issue_layers: [],
+        validation_issue_groups: [],
         edition_classes: editionClasses,
         edition_scope: editionScopes.length === 1 ? editionScopes[0] : "cross-edition / ambiguous",
         baseline_kinds: baselineKinds,
@@ -1177,6 +2594,60 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       ];
     }}
 
+    function evaluateBuilderSelection(memberIds) {{
+      const members = memberIds.map((id) => entryMap.get(id)).filter(Boolean);
+      if (!members.length) {{
+        return {{
+          label: "unknown",
+          warnings: ["Select one or more baseline entries to evaluate a candidate load set."],
+          editionScope: "n/a",
+          baselineKinds: [],
+          loadModes: [],
+        }};
+      }}
+      const editionScopes = [...new Set(members.map((entry) => entry.edition_scope))];
+      const baselineKinds = [...new Set(members.map((entry) => entry.baseline_kind))];
+      const loadModes = [...new Set(members.map((entry) => entry.load_mode))];
+      const warnings = [];
+      let label = "likely clean";
+
+      const selectedSet = new Set(memberIds);
+      const hasProtoExtension = members.some((entry) => entry.load_mode === "base-plus-extension" && entry.id !== "repo-2025-proto-base");
+      if (hasProtoExtension && !selectedSet.has("repo-2025-proto-base")) {{
+        label = "known conflict";
+        warnings.push("One or more base-plus-extension members are selected without repo-2025-proto-base.");
+      }}
+
+      const editionClasses = [...new Set(members.map((entry) => entry.edition_class))];
+      if (editionClasses.length > 1 || editionScopes.length > 1) {{
+        if (label !== "known conflict") label = "known warning";
+        warnings.push("The candidate mixes multiple edition classes or edition scopes.");
+      }}
+
+      const scenarioFamilies = [...new Set(members.map((entry) => entry.scenario_family))];
+      if (scenarioFamilies.length > 1 && label === "likely clean") {{
+        label = "known warning";
+        warnings.push("The candidate spans multiple scenario families and should be regenerated before relying on merged behavior.");
+      }}
+
+      const orderedFamilyMembers = members.filter((entry) => entry.load_mode === "ordered-family");
+      if (orderedFamilyMembers.length > 1) {{
+        const orderedFamilies = [...new Set(orderedFamilyMembers.map((entry) => entry.scenario_family))];
+        if (orderedFamilies.length > 1) {{
+          if (label !== "known conflict") label = "known warning";
+          warnings.push("Ordered-family members from different families are selected together.");
+        }}
+      }}
+
+      return {{
+        label,
+        warnings: warnings.length ? warnings : ["No obvious repo-known merge hazard detected from the current selection."],
+        editionScope: editionScopes.length === 1 ? editionScopes[0] : "cross-edition / ambiguous",
+        baselineKinds,
+        loadModes,
+      }};
+    }}
+
     function currentCatalogItems() {{
       return selectedCatalogKind === "custom-load-set" ? customLoadSets() : snapshot.families;
     }}
@@ -1184,6 +2655,14 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     function currentCatalogItem() {{
       if (selectedCatalogKind === "custom-load-set") return customLoadSets().find((loadSet) => loadSet.name === selectedCatalogName) || null;
       return familyMap.get(selectedCatalogName) || null;
+    }}
+
+    function catalogStatus(item) {{
+      return item.catalog_status || (item.parse_status === "browser-pending" ? "browser-pending" : item.parse_status === "ok" ? "ok" : "error");
+    }}
+
+    function statusPill(status) {{
+      return `<span class="pill status-${{status}}">${{status.replaceAll("-", " ")}}</span>`;
     }}
 
     function catalogSearchText(family) {{
@@ -1199,26 +2678,84 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
 
     function renderFamilyList() {{
       const filter = document.getElementById("family-filter").value.trim().toLowerCase();
+      const statusFilter = document.getElementById("status-filter").value;
+      const editionFilter = document.getElementById("edition-filter").value;
+      const baselineFilter = document.getElementById("baseline-filter").value;
+      const loadModeFilter = document.getElementById("load-mode-filter").value;
       const host = document.getElementById("family-list");
       host.innerHTML = "";
       for (const family of currentCatalogItems()) {{
         const catalogName = family.scenario_family || family.name;
         if (filter && !catalogSearchText(family).includes(filter)) continue;
+        if (statusFilter && catalogStatus(family) !== statusFilter) continue;
+        if (editionFilter && (family.edition_scope || "") !== editionFilter) continue;
+        if (baselineFilter && !(family.baseline_kinds || []).includes(baselineFilter)) continue;
+        if (loadModeFilter && (family.load_mode || "") !== loadModeFilter) continue;
         const card = document.createElement("div");
         card.className = "family-card" + (catalogName === selectedCatalogName ? " active" : "");
+        card.dataset.status = catalogStatus(family);
         card.innerHTML = `
-          <strong>${{catalogName}}</strong><br>
-          <span class="muted">${{(family.edition_classes || ["custom"]).join(", ")}} | ${{family.edition_scope || "n/a"}} | ${{family.load_mode}}</span><br>
-          <span class="muted">${{family.object_class_count}} objects, ${{family.interaction_class_count}} interactions, ${{family.datatype_count}} datatypes</span>
+          <div class="family-card-head">
+            <strong>${{catalogName}}</strong>
+            ${{statusPill(catalogStatus(family))}}
+          </div>
+          <div class="family-card-meta">
+            <div class="muted">${{sourceLabel(family)}} | ${{ownershipLabel(family)}}</div>
+            <div class="muted">${{(family.edition_classes || ["custom"]).join(", ")}} | ${{family.edition_scope || "n/a"}} | ${{family.load_mode}}</div>
+            <div>${{issueSummaryLabel(family)}}</div>
+            <div class="muted">${{family.object_class_count}} objects, ${{family.interaction_class_count}} interactions, ${{family.datatype_count}} datatypes</div>
+          </div>
+          <div class="family-card-foot">
+            ${{family.validation_verdict ? statusPill(family.validation_verdict.replaceAll(" ", "-")) : ""}}
+          </div>
         `;
         card.onclick = () => {{
           selectedCatalogName = catalogName;
           selectedNodeName = null;
-          renderFamilyList();
-          renderInspect();
-          renderSearch();
+          selectedSearchName = null;
+          refreshSelectionViews();
         }};
         host.appendChild(card);
+      }}
+      if (!host.children.length) {{
+        host.innerHTML = emptyState("No catalog items match the current filters.");
+      }}
+    }}
+
+    function visibleCatalogNames() {{
+      return [...document.querySelectorAll("#family-list .family-card strong")]
+        .map((node) => node.textContent?.trim())
+        .filter(Boolean);
+    }}
+
+    function moveCatalogSelection(delta) {{
+      const names = visibleCatalogNames();
+      if (!names.length) return;
+      const currentIndex = Math.max(0, names.indexOf(selectedCatalogName));
+      const nextIndex = Math.min(names.length - 1, Math.max(0, currentIndex + delta));
+      if (names[nextIndex] === selectedCatalogName) return;
+      selectedCatalogName = names[nextIndex];
+      selectedNodeName = null;
+      selectedSearchName = null;
+      refreshSelectionViews();
+      document.getElementById("family-list").focus();
+    }}
+
+    function syncDiffSelectionToCatalog() {{
+      const left = document.getElementById("left-family");
+      const right = document.getElementById("right-family");
+      if (!left || !right) return;
+      const names = [
+        ...snapshot.families.map((family) => family.scenario_family),
+        ...customLoadSets().map((loadSet) => loadSet.name),
+      ];
+      if (!names.length) return;
+      if (selectedCatalogName && names.includes(selectedCatalogName)) {{
+        left.value = selectedCatalogName;
+      }}
+      const fallback = names.find((name) => name !== left.value) || left.value;
+      if (!names.includes(right.value) || right.value === left.value) {{
+        right.value = fallback;
       }}
     }}
 
@@ -1230,61 +2767,386 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         return;
       }}
       const title = family.scenario_family || family.name;
+      const validationCommands = family.validation_command ? [{{ label: "validation command", command: family.validation_command }}] : [];
       host.innerHTML = `
+        <div class="surface-kicker">Overview</div>
+        <div class="summary-title">
+          <strong>${{title}}</strong>
+          ${{statusPill(catalogStatus(family))}}
+          ${{family.validation_verdict ? statusPill(family.validation_verdict.replaceAll(" ", "-")) : ""}}
+        </div>
+        ${{
+          renderActionBar([
+            {{ label: "Open Validation Report", kind: "primary", href: family.validation_html_path, disabled: !family.validation_html_path }},
+            {{ label: "Go To Validation", kind: "secondary", workspace: "validation" }},
+            {{ label: "Copy Validation Command", kind: "secondary", command: family.validation_command, disabled: !family.validation_command }},
+          ])
+        }}
         <dl class="kv">
           <dt>Selection</dt><dd>${{title}}</dd>
           <dt>Edition classes</dt><dd>${{(family.edition_classes || ["custom"]).join(", ")}}</dd>
-          <dt>Edition scope</dt><dd>${{family.edition_scope || "n/a"}}</dd>
+          <dt>Edition scope</dt><dd>${{displayText(family.edition_scope)}}</dd>
           <dt>Baseline kinds</dt><dd>${{(family.baseline_kinds || ["custom"]).join(", ")}}</dd>
           <dt>Load mode</dt><dd>${{family.load_mode}}</dd>
-          <dt>Parse status</dt><dd>${{family.parse_status}}${{family.parse_error ? `: ${{family.parse_error}}` : ""}}</dd>
+          <dt>Parse status</dt><dd>${{family.parse_status}}${{family.parse_error_kind ? ` (${{family.parse_error_kind}})` : ""}}${{family.parse_error ? `: ${{family.parse_error}}` : ""}}</dd>
+          <dt>Next step</dt><dd>${{displayText(family.recommended_next_step)}}</dd>
+          <dt>Conflict symbol</dt><dd>${{displayText(family.merge_conflict_symbol)}}</dd>
+          <dt>Conflict members</dt><dd>${{displayText(family.merge_conflict_members)}}</dd>
+          <dt>Conflict details</dt><dd>${{conflictDetailsBlock(family.merge_conflict_member_details || [])}}</dd>
           <dt>Default load set</dt><dd>${{(family.default_load_set_ids || family.member_ids).join(", ")}}</dd>
           <dt>Module names</dt><dd>${{family.module_names.join(", ")}}</dd>
-          <dt>Dimensions</dt><dd>${{family.dimensions.join(", ") || "n/a"}}</dd>
+          <dt>Dimensions</dt><dd>${{displayText(family.dimensions)}}</dd>
         </dl>
-        <h3>Validation Packet</h3>
+        ${{
+          renderCommandDrawer("Operator commands", validationCommands, "Validation command unavailable for this selection.")
+        }}
+        <h3>Validation Files</h3>
         <div class="list">
-          <code>${{family.validation_command || "n/a"}}</code>
           ${{
             family.validation_html_path
-              ? `<a href="${{family.validation_html_path}}" target="_blank" rel="noopener">open HTML validation packet</a><br>
-                 <a href="${{family.validation_md_path}}" target="_blank" rel="noopener">open Markdown validation packet</a><br>
-                 <a href="${{family.validation_json_path}}" target="_blank" rel="noopener">open JSON validation packet</a>`
-              : `<span class="muted">Validation packet not generated for this snapshot.</span>`
+              ? `<div style="margin-top: 10px;"><a href="${{family.validation_html_path}}" target="_blank" rel="noopener">open validation HTML</a><br>
+                 <a href="${{family.validation_md_path}}" target="_blank" rel="noopener">open validation Markdown</a><br>
+                 <a href="${{family.validation_json_path}}" target="_blank" rel="noopener">open validation JSON</a></div>`
+              : `<div style="margin-top: 10px;">${{emptyState("Validation files are not present in this snapshot.")}}</div>`
           }}
         </div>
-        <h3>Member Paths</h3>
+        <h3>Source Files</h3>
         <div class="list">${{family.member_paths.map((item) => `<code>${{item}}</code>`).join("")}}</div>
       `;
+      wireCopyButtons(host);
+      wireActionButtons(host);
       renderTree();
       renderEditFlow();
     }}
 
-    function renderSearch() {{
+    function selectionSearchRows() {{
+      return snapshot.search_index.filter((row) => !selectedCatalogName || row.source_name === selectedCatalogName);
+    }}
+
+    function currentSearchRows() {{
       const filter = document.getElementById("search-filter").value.trim().toLowerCase();
-      const tbody = document.getElementById("search-results");
-      const rows = snapshot.search_index.filter((row) => {{
-        if (selectedCatalogName && row.source_name !== selectedCatalogName) return false;
+      const matchesFilter = (row) => {{
         if (!filter) return true;
         return [row.kind, row.name, row.source_name, row.parent_name || "", row.lineage.join(" "), row.edition_classes.join(" "), row.edition_scope]
           .join(" ")
           .toLowerCase()
           .includes(filter);
-      }}).slice(0, 250);
-      tbody.innerHTML = rows.map((row) => `
-        <tr>
-          <td>${{row.kind}}</td>
-          <td><code>${{row.name}}</code><br><span class="muted">${{row.lineage.join(" > ")}}</span></td>
-          <td>${{row.source_name}}</td>
-        </tr>
-      `).join("");
+      }};
+      const matchesWorkspaceFocus = (row) => matchesFocus(
+        row.kind,
+        [row.kind, row.name, row.source_name, row.parent_name || "", row.lineage, row.edition_classes, row.edition_scope, row.load_mode],
+        {{ owners: row.baseline_kinds, issue: true, changed: true }},
+      );
+      const scopedRows = selectionSearchRows().filter((row) => matchesFilter(row) && matchesWorkspaceFocus(row));
+      if (scopedRows.length || !filter) return scopedRows.slice(0, 250);
+      return snapshot.search_index.filter((row) => matchesFilter(row) && matchesWorkspaceFocus(row)).slice(0, 250);
+    }}
+
+    function inferTreeKind(symbol, explicitKind = null) {{
+      if (explicitKind === "object" || explicitKind === "interaction") return explicitKind;
+      if (!symbol) return null;
+      if (symbol.startsWith("HLAinteractionRoot")) return "interaction";
+      if (symbol.startsWith("HLAobjectRoot")) return "object";
+      const row = currentSearchRows().find((item) => item.name === symbol);
+      if (row && (row.kind === "object" || row.kind === "interaction")) return row.kind;
+      return null;
+    }}
+
+    function jumpToSymbol(symbol, options = {{}}) {{
+      if (!symbol) return;
+      const explicitKind = options.kind || null;
+      const setFilter = options.setFilter !== false;
+      if (setFilter) document.getElementById("search-filter").value = symbol;
+      selectedSearchName = symbol;
+      const kind = inferTreeKind(symbol, explicitKind);
+      if (kind) {{
+        document.getElementById("tree-kind").value = kind;
+        selectedNodeName = symbol;
+      }}
+      renderWorkspaceMode();
+      renderSelectionSummary();
+      renderSearch();
+      renderTree();
+    }}
+
+    function renderSearch() {{
+      const tbody = document.getElementById("search-results");
+      const rows = currentSearchRows();
+      if (!rows.some((row) => row.name === selectedSearchName)) selectedSearchName = rows[0]?.name || null;
+      if (!rows.length) {{
+        tbody.innerHTML = `<tr><td colspan="3">${{emptyState("No merged names match the current search scope.")}}</td></tr>`;
+        return;
+      }}
+      tbody.innerHTML = rows.map((row) => {{
+        const active = row.name === selectedSearchName ? " active" : "";
+        return `
+          <tr class="search-row${{active}}" data-symbol="${{row.name}}" data-kind="${{row.kind}}">
+            <td>${{row.kind}}</td>
+            <td><code>${{row.name}}</code><br><span class="muted">${{row.lineage.join(" > ")}}</span></td>
+            <td>${{row.source_name}}</td>
+          </tr>
+        `;
+      }}).join("");
+      tbody.querySelectorAll(".search-row").forEach((element) => {{
+        element.onclick = () => {{
+          jumpToSymbol(element.dataset.symbol, {{ kind: element.dataset.kind }});
+        }};
+      }});
+    }}
+
+    function moveSearchSelection(delta) {{
+      const rows = currentSearchRows();
+      if (!rows.length) return;
+      const currentIndex = Math.max(0, rows.findIndex((row) => row.name === selectedSearchName));
+      const nextIndex = Math.min(rows.length - 1, Math.max(0, currentIndex + delta));
+      const next = rows[nextIndex];
+      if (!next) return;
+      jumpToSymbol(next.name, {{ kind: next.kind }});
+      document.getElementById("search-filter").focus();
+    }}
+
+    function formatConflictValue(value) {{
+      if (Array.isArray(value)) return value.length ? value.join(", ") : "none";
+      if (value && typeof value === "object") return Object.entries(value).map(([key, inner]) => `${{key}}=${{formatConflictValue(inner)}}`).join("; ");
+      if (value === null || value === undefined || value === "") return "not available";
+      return String(value);
+    }}
+
+    function conflictDetailsBlock(details) {{
+      if (!details || !details.length) return "<span class='muted'>No member-level detail recorded.</span>";
+      return `<div class="cards">${{details.map((detail) => {{
+        const tone = detail.baseline_kind === "repo-owned" ? "healthy" : "warning";
+        const rows = Object.entries(detail)
+          .filter(([key]) => key !== "member")
+          .map(([key, value]) => `<div class="muted"><strong>${{key.replaceAll("_", " ")}}:</strong> ${{formatConflictValue(value)}}</div>`)
+          .join("");
+        return `<div class="card ${{tone}}">
+          <div class="card-head">
+            <strong>${{detail.member || "member"}}</strong>
+            <span class="ownership-note">${{detail.baseline_kind || "ownership unavailable"}}</span>
+          </div>
+          <div class="card-meta">${{rows}}</div>
+        </div>`;
+      }}).join("")}}</div>`;
+    }}
+
+    function symbolsFromValidationMessages(messages) {{
+      if (!messages || !messages.length) return [];
+      const candidates = selectionSearchRows()
+        .map((row) => row.name)
+        .filter((name, index, values) => values.indexOf(name) === index)
+        .sort((left, right) => right.length - left.length);
+      const found = [];
+      for (const symbol of candidates) {{
+        if (messages.some((message) => String(message || "").includes(symbol)) && !found.includes(symbol)) {{
+          found.push(symbol);
+        }}
+      }}
+      return found.slice(0, 3);
+    }}
+
+    function firstValidationSymbol(groups) {{
+      for (const group of groups || []) {{
+        const symbols = symbolsFromValidationMessages(group.messages || []);
+        if (symbols.length) return symbols[0];
+      }}
+      return null;
+    }}
+
+    function renderSymbolActions(symbols) {{
+      if (!symbols.length) return "<span class='muted'>no symbol jump</span>";
+      return symbols.map((symbol) => `<button class="symbol-link" type="button" data-symbol="${{symbol}}">${{symbol}}</button>`).join("");
+    }}
+
+    function wireSymbolJumpButtons(host = document) {{
+      host.querySelectorAll(".symbol-link").forEach((element) => {{
+        element.onclick = () => {{
+          jumpToSymbol(element.dataset.symbol, {{ kind: element.dataset.kind || null }});
+        }};
+      }});
+    }}
+
+    function validationGroupsBlock(groups) {{
+      if (!groups || !groups.length) return "<span class='muted'>No grouped validation issues are recorded for this selection.</span>";
+      const filteredGroups = groups.filter((group) => {{
+        const messages = group.messages || [];
+        const symbols = symbolsFromValidationMessages(messages);
+        return matchesFocus(
+          "issue",
+          [group.layer, messages, symbols],
+          {{ ignoreKind: true, issue: true, changed: true }},
+        );
+      }});
+      if (!filteredGroups.length) return "<span class='muted'>No validation issues match the workspace focus.</span>";
+      return `<div class="cards">${{filteredGroups.map((group) => `
+        <div class="card ${{group.count ? "warning" : "healthy"}}">
+          <div class="card-head">
+            <strong>${{group.layer}}</strong>
+            <span class="ownership-note">${{group.count}} issue${{group.count === 1 ? "" : "s"}}</span>
+          </div>
+          <div style="margin: 8px 0;">${{renderSymbolActions(symbolsFromValidationMessages(group.messages || []))}}</div>
+          ${{
+            (group.messages || []).map((message) => `<div class="muted">${{message}}</div>`).join("")
+          }}
+        </div>
+      `).join("")}}</div>`;
+    }}
+
+    function renderConflictWorkspace() {{
+      const host = document.getElementById("conflict-panel");
+      const family = currentCatalogItem();
+      if (!family) {{
+        host.textContent = "Select a family or custom load set to inspect conflict state.";
+        return;
+      }}
+      const status = catalogStatus(family);
+      const symbol = family.merge_conflict_symbol;
+      const canJump = Boolean(symbol);
+      const severity = severityClass(status, family.validation_verdict);
+      const commandItems = [
+        ...(family.validation_command ? [{{ label: "validation command", command: family.validation_command }}] : []),
+        ...(family.parse_status !== "browser-pending"
+          ? [{{ label: "regenerate diff", command: `./tools/fom-workbench --html --diff ${{family.scenario_family || family.name}}:${{family.scenario_family || family.name}}` }}]
+          : []),
+      ];
+      host.innerHTML = `
+        <div class="surface-kicker">Conflict state</div>
+        <div class="summary-title">
+          <strong>${{family.scenario_family || family.name}}</strong> ${{statusPill(status)}}
+        </div>
+        <div class="count-grid">
+          <div class="count-box ${{severity}}">
+            <strong>${{family.merge_conflict_symbol || "No symbol"}}</strong>
+            <span class="muted">Conflict symbol</span>
+          </div>
+          <div class="count-box">
+            <strong>${{(family.merge_conflict_members || []).length}}</strong>
+            <span class="muted">Members involved</span>
+          </div>
+          <div class="count-box">
+            <strong>${{family.validation_issue_count || 0}}</strong>
+            <span class="muted">Validation issues</span>
+          </div>
+          <div class="count-box">
+            <strong>${{ownershipLabel(family)}}</strong>
+            <span class="muted">Ownership mix</span>
+          </div>
+        </div>
+        <div class="next-step-box" style="margin-bottom: 12px;">
+          <div class="stat-label">Next action</div>
+          <div>${{family.recommended_next_step || "n/a"}}</div>
+        </div>
+        ${{
+          renderActionBar([
+            {{ label: "Investigate Symbol", kind: "primary", symbol, disabled: !canJump }},
+            {{ label: "Prepare Repair", kind: "secondary", workspace: "repair", disabled: !(family.merge_conflict_member_details || []).length }},
+            {{ label: "Copy Validation Command", kind: "secondary", command: family.validation_command, disabled: !family.validation_command }},
+          ])
+        }}
+        <p class="muted">Parse status: ${{family.parse_status}}${{family.parse_error_kind ? ` (${{family.parse_error_kind}})` : ""}}</p>
+        <p><strong>Validation:</strong> ${{family.validation_verdict || "n/a"}}${{family.validation_issue_count ? ` | issues=${{family.validation_issue_count}}` : ""}}</p>
+        <p><strong>Conflict members:</strong> ${{(family.merge_conflict_members || []).join(", ") || "n/a"}}</p>
+        <div><strong>Conflict details:</strong>${{conflictDetailsBlock(family.merge_conflict_member_details || [])}}</div>
+        ${{
+          renderCommandDrawer("Technical commands", commandItems, "No technical commands available for this conflict state.")
+        }}
+        <div class="builder-grid" style="margin-top: 10px;">
+          <button id="conflict-jump-search" type="button" ${{canJump ? "" : "disabled"}}>open in search</button>
+          <button id="conflict-copy-symbol" type="button" ${{canJump ? "" : "disabled"}}>pin symbol</button>
+        </div>
+      `;
+      const jumpButton = document.getElementById("conflict-jump-search");
+      const focusButton = document.getElementById("conflict-copy-symbol");
+      if (jumpButton && canJump) {{
+        jumpButton.onclick = () => {{
+          jumpToSymbol(symbol, {{ setFilter: true }});
+        }};
+      }}
+      if (focusButton && canJump) {{
+        focusButton.onclick = () => {{
+          jumpToSymbol(symbol, {{ setFilter: true }});
+        }};
+      }}
+      wireCopyButtons(host);
+      wireActionButtons(host);
+    }}
+
+    function renderValidationWorkspace() {{
+      const host = document.getElementById("validation-panel");
+      const family = currentCatalogItem();
+      if (!family) {{
+        host.textContent = "Select a family or custom load set to inspect validation state.";
+        return;
+      }}
+      const severity = severityClass(catalogStatus(family), family.validation_verdict);
+      const firstIssueSymbol = firstValidationSymbol(family.validation_issue_groups || []);
+      const commandItems = family.validation_command ? [{{ label: "validation command", command: family.validation_command }}] : [];
+      host.innerHTML = `
+        <div class="surface-kicker">Validation state</div>
+        <div class="summary-title">
+          <strong>${{family.scenario_family || family.name}}</strong>
+          ${{statusPill(catalogStatus(family))}}
+          ${{family.validation_verdict ? statusPill(family.validation_verdict.replaceAll(" ", "-")) : ""}}
+        </div>
+        <div class="count-grid">
+          <div class="count-box ${{severity}}">
+            <strong>${{family.validation_verdict || "n/a"}}</strong>
+            <span class="muted">Verdict</span>
+          </div>
+          <div class="count-box">
+            <strong>${{family.validation_issue_count || 0}}</strong>
+            <span class="muted">Issues</span>
+          </div>
+          <div class="count-box">
+            <strong>${{(family.validation_issue_layers || []).length || 0}}</strong>
+            <span class="muted">Layers</span>
+          </div>
+          <div class="count-box">
+            <strong>${{ownershipLabel(family)}}</strong>
+            <span class="muted">Ownership mix</span>
+          </div>
+        </div>
+        <div class="next-step-box" style="margin-bottom: 12px;">
+          <div class="stat-label">Next action</div>
+          <div>${{family.validation_issue_count ? "Review the issue groups and jump into the affected symbol." : "Open the validation packet or continue inspection."}}</div>
+        </div>
+        ${{
+          renderActionBar([
+            {{ label: "Open Validation Report", kind: "primary", href: family.validation_html_path, disabled: !family.validation_html_path }},
+            {{ label: "Investigate First Issue", kind: "secondary", symbol: firstIssueSymbol, disabled: !firstIssueSymbol }},
+            {{ label: "Copy Validation Command", kind: "secondary", command: family.validation_command, disabled: !family.validation_command }},
+          ])
+        }}
+        <p><strong>Issue layers:</strong> ${{(family.validation_issue_layers || []).join(", ") || "none"}}</p>
+        <div><strong>Issue groups:</strong>${{validationGroupsBlock(family.validation_issue_groups || [])}}</div>
+        ${{
+          renderCommandDrawer("Technical commands", commandItems, "Validation command unavailable for this selection.")
+        }}
+        <div class="list" style="margin-top: 10px;">
+          ${{
+            family.validation_html_path
+              ? `<a href="${{family.validation_html_path}}" target="_blank" rel="noopener">open validation HTML</a><br>
+                 <a href="${{family.validation_md_path}}" target="_blank" rel="noopener">open validation Markdown</a><br>
+                 <a href="${{family.validation_json_path}}" target="_blank" rel="noopener">open validation JSON</a>`
+              : `<span class="muted">Validation files are not present in this snapshot.</span>`
+          }}
+        </div>
+      `;
+      wireSymbolJumpButtons(host);
+      wireCopyButtons(host);
+      wireActionButtons(host);
     }}
 
     function currentNodes() {{
       const family = currentCatalogItem();
       if (!family) return [];
       const kind = document.getElementById("tree-kind").value;
-      return kind === "interaction" ? family.interaction_nodes : family.object_nodes;
+      const rows = kind === "interaction" ? family.interaction_nodes : family.object_nodes;
+      return rows.filter((row) => matchesFocus(
+        kind,
+        [row.kind, row.full_name, row.parent_name || "", row.lineage, row.declared_names, row.total_names, row.datatype_hints],
+        {{ owners: family.baseline_kinds || [], issue: true, changed: true }},
+      ));
     }}
 
     function renderTree() {{
@@ -1299,6 +3161,12 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         if (!filter) return true;
         return [row.full_name, row.parent_name || "", row.lineage.join(" "), row.datatype_hints.join(" ")].join(" ").toLowerCase().includes(filter);
       }});
+      if (!rows.length) {{
+        panel.innerHTML = emptyState("No hierarchy nodes match the current tree filter.");
+        selectedNodeName = null;
+        renderNodePanel();
+        return;
+      }}
       panel.innerHTML = rows.map((row) => {{
         const depth = Math.max(0, row.lineage.length - 1) * 16;
         const active = row.full_name === selectedNodeName ? " active" : "";
@@ -1311,11 +3179,19 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       panel.querySelectorAll(".tree-row").forEach((element) => {{
         element.onclick = () => {{
           selectedNodeName = element.dataset.name;
+          selectedSearchName = element.dataset.name;
+          renderWorkspaceMode();
+          renderSelectionSummary();
           renderTree();
+          renderSearch();
           renderNodePanel();
         }};
       }});
-      if (!selectedNodeName && rows[0]) selectedNodeName = rows[0].full_name;
+      if (!selectedNodeName && rows[0]) {{
+        selectedNodeName = rows[0].full_name;
+        renderWorkspaceMode();
+        renderSelectionSummary();
+      }}
       renderNodePanel();
     }}
 
@@ -1323,7 +3199,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const host = document.getElementById("node-panel");
       const row = currentNodes().find((item) => item.full_name === selectedNodeName);
       if (!row) {{
-        host.innerHTML = `<span class="muted">Select a node.</span>`;
+        host.innerHTML = emptyState("Pin a symbol from search, diff, conflict, or validation to inspect its merged declaration here.");
         return;
       }}
       host.innerHTML = `
@@ -1340,6 +3216,85 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       `;
     }}
 
+    function selectionLabel(family) {{
+      return family.scenario_family || family.name || "selection";
+    }}
+
+    function selectionWorkbenchCommand(family) {{
+      if (family.name) return `./tools/fom-workbench --html --custom-load-set ${{family.name}}=${{family.member_ids.join(",")}}`;
+      return "./tools/fom-workbench --html";
+    }}
+
+    function metadataEditCommand(entryId) {{
+      const desc = document.getElementById("edit-description").value.trim();
+      const keywords = document.getElementById("edit-keywords").value.trim();
+      const notes = document.getElementById("edit-notes").value.trim();
+      let cmd = `./tools/fom-workbench --edit-entry ${{entryId}}`;
+      if (desc) cmd += ` --set-description ${{JSON.stringify(desc)}}`;
+      for (const item of keywords.split(",").map((value) => value.trim()).filter(Boolean)) cmd += ` --add-keyword ${{JSON.stringify(item)}}`;
+      for (const item of notes.split(",").map((value) => value.trim()).filter(Boolean)) cmd += ` --add-note ${{JSON.stringify(item)}}`;
+      return cmd;
+    }}
+
+    function repairSuggestions(family) {{
+      const suggestions = [];
+      const details = family.merge_conflict_member_details || [];
+      if (family.parse_error_kind !== "merge" || !details.length) return suggestions;
+      if (family.merge_conflict_kind === "simple datatype" && family.merge_conflict_symbol) {{
+        for (const detail of details) {{
+          if (detail.baseline_kind !== "repo-owned" || !detail.entry_id) {{
+            suggestions.push({{
+              status: "blocked",
+              title: `Blocked member: ${{detail.member || "unknown"}}`,
+              summary: `This conflict member is not repo-owned.`,
+              targetPath: detail.entry_path || "n/a",
+              commands: [],
+            }});
+            continue;
+          }}
+          const declaration = detail.declaration || {{}};
+          const peer = details.find((item) => item.entry_id !== detail.entry_id && item.declaration && item.declaration.category === "simple");
+          if (declaration.category !== "simple" || !peer) {{
+            suggestions.push({{
+              status: "unsupported",
+              title: `Unsupported repair for ${{detail.entry_id}}`,
+              summary: `The current repair helper only previews repo-owned simple datatype alignments.`,
+              targetPath: detail.entry_path || "n/a",
+              commands: [],
+            }});
+            continue;
+          }}
+          let editCommand = `./tools/fom-workbench --edit-entry ${{detail.entry_id}}`;
+          if (peer.declaration.representation) {{
+            editCommand += ` --set-simple-datatype-representation ${{JSON.stringify(`${{family.merge_conflict_symbol}}=${{peer.declaration.representation}}`)}}`;
+          }}
+          if (peer.declaration.semantics) {{
+            editCommand += ` --set-simple-datatype-semantics ${{JSON.stringify(`${{family.merge_conflict_symbol}}=${{peer.declaration.semantics}}`)}}`;
+          }}
+          suggestions.push({{
+            status: "supported",
+            title: `Align ${{detail.entry_id}} to ${{peer.entry_id || peer.member || "peer"}}`,
+            summary: `Match the repo-owned simple datatype declaration for ${{family.merge_conflict_symbol}} to the peer declaration.`,
+            targetPath: detail.entry_path || "n/a",
+            commands: [
+              editCommand,
+              selectionWorkbenchCommand(family),
+              family.validation_command || "validation command unavailable",
+            ],
+          }});
+        }}
+        return suggestions;
+      }}
+      suggestions.push({{
+        status: "unsupported",
+        title: "Unsupported conflict repair",
+        summary: `This UI only stages repo-owned simple datatype repair previews right now. Conflict kind: ${{family.merge_conflict_kind || "unknown"}}.`,
+        targetPath: "n/a",
+        commands: [],
+      }});
+      return suggestions;
+    }}
+
     function renderEditFlow() {{
       const family = currentCatalogItem();
       const summary = document.getElementById("edit-summary");
@@ -1352,7 +3307,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const editable = snapshot.entries.filter((entry) => family.member_ids.includes(entry.id) && entry.baseline_kind === "repo-owned");
       const blocked = snapshot.entries.filter((entry) => family.member_ids.includes(entry.id) && entry.baseline_kind !== "repo-owned");
       if (!editable.length) {{
-        summary.textContent = `No repo-owned entries in this family. Third-party members are read-only.`;
+        summary.textContent = `This selection has no repo-owned entries. Third-party members remain read-only.`;
       }} else {{
         summary.textContent = `Repo-owned editable entries: ${{editable.map((entry) => entry.id).join(", ")}}. Third-party members remain read-only.`;
       }}
@@ -1360,18 +3315,65 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         summary.textContent += ` Blocked: ${{blocked.map((entry) => entry.id).join(", ")}}`;
       }}
       const firstEditable = editable[0];
+      const repairCards = repairSuggestions(family);
+      const repairHtml = repairCards.length
+        ? `<div class="cards">${{repairCards.map((card) => `
+            <div class="card ${{severityClass(card.status)}}">
+              <div class="card-head">
+                <strong>${{card.title}}</strong>
+                ${{statusPill(card.status)}}
+              </div>
+              <span class="muted">${{card.summary}}</span><br>
+              <span class="muted">Target file: <code>${{card.targetPath}}</code></span>
+              ${{
+                renderActionBar([
+                  {{ label: "Copy Repair Command", kind: "primary", command: card.commands[0], disabled: !card.commands[0] }},
+                  {{ label: "Copy Regenerate Command", kind: "secondary", command: card.commands[1], disabled: !card.commands[1] }},
+                  {{ label: "Copy Validation Command", kind: "secondary", command: card.commands[2], disabled: !card.commands[2] }},
+                ])
+              }}
+              ${{
+                renderCommandDrawer(
+                  "Technical commands",
+                  card.commands.map((item, index) => ({{
+                    label: index === 0 ? "repair command" : index === 1 ? "regenerate workbench" : "rerun validation",
+                    command: item,
+                  }})),
+                  "No executable repair preview for this card.",
+                )
+              }}
+            </div>
+          `).join("")}}</div>`
+        : emptyState("No repair preview is available for this selection yet.");
       if (!firstEditable) {{
-        command.innerHTML = "<span class='muted'>No guarded edit command available for this selection.</span>";
+        command.innerHTML = `${{repairHtml}}<div class="list" style="margin-top: 10px;">${{emptyState("No metadata edit preview is available for this selection.")}}</div>`;
+        wireCopyButtons(command);
+        wireActionButtons(command);
         return;
       }}
-      const desc = document.getElementById("edit-description").value.trim();
-      const keywords = document.getElementById("edit-keywords").value.trim();
-      const notes = document.getElementById("edit-notes").value.trim();
-      let cmd = `./tools/fom-workbench --edit-entry ${{firstEditable.id}}`;
-      if (desc) cmd += ` --set-description ${{JSON.stringify(desc)}}`;
-      for (const item of keywords.split(",").map((value) => value.trim()).filter(Boolean)) cmd += ` --add-keyword ${{JSON.stringify(item)}}`;
-      for (const item of notes.split(",").map((value) => value.trim()).filter(Boolean)) cmd += ` --add-note ${{JSON.stringify(item)}}`;
-      command.innerHTML = `<code>${{cmd}}</code>`;
+      const metadataCommand = metadataEditCommand(firstEditable.id);
+      command.innerHTML = `
+        ${{repairHtml}}
+        <div class="card" style="margin-top: 10px;">
+          <div class="card-head">
+            <strong>Metadata edit preview for ${{firstEditable.id}}</strong>
+            <span class="ownership-note">repo-owned</span>
+          </div>
+          ${{
+            renderActionBar([
+              {{ label: "Copy Metadata Edit Command", kind: "primary", command: metadataCommand }},
+            ])
+          }}
+          ${{
+            renderCommandDrawer(
+              "Technical commands",
+              [{{ label: "metadata edit command", command: metadataCommand }}],
+            )
+          }}
+        </div>
+      `;
+      wireCopyButtons(command);
+      wireActionButtons(command);
     }}
 
     function renderBuilder() {{
@@ -1380,6 +3382,8 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const listHost = document.getElementById("builder-entry-list");
       const savedHost = document.getElementById("builder-saved");
       const commandHost = document.getElementById("builder-command");
+      const selectedHost = document.getElementById("builder-selected");
+      const healthHost = document.getElementById("builder-health");
       const rows = snapshot.entries.filter((entry) => {{
         if (!filter) return true;
         return [entry.id, entry.scenario_family, entry.edition_class, entry.edition_scope, entry.path, entry.load_mode, entry.baseline_kind]
@@ -1388,27 +3392,51 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
           .includes(filter);
       }});
       listHost.innerHTML = rows.map((entry) => {{
-        const checked = builderSelectedMemberIds.has(entry.id) ? "checked" : "";
+        const checked = builderHas(entry.id) ? "checked" : "";
         return `<label><input type="checkbox" data-entry-id="${{entry.id}}" ${{checked}}> <code>${{entry.id}}</code> <span class="muted">${{entry.scenario_family}} | ${{entry.edition_class}} | ${{entry.edition_scope}} | ${{entry.load_mode}}</span></label>`;
       }}).join("");
       listHost.querySelectorAll("input[type=checkbox]").forEach((node) => {{
         node.addEventListener("change", () => {{
-          if (node.checked) builderSelectedMemberIds.add(node.dataset.entryId);
-          else builderSelectedMemberIds.delete(node.dataset.entryId);
+          if (node.checked) builderAdd(node.dataset.entryId);
+          else builderRemove(node.dataset.entryId);
           renderBuilder();
         }});
       }});
-      const selectedIds = [...builderSelectedMemberIds].sort();
+      const selectedIds = [...builderSelectedMemberIds];
+      const selectedMembers = selectedIds.map((id) => entryMap.get(id)).filter(Boolean);
+      const health = evaluateBuilderSelection(selectedIds);
+      healthHost.innerHTML = `
+        ${{statusPill(health.label.replaceAll(" ", "-"))}}
+        <div class="muted">edition scope: ${{health.editionScope}} | baselines: ${{health.baselineKinds.join(", ") || "n/a"}} | load modes: ${{health.loadModes.join(", ") || "n/a"}}</div>
+        ${{health.warnings.map((item) => `<div class="muted">${{item}}</div>`).join("")}}
+      `;
+      selectedHost.innerHTML = selectedMembers.length
+        ? selectedMembers.map((entry, index) => `
+            <div style="margin-bottom: 8px;">
+              <strong>${{index + 1}}. <code>${{entry.id}}</code></strong>
+              <span class="muted">${{entry.scenario_family}} | ${{entry.load_mode}}</span><br>
+              <button type="button" data-move="up" data-entry-id="${{entry.id}}" ${{index === 0 ? "disabled" : ""}}>move up</button>
+              <button type="button" data-move="down" data-entry-id="${{entry.id}}" ${{index === selectedMembers.length - 1 ? "disabled" : ""}}>move down</button>
+            </div>
+          `).join("")
+        : "<span class='muted'>Select baseline entries to build an ordered load set.</span>";
+      selectedHost.querySelectorAll("button[data-move]").forEach((node) => {{
+        node.addEventListener("click", () => {{
+          builderMove(node.dataset.entryId, node.dataset.move === "up" ? -1 : 1);
+          renderBuilder();
+        }});
+      }});
       const candidateName = nameBox.value.trim();
       if (!selectedIds.length) {{
-        commandHost.innerHTML = "<span class='muted'>Select one or more baseline entries to build a named custom load set.</span>";
+        commandHost.innerHTML = emptyState("Select one or more baseline entries to build a named custom load set.");
       }} else if (!candidateName) {{
-        commandHost.innerHTML = `<code>${{customLoadSetCommand("custom-name", selectedIds)}}</code>`;
+        commandHost.innerHTML = renderCommandList([{{ label: "preview custom load-set command", command: customLoadSetCommand("custom-name", selectedIds) }}]);
       }} else {{
-        commandHost.innerHTML = `<code>${{customLoadSetCommand(candidateName, selectedIds)}}</code>`;
+        commandHost.innerHTML = renderCommandList([{{ label: "custom load-set command", command: customLoadSetCommand(candidateName, selectedIds) }}]);
       }}
+      wireCopyButtons(commandHost);
       if (!browserCustomLoadSets.length) {{
-        savedHost.innerHTML = "<span class='muted'>No browser-saved custom load sets yet.</span>";
+        savedHost.innerHTML = emptyState("Saved browser load sets appear here.");
         return;
       }}
       savedHost.innerHTML = browserCustomLoadSets.map((row) => `
@@ -1426,7 +3454,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
           if (!row) return;
           if (button.dataset.action === "load") {{
             document.getElementById("builder-name").value = row.name;
-            builderSelectedMemberIds = new Set(row.member_ids);
+            builderSelectedMemberIds = [...row.member_ids];
             renderBuilder();
             return;
           }}
@@ -1435,11 +3463,9 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
             selectedCatalogKind = "custom-load-set";
             selectedCatalogName = row.name;
             selectedNodeName = null;
-            renderFamilyList();
-            renderInspect();
-            renderSearch();
+            selectedSearchName = null;
             setDiffSelectors();
-            renderDiff();
+            refreshSelectionViews();
             return;
           }}
           browserCustomLoadSets = browserCustomLoadSets.filter((item) => item.name !== row.name);
@@ -1448,29 +3474,26 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
             selectedCatalogName = customLoadSets()[0]?.name || null;
           }}
           renderBuilder();
-          renderFamilyList();
-          renderInspect();
-          renderSearch();
           setDiffSelectors();
-          renderDiff();
+          refreshSelectionViews();
         }});
       }});
     }}
 
     function saveBuilderSelection() {{
       const name = document.getElementById("builder-name").value.trim();
-      const memberIds = [...builderSelectedMemberIds].sort();
+      const memberIds = [...builderSelectedMemberIds];
       const commandHost = document.getElementById("builder-command");
       if (!name) {{
-        commandHost.innerHTML = "<span class='muted'>Name the custom load set before saving it in the browser.</span>";
+        commandHost.innerHTML = emptyState("Name the custom load set before saving it in the browser.");
         return;
       }}
       if (!memberIds.length) {{
-        commandHost.innerHTML = "<span class='muted'>Select at least one baseline entry before saving a custom load set.</span>";
+        commandHost.innerHTML = emptyState("Select at least one baseline entry before saving a custom load set.");
         return;
       }}
       if (fixedFamilyNames.has(name) || fixedCustomLoadSetNames.has(name)) {{
-        commandHost.innerHTML = `<span class='muted'>${{name}} is already used by a family or generated custom load set. Pick another name.</span>`;
+        commandHost.innerHTML = emptyState(`${{name}} is already used by a family or generated custom load set. Pick another name.`);
         return;
       }}
       browserCustomLoadSets = browserCustomLoadSets.filter((row) => row.name !== name);
@@ -1480,19 +3503,17 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       selectedCatalogKind = "custom-load-set";
       selectedCatalogName = name;
       selectedNodeName = null;
+      selectedSearchName = null;
       renderBuilder();
-      renderFamilyList();
-      renderInspect();
-      renderSearch();
       setDiffSelectors();
-      renderDiff();
+      refreshSelectionViews();
     }}
 
     function exportBuilderSets() {{
       const transfer = document.getElementById("builder-transfer");
       const commandHost = document.getElementById("builder-command");
       if (!browserCustomLoadSets.length) {{
-        commandHost.innerHTML = "<span class='muted'>No browser-saved custom load sets to export.</span>";
+        commandHost.innerHTML = emptyState("There are no browser-saved load sets to export.");
         return;
       }}
       const payload = JSON.stringify(browserCustomLoadSets, null, 2);
@@ -1506,7 +3527,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         link.click();
         URL.revokeObjectURL(url);
       }}
-      commandHost.innerHTML = "<span class='muted'>Exported browser-saved custom load sets to the transfer box and download prompt.</span>";
+      commandHost.innerHTML = emptyState("Exported browser-saved custom load sets to the transfer box and download prompt.");
     }}
 
     function importBuilderSets() {{
@@ -1514,19 +3535,19 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const commandHost = document.getElementById("builder-command");
       const raw = transfer.value.trim();
       if (!raw) {{
-        commandHost.innerHTML = "<span class='muted'>Paste exported custom load set JSON into the transfer box before importing.</span>";
+        commandHost.innerHTML = emptyState("Paste exported custom load set JSON into the transfer box before importing.");
         return;
       }}
       let parsed;
       try {{
         parsed = JSON.parse(raw);
       }} catch (_error) {{
-        commandHost.innerHTML = "<span class='muted'>Import JSON is malformed.</span>";
+        commandHost.innerHTML = emptyState("Import JSON is malformed.");
         return;
       }}
       const imported = normalizeBrowserCustomLoadSets(parsed);
       if (!imported.length) {{
-        commandHost.innerHTML = "<span class='muted'>Import JSON did not contain any valid browser custom load sets.</span>";
+        commandHost.innerHTML = emptyState("Import JSON did not contain any valid browser custom load sets.");
         return;
       }}
       const merged = new Map(browserCustomLoadSets.map((row) => [row.name, row]));
@@ -1534,12 +3555,9 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       browserCustomLoadSets = [...merged.values()].sort((left, right) => left.name.localeCompare(right.name));
       saveBrowserCustomLoadSets();
       renderBuilder();
-      renderFamilyList();
-      renderInspect();
-      renderSearch();
       setDiffSelectors();
-      renderDiff();
-      commandHost.innerHTML = `<span class='muted'>Imported ${{imported.length}} browser custom load set(s).</span>`;
+      refreshSelectionViews();
+      commandHost.innerHTML = emptyState(`Imported ${{imported.length}} browser custom load set(s).`);
     }}
 
     function diffKey(left, right) {{
@@ -1549,16 +3567,22 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     function setDiffSelectors() {{
       const left = document.getElementById("left-family");
       const right = document.getElementById("right-family");
-      const options = [
+      const names = [
         ...snapshot.families.map((family) => family.scenario_family),
         ...customLoadSets().map((loadSet) => loadSet.name),
-      ].map((name) => `<option value="${{name}}">${{name}}</option>`).join("");
+      ];
+      const options = names.map((name) => `<option value="${{name}}">${{name}}</option>`).join("");
       left.innerHTML = options;
       right.innerHTML = options;
-      left.value = snapshot.families[0]?.scenario_family || "";
+      left.value = selectedCatalogName && names.includes(selectedCatalogName) ? selectedCatalogName : (snapshot.families[0]?.scenario_family || "");
       right.value = customLoadSets()[0]?.name || snapshot.families[1]?.scenario_family || snapshot.families[0]?.scenario_family || "";
-      left.onchange = renderDiff;
-      right.onchange = renderDiff;
+      syncDiffSelectionToCatalog();
+      left.onchange = () => {{
+        renderDiff();
+      }};
+      right.onchange = () => {{
+        renderDiff();
+      }};
     }}
 
     function loadSetByName(name) {{
@@ -1569,14 +3593,21 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const left = document.getElementById("left-family").value;
       const right = document.getElementById("right-family").value;
       const host = document.getElementById("diff-panel");
+      rememberComparison(left, right);
+      renderRecentComparisons();
       const customLeft = document.getElementById("custom-left").value.trim();
       const customRight = document.getElementById("custom-right").value.trim();
       if (customLeft || customRight) {{
-        host.innerHTML = `<p class="muted">Custom load-set diffing is generated by the tool with named sets. Example:</p><div class="list"><code>./tools/fom-workbench --html --custom-load-set custom-left=${{customLeft}} --custom-load-set custom-right=${{customRight}} --diff custom-left:custom-right</code></div>`;
+        const diffCommand = `./tools/fom-workbench --html --custom-load-set custom-left=${{customLeft}} --custom-load-set custom-right=${{customRight}} --diff custom-left:custom-right`;
+        host.innerHTML = `<p class="muted">Custom load-set diffing is generated by rerunning the tool with named sets.</p>
+          ${{renderActionBar([{{ label: "Copy Regenerate Diff Command", kind: "primary", command: diffCommand }}])}}
+          ${{renderCommandDrawer("Operator commands", [{{ label: "regenerate custom diff", command: diffCommand }}])}}`;
+        wireCopyButtons(host);
+        wireActionButtons(host);
         return;
       }}
       if (!left || !right || left === right) {{
-        host.textContent = "Select two distinct families to compare.";
+        host.innerHTML = emptyState("Select two distinct families or named load sets to compare.");
         return;
       }}
       const diff = diffMap.get(diffKey(left, right)) || diffMap.get(diffKey(right, left));
@@ -1586,32 +3617,118 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         if (leftLoadSet || rightLoadSet) {{
           const leftCommand = leftLoadSet ? customLoadSetCommand(leftLoadSet.name, leftLoadSet.member_ids) : null;
           const rightCommand = rightLoadSet ? customLoadSetCommand(rightLoadSet.name, rightLoadSet.member_ids) : null;
+          const regenCommand = `./tools/fom-workbench --html${{leftLoadSet ? ` --custom-load-set ${{leftLoadSet.name}}=${{leftLoadSet.member_ids.join(",")}}` : ""}}${{rightLoadSet ? ` --custom-load-set ${{rightLoadSet.name}}=${{rightLoadSet.member_ids.join(",")}}` : ""}} --diff ${{left}}:${{right}}`;
           host.innerHTML = `
-            <p class="muted">No precomputed diff row is available for this pair in the current snapshot.</p>
-            <div class="list">
-              ${{
-                leftCommand ? `<code>${{leftCommand}}</code>` : ""
-              }}
-              ${{
-                rightCommand ? `<code>${{rightCommand}}</code>` : ""
-              }}
-              <code>./tools/fom-workbench --html${{leftLoadSet ? ` --custom-load-set ${{leftLoadSet.name}}=${{leftLoadSet.member_ids.join(",")}}` : ""}}${{rightLoadSet ? ` --custom-load-set ${{rightLoadSet.name}}=${{rightLoadSet.member_ids.join(",")}}` : ""}} --diff ${{left}}:${{right}}</code>
-            </div>
+            <p class="muted">This snapshot does not contain a precomputed diff for the selected pair.</p>
+            ${{
+              renderActionBar([
+                {{ label: "Copy Regenerate Diff Command", kind: "primary", command: regenCommand }},
+                {{ label: `Copy ${{left}} Load Set`, kind: "secondary", command: leftCommand, disabled: !leftCommand }},
+                {{ label: `Copy ${{right}} Load Set`, kind: "secondary", command: rightCommand, disabled: !rightCommand }},
+              ])
+            }}
+            ${{
+              renderCommandDrawer("Operator commands", [
+                ...(leftCommand ? [{{ label: `recreate ${{leftLoadSet.name}}`, command: leftCommand }}] : []),
+                ...(rightCommand ? [{{ label: `recreate ${{rightLoadSet.name}}`, command: rightCommand }}] : []),
+                {{ label: "regenerate diff", command: regenCommand }},
+              ])
+            }}
           `;
+          wireCopyButtons(host);
+          wireActionButtons(host);
           return;
         }}
-        host.textContent = "No diff row available.";
+        host.innerHTML = emptyState("This snapshot does not contain a diff for the selected pair.");
         return;
       }}
       const leftLoadSet = loadSetByName(left);
       const rightLoadSet = loadSetByName(right);
       if (!diff.comparable) {{
-        host.textContent = `Not comparable: ${{diff.reason || "unknown"}}`;
+        host.innerHTML = `
+          <p><strong>${{diff.left_family}}</strong> vs <strong>${{diff.right_family}}</strong></p>
+          <p class="muted">This comparison cannot be materialized from the current snapshot: ${{displayText(diff.reason)}}</p>
+          ${{
+            renderActionBar([
+              {{ label: "Go To Conflict", kind: "primary", workspace: "conflict" }},
+              {{ label: "Investigate Left Conflict", kind: "secondary", symbol: diff.left_merge_conflict_symbol, disabled: !diff.left_merge_conflict_symbol }},
+              {{ label: "Investigate Right Conflict", kind: "secondary", symbol: diff.right_merge_conflict_symbol, disabled: !diff.right_merge_conflict_symbol }},
+            ])
+          }}
+          <div class="split">
+            <div>
+              <h3>Left Side</h3>
+              <p><strong>Status:</strong> ${{diff.left_parse_status}}${{diff.left_parse_error_kind ? ` (${{diff.left_parse_error_kind}})` : ""}}</p>
+              <p><strong>Next step:</strong> ${{diff.left_recommended_next_step || "n/a"}}</p>
+              <p><strong>Conflict symbol:</strong> ${{diff.left_merge_conflict_symbol || "n/a"}}</p>
+              <div>${{renderSymbolActions(diff.left_merge_conflict_symbol ? [diff.left_merge_conflict_symbol] : [])}}</div>
+              <p><strong>Conflict members:</strong> ${{(diff.left_merge_conflict_members || []).join(", ") || "n/a"}}</p>
+              <div><strong>Conflict details:</strong>${{conflictDetailsBlock(diff.left_merge_conflict_member_details || [])}}</div>
+              <p class="muted">${{diff.left_parse_error || "No additional error detail."}}</p>
+            </div>
+            <div>
+              <h3>Right Side</h3>
+              <p><strong>Status:</strong> ${{diff.right_parse_status}}${{diff.right_parse_error_kind ? ` (${{diff.right_parse_error_kind}})` : ""}}</p>
+              <p><strong>Next step:</strong> ${{diff.right_recommended_next_step || "n/a"}}</p>
+              <p><strong>Conflict symbol:</strong> ${{diff.right_merge_conflict_symbol || "n/a"}}</p>
+              <div>${{renderSymbolActions(diff.right_merge_conflict_symbol ? [diff.right_merge_conflict_symbol] : [])}}</div>
+              <p><strong>Conflict members:</strong> ${{(diff.right_merge_conflict_members || []).join(", ") || "n/a"}}</p>
+              <div><strong>Conflict details:</strong>${{conflictDetailsBlock(diff.right_merge_conflict_member_details || [])}}</div>
+              <p class="muted">${{diff.right_parse_error || "No additional error detail."}}</p>
+            </div>
+          </div>
+        `;
+        wireSymbolJumpButtons(host);
+        wireCopyButtons(host);
+        wireActionButtons(host);
         return;
       }}
+      const counts = {{
+        objects: (diff.only_left_object_classes || []).length + (diff.only_right_object_classes || []).length,
+        interactions: (diff.only_left_interaction_classes || []).length + (diff.only_right_interaction_classes || []).length,
+        datatypes: (diff.only_left_datatype_names || []).length + (diff.only_right_datatype_names || []).length,
+        dimensions: (diff.only_left_dimensions || []).length + (diff.only_right_dimensions || []).length,
+      }};
+      const focusedLeftObjects = (diff.only_left_object_classes || []).filter((item) => matchesFocus("object", [item], {{ changed: true, issue: true }}));
+      const focusedRightObjects = (diff.only_right_object_classes || []).filter((item) => matchesFocus("object", [item], {{ changed: true, issue: true }}));
+      const focusedLeftInteractions = (diff.only_left_interaction_classes || []).filter((item) => matchesFocus("interaction", [item], {{ changed: true, issue: true }}));
+      const focusedRightInteractions = (diff.only_right_interaction_classes || []).filter((item) => matchesFocus("interaction", [item], {{ changed: true, issue: true }}));
+      const focusedLeftDatatypes = (diff.only_left_datatype_names || []).filter((item) => matchesFocus("datatype", [item], {{ changed: true, issue: true }}));
+      const focusedRightDatatypes = (diff.only_right_datatype_names || []).filter((item) => matchesFocus("datatype", [item], {{ changed: true, issue: true }}));
+      const focusedLeftDimensions = (diff.only_left_dimensions || []).filter((item) => matchesFocus("dimension", [item], {{ changed: true, issue: true }}));
+      const focusedRightDimensions = (diff.only_right_dimensions || []).filter((item) => matchesFocus("dimension", [item], {{ changed: true, issue: true }}));
+      const showObjects = focusedLeftObjects.length || focusedRightObjects.length || !focusIsActive() || focusKind === "object";
+      const showInteractions = focusedLeftInteractions.length || focusedRightInteractions.length || !focusIsActive() || focusKind === "interaction";
+      const showDatatypes = focusedLeftDatatypes.length || focusedRightDatatypes.length || focusKind === "datatype";
+      const showDimensions = focusedLeftDimensions.length || focusedRightDimensions.length || focusKind === "dimension";
       host.innerHTML = `
         <p><strong>${{diff.left_family}}</strong> vs <strong>${{diff.right_family}}</strong></p>
         <p class="muted">${{diff.left_kind}} vs ${{diff.right_kind}} | left members: ${{diff.left_member_ids.join(", ")}} | right members: ${{diff.right_member_ids.join(", ")}}</p>
+        ${{
+          renderActionBar([
+            {{ label: "Go To Validation", kind: "primary", workspace: "validation" }},
+            {{ label: "Investigate First Left Object", kind: "secondary", symbol: diff.only_left_object_classes[0], symbolKind: "object", disabled: !(diff.only_left_object_classes || []).length }},
+            {{ label: "Investigate First Right Object", kind: "secondary", symbol: diff.only_right_object_classes[0], symbolKind: "object", disabled: !(diff.only_right_object_classes || []).length }},
+          ])
+        }}
+        <div class="count-grid">
+          <div class="count-box">
+            <strong>${{counts.objects}}</strong>
+            <span class="muted">Object deltas</span>
+          </div>
+          <div class="count-box">
+            <strong>${{counts.interactions}}</strong>
+            <span class="muted">Interaction deltas</span>
+          </div>
+          <div class="count-box">
+            <strong>${{counts.datatypes}}</strong>
+            <span class="muted">Datatype deltas</span>
+          </div>
+          <div class="count-box">
+            <strong>${{counts.dimensions}}</strong>
+            <span class="muted">Dimension deltas</span>
+          </div>
+        </div>
         ${{
           leftLoadSet || rightLoadSet
             ? `<div class="list">
@@ -1628,43 +3745,115 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
                </div>`
             : ""
         }}
-        <div class="split">
-          <div>
-            <h3>Only Left Objects</h3>
-            <div class="list">${{diff.only_left_object_classes.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
-          </div>
-          <div>
-            <h3>Only Right Objects</h3>
-            <div class="list">${{diff.only_right_object_classes.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
-          </div>
-        </div>
-        <div class="split" style="margin-top: 14px;">
-          <div>
-            <h3>Only Left Interactions</h3>
-            <div class="list">${{diff.only_left_interaction_classes.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
-          </div>
-          <div>
-            <h3>Only Right Interactions</h3>
-            <div class="list">${{diff.only_right_interaction_classes.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
-          </div>
-        </div>
-      `;
+        ${{
+          showObjects
+            ? `<div class="split">
+                <div>
+                  <h3>Only Left Objects</h3>
+                  <div class="list">${{focusedLeftObjects.slice(0, 120).map((item) => `<button class="symbol-link" type="button" data-symbol="${{item}}" data-kind="object">${{item}}</button>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+                <div>
+                  <h3>Only Right Objects</h3>
+                  <div class="list">${{focusedRightObjects.slice(0, 120).map((item) => `<button class="symbol-link" type="button" data-symbol="${{item}}" data-kind="object">${{item}}</button>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+              </div>`
+            : ""
+        }}
+        ${{
+          showInteractions
+            ? `<div class="split" style="margin-top: 14px;">
+                <div>
+                  <h3>Only Left Interactions</h3>
+                  <div class="list">${{focusedLeftInteractions.slice(0, 120).map((item) => `<button class="symbol-link" type="button" data-symbol="${{item}}" data-kind="interaction">${{item}}</button>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+                <div>
+                  <h3>Only Right Interactions</h3>
+                  <div class="list">${{focusedRightInteractions.slice(0, 120).map((item) => `<button class="symbol-link" type="button" data-symbol="${{item}}" data-kind="interaction">${{item}}</button>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+              </div>`
+            : ""
+        }}
+        ${{
+          showDatatypes
+            ? `<div class="split" style="margin-top: 14px;">
+                <div>
+                  <h3>Only Left Datatypes</h3>
+                  <div class="list">${{focusedLeftDatatypes.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+                <div>
+                  <h3>Only Right Datatypes</h3>
+                  <div class="list">${{focusedRightDatatypes.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+              </div>`
+            : ""
+        }}
+        ${{
+          showDimensions
+            ? `<div class="split" style="margin-top: 14px;">
+                <div>
+                  <h3>Only Left Dimensions</h3>
+                  <div class="list">${{focusedLeftDimensions.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+                <div>
+                  <h3>Only Right Dimensions</h3>
+                  <div class="list">${{focusedRightDimensions.slice(0, 120).map((item) => `<code>${{item}}</code>`).join("") || "<span class='muted'>none</span>"}}</div>
+                </div>
+              </div>`
+            : ""
+        }}
+        ${{focusIsActive() && !showObjects && !showInteractions && !showDatatypes && !showDimensions ? emptyState("No diff deltas match the workspace focus.") : ""}}
+        `;
+      wireSymbolJumpButtons(host);
+      wireCopyButtons(host);
+      wireActionButtons(host);
     }}
 
     document.getElementById("family-filter").addEventListener("input", renderFamilyList);
+    document.getElementById("family-filter").addEventListener("keydown", (event) => {{
+      if (event.key === "ArrowDown") {{
+        event.preventDefault();
+        moveCatalogSelection(1);
+      }}
+    }});
+    document.getElementById("status-filter").addEventListener("change", renderFamilyList);
+    document.getElementById("edition-filter").addEventListener("change", renderFamilyList);
+    document.getElementById("baseline-filter").addEventListener("change", renderFamilyList);
+    document.getElementById("load-mode-filter").addEventListener("change", renderFamilyList);
     document.getElementById("catalog-mode").addEventListener("change", (event) => {{
       selectedCatalogKind = event.target.value;
       selectedCatalogName = selectedCatalogKind === "custom-load-set"
         ? (customLoadSets()[0]?.name || null)
         : (snapshot.families[0]?.scenario_family || null);
       selectedNodeName = null;
-      renderFamilyList();
-      renderInspect();
-      renderSearch();
+      selectedSearchName = null;
+      refreshSelectionViews();
+    }});
+    document.getElementById("family-list").addEventListener("keydown", (event) => {{
+      if (event.key === "ArrowDown") {{
+        event.preventDefault();
+        moveCatalogSelection(1);
+      }} else if (event.key === "ArrowUp") {{
+        event.preventDefault();
+        moveCatalogSelection(-1);
+      }}
     }});
     document.getElementById("search-filter").addEventListener("input", renderSearch);
+    document.getElementById("search-filter").addEventListener("keydown", (event) => {{
+      if (event.key === "ArrowDown") {{
+        event.preventDefault();
+        moveSearchSelection(1);
+      }} else if (event.key === "ArrowUp") {{
+        event.preventDefault();
+        moveSearchSelection(-1);
+      }}
+    }});
     document.getElementById("tree-filter").addEventListener("input", renderTree);
-    document.getElementById("tree-kind").addEventListener("change", () => {{ selectedNodeName = null; renderTree(); }});
+    document.getElementById("tree-kind").addEventListener("change", () => {{
+      selectedNodeName = null;
+      renderWorkspaceMode();
+      renderSelectionSummary();
+      renderTree();
+    }});
     document.getElementById("edit-description").addEventListener("input", renderEditFlow);
     document.getElementById("edit-keywords").addEventListener("input", renderEditFlow);
     document.getElementById("edit-notes").addEventListener("input", renderEditFlow);
@@ -1672,7 +3861,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     document.getElementById("builder-name").addEventListener("input", renderBuilder);
     document.getElementById("builder-save").addEventListener("click", saveBuilderSelection);
     document.getElementById("builder-clear").addEventListener("click", () => {{
-      builderSelectedMemberIds = new Set();
+      builderSelectedMemberIds = [];
       document.getElementById("builder-name").value = "";
       renderBuilder();
     }});
@@ -1680,13 +3869,28 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
     document.getElementById("builder-import").addEventListener("click", importBuilderSets);
     document.getElementById("custom-left").addEventListener("input", renderDiff);
     document.getElementById("custom-right").addEventListener("input", renderDiff);
+    document.querySelectorAll(".workspace-tab").forEach((button) => {{
+      button.addEventListener("click", () => {{
+        currentWorkspaceMode = button.dataset.workspace;
+        renderWorkspaceMode();
+        renderSelectionSummary();
+      }});
+    }});
+    document.querySelectorAll(".focus-chip").forEach((button) => {{
+      button.addEventListener("click", () => {{
+        focusKind = button.dataset.focusKind || "all";
+        rerenderFocusedViews();
+      }});
+    }});
+    document.getElementById("workspace-focus-filter").addEventListener("input", (event) => {{
+      focusSelector = event.target.value;
+      rerenderFocusedViews();
+    }});
     setCapabilities();
     renderBuilder();
-    renderFamilyList();
-    renderInspect();
-    renderSearch();
     setDiffSelectors();
-    renderDiff();
+    renderFocusControls();
+    refreshSelectionViews();
   </script>
 </body>
 </html>"""
