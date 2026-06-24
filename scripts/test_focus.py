@@ -108,6 +108,8 @@ def print_usage() -> None:
                 "  ./tools/test-focus run java-bridges",
                 "  ./tools/test-focus run jpype",
                 "  ./tools/test-focus run target-radar",
+                "  ./tools/test-focus run python-2025-time",
+                "  ./tools/test-focus run routes-2025",
                 "  ./tools/test-focus run python-2025-runtime -- --maxfail=1",
                 "  ./tools/test-focus resume python-2025-runtime",
                 "",

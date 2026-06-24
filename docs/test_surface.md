@@ -132,6 +132,11 @@ raw pytest selectors:
 ./tools/test-focus run py4j
 ./tools/test-focus run target-radar
 ./tools/test-focus run rti-core
+./tools/test-focus run python-2025-time
+./tools/test-focus run python-2025-save-restore
+./tools/test-focus run python-2025-ownership
+./tools/test-focus run python-2025-mom-callbacks
+./tools/test-focus run routes-2025
 ./tools/test-focus run python-2025-runtime -- --maxfail=1
 ./tools/test-focus resume python-2025-runtime
 ```

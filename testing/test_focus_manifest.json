@@ -171,6 +171,97 @@
       ]
     },
     {
+      "id": "python-2025-time",
+      "title": "Python 2025 time-window tests",
+      "description": "Focused 2025 direct-runtime and shared time-window, lookahead, and restore-window proofs.",
+      "owner_packages": [
+        "hla-backend-python1516-2025",
+        "hla-fom-target-radar"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py",
+          "-k",
+          "time_window and python1516_2025"
+        ],
+        [
+          "./tools/test",
+          "tests/time"
+        ]
+      ]
+    },
+    {
+      "id": "python-2025-save-restore",
+      "title": "Python 2025 save/restore tests",
+      "description": "Focused 2025 direct-runtime and hosted save/restore, rollback, and queued-callback proofs.",
+      "owner_packages": [
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py",
+          "-k",
+          "save_restore and python1516_2025"
+        ],
+        [
+          "./tools/test",
+          "tests/transport/test_grpc_transport_2025.py",
+          "-k",
+          "save_restore"
+        ]
+      ]
+    },
+    {
+      "id": "python-2025-ownership",
+      "title": "Python 2025 ownership tests",
+      "description": "Focused 2025 ownership, negotiation, and ownership-query proofs across direct and hosted routes.",
+      "owner_packages": [
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py",
+          "-k",
+          "ownership and python1516_2025"
+        ],
+        [
+          "./tools/test",
+          "tests/transport/test_grpc_transport_2025.py",
+          "-k",
+          "ownership"
+        ]
+      ]
+    },
+    {
+      "id": "python-2025-mom-callbacks",
+      "title": "Python 2025 MOM and callback tests",
+      "description": "Focused 2025 MOM, callback-control, and support-service proofs across direct and hosted routes.",
+      "owner_packages": [
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py",
+          "-k",
+          "mom and python1516_2025 or callback and python1516_2025 or support_service and python1516_2025"
+        ],
+        [
+          "./tools/test",
+          "tests/transport/test_grpc_transport_2025.py",
+          "-k",
+          "mom or callback or support_service"
+        ]
+      ]
+    },
+    {
       "id": "transport",
       "title": "Hosted transport tests",
       "description": "gRPC and REST transport tests for the hosted Python routes and shared transport boundary.",
@@ -184,6 +275,29 @@
         [
           "./tools/test",
           "tests/transport"
+        ]
+      ]
+    },
+    {
+      "id": "routes-2025",
+      "title": "Hosted 2025 route tests",
+      "description": "Focused 2025 hosted-route transport, parity, finish-line, and route-identity checks.",
+      "owner_packages": [
+        "hla-transport-grpc",
+        "hla-verification",
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/transport/test_grpc_transport_2025.py"
+        ],
+        [
+          "./tools/test",
+          "tests/requirements/test_2025_route_parity_matrix.py",
+          "tests/requirements/test_2025_finish_line_snapshot.py",
+          "tests/requirements/test_2025_python_rti_backend_audit.py"
         ]
       ]
     },

@@ -36,6 +36,7 @@ Operator commands that matter from the top level:
 - `./tools/python verify`
 - `./tools/test-focus inventory`
 - `./tools/test-focus run target-radar`
+- `./tools/test-focus run python-2025-time`
 - `./tools/compliance generate`
 - `./tools/compliance discover --show-backlog`
 - `./tools/certi-easy preflight`

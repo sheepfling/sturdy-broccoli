@@ -23,6 +23,8 @@ def test_tools_test_focus_help_describes_inventory_run_and_resume() -> None:
     assert "./tools/test-focus run python-examples" in result.stdout
     assert "./tools/test-focus run jpype" in result.stdout
     assert "./tools/test-focus run target-radar" in result.stdout
+    assert "./tools/test-focus run python-2025-time" in result.stdout
+    assert "./tools/test-focus run routes-2025" in result.stdout
     assert "./tools/test-focus resume python-2025-runtime" in result.stdout
 
 
@@ -47,7 +49,12 @@ def test_tools_test_focus_inventory_json_lists_expected_targets() -> None:
         "fom",
         "target-radar",
         "python-2025-runtime",
+        "python-2025-time",
+        "python-2025-save-restore",
+        "python-2025-ownership",
+        "python-2025-mom-callbacks",
         "transport",
+        "routes-2025",
         "backends",
         "rti-core",
         "requirements-2025",
