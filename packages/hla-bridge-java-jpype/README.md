@@ -102,3 +102,4 @@ install order, see:
 - [`../../docs/install_matrix.md`](../../docs/install_matrix.md)
 - [`../../docs/backend_route_inventory.md`](../../docs/backend_route_inventory.md)
 - [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)
+- [`../../docs/java_bridge_wrapping_guide.md`](../../docs/java_bridge_wrapping_guide.md)

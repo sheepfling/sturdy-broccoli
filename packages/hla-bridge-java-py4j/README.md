@@ -30,3 +30,5 @@ rti = rti_ambassador(config)
 ```
 
 See `examples/py4j_java_rti_2025.py` for a callback skeleton.
+See [`../../docs/java_bridge_wrapping_guide.md`](../../docs/java_bridge_wrapping_guide.md)
+for the cross-edition, cross-route wrapping guide.

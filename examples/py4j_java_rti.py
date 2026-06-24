@@ -4,14 +4,14 @@ Use this when a vendor RTI is already running in a separate JVM, or when you wan
 process isolation between Python and Java.  The Java side must start a Py4J
 GatewayServer with the RTI jars on its classpath.
 """
-from hla.rti1516e.enums import CallbackModel
-from hla.rti1516e.spec import FederateAmbassadorSpec
 from hla.bridges.java.py4j import Py4JConfig, rti_ambassador
+from hla.rti1516e import NullFederateAmbassador
+from hla.rti1516e.enums import CallbackModel
 
 
-class MyFederate(FederateAmbassadorSpec):
-    def time_advance_grant(self, logical_time):
-        print("granted", logical_time)
+class MyFederate(NullFederateAmbassador):
+    def timeAdvanceGrant(self, logicalTime):
+        print("granted", logicalTime)
 
 
 config = Py4JConfig(
