@@ -188,11 +188,11 @@ def validate_credentials(credentials: Any | None) -> None:
 
 
 def resolve_fom_modules(sources: tuple[Any, ...], *, mim: bool) -> tuple[Any, ...]:
-    fom = import_module("hla.rti1516e.fom")
+    fom = import_module("hla.fom")
     try:
         modules = fom.FOMResolver(require_local_parse=True).resolve_many(sources)
         if not mim:
-            validation = import_module("hla.rti1516_2025.validation")
+            validation = import_module("hla.fom.validation")
             issues = validation.validate_fom_modules(modules)
             if issues:
                 raise InvalidFOM(issues[0].message)
@@ -215,7 +215,7 @@ def resolve_fom_modules(sources: tuple[Any, ...], *, mim: bool) -> tuple[Any, ..
 
 
 def merge_fom_modules(modules: tuple[Any, ...], *, mim_module: Any) -> Any:
-    fom = import_module("hla.rti1516e.fom")
+    fom = import_module("hla.fom")
     try:
         return fom.merge_fom_modules(modules, mim_module=mim_module)
     except fom.FOMMergeError as exc:
@@ -223,7 +223,7 @@ def merge_fom_modules(modules: tuple[Any, ...], *, mim_module: Any) -> Any:
 
 
 def standard_mim_module() -> Any:
-    fom = import_module("hla.rti1516e.fom")
+    fom = import_module("hla.fom")
     return fom.standard_mim_module()
 
 

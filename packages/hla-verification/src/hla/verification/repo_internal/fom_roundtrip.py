@@ -13,7 +13,7 @@ from typing import Any, Iterable, Mapping
 
 from google.protobuf import json_format
 
-from hla.rti1516e.fom import FOMCatalog, FOMModule, FOMResolver, merge_fom_modules, parse_fom_xml, serialize_fom_module
+from hla.fom import FOMCatalog, FOMModule, FOMResolver, merge_fom_modules, parse_fom_xml, serialize_fom_module
 from hla.transports.grpc.fedpro2010 import datatypes_pb2 as fedpro2010_datatypes
 from hla.transports.grpc.fedpro2025 import datatypes_2025_pb2 as fedpro2025_datatypes
 from hla.verification.repo_internal.fom_inventory import lookup_fom_inventory
@@ -256,7 +256,7 @@ def build_fom_roundtrip(
         mim_module = resolver.resolve(mim_source)
         mim_label = str(mim_source)
     elif include_standard_mim and year == 2010:
-        from hla.rti1516e.fom import standard_mim_module
+        from hla.fom import standard_mim_module
 
         mim_module = standard_mim_module()
         mim_label = "HLAstandardMIM"

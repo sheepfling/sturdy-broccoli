@@ -2,9 +2,9 @@
 
 import pytest
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from tests.backends.python_backend_extended_support import *
-from hla.rti1516e.fom import FOMModule
+from hla.fom import FOMModule
 from hla.backends.inmemory import PythonRTIConfig
 from hla.rti1516e.enums import (
     CallbackModel,
@@ -25,7 +25,7 @@ from hla.rti1516e.exceptions import (
     InconsistentFDD,
 )
 from hla.rti1516e.handles import FederateHandleSet
-from hla.rti1516e.spec_refs import method_label, method_reference
+from hla.spec.refs import method_label, method_reference
 
 def test_spec_references_link_services_to_clause_numbers():
     assert method_reference("connect").section == "4.2"

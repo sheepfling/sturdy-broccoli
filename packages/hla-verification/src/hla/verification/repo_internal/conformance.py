@@ -5,7 +5,7 @@ matrix from the source-derived Java/C++ API metadata, the Python backend service
 handlers, callback helpers, and the verification artifacts we currently have.
 
 Section anchors: IEEE 1516.1-2010 §4-§12, especially the per-service clauses
-listed in :mod:`hla.rti1516e.spec_refs`.
+listed in :mod:`hla.spec.refs`.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from hla.verification.repo_internal.conformance_evidence import focused_evidence
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.common import CALLBACK_METHOD_NAMES, RTI_METHOD_NAMES, lower_camel_to_snake
 from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e.spec_refs import IEEE_1516_1_2010, method_reference
+from hla.spec.refs import IEEE_1516_1_2010, method_reference
 from hla.verification.repo_internal.mom_negative_testing import build_mom_negative_test_cases
 from hla.verification.repo_internal.mom_negative_testing import default_mom_model, mom_negative_case_report
 

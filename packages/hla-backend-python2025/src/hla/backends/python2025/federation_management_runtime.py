@@ -118,7 +118,7 @@ def force_federate_loss(
 
     lost_handle = target._federate_handle
     lost_time = target._logical_time
-    mom = import_module("hla.rti1516e.mom")
+    mom = import_module("hla.fom.mom")
     lost_handle_bytes = import_module("hla.rti1516e.handles").FederateHandle(int(lost_handle.value)).encode()
     lost_time_bytes = import_module("hla.rti1516e.time").HLAinteger64Time(int(lost_time.value)).encode()
     if target._federate_ambassador is not None:

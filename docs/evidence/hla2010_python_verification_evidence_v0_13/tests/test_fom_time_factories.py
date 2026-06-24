@@ -6,7 +6,7 @@ from hla.rti1516e.backends.base import Invocation
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
 from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

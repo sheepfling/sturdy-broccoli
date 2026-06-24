@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e.exceptions import ObjectInstanceNotKnown
 from hla.rti1516e.handles import AttributeHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle

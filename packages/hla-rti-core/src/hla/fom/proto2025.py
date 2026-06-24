@@ -6,8 +6,8 @@ from importlib import import_module, resources
 from pathlib import Path
 from typing import Any, Final, Iterable
 
-FOM_RESOURCE_PACKAGE: Final = "hla.rti1516_2025.resources.foms"
-ENCODING_AUTH_RESOURCE_PACKAGE: Final = "hla.rti1516_2025.resources.encoding_auth"
+FOM_RESOURCE_PACKAGE: Final = "hla.fom.resources.proto2025.foms"
+ENCODING_AUTH_RESOURCE_PACKAGE: Final = "hla.fom.resources.proto2025.encoding_auth"
 
 PROTO2025_BASE: Final = "Proto2025_Base.xml"
 PROTO2025_MESSAGE_TEST: Final = "Proto2025_MessageTest.xml"
@@ -76,7 +76,7 @@ class FomTypeRepository:
 
     @classmethod
     def from_modules(cls, modules: Iterable[Any]) -> "FomTypeRepository":
-        fom = import_module("hla.rti1516e.fom")
+        fom = import_module("hla.fom")
         resolved = fom.FOMResolver().resolve_many(tuple(modules))
         return cls(catalog=fom.merge_fom_modules(resolved), modules=resolved)
 

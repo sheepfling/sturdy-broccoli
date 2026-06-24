@@ -2,7 +2,7 @@
 
 import pytest
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from tests.backends.python_backend_extended_support import *
 from hla.rti1516e import RTIambassador, NullFederateAmbassador
 from hla.rti1516e.exceptions import *
@@ -2900,12 +2900,14 @@ def test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows():
 
     acquirer.attribute_ownership_acquisition(offered, {attr}, b"acquire-tag")
     drain(owner, acquirer)
-    acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
-    assert acquired is not None
-    assert acquired.args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
     divest_notice = owner_fed.last_callback("requestDivestitureConfirmation")
     assert divest_notice is not None
-    assert divest_notice.args == (offered, AttributeHandleSet({attr}))
+    assert divest_notice.args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
+    owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    drain(owner, acquirer)
+    acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
+    assert acquired is not None
+    assert acquired.args == (offered, AttributeHandleSet({attr}), b"confirm-tag")
     assert acquirer.is_attribute_owned_by_federate(offered, attr) is True
 
     pending = owner.register_object_instance(cls, "Pending-1")
@@ -2980,9 +2982,16 @@ def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_
         rec for rec in acquirer_fed.records if rec.method_name == "attributeOwnershipAcquisitionNotification"
     ]
     assert [rec.method_name for rec in divest_callbacks] == ["requestDivestitureConfirmation"]
+    assert acquisition_callbacks == []
+    assert divest_callbacks[0].args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
+
+    owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    drain(owner, acquirer)
+    acquisition_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "attributeOwnershipAcquisitionNotification"
+    ]
     assert [rec.method_name for rec in acquisition_callbacks] == ["attributeOwnershipAcquisitionNotification"]
-    assert divest_callbacks[0].args == (offered, AttributeHandleSet({attr}))
-    assert acquisition_callbacks[0].args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
+    assert acquisition_callbacks[0].args == (offered, AttributeHandleSet({attr}), b"confirm-tag")
 
     pending = owner.register_object_instance(cls, "Callback-Pending-1")
     drain(owner, acquirer)

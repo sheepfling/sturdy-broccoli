@@ -10,9 +10,9 @@ Canonical implementation remains in:
 Canonical public entrypoints include:
 
 - `hla.rti1516e`
-- `hla.rti1516e.rti_ambassador`
+- `hla.runtime.rti1516e_ambassador`
 - `hla.rti1516e.federate_ambassador`
-- `hla.rti1516e.rti` only as a temporary workspace compatibility facade
+- `hla.runtime.rti1516e` only as a temporary workspace compatibility facade
 
 This package owns the abstract API, spec-facing support modules, and backend
 registry contract. It must not depend on concrete backend families, vendor
@@ -50,7 +50,7 @@ runtime launchers, or repo-internal verification helpers.
     - quoted return annotations
   - Prefer `from __future__ import annotations` instead.
 - [ ] Add or enforce a rule:
-  - every Python module in `pyhla` should use:
+  - every Python module in `upstream_reference` should use:
     ```python
     from __future__ import annotations
     ```

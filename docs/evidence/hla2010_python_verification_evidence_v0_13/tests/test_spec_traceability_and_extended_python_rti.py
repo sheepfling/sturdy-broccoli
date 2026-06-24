@@ -4,7 +4,7 @@ from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIBackend
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, ServiceGroup
 from hla.rti1516e.handles import AttributeHandleSet, MessageRetractionHandle, RegionHandleSet
 from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e.spec_refs import FOM_REFERENCES, method_reference
+from hla.spec.refs import FOM_REFERENCES, method_reference
 from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
 
 

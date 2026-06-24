@@ -15,7 +15,7 @@ typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 
 [project.entry-points."hla.specs"]
-rti1516e = "hla.rti1516e.plugin:plugin"
+rti1516e = "hla.runtime.rti1516e_plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -27,7 +27,7 @@ namespaces = true
 exclude = ["hla.rti1516e.testing*"]
 
 [tool.setuptools.package-data]
-"hla.rti1516e" = ["*.json", "*.pyi", "py.typed", "resources/foms/*.xml"]
+"hla.rti1516e" = ["*.json", "*.pyi", "py.typed"]
 
 [tool.hla.package]
 status = "implementation-owned"

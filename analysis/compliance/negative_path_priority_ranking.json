@@ -18,7 +18,9 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveBegun",
@@ -38,7 +40,9 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route"
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
@@ -76,7 +80,10 @@
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveComplete",
@@ -97,7 +104,10 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route"
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
@@ -133,7 +143,8 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_failure_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveNotComplete",
@@ -153,7 +164,8 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_failure_scenario_over_fedpro_route"
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
@@ -191,7 +203,10 @@
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_restore_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreComplete",
@@ -212,7 +227,10 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_restore_state_scenario_over_fedpro_route"
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
@@ -248,7 +266,8 @@
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_failure_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreNotComplete",
@@ -268,7 +287,8 @@
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_restore_failure_scenario_over_fedpro_route"
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
@@ -366,7 +386,11 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_nextMessageRequest",
@@ -385,7 +409,11 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -485,7 +513,9 @@
         "tests/verification/test_compliance_slice_v011.py",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
@@ -506,7 +536,9 @@
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
         "tests/verification/test_compliance_slice_v011.py",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -718,7 +750,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
@@ -737,7 +771,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -775,7 +811,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
@@ -794,7 +832,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -832,7 +872,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
@@ -851,7 +892,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1062,7 +1104,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
@@ -1081,7 +1125,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1118,7 +1164,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
@@ -1137,7 +1184,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1174,7 +1222,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
@@ -1193,7 +1243,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1230,7 +1282,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
@@ -1249,7 +1302,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1285,7 +1339,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -1306,7 +1360,7 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -1464,7 +1518,9 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
@@ -1483,7 +1539,9 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_unpublish_rejection_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1519,7 +1577,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
@@ -1538,7 +1597,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1574,7 +1634,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
@@ -1593,7 +1654,8 @@
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1628,7 +1690,8 @@
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryLookahead",
@@ -1647,7 +1710,8 @@
       "positive_test_refs": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
-        "tests/verification/test_compliance_slice_v011.py"
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
@@ -1684,7 +1748,9 @@
         "tests/verification/test_compliance_slice_v011.py",
         "packages/hla-verification/src/hla.verification/scenario_target_radar_time.py::run_target_radar_time_window_future_exclusion_scenario",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
       ],
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryGALT",
@@ -1705,7 +1771,9 @@
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
         "tests/verification/test_compliance_slice_v011.py",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_future_exclusion",
-        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix"
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_time_window_future_exclusion_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_future_exclusion_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route"
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",

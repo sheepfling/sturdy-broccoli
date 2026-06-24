@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from .state import FederateState, FederationState
 
 

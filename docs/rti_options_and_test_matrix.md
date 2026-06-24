@@ -111,7 +111,7 @@ Current remote callback contract for both `grpc` and `rest`:
 ## Supported Backend Names
 
 These are the backend names currently recognized by
-[rti.py](../packages/hla-rti1516e/src/hla/rti1516e/rti.py).
+[rti1516e.py](../packages/hla-rti-core/src/hla/runtime/rti1516e.py).
 
 This section is generated from `create_backend(...)` by
 [`./tools/rti-options generate`](../tools/rti-options).
@@ -333,7 +333,7 @@ That gives one matrix that covers:
 ## Maintenance
 
 If backend aliases change in
-[rti.py](../packages/hla-rti1516e/src/hla/rti1516e/rti.py),
+[rti1516e.py](../packages/hla-rti-core/src/hla/runtime/rti1516e.py),
 rerun:
 
 ```bash

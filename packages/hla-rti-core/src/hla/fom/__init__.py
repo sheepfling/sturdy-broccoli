@@ -17,6 +17,7 @@ from __future__ import annotations
 import os
 import re
 import struct
+import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -25,7 +26,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 from urllib.parse import quote, unquote, urlparse, urlunparse
 
-from .exceptions import CouldNotDecode
+from hla.rti1516e.exceptions import CouldNotDecode
 
 try:
     from lxml import etree as LET
@@ -581,12 +582,33 @@ def _path_to_file_uri(path: Path) -> str:
         return urlunparse(("file", "", quote(str(absolute)), "", "", ""))
 
 
+def _split_fom_resource_roots() -> tuple[Path, ...]:
+    roots: list[Path] = []
+    seen: set[Path] = set()
+    for entry in sys.path:
+        if not entry:
+            continue
+        try:
+            foms_root = Path(entry).expanduser().resolve() / "hla" / "foms"
+        except OSError:
+            continue
+        if not foms_root.exists():
+            continue
+        for candidate in foms_root.glob("*/resources/foms"):
+            resolved = candidate.resolve()
+            if resolved in seen or not resolved.exists():
+                continue
+            seen.add(resolved)
+            roots.append(resolved)
+    return tuple(roots)
+
+
 def default_fom_search_paths() -> tuple[Path, ...]:
     """Return bundled package FOM search paths."""
 
     candidates: list[Path] = []
     try:
-        package_root = resources.files("hla.rti1516e")
+        package_root = resources.files("hla.fom")
         fom_root = package_root.joinpath("resources", "foms")
         package_path = Path(str(package_root))
         candidates.extend((Path(str(fom_root)), package_path, package_path.parent))
@@ -597,6 +619,7 @@ def default_fom_search_paths() -> tuple[Path, ...]:
         candidates.append(Path(str(target_radar_root)))
     except Exception:
         pass
+    candidates.extend(_split_fom_resource_roots())
 
     module_root = Path(__file__).resolve().parent
     candidates.extend((module_root / "resources" / "foms", module_root, module_root.parent))
@@ -645,8 +668,8 @@ def normalize_module_uri(source: Any, *, base_paths: Iterable[str | os.PathLike[
     text = str(source)
     if text.startswith("hla2010/resources/foms/"):
         text = text.removeprefix("hla2010/resources/foms/")
-    elif text.startswith("hla.rti1516e/resources/foms/"):
-        text = text.removeprefix("hla.rti1516e/resources/foms/")
+    elif text.startswith("hla.fom/resources/foms/"):
+        text = text.removeprefix("hla.fom/resources/foms/")
     if text == _STANDARD_MIM_NAME:
         path = _bundled_standard_mim_path()
         return _path_to_file_uri(path), path
@@ -1984,7 +2007,7 @@ def _datatype_spec_lookup(name: str, catalog: FOMCatalog | Mapping[str, Any] | N
 
 
 def _decode_primitive_datatype(name: str, payload: bytes) -> tuple[int, Any]:
-    from . import encoding as hla_encoding
+    from hla.rti1516e import encoding as hla_encoding
 
     cls = getattr(hla_encoding, name, None)
     if cls is None:

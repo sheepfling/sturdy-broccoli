@@ -1,4 +1,15 @@
 {
-  "section_count": 0,
-  "sections": []
+  "section_count": 1,
+  "sections": [
+    {
+      "core_priority": 1,
+      "representative_methods": [
+        "RTIambassador.getMessageRetractionHandleFactory",
+        "RTIambassador.getRegionHandleFactory"
+      ],
+      "row_count": 2,
+      "section_label": "IEEE 1516.1-2010 \u00a710",
+      "section_root": "10"
+    }
+  ]
 }

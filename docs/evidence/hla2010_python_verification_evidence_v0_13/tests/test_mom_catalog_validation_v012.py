@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.rti1516e.ambassadors import RecordingFederateAmbassador
 from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import InteractionClassNotPublished, InteractionParameterNotDefined
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 
 
 def _joined(name: str, *, config: PythonRTIConfig | None = None):

@@ -27,8 +27,8 @@ _BACKEND_PLUGINS_LOADED = False
 _SPEC_PLUGINS: dict[str, SpecPlugin] = {}
 _SPEC_PLUGINS_LOADED = False
 _SOURCE_CHECKOUT_SPEC_PLUGIN_MODULES: tuple[str, ...] = (
-    "hla.rti1516e.plugin",
-    "hla.rti1516_2025.plugin",
+    "hla.runtime.rti1516e_plugin",
+    "hla.runtime.rti1516_2025_plugin",
 )
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla.backends.inmemory.plugin",
@@ -367,7 +367,7 @@ class HlaFactory:
     def create_encoding_context(self, *, transport: str = "inproc", fom_modules: Any = None) -> EncodingContext:
         repository = None
         if self.spec.name == "rti1516_2025":
-            foms = importlib.import_module("hla.rti1516_2025.foms")
+            foms = importlib.import_module("hla.fom.proto2025")
             repository = (
                 foms.FomTypeRepository.empty()
                 if fom_modules is None
@@ -508,8 +508,8 @@ class HlaFactory:
             normalized = tuple(modules)
         active_codecs = codecs or self.encoding_registry()
         if self.spec.name == "rti1516_2025":
-            validation_module = importlib.import_module("hla.rti1516_2025.validation")
-            repository = importlib.import_module("hla.rti1516_2025.foms").FomTypeRepository.from_modules(normalized)
+            validation_module = importlib.import_module("hla.fom.validation")
+            repository = importlib.import_module("hla.fom.proto2025").FomTypeRepository.from_modules(normalized)
             strict_identification = bool(options.get("strict_identification", False))
             issues = validation_module.validate_fom_modules(
                 repository.modules,

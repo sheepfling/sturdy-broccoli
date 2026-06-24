@@ -6,8 +6,8 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 
 | Pitch backend | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |
 |---|---:|---:|---:|---:|---:|---:|
-| pitch-jpype | 545 | 4 | 43 | 91 | 26 | 211 |
-| pitch-py4j | 545 | 4 | 43 | 91 | 26 | 211 |
+| pitch-jpype | 545 | 4 | 43 | 93 | 26 | 211 |
+| pitch-py4j | 545 | 4 | 43 | 93 | 26 | 211 |
 
 ## Clause Summary
 
@@ -15,7 +15,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 0 | 0 | 1 | 3 |
 | IEEE 1516-2010 §12 | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 0 | 0 | 0 | 82 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
@@ -46,7 +46,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 0 | 0 | 1 | 3 |
 | IEEE 1516-2010 §12 | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 0 | 0 | 0 | 82 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
@@ -75,7 +75,7 @@ This audit projects the shared HLA 2010 requirements matrix onto Pitch so every 
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 0 | 0 | 1 | 3 |
 | IEEE 1516-2010 §12 | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 0 | 0 | 0 | 82 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
@@ -159,10 +159,12 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getFederateHandleSetFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getHLAversion | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getInteractionClassHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getMessageRetractionHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getObjectClassHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getObjectInstanceHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getParameterHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getParameterHandleValueMapFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleSetFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTimeFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTransportationTypeHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |

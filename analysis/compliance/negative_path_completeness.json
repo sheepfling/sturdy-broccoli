@@ -1,5 +1,5 @@
 {
-  "row_count": 217,
+  "row_count": 219,
   "rows": [
     {
       "actionable_exception_count": 0,
@@ -3205,6 +3205,18 @@
       "verification_status": "focused-executable-tests"
     },
     {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "getMessageRetractionHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
+      "verification_status": "group-level-slice-tests"
+    },
+    {
       "actionable_exception_count": 2,
       "declared_exception_count": 2,
       "declared_exceptions": [
@@ -3263,6 +3275,18 @@
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "getRegionHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
+      "verification_status": "group-level-slice-tests"
     },
     {
       "actionable_exception_count": 2,
@@ -3789,7 +3813,7 @@
   "status_counts": {
     "complete": 80,
     "mapped-not-exhaustive": 30,
-    "not-applicable": 65,
+    "not-applicable": 67,
     "partial": 42
   }
 }

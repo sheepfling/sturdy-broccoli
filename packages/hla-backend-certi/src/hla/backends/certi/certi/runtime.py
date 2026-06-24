@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from hla.rti1516e.exceptions import RTIinternalError
-from hla.rti1516e.fom import normalize_module_uri
+from hla.fom import normalize_module_uri
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla.backends.common import BackendUnavailableError, UnsupportedBackendService
 from hla.transports.common import RTITransport

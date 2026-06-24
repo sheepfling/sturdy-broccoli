@@ -7,7 +7,7 @@ from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig,
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed, MessageCanNoLongerBeRetracted, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
 from hla.rti1516e.handles import MessageRetractionHandle
-from hla.rti1516e import mom
+import hla.fom.mom as mom
 
 
 def drain(*rtis, rounds: int = 20):

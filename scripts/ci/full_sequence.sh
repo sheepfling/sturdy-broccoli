@@ -12,7 +12,7 @@ usage() {
 usage: ./scripts/ci/full_sequence.sh
 
 Run the repo-green full documented local lifecycle sequence:
-install -> compilation -> lint / type annotations -> unit tests
+install -> upstream contract -> compilation -> lint / type annotations -> unit tests
 -> integration smoke -> integration tests -> compliance matrices
 -> full backend matrixed compliance -> other evidence
 
@@ -36,6 +36,7 @@ run_step() {
 }
 
 run_step "install" "$ROOT_DIR/scripts/ci/install_python.sh"
+run_step "upstream contract" "$ROOT_DIR/scripts/ci/upstream_contract.sh"
 run_step "compilation" "$ROOT_DIR/scripts/ci/lint.sh"
 run_step "lint / type annotations" "$ROOT_DIR/scripts/ci/pyright.sh"
 run_step "standard shim route artifacts" "$ROOT_DIR/scripts/ci/build_standard_shims_if_available.sh"

@@ -10297,6 +10297,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "service-requirement",
+      "matrix_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "notes": "",
+      "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "runtime_disposition": "vendor-divergent",
+      "runtime_status": "",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "title": "Disable Callbacks service"
+    },
+    {
+      "clause_root": "10",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
       "notes": "",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
@@ -10340,6 +10353,19 @@
       "notes": "",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
       "runtime_disposition": "verified",
+      "runtime_status": "",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "title": "Disable Callbacks service"
+    },
+    {
+      "clause_root": "10",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "service-requirement",
+      "matrix_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
+      "notes": "",
+      "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
+      "runtime_disposition": "vendor-divergent",
       "runtime_status": "",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
       "title": "Disable Callbacks service"
@@ -13942,7 +13968,8 @@
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a710": {
         "not-applicable": 2,
-        "total": 84,
+        "total": 86,
+        "vendor-divergent": 2,
         "verified": 82
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a711": {
@@ -14051,10 +14078,10 @@
     },
     "disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 23,
+      "vendor-divergent": 25,
       "verified": 818
     },
-    "row_count": 920,
+    "row_count": 922,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
   }
 }

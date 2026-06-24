@@ -1474,7 +1474,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ],
     }
     assert omt_xs_any_mapping_audit["test_path"] == "tests/test_rti1516_2025_validation.py"
-    assert omt_xs_any_mapping_audit["implementation_path"] == "packages/hla-rti1516e/src/hla/rti1516e/fom.py"
+    assert omt_xs_any_mapping_audit["implementation_path"] == "packages/hla-rti-core/src/hla/fom/__init__.py"
     assert omt_xs_any_mapping_audit["ready_for_omt_xs_any_mapping_claim"] is True
     assert omt_xs_any_mapping_audit["executable_anchor_ready"] is True
     assert omt_xs_any_mapping_audit["implementation_anchor_ready"] is True
@@ -1919,18 +1919,21 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "tests/transport/test_grpc_transport_2025.py"
     )
     support_service_audit = snapshot["support_service_proof_audit"]
-    assert support_service_audit["row_count"] == 62
+    assert support_service_audit["row_count"] == 64
     assert support_service_audit["focused_executable_row_count"] == 62
     assert support_service_audit["rows_with_known_gaps"] == 0
     assert support_service_audit["complete_negative_path_row_count"] == 61
     assert support_service_audit["partial_negative_path_row_count"] == 0
     assert support_service_audit["mapped_not_exhaustive_negative_path_row_count"] == 0
-    assert support_service_audit["ready_for_support_service_traceability_claim"] is True
-    assert support_service_audit["ready_for_support_service_full_conformance_claim"] is True
-    assert support_service_audit["by_verification_status"] == {"focused-executable-tests": 62}
+    assert support_service_audit["ready_for_support_service_traceability_claim"] is False
+    assert support_service_audit["ready_for_support_service_full_conformance_claim"] is False
+    assert support_service_audit["by_verification_status"] == {
+        "focused-executable-tests": 62,
+        "group-level-slice-tests": 2,
+    }
     assert support_service_audit["by_negative_path_status"] == {
         "complete": 61,
-        "not-applicable": 1,
+        "not-applicable": 3,
     }
     assert "explicit support-service ledger" in support_service_audit["current_assessment"]
     assert "Negative-path coverage is now complete for all 61 actionable support-service rows" in support_service_audit["current_assessment"]
@@ -2016,7 +2019,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         {"path": "tests/test_rti1516_2025_python2025_runtime.py", "slice_count": 49},
         {"path": "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py", "slice_count": 42},
         {"path": "tests/test_rti1516_2025_validation.py", "slice_count": 12},
-        {"path": "packages/hla-rti1516e/src/hla/rti1516e/fom.py", "slice_count": 12},
+        {"path": "packages/hla-rti-core/src/hla/fom/__init__.py", "slice_count": 12},
     ]
     leading_runtime_modules = concentration_audit["leading_extracted_runtime_modules"]
     assert len(leading_runtime_modules) == 5
@@ -4048,9 +4051,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Ready for callback surface traceability claim: True" in markdown
     assert "Ready for callback-by-callback working-surface claim: True" in markdown
     assert "Support-Service Proof Audit" in markdown
-    assert "Support-service rows: 62" in markdown
+    assert "Support-service rows: 64" in markdown
     assert "Complete negative-path rows: 61" in markdown
-    assert "Ready for support-service traceability claim: True" in markdown
+    assert "Ready for support-service traceability claim: False" in markdown
     assert "Python RTI Milestone Audit" in markdown
     assert "Audit status: bounded-python-rti-milestones" in markdown
     assert "Milestones per route: 6" in markdown

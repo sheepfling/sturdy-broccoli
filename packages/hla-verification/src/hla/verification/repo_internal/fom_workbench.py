@@ -10,7 +10,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from hla.rti1516e.fom import FOMCatalog, FOMResolver, merge_fom_modules
+from hla.fom import FOMCatalog, FOMResolver, merge_fom_modules
 from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records, inventory_records
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
 from hla.verification.repo_internal.fom_validate import write_fom_validation, write_fom_validation_html

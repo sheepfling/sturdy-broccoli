@@ -5,13 +5,13 @@ import inspect
 import pytest
 
 import hla.rti1516e
-import hla.rti1516e.rti as rti_module
+import hla.runtime.rti1516e as rti_module
 from hla.backends.common import RecordingBackend, make_rti_ambassador
 import hla.rti.factory as runtime_factory
-from hla.rti1516e.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
+from hla.runtime.rti1516e import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
 from hla.rti1516e import FederateAmbassador, NullFederateAmbassador, RTIambassador, lower_camel_to_snake
 from hla.rti1516e.federate_ambassador import UnimplementedFederateAmbassador
-from hla.rti1516e.rti_ambassador import UnimplementedRTIambassador
+from hla.runtime.rti1516e_ambassador import UnimplementedRTIambassador
 
 _PYTHON2025_PROVIDER_ALIASES = ("python2025", "python-2025", "python-2025-backend")
 

@@ -15,7 +15,7 @@ The RTI adapter boundary therefore exposes the same service names and the same f
 
 ## FOM URL handling
 
-`hla.rti1516e.fom` now owns FOM/MIM source normalization and parsing.
+`hla.fom` now owns FOM/MIM source normalization and parsing.
 
 Supported source forms:
 

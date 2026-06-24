@@ -186,6 +186,6 @@ def mom_single_module_data(module: Any | None) -> str:
     if path is not None and Path(path).exists():
         return Path(path).read_text(encoding="utf-8")
     if getattr(module, "parsed", False):
-        fom = import_module("hla.rti1516e.fom")
+        fom = import_module("hla.fom")
         return fom.serialize_fom_module(module, edition="2025")
     return str(getattr(module, "uri", None) or getattr(module, "source", ""))

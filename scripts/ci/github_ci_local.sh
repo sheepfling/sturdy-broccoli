@@ -70,6 +70,9 @@ lane_override_var() {
 }
 
 run_default_mode() {
+  run_lane upstream_contract \
+    HLA2010_GITHUB_CI_LOCAL_UPSTREAM_CONTRACT_CMD \
+    bash "$ROOT_DIR/scripts/ci/upstream_contract.sh"
   run_lane vendor_runner_contract \
     HLA2010_GITHUB_CI_LOCAL_VENDOR_RUNNER_CONTRACT_CMD \
     python3 "$ROOT_DIR/scripts/check_vendor_runner_template_drift.py"

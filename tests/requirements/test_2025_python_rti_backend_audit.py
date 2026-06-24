@@ -898,7 +898,7 @@ def test_2025_python_rti_backend_audit_marks_java_and_cpp_2025_routes_as_non_pri
     from hla.backends.cpp_shim.backend_2025 import CppRouteShim2025Backend
     from hla.backends.cpp_shim.standard import discover_cpp_standard
     from hla.rti.plugin_api import BackendRequest
-    from hla.rti1516_2025.plugin import plugin as spec_plugin
+    from hla.runtime.rti1516_2025_plugin import plugin as spec_plugin
 
     request = BackendRequest(spec=spec_plugin().spec)
 
@@ -1715,7 +1715,7 @@ def test_2025_python_rti_backend_audit_keeps_finish_line_documents_off_stale_shi
 def test_2025_python_rti_backend_audit_keeps_public_2025_factory_defaults_and_discovery_order_python2025_first() -> None:
     from hla.rti import discover_rti_backends
     from hla.rti import factory as runtime_factory
-    from hla.rti1516_2025.factory import create_hla_factory, create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_hla_factory, create_rti_ambassador
 
     rti_signature = inspect.signature(create_rti_ambassador)
     factory_signature = inspect.signature(create_hla_factory)

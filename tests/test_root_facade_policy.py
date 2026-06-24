@@ -288,18 +288,15 @@ def test_legacy_root_namespace_directories_contain_no_python_modules() -> None:
 def test_documented_root_workspace_facades_remain_available() -> None:
     import hla.rti1516e.ambassadors
     import hla.rti1516e.api
-    import hla.rti1516e.rti
+    import hla.runtime.rti1516e
 
     assert hla.rti1516e.ambassadors.__name__ == "hla.rti1516e.ambassadors"
     assert hla.rti1516e.api.__name__ == "hla.rti1516e.api"
-    assert hla.rti1516e.rti.__name__ == "hla.rti1516e.rti"
+    assert hla.runtime.rti1516e.__name__ == "hla.runtime.rti1516e"
 
 
 def test_root_rti_workspace_facade_is_only_used_by_deliberate_public_contract_tests() -> None:
-    allowed = {
-        "tests/test_python_api_spec.py",
-        "tests/test_root_facade_policy.py",
-    }
+    allowed: set[str] = set()
     import_pattern = re.compile(r"^\s*(from hla2010\.rti import|import hla.rti1516e\.rti\b)")
 
     hits: set[str] = set()

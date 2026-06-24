@@ -152,14 +152,14 @@
 | hla.rti1516e.exceptions | UnableToPerformSave | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
 | hla.rti1516e.exceptions | UnknownName | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
 | hla.rti1516e.exceptions | UnsupportedCallbackModel | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
-| hla.rti1516e.fom | FOMCatalog | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | FOMMergeError | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | FOMModule | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | FOMResolutionError | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | FOMResolver | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | InteractionClassSpec | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | OMTConformanceAssessment | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.fom | ObjectClassSpec | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | FOMCatalog | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | FOMMergeError | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | FOMModule | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | FOMResolutionError | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | FOMResolver | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | InteractionClassSpec | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | OMTConformanceAssessment | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.fom | ObjectClassSpec | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.handles | AttributeHandle | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla.rti1516e.handles | AttributeHandleFactory | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla.rti1516e.handles | AttributeHandleSet | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |

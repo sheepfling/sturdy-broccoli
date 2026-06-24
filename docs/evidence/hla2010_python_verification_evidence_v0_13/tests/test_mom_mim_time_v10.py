@@ -5,7 +5,7 @@ from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.exceptions import InTimeAdvancingState, MessageCanNoLongerBeRetracted
 from hla.rti1516e.handles import ObjectInstanceHandle
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.datatypes import MessageRetractionReturn, TimeQueryReturn
 
 

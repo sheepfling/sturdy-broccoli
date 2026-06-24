@@ -1,0 +1,74 @@
+{
+  "$id": "https://example.invalid/sturdy-broccoli/upstream_reference-contract-schema-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "contract_facts": {
+      "type": "object"
+    },
+    "modules": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "properties": {
+          "classes": {
+            "type": "object"
+          },
+          "dataclasses": {
+            "type": "object"
+          },
+          "enums": {
+            "type": "object"
+          },
+          "exceptions": {
+            "type": "object"
+          },
+          "file": {
+            "type": "string"
+          },
+          "module": {
+            "type": "string"
+          },
+          "namedtuples": {
+            "type": "object"
+          },
+          "public_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "module",
+          "public_symbols"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "package": {
+      "type": "string"
+    },
+    "package_dir": {
+      "type": "string"
+    },
+    "standard": {
+      "type": "string"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "tag_commit": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "standard",
+    "tag",
+    "tag_commit",
+    "package",
+    "modules"
+  ],
+  "title": "Frozen upstream_reference contract snapshot schema v1",
+  "type": "object"
+}

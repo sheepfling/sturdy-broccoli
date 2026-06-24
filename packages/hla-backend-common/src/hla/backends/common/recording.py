@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from hla.rti1516e import NullFederateAmbassador
-from hla.rti1516e.spec_refs import SpecReference, method_reference
+from hla.spec.refs import SpecReference, method_reference
 
 from .base import CALLBACK_METHOD_NAMES, lower_camel_to_snake
 

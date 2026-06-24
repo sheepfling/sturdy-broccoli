@@ -7,9 +7,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
-from hla.rti1516e.spec_refs import method_reference
+from hla.spec.refs import method_reference
 from .service_reporting import ServiceReportRecord
 from .state import CallbackEvent, FederateState, FederationState, SupplementalReceiveInfo
 

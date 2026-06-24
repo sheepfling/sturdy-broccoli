@@ -706,7 +706,7 @@ class _TargetRadar2025RTIAdapter:
             fom_only_modules = [module for module in modules if str(module) not in standard_mim_designators]
             mim_module = mim_modules[0]
             if str(mim_module) in {"HLAstandardMIM", "HLAstandardMIM.xml"}:
-                mim_module = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
+                mim_module = str(files("hla.fom.resources.foms").joinpath("HLAstandardMIM.xml"))
             self._call_compat(
                 self._delegate.createFederationExecutionWithMIM,
                 federationName=federation_name,
@@ -730,7 +730,7 @@ class _TargetRadar2025RTIAdapter:
         fom_modules,
         logical_time_implementation_name: str | None = None,
     ) -> None:  # noqa: ANN001
-        mim_module = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
+        mim_module = str(files("hla.fom.resources.foms").joinpath("HLAstandardMIM.xml"))
         self._call_compat(
             self._delegate.createFederationExecutionWithMIM,
             federationName=federation_name,
@@ -2676,7 +2676,7 @@ def _enable_strict_interaction_publication_probe(rti) -> None:  # noqa: ANN001
 def test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010() -> None:
     import hla.rti1516_2025 as rti2025
     import hla.rti1516e as rti1516e
-    from hla.rti1516_2025.plugin import plugin as rti2025_plugin
+    from hla.runtime.rti1516_2025_plugin import plugin as rti2025_plugin
 
     assert rti2025.RTIambassador is not rti1516e.RTIambassador
     assert rti2025.FederateAmbassador is not rti1516e.FederateAmbassador
@@ -3186,7 +3186,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished, ObjectClassNotPublished
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "Exchange2025.xml"
     fom.write_text(
@@ -3331,7 +3331,7 @@ def test_2025_provider_runs_two_federate_object_and_interaction_exchange(
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_example_target_radar_scenario_end_to_end(backend_name: str) -> None:
     from hla.foms.target_radar._internal import Vec3, run_target_radar_scenario, target_radar_fom_path
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-target-radar-{uuid.uuid4().hex[:8]}"
     pair_by_role: dict[str, _TargetRadar2025RTIAdapter] = {}
@@ -3364,8 +3364,8 @@ def test_2025_provider_runs_example_target_radar_scenario_end_to_end(backend_nam
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_lifecycle_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_scenario
-    from hla.rti1516_2025.foms import scenario_fom_paths
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-lifecycle-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend=backend_name)
@@ -3391,8 +3391,8 @@ def test_2025_provider_runs_federation_lifecycle_scenario_end_to_end(backend_nam
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_scenario
-    from hla.rti1516_2025.foms import scenario_fom_paths
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-lifecycle-mim-{uuid.uuid4().hex[:8]}"
     rti = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend=backend_name))
@@ -3418,7 +3418,7 @@ def test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end(back
 @pytest.mark.requirements("HLA2025-FI-003", "HLA2025-OM-001", "HLA2025-SUP-001")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_basic_backend_neutral_smoke_scenario_via_compat_adapter(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_basic_federate_scenario
 
     summary = run_basic_federate_scenario(
@@ -3440,8 +3440,8 @@ def test_2025_provider_runs_basic_backend_neutral_smoke_scenario_via_compat_adap
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_lifecycle_negative_scenario
-    from hla.rti1516_2025.foms import scenario_fom_paths
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-lifecycle-negative-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend=backend_name)
@@ -3478,8 +3478,8 @@ def test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end(ba
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_federation_listing_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_federation_listing_scenario
-    from hla.rti1516_2025.foms import scenario_fom_paths
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-listing-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend=backend_name)
@@ -3507,8 +3507,8 @@ def test_2025_provider_runs_federation_listing_scenario_end_to_end(backend_name:
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_multi_participation_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_multi_participation_scenario
-    from hla.rti1516_2025.foms import scenario_fom_paths
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-multi-participation-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend=backend_name)
@@ -3555,7 +3555,7 @@ def test_2025_provider_runs_multi_participation_scenario_end_to_end(backend_name
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_fom_integrity_negative_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_fom_integrity_negative_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-fom-negative-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend=backend_name)
@@ -3595,7 +3595,7 @@ def test_2025_provider_runs_fom_integrity_negative_scenario_end_to_end(backend_n
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_fom_module_visibility_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_fom_module_visibility_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-fom-visibility-{uuid.uuid4().hex[:8]}"
     rti = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend=backend_name))
@@ -3626,7 +3626,7 @@ def test_2025_provider_runs_fom_module_visibility_scenario_end_to_end(backend_na
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_multi_module_fom_visibility_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import FederationLifecycleScenarioConfig, run_multi_module_fom_visibility_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-fom-multi-{uuid.uuid4().hex[:8]}"
     rti = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend=backend_name))
@@ -3662,8 +3662,8 @@ def test_2025_provider_runs_multi_module_fom_visibility_scenario_end_to_end(back
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_join_precondition_scenario_end_to_end(backend_name: str) -> None:
     from hla.verification import JoinScenarioConfig, run_join_precondition_scenario
-    from hla.rti1516_2025.foms import scenario_fom_paths
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-join-preconditions-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend=backend_name)
@@ -3713,7 +3713,7 @@ def test_2025_provider_runs_join_precondition_scenario_end_to_end(backend_name: 
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_resign_precondition_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import ResignScenarioConfig, run_resign_precondition_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025ResignFOM.xml"
     _write_proto2025_resign_fom(fom_path)
@@ -3758,7 +3758,7 @@ def test_2025_provider_runs_resign_precondition_scenario_end_to_end(tmp_path: Pa
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import ResignScenarioConfig, run_resign_mom_cleanup_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025ResignMOMFOM.xml"
     _write_proto2025_resign_fom(fom_path)
@@ -3798,7 +3798,7 @@ def test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.verification import ResignScenarioConfig, run_disconnect_mom_cleanup_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DisconnectMOMFOM.xml"
     _write_proto2025_resign_fom(fom_path)
@@ -3836,7 +3836,7 @@ def test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end(
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import LostFederateScenarioConfig, run_lost_federate_mom_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025LostFederateFOM.xml"
     _write_proto2025_smoke_object_fom(fom_path)
@@ -3877,7 +3877,7 @@ def test_2025_provider_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_external_lost_federate_observer_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516e.enums import CallbackModel
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import (
         ExternalLostFederateVictimSession,
         LostFederateScenarioConfig,
@@ -3953,7 +3953,7 @@ def test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.verification import RequestAttributeValueUpdateScenarioConfig, run_request_attribute_value_update_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
     _write_proto2025_smoke_object_fom(fom_path)
@@ -4000,7 +4000,7 @@ def test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.verification import RequestAttributeValueUpdateScenarioConfig, run_request_attribute_value_update_routing_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
     _write_proto2025_smoke_object_fom(fom_path)
@@ -4054,7 +4054,7 @@ def test_2025_provider_runs_declaration_management_scenario_end_to_end(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.verification import DeclarationManagementScenarioConfig, run_declaration_management_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DeclarationFOM.xml"
     _write_proto2025_declaration_fom(fom_path)
@@ -4118,7 +4118,7 @@ def test_2025_provider_runs_declaration_management_scenario_end_to_end(
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-019")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_update_rate_scenario_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
 
     fom_path = tmp_path / "Proto2025UpdateRateFOM.xml"
@@ -4147,7 +4147,7 @@ def test_2025_provider_runs_update_rate_scenario_via_compat_adapter(tmp_path: Pa
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-SVC-019")
 def test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapter(tmp_path: Path) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
 
     fom_path = tmp_path / "Proto2025DirectUpdateRateFOM.xml"
@@ -4186,7 +4186,7 @@ def test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapt
 def test_2025_provider_runs_two_federate_exchange_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import (
         TwoFederateExchangeConfig,
@@ -4256,7 +4256,7 @@ def test_2025_provider_runs_two_federate_exchange_scenario_via_compat_adapter(
 def test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wrapper_adapter(
     tmp_path: Path,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import (
         TwoFederateExchangeConfig,
@@ -4325,7 +4325,7 @@ def test_2025_primary_python_rti_runs_two_federate_exchange_scenario_without_wra
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_exchange_round_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import ExchangeRoundConfig
@@ -4432,7 +4432,7 @@ def test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_e
         DeclarationManagementScenarioConfig,
         run_declaration_invalid_attribute_publication_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DeclarationFOM.xml"
     _write_proto2025_declaration_fom(fom_path)
@@ -4473,7 +4473,7 @@ def test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end(
         DeclarationManagementScenarioConfig,
         run_declaration_unpublish_rejection_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DeclarationFOM.xml"
     _write_proto2025_declaration_fom(fom_path)
@@ -4518,7 +4518,7 @@ def test_2025_provider_runs_time_managed_declaration_independence_scenario_end_t
         DeclarationManagementScenarioConfig,
         run_time_managed_declaration_independence_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DeclarationFOM.xml"
     _write_proto2025_declaration_fom(fom_path)
@@ -4573,7 +4573,7 @@ def test_2025_provider_runs_time_managed_declaration_independence_scenario_end_t
 def test_2025_provider_runs_section8_state_services_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_state_services_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4609,7 +4609,7 @@ def test_2025_provider_runs_section8_state_services_via_compat_adapter(
 def test_2025_primary_python_rti_runs_section8_state_services_without_wrapper_adapter(
     time_factory_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_state_services_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4646,7 +4646,7 @@ def test_2025_primary_python_rti_runs_section8_state_services_without_wrapper_ad
 def test_2025_provider_blocks_early_timestamped_send_via_section8_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_early_timestamp_send_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4687,7 +4687,7 @@ def test_2025_provider_runs_section8_time_bound_queries_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
     from hla.rti1516e.datatypes import TimeQueryReturn
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_time_bound_query_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4722,7 +4722,7 @@ def test_2025_provider_runs_section8_time_bound_queries_via_compat_adapter(
 def test_2025_primary_python_rti_runs_section8_time_bound_queries_without_wrapper_adapter(
     time_factory_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_time_bound_query_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4763,7 +4763,7 @@ def test_2025_provider_runs_section8_ordering_and_queries_via_compat_adapter(
 ) -> None:
     from hla.rti1516e.datatypes import TimeQueryReturn
     from hla.rti1516e.enums import OrderType
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_ordering_and_query_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4813,7 +4813,7 @@ def test_2025_primary_python_rti_runs_section8_ordering_and_queries_without_wrap
     time_factory_name: str,
 ) -> None:
     from hla.rti1516e.enums import OrderType
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_ordering_and_query_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4860,7 +4860,7 @@ def test_2025_primary_python_rti_runs_section8_ordering_and_queries_without_wrap
 def test_2025_provider_runs_section8_available_and_flush_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_available_and_flush_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4896,7 +4896,7 @@ def test_2025_provider_runs_section8_available_and_flush_via_compat_adapter(
 def test_2025_primary_python_rti_runs_section8_available_and_flush_without_wrapper_adapter(
     time_factory_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_available_and_flush_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4935,7 +4935,7 @@ def test_2025_provider_runs_section8_request_retraction_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
     from hla.rti1516e.enums import OrderType
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_request_retraction_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -4975,7 +4975,7 @@ def test_2025_primary_python_rti_runs_section8_request_retraction_without_wrappe
     time_factory_name: str,
 ) -> None:
     from hla.rti1516e.enums import OrderType
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_request_retraction_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5013,7 +5013,7 @@ def test_2025_primary_python_rti_runs_section8_request_retraction_without_wrappe
 def test_2025_provider_runs_section8_duplicate_enable_rejection_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_duplicate_enable_rejection_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5049,7 +5049,7 @@ def test_2025_provider_runs_section8_duplicate_enable_rejection_via_compat_adapt
 def test_2025_primary_python_rti_runs_section8_duplicate_enable_rejection_without_wrapper_adapter(
     time_factory_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_duplicate_enable_rejection_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5087,7 +5087,7 @@ def test_2025_primary_python_rti_runs_section8_duplicate_enable_rejection_withou
 def test_2025_provider_runs_section8_tar_galt_boundary_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_tar_galt_boundary_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5122,7 +5122,7 @@ def test_2025_provider_runs_section8_tar_galt_boundary_via_compat_adapter(
 def test_2025_primary_python_rti_runs_section8_tar_galt_boundary_without_wrapper_adapter(
     time_factory_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_tar_galt_boundary_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5158,7 +5158,7 @@ def test_2025_primary_python_rti_runs_section8_tar_galt_boundary_without_wrapper
 def test_2025_provider_runs_section8_available_and_retraction_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_available_and_retraction_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5195,7 +5195,7 @@ def test_2025_provider_runs_section8_available_and_retraction_via_compat_adapter
 def test_2025_primary_python_rti_runs_section8_available_and_retraction_without_wrapper_adapter(
     time_factory_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_available_and_retraction_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5233,7 +5233,7 @@ def test_2025_provider_runs_section8_order_override_via_compat_adapter(
     backend_name: str, time_factory_name: str
 ) -> None:
     from hla.rti1516e.enums import OrderType
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_order_override_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5274,7 +5274,7 @@ def test_2025_primary_python_rti_runs_section8_order_override_without_wrapper_ad
     time_factory_name: str,
 ) -> None:
     from hla.rti1516e.enums import OrderType
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import run_section8_order_override_case, section8_matrix_config
 
     config = section8_matrix_config(
@@ -5308,7 +5308,7 @@ def test_2025_provider_runs_passive_full_declaration_scenario_via_compat_adapter
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.verification import DeclarationManagementScenarioConfig, run_declaration_management_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DeclarationPassiveFullFOM.xml"
     _write_proto2025_declaration_fom(fom_path)
@@ -5383,7 +5383,7 @@ def test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_
     tmp_path: Path,
 ) -> None:
     from hla.verification import DeclarationManagementScenarioConfig, run_declaration_management_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DirectDeclarationPassiveFullFOM.xml"
     _write_proto2025_declaration_fom(fom_path)
@@ -5457,7 +5457,7 @@ def test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_discovery_class_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import DiscoveryClassScenarioConfig, run_discovery_class_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025HierarchyFOM.xml"
     _write_proto2025_hierarchy_fom(fom_path)
@@ -5509,7 +5509,7 @@ def test_2025_provider_runs_discovery_class_scenario_end_to_end(tmp_path: Path, 
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.datatypes import RangeBounds
     from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import (
@@ -5568,7 +5568,7 @@ def test_2025_provider_runs_two_federate_suite_ddm_scenario_via_compat_adapter(b
 )
 def test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter() -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import SuiteRecordingFederateAmbassador, run_suite_ddm_scenario
 
@@ -5626,7 +5626,7 @@ def test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wr
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_adapter(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.time import HLAfloat64Time
     from hla.verification import (
         SuiteRecordingFederateAmbassador,
@@ -5672,7 +5672,7 @@ def test_2025_provider_runs_two_federate_suite_save_restore_scenario_via_compat_
     "HLA2025-FI-SVC-017",
 )
 def test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAfloat64Time
     from hla.verification import SuiteRecordingFederateAmbassador, run_suite_save_restore_scenario
 
@@ -5714,7 +5714,7 @@ def test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_w
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_local_delete_scenario_end_to_end(tmp_path: Path, backend_name: str) -> None:
     from hla.verification import LocalDeleteScenarioConfig, run_local_delete_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
     _write_proto2025_smoke_object_fom(fom_path)
@@ -5766,8 +5766,8 @@ def test_2025_provider_runs_local_delete_scenario_end_to_end(tmp_path: Path, bac
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
 
     federation_name = f"{backend_name}-2025-support-route-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend=backend_name)
@@ -5833,8 +5833,8 @@ def test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values
         InvalidTransportationTypeHandle,
         InvalidUpdateRateDesignator,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
 
     federation_name = f"{backend_name}-2025-support-invalid-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend=backend_name)
@@ -5891,8 +5891,8 @@ def test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.handles import DimensionHandle, MessageRetractionHandle, RegionHandle
 
@@ -5979,8 +5979,8 @@ def test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_withou
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_surface() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.handles import DimensionHandle, MessageRetractionHandle, RegionHandle
 
@@ -6052,8 +6052,8 @@ def test_2025_primary_python_rti_accepts_snake_case_aliases_for_direct_runtime_s
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
 
     federation_name = f"python2025-raw-callback-control-{uuid.uuid4().hex[:8]}"
@@ -6133,8 +6133,8 @@ def test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_
 
 @pytest.mark.requirements("HLA2025-FI-006", "HLA2025-FI-SVC-193", "HLA2025-MIL-001")
 def test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_without_evocation() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
 
     federation_name = f"python2025-immediate-callbacks-{uuid.uuid4().hex[:8]}"
@@ -6214,8 +6214,8 @@ def test_2025_primary_python_rti_delivers_immediate_object_callbacks_inline_with
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_support_factory_and_decode_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SupportServicesScenarioConfig, run_support_factory_and_decode_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516e.enums import OrderType, TransportationType
     from hla.rti1516e.handles import (
         AttributeHandleFactory,
@@ -6314,7 +6314,7 @@ def test_2025_provider_runs_support_factory_and_decode_scenario_via_compat_adapt
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_round_trips_automatic_resign_directive_support_service(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-auto-resign-support-{uuid.uuid4().hex[:8]}"
     federate = Recording2025FederateAmbassador()
@@ -6356,7 +6356,7 @@ def test_2025_provider_round_trips_automatic_resign_directive_support_service(ba
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import NameReservationScenarioConfig, run_name_reservation_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-name-reservation-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend=backend_name)
@@ -6391,7 +6391,7 @@ def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(backend
 def test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter() -> None:
     from hla.verification import NameReservationScenarioConfig, run_name_reservation_scenario
     from hla.rti1516_2025.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-direct-name-reservation-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend="python2025")
@@ -6458,7 +6458,7 @@ def test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_callback_control_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import CallbackControlScenarioConfig, run_callback_control_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import ResignAction
 
     federation_name = f"{backend_name}-2025-callback-control-adapter-{uuid.uuid4().hex[:8]}"
@@ -6539,7 +6539,7 @@ def test_2025_provider_runs_callback_control_scenario_via_compat_adapter(backend
 )
 def test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter() -> None:
     from hla.verification import CallbackControlScenarioConfig, run_callback_control_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import ResignAction
 
     federation_name = f"python2025-callback-control-direct-{uuid.uuid4().hex[:8]}"
@@ -6631,8 +6631,8 @@ def test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_restore_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516e.enums import RestoreStatus, SaveStatus
 
     federation_name = f"{backend_name}-2025-save-restore-adapter-{uuid.uuid4().hex[:8]}"
@@ -6726,8 +6726,8 @@ def test_2025_provider_runs_backend_neutral_save_restore_scenario_via_compat_ada
 )
 def test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_restore_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
 
     federation_name = f"python2025-2025-save-restore-direct-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -6807,7 +6807,7 @@ def test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_with
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import SaveRestoreScenarioConfig, run_example_fom_save_restore_gauntlet_scenario
 
     federation_name = f"python2025-direct-save-restore-gauntlet-{uuid.uuid4().hex[:8]}"
@@ -6867,7 +6867,7 @@ def test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_withou
     "HLA2025-FI-SVC-027",
 )
 def test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import SaveRestoreScenarioConfig, run_save_restore_queued_callback_scenario
 
     federation_name = f"python2025-direct-save-restore-queued-{uuid.uuid4().hex[:8]}"
@@ -6915,7 +6915,7 @@ def test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_with
     "HLA2025-MIL-005",
 )
 def test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Time
     from hla.verification import SaveRestoreScenarioConfig, run_scheduled_save_restore_time_state_scenario
 
@@ -6967,7 +6967,7 @@ def test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_restore_queued_callback_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_restore_queued_callback_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-save-restore-queued-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend=backend_name)
@@ -7015,7 +7015,7 @@ def test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compa
     backend_name: str,
 ) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_scheduled_save_restore_time_state_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.time import HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-scheduled-save-restore-{uuid.uuid4().hex[:8]}"
@@ -7065,7 +7065,7 @@ def test_2025_provider_runs_scheduled_save_restore_time_state_scenario_via_compa
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_failure_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_failure_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import SaveStatus
 
     federation_name = f"{backend_name}-2025-save-failure-{uuid.uuid4().hex[:8]}"
@@ -7110,7 +7110,7 @@ def test_2025_provider_runs_save_failure_scenario_via_compat_adapter(backend_nam
 )
 def test_2025_primary_python_rti_runs_save_failure_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_failure_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-2025-save-failure-direct-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -7154,7 +7154,7 @@ def test_2025_primary_python_rti_runs_save_failure_scenario_without_wrapper_adap
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_request_failure_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_request_failure_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import RestoreStatus
 
     federation_name = f"{backend_name}-2025-restore-request-failure-{uuid.uuid4().hex[:8]}"
@@ -7197,7 +7197,7 @@ def test_2025_provider_runs_restore_request_failure_scenario_via_compat_adapter(
 )
 def test_2025_primary_python_rti_runs_restore_request_failure_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_request_failure_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-2025-restore-request-failure-direct-{uuid.uuid4().hex[:8]}"
     missing_save_name = f"MISSING-{uuid.uuid4().hex[:8]}"
@@ -7241,7 +7241,7 @@ def test_2025_primary_python_rti_runs_restore_request_failure_scenario_without_w
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_failure_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_failure_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus
 
     federation_name = f"{backend_name}-2025-restore-failure-{uuid.uuid4().hex[:8]}"
@@ -7286,7 +7286,7 @@ def test_2025_provider_runs_restore_failure_scenario_via_compat_adapter(backend_
 )
 def test_2025_primary_python_rti_runs_restore_failure_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_failure_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-2025-restore-failure-direct-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -7333,7 +7333,7 @@ def test_2025_primary_python_rti_runs_restore_failure_scenario_without_wrapper_a
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_abort_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_abort_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import SaveFailureReason, SaveStatus
 
     federation_name = f"{backend_name}-2025-save-abort-{uuid.uuid4().hex[:8]}"
@@ -7380,7 +7380,7 @@ def test_2025_provider_runs_save_abort_scenario_via_compat_adapter(backend_name:
 )
 def test_2025_primary_python_rti_runs_save_abort_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_abort_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-2025-save-abort-direct-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -7428,7 +7428,7 @@ def test_2025_primary_python_rti_runs_save_abort_scenario_without_wrapper_adapte
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_abort_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus
 
     federation_name = f"{backend_name}-2025-restore-abort-{uuid.uuid4().hex[:8]}"
@@ -7476,7 +7476,7 @@ def test_2025_provider_runs_restore_abort_scenario_via_compat_adapter(backend_na
 )
 def test_2025_primary_python_rti_runs_restore_abort_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-2025-restore-abort-direct-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -7519,7 +7519,7 @@ def test_2025_primary_python_rti_runs_restore_abort_scenario_without_wrapper_ada
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_request_precondition_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_request_precondition_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected, RestoreInProgress, SaveInProgress
 
     leader = create_rti_ambassador(backend=backend_name)
@@ -7552,7 +7552,7 @@ def test_2025_provider_runs_restore_request_precondition_scenario_via_compat_ada
 )
 def test_2025_primary_python_rti_runs_restore_request_precondition_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_request_precondition_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     leader = create_rti_ambassador(backend="python2025")
     wing = create_rti_ambassador(backend="python2025")
@@ -7586,7 +7586,7 @@ def test_2025_primary_python_rti_runs_restore_request_precondition_scenario_with
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_participant_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_participant_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected, RestoreNotRequested
 
     leader = create_rti_ambassador(backend=backend_name)
@@ -7622,7 +7622,7 @@ def test_2025_provider_runs_restore_participant_exception_scenario_via_compat_ad
 )
 def test_2025_primary_python_rti_runs_restore_participant_exception_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_participant_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     leader = create_rti_ambassador(backend="python2025")
     wing = create_rti_ambassador(backend="python2025")
@@ -7657,7 +7657,7 @@ def test_2025_primary_python_rti_runs_restore_participant_exception_scenario_wit
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_participant_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_participant_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected, SaveNotInitiated
 
     leader = create_rti_ambassador(backend=backend_name)
@@ -7695,7 +7695,7 @@ def test_2025_provider_runs_save_participant_exception_scenario_via_compat_adapt
 )
 def test_2025_primary_python_rti_runs_save_participant_exception_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_participant_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     leader = create_rti_ambassador(backend="python2025")
     wing = create_rti_ambassador(backend="python2025")
@@ -7733,7 +7733,7 @@ def test_2025_primary_python_rti_runs_save_participant_exception_scenario_withou
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_abort_save_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected
 
     summary = run_abort_save_exception_scenario(
@@ -7751,7 +7751,7 @@ def test_2025_provider_runs_abort_save_exception_scenario_via_compat_adapter(bac
 )
 def test_2025_primary_python_rti_runs_abort_save_exception_scenario_without_wrapper_adapter() -> None:
     from hla.verification import run_abort_save_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     summary = run_abort_save_exception_scenario(
         create_rti_ambassador(backend="python2025"),
@@ -7770,7 +7770,7 @@ def test_2025_primary_python_rti_runs_abort_save_exception_scenario_without_wrap
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_abort_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected, RestoreNotInProgress
 
     leader = create_rti_ambassador(backend=backend_name)
@@ -7803,7 +7803,7 @@ def test_2025_provider_runs_restore_abort_exception_scenario_via_compat_adapter(
 )
 def test_2025_primary_python_rti_runs_restore_abort_exception_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_abort_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     leader = create_rti_ambassador(backend="python2025")
     wing = create_rti_ambassador(backend="python2025")
@@ -7835,7 +7835,7 @@ def test_2025_primary_python_rti_runs_restore_abort_exception_scenario_without_w
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_status_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_save_status_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected
 
     summary = run_save_status_exception_scenario(
@@ -7853,7 +7853,7 @@ def test_2025_provider_runs_save_status_exception_scenario_via_compat_adapter(ba
 )
 def test_2025_primary_python_rti_runs_save_status_exception_scenario_without_wrapper_adapter() -> None:
     from hla.verification import run_save_status_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     summary = run_save_status_exception_scenario(
         create_rti_ambassador(backend="python2025"),
@@ -7871,7 +7871,7 @@ def test_2025_primary_python_rti_runs_save_status_exception_scenario_without_wra
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_status_exception_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import run_restore_status_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected
 
     summary = run_restore_status_exception_scenario(
@@ -7889,7 +7889,7 @@ def test_2025_provider_runs_restore_status_exception_scenario_via_compat_adapter
 )
 def test_2025_primary_python_rti_runs_restore_status_exception_scenario_without_wrapper_adapter() -> None:
     from hla.verification import run_restore_status_exception_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     summary = run_restore_status_exception_scenario(
         create_rti_ambassador(backend="python2025"),
@@ -7907,7 +7907,7 @@ def test_2025_primary_python_rti_runs_restore_status_exception_scenario_without_
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_save_request_precondition_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_request_precondition_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.exceptions import FederateNotExecutionMember, NotConnected, RestoreInProgress, SaveInProgress
 
     leader = create_rti_ambassador(backend=backend_name)
@@ -7940,7 +7940,7 @@ def test_2025_provider_runs_save_request_precondition_scenario_via_compat_adapte
 )
 def test_2025_primary_python_rti_runs_save_request_precondition_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_save_request_precondition_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     leader = create_rti_ambassador(backend="python2025")
     wing = create_rti_ambassador(backend="python2025")
@@ -7983,7 +7983,7 @@ def test_2025_primary_python_rti_runs_save_request_precondition_scenario_without
 def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_federate_local_state_scenario
     from hla.verification.scenario_support import drain_callbacks_pair, order_value, wait_for_callback
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import OrderType
     from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
 
@@ -8126,7 +8126,7 @@ def test_2025_provider_runs_restore_federate_local_state_scenario_via_compat_ada
 def test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_federate_local_state_scenario
     from hla.verification.scenario_support import drain_callbacks_pair, order_value, wait_for_callback
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import OrderType
 
     federation_name = f"python2025-2025-restore-local-state-direct-{uuid.uuid4().hex[:8]}"
@@ -8263,7 +8263,7 @@ def test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_with
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_object_state_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-restore-object-state-{uuid.uuid4().hex[:8]}"
     leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend=backend_name))
@@ -8316,7 +8316,7 @@ def test_2025_provider_runs_restore_object_state_scenario_via_compat_adapter(bac
 )
 def test_2025_primary_python_rti_runs_restore_object_state_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_object_state_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-2025-restore-object-state-direct-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -8368,7 +8368,7 @@ def test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_
     backend_name: str,
 ) -> None:
     from hla.verification import OwnershipScenarioConfig, run_attribute_ownership_unavailable_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-ownership-unavailable-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend=backend_name)
@@ -8406,7 +8406,7 @@ def test_2025_provider_runs_attribute_ownership_unavailable_scenario_via_compat_
 )
 def test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_without_wrapper_adapter() -> None:
     from hla.verification import OwnershipScenarioConfig, run_attribute_ownership_unavailable_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-direct-ownership-unavailable-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend="python2025")
@@ -8450,7 +8450,7 @@ def test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_w
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_non_owner_update_rejection_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import NonOwnerUpdateScenarioConfig, run_non_owner_update_rejection_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-non-owner-update-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend=backend_name)
@@ -8489,7 +8489,7 @@ def test_2025_provider_runs_non_owner_update_rejection_scenario_via_compat_adapt
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapter(backend_name: str) -> None:
     from hla.verification import ReleaseRequestOwnershipScenarioConfig, run_release_request_ownership_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-release-request-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend=backend_name)
@@ -8538,7 +8538,7 @@ def test_2025_provider_runs_release_request_ownership_scenario_via_compat_adapte
 )
 def test_2025_primary_python_rti_runs_release_request_ownership_scenario_without_wrapper_adapter() -> None:
     from hla.verification import ReleaseRequestOwnershipScenarioConfig, run_release_request_ownership_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-direct-release-request-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend="python2025")
@@ -8596,7 +8596,7 @@ def test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_a
     backend_name: str,
 ) -> None:
     from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-negotiated-route-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend=backend_name)
@@ -8659,7 +8659,7 @@ def test_2025_provider_runs_negotiated_attribute_ownership_scenario_via_compat_a
 )
 def test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter() -> None:
     from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-direct-negotiated-route-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend="python2025")
@@ -8728,7 +8728,7 @@ def test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_a
     backend_name: str,
 ) -> None:
     from hla.verification import NegotiatedOwnershipScenarioConfig, run_confirm_divestiture_negotiated_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-confirm-negotiated-route-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend=backend_name)
@@ -8778,7 +8778,7 @@ def test_2025_provider_runs_confirm_divestiture_negotiated_scenario_via_compat_a
 )
 def test_2025_primary_python_rti_runs_confirm_divestiture_negotiated_scenario_without_wrapper_adapter() -> None:
     from hla.verification import NegotiatedOwnershipScenarioConfig, run_confirm_divestiture_negotiated_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-direct-confirm-negotiated-{uuid.uuid4().hex[:8]}"
     owner = create_rti_ambassador(backend="python2025")
@@ -8838,7 +8838,7 @@ def test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_comp
     backend_name: str,
 ) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_resigned_federate_callback_silence_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-2025-resign-callback-{uuid.uuid4().hex[:8]}"
     leader = _TargetRadar2025RTIAdapter(create_rti_ambassador(backend=backend_name))
@@ -8876,7 +8876,7 @@ def test_2025_provider_runs_resigned_federate_callback_silence_scenario_via_comp
 )
 def test_2025_primary_python_rti_runs_resigned_federate_callback_silence_scenario_without_wrapper_adapter() -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_resigned_federate_callback_silence_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"python2025-direct-resign-callback-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend="python2025")
@@ -8923,7 +8923,7 @@ def test_2025_provider_treats_callback_enablement_as_runtime_policy_not_saved_st
     backend_name: str,
 ) -> None:
     from hla.verification import SaveRestoreScenarioConfig, run_restore_callback_policy_scenario
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import ResignAction
 
     federation_name = f"{backend_name}-2025-restore-callback-policy-{uuid.uuid4().hex[:8]}"
@@ -9031,8 +9031,8 @@ def test_2025_provider_runs_callback_control_route_with_object_reflection_end_to
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
 
     federation_name = f"{backend_name}-2025-callback-object-{uuid.uuid4().hex[:8]}"
     publisher = create_rti_ambassador(backend=backend_name)
@@ -9122,8 +9122,8 @@ def test_2025_provider_runs_callback_control_route_with_object_reflection_end_to
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-FI-SVC-121", "HLA2025-FI-SVC-122")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_attribute_ownership_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import OwnershipScenarioConfig, run_attribute_ownership_scenario
 
     federation_name = f"{backend_name}-2025-ownership-{uuid.uuid4().hex[:8]}"
@@ -9166,8 +9166,8 @@ def test_2025_provider_runs_attribute_ownership_scenario_end_to_end(backend_name
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import NegotiatedOwnershipScenarioConfig
 
     federation_name = f"{backend_name}-2025-negotiated-adapter-{uuid.uuid4().hex[:8]}"
@@ -9288,8 +9288,8 @@ def test_2025_provider_runs_negotiated_ownership_flow_via_compat_adapter(backend
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import NegotiatedOwnershipScenarioConfig, run_negotiated_attribute_ownership_scenario
 
     federation_name = f"python2025-direct-negotiated-{uuid.uuid4().hex[:8]}"
@@ -9365,8 +9365,8 @@ def test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_
 )
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_transportation_type_scenario_via_compat_adapter(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_scenario
 
     federation_name = f"{backend_name}-2025-transport-adapter-{uuid.uuid4().hex[:8]}"
@@ -9423,8 +9423,8 @@ def test_2025_provider_runs_transportation_type_scenario_via_compat_adapter(back
     "HLA2025-FI-SVC-068",
 )
 def test_2025_primary_python_rti_runs_transportation_type_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_scenario
 
     federation_name = f"python2025-transport-direct-{uuid.uuid4().hex[:8]}"
@@ -9486,7 +9486,7 @@ def test_2025_primary_python_rti_runs_transportation_type_scenario_without_wrapp
 def test_2025_provider_runs_transportation_type_restore_persistence_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_restore_persistence_scenario
 
     federation_name = f"{backend_name}-2025-transport-restore-route-{uuid.uuid4().hex[:8]}"
@@ -9536,7 +9536,7 @@ def test_2025_provider_runs_transportation_type_restore_persistence_scenario_via
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_restore_persistence_scenario
 
     federation_name = f"python2025-direct-transport-restore-{uuid.uuid4().hex[:8]}"
@@ -9592,7 +9592,7 @@ def test_2025_primary_python_rti_runs_transportation_type_restore_persistence_sc
 def test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_adapter(
     backend_name: str,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_rejection_scenario
 
     federation_name = f"{backend_name}-2025-transport-reject-route-{uuid.uuid4().hex[:8]}"
@@ -9627,7 +9627,7 @@ def test_2025_provider_runs_transportation_type_rejection_scenario_via_compat_ad
     "HLA2025-MIL-001",
 )
 def test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TransportationTypeScenarioConfig, run_transportation_type_rejection_scenario
 
     federation_name = f"python2025-direct-transport-reject-{uuid.uuid4().hex[:8]}"
@@ -9673,7 +9673,7 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "CompatTransportRestore2025.xml"
     fom.write_text(
@@ -9866,7 +9866,7 @@ def test_2025_provider_restores_transportation_type_state_via_compat_adapter(
 )
 def test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter(tmp_path: Path) -> None:
     from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectTransportRestore2025.xml"
     fom.write_text(
@@ -10073,7 +10073,7 @@ def test_2025_provider_runs_ddm_object_region_lifecycle_scenario_via_compat_adap
         DdmObjectRegionLifecycleScenarioConfig,
         run_ddm_object_region_lifecycle_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DefaultRoutingDDM.xml"
     _write_proto2025_default_routing_ddm_fom(fom_path)
@@ -10131,7 +10131,7 @@ def test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_witho
         DdmObjectRegionLifecycleScenarioConfig,
         run_ddm_object_region_lifecycle_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DefaultRoutingDDM.xml"
     _write_proto2025_default_routing_ddm_fom(fom_path)
@@ -10190,7 +10190,7 @@ def test_2025_provider_runs_ddm_declaration_gating_scenario_via_compat_adapter(
         DdmDeclarationGatingScenarioConfig,
         run_ddm_declaration_gating_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DefaultRoutingDDMGating.xml"
     _write_proto2025_default_routing_ddm_fom(fom_path)
@@ -10250,7 +10250,7 @@ def test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wr
         DdmDeclarationGatingScenarioConfig,
         run_ddm_declaration_gating_scenario,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom_path = tmp_path / "Proto2025DefaultRoutingDDMGating.xml"
     _write_proto2025_default_routing_ddm_fom(fom_path)
@@ -10306,7 +10306,7 @@ def test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wr
 def test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import (
         DdmPassiveRegionScenarioConfig,
         run_ddm_passive_region_subscription_scenario,
@@ -10359,7 +10359,7 @@ def test_2025_provider_runs_ddm_passive_region_subscription_scenario_via_compat_
 def test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter(
     tmp_path: Path,
 ) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import (
         DdmPassiveRegionScenarioConfig,
         run_ddm_passive_region_subscription_scenario,
@@ -10414,7 +10414,7 @@ def test_2025_provider_runs_object_scope_relevance_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import ObjectScopeScenarioConfig, run_object_scope_relevance_scenario
 
     fom_path = tmp_path / "Proto2025ObjectScopeDDM.xml"
@@ -10502,7 +10502,7 @@ def test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wr
     tmp_path: Path,
 ) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import ObjectScopeScenarioConfig, run_object_scope_relevance_scenario
 
     fom_path = tmp_path / "Proto2025ObjectScopeDDM.xml"
@@ -10589,7 +10589,7 @@ def test_2025_provider_runs_orphan_object_lifecycle_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import OrphanObjectScenarioConfig, run_orphan_object_lifecycle_scenario
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
@@ -10659,7 +10659,7 @@ def test_2025_primary_python_rti_runs_orphan_object_lifecycle_scenario_without_w
     tmp_path: Path,
 ) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import OrphanObjectScenarioConfig, run_orphan_object_lifecycle_scenario
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
@@ -10732,7 +10732,7 @@ def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import NameReservationScenarioConfig, run_name_reservation_scenario
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
@@ -10799,7 +10799,7 @@ def test_2025_provider_runs_name_reservation_scenario_via_compat_adapter(
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_timed_delete_scenario_via_compat_adapter(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TimedDeleteScenarioConfig, run_timed_delete_scenario
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
@@ -10861,7 +10861,7 @@ def test_2025_provider_runs_timed_delete_scenario_via_compat_adapter(tmp_path: P
 )
 def test_2025_primary_python_rti_runs_timed_delete_scenario_without_wrapper_adapter(tmp_path: Path) -> None:
     from hla.rti1516e.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TimedDeleteScenarioConfig, run_timed_delete_scenario
 
     fom_path = tmp_path / "Proto2025SmokeObjectFOM.xml"
@@ -10918,8 +10918,8 @@ def test_2025_primary_python_rti_runs_timed_delete_scenario_without_wrapper_adap
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_synchronization_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import SynchronizationScenarioConfig, run_synchronization_scenario
 
     federation_name = f"{backend_name}-2025-sync-{uuid.uuid4().hex[:8]}"
@@ -10957,8 +10957,8 @@ def test_2025_provider_runs_synchronization_scenario_end_to_end(backend_name: st
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_synchronization_registration_failure_scenario_end_to_end(backend_name: str) -> None:
     from hla.rti1516e.enums import SynchronizationPointFailureReason
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import SynchronizationScenarioConfig, run_synchronization_registration_failure_scenario
 
     federation_name = f"{backend_name}-2025-sync-failure-{uuid.uuid4().hex[:8]}"
@@ -10995,8 +10995,8 @@ def test_2025_provider_runs_synchronization_registration_failure_scenario_end_to
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-011")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import SynchronizationScenarioConfig, run_failed_federate_synchronization_scenario
 
     federation_name = f"{backend_name}-2025-sync-failed-set-{uuid.uuid4().hex[:8]}"
@@ -11037,8 +11037,8 @@ def test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end(
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-012")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_late_join_synchronization_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import SynchronizationScenarioConfig, run_late_join_synchronization_scenario
 
     federation_name = f"{backend_name}-2025-sync-late-{uuid.uuid4().hex[:8]}"
@@ -11081,8 +11081,8 @@ def test_2025_provider_runs_late_join_synchronization_scenario_end_to_end(backen
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-013")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.verification import SynchronizationScenarioConfig, run_multiple_synchronization_points_scenario
 
     federation_name = f"{backend_name}-2025-sync-multi-{uuid.uuid4().hex[:8]}"
@@ -11132,7 +11132,7 @@ def test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end(
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarTimeWindowConfig, run_target_radar_time_window_gauntlet_scenario
 
     federation_name = f"{backend_name}-2025-time-window-gauntlet-{uuid.uuid4().hex[:8]}"
@@ -11199,7 +11199,7 @@ def test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end(backend_n
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarFutureExclusionConfig, run_target_radar_time_window_future_exclusion_scenario
 
     federation_name = f"{backend_name}-2025-time-window-future-exclusion-{uuid.uuid4().hex[:8]}"
@@ -11643,7 +11643,7 @@ def test_2025_receive_order_poison_oracle_rejects_closed_window_mutation() -> No
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarOutputDeliveryConfig, run_target_radar_time_window_output_delivery_scenario
 
     federation_name = f"{backend_name}-2025-time-window-output-{uuid.uuid4().hex[:8]}"
@@ -11698,7 +11698,7 @@ def test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end(back
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarConsumerOrderConfig, run_target_radar_time_window_consumer_order_scenario
 
     federation_name = f"{backend_name}-2025-time-window-order-{uuid.uuid4().hex[:8]}"
@@ -11753,7 +11753,7 @@ def test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end(backe
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_pipeline_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarPipelineConfig, run_target_radar_time_window_pipeline_scenario
 
     federation_name = f"{backend_name}-2025-time-window-pipeline-{uuid.uuid4().hex[:8]}"
@@ -11808,7 +11808,7 @@ def test_2025_provider_runs_time_window_pipeline_scenario_end_to_end(backend_nam
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarPipelineRestoreConfig, run_target_radar_time_window_pipeline_restore_scenario
 
     federation_name = f"{backend_name}-2025-time-window-pipeline-restore-{uuid.uuid4().hex[:8]}"
@@ -11872,7 +11872,7 @@ def test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end(bac
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516e.enums import OrderType
     from hla.verification import TargetRadarReceiveOrderPoisonConfig, run_target_radar_time_window_receive_order_poison_scenario
 
@@ -11923,7 +11923,7 @@ def test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_restore_state_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarWindowRestoreConfig, run_target_radar_time_window_restore_state_scenario
 
     federation_name = f"{backend_name}-2025-time-window-restore-{uuid.uuid4().hex[:8]}"
@@ -11976,7 +11976,7 @@ def test_2025_provider_runs_time_window_restore_state_scenario_end_to_end(backen
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_restore_output_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarWindowRestoreOutputConfig, run_target_radar_time_window_restore_output_scenario
 
     federation_name = f"{backend_name}-2025-time-window-restore-output-{uuid.uuid4().hex[:8]}"
@@ -12028,7 +12028,7 @@ def test_2025_provider_runs_time_window_restore_output_scenario_end_to_end(backe
 @pytest.mark.requirements("HLA2025-MIL-004", "HLA2025-MIL-005", "HLA2025-MIL-006")
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_time_window_core_scenario_end_to_end(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import TargetRadarTimeWindowConfig, run_target_radar_time_window_core_scenario
 
     federation_name = f"{backend_name}-2025-time-window-core-{uuid.uuid4().hex[:8]}"
@@ -12105,7 +12105,7 @@ def test_2025_provider_passive_and_universal_subscription_aliases_match_active_e
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "AliasExchange2025.xml"
     fom.write_text(
@@ -12270,7 +12270,7 @@ def test_2025_provider_is_first_green_runtime_path(backend_name: str) -> None:
 def test_2025_provider_connection_lost_callback_tears_down_connection(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NotConnected
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     callbacks = Recording2025FederateAmbassador()
     rti = create_rti_ambassador(backend=backend_name)
@@ -12358,7 +12358,7 @@ def test_2025_provider_enable_disable_callbacks_controls_evoked_delivery(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "CallbackControl2025.xml"
     fom.write_text(
@@ -12472,7 +12472,7 @@ def test_2025_provider_enable_disable_callbacks_controls_evoked_delivery(
 def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown, RestoreNotRequested, SaveInProgress, SaveNotInitiated
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "SaveRestore2025.xml"
     fom.write_text(
@@ -12628,7 +12628,7 @@ def test_2025_provider_runs_federation_save_restore_lifecycle(tmp_path: Path, ba
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_runs_example_fom_save_restore_gauntlet(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-save-restore-gauntlet-{uuid.uuid4().hex[:8]}"
@@ -12875,7 +12875,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     smoke_fom = tmp_path / "SmokeSaveRestore2025.xml"
@@ -13177,7 +13177,7 @@ def test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet(
 def test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility(
     tmp_path: Path,
 ) -> None:
-    from hla.rti1516_2025.factory import create_hla_factory
+    from hla.runtime.rti1516_2025_factory import create_hla_factory
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
 
     fom = tmp_path / "OwnershipPrimaryFactory2025.xml"
@@ -13356,7 +13356,7 @@ def test_2025_provider_routes_directed_interactions_to_object_class_subscribers(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectedInteraction2025.xml"
     fom.write_text(
@@ -13477,7 +13477,7 @@ def test_2025_provider_routes_directed_interactions_only_to_subscribers(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectedRouting2025.xml"
     fom.write_text(
@@ -13636,7 +13636,7 @@ def test_2025_provider_queues_timestamped_directed_interactions_until_time_advan
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "TimedDirectedInteraction2025.xml"
@@ -13780,7 +13780,7 @@ def test_2025_provider_filters_directed_interactions_by_ddm_region_overlap(
 ) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectedInteractionRegionDDM2025.xml"
     fom.write_text(
@@ -13917,7 +13917,7 @@ def test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subs
 ) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectedDDMRouting2025.xml"
     fom.write_text(
@@ -14115,7 +14115,7 @@ def test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_deliver
     from hla.backends.python2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectedDDMDisconnect2025.xml"
     fom.write_text(
@@ -14265,7 +14265,7 @@ def test_2025_provider_delivers_and_retracts_timestamped_directed_interactions_f
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Time
 
     fom = tmp_path / "TimedDirectedInteractionAllSubscribers2025.xml"
@@ -14451,7 +14451,7 @@ def test_2025_provider_drops_queued_directed_tso_for_departed_target(
 ) -> None:
     from hla.backends.python2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "DirectedTsoDisconnect2025.xml"
@@ -14583,7 +14583,7 @@ def test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_se
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "SelectiveDirectedInteraction2025.xml"
     fom.write_text(
@@ -14731,7 +14731,7 @@ def test_2025_provider_preserves_other_federate_directed_publication_after_unpub
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "DirectedPublicationIsolation2025.xml"
     fom.write_text(
@@ -14865,7 +14865,7 @@ def test_2025_provider_supports_single_object_instance_name_reservation_callback
         RestoreInProgress,
         SaveInProgress,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     unjoined = create_rti_ambassador(backend=backend_name)
     with pytest.raises(NotConnected):
@@ -14961,7 +14961,7 @@ def test_2025_provider_supports_multiple_object_instance_name_reservation_and_re
         RestoreInProgress,
         SaveInProgress,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     unjoined = create_rti_ambassador(backend=backend_name)
     with pytest.raises(NotConnected):
@@ -15074,7 +15074,7 @@ def test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_po
         InvalidObjectClassHandle,
         InvalidOrderType,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.handles import AttributeHandle, DimensionHandle, ObjectClassHandle
 
     fom = tmp_path / "PolicyDDM2025.xml"
@@ -15192,7 +15192,7 @@ def test_2025_provider_filters_object_reflections_by_ddm_region_overlap(
 ) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "RegionDDM2025.xml"
     fom.write_text(
@@ -15329,7 +15329,7 @@ def test_2025_provider_filters_interactions_by_ddm_region_overlap(
 ) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "InteractionRegionDDM2025.xml"
     fom.write_text(
@@ -15438,7 +15438,7 @@ def test_2025_provider_preserves_direct_callback_context_for_timed_region_delive
 ) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "TimedRegionContext2025.xml"
@@ -15631,7 +15631,7 @@ def test_2025_provider_passive_ddm_region_subscription_aliases_match_active_regi
 ) -> None:
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "PassiveRegionAlias2025.xml"
     fom.write_text(
@@ -15818,7 +15818,7 @@ def test_2025_provider_object_management_and_support_callbacks(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import DeletePrivilegeNotHeld, ObjectInstanceNotKnown
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "ObjectSupport2025.xml"
     fom.write_text(
@@ -15955,7 +15955,7 @@ def test_2025_provider_object_management_and_support_callbacks(
 def test_2025_provider_applies_resign_time_ownership_policies(tmp_path: Path, backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NoAcquisitionPending, ObjectInstanceNotKnown
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "ResignOwnership2025.xml"
     fom.write_text(
@@ -16101,7 +16101,7 @@ def test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callb
         InvalidObjectInstanceHandle,
         ObjectInstanceNameInUse,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.handles import ObjectInstanceHandle
 
     fom = tmp_path / "Ownership2025.xml"
@@ -16243,7 +16243,7 @@ def test_2025_provider_negotiated_ownership_matches_python_parity_flow(
         AttributeAlreadyBeingDivested,
         NoAcquisitionPending,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "NegotiatedOwnership2025.xml"
     fom.write_text(
@@ -16379,7 +16379,7 @@ def test_2025_provider_serializes_mom_service_reports_without_overclaiming_confo
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.handles import AttributeHandle
 
     federation_name = f"{backend_name}-mom-report-{uuid.uuid4().hex[:8]}"
@@ -16468,7 +16468,7 @@ def test_2025_python2025_declares_all_bundled_mim_manager_command_leaves_as_rout
         MOM_2025_INPROCESS_ROUTED_MANAGER_LEAVES,
     )
 
-    mim_path = files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml")
+    mim_path = files("hla.fom.resources.foms").joinpath("HLAstandardMIM.xml")
     with mim_path.open("rb") as handle:
         root = ET.parse(handle).getroot()
     namespace = root.tag.removesuffix("objectModel")
@@ -16535,7 +16535,7 @@ def test_2025_python2025_declares_all_bundled_mim_manager_command_leaves_as_rout
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_synchronization_point_reports_through_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-sync-{uuid.uuid4().hex[:8]}"
     leader_callbacks = Recording2025FederateAmbassador()
@@ -16618,7 +16618,7 @@ def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interaction
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     def write_module(path: Path, module_name: str, class_name: str) -> Path:
         path.write_text(
@@ -16768,7 +16768,7 @@ def test_2025_provider_routes_mom_mim_and_fom_module_reports_through_interaction
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_adjust_interactions_for_reporting_switches(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-adjust-{uuid.uuid4().hex[:8]}"
     controller = create_rti_ambassador(backend=backend_name)
@@ -16843,7 +16843,7 @@ def test_2025_provider_routes_mom_adjust_interactions_for_reporting_switches(bac
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_set_switches_adjust_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-switches-{uuid.uuid4().hex[:8]}"
     controller = create_rti_ambassador(backend=backend_name)
@@ -16915,7 +16915,7 @@ def test_2025_provider_routes_mom_set_switches_adjust_interactions(backend_name:
 def test_2025_provider_routes_mom_timing_and_attribute_state_adjust_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import ObjectClassNotPublished
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-state-adjust-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -17015,7 +17015,7 @@ def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resig
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-aliases-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -17123,7 +17123,7 @@ def test_2025_provider_accepts_mom_alias_spellings_for_order_ownership_and_resig
 def test_2025_provider_rejects_invalid_mom_control_spellings_with_exception_reports(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-invalid-controls-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -17200,7 +17200,7 @@ def test_2025_provider_rejects_invalid_mom_control_spellings_with_exception_repo
 def test_2025_provider_rejects_invalid_mom_boolean_spellings_with_exception_reports(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-invalid-bools-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -17269,7 +17269,7 @@ def test_2025_provider_reports_mom_federate_publication_subscription_and_object_
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-fed-reports-{uuid.uuid4().hex[:8]}"
     observer_callbacks = Recording2025FederateAmbassador()
@@ -17405,7 +17405,7 @@ def test_2025_provider_reports_mom_federate_publication_subscription_and_object_
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_mom_federate_activity_counts(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-activity-{uuid.uuid4().hex[:8]}"
     observer_callbacks = Recording2025FederateAmbassador()
@@ -17531,7 +17531,7 @@ def test_2025_provider_reports_mom_federate_activity_counts(backend_name: str) -
 def test_2025_provider_routes_mom_declaration_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import InteractionClassNotPublished, ObjectClassNotPublished
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-service-{uuid.uuid4().hex[:8]}"
     controller = create_rti_ambassador(backend=backend_name)
@@ -17671,7 +17671,7 @@ def test_2025_provider_routes_mom_declaration_service_interactions(backend_name:
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_routes_mom_federation_management_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-fm-service-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -17794,7 +17794,7 @@ def test_2025_provider_routes_mom_federation_management_service_interactions(bac
 def test_2025_provider_routes_mom_time_management_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-time-service-{uuid.uuid4().hex[:8]}"
     target_callbacks = Recording2025FederateAmbassador()
@@ -17882,7 +17882,7 @@ def test_2025_provider_routes_mom_time_management_service_interactions(backend_n
 def test_2025_provider_routes_mom_object_and_ownership_service_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-object-service-{uuid.uuid4().hex[:8]}"
     target_callbacks = Recording2025FederateAmbassador()
@@ -18034,7 +18034,7 @@ def test_2025_provider_routes_mom_object_and_ownership_service_interactions(back
 def test_2025_provider_reports_mom_service_failures_as_mom_exception_interactions(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-exception-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -18088,7 +18088,7 @@ def test_2025_provider_routes_mom_exception_reporting_switch_to_callback_deliver
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-mom-exception-switch-{uuid.uuid4().hex[:8]}"
     controller_callbacks = Recording2025FederateAmbassador()
@@ -18177,7 +18177,7 @@ def test_2025_provider_rejects_duplicate_federation_and_federate_names(backend_n
         FederateNameAlreadyInUse,
         FederationExecutionAlreadyExists,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-join-{uuid.uuid4().hex[:8]}"
     leader = create_rti_ambassador(backend=backend_name)
@@ -18236,7 +18236,7 @@ def test_2025_provider_rejects_duplicate_federation_and_federate_names(backend_n
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_federate_resigned_callback_with_reason_context(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-resign-{uuid.uuid4().hex[:8]}"
     federate = Recording2025FederateAmbassador()
@@ -18286,7 +18286,7 @@ def test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family(
         InvalidObjectInstanceHandle,
         InvalidServiceGroup,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.handles import (
         FederateHandle,
         InteractionClassHandle,
@@ -18364,7 +18364,7 @@ def test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family(
 def test_2025_provider_supports_explicit_switch_inquiry_and_control_model(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-switch-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend=backend_name)
@@ -18449,7 +18449,7 @@ def test_2025_provider_supports_explicit_switch_inquiry_and_control_model(backen
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_reports_federation_executions_and_members(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-report-{uuid.uuid4().hex[:8]}"
     leader_fed = Recording2025FederateAmbassador()
@@ -18509,7 +18509,7 @@ def test_2025_provider_validates_callback_model_and_credentials_at_connect(backe
     from hla.rti1516_2025.datatypes import Credentials
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.exceptions import InvalidCredentials, UnsupportedCallbackModel
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     rti = create_rti_ambassador(backend=backend_name)
     with pytest.raises(UnsupportedCallbackModel):
@@ -18531,7 +18531,7 @@ def test_2025_provider_validates_callback_model_and_credentials_at_connect(backe
 def test_2025_provider_requires_valid_fom_modules_and_default_logical_time(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.exceptions import CouldNotCreateLogicalTimeFactory, InvalidFOM
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     federation_name = f"{backend_name}-fom-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend=backend_name)
@@ -18572,7 +18572,7 @@ def test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import DesignatorIsHLAstandardMIM, ErrorReadingFOM, FederatesCurrentlyJoined
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     broken_fom = tmp_path / "BrokenProto2025.xml"
     broken_fom.write_text(
@@ -18648,7 +18648,7 @@ def test_2025_provider_distinguishes_fom_mim_open_read_invalid_and_merge_errors(
         InvalidFOM,
         InvalidMIM,
     )
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     def write_module(path: Path, name: str, representation: str) -> Path:
         path.write_text(
@@ -18751,7 +18751,7 @@ def test_2025_provider_queues_timestamped_messages_and_supports_retraction(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "QueuedTso2025.xml"
@@ -18880,7 +18880,7 @@ def test_2025_provider_retracts_partially_delivered_tso_without_releasing_laggin
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "PartialRetractedTso2025.xml"
@@ -19033,7 +19033,7 @@ def test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "RetractionFanout2025.xml"
@@ -19198,7 +19198,7 @@ def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_tar
 ) -> None:
     from hla.backends.python2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "DisconnectDeliveredRetraction2025.xml"
@@ -19363,7 +19363,7 @@ def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_tar
 def test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import LogicalTimeAlreadyPassed, TimeRegulationIsNotEnabled
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAfloat64Interval, HLAfloat64Time
 
     federation_name = f"{backend_name}-time-{uuid.uuid4().hex[:8]}"
@@ -19441,7 +19441,7 @@ def test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants
 def test_2025_provider_blocks_window_closure_until_future_inputs_are_excluded(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import InvalidLogicalTime
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-future-exclusion-{uuid.uuid4().hex[:8]}"
@@ -19565,7 +19565,7 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "Exchange2025.xml"
@@ -19764,7 +19764,7 @@ def test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_qu
 def test_2025_provider_restore_recovers_time_and_switch_control_state(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-control-restore-{uuid.uuid4().hex[:8]}"
@@ -19863,7 +19863,7 @@ def test_2025_provider_restore_recovers_transport_and_order_policy_state(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "PolicyRestore2025.xml"
     fom.write_text(
@@ -20062,7 +20062,7 @@ def test_2025_provider_restore_recovers_callback_delivery_policy(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "CallbackRestore2025.xml"
     fom.write_text(
@@ -20206,7 +20206,7 @@ def test_2025_provider_restore_recovers_plain_object_subscriber_routing(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import SaveRestoreScenarioConfig, run_restore_plain_object_subscriber_routing_scenario
 
     _ = tmp_path
@@ -20272,7 +20272,7 @@ def test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target(
     from hla.backends.python2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "DdmTsoDisconnect2025.xml"
@@ -20402,7 +20402,7 @@ def test_2025_provider_restore_recovers_plain_interaction_subscriber_routing(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import SaveRestoreScenarioConfig, run_restore_plain_interaction_subscriber_routing_scenario
 
     _ = tmp_path
@@ -20469,7 +20469,7 @@ def test_2025_provider_restore_recovers_inflight_ownership_state(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import NoAcquisitionPending
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "Ownership2025.xml"
     fom.write_text(
@@ -20635,7 +20635,7 @@ def test_2025_provider_restores_cross_federate_attribute_owner_visibility(
     tmp_path: Path, backend_name: str
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "Ownership2025.xml"
     fom.write_text(
@@ -20791,12 +20791,12 @@ def test_2025_provider_restore_recovers_directed_ddm_subscriber_routing(
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.verification import SaveRestoreScenarioConfig, run_restore_directed_ddm_subscriber_routing_scenario
 
     config = SaveRestoreScenarioConfig(
         federation_name=f"{backend_name}-2025-directed-ddm-restore-{uuid.uuid4().hex[:8]}",
-        fom_modules=(str(files("hla.rti1516_2025.resources.foms").joinpath("DirectedDDMRestore2025.xml")),),
+        fom_modules=(str(files("hla.fom.resources.proto2025.foms").joinpath("DirectedDDMRestore2025.xml")),),
         leader_name="DirectedOwner",
         wing_name="DirectedA",
         federate_type="Observer",
@@ -20857,7 +20857,7 @@ def test_2025_provider_restore_recovers_locally_deleted_object_known_state(
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     fom = tmp_path / "LocalDeleteRestore2025.xml"
     fom.write_text(
@@ -20996,13 +20996,13 @@ def test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_rest
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Time
     from hla.verification import SaveRestoreScenarioConfig, run_restore_stale_directed_tso_cleanup_scenario
 
     config = SaveRestoreScenarioConfig(
         federation_name=f"{backend_name}-2025-directed-tso-restore-{uuid.uuid4().hex[:8]}",
-        fom_modules=(str(files("hla.rti1516_2025.resources.foms").joinpath("DirectedTSORestore2025.xml")),),
+        fom_modules=(str(files("hla.fom.resources.proto2025.foms").joinpath("DirectedTSORestore2025.xml")),),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="DirectedTSOOwner",
         wing_name="DirectedTSOSubscriber",
@@ -21061,7 +21061,7 @@ def test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_rest
     from hla.backends.python2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InvalidMessageRetractionHandle
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     fom = tmp_path / "DeleteTsoRestore2025.xml"
@@ -21291,7 +21291,7 @@ def test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_rest
 def test_2025_provider_proves_time_window_core_progression(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InvalidLogicalTime
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-time-window-core-{uuid.uuid4().hex[:8]}"
@@ -21466,7 +21466,7 @@ def test_2025_provider_proves_time_window_core_progression(backend_name: str) ->
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_ignores_receive_order_poison_after_window_close(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-receive-order-poison-{uuid.uuid4().hex[:8]}"
@@ -21590,7 +21590,7 @@ def test_2025_provider_ignores_receive_order_poison_after_window_close(backend_n
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_delivers_post_closure_timestamped_output_to_consumer(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-output-delivery-{uuid.uuid4().hex[:8]}"
@@ -21709,7 +21709,7 @@ def test_2025_provider_preserves_consumer_timestamp_order_between_competing_outp
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-consumer-order-{uuid.uuid4().hex[:8]}"
@@ -21825,7 +21825,7 @@ def test_2025_provider_preserves_consumer_timestamp_order_between_competing_outp
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_keeps_two_scan_pipeline_outputs_separated(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
 
     federation_name = f"{backend_name}-2025-pipeline-{uuid.uuid4().hex[:8]}"
@@ -21942,7 +21942,7 @@ def test_2025_provider_keeps_two_scan_pipeline_outputs_separated(backend_name: s
 @pytest.mark.parametrize("backend_name", ("python2025",))
 def test_2025_provider_restores_open_and_closed_time_window_state(backend_name: str) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import TargetRadarWindowRestoreConfig
 
@@ -22168,7 +22168,7 @@ def test_2025_provider_restores_closed_window_output_resume_without_dirty_replay
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import TargetRadarWindowRestoreOutputConfig
 
@@ -22351,7 +22351,7 @@ def test_2025_provider_restores_pipeline_resume_without_cross_window_replay(
     backend_name: str,
 ) -> None:
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
     from hla.verification import TargetRadarPipelineRestoreConfig
 

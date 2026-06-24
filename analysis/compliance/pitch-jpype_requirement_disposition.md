@@ -10,7 +10,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 0 | 0 | 1 | 3 |
 | IEEE 1516-2010 §12 | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 0 | 0 | 0 | 82 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 84 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 9 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 274 | 2 | 3 | 0 | 2 | 0 |
@@ -171,10 +171,12 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getFederateHandleSetFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getHLAversion | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getInteractionClassHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getMessageRetractionHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getObjectClassHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getObjectInstanceHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getParameterHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getParameterHandleValueMapFactory | not-yet-tested | service-requirement | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleSetFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTimeFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTransportationTypeHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |

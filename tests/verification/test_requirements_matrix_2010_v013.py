@@ -136,6 +136,7 @@ def test_clause4_requirements_matrix_rows_use_shared_harness_backing_refs() -> N
         "tests/scenarios/test_federation_management_backend_matrix.py",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::",
         "tests/scenarios/test_federation_management_backend_matrix.py::",
+        "tests/transport/test_grpc_transport_2025.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
     )
 
@@ -169,6 +170,7 @@ def test_clause7_requirements_matrix_rows_use_shared_harness_backing_refs() -> N
     allowed_prefixes = (
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "tests/scenarios/test_ownership_management_backend_matrix.py::",
+        "tests/transport/test_grpc_transport_2025.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
     )
 

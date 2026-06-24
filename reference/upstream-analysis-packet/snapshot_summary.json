@@ -1,0 +1,22 @@
+{
+  "ieee1516_2025": {
+    "ambassador_method_counts": {
+      "FederateAmbassador": 56,
+      "RTIambassador": 188
+    },
+    "has_RTIException": false,
+    "has_RTIexception": true,
+    "has_handle_value_map_getValueReference": false,
+    "has_handle_value_map_get_value_reference": false
+  },
+  "ieee1516e": {
+    "ambassador_method_counts": {
+      "FederateAmbassador": 51,
+      "RTIambassador": 162
+    },
+    "has_RTIException": false,
+    "has_RTIexception": true,
+    "has_handle_value_map_getValueReference": true,
+    "has_handle_value_map_get_value_reference": false
+  }
+}

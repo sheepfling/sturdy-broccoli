@@ -4645,7 +4645,7 @@ def _mapping_status(module_name: str, cls: type[Any]) -> tuple[str, str]:
         return ("adapted", "Convenience layer on top of the raw spec-shaped API surface.")
     if module_name == "hla.rti1516e.datatypes":
         return ("adapted", "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes.")
-    if module_name in {"hla.rti1516e.encoding", "hla.rti1516e.ambassadors", "hla.rti1516e.rti"}:
+    if module_name in {"hla.rti1516e.encoding", "hla.rti1516e.ambassadors", "hla.runtime.rti1516e"}:
         return ("supporting-scaffold", "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type.")
     if module_name.startswith("hla.rti1516e.backends"):
         return ("supporting-scaffold", "Runtime/backend integration support, not a direct spec class mapping.")
@@ -4658,11 +4658,11 @@ PUBLIC_CLASS_INVENTORY_MODULES = (
     "hla.rti1516e.encoding",
     "hla.rti1516e.enums",
     "hla.rti1516e.exceptions",
-    "hla.rti1516e.fom",
+    "hla.fom",
     "hla.rti1516e.handles",
-    "hla.rti1516e.mom",
+    "hla.fom.mom",
     "hla.rti1516e.raw_api",
-    "hla.rti1516e.rti",
+    "hla.runtime.rti1516e",
     "hla.rti1516e.time",
     "hla.rti1516e.datatypes",
 )

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from hla.rti1516e import mom
+import hla.fom.mom as mom
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.enums import CallbackModel

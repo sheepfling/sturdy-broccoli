@@ -190,10 +190,12 @@ This ledger tracks declared exception and negative-path completeness independent
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getFederateHandleSetFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getHLAversion | not-applicable | 0 | 0 | 1 | No declared RTI exception matrix is present for this row. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getInteractionClassHandleFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
+| IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getMessageRetractionHandleFactory | not-applicable | 0 | 0 | 0 | No declared RTI exception matrix is present for this row. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getObjectClassHandleFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getObjectInstanceHandleFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getParameterHandleFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getParameterHandleValueMapFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
+| IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getRegionHandleFactory | not-applicable | 0 | 0 | 0 | No declared RTI exception matrix is present for this row. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getRegionHandleSetFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getTimeFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |
 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getTransportationTypeHandleFactory | complete | 2 | 2 | 2 | Declared negative-path expectations are fully represented by executable evidence. |

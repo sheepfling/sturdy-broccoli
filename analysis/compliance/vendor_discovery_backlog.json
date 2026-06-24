@@ -4243,6 +4243,26 @@
       "priority_rank": 3,
       "rationale": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
       "recommended_next_action": "add focused Pitch requirement probe",
+      "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "row_kind": "pitch-requirement-disposition-row",
+      "scope": "runtime-or-service-probe",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "section_root": "10",
+      "session_status": "n/a-requirement-disposition",
+      "slice_or_method": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "source_artifact": "analysis/compliance/pitch_requirement_disposition.json"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-requirements",
+      "current_status": "not-yet-tested",
+      "evidence_tests": [
+        "analysis/compliance/section10_backend_matrix.json"
+      ],
+      "priority": "P3",
+      "priority_rank": 3,
+      "rationale": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
+      "recommended_next_action": "add focused Pitch requirement probe",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
       "row_kind": "pitch-requirement-disposition-row",
       "scope": "runtime-or-service-probe",
@@ -4310,6 +4330,26 @@
       "section_root": "10",
       "session_status": "n/a-requirement-disposition",
       "slice_or_method": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
+      "source_artifact": "analysis/compliance/pitch_requirement_disposition.json"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-requirements",
+      "current_status": "not-yet-tested",
+      "evidence_tests": [
+        "analysis/compliance/section10_backend_matrix.json"
+      ],
+      "priority": "P3",
+      "priority_rank": 3,
+      "rationale": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
+      "recommended_next_action": "add focused Pitch requirement probe",
+      "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
+      "row_kind": "pitch-requirement-disposition-row",
+      "scope": "runtime-or-service-probe",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "section_root": "10",
+      "session_status": "n/a-requirement-disposition",
+      "slice_or_method": "REQ-RTI-SS-10_44-getRegionHandleFactory",
       "source_artifact": "analysis/compliance/pitch_requirement_disposition.json"
     },
     {
@@ -10080,6 +10120,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
@@ -10113,11 +10155,14 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/time/test_mom_mim_time_v10.py",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
@@ -10143,11 +10188,15 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
       ],
@@ -10177,8 +10226,12 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
+        "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -10204,8 +10257,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10229,7 +10282,7 @@
       "current_status": "defended-partial",
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
@@ -10256,8 +10309,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10281,7 +10334,7 @@
       "current_status": "defended-partial",
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
@@ -10306,8 +10359,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10331,7 +10384,7 @@
       "current_status": "defended-partial",
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_transport_and_order_policy_state_over_fedpro_schema",
@@ -10358,8 +10411,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10383,7 +10436,7 @@
       "current_status": "defended-partial",
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
@@ -10410,7 +10463,7 @@
       "grpc-hosted-python": 27,
       "pitch-jpype": 26,
       "pitch-py4j": 26,
-      "pitch-requirements": 349,
+      "pitch-requirements": 351,
       "portico": 1,
       "portico-jpype": 1,
       "portico-py4j": 1,
@@ -10420,19 +10473,19 @@
     "priority_counts": {
       "P1": 54,
       "P2": 11,
-      "P3": 173,
+      "P3": 175,
       "P4": 214,
       "P5": 54,
       "P6": 12
     },
-    "row_count": 518,
+    "row_count": 520,
     "status_counts": {
       "blocked": 8,
       "classification-required": 214,
       "defended-partial": 12,
       "env-gated-positive": 3,
       "not-yet-matrixed": 82,
-      "not-yet-tested": 91,
+      "not-yet-tested": 93,
       "positive-path-passing": 54,
       "vendor-divergent": 54
     }

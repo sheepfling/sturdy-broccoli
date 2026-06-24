@@ -13,7 +13,7 @@ PYTHON2025_RTI_SRC = ROOT / "packages" / "hla-backend-python2025" / "src"
 
 
 def _backend_request() -> BackendRequest:
-    from hla.rti1516_2025.plugin import plugin as spec_plugin
+    from hla.runtime.rti1516_2025_plugin import plugin as spec_plugin
 
     return BackendRequest(spec=spec_plugin().spec)
 
@@ -68,7 +68,7 @@ def test_split_python2025_rti_package_plugin_descriptor_creates_backend() -> Non
 
 
 def test_split_python2025_runtime_can_spawn_verification_sibling_without_shim_route() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     runtime_rti = create_rti_ambassador(backend="python2025")
     sibling = runtime_rti._verification_spawn_like()
@@ -277,6 +277,13 @@ def test_split_python2025_compatibility_export_modules_remain_thin_runtime_reexp
                 if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
                     continue
                 violations.append(f"{path.relative_to(ROOT).as_posix()}: unexpected expression")
+                continue
+            if (
+                isinstance(node, ast.Assign)
+                and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)
+                and node.targets[0].id == "__all__"
+            ):
                 continue
             if isinstance(node, ast.ImportFrom):
                 module = node.module or ""

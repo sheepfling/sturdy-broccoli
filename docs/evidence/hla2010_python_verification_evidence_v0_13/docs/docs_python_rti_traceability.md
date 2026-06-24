@@ -10,7 +10,7 @@ The Python RTI is a development/reference RTI, not a certified production RTI. C
 |---|---:|---|
 | RTIambassador services | 162 / 162 | every source-derived method has a `PythonRTIBackend` handler |
 | FederateAmbassador callbacks | 55 / 55 | no-op base + recording + multiplexer helpers |
-| FOM/OMT references | 1516.2 section IDs | exposed through `hla.rti1516e.spec_refs.FOM_REFERENCES` |
+| FOM/OMT references | 1516.2 section IDs | exposed through `hla.spec.refs.FOM_REFERENCES` |
 
 ## Ambassador helpers
 
@@ -24,7 +24,7 @@ The Python RTI is a development/reference RTI, not a certified production RTI. C
 ## Example section lookup
 
 ```python
-from hla.rti1516e.spec_refs import method_reference
+from hla.spec.refs import method_reference
 assert method_reference("connect").section == "4.2"
 assert method_reference("create_federation_execution_with_mim").section == "4.5"
 assert method_reference("update_attribute_values").section == "6.10"

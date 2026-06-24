@@ -34,6 +34,5 @@ def test_pitch_202x_surface_audit_confirms_close_method_surface_but_bridge_block
     assert report.federate_ambassador.overload_count_mismatches == ()
 
     blocker_paths = {finding.path for finding in report.blocker_findings}
-    assert "packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/factory.py" in blocker_paths
-    assert "packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j/factory.py" in blocker_paths
     assert "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py" in blocker_paths
+    assert "packages/hla-bridge-java-common/src/hla/bridges/java/common/java_factory_selection.py" in blocker_paths

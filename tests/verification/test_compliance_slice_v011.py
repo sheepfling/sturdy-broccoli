@@ -5,14 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM
 from hla.rti1516e.datatypes import RangeBounds
 from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
 from hla.backends.inmemory.state import CallbackEvent
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,

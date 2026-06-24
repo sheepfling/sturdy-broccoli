@@ -10,8 +10,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal
 
-from hla.rti1516_2025.validation import ValidationIssue, validate_fom_module, validate_omt_xml_schema
-from hla.rti1516e.fom import (
+from hla.fom.validation import ValidationIssue, validate_fom_module, validate_omt_xml_schema
+from hla.fom import (
     merge_fom_modules,
     FOMResolver,
     FOMModule,

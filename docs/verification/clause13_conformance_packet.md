@@ -5,7 +5,7 @@ This packet does not claim certification. It packages current repo evidence so t
 ## Aggregate counts
 
 - requirements_ledger_pass_rows: 217
-- explicit_requirement_marker_count: 143
+- explicit_requirement_marker_count: 150
 - callback_tested_row_count: 55
 - rti_tested_row_count: 162
 - rti_rows_with_negative_refs: 152

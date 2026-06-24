@@ -7,15 +7,15 @@ for repo-owned and third-party FOM XML modules.
 
 | ID | Edition | Load Mode | Baseline | Scenario Family | Path |
 | --- | --- | --- | --- | --- | --- |
-| `repo-2010-standard-mim` | `2010` | `standalone` | `repo-owned` | `standard-mim` | `packages/hla-rti1516e/src/hla/rti1516e/resources/foms/HLAstandardMIM.xml` |
-| `repo-2010-vendor-smoke` | `2010` | `standalone` | `repo-owned` | `vendor-smoke` | `packages/hla-rti1516e/src/hla/rti1516e/resources/foms/VendorSmokeFOM.xml` |
-| `repo-2010-demo` | `2010` | `standalone` | `repo-owned` | `demo` | `packages/hla-rti1516e/src/hla/rti1516e/resources/foms/DemoFOMmodule.xml` |
+| `repo-2010-standard-mim` | `2010` | `standalone` | `repo-owned` | `standard-mim` | `packages/hla-rti-core/src/hla/fom/resources/foms/HLAstandardMIM.xml` |
+| `repo-2010-vendor-smoke` | `2010` | `standalone` | `repo-owned` | `vendor-smoke` | `packages/hla-rti-core/src/hla/fom/resources/foms/VendorSmokeFOM.xml` |
+| `repo-2010-demo` | `2010` | `standalone` | `repo-owned` | `demo` | `packages/hla-rti-core/src/hla/fom/resources/foms/DemoFOMmodule.xml` |
 | `repo-cross-target-radar` | `cross-edition` | `standalone` | `repo-owned` | `target-radar` | `packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml` |
-| `repo-2025-proto-base` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-v0.1` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_Base.xml` |
-| `repo-2025-proto-message-test` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-message-test` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_MessageTest.xml` |
-| `repo-2025-proto-space-lite` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-space-lite` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_SpaceLite.xml` |
-| `repo-2025-proto-time-mgmt-test` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-time-mgmt-test` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_TimeMgmtTest.xml` |
-| `repo-2025-encoding-auth-smoke` | `2025` | `standalone` | `repo-owned` | `encoding-auth-smoke` | `packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/encoding_auth/EncodingSmokeTest-2025.xml` |
+| `repo-2025-proto-base` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-v0.1` | `packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_Base.xml` |
+| `repo-2025-proto-message-test` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-message-test` | `packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_MessageTest.xml` |
+| `repo-2025-proto-space-lite` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-space-lite` | `packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_SpaceLite.xml` |
+| `repo-2025-proto-time-mgmt-test` | `2025` | `base-plus-extension` | `repo-owned` | `proto2025-time-mgmt-test` | `packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_TimeMgmtTest.xml` |
+| `repo-2025-encoding-auth-smoke` | `2025` | `standalone` | `repo-owned` | `encoding-auth-smoke` | `packages/hla-rti-core/src/hla/fom/resources/proto2025/encoding_auth/EncodingSmokeTest-2025.xml` |
 | `repo-2025-omt-schema-probe` | `2025` | `standalone` | `repo-owned` | `omt-schema-baseline` | `docs/requirements/ieee-1516-2025/encoding_auth_work_packet/05-example-foms/SchemaValidProbe-2025.xml` |
 | `third-party-rpr-foundation` | `2010` | `ordered-family` | `third-party` | `rpr-normative` | `third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Foundation_v2.0.xml` |
 | `third-party-rpr-enumerations` | `2010` | `ordered-family` | `third-party` | `rpr-normative` | `third_party/fom_baseline/upstream/mcgredonps/HLAGenerator/rpr2.0/Annex_A_Files_Normative/RPR-Enumerations_v2.0.xml` |

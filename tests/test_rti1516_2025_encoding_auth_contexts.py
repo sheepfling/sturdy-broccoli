@@ -9,8 +9,8 @@ from hla.rti1516_2025.auth import HLAnoCredentials, HLAplainTextPassword
 from hla.rti1516_2025.datatypes import Credentials
 from hla.rti1516_2025.enums import AuthorizationResultCode
 from hla.rti1516_2025.exceptions import ConnectionFailed, InvalidCredentials, Unauthorized
-from hla.rti1516_2025.foms import FomTypeRepository, encoding_smoke_fom_path
-from hla.rti1516e.fom import FOMResolver
+from hla.fom.proto2025 import FomTypeRepository, encoding_smoke_fom_path
+from hla.fom import FOMResolver
 
 _PROVIDER_ROUTES = ("python2025",)
 
@@ -283,7 +283,7 @@ def test_runtime_context_writes_redacted_encoding_auth_evidence(tmp_path, provid
 @pytest.mark.requirements("HLA2025-OMT-005", "HLA2025-OMT-006")
 @pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_runtime_context_writes_strict_fom_validation_evidence(tmp_path, provider: str) -> None:
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
 
     runtime = HlaFactoryRegistry.get("2025", provider=provider).create_runtime_context(
         auth_config={"mode": "NoAuth"},

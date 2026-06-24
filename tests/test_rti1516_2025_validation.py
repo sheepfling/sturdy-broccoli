@@ -31,7 +31,7 @@ def _write_strict_omt_fixture(tmp_path: Path, text: str = STRICT_OMT_2025_FIXTUR
 
 
 def _schema_issue_requirements(tmp_path: Path, text: str) -> set[str]:
-    from hla.rti1516_2025.validation import validate_omt_xml_schema
+    from hla.fom.validation import validate_omt_xml_schema
 
     return {issue.requirement for issue in validate_omt_xml_schema(_write_strict_omt_fixture(tmp_path, text), OMT_2025_SCHEMA)}
 
@@ -88,7 +88,7 @@ def test_2025_omt_schema_validation_rejects_enumeration_domains(
     old: str,
     new: str,
 ) -> None:
-    from hla.rti1516_2025.validation import validate_omt_xml_schema
+    from hla.fom.validation import validate_omt_xml_schema
 
     assert validate_omt_xml_schema(_write_strict_omt_fixture(tmp_path), OMT_2025_SCHEMA) == []
 
@@ -114,7 +114,7 @@ def test_2025_omt_schema_validation_rejects_enumeration_domains(
     "HLA2025-OMT-CV-014",
 )
 def test_2025_omt_schema_validation_rejects_named_keyref_and_unique_constraints(tmp_path: Path) -> None:
-    from hla.rti1516_2025.validation import validate_omt_xml_schema
+    from hla.fom.validation import validate_omt_xml_schema
 
     schema_text = OMT_2025_SCHEMA.read_text(encoding="utf-8")
     for constraint_name in (
@@ -159,7 +159,7 @@ def test_2025_omt_schema_validation_rejects_named_keyref_and_unique_constraints(
     "HLA2025-OMT-COMP-196",
 )
 def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "logical-time-2025.xml"
     source.write_text(
@@ -210,8 +210,8 @@ def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
 
 @pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-002", "HLA2025-OMT-006")
 def test_2025_parser_preserves_reference_datatypes_and_value_required_metadata(tmp_path: Path) -> None:
-    from hla.rti1516_2025.validation import validate_fom_module
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom.validation import validate_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "reference-value-required.xml"
     source.write_text(
@@ -282,8 +282,8 @@ def test_2025_parser_preserves_reference_datatypes_and_value_required_metadata(t
 
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-MOD-010", "HLA2025-FR-003", "HLA2025-FR-004")
 def test_2025_validation_allows_standard_mim_hla_attribute_and_parameter_names(tmp_path: Path) -> None:
-    from hla.rti1516_2025.validation import validate_fom_modules
-    from hla.rti1516e.fom import FOMResolver
+    from hla.fom.validation import validate_fom_modules
+    from hla.fom import FOMResolver
 
     source = tmp_path / "ddm-mim-probe.xml"
     source.write_text(
@@ -343,8 +343,8 @@ def test_2025_validation_allows_standard_mim_hla_attribute_and_parameter_names(t
 
 @pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-006")
 def test_2025_validation_rejects_invalid_value_required_metadata(tmp_path: Path) -> None:
-    from hla.rti1516_2025.validation import validate_fom_module
-    from hla.rti1516e.fom import parse_fom_xml
+    from hla.fom.validation import validate_fom_module
+    from hla.fom import parse_fom_xml
 
     source = tmp_path / "invalid-value-required.xml"
     source.write_text(
@@ -398,7 +398,7 @@ def test_2025_validation_rejects_invalid_value_required_metadata(tmp_path: Path)
     "HLA2025-OMT-COMP-215",
 )
 def test_2025_parser_round_trips_typed_omt_metadata_subset(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "typed-omt-metadata.xml"
     source.write_text(
@@ -555,7 +555,7 @@ def test_2025_parser_round_trips_typed_omt_metadata_subset(tmp_path: Path) -> No
     "HLA2025-OMT-COMP-195",
 )
 def test_2025_parser_round_trips_metadata_switches_transport_and_time_subset(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "metadata-switches-time.xml"
     source.write_text(
@@ -771,7 +771,7 @@ def test_2025_parser_round_trips_metadata_switches_transport_and_time_subset(tmp
     "HLA2025-OMT-COMP-223",
 )
 def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "extended-omt-supported-subset.xml"
     source.write_text(
@@ -1053,7 +1053,7 @@ def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -
     "HLA2025-OMT-COMP-201",
 )
 def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "narrow-omt-fields.xml"
     source.write_text(
@@ -1168,7 +1168,7 @@ def test_2025_parser_intentionally_narrows_unmodeled_omt_fields(tmp_path: Path) 
     "HLA2025-OMT-COMP-133",
 )
 def test_2025_class_and_parameter_metadata_round_trips(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "class-parameter-metadata.xml"
     source.write_text(
@@ -1233,7 +1233,7 @@ def test_2025_class_and_parameter_metadata_round_trips(tmp_path: Path) -> None:
     "HLA2025-OMT-COMP-018",
 )
 def test_2025_attribute_metadata_round_trips(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "attribute-metadata.xml"
     source.write_text(
@@ -1295,7 +1295,7 @@ def test_2025_attribute_metadata_round_trips(tmp_path: Path) -> None:
     "HLA2025-OMT-COMP-207",
 )
 def test_2025_transportation_and_update_rate_metadata_round_trips(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "transport-update-rate-metadata.xml"
     source.write_text(
@@ -1577,7 +1577,7 @@ def test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_
     case_name: str,
     body: str,
 ) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / f"{case_name}.xml"
     source.write_text(_wrap_omt_2025_fragment(body, extra_root_attrs=' xmlns:ext="urn:ext"'), encoding="utf-8")
@@ -1617,7 +1617,7 @@ def test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_
     "HLA2025-OMT-COMP-112",
 )
 def test_2025_parser_round_trips_structural_association_omt_fields(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "structural-association-omt.xml"
     source.write_text(
@@ -1700,7 +1700,7 @@ def test_2025_parser_round_trips_structural_association_omt_fields(tmp_path: Pat
     "HLA2025-OMT-COMP-170",
 )
 def test_2025_parser_round_trips_additional_switch_metadata(tmp_path: Path) -> None:
-    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+    from hla.fom import parse_fom_xml, serialize_fom_module
 
     source = tmp_path / "additional-switches.xml"
     source.write_text(
@@ -1740,7 +1740,7 @@ def test_2025_parser_round_trips_additional_switch_metadata(tmp_path: Path) -> N
 
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-006")
 def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:
-    from hla.rti1516_2025.validation import validate_hla_name
+    from hla.fom.validation import validate_hla_name
 
     issues = validate_hla_name("hla.Bad:Name", table="objectClassStructure")
 
@@ -1754,8 +1754,8 @@ def test_validate_hla_name_reports_structured_2025_omt_failures() -> None:
 
 @pytest.mark.requirements("HLA2025-OMT-001", "HLA2025-OMT-005", "HLA2025-OMT-006")
 def test_validate_fom_module_returns_structured_issue_payloads() -> None:
-    from hla.rti1516_2025.validation import validate_fom_module
-    from hla.rti1516e.fom import FOMModule, ObjectClassSpec
+    from hla.fom.validation import validate_fom_module
+    from hla.fom import FOMModule, ObjectClassSpec
 
     module = FOMModule(
         source="synthetic",
@@ -1785,7 +1785,7 @@ def test_validate_fom_module_returns_structured_issue_payloads() -> None:
 @pytest.mark.requirements("HLA2025-OMT-001")
 @pytest.mark.parametrize("name", ("HLAdefaultRoutingSpace", "HLAfederate", "HLAserviceGroup"))
 def test_validate_hla_name_allows_standard_mim_dimension_names(name: str) -> None:
-    from hla.rti1516_2025.validation import validate_hla_name
+    from hla.fom.validation import validate_hla_name
 
     assert validate_hla_name(name, table="dimensionTable") == []
 
@@ -1794,7 +1794,7 @@ def test_validate_hla_name_allows_standard_mim_dimension_names(name: str) -> Non
 def test_2025_python2025_rejects_fom_with_invalid_hla_user_defined_names(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel
     from hla.rti1516_2025.exceptions import InvalidFOM
-    from hla.rti1516_2025.factory import create_hla_factory
+    from hla.runtime.rti1516_2025_factory import create_hla_factory
 
     invalid_fom = tmp_path / "invalid-2025-name.xml"
     invalid_fom.write_text(
@@ -1844,7 +1844,7 @@ def test_2025_python2025_rejects_fom_with_invalid_hla_user_defined_names(tmp_pat
 
 @pytest.mark.requirements("HLA2025-OMT-005", "HLA2025-OMT-006")
 def test_2025_factory_load_fom_reports_strict_identification_failures(tmp_path: Path) -> None:
-    from hla.rti1516_2025.factory import create_hla_factory
+    from hla.runtime.rti1516_2025_factory import create_hla_factory
 
     invalid_fom = tmp_path / "missing-identification-rows.xml"
     invalid_fom.write_text(

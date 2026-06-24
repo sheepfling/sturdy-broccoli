@@ -7,7 +7,7 @@ This release moves the project closer to a compliant HLA 1516.1-2010 shape while
 | Area | HLA 1516.1-2010 section anchors | Implementation |
 |---|---|---|
 | Connect/disconnect startup | §4.2, §4.3 | `hla.rti1516e.startup.connect_create_join`, `PythonRTIBackend._svc_connect`, `_svc_disconnect` |
-| Federation creation and FDD loading | §4.1.4, §4.1.4.1, §4.1.4.2, §4.5 | `hla.rti1516e.fom.FOMResolver`, `merge_fom_modules`, `PythonRTIBackend._svc_createFederationExecution` |
+| Federation creation and FDD loading | §4.1.4, §4.1.4.1, §4.1.4.2, §4.5 | `hla.fom.FOMResolver`, `merge_fom_modules`, `PythonRTIBackend._svc_createFederationExecution` |
 | Join and FOM module extension | §4.9 | `PythonRTIBackend._svc_joinFederationExecution` |
 | Synchronization points | §4.11-§4.15 | `SynchronizationPointState`, register/announce/achieve/federation-synchronized paths |
 | Java API FOM designators | Java binding uses `URL` / `URL[]` FOM designators | `module_uri`, `JavaBridge.fom_url`, `JavaValueConverter.to_backend(... expected_type_name="URL[]")` |
@@ -20,7 +20,7 @@ This release moves the project closer to a compliant HLA 1516.1-2010 shape while
 
 ```python
 from hla.rti1516e.ambassadors import RecordingFederateAmbassador
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
 
 rti = create_rti_ambassador("python")
@@ -52,7 +52,7 @@ For whole-federation synchronization points, federates that join after registrat
 
 ## FOM discovery and loading
 
-`hla.rti1516e.fom` now supports these FOM/MIM designator forms:
+`hla.fom` now supports these FOM/MIM designator forms:
 
 - absolute and relative filesystem paths
 - `file:` URLs

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import InvalidLogicalTime

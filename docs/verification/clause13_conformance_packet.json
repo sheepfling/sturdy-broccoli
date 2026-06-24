@@ -1,7 +1,7 @@
 {
   "aggregate_counts": {
     "callback_tested_row_count": 55,
-    "explicit_requirement_marker_count": 143,
+    "explicit_requirement_marker_count": 150,
     "requirements_ledger_pass_rows": 217,
     "rti_rows_with_negative_refs": 152,
     "rti_tested_row_count": 162
@@ -15,10 +15,11 @@
           "tests/verification/test_clause4_clause5_requirement_markers.py"
         ],
         "name": "standard_service_usage",
-        "requirement_marker_count": 143,
+        "requirement_marker_count": 150,
         "requirement_marker_families": {
           "DDM": 12,
           "DM": 12,
+          "FI": 7,
           "FM": 5,
           "OM": 29,
           "OWN": 18,
@@ -84,12 +85,13 @@
   "requirements_ledger_summary": {
     "interface_counts": {
       "FederateAmbassador": 55,
-      "RTIambassador": 162
+      "RTIambassador": 164
     },
     "outcome_counts": {
+      "partial": 2,
       "pass": 217
     },
-    "row_count": 217,
+    "row_count": 219,
     "section_outcomes": {
       "IEEE 1516.1-2010 (2010 edition) \u00a710.10": {
         "pass": 1
@@ -203,6 +205,7 @@
         "pass": 1
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a710.44": {
+        "partial": 2,
         "pass": 18
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a710.5": {
@@ -612,7 +615,7 @@
           "tests/verification/test_service_conformance_matrix_v013.py"
         ],
         "name": "services_exceptions_callbacks",
-        "rti_row_count": 162,
+        "rti_row_count": 164,
         "rti_rows_with_negative_refs": 152,
         "rti_tested_row_count": 162
       },
@@ -672,13 +675,14 @@
   "service_conformance_summary": {
     "interface_counts": {
       "FederateAmbassador": 55,
-      "RTIambassador": 162
+      "RTIambassador": 164
     },
-    "row_count": 217,
+    "row_count": 219,
     "source": "generated-from-package-source",
     "status_counts": {
       "callback-helper-tested": 55,
-      "reference-implemented-tested": 162
+      "reference-implemented-tested": 162,
+      "reference-implemented-untested": 2
     },
     "version": "0.13.0"
   },

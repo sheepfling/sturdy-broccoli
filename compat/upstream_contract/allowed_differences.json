@@ -1,0 +1,110 @@
+{
+  "policy": {
+    "ambassador_protocols": "strict: no intentional differences known",
+    "annotation_strictness_v1": "do not fail on type or return annotation differences initially",
+    "byte_wrapper": "private but contract-sensitive support module for encoding runtime/types",
+    "contract_refresh_tooling_may_require_upstream_reference": true,
+    "default_runtime_requires_upstream_reference": false,
+    "normal_mode": "fail missing or mismatched canonical upstream_reference symbols; allow documented sturdy extras",
+    "rti_factory": "strict standard-facing contract for both standards",
+    "strict_mode": "also fail undocumented extras"
+  },
+  "upstream_reference_commit": "ed39b02e4c6e7813fce9e0e183b184c8513d4dd6",
+  "upstream_contract_version": "v0.1.1",
+  "schema": 1,
+  "standards": {
+    "ieee1516_2025": {
+      "contract_sensitive_private_modules": [
+        "_byte_wrapper"
+      ],
+      "extra_modules_allowed": [
+        "factory",
+        "foms",
+        "plugin",
+        "validation"
+      ],
+      "extra_symbols_allowed": {},
+      "notes": [
+        "upstream_reference.ieee1516_2025.handles does not expose public HandleValueMap in v0.1.1",
+        "upstream_reference.ieee1516_2025.rti_factory re-exports EncoderFactory"
+      ],
+      "package_map": {
+        "upstream_reference.ieee1516_2025": "hla.rti1516_2025"
+      },
+      "root_exports_extra_allowed": true,
+      "strict_modules": [
+        "auth",
+        "datatypes",
+        "handles",
+        "enums",
+        "exceptions",
+        "logical_time",
+        "time",
+        "encoding",
+        "handle_factory",
+        "rti_factory",
+        "rti_ambassador",
+        "federate_ambassador"
+      ]
+    },
+    "ieee1516e": {
+      "contract_sensitive_private_modules": [
+        "_byte_wrapper"
+      ],
+      "extra_modules_allowed": [
+        "api",
+        "ambassadors",
+        "factory",
+        "fom",
+        "mom",
+        "plugin",
+        "raw_api",
+        "rti",
+        "spec_inventory",
+        "spec_refs",
+        "spec_sources",
+        "validation"
+      ],
+      "extra_symbols_allowed": {
+        "datatypes": [
+          "RangeBounds.lower_bound",
+          "RangeBounds.upper_bound",
+          "MessageRetractionReturn.retraction_handle_is_valid",
+          "FederationExecutionInformation.federation_execution_name",
+          "FederationExecutionInformation.logical_time_implementation_name",
+          "FederateHandleSaveStatusPair.federate_handle",
+          "FederateHandleSaveStatusPair.save_status",
+          "FederateRestoreStatus.pre_restore_handle",
+          "FederateRestoreStatus.post_restore_handle",
+          "FederateRestoreStatus.restore_status",
+          "TimeQueryReturn.time_is_valid",
+          "AttributeRegionAssociation.attributes",
+          "AttributeRegionAssociation.regions"
+        ],
+        "exceptions": [
+          "RTIException"
+        ],
+        "handles": [
+          "HandleValueMap.get_value_reference"
+        ]
+      },
+      "package_map": {
+        "upstream_reference.ieee1516e": "hla.rti1516e"
+      },
+      "root_exports_extra_allowed": true,
+      "strict_modules": [
+        "datatypes",
+        "handles",
+        "enums",
+        "exceptions",
+        "logical_time",
+        "time",
+        "encoding",
+        "handle_factory",
+        "rti_factory",
+        "rti_ambassador",
+        "federate_ambassador"
+      ]
+    }
+  }
+}

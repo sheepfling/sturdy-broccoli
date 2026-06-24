@@ -37,7 +37,7 @@ OWNED_PREFIX_TO_PACKAGE = {
 }
 
 ALLOWED_PACKAGE_DEPENDENCIES: dict[str, set[str]] = {
-    "hla-rti-core": {"hla-backend-common", "hla-transport-common"},
+    "hla-rti-core": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-transport-common"},
     "hla-rti1516e": {"hla-rti-core"},
     "hla-rti1516-2025": {"hla-rti-core"},
     "hla-backend-common": {"hla-rti1516e", "hla-rti-core"},

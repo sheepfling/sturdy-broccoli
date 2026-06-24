@@ -8,10 +8,10 @@ from pathlib import Path
 import pytest
 from google.protobuf import json_format
 
-import hla.rti1516e.fom as fom_module
+import hla.fom as fom_module
 from hla.rti1516e.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
 from hla.rti1516e.exceptions import CouldNotDecode
-from hla.rti1516e.fom import (
+from hla.fom import (
     OMTConformanceAssessment,
     ArrayDatatypeSpec,
     BasicDatatypeSpec,
@@ -39,7 +39,7 @@ from hla.rti1516e.fom import (
 from hla.transports.grpc.fedpro2010 import datatypes_pb2 as fedpro2010_datatypes
 
 
-RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
+RESOURCE_ROOT = Path(str(resources.files("hla.fom").joinpath("resources", "foms")))
 TARGET_RADAR_RESOURCE_ROOT = Path(str(resources.files("hla.foms.target_radar").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 TARGET_RADAR_FOM = str((TARGET_RADAR_RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
@@ -2628,7 +2628,7 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     assert "merge validation" in text
     assert "parse/serialize round-trip validation" in text
     assert "serviceUtilization" in text
-RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
+RESOURCE_ROOT = Path(str(resources.files("hla.fom").joinpath("resources", "foms")))
 TARGET_RADAR_RESOURCE_ROOT = Path(str(resources.files("hla.foms.target_radar").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 TARGET_RADAR_FOM = str((TARGET_RADAR_RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())

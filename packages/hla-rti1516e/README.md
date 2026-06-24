@@ -5,8 +5,8 @@ Strict IEEE 1516.1-2010 Python spec package.
 This package is the public front door for the canonical `hla.rti1516e` standard-facing API:
 
 - `hla.rti1516e.RTIambassador` and `hla.rti1516e.FederateAmbassador` for the canonical strict protocol surface
-- `hla.rti1516e.rti_ambassador` and `hla.rti1516e.federate_ambassador` for the source-shaped interface modules
-- `hla.rti1516e.rti` for version-local backend discovery and ambassador creation
+- `hla.runtime.rti1516e_ambassador` and `hla.rti1516e.federate_ambassador` for the source-shaped interface modules
+- `hla.runtime.rti1516e` for version-local backend discovery and ambassador creation
 
 It also owns the shared HLA value types and traceability helpers:
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType, ResignAction
 from hla.rti1516e.exceptions import (
     FederateHandleNotKnown,

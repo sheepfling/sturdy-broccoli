@@ -11,7 +11,7 @@ from hla.rti1516e.exceptions import (
     InvalidInteractionClassHandle,
     InvalidObjectClassHandle,
 )
-from hla.rti1516e.fom import FOMModule, FOMResolver
+from hla.fom import FOMModule, FOMResolver
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,

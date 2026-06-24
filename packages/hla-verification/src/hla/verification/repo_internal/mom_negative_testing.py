@@ -12,8 +12,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from hla.rti1516e import mom as hla_mom
-from hla.rti1516e.fom import FOMCatalog, FOMResolver
+import hla.fom.mom as hla_mom
+from hla.fom import FOMCatalog, FOMResolver
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,

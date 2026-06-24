@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.rti1516e.enums import OrderType
-from hla.rti1516e.fom import FOMModule
+from hla.fom import FOMModule
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
 from . import mom_catalog as mom_table
 from .mom_actions import PythonRTIMomActionsMixin

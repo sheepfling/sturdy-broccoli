@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from hla.rti1516_2025.validation import ValidationIssue, validate_omt_xml_schema
+from hla.fom.validation import ValidationIssue, validate_omt_xml_schema
 
 
 @dataclass(frozen=True, slots=True)

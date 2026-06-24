@@ -31,8 +31,8 @@ Cross-version factory and registry logic lives in:
 
 Version-local helpers live in:
 
-- [../packages/hla-rti1516e/src/hla/rti1516e/rti.py](../packages/hla-rti1516e/src/hla/rti1516e/rti.py)
-- [../packages/hla-rti1516-2025/src/hla/rti1516_2025/factory.py](../packages/hla-rti1516-2025/src/hla/rti1516_2025/factory.py)
+- [../packages/hla-rti-core/src/hla/runtime/rti1516e.py](../packages/hla-rti-core/src/hla/runtime/rti1516e.py)
+- [../packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_factory.py](../packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_factory.py)
 - [../packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_factory.py](../packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_factory.py)
 
 Plugin registration entrypoints live in:
@@ -52,13 +52,13 @@ backend file. The most useful follow-on files are:
 
 If you want to know how the 2010 backend is selected:
 
-1. `packages/hla-rti1516e/src/hla/rti1516e/rti.py`
+1. `packages/hla-rti-core/src/hla/runtime/rti1516e.py`
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
 3. `packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py`
 
 If you want to know how the 2025 backend is selected:
 
-1. `packages/hla-rti1516-2025/src/hla/rti1516_2025/factory.py`
+1. `packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_factory.py`
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
 3. `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`
 

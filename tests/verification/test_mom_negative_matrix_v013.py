@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from hla.rti1516e import mom as hla_mom
+import hla.fom.mom as hla_mom
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import RTIexception
@@ -19,7 +19,7 @@ from hla.verification.repo_internal.mom_negative_testing import (
     mom_negative_case_report,
 )
 from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 
 
 MOM_MODEL = default_mom_model()

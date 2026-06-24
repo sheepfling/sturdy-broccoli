@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 
 from hla.rti1516e.enums import ResignAction
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 from hla.rti1516e.datatypes import RangeBounds
 from hla.backends.inmemory import InMemoryRTIEngine

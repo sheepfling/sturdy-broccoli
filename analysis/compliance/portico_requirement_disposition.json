@@ -8512,6 +8512,19 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence_refs": [],
       "kind": "service-requirement",
+      "matrix_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "title": "Disable Callbacks service"
+    },
+    {
+      "clause_root": "10",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
@@ -8554,6 +8567,19 @@
       "matrix_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
       "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
+      "runtime_disposition": "classification-required",
+      "runtime_status": "",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "title": "Disable Callbacks service"
+    },
+    {
+      "clause_root": "10",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [],
+      "kind": "service-requirement",
+      "matrix_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
+      "notes": "Portico runtime disposition is generated as classification-required from the shared 2010 requirements matrix.",
+      "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
@@ -12043,9 +12069,9 @@
         "total": 21
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a710": {
-        "classification-required": 82,
+        "classification-required": 84,
         "not-applicable": 2,
-        "total": 84
+        "total": 86
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a711": {
         "classification-required": 35,
@@ -12146,10 +12172,10 @@
       }
     },
     "disposition_counts": {
-      "classification-required": 817,
+      "classification-required": 819,
       "not-applicable": 103
     },
-    "row_count": 920,
+    "row_count": 922,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"
   }
 }

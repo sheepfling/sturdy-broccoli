@@ -188,7 +188,7 @@ roots from `__file__`, or compute `__all__` from `globals()`.
 
 Backend plugin contracts now live in
 `hla.backends.common.plugin_api`. Runtime factory helpers now live in
-`hla.rti`, while `hla.rti1516e.rti` remains a narrow 2010-local helper for
+`hla.rti`, while `hla.runtime.rti1516e` remains a narrow 2010-local helper for
 backend discovery and ambassador creation. Package-owned code should import
 runtime factory helpers from `hla.rti` directly; registry, transport, and
 private helper access must stay in the owning split packages.

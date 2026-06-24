@@ -55,7 +55,7 @@ The workbench needs to support:
 The snapshot is generated from:
 
 - [`fom-examples/fom_inventory.json`](fom-examples/fom_inventory.json)
-- repo parse/merge helpers in `hla.rti1516e.fom`
+- repo parse/merge helpers in `hla.fom`
 
 Each family row includes:
 

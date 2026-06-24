@@ -23,7 +23,7 @@ def _is_message_retraction_return(value: Any) -> bool:
 
 
 def vendor_smoke_fom_path() -> str:
-    return str(resources.files("hla.rti1516e").joinpath("resources", "foms", "VendorSmokeFOM.xml"))
+    return str(resources.files("hla.fom").joinpath("resources", "foms", "VendorSmokeFOM.xml"))
 
 
 @dataclass(frozen=True)

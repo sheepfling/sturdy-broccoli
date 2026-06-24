@@ -1055,56 +1055,56 @@
       "class_name": "FOMCatalog",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMMergeError",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMModule",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMResolutionError",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMResolver",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "InteractionClassSpec",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "OMTConformanceAssessment",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "ObjectClassSpec",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla.rti1516e.fom",
+      "module": "hla.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {

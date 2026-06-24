@@ -14,7 +14,7 @@ dependencies = ["hla-rti-core==0.13.0"]
 test = ["pytest"]
 
 [project.entry-points."hla.specs"]
-rti1516_2025 = "hla.rti1516_2025.plugin:plugin"
+rti1516_2025 = "hla.runtime.rti1516_2025_plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -25,7 +25,7 @@ include = ["hla.rti1516_2025*"]
 namespaces = true
 
 [tool.setuptools.package-data]
-"hla.rti1516_2025" = ["*.pyi", "py.typed", "resources/foms/*.xml", "resources/encoding_auth/*.xml"]
+"hla.rti1516_2025" = ["*.pyi", "py.typed"]
 
 [tool.hla.package]
 status = "implementation-owned"

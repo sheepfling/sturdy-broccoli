@@ -4,8 +4,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Iterable
 
+from hla.spec.refs import SpecReference, method_reference
+
 from .federate_ambassador import FederateAmbassador, NullFederateAmbassador, lower_camel_to_snake
-from .spec_refs import SpecReference, method_reference
 
 
 @dataclass(frozen=True)

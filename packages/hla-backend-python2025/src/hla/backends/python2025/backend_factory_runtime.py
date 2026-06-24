@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from importlib import import_module
 from dataclasses import dataclass, field, replace
 from typing import Any, Mapping
 
@@ -33,8 +34,9 @@ class Python2025Backend:
         self.request = request
 
     def create_rti_ambassador(self):  # noqa: ANN201
-        from .backend import Python2025RTIAmbassador
-
+        Python2025RTIAmbassador = import_module(
+            "hla.backends.python2025.backend"
+        ).Python2025RTIAmbassador
         ambassador = Python2025RTIAmbassador()
         ambassador.backend_info = self.info
         return ambassador
@@ -48,8 +50,9 @@ class HostedPython2025Backend(Python2025Backend):
         self.transport = transport
 
     def create_rti_ambassador(self):  # noqa: ANN201
-        from .hosted_fedpro import FedPro2025RTIAmbassador
-
+        FedPro2025RTIAmbassador = import_module(
+            "hla.backends.python2025.hosted_fedpro"
+        ).FedPro2025RTIAmbassador
         ambassador = FedPro2025RTIAmbassador(self.transport)
         ambassador.backend_info = replace(
             self.info,

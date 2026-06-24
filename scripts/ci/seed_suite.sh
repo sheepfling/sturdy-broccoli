@@ -11,6 +11,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'EOF'
 seed_suite.sh: run the default CI quality gate locally.
 Evidence:
+- upstream_contract.sh
 - lint.sh
 - test.sh
 - target_radar_backend_matrix.sh
@@ -36,6 +37,7 @@ run_stage() {
   done
 }
 
+run_stage upstream_contract "$ROOT_DIR/scripts/ci/upstream_contract.sh"
 run_stage lint "$ROOT_DIR/scripts/ci/lint.sh"
 run_stage test "$ROOT_DIR/scripts/ci/test.sh" "$@"
 if [[ "${HLA2010_SKIP_TARGET_RADAR_BACKEND_MATRIX:-0}" != "1" ]]; then

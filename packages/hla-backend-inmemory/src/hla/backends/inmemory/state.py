@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Deque
 
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveStatus
-from hla.rti1516e.fom import FOMCatalog, FOMModule
+from hla.fom import FOMCatalog, FOMModule
 from hla.rti1516e.handles import (
     AttributeHandle,
     DimensionHandle,

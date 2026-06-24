@@ -63,8 +63,8 @@ def test_hla_factory_registry_strips_composition_only_options_before_2025_backen
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-001", "HLA2025-OMT-002")
 @pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_2025_version_local_factory_uses_same_composition_layer(provider: str) -> None:
-    from hla.rti1516_2025.factory import create_hla_factory
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_hla_factory
+    from hla.fom.proto2025 import scenario_fom_paths
 
     factory = create_hla_factory(provider=provider)
     assert factory.spec.name == "rti1516_2025"
@@ -80,8 +80,8 @@ def test_2025_version_local_factory_uses_same_composition_layer(provider: str) -
 @pytest.mark.requirements("HLA2025-OMT-005", "HLA2025-OMT-006")
 @pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_2025_factory_can_run_strict_identification_validation_on_packaged_foms(provider: str) -> None:
-    from hla.rti1516_2025.factory import create_hla_factory
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_hla_factory
+    from hla.fom.proto2025 import scenario_fom_paths
 
     factory = create_hla_factory(provider=provider)
     result = factory.load_fom(
@@ -97,7 +97,7 @@ def test_2025_factory_can_run_strict_identification_validation_on_packaged_foms(
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003")
 def test_2025_version_local_factory_defaults_to_python2025_provider() -> None:
-    from hla.rti1516_2025.factory import create_hla_factory, create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_hla_factory, create_rti_ambassador
 
     factory = create_hla_factory()
     assert factory.provider == "python2025"
@@ -113,7 +113,7 @@ def test_2025_version_local_factory_defaults_to_python2025_provider() -> None:
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-BND-003")
 @pytest.mark.parametrize("backend_name", _PYTHON2025_PROVIDER_ALIASES)
 def test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane(backend_name: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.backends.python2025.hosted_fedpro import FedPro2025RTIAmbassador
 
     rti = create_rti_ambassador(backend=backend_name, transport={"kind": "grpc", "target": "127.0.0.1:15164"})
@@ -127,7 +127,7 @@ def test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-003")
 def test_2025_version_local_factory_rejects_legacy_shim_provider_name() -> None:
-    from hla.rti1516_2025.factory import create_hla_factory, create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_hla_factory, create_rti_ambassador
 
     with pytest.raises(ValueError, match="Unknown RTI provider: 'shim'"):
         create_hla_factory(provider="shim")
@@ -140,8 +140,8 @@ def test_2025_version_local_factory_rejects_legacy_shim_provider_name() -> None:
 def test_2025_direct_runtime_accepts_semantically_equivalent_2010_resign_action() -> None:
     from hla.backends.common import RecordingFederateAmbassador
     from hla.rti1516_2025 import CallbackModel
-    from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516e.enums import ResignAction as ResignAction2010
 
     federation_name = f"python2025-resign-normalization-{uuid.uuid4().hex[:8]}"
@@ -174,7 +174,7 @@ def test_2025_direct_runtime_accepts_semantically_equivalent_2010_resign_action(
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-BND-003")
 def test_2025_version_local_factory_rejects_unknown_backend_specific_options() -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     with pytest.raises(
         ValueError,
@@ -186,7 +186,7 @@ def test_2025_version_local_factory_rejects_unknown_backend_specific_options() -
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-BND-003")
 @pytest.mark.parametrize("provider", _PROVIDER_ROUTES)
 def test_2025_direct_factory_rejects_composition_only_options_without_hla_factory_layer(provider: str) -> None:
-    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
     with pytest.raises(
         ValueError,

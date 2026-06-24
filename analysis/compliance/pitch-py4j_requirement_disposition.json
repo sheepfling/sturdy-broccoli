@@ -11302,6 +11302,21 @@
         "analysis/compliance/section10_backend_matrix.json"
       ],
       "kind": "service-requirement",
+      "matrix_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "notes": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
+      "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
+      "runtime_disposition": "not-yet-tested",
+      "runtime_status": "",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "title": "Disable Callbacks service"
+    },
+    {
+      "clause_root": "10",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "analysis/compliance/section10_backend_matrix.json"
+      ],
+      "kind": "service-requirement",
       "matrix_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
       "notes": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
@@ -11350,6 +11365,21 @@
       "matrix_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
       "notes": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
+      "runtime_disposition": "not-yet-tested",
+      "runtime_status": "",
+      "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
+      "title": "Disable Callbacks service"
+    },
+    {
+      "clause_root": "10",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
+      "evidence_refs": [
+        "analysis/compliance/section10_backend_matrix.json"
+      ],
+      "kind": "service-requirement",
+      "matrix_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
+      "notes": "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome.",
+      "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
       "runtime_disposition": "not-yet-tested",
       "runtime_status": "",
       "section_ref": "1516.1-2010 (2010 edition) \u00a710.44",
@@ -15142,8 +15172,8 @@
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a710": {
         "not-applicable": 2,
-        "not-yet-tested": 82,
-        "total": 84
+        "not-yet-tested": 84,
+        "total": 86
       },
       "IEEE 1516.1-2010 (2010 edition) \u00a711": {
         "classification-required": 35,
@@ -15255,11 +15285,11 @@
       "blocked": 4,
       "classification-required": 211,
       "not-applicable": 26,
-      "not-yet-tested": 91,
+      "not-yet-tested": 93,
       "vendor-divergent": 43,
       "verified": 545
     },
-    "row_count": 920,
+    "row_count": 922,
     "source_artifact": "analysis/compliance/pitch_requirement_disposition.json"
   }
 }

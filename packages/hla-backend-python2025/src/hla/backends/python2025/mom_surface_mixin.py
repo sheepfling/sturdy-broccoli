@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping
 
 from hla.rti1516_2025.enums import OrderType, ResignAction
 from hla.rti1516_2025.handles import (
@@ -59,10 +59,6 @@ from .mom_runtime import (
     send_mom_transport_count_report,
 )
 from .object_instance_runtime import set_internal_object_attribute_values
-
-if TYPE_CHECKING:
-    from .backend import Python2025RTIAmbassador
-
 
 class MomSurfaceMixin:
     """Move MOM helpers out of the primary ambassador class body."""
@@ -215,7 +211,7 @@ class MomSurfaceMixin:
     ) -> dict[str, bytes]:
         return mom_request_params_by_name(self, interaction_class_name, values_by_handle)
 
-    def _mom_target_rti(self, params: Mapping[str, bytes]) -> Python2025RTIAmbassador:
+    def _mom_target_rti(self, params: Mapping[str, bytes]) -> Any:
         return mom_target_rti(self, params)
 
     @staticmethod

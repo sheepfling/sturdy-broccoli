@@ -43,8 +43,8 @@
           "matrix_id": "HLA1516.1-OM-6.1.10-002",
           "negative_test_refs": [
             "tests/scenarios/test_object_management_backend_matrix.py",
-            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
           ],
@@ -58,14 +58,14 @@
             "tests/backends/test_python_backend_object_ownership_extended.py::test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore",
             "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
             "tests/scenarios/test_object_management_backend_matrix.py",
-            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-            "tests/test_rti1516_2025_spec_and_shim.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
-            "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
-            "tests/test_rti1516_2025_spec_and_shim.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
+            "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
+            "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+            "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
             "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -87,7 +87,7 @@
           ],
           "vendor_notes": "shared transportation-type and restore-persistence scenarios verify the supported Pitch transport subset and restore persistence",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -124,10 +124,13 @@
           "negative_test_refs": [
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
             "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_consumer_order",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
+            "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -153,7 +156,7 @@
           ],
           "vendor_notes": "shared transportation-type scenarios verify Pitch distinguishes reliable and best-effort behavior in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -233,7 +236,7 @@
           ],
           "vendor_notes": "shared transportation-type restore scenario verifies Pitch attribute transport persistence for the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -289,7 +292,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -337,7 +340,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -396,7 +399,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport queries in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -452,7 +455,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -500,7 +503,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -565,7 +568,7 @@
           ],
           "vendor_notes": "shared transportation-type restore scenario verifies Pitch interaction transport persistence for the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -621,7 +624,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -669,7 +672,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -728,7 +731,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport queries in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -784,7 +787,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],
@@ -832,7 +835,7 @@
           ],
           "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
           "vendor_profile_bucket": "Exchange",
-          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
           "vendor_profile_refs": [
             "docs/rti_options_and_test_matrix.md"
           ],

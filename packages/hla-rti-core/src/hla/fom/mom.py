@@ -13,8 +13,8 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
-from .encoding import HLAboolean, HLAinteger32BE, HLAopaqueData, HLAunicodeString
-from .fom import FOMModule, InteractionClassSpec, ObjectClassSpec
+from hla.rti1516e.encoding import HLAboolean, HLAinteger32BE, HLAopaqueData, HLAunicodeString
+from hla.fom import FOMModule, InteractionClassSpec, ObjectClassSpec
 
 MOM_OBJECT_ROOT = "HLAobjectRoot.HLAmanager"
 MOM_INTERACTION_ROOT = "HLAinteractionRoot.HLAmanager"
@@ -267,7 +267,7 @@ def create_standard_mim_module() -> FOMModule:
     """
 
     try:
-        from .fom import _bundled_standard_mim_path, _path_to_file_uri, parse_fom_xml
+        from hla.fom import _bundled_standard_mim_path, _path_to_file_uri, parse_fom_xml
 
         path = _bundled_standard_mim_path()
         parsed = parse_fom_xml(path, source=STANDARD_MIM_NAME, uri=_path_to_file_uri(path))

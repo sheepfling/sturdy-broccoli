@@ -9,7 +9,7 @@ from __future__ import annotations
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.spec import FederateAmbassadorSpec
 from hla.foms.target_radar._internal import target_radar_fom_path
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 
 
 class PrinterFederate(FederateAmbassadorSpec):

@@ -14,7 +14,7 @@ from hla.foms.proto2025_space_lite._internal import run_space_lite_showcase
 from hla.foms.proto2025_time_mgmt_test._internal import run_time_mgmt_test_showcase
 from hla.foms.target_radar._internal import run_target_radar_scenario, target_radar_fom_path
 from hla.foms.target_radar._internal.target_radar_factory import make_target_radar_factory
-from hla.rti1516_2025.factory import create_rti_ambassador
+from hla.runtime.rti1516_2025_factory import create_rti_ambassador
 
 
 @dataclass(frozen=True)

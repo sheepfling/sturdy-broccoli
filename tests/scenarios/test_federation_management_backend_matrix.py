@@ -19,7 +19,7 @@ from hla.rti1516e.exceptions import (
     RestoreNotInProgress,
     SaveInProgress,
 )
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.backends.inmemory import InMemoryRTIEngine
 from hla.verification import (
     LostFederateScenarioConfig,
@@ -59,7 +59,7 @@ from hla.verification import (
     run_synchronization_scenario,
 )
 
-_VENDOR_SMOKE_FOM = str(resources.files("hla.rti1516e").joinpath("resources", "foms", "VendorSmokeFOM.xml"))
+_VENDOR_SMOKE_FOM = str(resources.files("hla.fom").joinpath("resources", "foms", "VendorSmokeFOM.xml"))
 
 
 def test_python_backend_synchronization_matrix():

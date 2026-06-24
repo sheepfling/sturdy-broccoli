@@ -2566,7 +2566,7 @@ def test_pitch_clause10_1516_1_dispositions_are_explicitly_staged():
     ]
     rows = {row["requirement_id"] or row["matrix_id"]: row for row in raw_rows if row.get("requirement_id") or row.get("matrix_id")}
 
-    assert len(raw_rows) == 84
+    assert len(raw_rows) == 86
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "classification-required"}
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "verified"}
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "blocked"}
@@ -2587,7 +2587,7 @@ def test_pitch_clause10_1516_1_dispositions_are_explicitly_staged():
         for row in raw_rows
         if row["pitch_disposition"] == "not-yet-tested"
     }
-    assert len(not_yet_tested_ids) == 82
+    assert len(not_yet_tested_ids) == 84
     assert "REQ-RTI-SS-10_4-getFederateHandle" in not_yet_tested_ids
     assert "REQ-RTI-SS-10_41-evokeCallback" in not_yet_tested_ids
     assert "HLA1516.1-SUP-10.17-001" in not_yet_tested_ids

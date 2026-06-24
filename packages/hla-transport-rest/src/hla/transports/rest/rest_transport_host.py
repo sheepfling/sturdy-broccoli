@@ -9,7 +9,7 @@ from typing import Any, Mapping
 from hla.transports.common.hosted_server import HostedRTICommandProcessor
 
 from hla.transports.common import TransportRequest
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 
 from .client import RestTransportClientAdapter
 

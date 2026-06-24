@@ -7,7 +7,7 @@ from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import NameNotFound
 from hla.rti1516e.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.startup import FederationStartupConfig, connect_create_join, drain_callbacks, synchronize_ready_to_run
 from hla.rti1516e.backends.java_common import JavaValueConverter
 from hla.rti1516e.testing.java_shim_backend import ShimJavaBridge

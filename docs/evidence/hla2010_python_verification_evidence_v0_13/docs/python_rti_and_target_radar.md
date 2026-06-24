@@ -7,7 +7,7 @@ RTI adapter path through JPype and Py4J. Application federates use the same
 ## Backend choices
 
 ```python
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.backends.python_rti import InMemoryRTIEngine
 
 # Multiple federates in the same local Python RTI share one engine.

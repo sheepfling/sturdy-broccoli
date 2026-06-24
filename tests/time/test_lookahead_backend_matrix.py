@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import pytest
 
 from hla.transports.grpc.python_server import start_python_grpc_server
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.verification.section8_matrix import (
     run_section8_early_timestamp_send_case,
     run_section8_state_services_case,

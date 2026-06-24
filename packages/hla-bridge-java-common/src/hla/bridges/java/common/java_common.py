@@ -811,6 +811,10 @@ _JAVA_COMPOSITE_DATATYPE_NAMES = {
     "TimeQueryReturn",
 }
 
+_CALLBACK_TYPE_FALLBACKS: dict[str, tuple[str | None, ...]] = {
+    "federationSynchronized": ("String", "FederateHandleSet"),
+}
+
 
 def _clean_java_type(type_name: str | None) -> str | None:
     return clean_java_type_name(type_name)
@@ -843,7 +847,15 @@ def expected_java_callback_parameter_types(
     names.  The metadata is source-derived from the uploaded Java binding.
     """
 
-    return (binding or _DEFAULT_BINDING).callback_parameter_types(method_name, arg_count)
+    resolved = (binding or _DEFAULT_BINDING).callback_parameter_types(method_name, arg_count)
+    if resolved:
+        return resolved
+    fallback = _CALLBACK_TYPE_FALLBACKS.get(method_name)
+    if fallback is None:
+        return ()
+    if arg_count is None:
+        return fallback
+    return fallback[:arg_count]
 
 class PythonFederateAmbassadorDispatcher:
     """Dispatch Java FederateAmbassador callbacks to a Python ambassador."""

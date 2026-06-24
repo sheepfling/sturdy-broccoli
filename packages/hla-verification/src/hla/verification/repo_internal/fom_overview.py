@@ -8,7 +8,7 @@ The report intentionally trades raw XML completeness for readability:
 - optional Mermaid diagrams for small hierarchies
 
 The Target/Radar FOM is the default example use case, but the helpers work for
-any resolved FOM/MIM catalog returned by :class:`hla.rti1516e.fom.FOMResolver`.
+any resolved FOM/MIM catalog returned by :class:`hla.fom.FOMResolver`.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-from hla.rti1516e.fom import FOMModule, FOMResolver
+from hla.fom import FOMModule, FOMResolver
 
 
 @dataclass(frozen=True)

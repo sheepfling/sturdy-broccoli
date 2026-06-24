@@ -7,7 +7,7 @@ Key owned surfaces:
 - `packages/hla-rti1516e/src/hla/rti1516e/`: the 2010 API package root, core
   types, handles, enums, exceptions, time, FOM/MOM helpers, and API/spec
   references.
-- `hla.rti1516e.rti`: the version-local backend-discovery and ambassador
+- `hla.runtime.rti1516e`: the version-local backend-discovery and ambassador
   creation helper.
 - package metadata and boundary rules proving that concrete backend
   implementations stay outside the `hla.rti1516e` API package.

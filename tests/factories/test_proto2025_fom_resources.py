@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import pytest
-from hla.rti1516_2025.foms import PROTO2025_V0_1_MODULES, fom_path, fom_paths, scenario_fom_paths
-from hla.rti1516e.fom import FOMResolutionError, FOMResolver, merge_fom_modules, parse_fom_xml, standard_mim_module
+from hla.fom.proto2025 import PROTO2025_V0_1_MODULES, fom_path, fom_paths, scenario_fom_paths
+from hla.fom import FOMResolutionError, FOMResolver, merge_fom_modules, normalize_module_uri, parse_fom_xml, standard_mim_module
 
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-OMT-002", "HLA2025-OMT-007")
@@ -58,3 +58,13 @@ def test_each_proto2025_2025_scenario_fom_set_merges_with_standard_mim(
     assert expected_object in catalog.object_classes
     assert expected_interaction in catalog.interaction_classes
     assert "HLAunicodeString" in catalog.datatype_names
+
+
+def test_target_radar_fom_stays_resolvable_after_proto2025_helper_import() -> None:
+    scenario_fom_paths("message-test")
+
+    _, path = normalize_module_uri("TargetRadarFOMmodule.xml")
+
+    assert path is not None
+    assert path.exists()
+    assert path.name == "TargetRadarFOMmodule.xml"

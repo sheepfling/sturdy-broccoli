@@ -2,7 +2,7 @@ import math
 import pytest
 
 from hla.rti1516e.backends.python_rti import InMemoryRTIEngine
-from hla.rti1516e.rti import create_rti_ambassador
+from hla.runtime.rti1516e import create_rti_ambassador
 from hla.rti1516e.scenarios.target_radar import run_target_radar_scenario
 from hla.rti1516e.testing.java_shim_kernel import SharedJavaShimKernel
 

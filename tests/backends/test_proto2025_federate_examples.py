@@ -5,7 +5,7 @@ from collections.abc import Mapping
 
 import pytest
 from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
-from hla.rti1516_2025.foms import scenario_fom_paths
+from hla.fom.proto2025 import scenario_fom_paths
 from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 

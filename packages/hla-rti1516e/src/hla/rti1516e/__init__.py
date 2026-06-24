@@ -11,13 +11,6 @@ from .enums import CallbackModel, OrderType, ResignAction, ServiceGroup
 __version__ = "0.13.0"
 
 
-def __getattr__(name: str):
-    if name in {"RtiFactory", "create_rti_ambassador"}:
-        from .factory import RtiFactory, create_rti_ambassador
-
-        return {"RtiFactory": RtiFactory, "create_rti_ambassador": create_rti_ambassador}[name]
-    raise AttributeError(name)
-
 __all__ = [
     "CallbackModel",
     "FederateAmbassador",
@@ -25,9 +18,7 @@ __all__ = [
     "OrderType",
     "RTIambassador",
     "ResignAction",
-    "RtiFactory",
     "ServiceGroup",
     "__version__",
-    "create_rti_ambassador",
     "lower_camel_to_snake",
 ]

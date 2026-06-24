@@ -36,7 +36,7 @@ from hla.rti1516e.exceptions import (
     RTIexception,
     SaveInProgress,
 )
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.bridges.java.common import JavaValueConverter, PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_shim_backend import ShimJavaBridge
 from hla.verification import (

@@ -15,7 +15,7 @@ from hla.backends.inmemory import InMemoryRTIEngine
 from hla.transports.common.transport import TransportRequest
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti import create_backend
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
@@ -33,7 +33,7 @@ from hla.transports.rest.rest_transport_host import start_python_rest_server
 
 pytestmark = pytest.mark.requires_loopback_server
 
-RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
+RESOURCE_ROOT = Path(str(resources.files("hla.fom").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 
 

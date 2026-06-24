@@ -404,7 +404,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "requirements": ("HLA2025-NEW-006", "HLA2025-OMT-002", "HLA2025-OMT-006"),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/validation.py",
         ),
         "supported_scope": (
@@ -444,7 +444,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
             "tests/factories/test_fom_omt_parsing.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser and 2025 serializer round-trip array encodings, attribute valueRequired metadata, "
@@ -480,7 +480,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
             "tests/factories/test_fom_omt_parsing.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser preserves the supported 2025 switch container subset "
@@ -509,7 +509,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
             "tests/factories/test_fom_omt_parsing.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser and 2025 serializer round-trip the supported model-identification scalar and "
@@ -534,7 +534,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/factories/test_fom_omt_parsing.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser and serializer preserve top-level dimension declarations, including dataType, "
@@ -557,7 +557,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser and serializer preserve attribute updateType, updateCondition, ownership, "
@@ -579,7 +579,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser and serializer preserve object-class sharing/semantics, "
@@ -603,7 +603,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser and serializer preserve object-class directedInteraction name/sharing "
@@ -664,7 +664,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "evidence": (
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser accepts foreign-namespace xs:any extension elements at the remaining 2025 OMT "
@@ -682,7 +682,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "requirements/2025/differentials/HLA_1516_2025_vs_2010_Differential_Set.csv",
             "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv",
             "tests/test_rti1516_2025_validation.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Renumbered service-utilization rows preserve behavior claims while updating clause references. "
@@ -697,7 +697,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/factories/test_fom_omt_parsing.py",
             "tests/factories/test_fom_roundtrip.py",
             "tests/requirements/test_2025_tail_backlog_evidence.py",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Shared OMT parser extracts optional serviceUtilization tables from SOM, FOM, and MIM modules, "
@@ -714,7 +714,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "tests/requirements/test_2025_tail_backlog_evidence.py",
             "tests/test_rti1516_2025_validation.py",
             "requirements/2025/STRICT_DOC_INVENTORY.json",
-            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+            "packages/hla-rti-core/src/hla/fom/__init__.py",
         ),
         "supported_scope": (
             "Native 2025 exception inventory uses the 2025 FOM/MIM/auth names without FDD-era exception names. "
@@ -3314,7 +3314,7 @@ def _build_omt_xs_any_mapping_audit(
     doc_path = project_root / doc_rel
     doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
     test_rel = "tests/test_rti1516_2025_validation.py"
-    impl_rel = "packages/hla-rti1516e/src/hla/rti1516e/fom.py"
+    impl_rel = "packages/hla-rti-core/src/hla/fom/__init__.py"
     test_text = (project_root / test_rel).read_text(encoding="utf-8")
     impl_text = (project_root / impl_rel).read_text(encoding="utf-8")
     rows = [

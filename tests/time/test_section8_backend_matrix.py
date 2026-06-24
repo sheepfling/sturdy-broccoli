@@ -8,7 +8,7 @@ import pytest
 
 from hla.transports.grpc.python_server import start_python_grpc_server
 from hla.rti1516e.enums import OrderType
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (
     run_section8_available_and_flush_case,
     run_section8_available_and_retraction_case,

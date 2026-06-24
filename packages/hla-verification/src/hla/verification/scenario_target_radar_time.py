@@ -5,7 +5,7 @@ import struct
 from dataclasses import dataclass
 from typing import Any
 
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import InvalidLogicalTime, RTIexception
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time

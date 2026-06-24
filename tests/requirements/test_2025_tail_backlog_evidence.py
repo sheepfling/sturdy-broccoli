@@ -137,7 +137,7 @@ def test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidenc
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert OMT_XS_ANY_DOC in evidence
             assert "tests/test_rti1516_2025_validation.py" in evidence
-            assert "packages/hla-rti1516e/src/hla/rti1516e/fom.py" in evidence
+            assert "packages/hla-rti-core/src/hla/fom/__init__.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-OMT-COMP-006", "HLA2025-OMT-COMP-039", "HLA2025-OMT-COMP-224")

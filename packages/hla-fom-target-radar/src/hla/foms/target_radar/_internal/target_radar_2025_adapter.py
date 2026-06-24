@@ -415,7 +415,7 @@ class TargetRadar2025RTIAdapter:
             fom_only_modules = [module for module in modules if str(module) not in standard_mim_designators]
             mim_module = mim_modules[0]
             if str(mim_module) in {"HLAstandardMIM", "HLAstandardMIM.xml"}:
-                mim_module = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
+                mim_module = str(files("hla.fom.resources.foms").joinpath("HLAstandardMIM.xml"))
             create_with_mim = self._delegate_callable("createFederationExecutionWithMIM", "create_federation_execution_with_mim")
             self._call_compat(
                 create_with_mim,

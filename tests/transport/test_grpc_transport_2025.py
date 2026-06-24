@@ -48,7 +48,7 @@ from hla.rti1516e.exceptions import (
     SaveInProgress,
     SaveNotInitiated,
 )
-from hla.rti1516_2025.factory import create_rti_ambassador as create_2025_rti_ambassador
+from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
 from hla.rti1516_2025.enums import ResignAction as ResignAction2025
 from hla.rti1516e.handles import (
     AttributeHandle,
@@ -3616,7 +3616,7 @@ def _drop_joined_peer(server, federate_handle: str) -> None:  # noqa: ANN001
 
 
 def _vendor_smoke_fom_path() -> str:
-    return str(files("hla.rti1516e.resources.foms").joinpath("VendorSmokeFOM.xml"))
+    return str(files("hla.fom.resources.foms").joinpath("VendorSmokeFOM.xml"))
 
 
 def _target_radar_fom_path() -> str:
@@ -3631,7 +3631,7 @@ def _fedpro_fom_path(designator: str) -> str:
     if designator == "TargetRadarFOMmodule.xml":
         return _target_radar_fom_path()
     resource_name = Path(designator).name
-    packaged_2025_fom = files("hla.rti1516_2025.resources.foms").joinpath(resource_name)
+    packaged_2025_fom = files("hla.fom.resources.proto2025.foms").joinpath(resource_name)
     if packaged_2025_fom.is_file():
         return str(packaged_2025_fom)
     fixture_dir = Path(tempfile.gettempdir()) / "hla-2025-fedpro-foms"
@@ -3899,7 +3899,7 @@ class _FedPro2025ScenarioAdapter:
         logical_time_implementation_name: str,
     ) -> None:
         self._logical_time_hint = logical_time_implementation_name
-        mim_path = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
+        mim_path = str(files("hla.fom.resources.foms").joinpath("HLAstandardMIM.xml"))
         fields = (
             federation_name,
             logical_time_implementation_name,
@@ -9543,7 +9543,7 @@ def test_2025_transport_server_runs_shared_pipeline_scenario_via_runner_over_fed
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-009", "HLA2025-BND-003")
 def test_2025_transport_server_runs_synchronization_scenario_via_runner_over_fedpro_route():
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
 
     server = start_2025_grpc_server()
     leader = None
@@ -9599,7 +9599,7 @@ def test_2025_transport_server_runs_synchronization_scenario_via_runner_over_fed
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-010", "HLA2025-BND-003")
 def test_2025_transport_server_runs_synchronization_registration_failure_scenario_via_runner_over_fedpro_route():
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
     from hla.rti1516e.enums import SynchronizationPointFailureReason
 
     server = start_2025_grpc_server()
@@ -9656,7 +9656,7 @@ def test_2025_transport_server_runs_synchronization_registration_failure_scenari
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-011", "HLA2025-BND-003")
 def test_2025_transport_server_runs_failed_federate_synchronization_scenario_via_runner_over_fedpro_route():
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
 
     server = start_2025_grpc_server()
     leader = None
@@ -9716,7 +9716,7 @@ def test_2025_transport_server_runs_failed_federate_synchronization_scenario_via
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-012", "HLA2025-BND-003")
 def test_2025_transport_server_runs_late_join_synchronization_scenario_via_runner_over_fedpro_route():
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
 
     server = start_2025_grpc_server()
     leader = None
@@ -9779,7 +9779,7 @@ def test_2025_transport_server_runs_late_join_synchronization_scenario_via_runne
 
 @pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-001", "HLA2025-FI-002", "HLA2025-FI-SVC-013", "HLA2025-BND-003")
 def test_2025_transport_server_runs_multiple_synchronization_points_scenario_via_runner_over_fedpro_route():
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
 
     server = start_2025_grpc_server()
     leader = None
@@ -12323,7 +12323,7 @@ def test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fed
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-BND-003")
 def test_2025_transport_server_runs_backend_neutral_save_restore_scenario_over_fedpro_route():
-    from hla.rti1516_2025.foms import scenario_fom_paths
+    from hla.fom.proto2025 import scenario_fom_paths
 
     server = start_2025_grpc_server()
     leader = None
@@ -27210,7 +27210,7 @@ def test_2025_transport_server_routes_create_with_mim_requests_over_fedpro_schem
     server = start_2025_grpc_server()
     transport = None
     federation_name = f"fedpro-2025-mim-create-{uuid.uuid4().hex[:8]}"
-    mim_path = str(files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml"))
+    mim_path = str(files("hla.fom.resources.foms").joinpath("HLAstandardMIM.xml"))
     try:
         transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
         assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)

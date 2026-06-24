@@ -149,14 +149,16 @@ class PythonRTIOwnershipServicesMixin(PythonRTIOwnershipCoreMixin):
                     notify_previous_owner=False,
                 )
             elif self._attribute_is_divesting(instance, attr) and owner is not None:
-                self._complete_immediate_attribute_transfer(
+                candidates = self._attribute_candidates(instance, attr)
+                candidates.discard(self.state.handle)
+                candidates.add(self.state.handle)
+                self._deliver_to_federate_handle(
                     federation,
-                    instance,
-                    attr,
-                    self.state.handle,
-                    old_owner=owner,
-                    acquisition_tag=bytes(userSuppliedTag),
-                    notify_previous_owner=True,
+                    owner,
+                    "requestDivestitureConfirmation",
+                    theObject,
+                    hla_handles.AttributeHandleSet({attr}),
+                    bytes(userSuppliedTag),
                 )
             else:
                 candidates = self._attribute_candidates(instance, attr)

@@ -8,8 +8,8 @@ from typing import Any
 
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516_2025.enums import CallbackModel, ResignAction
-from hla.rti1516_2025.factory import create_rti_ambassador
-from hla.rti1516_2025.foms import scenario_fom_paths
+from hla.runtime.rti1516_2025_factory import create_rti_ambassador
+from hla.fom.proto2025 import scenario_fom_paths
 
 
 def _drain(*rtis: object, rounds: int = 25) -> None:

@@ -48,7 +48,7 @@ The 32 semantic rows are not marked complete. They require service-specific fede
 v0.13 adds `hla.rti1516e.verification.build_service_conformance_matrix`, derived from:
 
 - generated Java/C++ API metadata in `hla.rti1516e.raw_api.API_METADATA`;
-- section references in `hla.rti1516e.spec_refs`;
+- section references in `hla.spec.refs`;
 - pure-Python backend `_svc_*` entry points;
 - FederateAmbassador helper methods;
 - static evidence found in the test tree.
@@ -75,7 +75,7 @@ Every row includes interface, service name, Python alias, section anchor, servic
 
 ## Implementation notes
 
-`hla.rti1516e.mom_catalog` now includes:
+`hla.fom.mom_catalog` now includes:
 
 - `negative_case_expectation`;
 - `flatten_negative_cases`;

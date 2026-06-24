@@ -671,10 +671,10 @@
     {
       "exact_requirement_evidence_rows": 18,
       "implementation_status_counts": {
-        "pure-python-reference-handler": 18
+        "pure-python-reference-handler": 20
       },
       "interface_counts": {
-        "RTIambassador": 18
+        "RTIambassador": 20
       },
       "known_gap_rows": 0,
       "methods": [
@@ -689,18 +689,21 @@
         "RTIambassador.getFederateHandleSetFactory",
         "RTIambassador.getHLAversion",
         "RTIambassador.getInteractionClassHandleFactory",
+        "RTIambassador.getMessageRetractionHandleFactory",
         "RTIambassador.getObjectClassHandleFactory",
         "RTIambassador.getObjectInstanceHandleFactory",
         "RTIambassador.getParameterHandleFactory",
         "RTIambassador.getParameterHandleValueMapFactory",
+        "RTIambassador.getRegionHandleFactory",
         "RTIambassador.getRegionHandleSetFactory",
         "RTIambassador.getTimeFactory",
         "RTIambassador.getTransportationTypeHandleFactory"
       ],
-      "no_requirement_evidence_rows": 0,
+      "no_requirement_evidence_rows": 2,
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status_counts": {
-        "focused-executable-tests": 18
+        "focused-executable-tests": 18,
+        "group-level-slice-tests": 2
       }
     },
     {

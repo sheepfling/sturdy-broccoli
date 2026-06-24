@@ -8,7 +8,7 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 3 | 0 | 1 | 0 |
 | IEEE 1516-2010 §12 | 21 | 21 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 82 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 82 | 0 | 2 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 35 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 9 | 0 | 0 | 0 | 1 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 275 | 0 | 4 | 0 | 2 | 0 |
@@ -57,6 +57,8 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | extracted-requirement | The RTI shall implement time-management services for regulation |
 | IEEE 1516.1-2010 (2010 edition) | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | extracted-requirement | The RTI shall implement DDM services for region creation |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getMessageRetractionHandleFactory | vendor-divergent | service-requirement | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleFactory | vendor-divergent | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | extracted-requirement | The RTI shall implement support services for lookups |
 | IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |

@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from hla.rti1516e import mom
+import hla.fom.mom as mom
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import (
     AlreadyConnected,

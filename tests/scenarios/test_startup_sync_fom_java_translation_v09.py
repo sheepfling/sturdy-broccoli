@@ -15,7 +15,7 @@ from hla.rti1516e.handles import (
     ObjectInstanceHandle,
     RegionHandleSet,
 )
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.datatypes import (
     FederateHandleSaveStatusPair,
     FederateRestoreStatus,

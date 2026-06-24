@@ -8,7 +8,7 @@ interface without reading the full workspace layout first.
 If you only need the supported import ladder, use:
 
 - `from hla.rti1516e import RTIambassador, FederateAmbassador, NullFederateAmbassador`
-- `from hla.rti1516e.rti_ambassador import RTIambassador`
+- `from hla.runtime.rti1516e_ambassador import RTIambassador`
 - `from hla.rti1516e.federate_ambassador import FederateAmbassador`
 - `from hla.backends.inmemory import rti_ambassador`
 - `python examples/target_radar_simulation.py --backend python --steps 5`
@@ -28,10 +28,10 @@ modules. Cross-version discovery and factory selection live under `hla.rti`.
 - [`../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py`](../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py): strict source-shaped `RTIambassador` protocol
 - [`../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py`](../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py): strict source-shaped `FederateAmbassador` protocol and no-op callback sink
 - [`../packages/hla-rti1516e/src/hla/rti1516e/api.py`](../packages/hla-rti1516e/src/hla/rti1516e/api.py): convenience re-export module for the strict surface
-- [`../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py): plain-text method inventory used by the spec layer
-- [`../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
-- [`../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py): clause and service references used for traceability
-- [`../packages/hla-rti1516e/src/hla/rti1516e/rti.py`](../packages/hla-rti1516e/src/hla/rti1516e/rti.py): version-local backend-discovery and ambassador-factory helper
+- [`../packages/hla-rti-core/src/hla/spec/inventory.py`](../packages/hla-rti-core/src/hla/spec/inventory.py): plain-text method inventory used by the spec layer
+- [`../packages/hla-rti-core/src/hla/spec/sources.py`](../packages/hla-rti-core/src/hla/spec/sources.py): readable Java/C++ source locations surfaced in docstrings
+- [`../packages/hla-rti-core/src/hla/spec/refs.py`](../packages/hla-rti-core/src/hla/spec/refs.py): clause and service references used for traceability
+- [`../packages/hla-rti-core/src/hla/runtime/rti1516e.py`](../packages/hla-rti-core/src/hla/runtime/rti1516e.py): version-local backend-discovery and ambassador-factory helper
 
 ## Import Table
 
@@ -64,7 +64,7 @@ from hla.rti1516e import NullFederateAmbassador
 - `hla-rti1516e` is the installable root package for the strict spec surface.
 - `packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py` and `federate_ambassador.py` expose source-shaped protocols.
 - `packages/hla-rti1516e/src/hla/rti1516e/api.py` re-exports the strict surface inside the versioned package.
-- `packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`, `spec_sources.py`, and `spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
+- `packages/hla-rti-core/src/hla/spec/inventory.py`, `sources.py`, and `refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
 That keeps the spec surface aligned with Java/C++ names while still preserving the source
 mapping needed for traceability.

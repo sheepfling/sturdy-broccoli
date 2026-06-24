@@ -13,7 +13,7 @@ from hla.rti1516e.exceptions import (
     FederationExecutionDoesNotExist,
     InconsistentFDD,
 )
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
 from hla.verification import (
     FederationLifecycleScenarioConfig,

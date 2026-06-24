@@ -207,10 +207,9 @@ def test_split_package_source_roots_use_single_owned_directory_root() -> None:
     for package_name in EXPECTED_PACKAGES:
         split = _package_split(package_name)
         source_roots = split["source_roots"]
-        assert len(source_roots) == 1, package_name
-        source_root = source_roots[0]
-        assert source_root.startswith(f"packages/{package_name}/src/"), package_name
-        assert (ROOT / source_root).exists(), package_name
+        assert source_roots, package_name
+        assert all(source_root.startswith(f"packages/{package_name}/src/") for source_root in source_roots), package_name
+        assert all((ROOT / source_root).exists() for source_root in source_roots), package_name
 
 
 def test_internal_split_package_dependencies_resolve_to_repo_packages_and_exact_repo_version() -> None:
@@ -311,33 +310,32 @@ def test_rti1516e_spec_manifest_owns_exact_root_package_tree() -> None:
     package_find = _load_project("hla-rti1516e")["tool"]["setuptools"]["packages"]["find"]
     assert package_find["where"] == ["src"]
     assert package_find["include"] == ["hla.rti1516e*"]
+    assert package_find["namespaces"] is True
 
     expected_root_surface = {
         "__init__.py",
         "_byte_wrapper.py",
         "ambassadors.py",
         "api.py",
+        "api_metadata.json",
         "datatypes.py",
         "encoding.py",
+        "encoding.pyi",
         "enums.py",
         "exceptions.py",
         "federate_ambassador.py",
-        "fom.py",
+        "federate_ambassador.pyi",
         "handle_factory.py",
         "handles.py",
         "logical_time.py",
-        "mom.py",
+        "py.typed",
         "raw_api.py",
-        "rti.py",
         "rti_ambassador.py",
-        "spec_inventory.py",
-        "spec_refs.py",
-        "spec_sources.py",
-        "factory.py",
-        "plugin.py",
+        "rti_ambassador.pyi",
+        "rti_factory.py",
         "time.py",
     }
-    assert _live_rti1516e_python_files() == expected_root_surface
+    assert _live_rti1516e_package_files() == expected_root_surface
 
     package_files = _live_rti1516e_package_files()
     assert "encoding.pyi" in package_files
@@ -464,7 +462,7 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
         "hla-rti1516e": (
             "canonical `hla.rti1516e` standard-facing API",
             "`hla.rti1516e.RTIambassador`",
-            "`hla.rti1516e.rti` for version-local backend discovery and ambassador creation",
+            "`hla.runtime.rti1516e` for version-local backend discovery and ambassador creation",
             "`tests/test_package_split_scaffolds.py`",
             "`tests/test_root_facade_policy.py`",
             "`tests/test_namespace_policy.py`",
@@ -867,7 +865,7 @@ def test_core_spec_doc_index_describes_the_only_root_facade_boundary() -> None:
     text = (PACKAGES / "hla-rti1516e" / "docs" / "README.md").read_text(encoding="utf-8")
 
     assert "abstract HLA 2010 spec and core API surface" in text
-    assert "`hla.rti1516e.rti`" in text
+    assert "`hla.runtime.rti1516e`" in text
     assert "version-local backend-discovery and ambassador" in text
     assert "tests/test_package_split_scaffolds.py" in text
     assert "tests/test_root_facade_policy.py" in text

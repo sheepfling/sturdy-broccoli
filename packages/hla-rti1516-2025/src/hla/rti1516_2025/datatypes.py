@@ -13,6 +13,11 @@ from .handles import FederateHandle, MessageRetractionHandle
 from .logical_time import LogicalTime
 
 
+class _CallableString(str):
+    def __call__(self) -> str:
+        return str(self)
+
+
 class RangeBounds(NamedTuple):
     lower: int
     upper: int
@@ -22,9 +27,8 @@ class RangeBounds(NamedTuple):
 class RtiConfiguration:
     """Python model of Java/C++ RtiConfiguration.
 
-    The HLA API exposes Java-style getters named ``configurationName()``,
-    ``rtiAddress()``, and ``additionalSettings()``.  The stored fields are kept
-    private so those method names remain callable.
+    The HLA API exposes property-style camelCase accessors. They return callable
+    strings so older call-style usage still produces the underlying value.
     """
 
     _configurationName: str = ""
@@ -47,14 +51,17 @@ class RtiConfiguration:
         self._additionalSettings = additionalSettings
         return self
 
-    def configurationName(self) -> str:
-        return self._configurationName
+    @property
+    def configurationName(self) -> _CallableString:
+        return _CallableString(self._configurationName)
 
-    def rtiAddress(self) -> str:
-        return self._rtiAddress
+    @property
+    def rtiAddress(self) -> _CallableString:
+        return _CallableString(self._rtiAddress)
 
-    def additionalSettings(self) -> str:
-        return self._additionalSettings
+    @property
+    def additionalSettings(self) -> _CallableString:
+        return _CallableString(self._additionalSettings)
 
     @property
     def configuration_name(self) -> str:
@@ -91,7 +98,8 @@ class MessageRetractionReturn(NamedTuple):
     handle: MessageRetractionHandle
 
 
-class FederationExecutionInformation(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class FederationExecutionInformation:
     federationExecutionName: str
     logicalTimeImplementationName: str
 

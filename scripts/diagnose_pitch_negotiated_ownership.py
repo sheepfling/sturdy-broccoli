@@ -26,7 +26,7 @@ _bootstrap_source_checkout()
 
 from hla.backends.common import BackendUnavailableError, RecordingFederateAmbassador
 from hla.rti1516e.enums import ResignAction
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,

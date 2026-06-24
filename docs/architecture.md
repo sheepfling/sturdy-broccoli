@@ -116,7 +116,7 @@ compatibility-wrapper/import-level code and should not be treated as the
 runtime owner.
 
 The remaining documented version-local facade is intentionally narrow:
-`hla.rti1516e.rti` is the 2010-local backend discovery and ambassador-creation
+`hla.runtime.rti1516e` is the 2010-local backend discovery and ambassador-creation
 surface, while shared adapter primitives and plugin contracts live only in
 `hla.backends.common`.
 

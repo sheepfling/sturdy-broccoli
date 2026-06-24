@@ -12,7 +12,7 @@ from hla.rti1516e.exceptions import (
     FederationExecutionDoesNotExist,
     FederatesCurrentlyJoined,
 )
-from hla.rti1516e.fom import standard_mim_module
+from hla.fom import standard_mim_module
 from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import TimeFactoryRegistry
 from hla.rti1516e.datatypes import FederationExecutionInformation

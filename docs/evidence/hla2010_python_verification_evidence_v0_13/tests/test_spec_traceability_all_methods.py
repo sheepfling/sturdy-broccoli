@@ -1,7 +1,7 @@
 from hla.rti1516e.backends.base import DelegatingRTIAmbassador
 from hla.rti1516e.backends.python_rti import PythonRTIBackend
 from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e.spec_refs import FOM_REFERENCES, method_reference
+from hla.spec.refs import FOM_REFERENCES, method_reference
 
 
 def test_all_generated_ambassador_methods_are_section_mapped():

@@ -7,7 +7,7 @@ from pathlib import Path
 
 from google.protobuf import json_format
 
-from hla.rti1516e.fom import FOMResolver, FOMModule, merge_fom_modules
+from hla.fom import FOMResolver, FOMModule, merge_fom_modules
 from hla.transports.grpc.fedpro2010 import datatypes_pb2 as fedpro2010_datatypes
 
 

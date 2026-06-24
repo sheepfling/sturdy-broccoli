@@ -5,7 +5,7 @@ matrix from the source-derived Java/C++ API metadata, the Python backend service
 handlers, callback helpers, and the verification artifacts we currently have.
 
 Section anchors: IEEE 1516.1-2010 §4-§12, especially the per-service clauses
-listed in :mod:`hla.rti1516e.spec_refs`.
+listed in :mod:`hla.spec.refs`.
 """
 from __future__ import annotations
 

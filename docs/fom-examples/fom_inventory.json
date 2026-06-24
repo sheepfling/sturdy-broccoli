@@ -3,7 +3,7 @@
   "entries": [
     {
       "id": "repo-2010-standard-mim",
-      "path": "packages/hla-rti1516e/src/hla/rti1516e/resources/foms/HLAstandardMIM.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/foms/HLAstandardMIM.xml",
       "edition_class": "2010",
       "load_mode": "standalone",
       "baseline_kind": "repo-owned",
@@ -12,7 +12,7 @@
     },
     {
       "id": "repo-2010-vendor-smoke",
-      "path": "packages/hla-rti1516e/src/hla/rti1516e/resources/foms/VendorSmokeFOM.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/foms/VendorSmokeFOM.xml",
       "edition_class": "2010",
       "load_mode": "standalone",
       "baseline_kind": "repo-owned",
@@ -21,7 +21,7 @@
     },
     {
       "id": "repo-2010-demo",
-      "path": "packages/hla-rti1516e/src/hla/rti1516e/resources/foms/DemoFOMmodule.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/foms/DemoFOMmodule.xml",
       "edition_class": "2010",
       "load_mode": "standalone",
       "baseline_kind": "repo-owned",
@@ -39,7 +39,7 @@
     },
     {
       "id": "repo-2025-proto-base",
-      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_Base.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_Base.xml",
       "edition_class": "2025",
       "load_mode": "base-plus-extension",
       "baseline_kind": "repo-owned",
@@ -48,7 +48,7 @@
     },
     {
       "id": "repo-2025-proto-message-test",
-      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_MessageTest.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_MessageTest.xml",
       "edition_class": "2025",
       "load_mode": "base-plus-extension",
       "baseline_kind": "repo-owned",
@@ -57,7 +57,7 @@
     },
     {
       "id": "repo-2025-proto-space-lite",
-      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_SpaceLite.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_SpaceLite.xml",
       "edition_class": "2025",
       "load_mode": "base-plus-extension",
       "baseline_kind": "repo-owned",
@@ -66,7 +66,7 @@
     },
     {
       "id": "repo-2025-proto-time-mgmt-test",
-      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_TimeMgmtTest.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/proto2025/foms/Proto2025_TimeMgmtTest.xml",
       "edition_class": "2025",
       "load_mode": "base-plus-extension",
       "baseline_kind": "repo-owned",
@@ -75,7 +75,7 @@
     },
     {
       "id": "repo-2025-encoding-auth-smoke",
-      "path": "packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/encoding_auth/EncodingSmokeTest-2025.xml",
+      "path": "packages/hla-rti-core/src/hla/fom/resources/proto2025/encoding_auth/EncodingSmokeTest-2025.xml",
       "edition_class": "2025",
       "load_mode": "standalone",
       "baseline_kind": "repo-owned",

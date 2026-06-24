@@ -25,6 +25,7 @@ FACTORY_NAME = "Java 2025 Standard Shim"
 BACKING_RUNTIME = {
     "runtime_provider": "python2025",
     "implementation_lane": "hla-backend-python2025",
+    "counts_as_python_2025_rti": False,
     "wrapper_only": False,
 }
 

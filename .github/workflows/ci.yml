@@ -6,6 +6,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  upstream-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install contract-check environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test
+        run: ./scripts/ci/install_python.sh
+      - name: Check frozen upstream contract
+        run: ./scripts/ci/upstream_contract.sh
+
   vendor-runner-contract:
     runs-on: ubuntu-latest
     steps:

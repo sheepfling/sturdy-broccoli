@@ -113,4 +113,5 @@ class PythonRTIOwnershipCoreMixin:
                 "requestDivestitureConfirmation",
                 instance.handle,
                 hla_handles.AttributeHandleSet({attr}),
+                bytes(acquisition_tag),
             )

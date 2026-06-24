@@ -8,7 +8,7 @@ from typing import Any, Mapping
 from hla.transports.common.hosted_server import HostedRTICommandProcessor
 
 from hla.rti1516e.exceptions import RTIexception
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 
 from hla.transports.grpc.fedpro2010 import FederateAmbassador_pb2 as callback_pb2
 from hla.transports.grpc.fedpro2010 import HLA2010RTITransport_pb2_grpc as pb2_grpc

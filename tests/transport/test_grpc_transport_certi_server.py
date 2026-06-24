@@ -9,7 +9,7 @@ from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.common import BackendUnavailableError
 from hla.transports.grpc import start_certi_grpc_server
 from hla.rti1516e.enums import OrderType, ResignAction
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (
     OwnershipScenarioConfig,
     SynchronizationScenarioConfig,

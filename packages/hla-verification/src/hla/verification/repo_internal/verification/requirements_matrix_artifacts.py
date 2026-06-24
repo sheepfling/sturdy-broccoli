@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from hla.rti1516e.spec_refs import FOM_REFERENCES, IEEE_1516_1_2010, SERVICE_AREAS
+from hla.spec.refs import FOM_REFERENCES, IEEE_1516_1_2010, SERVICE_AREAS
 
 from .asset_plan import build_verification_plan
 from .curated_requirement_rows import load_curated_requirement_rows

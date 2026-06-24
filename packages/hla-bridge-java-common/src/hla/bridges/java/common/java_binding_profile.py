@@ -95,7 +95,7 @@ def load_python_java_binding_profile(profile: str | JavaApiProfile) -> PythonJav
         handles_module=importlib.import_module(f"{api_profile.python_package}.handles"),
         datatypes_module=importlib.import_module(f"{api_profile.python_package}.datatypes"),
         time_module=importlib.import_module(f"{api_profile.python_package}.time"),
-        fom_module=importlib.import_module(f"{api_profile.python_package}.fom"),
+        fom_module=importlib.import_module("hla.fom"),
         null_federate_ambassador_type=getattr(federate_module, "NullFederateAmbassador"),
         raw_api_metadata=raw_api_metadata,
     )

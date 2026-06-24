@@ -418,7 +418,7 @@ def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -
         "hla-backend-certi": "hla.backends.certi",
         "hla-backend-common": "hla.backends.common",
         "hla-bridge-java-common": "hla.bridges.java.common",
-        "hla-rti-core": "hla.rti",
+        "hla-rti-core": ("hla.rti", "hla.runtime", "hla.fom", "hla.spec"),
         "hla-bridge-java-jpype": "hla.bridges.java.jpype",
         "hla-bridge-java-py4j": "hla.bridges.java.py4j",
         "hla-vendor-pitch": "hla.vendors.pitch",
@@ -437,7 +437,8 @@ def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -
 
     for package_name, import_root in expected_roots.items():
         include_patterns = _load_project(package_name)["tool"]["setuptools"]["packages"]["find"]["include"]
-        assert include_patterns == [f"{import_root}*"], package_name
+        expected_patterns = [f"{root}*" for root in import_root] if isinstance(import_root, tuple) else [f"{import_root}*"]
+        assert include_patterns == expected_patterns, package_name
         assert all(not pattern.startswith("hla2010*") for pattern in include_patterns), package_name
 
 
@@ -447,7 +448,7 @@ def test_split_package_python_namespaces_do_not_overlap() -> None:
         "hla-backend-certi": ("packages/hla-backend-certi/src", "hla.backends.certi*"),
         "hla-backend-common": ("packages/hla-backend-common/src", "hla.backends.common*"),
         "hla-bridge-java-common": ("packages/hla-bridge-java-common/src", "hla.bridges.java.common*"),
-        "hla-rti-core": ("packages/hla-rti-core/src", "hla.rti*"),
+        "hla-rti-core": ("packages/hla-rti-core/src", ("hla.rti*", "hla.runtime*", "hla.fom*", "hla.spec*")),
         "hla-bridge-java-jpype": ("packages/hla-bridge-java-jpype/src", "hla.bridges.java.jpype*"),
         "hla-bridge-java-py4j": ("packages/hla-bridge-java-py4j/src", "hla.bridges.java.py4j*"),
         "hla-vendor-pitch": ("packages/hla-vendor-pitch/src", "hla.vendors.pitch*"),
@@ -465,7 +466,7 @@ def test_split_package_python_namespaces_do_not_overlap() -> None:
     }
 
     discovered: dict[str, set[str]] = {
-        package_name: set(find_packages(where=where, include=[include]))
+        package_name: set(find_packages(where=where, include=list(include) if isinstance(include, tuple) else [include]))
         for package_name, (where, include) in package_roots.items()
     }
 
@@ -523,7 +524,7 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     certi_packages = set(find_packages(where="packages/hla-backend-certi/src", include=["hla.backends.certi*"]))
     backend_common_packages = set(find_packages(where="packages/hla-backend-common/src", include=["hla.backends.common*"]))
     java_common_packages = set(find_packages(where="packages/hla-bridge-java-common/src", include=["hla.bridges.java.common*"]))
-    runtime_common_packages = set(find_packages(where="packages/hla-rti-core/src", include=["hla.rti*"]))
+    runtime_common_packages = set(find_packages(where="packages/hla-rti-core/src", include=["hla.rti*", "hla.runtime*", "hla.fom*", "hla.spec*"]))
     java_jpype_packages = set(find_packages(where="packages/hla-bridge-java-jpype/src", include=["hla.bridges.java.jpype*"]))
     java_py4j_packages = set(find_packages(where="packages/hla-bridge-java-py4j/src", include=["hla.bridges.java.py4j*"]))
     pitch_common_packages = set(find_packages(where="packages/hla-vendor-pitch/src", include=["hla.vendors.pitch*"]))
@@ -544,6 +545,9 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     assert "hla.backends.common" in backend_common_packages
     assert "hla.bridges.java.common" in java_common_packages
     assert "hla.rti" in runtime_common_packages
+    assert "hla.runtime" in runtime_common_packages
+    assert "hla.fom" in runtime_common_packages
+    assert "hla.spec" in runtime_common_packages
     assert "hla.bridges.java.jpype" in java_jpype_packages
     assert "hla.bridges.java.py4j" in java_py4j_packages
     assert "hla.vendors.pitch" in pitch_common_packages
@@ -572,7 +576,7 @@ def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path
         [
             sys.executable,
             "-c",
-            "import hla.rti1516e; from hla.rti1516e import rti; from hla.backends.inmemory.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
+            "import hla.rti1516e; import hla.runtime.rti1516e as rti; from hla.backends.inmemory.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
         ],
         cwd=tmp_path,
         env=env,
@@ -591,7 +595,7 @@ def test_top_level_hla2010_import_is_lightweight(tmp_path: Path):
         [
             sys.executable,
             "-c",
-            "import json, sys; import hla.rti1516e; print(json.dumps(sorted(name for name in sys.modules if name == 'hla.rti1516e.rti' or name.startswith(('hla2010_rti_', 'hla.rti1516e.backends')))))",
+            "import json, sys; import hla.rti1516e; print(json.dumps(sorted(name for name in sys.modules if name == 'hla.runtime.rti1516e' or name.startswith(('hla2010_rti_', 'hla.rti1516e.backends')))))",
         ],
         cwd=tmp_path,
         env=env,
@@ -619,7 +623,7 @@ def test_shared_split_packages_import_cleanly_without_vendor_package_leakage(tmp
                     f"import {package_name}; "
                     "print(json.dumps({"
                     f"'module': {package_name}.__name__, "
-                    "'root_rti_loaded': 'hla.rti1516e.rti' in sys.modules, "
+                    "'root_rti_loaded': 'hla.runtime.rti1516e' in sys.modules, "
                     "'vendor_modules': sorted("
                     "name for name in sys.modules "
                     f"if name.startswith({forbidden_prefixes!r})"
@@ -663,7 +667,7 @@ def test_backend_split_packages_import_cleanly_without_unrelated_vendor_family_l
                     f"import {package_name}; "
                     "print(json.dumps({"
                     f"'module': {package_name}.__name__, "
-                    "'root_rti_loaded': 'hla.rti1516e.rti' in sys.modules, "
+                    "'root_rti_loaded': 'hla.runtime.rti1516e' in sys.modules, "
                     "'forbidden_modules': sorted("
                     "name for name in sys.modules "
                     f"if name.startswith({forbidden_prefixes!r})"
@@ -708,7 +712,7 @@ def test_declared_backend_entrypoint_modules_import_under_declared_split_package
                         f"'backend_name': {backend_name!r}, "
                         f"'module': module.__name__, "
                         "'symbol_name': getattr(symbol, '__name__', None), "
-                        "'root_rti_loaded': 'hla.rti1516e.rti' in sys.modules, "
+                        "'root_rti_loaded': 'hla.runtime.rti1516e' in sys.modules, "
                         "'forbidden_modules': sorted("
                         "name for name in sys.modules "
                         f"if name.startswith({forbidden_prefixes!r})"
@@ -738,7 +742,7 @@ def test_backend_plugin_contract_import_does_not_import_rti_factory(tmp_path: Pa
         [
             sys.executable,
             "-c",
-            "import json, sys; import hla.backends.inmemory.plugin; print(json.dumps('hla.rti1516e.rti' in sys.modules))",
+            "import json, sys; import hla.backends.inmemory.plugin; print(json.dumps('hla.runtime.rti1516e' in sys.modules))",
         ],
         cwd=tmp_path,
         env=env,

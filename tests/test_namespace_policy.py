@@ -61,12 +61,12 @@ FORBIDDEN_REMOVED_COMPAT_IMPORT_PATTERNS = (
     "hla.rti1516e.transport_registry",
 )
 PACKAGE_TRANSPORT_REGISTRY_IMPORTS_THROUGH_ROOT = (
-    "from hla.rti1516e.rti import register_transport_factory",
-    "from hla.rti1516e.rti import _coerce_transport_spec",
+    "from hla.runtime.rti1516e import register_transport_factory",
+    "from hla.runtime.rti1516e import _coerce_transport_spec",
 )
 PACKAGE_RTI_ROOT_IMPORT_PREFIXES = (
-    "from hla.rti1516e.rti import",
-    "import hla.rti1516e.rti",
+    "from hla.runtime.rti1516e import",
+    "import hla.runtime.rti1516e",
 )
 PACKAGE_ROOT_HELPER_IMPORT_PREFIXES = (
     "from hla.rti1516e.ambassadors import",
@@ -75,8 +75,8 @@ PACKAGE_ROOT_HELPER_IMPORT_PREFIXES = (
     "import hla.rti1516e.runtime_api",
 )
 SCRIPT_RTI_ROOT_IMPORT_PREFIXES = (
-    "from hla.rti1516e.rti import",
-    "import hla.rti1516e.rti",
+    "from hla.runtime.rti1516e import",
+    "import hla.runtime.rti1516e",
 )
 FORBIDDEN_ROOT_VERIFICATION_FACADE_IMPORTS = (
     "from hla.rti1516e.conformance import",
@@ -475,7 +475,7 @@ def test_examples_and_public_docs_do_not_promote_root_rti_import_form() -> None:
         rel = path.relative_to(ROOT).as_posix()
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
-            if stripped.startswith("from hla.rti1516e.rti import") or stripped.startswith("import hla.rti1516e.rti"):
+            if stripped.startswith("from hla.runtime.rti1516e import") or stripped.startswith("import hla.runtime.rti1516e"):
                 violations.append(f"{rel}:{lineno}: {stripped}")
     assert not violations, "\n".join(violations)
 

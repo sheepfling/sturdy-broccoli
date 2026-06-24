@@ -8,7 +8,7 @@ import pytest
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.common import BackendUnavailableError, make_rti_ambassador
 from hla.rti1516e.enums import ResignAction
-from hla.rti1516e.factory import create_rti_ambassador
+from hla.runtime.factory import create_rti_ambassador
 from hla.bridges.java.common.java_shim_factory import create_shared_java_shim_backend
 from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
 from hla.verification import (

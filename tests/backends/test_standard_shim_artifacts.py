@@ -74,7 +74,7 @@ def test_java_standard_2025_build_tool_reads_official_api_surface() -> None:
 def test_java_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -> None:
     from hla.bridges.java.common.java_standard_2025 import JavaStandard2025Backend, discover_java_standard_2025
     from hla.rti.plugin_api import BackendRequest
-    from hla.rti1516_2025.plugin import plugin as spec_plugin
+    from hla.runtime.rti1516_2025_plugin import plugin as spec_plugin
 
     discovery = discover_java_standard_2025("jpype")
     assert discovery.kind == "java/jpype/standard-2025"
@@ -105,7 +105,7 @@ def test_java_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -
 def test_cpp_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -> None:
     from hla.backends.cpp_shim.standard import create_cpp_standard_backend, discover_cpp_standard
     from hla.rti.plugin_api import BackendRequest
-    from hla.rti1516_2025.plugin import plugin as spec_plugin
+    from hla.runtime.rti1516_2025_plugin import plugin as spec_plugin
 
     discovery = discover_cpp_standard("pybind", "2025")
     assert discovery.kind == "cpp/pybind/standard-2025"

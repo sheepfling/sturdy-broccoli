@@ -150,11 +150,11 @@ def _fom_module_designators(fom_modules) -> list[str]:
 
 
 def _resolve_2025_fom_modules(sources: tuple[str, ...], *, mim: bool) -> tuple[object, ...]:
-    fom = import_module("hla.rti1516e.fom")
+    fom = import_module("hla.fom")
     try:
         modules = fom.FOMResolver(require_local_parse=True).resolve_many(sources)
         if not mim:
-            validation = import_module("hla.rti1516_2025.validation")
+            validation = import_module("hla.fom.validation")
             issues = validation.validate_fom_modules(modules)
             if issues:
                 raise ValueError(issues[0].message)
@@ -181,7 +181,7 @@ def _raise_resolution_error(kind: str, details: str, *, open_name: str, read_nam
 
 
 def _merge_2025_fom_modules(modules: tuple[object, ...], *, mim_module: object) -> object:
-    fom = import_module("hla.rti1516e.fom")
+    fom = import_module("hla.fom")
     try:
         return fom.merge_fom_modules(modules, mim_module=mim_module)
     except fom.FOMMergeError as exc:
@@ -609,7 +609,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         return self._error("InvalidMIM", "Explicit createFederationExecutionWithMIM requires a MIM module designator")
                     resolved_mim = _resolve_2025_fom_modules((mim_designator,), mim=True)[0]
                 else:
-                    fom = import_module("hla.rti1516e.fom")
+                    fom = import_module("hla.fom")
                     resolved_mim = fom.standard_mim_module()
                 resolved_foms = _resolve_2025_fom_modules(fom_designators, mim=False)
                 merged_catalog = _merge_2025_fom_modules(resolved_foms, mim_module=resolved_mim)
@@ -717,7 +717,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 fom_designators = tuple(_fom_module_designators(payload.additionalFomModules))
                 if fom_designators:
                     try:
-                        fom = import_module("hla.rti1516e.fom")
+                        fom = import_module("hla.fom")
                         resolved_join_foms = _resolve_2025_fom_modules(fom_designators, mim=False)
                         base_designators = self.federation_fom_designators.get(federation_name, ())
                         resolved_base_foms = _resolve_2025_fom_modules(base_designators, mim=False)
@@ -4978,7 +4978,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         report_class = self.interactions.get(report_name)
         if report_class is not None:
             handle_module = import_module("hla.rti1516e.handles")
-            mom_module = import_module("hla.rti1516e.mom")
+            mom_module = import_module("hla.fom.mom")
             time_module = import_module("hla.rti1516e.time")
             encoded_handle = handle_module.FederateHandle(int(handle)).encode()
             raw_time = self._handle_current_time(handle).data.decode("ascii")

@@ -10,7 +10,7 @@ This profile currently inherits the Portico family-level requirement disposition
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 unknown | 4 | 0 | 0 | 0 | 0 | 4 | 0 |
 | IEEE 1516-2010 §12 | 21 | 0 | 0 | 0 | 0 | 21 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 0 | 0 | 0 | 0 | 2 | 82 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 0 | 2 | 84 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 0 | 1 | 9 |
 | IEEE 1516.1-2010 (2010 edition) §4 | 281 | 0 | 0 | 0 | 0 | 2 | 279 |
@@ -686,10 +686,12 @@ This profile currently inherits the Portico family-level requirement disposition
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getFederateHandleSetFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getHLAversion | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getInteractionClassHandleFactory | classification-required | service-requirement | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getMessageRetractionHandleFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getObjectClassHandleFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getObjectInstanceHandleFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getParameterHandleFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getParameterHandleValueMapFactory | classification-required | service-requirement | Disable Callbacks service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleSetFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTimeFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTransportationTypeHandleFactory | classification-required | service-requirement | Disable Callbacks service |
