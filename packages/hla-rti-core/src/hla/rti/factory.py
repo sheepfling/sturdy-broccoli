@@ -741,7 +741,12 @@ def available_backend_plugins() -> Mapping[str, RTIBackendPlugin]:
     """Return registered backend plugins keyed by normalized names and aliases."""
 
     _load_backend_plugins()
-    return dict(_BACKEND_PLUGINS)
+    rows: dict[str, RTIBackendPlugin] = dict(_BACKEND_PLUGINS)
+    for plugin in iter_rti_backend_plugins():
+        rows[plugin.name] = plugin
+        for alias in plugin.aliases:
+            rows[alias] = plugin
+    return rows
 
 
 def iter_rti_backend_plugins() -> tuple[RTIBackendPlugin, ...]:
@@ -761,6 +766,8 @@ def discover_rti_backends(*, spec: str | HLASpec | None = None, probe: bool = Fa
     rows: list[RTIBackendDiscovery] = []
     for plugin in iter_rti_backend_plugins():
         if resolved_spec is not None and resolved_spec.name not in plugin.supports:
+            continue
+        if resolved_spec is not None and resolved_spec.name == "rti1516_2025" and plugin.name in {"jpype", "py4j"}:
             continue
         available: bool | None = None
         info: Any = None

@@ -343,7 +343,7 @@ PY
 usage() {
   local script_name="./tools/pitch"
   cat <<EOF
-usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|smoke-best-effort|verify|verify-best-effort|all|doctor]
+usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|smoke-best-effort|verify|verify-best-effort|202x-certify|all|doctor]
 
 Simple Pitch Docker workflow:
   $script_name preflight [--json] # check Docker and Pitch runtime prerequisites
@@ -353,6 +353,7 @@ Simple Pitch Docker workflow:
   $script_name smoke-best-effort # run Pitch smoke and treat blocked local preflight as report-only
   $script_name verify    # run the full real Pitch backend matrix
   $script_name verify-best-effort # run Pitch verify and treat blocked local preflight as report-only
+  $script_name 202x-certify # run the 202X surface audit plus trial-safe real-runtime credence packet
   $script_name save-restore # report the current real Pitch save/restore gap profile
   $script_name save-restore-probe # run the current narrow real Pitch save/restore probe
   $script_name save-restore-review [repeat-count] # run repeated review for the real Pitch save/restore probe
@@ -421,6 +422,9 @@ case "${1:-start}" in
     ;;
   verify-best-effort)
     verify_pitch_docker_best_effort
+    ;;
+  202x-certify)
+    exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/run_pitch_202x_certification.py"
     ;;
   save-restore)
     "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-save-restore

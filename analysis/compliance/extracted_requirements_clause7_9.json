@@ -1278,7 +1278,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ownership.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1405,7 +1405,7 @@
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ownership.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [

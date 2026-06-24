@@ -203,6 +203,7 @@ _BACKEND_DISPOSITION_ARTIFACT_META: dict[str, dict[str, str]] = {
         "title": "Python Requirement Disposition",
         "label": "python",
         "output_stem": "python_requirement_disposition",
+        "compatibility_output_stems": ("python1516e_requirement_disposition",),
     },
     "certi": {
         "disposition_field": "certi_runtime_disposition",
@@ -6389,7 +6390,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         requirement_id = str(row.get("requirement_id") or row.get("matrix_id") or "")
         if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
             return "not-applicable"
-        if backend == "python" and requirement_id in python_requirement_overrides:
+        if backend in {"python", "python1516e"} and requirement_id in python_requirement_overrides:
             return python_requirement_overrides[requirement_id]
         if backend == "certi" and requirement_id in certi_requirement_overrides:
             return certi_requirement_overrides[requirement_id]
@@ -6421,7 +6422,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
 
         if kind in {"section-area", "omt-area", "verification-slice", "curated-seed"}:
             return "not-applicable"
-        if backend == "python":
+        if backend in {"python", "python1516e"}:
             if matrix_status == "pass":
                 return "verified"
             if matrix_status == "partial":
@@ -6602,19 +6603,17 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
         for clause, counts in sorted(clause_counts.items(), key=lambda item: item[0])
     }
     output_stem = meta["output_stem"]
-    _write_json(
-        OUTPUT_DIR / f"{output_stem}.json",
-        {
-            "summary": {
-                "backend": meta["label"],
-                "row_count": len(sorted_rows),
-                "disposition_counts": dict(sorted(disposition_counts.items())),
-                "clause_summary": clause_summary,
-                "source_artifact": "analysis/compliance/requirements_matrix_2010.json",
-            },
-            "rows": [asdict(row) for row in sorted_rows],
+    json_payload = {
+        "summary": {
+            "backend": meta["label"],
+            "row_count": len(sorted_rows),
+            "disposition_counts": dict(sorted(disposition_counts.items())),
+            "clause_summary": clause_summary,
+            "source_artifact": "analysis/compliance/requirements_matrix_2010.json",
         },
-    )
+        "rows": [asdict(row) for row in sorted_rows],
+    }
+    _write_json(OUTPUT_DIR / f"{output_stem}.json", json_payload)
 
     md_lines = [
         f"# {meta['title']}",
@@ -6661,6 +6660,9 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
             f"{row.runtime_disposition} | {row.kind} | {row.title} |"
         )
     _write_markdown(OUTPUT_DIR / f"{output_stem}.md", md_lines)
+    for compatibility_stem in meta.get("compatibility_output_stems", ()):
+        _write_json(OUTPUT_DIR / f"{compatibility_stem}.json", json_payload)
+        _write_markdown(OUTPUT_DIR / f"{compatibility_stem}.md", md_lines)
 
 
 def main(argv: list[str] | None = None) -> int:

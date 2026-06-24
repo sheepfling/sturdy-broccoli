@@ -83,9 +83,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -142,12 +142,12 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -223,12 +223,12 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassWithRegions",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClassWithRegions",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -307,12 +307,12 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla2010/time_management.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -350,11 +350,11 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
         "tests/scenarios/test_target_radar_scenario.py",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_invalid_attribute_publication_scenario_over_fedpro_route",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route",
@@ -429,10 +429,10 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla2010/fom.py::parse_fom_xml",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -489,10 +489,10 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla2010/fom.py::parse_fom_xml",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -547,10 +547,10 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishObjectClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -612,11 +612,11 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -668,9 +668,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishInteractionClass",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -727,10 +727,10 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -781,11 +781,11 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassWithRegions",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClassWithRegions",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -844,11 +844,11 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -910,8 +910,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -962,9 +962,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1025,8 +1025,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1077,9 +1077,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishObjectClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1125,10 +1125,10 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishObjectClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1184,8 +1184,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1234,9 +1234,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1305,8 +1305,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishInteractionClass",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1349,9 +1349,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unpublishInteractionClass",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1414,9 +1414,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1464,9 +1464,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1524,9 +1524,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1589,9 +1589,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1637,10 +1637,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1694,9 +1694,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1744,9 +1744,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1801,8 +1801,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -2023,11 +2023,11 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_deleteObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2099,9 +2099,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2168,10 +2168,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2237,9 +2237,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2359,9 +2359,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2421,9 +2421,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2488,10 +2488,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2628,12 +2628,12 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_attributeOwnershipAcquisition",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_attributeOwnershipAcquisitionIfAvailable",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_attributeOwnershipAcquisition",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_attributeOwnershipAcquisitionIfAvailable",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2709,10 +2709,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_deleteObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2784,10 +2784,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2857,13 +2857,13 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2950,11 +2950,11 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2990,9 +2990,9 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -3029,10 +3029,10 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/ddm.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3157,10 +3157,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3229,8 +3229,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_reserveObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_reserveObjectInstanceName",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3331,8 +3331,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_releaseObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_releaseObjectInstanceName",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3384,8 +3384,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_reserveMultipleObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_reserveMultipleObjectInstanceName",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3486,8 +3486,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_releaseMultipleObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_releaseMultipleObjectInstanceName",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3539,8 +3539,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3591,9 +3591,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3662,8 +3662,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3718,9 +3718,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_reserveObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_registerObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_reserveObjectInstanceName",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3836,8 +3836,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3891,9 +3891,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3960,10 +3960,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4041,10 +4041,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_updateAttributeValues",
         "hla2010/ambassadors.py",
         "hla2010/time_management.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4072,11 +4072,11 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_plain_object_subscriber_routing_over_fedpro_schema",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_request_attribute_value_update_scenario_over_fedpro_route",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
@@ -4117,8 +4117,8 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4286,8 +4286,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4351,9 +4351,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_publishInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4426,9 +4426,9 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
         "hla2010/fom.py::parse_fom_xml",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4498,10 +4498,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_sendInteraction",
         "hla2010/ambassadors.py",
         "hla2010/time_management.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4533,11 +4533,11 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_consumer_order_scenario_over_fedpro_route",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_output_delivery_scenario_over_fedpro_route",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_gauntlet_scenario_over_fedpro_route",
@@ -4577,9 +4577,9 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/ddm.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4634,9 +4634,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4696,8 +4696,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_deleteObjectInstance",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4752,10 +4752,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_deleteObjectInstance",
         "hla2010/ambassadors.py",
         "hla2010/time_management.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4788,11 +4788,11 @@
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_output_delivery",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline",
         "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_receive_order_poison",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_consumer_order_oracle_rejects_reversed_delivery_order",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_output_delivery_oracle_rejects_output_before_window_close",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_pipeline_oracle_rejects_cross_window_payload_contamination",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_receive_order_poison_oracle_rejects_closed_window_mutation",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_decodes_extended_callback_routes_over_fedpro_schema",
         "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_local_delete_scenario_over_fedpro_route",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -4886,8 +4886,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4939,8 +4939,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5099,8 +5099,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeValueUpdate",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestAttributeValueUpdate",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -5159,9 +5159,9 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeValueUpdate",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestAttributeValueUpdate",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5228,10 +5228,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5342,10 +5342,10 @@
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
         "hla2010/ambassadors.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5410,8 +5410,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5469,9 +5469,9 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5577,7 +5577,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5624,7 +5624,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5672,8 +5672,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5725,7 +5725,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5826,7 +5826,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5873,7 +5873,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5921,8 +5921,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5980,10 +5980,10 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/ddm.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -6089,7 +6089,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -6136,7 +6136,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -6184,8 +6184,8 @@
       "claim_scope": "broad-spec",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -6243,7 +6243,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -6344,7 +6344,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -6391,7 +6391,7 @@
       "claim_scope": "supported-subset",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",

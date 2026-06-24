@@ -217,6 +217,30 @@ def test_fom_validate_top_level_wrapper_supports_family_html_mode(tmp_path: Path
     assert (output_dir / "fom_validation_report.html").exists()
 
 
+def test_fom_siso_showcase_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "fom-siso-showcase"
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "fom-siso-showcase"),
+            "--packet",
+            "link16-standalone-template",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert (output_dir / "fom_siso_showcase_report.json").exists()
+    assert (output_dir / "fom_siso_showcase_report.md").exists()
+    assert (output_dir / "workbench" / "fom_workbench_snapshot.json").exists()
+
+
 def test_fom_workbench_top_level_wrapper_writes_snapshot_and_html(tmp_path: Path) -> None:
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
     output_dir = tmp_path / "fom-workbench"
@@ -888,6 +912,7 @@ def test_pitch_top_level_wrapper_help_lists_best_effort_routes() -> None:
     assert result.returncode == 0
     assert "./tools/pitch smoke-best-effort" in result.stdout
     assert "./tools/pitch verify-best-effort" in result.stdout
+    assert "./tools/pitch 202x-certify" in result.stdout
 
 
 def test_pitch_top_level_wrapper_crc_macos_repro_is_reachable_from_outside_repo(tmp_path: Path) -> None:

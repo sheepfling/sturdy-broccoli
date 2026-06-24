@@ -90,13 +90,13 @@
 ## Preflight
 
 - `certi`: result `real CERTI runnable`, environment `loopback-ok`, exit `0`, file `analysis/preflight_artifacts/certi-preflight.json`
-- `pitch`: result `ready to run ./tools/pitch install or ./tools/pitch all`, environment `ready`, exit `0`, file `analysis/preflight_artifacts/pitch-preflight.json`
+- `pitch`: result `not ready; fix the blocked prerequisite(s) above and rerun`, environment `docker-blocked`, exit `1`, file `analysis/preflight_artifacts/pitch-preflight.json`
 
 ## Runtime Status
 
 - repo-green: `repo-green` (exit `0`)
 - certi vendor-green: `vendor-green` (exit `0`)
-- pitch vendor-green: `vendor-green` (exit `0`)
+- pitch vendor-green: `environment-blocked` (exit `1`)
 
 Required markers for `certi` in `repo-green`:
 - `active_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`

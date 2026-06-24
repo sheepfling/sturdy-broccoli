@@ -11,8 +11,8 @@
         "tests/scenarios/test_support_services_backend_matrix.py"
       ],
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getMessageRetractionHandleFactory",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_getMessageRetractionHandleFactory",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -26,7 +26,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "non-core section lacking exact row-level evidence",
-      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getMessageRetractionHandleFactory",
+      "python_entry_point": "hla.backends.python1516e.backend.PythonRTIBackend._svc_getMessageRetractionHandleFactory",
       "python_name": "get_message_retraction_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getMessageRetractionHandleFactory",
       "section": "10.44",
@@ -48,8 +48,8 @@
         "tests/scenarios/test_support_services_backend_matrix.py"
       ],
       "implementation_refs": [
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getRegionHandleFactory",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+        "hla.backends.python1516e.backend.PythonRTIBackend._svc_getRegionHandleFactory",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -63,7 +63,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "non-core section lacking exact row-level evidence",
-      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getRegionHandleFactory",
+      "python_entry_point": "hla.backends.python1516e.backend.PythonRTIBackend._svc_getRegionHandleFactory",
       "python_name": "get_region_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleFactory",
       "section": "10.44",

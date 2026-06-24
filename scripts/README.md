@@ -47,6 +47,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-schema-baseline` canonical positive XML/XSD baseline validation flow
 - `./tools/fom-schema-audit` canonical top-to-bottom schema-positive validation, JSON cycle, and workbench flow with `Edition Scope`
 - `./tools/fom-siso-audit` canonical top-to-bottom high-value SISO corpus validation, JSON cycle, and workbench flow with `Edition Scope`
+- `./tools/fom-siso-showcase` canonical standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM
 - `./tools/fom-corpus-classification` canonical corpus bucketing flow with `Edition Scope`
 - `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow with `Edition Scope`
 - `./tools/fom-roundtrip` canonical FOM round-trip packet flow with `Edition Scope`
@@ -57,10 +58,12 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `scripts/generate_fom_schema_baseline.py`: dedicated positive XML/XSD baseline report generator with `Edition Scope` in the surrounding report stack
 - `scripts/generate_fom_schema_audit.py`: end-to-end schema-positive validator/round-trip/workbench audit generator with `Edition Scope`
 - `scripts/generate_fom_siso_audit.py`: end-to-end high-value SISO validator/round-trip/workbench audit generator with `Edition Scope`
+- `scripts/generate_fom_siso_showcase.py`: end-to-end standards-backed showcase packet generator for Link 16, RPR 3.0, and Space FOM
 - `./tools/package-deps` canonical split-package dependency tree flow
 - `./tools/section8-gate` canonical Section 8 backend-matrix gate
 - `./tools/target-radar` canonical target/radar proof and backend-matrix artifact flow
 - `./tools/lint` canonical local lint, link, and generated-doc hygiene flow
+- `./tools/test-focus` canonical targeted pytest focus wrapper
 - `./tools/two-federate` canonical generic two-federate artifact flow
 - `./tools/test` canonical direct pytest wrapper
 

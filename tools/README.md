@@ -31,6 +31,7 @@ Core operator entrypoints:
 - `./tools/fom-schema-baseline`
 - `./tools/fom-schema-audit`
 - `./tools/fom-siso-audit`
+- `./tools/fom-siso-showcase`
 - `./tools/fom-corpus-classification`
 - `./tools/fom-workbench`
 - `./tools/fom-roundtrip`
@@ -85,6 +86,7 @@ Shortest common paths:
 - validate the positive XML/XSD baseline: `./tools/fom-schema-baseline` and keep an eye on the matching `Edition Scope` labels in the surrounding report chain
 - run the schema-positive top-to-bottom audit: `./tools/fom-schema-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
 - run the high-value SISO top-to-bottom audit: `./tools/fom-siso-audit` and inspect its `Edition Scope` column across validator, JSON cycle, and workbench outputs
+- generate the standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM: `./tools/fom-siso-showcase`
 - refresh the public baseline and generate a parser stress report: `./tools/fom-stress --refresh-baseline`
 - download authenticated SISO DataFiles packages: `./tools/download-siso`
 - catalog locally downloaded SISO packages into the shared inventory: `python3 scripts/generate_siso_inventory.py`

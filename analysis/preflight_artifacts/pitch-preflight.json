@@ -1,10 +1,10 @@
 {
   "checks": [
     {
-      "detail": "ok: /usr/local/bin/docker",
+      "detail": "blocked: Docker CLI exists but the daemon is not reachable",
       "name": "docker",
-      "ok": true,
-      "status": "ok"
+      "ok": false,
+      "status": "blocked"
     },
     {
       "detail": "ok: <repo>/third_party/pitch/PITCH-prti1516e-manual",
@@ -19,31 +19,31 @@
       "status": "ok"
     },
     {
-      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
+      "detail": "ok: 127.0.0.1:8989 is available",
       "name": "crc_port",
       "ok": true,
       "status": "ok"
     },
     {
-      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
+      "detail": "ok: 127.0.0.1:15164 is available",
       "name": "fedpro_port",
       "ok": true,
       "status": "ok"
     }
   ],
-  "environment": "ready",
-  "exit_code": 0,
-  "next_step": "./tools/pitch install or ./tools/pitch all",
+  "environment": "docker-blocked",
+  "exit_code": 1,
+  "next_step": "fix the blocked prerequisite(s) above and rerun",
   "platform": "Darwin 25.5.0 arm64",
   "ports": {
     "crc": {
-      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
+      "detail": "ok: 127.0.0.1:8989 is available",
       "host": "127.0.0.1",
       "port": 8989,
       "status": "ok"
     },
     "fedpro": {
-      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
+      "detail": "ok: 127.0.0.1:15164 is available",
       "host": "127.0.0.1",
       "port": 15164,
       "status": "ok"
@@ -52,7 +52,7 @@
   "required_markers": {
     "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
   },
-  "result": "ready to run ./tools/pitch install or ./tools/pitch all",
+  "result": "not ready; fix the blocked prerequisite(s) above and rerun",
   "runtime": {
     "container_name": "hla2010-pitch-crc",
     "home": "third_party/pitch/PITCH-prti1516e-manual",

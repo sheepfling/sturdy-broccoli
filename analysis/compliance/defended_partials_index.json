@@ -23,11 +23,11 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
-            "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
-            "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
-            "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
+            "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+            "hla.backends.python1516e.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+            "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+            "hla.backends.python1516e.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py"
           ],
           "kind": "extracted-requirement",
           "linked_assets": [
@@ -63,9 +63,9 @@
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_pipeline_restore",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_output",
             "tests/scenarios/test_python_route_parity.py::test_python_route_parity_target_radar_time_window_restore_state",
-            "tests/test_rti1516_2025_python2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
-            "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
-            "tests/test_rti1516_2025_python2025_runtime.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_pipeline_restore_oracle_rejects_dirty_pipeline_output_replay",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_restore_output_oracle_rejects_dirty_output_replay_after_restore",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_restore_window_state_oracle_rejects_dirty_post_close_callback_leak",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
             "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -102,10 +102,10 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/ddm.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
           ],
           "kind": "extracted-requirement",
           "linked_assets": [
@@ -196,9 +196,9 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
           ],
           "kind": "extracted-requirement",
           "linked_assets": [
@@ -260,7 +260,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -307,7 +307,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -364,7 +364,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -423,7 +423,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -470,7 +470,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -527,10 +527,10 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/ddm.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/save_restore.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/state.py"
           ],
           "kind": "extracted-requirement",
           "linked_assets": [
@@ -592,7 +592,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -639,7 +639,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -696,7 +696,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -755,7 +755,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",
@@ -802,7 +802,7 @@
           "claim_scope": "supported-subset",
           "document": "IEEE 1516.1-2010 (2010 edition)",
           "implementation_refs": [
-            "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+            "packages/hla-backend-python1516e/src/hla.backends.python1516e/object_delivery.py",
             "hla2010/ambassadors.py"
           ],
           "kind": "extracted-requirement",

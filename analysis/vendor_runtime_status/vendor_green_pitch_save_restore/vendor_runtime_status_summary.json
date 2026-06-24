@@ -1,53 +1,60 @@
 {
   "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
-  "blocked_vendors": [],
-  "exit_code": 0,
-  "lane": "vendor-green",
-  "missing_vendors": [],
-  "overall_classification": "vendor-green",
-  "ready_vendors": [
+  "blocked_vendors": [
     "pitch"
   ],
+  "exit_code": 1,
+  "lane": "vendor-green",
+  "missing_vendors": [],
+  "overall_classification": "environment-blocked",
+  "ready_vendors": [],
   "recommended_next_steps": {
     "pitch": [
-      "./tools/pitch install or ./tools/pitch all"
+      "fix the blocked prerequisite(s) above and rerun"
     ]
   },
   "suite_name": "vendor-runtime-status",
   "unexpected_failure_vendors": [],
   "vendors": [
     {
-      "actionable": true,
+      "actionable": false,
       "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
-      "blocked_checks": [],
-      "blocked_reason": null,
-      "classification": "ready",
-      "environment": "ready",
-      "exit_code": 0,
-      "lane_ok": true,
-      "next_steps": [
-        "./tools/pitch install or ./tools/pitch all"
+      "blocked_checks": [
+        {
+          "detail": "blocked: Docker CLI exists but the daemon is not reachable",
+          "message": null,
+          "name": "docker",
+          "status": "blocked"
+        }
       ],
-      "note": "vendor runtime prerequisites are ready",
+      "blocked_reason": "docker",
+      "classification": "environment-blocked",
+      "environment": "docker-blocked",
+      "exit_code": 1,
+      "lane_ok": false,
+      "next_steps": [
+        "fix the blocked prerequisite(s) above and rerun"
+      ],
+      "note": "host/runtime prerequisites are blocked on this surface",
       "present": true,
       "required_markers": {
         "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
       },
       "required_ports": {
         "crc": {
-          "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
+          "detail": "ok: 127.0.0.1:8989 is available",
           "host": "127.0.0.1",
           "port": 8989,
           "status": "ok"
         },
         "fedpro": {
-          "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
+          "detail": "ok: 127.0.0.1:15164 is available",
           "host": "127.0.0.1",
           "port": 15164,
           "status": "ok"
         }
       },
-      "result": "ready to run ./tools/pitch install or ./tools/pitch all",
+      "result": "not ready; fix the blocked prerequisite(s) above and rerun",
       "tool": "pitch-preflight",
       "vendor": "pitch"
     }

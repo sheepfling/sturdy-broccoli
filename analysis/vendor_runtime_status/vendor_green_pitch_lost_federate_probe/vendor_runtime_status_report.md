@@ -1,8 +1,8 @@
 # Vendor Runtime Status
 
 - lane: `vendor-green`
-- overall classification: `vendor-green`
-- exit code: `0`
+- overall classification: `environment-blocked`
+- exit code: `1`
 - artifact dir: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts`
 
 ## Vendors
@@ -22,7 +22,10 @@ Required markers for `certi`:
 Next steps for `certi`:
 - `./tools/certi-easy smoke compare`
 - `HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py`
-| pitch | ready | ready | 0 |  | /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json | vendor runtime prerequisites are ready |
+| pitch | environment-blocked | docker-blocked | 1 | docker | /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json | host/runtime prerequisites are blocked on this surface |
+
+Blocked checks for `pitch`:
+- `docker`: blocked: Docker CLI exists but the daemon is not reachable
 
 Required markers for `pitch`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
@@ -32,4 +35,4 @@ Required ports for `pitch`:
 - `fedpro`: `127.0.0.1:15164` [ok]
 
 Next steps for `pitch`:
-- `./tools/pitch install or ./tools/pitch all`
+- `fix the blocked prerequisite(s) above and rerun`

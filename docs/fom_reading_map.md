@@ -21,6 +21,8 @@ their current support boundary.
   - `./tools/fom-schema-audit`
 - high-value SISO audit:
   - `./tools/fom-siso-audit`
+- high-value SISO showcase:
+  - `./tools/fom-siso-showcase`
 - edition/classification inventory:
   - [`fom-examples/fom_inventory.json`](fom-examples/fom_inventory.json)
   - [`fom-examples/fom_inventory.md`](fom-examples/fom_inventory.md)
@@ -95,6 +97,8 @@ Scope labels used across reports:
   - `./tools/fom-schema-audit`
 - high-value SISO audit flow:
   - `./tools/fom-siso-audit`
+- high-value SISO showcase flow:
+  - `./tools/fom-siso-showcase`
 
 ## Notes
 
@@ -104,6 +108,7 @@ Scope labels used across reports:
   - ordered family parse/load
   - FedPro JSON envelope round-trip for the original XML payload
 - For the optional SISO corpus we prove the same parser/load and round-trip behaviors when the downloads are present locally.
+- The showcase surface turns the strongest of those packets into a presentable narrative with workbench-backed custom load sets and expected outcome buckets.
 - We do not currently claim:
   - full serializer-normalization parity for every imported corpus
-  - runnable example federate scenarios for those third-party FOMs
+  - runnable example federate scenarios for every third-party FOM packet

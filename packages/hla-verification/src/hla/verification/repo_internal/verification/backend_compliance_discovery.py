@@ -235,6 +235,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
     pitch_path = compliance_dir / "pitch_backend_matrix.json"
     requirements_path = compliance_dir / "requirements_matrix_2010.json"
     python_disposition_path = compliance_dir / "python_requirement_disposition.json"
+    python1516e_disposition_path = compliance_dir / "python1516e_requirement_disposition.json"
     certi_disposition_path = compliance_dir / "certi_requirement_disposition.json"
     certi_native_disposition_path = compliance_dir / "certi-native_requirement_disposition.json"
     certi_jpype_disposition_path = compliance_dir / "certi-jpype_requirement_disposition.json"
@@ -251,6 +252,11 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
     pitch = _load_json(pitch_path)
     requirements = _load_json(requirements_path)
     python_disposition = _load_json(python_disposition_path) if python_disposition_path.exists() else {"summary": {}, "rows": []}
+    python1516e_disposition = (
+        _load_json(python1516e_disposition_path)
+        if python1516e_disposition_path.exists()
+        else python_disposition
+    )
     certi_disposition = _load_json(certi_disposition_path) if certi_disposition_path.exists() else {"summary": {}, "rows": []}
     certi_native_disposition = _load_json(certi_native_disposition_path) if certi_native_disposition_path.exists() else {"summary": {}, "rows": []}
     certi_jpype_disposition = _load_json(certi_jpype_disposition_path) if certi_jpype_disposition_path.exists() else {"summary": {}, "rows": []}
@@ -262,6 +268,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
     pitch_jpype_disposition = _load_json(pitch_jpype_disposition_path) if pitch_jpype_disposition_path.exists() else {"summary": {}, "rows": []}
     pitch_py4j_disposition = _load_json(pitch_py4j_disposition_path) if pitch_py4j_disposition_path.exists() else {"summary": {}, "rows": []}
     python_disposition_summary = _summary_view(python_disposition)
+    python1516e_disposition_summary = _summary_view(python1516e_disposition)
     certi_disposition_summary = _summary_view(certi_disposition)
     certi_native_disposition_summary = _summary_view(certi_native_disposition)
     certi_jpype_disposition_summary = _summary_view(certi_jpype_disposition)
@@ -406,6 +413,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
             "pitch_row_count": pitch.get("row_count", len(pitch.get("rows", ()))),
             "requirements_row_count": requirements.get("summary", {}).get("row_count", len(requirements.get("rows", ()))),
             "python_requirement_disposition_row_count": python_disposition_summary.get("row_count", len(python_disposition.get("rows", ()))),
+            "python1516e_requirement_disposition_row_count": python1516e_disposition_summary.get("row_count", len(python1516e_disposition.get("rows", ()))),
             "certi_requirement_disposition_row_count": certi_disposition_summary.get("row_count", len(certi_disposition.get("rows", ()))),
             "certi_native_requirement_disposition_row_count": certi_native_disposition_summary.get("row_count", len(certi_native_disposition.get("rows", ()))),
             "certi_jpype_requirement_disposition_row_count": certi_jpype_disposition_summary.get("row_count", len(certi_jpype_disposition.get("rows", ()))),
@@ -425,6 +433,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
                 "analysis/compliance/section8_backend_matrix.json",
                 "analysis/compliance/pitch_backend_matrix.json",
                 "analysis/compliance/python_requirement_disposition.json",
+                "analysis/compliance/python1516e_requirement_disposition.json",
                 "analysis/compliance/certi_requirement_disposition.json",
                 "analysis/compliance/certi-native_requirement_disposition.json",
                 "analysis/compliance/certi-jpype_requirement_disposition.json",
@@ -444,6 +453,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
             "analysis/compliance/section8_backend_matrix.json",
             "analysis/compliance/pitch_backend_matrix.json",
             "analysis/compliance/python_requirement_disposition.json",
+            "analysis/compliance/python1516e_requirement_disposition.json",
             "analysis/compliance/certi_requirement_disposition.json",
             "analysis/compliance/certi-native_requirement_disposition.json",
             "analysis/compliance/certi-jpype_requirement_disposition.json",
@@ -463,6 +473,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
             key: _sorted_counts(value) for key, value in requirement_vendor_summary.items()
         },
         "python_requirement_disposition_summary": python_disposition_summary,
+        "python1516e_requirement_disposition_summary": python1516e_disposition_summary,
         "certi_requirement_disposition_summary": certi_disposition_summary,
         "certi_native_requirement_disposition_summary": certi_native_disposition_summary,
         "certi_jpype_requirement_disposition_summary": certi_jpype_disposition_summary,

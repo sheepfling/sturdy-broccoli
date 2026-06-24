@@ -126,6 +126,7 @@ Use this for most work:
 ./tools/pitch all
 ./tools/pitch smoke
 ./tools/pitch verify
+./tools/pitch 202x-certify
 ./tools/pitch doctor
 ./tools/pitch logs
 ./tools/pitch stop
@@ -196,6 +197,30 @@ Pitch is currently not promoted for:
 - lost-federate handling
 - DDM
 - target/radar
+
+If you want the narrowest explicit 202X vendor-credence packet for the bundled
+Pitch jars, use:
+
+```bash
+./tools/pitch 202x-certify
+```
+
+That route:
+
+- re-runs Pitch preflight
+- refreshes the checked-in `202X` surface audit
+- runs the promoted lifecycle/exchange smoke
+- runs the two current trial-safe Target/Radar probes:
+  - `time-window-probe`
+  - `time-window-restore-state-probe`
+- emits a combined certification packet under:
+  - `analysis/pitch_202x_certification/`
+
+Treat that packet as:
+
+- evidence that the bundled Pitch `202X` surface is real
+- evidence for the smallest real-runtime trial-safe example/FOM scenarios
+- not an IEEE `2025` conformance claim
 
 If you want the current explicit operator result for the negotiated-ownership
 gap, use:
