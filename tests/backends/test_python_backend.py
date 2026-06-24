@@ -1,7 +1,7 @@
 import pytest
 
 from hla.rti1516e import NullFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.backends.python1516e import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.encoding import HLAunicodeString
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import CouldNotDecode

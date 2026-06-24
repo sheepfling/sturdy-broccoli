@@ -1,7 +1,7 @@
 """Main executable 2025 spec suite for the primary python1516_2025 runtime lane.
 
-The substantive runtime under test is ``hla-backend-python2025`` /
-``hla.backends.python2025``. Explicit shim coverage in this module is limited
+The substantive runtime under test is ``hla-backend-python1516-2025`` /
+``hla.backends.python1516_2025``. Explicit shim coverage in this module is limited
 to wrapper-specific compatibility behavior and re-export consumption checks.
 """
 
@@ -2743,18 +2743,18 @@ def test_dedicated_python1516_2025_backend_is_discoverable_and_executable() -> N
     assert plugins["python1516_2025"].family == "python-rti-1516-2025"
     python1516_2025_rti = create_rti_ambassador(spec="2025", backend="python1516_2025")
 
-    assert python1516_2025_rti.__class__.__module__ == "hla.backends.python2025.backend"
+    assert python1516_2025_rti.__class__.__module__ == "hla.backends.python1516_2025.backend"
     assert python1516_2025_rti.backend_info.name == "python1516_2025-rti"
     assert python1516_2025_rti.backend_info.kind == "python/2025"
     assert python1516_2025_rti.backend_info.details["provider"] == "python1516_2025"
-    assert python1516_2025_rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert python1516_2025_rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
 
     with pytest.raises(ValueError, match="Unknown RTI backend kind: 'shim'"):
         create_rti_ambassador(spec="2025", backend="shim")
 
 
 def test_2025_legacy_shim_runtime_alias_module_exports_python1516_2025_symbols_as_real_runtime_aliases() -> None:
-    from hla.backends.python2025.backend import (
+    from hla.backends.python1516_2025.backend import (
         Python2025Backend as RuntimePython2025Backend,
         Python2025RTIAmbassador as RuntimePython2025RTIAmbassador,
         create_python2025_backend as runtime_create_python2025_backend,
@@ -2780,7 +2780,7 @@ def test_2025_legacy_shim_runtime_alias_module_exports_python1516_2025_symbols_a
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_directed_interaction_semantics() -> None:
-    from hla.backends.python2025.directed_interaction_boundary import (
+    from hla.backends.python1516_2025.directed_interaction_boundary import (
         matching_directed_interaction_targets as extracted_matching_directed_interaction_targets,
     )
     from hla.backends.shim.directed_interaction import (
@@ -2792,7 +2792,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_directed_inter
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_save_restore_semantics() -> None:
-    from hla.backends.python2025.save_restore_lifecycle import (
+    from hla.backends.python1516_2025.save_restore_lifecycle import (
         request_federation_save as extracted_request_federation_save,
     )
     from hla.backends.shim.save_restore import (
@@ -2804,10 +2804,10 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_save_restore_s
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_ddm_default_policy_semantics() -> None:
-    from hla.backends.python2025.attribute_policy import (
+    from hla.backends.python1516_2025.attribute_policy import (
         known_object_classes_for_federate as extracted_known_object_classes_for_federate,
     )
-    from hla.backends.python2025.ddm_default_attribute_policy import (
+    from hla.backends.python1516_2025.ddm_default_attribute_policy import (
         reflectable_attribute_names_for_subscriber as extracted_reflectable_attribute_names_for_subscriber,
         region_sets_overlap as extracted_region_sets_overlap,
     )
@@ -2826,7 +2826,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_ddm_default_po
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_time_management_semantics() -> None:
-    from hla.backends.python2025.time_management_runtime import (
+    from hla.backends.python1516_2025.time_management_runtime import (
         query_galt_for as extracted_query_galt_for,
         process_time_advances as extracted_process_time_advances,
     )
@@ -2841,7 +2841,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_time_managemen
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_support_policy_semantics() -> None:
-    from hla.backends.python2025.support_policy_runtime import (
+    from hla.backends.python1516_2025.support_policy_runtime import (
         serialize_mom_service_report as extracted_serialize_mom_service_report,
         set_switch as extracted_set_switch,
     )
@@ -2856,7 +2856,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_support_policy
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_support_lookup_semantics() -> None:
-    from hla.backends.python2025.support_lookup_runtime import (
+    from hla.backends.python1516_2025.support_lookup_runtime import (
         get_object_class_handle as extracted_get_object_class_handle,
         get_order_name as extracted_get_order_name,
     )
@@ -2871,7 +2871,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_support_lookup
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_model_semantics() -> None:
-    from hla.backends.python2025.object_model_runtime import (
+    from hla.backends.python1516_2025.object_model_runtime import (
         matching_object_publishers as extracted_matching_object_publishers,
     )
     from hla.backends.shim.object_model import (
@@ -2883,7 +2883,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_model_s
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_declaration_management_semantics() -> None:
-    from hla.backends.python2025.declaration_management_runtime import (
+    from hla.backends.python1516_2025.declaration_management_runtime import (
         publish_object_class_attributes as extracted_publish_object_class_attributes,
     )
     from hla.backends.shim.declaration_management import (
@@ -2895,7 +2895,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_declaration_ma
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_federation_management_semantics() -> None:
-    from hla.backends.python2025.federation_management_runtime import (
+    from hla.backends.python1516_2025.federation_management_runtime import (
         connect as extracted_connect,
         join_federation_execution as extracted_join_federation_execution,
     )
@@ -2910,7 +2910,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_federation_man
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_reflection_semantics() -> None:
-    from hla.backends.python2025.object_reflection_runtime import (
+    from hla.backends.python1516_2025.object_reflection_runtime import (
         fanout_attribute_update as extracted_fanout_attribute_update,
         group_source_values_by_transport as extracted_group_source_values_by_transport,
     )
@@ -2925,7 +2925,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_reflect
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_instance_semantics() -> None:
-    from hla.backends.python2025.object_instance_runtime import (
+    from hla.backends.python1516_2025.object_instance_runtime import (
         register_object_instance as extracted_register_object_instance,
         update_attribute_values as extracted_update_attribute_values,
     )
@@ -2940,7 +2940,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_instanc
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_policy_semantics() -> None:
-    from hla.backends.python2025.interaction_policy_runtime import (
+    from hla.backends.python1516_2025.interaction_policy_runtime import (
         interaction_order_for as extracted_interaction_order_for,
         parameter_names_from_handles as extracted_parameter_names_from_handles,
     )
@@ -2955,7 +2955,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_po
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_runtime_semantics() -> None:
-    from hla.backends.python2025.interaction_runtime import (
+    from hla.backends.python1516_2025.interaction_runtime import (
         publish_interaction_class as extracted_publish_interaction_class,
         send_interaction as extracted_send_interaction,
     )
@@ -2970,7 +2970,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_ru
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_region_semantics() -> None:
-    from hla.backends.python2025.object_region_runtime import (
+    from hla.backends.python1516_2025.object_region_runtime import (
         create_region as extracted_create_region,
         register_object_instance_with_regions as extracted_register_object_instance_with_regions,
     )
@@ -2985,7 +2985,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_object_region_
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_callback_semantics() -> None:
-    from hla.backends.python2025.callback_runtime import (
+    from hla.backends.python1516_2025.callback_runtime import (
         deliver_callback as extracted_deliver_callback,
         evoke_multiple_callbacks as extracted_evoke_multiple_callbacks,
     )
@@ -3000,7 +3000,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_callback_seman
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_ownership_semantics() -> None:
-    from hla.backends.python2025.ownership_runtime import (
+    from hla.backends.python1516_2025.ownership_runtime import (
         attribute_ownership_acquisition as extracted_attribute_ownership_acquisition,
         unconditional_attribute_ownership_divestiture as extracted_unconditional_attribute_ownership_divestiture,
     )
@@ -3018,7 +3018,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_ownership_sema
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_update_rate_semantics() -> None:
-    from hla.backends.python2025.update_rate_runtime import (
+    from hla.backends.python1516_2025.update_rate_runtime import (
         apply_update_rate_reduction_for_subscriber as extracted_apply_update_rate_reduction_for_subscriber,
         get_update_rate_value as extracted_get_update_rate_value,
     )
@@ -3036,7 +3036,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_update_rate_se
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_catalog_semantics() -> None:
-    from hla.backends.python2025.catalog_runtime import (
+    from hla.backends.python1516_2025.catalog_runtime import (
         attribute_handles as extracted_attribute_handles,
         synchronization_required_federates as extracted_synchronization_required_federates,
     )
@@ -3051,7 +3051,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_catalog_semant
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_attribute_scope_semantics() -> None:
-    from hla.backends.python2025.attribute_scope_runtime import (
+    from hla.backends.python1516_2025.attribute_scope_runtime import (
         deliver_forced_remove_callbacks as extracted_deliver_forced_remove_callbacks,
         evaluate_attribute_scope_advisories as extracted_evaluate_attribute_scope_advisories,
     )
@@ -3066,7 +3066,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_attribute_scop
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_codec_semantics() -> None:
-    from hla.backends.python2025.mom_codec import (
+    from hla.backends.python1516_2025.mom_codec import (
         mom_attribute_handles as extracted_mom_attribute_handles,
         mom_request_params_by_name as extracted_mom_request_params_by_name,
     )
@@ -3081,7 +3081,7 @@ def test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_codec_sema
 
 @pytest.mark.requirements("HLA2025-MIL-006")
 def test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_runtime_semantics() -> None:
-    from hla.backends.python2025.mom_runtime import (
+    from hla.backends.python1516_2025.mom_runtime import (
         handle_mom_interaction as extracted_handle_mom_interaction,
         send_mom_exception_interaction as extracted_send_mom_exception_interaction,
     )
@@ -3462,7 +3462,7 @@ def test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end(ba
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["federation_name"] == config.federation_name
     assert summary["leader_handle"] is not None
@@ -3496,7 +3496,7 @@ def test_2025_provider_runs_federation_listing_scenario_end_to_end(backend_name:
     )
 
     assert rti.backend_info.details["provider"] == "python1516_2025"
-    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert rti.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["federation_name"] == config.federation_name
     assert config.federation_name in summary["reported_names"]
@@ -3537,7 +3537,7 @@ def test_2025_provider_runs_multi_participation_scenario_end_to_end(backend_name
 
     for ambassador in (leader, wing, shadow):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["primary_federation_name"] == config.federation_name
     assert summary["secondary_federation_name"] == config.secondary_federation_name
@@ -3692,7 +3692,7 @@ def test_2025_provider_runs_join_precondition_scenario_end_to_end(backend_name: 
 
     for ambassador in (leader, wing, late):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert type(summary["not_connected"]).__name__ == "NotConnected"
     assert type(summary["missing_federation"]).__name__ == "FederationExecutionDoesNotExist"
@@ -3743,7 +3743,7 @@ def test_2025_provider_runs_resign_precondition_scenario_end_to_end(tmp_path: Pa
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert type(summary["not_connected"]).__name__ == "NotConnected"
     assert type(summary["not_joined"]).__name__ == "FederateNotExecutionMember"
@@ -3785,7 +3785,7 @@ def test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end(tmp_path: Pat
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["wing_before"].args[1]
     assert summary["federation_after"].args[1]
@@ -3825,7 +3825,7 @@ def test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end(
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["leader_before"].args[1]
     assert summary["federation_after"].args[1]
@@ -3866,7 +3866,7 @@ def test_2025_provider_runs_lost_federate_mom_scenario_end_to_end(tmp_path: Path
 
     for ambassador in (observer, victim):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["loss_record"].args[1]
     assert summary["removal"].args[0] == summary["object_instance"]
@@ -3940,7 +3940,7 @@ def test_2025_provider_runs_external_lost_federate_observer_scenario_end_to_end(
     )
 
     assert observer.backend_info.details["provider"] == "python1516_2025"
-    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert observer.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["loss_record"].args[1]
     assert summary["removal"].args[0] == summary["object_instance"]
@@ -3984,7 +3984,7 @@ def test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end(
 
     for ambassador in (owner, requester):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["owner_handle"] is not None
     assert summary["requester_handle"] is not None
@@ -4034,7 +4034,7 @@ def test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_
 
     for ambassador in (owner_a, owner_b, requester):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["owner_a_handle"] is not None
     assert summary["owner_b_handle"] is not None
@@ -5610,7 +5610,7 @@ def test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wr
 
     for ambassador in (sender, receiver):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["received_count"] == 1
     assert summary["received_payload"] == {"Message": "near"}
@@ -5702,7 +5702,7 @@ def test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_w
 
     for ambassador in (left, right):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["federation_saved"] is True
     assert summary["restore_completed"] is True
@@ -5922,7 +5922,7 @@ def test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_withou
     object_instance = rti.registerObjectInstance(object_class, "python1516_2025-direct-support-suite")
 
     assert rti.backend_info.details["provider"] == "python1516_2025"
-    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert rti.backend_info.details["counts_as_python_2025_rti"] is True
     assert rti.getFederateName(federate_handle) == "Support"
     assert rti.normalizeFederateHandle(federate_handle) == federate_handle.value
@@ -6416,10 +6416,10 @@ def test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_
         )
 
         assert owner.backend_info.details["provider"] == "python1516_2025"
-        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert owner.backend_info.details["counts_as_python_2025_rti"] is True
         assert rival.backend_info.details["provider"] == "python1516_2025"
-        assert rival.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rival.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert rival.backend_info.details["counts_as_python_2025_rti"] is True
 
         assert summary["owner_handle"] is not None
@@ -6844,7 +6844,7 @@ def test_2025_primary_python_rti_runs_package_owned_save_restore_gauntlet_withou
 
     for ambassador in (owner, mirror, sender, observer):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["dirty_fingerprints"] != summary["saved_fingerprints"]
     assert summary["restored_fingerprints"] == summary["saved_fingerprints"]
@@ -6893,7 +6893,7 @@ def test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_with
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["leader_initiate_save"].args[0] == config.save_name
     assert summary["wing_initiate_save"].args == (config.save_name,)
@@ -6944,7 +6944,7 @@ def test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["leader_initiate_save"].args[0] == config.save_name
     assert summary["wing_initiate_save"].args[0] == config.save_name
@@ -8432,10 +8432,10 @@ def test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_w
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert acquirer.backend_info.details["provider"] == "python1516_2025"
-    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
     assert _normalized_2025_callback_equal(summary["unavailable"].args[0], summary["object_instance"])
     assert _normalized_2025_callback_equal(summary["unavailable"].args[1], {summary["acquirer_attribute"]})
@@ -8566,10 +8566,10 @@ def test_2025_primary_python_rti_runs_release_request_ownership_scenario_without
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert acquirer.backend_info.details["provider"] == "python1516_2025"
-    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
     assert _normalized_2025_callback_equal(summary["release"].args, (
         summary["object_instance"],
@@ -8688,10 +8688,10 @@ def test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_wi
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert acquirer.backend_info.details["provider"] == "python1516_2025"
-    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
     if summary["assumption"] is not None:
         assert _normalized_2025_callback_equal(summary["assumption"].args, (
@@ -8807,10 +8807,10 @@ def test_2025_primary_python_rti_runs_confirm_divestiture_negotiated_scenario_wi
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert acquirer.backend_info.details["provider"] == "python1516_2025"
-    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
     assert _normalized_2025_callback_equal(summary["divestiture_confirmation"].args, (
         summary["object_instance"],
@@ -8900,10 +8900,10 @@ def test_2025_primary_python_rti_runs_resigned_federate_callback_silence_scenari
     )
 
     assert leader.backend_info.details["provider"] == "python1516_2025"
-    assert leader.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert leader.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert leader.backend_info.details["counts_as_python_2025_rti"] is True
     assert wing.backend_info.details["provider"] == "python1516_2025"
-    assert wing.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert wing.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert wing.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["leader_initiate_save"].args == (config.save_name,)
     assert summary["leader_saved"] is not None
@@ -9321,10 +9321,10 @@ def test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert acquirer.backend_info.details["provider"] == "python1516_2025"
-    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["release"].args[2] == config.cancel_tag
     assert getattr(summary["cancellation"].args[0], "value", summary["cancellation"].args[0]) == getattr(
@@ -9567,10 +9567,10 @@ def test_2025_primary_python_rti_runs_transportation_type_restore_persistence_sc
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert observer.backend_info.details["provider"] == "python1516_2025"
-    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert observer.backend_info.details["counts_as_python_2025_rti"] is True
     assert len(summary["pre_restore_reflects"]) == 2
     assert len(summary["post_restore_attribute_reports"]) >= 2
@@ -9650,10 +9650,10 @@ def test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_wit
     )
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert observer.backend_info.details["provider"] == "python1516_2025"
-    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert observer.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["object_instance"] is not None
     assert summary["attribute"] is not None
@@ -9952,10 +9952,10 @@ def test_2025_primary_python_rti_restores_transportation_type_state_without_wrap
     best_effort_transport = owner.get_transportation_type_handle("HLAbestEffort")
 
     assert owner.backend_info.details["provider"] == "python1516_2025"
-    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert owner.backend_info.details["counts_as_python_2025_rti"] is True
     assert observer.backend_info.details["provider"] == "python1516_2025"
-    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert observer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert observer.backend_info.details["counts_as_python_2025_rti"] is True
 
     owner.publish_object_class_attributes(object_class, {reliable_attribute, best_effort_attribute})
@@ -11111,7 +11111,7 @@ def test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end(
 
     for ambassador in (leader, wing):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["leader_handle"] is not None
     assert summary["wing_handle"] is not None
@@ -11171,7 +11171,7 @@ def test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end(backend_n
 
     for ambassador in (truth, sensor, radar, consumer, fast, slow):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["certification_target"] == "lookahead-processing-window-certified"
     assert set(summary["subproofs"]) == {
@@ -11221,10 +11221,10 @@ def test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end(bac
     )
 
     assert slow.backend_info.details["provider"] == "python1516_2025"
-    assert slow.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert slow.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert slow.backend_info.details["counts_as_python_2025_rti"] is True
     assert radar.backend_info.details["provider"] == "python1516_2025"
-    assert radar.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert radar.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert radar.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["certification_target"] == "time-window-future-exclusion"
     assert summary["oracle_report"]["certification_target"] == "time-window-future-exclusion"
@@ -11669,13 +11669,13 @@ def test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end(back
     )
 
     assert truth.backend_info.details["provider"] == "python1516_2025"
-    assert truth.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert truth.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert truth.backend_info.details["counts_as_python_2025_rti"] is True
     assert radar.backend_info.details["provider"] == "python1516_2025"
-    assert radar.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert radar.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert radar.backend_info.details["counts_as_python_2025_rti"] is True
     assert consumer.backend_info.details["provider"] == "python1516_2025"
-    assert consumer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert consumer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert consumer.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["certification_target"] == "time-window-output-delivery"
     assert summary["oracle_report"]["certification_target"] == "time-window-output-delivery"
@@ -11729,7 +11729,7 @@ def test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end(backe
 
     for ambassador in (truth, radar, other, consumer):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
     assert delivered == [
@@ -11780,7 +11780,7 @@ def test_2025_provider_runs_time_window_pipeline_scenario_end_to_end(backend_nam
 
     for ambassador in (truth, radar, consumer):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     delivered = [(record.args[2], record.args[5].value) for record in summary["consumer_receives"]]
     assert delivered == [
@@ -11835,7 +11835,7 @@ def test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end(bac
 
     for ambassador in (truth, radar, consumer):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["saved_radar_time"].value == config.scan2_input_time
     assert summary["saved_consumer_time"].value == config.scan1_end
@@ -11900,7 +11900,7 @@ def test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end
 
     for ambassador in (truth, radar, consumer):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["window_close_grant"].args[0].value == config.scan_window_end
     assert summary["closed_window_tags_before"] == [b"truth-105", b"truth-106"]
@@ -11946,7 +11946,7 @@ def test_2025_provider_runs_time_window_restore_state_scenario_end_to_end(backen
 
     for ambassador in (truth, radar):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["first_grant"].args[0].value == config.first_input_time
     assert summary["dirty_close_grant"].args[0].value == config.scan_window_end
@@ -12003,7 +12003,7 @@ def test_2025_provider_runs_time_window_restore_output_scenario_end_to_end(backe
 
     for ambassador in (truth, radar, consumer):
         assert ambassador.backend_info.details["provider"] == "python1516_2025"
-        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert ambassador.backend_info.details["counts_as_python_2025_rti"] is True
     assert summary["window_close_grant"].args[0].value == config.scan_window_end
     assert summary["saved_consumer_time"].value == config.scan_window_end
@@ -13226,7 +13226,7 @@ def test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_vi
 
     for rti in (owner, acquirer):
         assert rti.backend_info.details["provider"] == "python1516_2025"
-        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
     federation_name = f"primary-factory-2025-owner-visibility-{uuid.uuid4().hex[:8]}"
@@ -14112,7 +14112,7 @@ def test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subs
 def test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state(
     tmp_path: Path, backend_name: str
 ) -> None:
-    from hla.backends.python2025.backend import _FEDERATION_REGISTRY
+    from hla.backends.python1516_2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
@@ -14449,7 +14449,7 @@ def test_2025_provider_delivers_and_retracts_timestamped_directed_interactions_f
 def test_2025_provider_drops_queued_directed_tso_for_departed_target(
     tmp_path: Path, backend_name: str
 ) -> None:
-    from hla.backends.python2025.backend import _FEDERATION_REGISTRY
+    from hla.backends.python1516_2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
@@ -19196,7 +19196,7 @@ def test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_tar
     tmp_path: Path,
     backend_name: str,
 ) -> None:
-    from hla.backends.python2025.backend import _FEDERATION_REGISTRY
+    from hla.backends.python1516_2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
     from hla.rti1516_2025.time import HLAinteger64Interval, HLAinteger64Time
@@ -20269,7 +20269,7 @@ def test_2025_provider_restore_recovers_plain_object_subscriber_routing(
 def test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target(
     tmp_path: Path, backend_name: str
 ) -> None:
-    from hla.backends.python2025.backend import _FEDERATION_REGISTRY
+    from hla.backends.python1516_2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.datatypes import RangeBounds
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
@@ -21058,7 +21058,7 @@ def test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_rest
     tmp_path: Path,
     backend_name: str,
 ) -> None:
-    from hla.backends.python2025.backend import _FEDERATION_REGISTRY
+    from hla.backends.python1516_2025.backend import _FEDERATION_REGISTRY
     from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import InvalidMessageRetractionHandle
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador

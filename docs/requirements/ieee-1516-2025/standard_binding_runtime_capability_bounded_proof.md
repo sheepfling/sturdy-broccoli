@@ -5,15 +5,15 @@ Source: IEEE 1516.1-2025 Java and C++ standard binding route evidence.
 This note records the repo's current requirement-facing claim for the standard
 Java and C++ 2025 binding routes. These routes are real executable
 artifact-gated/runtime-capability traces over the main
-`hla-backend-python2025` runtime, but they remain bounded binding/adaptation
+`hla-backend-python1516-2025` runtime, but they remain bounded binding/adaptation
 evidence rather than exhaustive cross-binding behavior-conformance proof.
 
 ## Current Bounded Claim
 
 - `java-standard-2025-jpype` and `java-standard-2025-py4j` are Java binding
-  routes over `hla-backend-python2025`, not separate 2025 RTI owners.
+  routes over `hla-backend-python1516-2025`, not separate 2025 RTI owners.
 - `cpp-standard-2025-pybind` and `cpp-standard-2025-grpc` are C++ binding
-  routes over `hla-backend-python2025`, not separate 2025 RTI owners.
+  routes over `hla-backend-python1516-2025`, not separate 2025 RTI owners.
 - Both Java and C++ standard-route families are parity-covered across the
   tracked eight scenario families used by the current finish-line inventory.
 - The remaining proof burden on these lanes is exhaustive cross-binding
@@ -63,5 +63,5 @@ evidence rather than exhaustive cross-binding behavior-conformance proof.
 - The repo does not claim exhaustive cross-binding behavior equivalence from
   these standard-route traces alone.
 - The repo does not use standard binding proof to weaken the architectural
-  boundary that keeps `hla-backend-python2025` as the main 2025 Python RTI
+  boundary that keeps `hla-backend-python1516-2025` as the main 2025 Python RTI
   implementation lane and the Java/C++ packages as bounded adaptation surfaces.

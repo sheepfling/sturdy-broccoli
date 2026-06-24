@@ -1,8 +1,8 @@
-# hla-backend-python2025
+# hla-backend-python1516-2025
 
 ## What This Is
 
-`hla-backend-python2025` owns the main full Python 2025 RTI runtime.
+`hla-backend-python1516-2025` owns the main full Python 2025 RTI runtime.
 
 It is the main full Python RTI backend for IEEE 1516.1-2025.
 
@@ -35,9 +35,12 @@ If you only need the public API shape, do not start here.
 
 The main implementation root is:
 
-- `hla.backends.python2025`
+- `hla.backends.python1516_2025`
 
-The public shell fronts focused modules such as:
+The public `hla.backends.python1516_2025.backend` shell now fronts a split
+package layout.
+
+That shell fronts focused modules such as:
 
 - `backend_factory_runtime.py`
 - `runtime_state.py`
@@ -59,3 +62,4 @@ Current status:
 - executes the main 2025 runtime directly
 - is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane
 - must not delegate runtime ownership back to `hla-backend-shim`
+- must not delegate back to `hla.backends.shim.backend.create_shim_backend`

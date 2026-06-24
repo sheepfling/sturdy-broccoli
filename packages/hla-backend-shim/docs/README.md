@@ -5,7 +5,7 @@ import-compatibility scaffolding and a compatibility wrapper over the main full
 Python 2025 RTI lane for `rti1516_2025`. It is not part of the repo-owned
 2025 Python RTI implementation claim.
 
-The executable runtime now lives in `hla-backend-python2025`, which is the
+The executable runtime now lives in `hla-backend-python1516-2025`, which is the
 sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane. This package
 retains temporary import-compatibility scaffolding, import-level
 wrapper-facing normalization, and compatibility aliases used by older routes
@@ -18,7 +18,7 @@ module path `hla.backends.shim.runtime_aliases`, where `Python2025Backend`,
 to the real runtime package.
 
 The other `hla.backends.shim.*` helper modules are intentionally thin
-forwarders into `hla.backends.python2025.*`. They remain only as temporary,
+forwarders into `hla.backends.python1516_2025.*`. They remain only as temporary,
 test-backed legacy import compatibility scaffolding and should not become the
 normal import path for new runtime code. They are kept only for test-backed
 legacy import compatibility, and they are also a test-backed legacy
@@ -26,11 +26,11 @@ compatibility surface. They are deprecated and should be removed after
 migration.
 
 The architectural intent remains explicit. The real Python 2025 RTI backend
-already lives in `hla-backend-python2025`; this package is the wrapper-only
+already lives in `hla-backend-python1516-2025`; this package is the wrapper-only
 compatibility lane and temporary scaffolding seam. Future work is about
 keeping that wrapper narrow, not about deciding whether a dedicated 2025
 backend should exist, and the package should be removed after migration.
 
 Current working stance: implement new 2025 runtime behavior in
-`hla-backend-python2025`, and reserve `hla-backend-shim` only for deprecated
+`hla-backend-python1516-2025`, and reserve `hla-backend-shim` only for deprecated
 compatibility-only scaffolding concerns until it can be removed.

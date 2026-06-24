@@ -1,6 +1,6 @@
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.backends.python1516e import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.enums import (
     CallbackModel,
 )

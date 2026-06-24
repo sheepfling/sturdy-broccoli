@@ -2,7 +2,7 @@
 
 Package-owned notes for the pure in-memory Python RTI backend live here.
 
-- `src/hla.backends.inmemory/` owns the backend implementation.
+- `src/hla.backends.python1516e/` owns the backend implementation.
 - `testing_policy.py` owns package-specific policy helpers.
 - `./tools/python verify` is the repo-green verification lane.
 - Shared scenario bodies live in `hla-verification`; Python backend

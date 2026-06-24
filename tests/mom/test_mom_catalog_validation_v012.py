@@ -4,8 +4,8 @@ import pytest
 
 import hla.fom.mom as hla_mom
 from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
-from hla.backends.inmemory.state import MOM_FEDERATE_CLASS, MOM_FEDERATION_CLASS, RTI_FEDERATE_HANDLE
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig
+from hla.backends.python1516e.state import MOM_FEDERATE_CLASS, MOM_FEDERATION_CLASS, RTI_FEDERATE_HANDLE
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.exceptions import InteractionClassNotPublished, InteractionParameterNotDefined, InvalidRegionContext
 from hla.runtime.factory import create_rti_ambassador

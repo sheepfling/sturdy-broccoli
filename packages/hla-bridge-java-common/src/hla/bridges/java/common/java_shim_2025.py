@@ -27,14 +27,14 @@ class JavaRouteShim2025Backend:
                 "spec": "rti1516_2025",
                 "implementation": "2025 Python RTI lane",
                 "runtime_provider": "python1516_2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": False,
                 "wrapper_only": False,
             },
         )
 
     def create_rti_ambassador(self) -> Any:
-        from hla.backends.python2025.backend import create_python2025_backend
+        from hla.backends.python1516_2025.backend import create_python2025_backend
 
         native_backend = create_python2025_backend(self.request)
         ambassador = native_backend.create_rti_ambassador()

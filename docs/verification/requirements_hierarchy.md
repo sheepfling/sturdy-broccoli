@@ -23,7 +23,7 @@ Use these 2025 front doors instead:
 
 - [`../python_rti_backend.md`](../python_rti_backend.md)
 - [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md)
-- [`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
+- [`../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
 
 Those pages carry the bounded direct/hosted `python1516_2025` executable-behavior
 claim plus the explicit excluded-area map for legacy aliases, Java/C++

@@ -18,8 +18,8 @@ Read it as five layers with one job each.
    - `hla.transports.common`
    - job: shared factory, registry, codec, and support logic
 3. concrete backends
-   - `hla.backends.inmemory`
-   - `hla.backends.python2025`
+   - `hla.backends.python1516e`
+   - `hla.backends.python1516_2025`
    - `hla.backends.certi`
    - job: actually execute HLA service behavior
 4. integrations
@@ -42,9 +42,9 @@ Everything else is detail inside one of those layers.
 There are three different kinds of hierarchy mixed together:
 
 1. package hierarchy
-   - `packages/hla-backend-inmemory`
+   - `packages/hla-backend-python1516e`
 2. import hierarchy
-   - `hla.backends.inmemory`
+   - `hla.backends.python1516e`
 3. runtime role hierarchy
    - standard surface -> support -> backend -> integration -> scenario/proof
 

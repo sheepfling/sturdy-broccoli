@@ -31,8 +31,8 @@ _SOURCE_CHECKOUT_SPEC_PLUGIN_MODULES: tuple[str, ...] = (
     "hla.runtime.rti1516_2025_plugin",
 )
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
-    "hla.backends.inmemory.plugin",
-    "hla.backends.python2025.plugin",
+    "hla.backends.python1516e.plugin",
+    "hla.backends.python1516_2025.plugin",
     "hla.backends.cpp_shim.plugin",
     "hla.bridges.java.common.java_shim_plugin",
     "hla.bridges.java.jpype.plugin",

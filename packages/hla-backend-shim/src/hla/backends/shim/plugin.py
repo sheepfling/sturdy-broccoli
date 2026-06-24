@@ -1,7 +1,7 @@
 """Entry point descriptor for the deprecated wrapper-only 2025 compatibility package."""
 from __future__ import annotations
 
-from hla.backends.python2025.compatibility_wrapper import ShimBackendInfo
+from hla.backends.python1516_2025.compatibility_wrapper import ShimBackendInfo
 from hla.rti.plugin_api import RTIBackendDiscovery, RTIBackendPlugin
 
 from .backend import create_shim_backend

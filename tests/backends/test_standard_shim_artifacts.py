@@ -52,7 +52,7 @@ def _assert_route_selected_uses_python2025_main_lane(evidence: dict[str, Any], b
     assert route_selected["spec"] == "rti1516_2025"
     assert route_selected["standardBacked"] is True
     assert route_selected["runtimeProvider"] == "python1516_2025"
-    assert route_selected["implementationLane"] == "hla-backend-python2025"
+    assert route_selected["implementationLane"] == "hla-backend-python1516-2025"
     assert route_selected["countsAsPython2025Rti"] is False
     assert route_selected["wrapperOnly"] is False
 
@@ -80,7 +80,7 @@ def test_java_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -
     assert discovery.kind == "java/jpype/standard-2025"
     assert discovery.details["spec"] == "rti1516_2025"
     assert discovery.details["runtime_provider"] == "python1516_2025"
-    assert discovery.details["implementation_lane"] == "hla-backend-python2025"
+    assert discovery.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert discovery.details["counts_as_python_2025_rti"] is False
 
     backend = JavaStandard2025Backend(
@@ -97,7 +97,7 @@ def test_java_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -
     assert ambassador.backend_info.details["spec"] == "rti1516_2025"
     assert ambassador.backend_info.details["standard_backed"] is True
     assert ambassador.backend_info.details["runtime_provider"] == "python1516_2025"
-    assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert ambassador.backend_info.details["counts_as_python_2025_rti"] is False
     assert ambassador.backend_info.details["wrapper_only"] is False
 
@@ -111,7 +111,7 @@ def test_cpp_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) ->
     assert discovery.kind == "cpp/pybind/standard-2025"
     assert discovery.details["spec"] == "rti1516_2025"
     assert discovery.details["runtime_provider"] == "python1516_2025"
-    assert discovery.details["implementation_lane"] == "hla-backend-python2025"
+    assert discovery.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert discovery.details["counts_as_python_2025_rti"] is False
 
     artifact_path = tmp_path / "librti1516_2025_standard_cpp_shim.a"
@@ -135,7 +135,7 @@ def test_cpp_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) ->
     assert ambassador.backend_info.details["spec"] == "rti1516_2025"
     assert ambassador.backend_info.details["standard_backed"] is True
     assert ambassador.backend_info.details["runtime_provider"] == "python1516_2025"
-    assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert ambassador.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert ambassador.backend_info.details["counts_as_python_2025_rti"] is False
     assert ambassador.backend_info.details["wrapper_only"] is False
 

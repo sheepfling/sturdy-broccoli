@@ -12,7 +12,7 @@ dependencies = [
   "hla-rti1516e==0.13.0",
   "hla-rti1516-2025==0.13.0",
   "hla-backend-common==0.13.0",
-  "hla-backend-inmemory==0.13.0",
+  "hla-backend-python1516e==0.13.0",
   "hla-fom-target-radar==0.13.0",
   "hla-fom-proto2025-message-test==0.13.0",
   "hla-fom-proto2025-space-lite==0.13.0",

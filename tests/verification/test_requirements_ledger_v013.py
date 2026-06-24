@@ -70,7 +70,7 @@ def test_requirements_ledger_covers_generated_api_surface(tmp_path: Path):
     assert by_method[("RTIambassador", "createFederationExecution")]["requirement_id"] == "REQ-RTI-FM-4_5-createFederationExecution"
     assert by_method[("RTIambassador", "enableTimeRegulation")]["requirement_id"] == "REQ-RTI-TM-8_2-enableTimeRegulation"
     assert by_method[("FederateAmbassador", "timeAdvanceGrant")]["requirement_id"] == "REQ-FED-TM-8_13-timeAdvanceGrant"
-    assert "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py" in by_method[("RTIambassador", "enableTimeRegulation")]["implementation_refs"]
+    assert "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py" in by_method[("RTIambassador", "enableTimeRegulation")]["implementation_refs"]
     assert by_method[("RTIambassador", "enableTimeRegulation")]["positive_test_refs"]
     assert by_method[("RTIambassador", "sendInteraction")]["negative_test_refs"]
     assert by_method[("RTIambassador", "enableTimeRegulation")]["artifact_refs"]

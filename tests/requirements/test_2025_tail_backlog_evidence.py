@@ -28,8 +28,8 @@ def _json_rows(path: Path) -> list[dict[str, object]]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
-PYTHON2025_BACKEND_PACKAGE_PATH = "packages/hla-backend-python2025/src/hla/backends/python2025/"
+PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py"
+PYTHON2025_BACKEND_PACKAGE_PATH = "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/"
 SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
 CALLBACK_BINDING_DELTA_DOC = "docs/requirements/ieee-1516-2025/callback_binding_deltas.md"
 BINDING_HOSTED_BOUNDARY_DOC = "docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md"
@@ -220,7 +220,7 @@ def test_retired_legacy_mapping_doc_accounts_for_all_retired_rows() -> None:
 
     assert "retired/legacy-only" in text
     assert "not active 2025 obligations" in text
-    assert "hla-backend-python2025" in text
+    assert "hla-backend-python1516-2025" in text
     assert "hla-backend-shim" in text
     for row_id in sorted(RETIRED_LEGACY_IDS):
         assert row_id in text
@@ -246,9 +246,9 @@ def test_harmonization_packets_keep_support_service_rows_on_bounded_support_serv
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert SUPPORT_SERVICES_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
-            assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py" in evidence
+            assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py" in evidence
 
 
 @pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
@@ -261,7 +261,7 @@ def test_binding_boundary_note_tracks_all_three_binding_rows_as_non_owner_routes
     assert "not an independent Java RTI" in text
     assert "not an independent C++ RTI" in text
     assert "not a second RTI implementation lane" in text
-    assert "hla-backend-python2025" in text
+    assert "hla-backend-python1516-2025" in text
     assert "hla-backend-shim" in text
     assert "tests/requirements/test_2025_route_parity_matrix.py" in text
     assert "tests/backends/test_standard_shim_artifacts.py" in text
@@ -285,7 +285,7 @@ def test_harmonization_packets_keep_time_management_rows_on_time_management_proo
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert TIME_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
             assert "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py" in evidence
 
@@ -307,7 +307,7 @@ def test_harmonization_packets_keep_federation_management_rows_on_federation_man
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert FEDERATION_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
             assert "tests/scenarios/test_federation_management_backend_matrix.py" in evidence
 
@@ -329,7 +329,7 @@ def test_harmonization_packets_keep_declaration_management_rows_on_declaration_m
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert DECLARATION_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
 
@@ -351,7 +351,7 @@ def test_harmonization_packets_keep_object_management_rows_on_object_management_
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert OBJECT_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/scenarios/test_object_management_backend_matrix.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
 
@@ -373,7 +373,7 @@ def test_harmonization_packets_keep_ownership_management_rows_on_ownership_manag
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert OWNERSHIP_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/scenarios/test_ownership_management_backend_matrix.py" in evidence
             assert "tests/backends/test_python_backend_object_ownership_extended.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
@@ -396,7 +396,7 @@ def test_harmonization_packets_keep_ddm_rows_on_ddm_proof_note() -> None:
         for row in matched:
             evidence = str(row.get("suggested_repo_evidence_path", ""))
             assert DDM_MANAGEMENT_DOC in evidence
-            assert "tests/test_rti1516_2025_python2025_runtime.py" in evidence
+            assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in evidence
             assert "tests/backends/test_python_backend_time_ddm_extended.py" in evidence
             assert "tests/scenarios/test_ddm_backend_matrix.py" in evidence
             assert "tests/transport/test_grpc_transport_2025.py" in evidence
@@ -727,7 +727,7 @@ def test_2025_standard_route_artifact_reports_record_bounded_scenario_parity() -
         assert scenario_evidence["status"] == "scenario-parity-green"
         assert "bounded scenario-parity evidence" in scenario_evidence["scope"]
         assert scenario_evidence["runtime_provider"] == "python1516_2025"
-        assert scenario_evidence["implementation_lane"] == "hla-backend-python2025"
+        assert scenario_evidence["implementation_lane"] == "hla-backend-python1516-2025"
         assert scenario_evidence["counts_as_python_2025_rti"] is False
         assert scenario_evidence["wrapper_only"] is False
         assert "object exchange" in scenarios
@@ -745,14 +745,14 @@ def test_2025_standard_route_artifact_reports_record_bounded_scenario_parity() -
     for route, row in java_report["routes"].items():
         assert route.startswith("java-standard-2025-")
         assert row["runtime_provider"] == "python1516_2025"
-        assert row["implementation_lane"] == "hla-backend-python2025"
+        assert row["implementation_lane"] == "hla-backend-python1516-2025"
         assert row["counts_as_python_2025_rti"] is False
         assert row["wrapper_only"] is False
 
     for route, row in cpp_report["routes"].items():
         assert route.startswith("cpp-standard-2025-")
         assert row["runtime_provider"] == "python1516_2025"
-        assert row["implementation_lane"] == "hla-backend-python2025"
+        assert row["implementation_lane"] == "hla-backend-python1516-2025"
         assert row["counts_as_python_2025_rti"] is False
         assert row["wrapper_only"] is False
 

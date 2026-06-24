@@ -114,13 +114,13 @@ def test_2025_version_local_factory_defaults_to_python1516_2025_provider() -> No
 @pytest.mark.parametrize("backend_name", _PYTHON1516_2025_PROVIDER_ALIASES)
 def test_2025_version_local_factory_accepts_hosted_transport_creation_on_python1516_2025_lane(backend_name: str) -> None:
     from hla.runtime.rti1516_2025_factory import create_rti_ambassador
-    from hla.backends.python2025.hosted_fedpro import FedPro2025RTIAmbassador
+    from hla.backends.python1516_2025.hosted_fedpro import FedPro2025RTIAmbassador
 
     rti = create_rti_ambassador(backend=backend_name, transport={"kind": "grpc", "target": "127.0.0.1:15164"})
 
     assert isinstance(rti, FedPro2025RTIAmbassador)
     assert rti.backend_info.details["provider"] == "python1516_2025"
-    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert rti.backend_info.details["counts_as_python_2025_rti"] is True
     rti.close()
 

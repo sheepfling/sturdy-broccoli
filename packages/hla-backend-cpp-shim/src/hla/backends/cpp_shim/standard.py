@@ -50,7 +50,7 @@ def discover_cpp_standard(route: str, edition: str) -> BackendInfo:
             "edition": edition,
             "spec": "rti1516_2025" if edition == "2025" else "rti1516e",
             "runtime_provider": "python1516_2025" if edition == "2025" else "python1516e",
-            "implementation_lane": "hla-backend-python2025" if edition == "2025" else "hla-backend-inmemory",
+            "implementation_lane": "hla-backend-python1516-2025" if edition == "2025" else "hla-backend-python1516e",
             **({"counts_as_python_2025_rti": False} if edition == "2025" else {}),
             "standard_backed": artifact_path.exists() and report_path.exists(),
             "artifact_path": str(artifact_path),
@@ -67,7 +67,7 @@ def create_cpp_standard_backend(route: str, request: BackendRequest) -> Any:
         raise RuntimeError(f"C++ {edition} standard shim artifact is missing at {artifact_path}. Run ./tools/shim-routes build cpp-standard-{edition} first.")
     report = _load_report(edition, report_path)
     if edition == "2010":
-        from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig, create_python_backend
+        from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig, create_python_backend
 
         config = options.pop("config", None)
         engine = options.pop("engine", None) or InMemoryRTIEngine()
@@ -90,7 +90,7 @@ def create_cpp_standard_backend(route: str, request: BackendRequest) -> Any:
             "route": route,
             "edition": edition,
             "runtime_provider": "python1516_2025" if edition == "2025" else "python1516e",
-            "implementation_lane": "hla-backend-python2025" if edition == "2025" else "hla-backend-inmemory",
+            "implementation_lane": "hla-backend-python1516-2025" if edition == "2025" else "hla-backend-python1516e",
             **({"counts_as_python_2025_rti": False} if edition == "2025" else {}),
             "wrapper_only": False,
             "standard_backed": True,

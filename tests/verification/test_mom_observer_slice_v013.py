@@ -3,7 +3,7 @@ from __future__ import annotations
 import hla.fom.mom as hla_mom
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e.enums import CallbackModel, ResignAction
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
 
 
 def _drain(*rtis, limit: int = 25) -> None:

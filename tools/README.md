@@ -5,7 +5,7 @@ This directory is the canonical home for human-facing operator entrypoints.
 If you are deciding what command to run, start here, not in `scripts/`.
 
 For IEEE 1516.1-2025 specifically, interpret the operator surface through
-`hla-backend-python2025` as the main runtime lane. `hla-backend-shim` remains
+`hla-backend-python1516-2025` as the main runtime lane. `hla-backend-shim` remains
 only as compatibility-wrapper/import-compatibility code, and hosted FedPro
 routes are bounded route variants rather than separate RTI families.
 

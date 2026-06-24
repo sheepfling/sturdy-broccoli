@@ -30,8 +30,8 @@ If you are trying to find the supported HLA entry points, start here:
 - `packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py`: strict `RTIambassador` protocol
 - `packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py`: strict `FederateAmbassador` protocol and no-op callback sink
 - `packages/hla-rti-core/src/hla/rti/`: cross-version backend/spec discovery and ambassador creation
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/`: in-memory Python RTI backend
-- `packages/hla-backend-python2025/src/hla/backends/python2025/`: main Python RTI backend for IEEE 1516.1-2025
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/`: in-memory Python RTI backend
+- `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/`: main Python RTI backend for IEEE 1516.1-2025
 - `packages/hla-backend-shim/src/hla/backends/shim/`: wrapper-only compatibility alias over the main 2025 backend lane
 - `packages/hla-transport-grpc/src/hla.transports.grpc/`: hosted gRPC transport surface
 - `./tools/target-radar` and `examples/target_radar_simulation.py`: Target/Radar operator/example entrypoints
@@ -73,17 +73,17 @@ backend-neutral ambassador surface.
 
 ## Concrete Backends
 
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/`: canonical pure in-memory RTI backend implementation package.
-- `packages/hla-backend-python2025/src/hla/backends/python2025/`: main full Python-owned IEEE 1516.1-2025 RTI implementation package.
-- `packages/hla-backend-shim/src/hla/backends/shim/`: maintained compatibility-wrapper package that delegates runtime semantics to `hla-backend-python2025`.
-- `packages/hla-backend-python2025/src/hla/backends/python2025/backend.py`, `backend_factory_runtime.py`, `runtime_state.py`, `*_runtime.py`, and `*_surface_mixin.py`: thin public shell plus the focused runtime/state/surface split that now carries the main 2025 RTI implementation.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py`, `engine.py`, `reporting.py`: shared backend state, handle registry, and service-report support.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/federation.py`, `federation_lifecycle.py`, `federation_sync.py`: federation lifecycle and synchronization services.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/object.py`, `object_delivery.py`: object update/delete, interaction delivery, and transport callbacks.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/mom.py`, `mom_actions.py`, `mom_reporting.py`: MOM dispatch/decoding and MOM/service-report emission.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/mom_catalog.py`: Python RTI-owned MOM exposure-model and negative-matrix generation derived from the merged FOM/MIM catalog.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time.py`, `time_queue.py`, `time_services.py`: queue/grant mechanics and public time-service/validation submodules.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py`, `callbacks.py`, `declaration.py`, `ownership.py`, `ddm.py`: remaining focused Python backend service domains.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/`: canonical pure in-memory RTI backend implementation package.
+- `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/`: main full Python-owned IEEE 1516.1-2025 RTI implementation package.
+- `packages/hla-backend-shim/src/hla/backends/shim/`: maintained compatibility-wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`.
+- `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py`, `backend_factory_runtime.py`, `runtime_state.py`, `*_runtime.py`, and `*_surface_mixin.py`: thin public shell plus the focused runtime/state/surface split that now carries the main 2025 RTI implementation.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/state.py`, `engine.py`, `reporting.py`: shared backend state, handle registry, and service-report support.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/federation.py`, `federation_lifecycle.py`, `federation_sync.py`: federation lifecycle and synchronization services.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/object.py`, `object_delivery.py`: object update/delete, interaction delivery, and transport callbacks.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/mom.py`, `mom_actions.py`, `mom_reporting.py`: MOM dispatch/decoding and MOM/service-report emission.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/mom_catalog.py`: Python RTI-owned MOM exposure-model and negative-matrix generation derived from the merged FOM/MIM catalog.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time.py`, `time_queue.py`, `time_services.py`: queue/grant mechanics and public time-service/validation submodules.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/save_restore.py`, `callbacks.py`, `declaration.py`, `ownership.py`, `ddm.py`: remaining focused Python backend service domains.
 - `packages/hla-backend-certi/src/hla/backends/certi/`: CERTI runtime, transport, service adapter, and Java-profile CERTI backend package.
 - `packages/hla-vendor-pitch/src/hla.vendors.pitch/`: shared Pitch runtime discovery and process-launch helpers.
 - `packages/hla-bridge-java-jpype/src/hla.bridges.java.jpype/` and `packages/hla-bridge-java-py4j/src/hla.bridges.java.py4j/`: generic Java RTI bridge packages through JPype and Py4J.
@@ -99,8 +99,8 @@ bindings.
 
 - `packages/hla-rti-core/src/hla/rti/`: neutral spec/backend discovery and ambassador factory layer.
 - `packages/hla-rti1516e/src/hla/rti1516e/factory.py`: 2010-local factory helper that bakes in `spec="rti1516e"`.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/factory.py`: pure-Python backend factories.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py`: pure-Python backend plugin descriptor.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/factory.py`: pure-Python backend factories.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py`: pure-Python backend plugin descriptor.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend plugin descriptors.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend factories and plugin descriptors.
 
@@ -123,9 +123,9 @@ The current package set is:
   exceptions, FOM/MOM helpers needed by federates, and the backend adapter
   contract.
 - `hla-rti1516-2025`: strict IEEE 1516.1-2025 spec surface, value types, FOM helpers, and 2025-local factory surface.
-- `hla-backend-inmemory`: pure in-memory Python RTI backend.
-- `hla-backend-python2025`: main full executable Python RTI backend for IEEE 1516.1-2025.
-- `hla-backend-shim`: wrapper-only compatibility alias over `hla-backend-python2025`.
+- `hla-backend-python1516e`: pure in-memory Python RTI backend.
+- `hla-backend-python1516-2025`: main full executable Python RTI backend for IEEE 1516.1-2025.
+- `hla-backend-shim`: wrapper-only compatibility alias over `hla-backend-python1516-2025`.
 - `hla-backend-certi`: CERTI transport/runtime adapter package.
 - `hla-backend-common`: shared backend conversion support layer.
 - `hla-bridge-java-common`: shared Java RTI support layer.
@@ -157,9 +157,9 @@ The current package set is:
 | `hla-transport-common` | shared | `hla-rti1516e` | concrete backend, vendor, leaf packages |
 | `hla-verification` | shared | `hla-rti1516e`, `hla-backend-common`, `hla-rti-core`, `hla-fom-* showcase leaves` | backend, vendor, transport packages |
 | `hla-bridge-java-common` | vendor/common | `hla-rti1516e`, `hla-backend-common` | python backend, transport, leaf packages |
-| `hla-backend-inmemory` | backend | `hla-rti1516e`, `hla-backend-common` | java-common, vendor, transport, leaf packages |
-| `hla-backend-python2025` | backend | `hla-rti1516-2025`, `hla-backend-common`, `hla-rti-core` | shim backflow, vendor, transport, leaf packages |
-| `hla-backend-shim` | compatibility-wrapper | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |
+| `hla-backend-python1516e` | backend | `hla-rti1516e`, `hla-backend-common` | java-common, vendor, transport, leaf packages |
+| `hla-backend-python1516-2025` | backend | `hla-rti1516-2025`, `hla-backend-common`, `hla-rti-core` | shim backflow, vendor, transport, leaf packages |
+| `hla-backend-shim` | compatibility-wrapper | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python1516-2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |
 | `hla-backend-certi` | backend | `hla-rti1516e`, `hla-bridge-java-common`, `hla-rti-core` | python backend, transport, leaf packages |
 | `hla-bridge-java-jpype` | backend | `hla-rti1516e`, `hla-bridge-java-common` | python backend, transport, leaf packages |
 | `hla-bridge-java-py4j` | backend | `hla-rti1516e`, `hla-bridge-java-common` | python backend, transport, leaf packages |
@@ -170,9 +170,9 @@ The current package set is:
 | `hla-transport-grpc` | transport | `hla-rti1516e`, `hla-transport-common`, `hla-rti-core` | concrete backend and vendor packages |
 | `hla-transport-rest` | transport | `hla-rti1516e`, `hla-transport-common`, `hla-rti-core` | concrete backend and vendor packages |
 | `hla-fom-target-radar` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-rti-core` | concrete backend, vendor, transport packages |
-| `hla-fom-proto2025-message-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
-| `hla-fom-proto2025-space-lite` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
-| `hla-fom-proto2025-time-mgmt-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
+| `hla-fom-proto2025-message-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-python1516e` | concrete backend, vendor, transport packages |
+| `hla-fom-proto2025-space-lite` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-python1516e` | concrete backend, vendor, transport packages |
+| `hla-fom-proto2025-time-mgmt-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-python1516e` | concrete backend, vendor, transport packages |
 
 Import isolation for the installable `packages/*` trees is enforced by
 [`tests/test_package_import_isolation.py`](../tests/test_package_import_isolation.py).

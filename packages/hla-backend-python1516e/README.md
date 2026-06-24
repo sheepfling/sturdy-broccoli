@@ -1,10 +1,10 @@
-# hla-backend-inmemory
+# hla-backend-python1516e
 
 ## What This Is
 
-`hla-backend-inmemory` is the local pure-Python RTI backend.
+`hla-backend-python1516e` is the local pure-Python RTI backend.
 
-It owns concrete backend behavior under `hla.backends.inmemory` and is the
+It owns concrete backend behavior under `hla.backends.python1516e` and is the
 easiest backend to run, debug, and test locally.
 
 ## What This Is Not
@@ -18,7 +18,7 @@ It is not:
 
 If you need standard API definitions, start with `hla.rti1516e` or
 `hla.rti1516_2025`. If you need the main 2025 runtime, use
-`hla-backend-python2025`.
+`hla-backend-python1516-2025`.
 
 ## When To Open It
 
@@ -33,14 +33,14 @@ Open this package when you want:
 
 The normal entrypoints are:
 
-- `src/hla.backends.inmemory/`
-- `src/hla.backends.inmemory/testing_policy.py`
-- `hla.backends.inmemory`
-- `hla.backends.inmemory.backend`
-- `hla.backends.inmemory.engine`
-- `hla.backends.inmemory.factory`
-- `hla.backends.inmemory.state`
-- `hla.backends.inmemory.plugin`
+- `src/hla.backends.python1516e/`
+- `src/hla.backends.python1516e/testing_policy.py`
+- `hla.backends.python1516e`
+- `hla.backends.python1516e.backend`
+- `hla.backends.python1516e.engine`
+- `hla.backends.python1516e.factory`
+- `hla.backends.python1516e.state`
+- `hla.backends.python1516e.plugin`
 
 ## Related Docs
 

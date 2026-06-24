@@ -215,7 +215,7 @@ def test_runtime_discovery_docs_keep_direct_runtime_package_preferred_over_root_
 
     import_boundary_text = (ROOT / "docs/import_boundary_rules.md").read_text(encoding="utf-8")
     assert "Package-owned code should import runtime factory helpers" in import_boundary_text
-    assert "hla-backend-python2025" in import_boundary_text
+    assert "hla-backend-python1516-2025" in import_boundary_text
     assert "must not import back through `hla.backends.shim.*`" in import_boundary_text
     assert "hla-backend-shim" in import_boundary_text
 

@@ -12,7 +12,7 @@ from hla.verification.repo_internal.mom_negative_testing import (
     executable_mom_negative_test_cases,
     mom_negative_case_report,
 )
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig
 from hla.runtime.factory import create_rti_ambassador
 
 MODEL = default_mom_model()

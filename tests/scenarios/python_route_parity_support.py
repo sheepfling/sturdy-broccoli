@@ -8,7 +8,7 @@ import pytest
 
 from hla.runtime.factory import create_rti_ambassador
 from hla.transports.grpc.python_server import start_python_grpc_server
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 
 PythonRoute = Literal["python-direct", "python-grpc"]
 

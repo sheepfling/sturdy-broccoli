@@ -5,7 +5,7 @@ from hla.rti1516e.raw_api import API_METADATA
 from hla.spec.refs import FOM_REFERENCES, method_reference
 from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
 from hla.backends.common import DelegatingRTIAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIBackend, rti_ambassador
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIBackend, rti_ambassador
 
 
 def drain(*rtis):

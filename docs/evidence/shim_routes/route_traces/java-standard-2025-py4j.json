@@ -15,7 +15,7 @@
       "backend": "java-standard-2025-py4j",
       "countsAsPython2025Rti": false,
       "event": "routeSelected",
-      "implementationLane": "hla-backend-python2025",
+      "implementationLane": "hla-backend-python1516-2025",
       "runtimeProvider": "python1516_2025",
       "spec": "rti1516_2025",
       "standardBacked": true,
@@ -31,7 +31,7 @@
         false,
         false,
         0,
-        "hla-backend-python2025 accepted the 2025 Python RTI connection request"
+        "hla-backend-python1516-2025 accepted the 2025 Python RTI connection request"
       ]
     },
     {

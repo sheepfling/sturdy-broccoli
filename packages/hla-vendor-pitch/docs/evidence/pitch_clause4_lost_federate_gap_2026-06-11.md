@@ -10,7 +10,7 @@ Current state:
 - The shared harness now contains an explicit lost-federate observer scenario:
   - `packages/hla-verification/src/hla/verification/scenario_lost_federate.py`
 - The Python backend can execute that scenario with a test-only injected non-orderly loss path:
-  - `packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py::force_federate_loss`
+  - `packages/hla-backend-python1516e/src/hla/backends/python1516e/backend.py::force_federate_loss`
   - `tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_lost_federate_mom_matrix`
 - Pitch now also has a smoke-gated real-runtime wrapper for the `pitch-py4j` profile:
   - `tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix`

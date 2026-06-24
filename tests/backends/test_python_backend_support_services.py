@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.backends.python1516e import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
 from hla.rti1516e.exceptions import (

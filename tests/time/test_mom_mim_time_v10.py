@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.exceptions import InTimeAdvancingState, MessageCanNoLongerBeRetracted
 from hla.rti1516e.handles import ObjectInstanceHandle

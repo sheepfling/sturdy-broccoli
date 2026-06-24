@@ -2307,7 +2307,7 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-RTI-PLM-12_2-decodeAttributeHandle"] = (
     _SCENARIO_EVIDENCE_REGISTRY["support-factory-decode"]
     + (
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla-backend-inmemory/src/hla.backends.inmemory/support_factories.py",
+        "packages/hla-backend-python1516e/src/hla.backends.python1516e/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py",
     ),
     "Programming-language mapping designator decoding now has shared harness coverage in the Python reference backend, but dedicated Pitch runtime parity wrappers for the Clause 12 decode surface have not yet been added or executed, so the Pitch disposition is explicitly tracked as not-yet-tested.",

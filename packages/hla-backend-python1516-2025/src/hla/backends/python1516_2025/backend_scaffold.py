@@ -19,7 +19,7 @@ class Python2025BackendInfo(BackendInfo):
         default_factory=lambda: {
             "spec": "rti1516_2025",
             "state": "historical-scaffold-archived",
-            "note": "The live 2025 Python RTI now executes from hla.backends.python2025.backend; this file is retained only as a historical pre-promotion scaffold reference.",
+            "note": "The live 2025 Python RTI now executes from hla.backends.python1516_2025.backend; this file is retained only as a historical pre-promotion scaffold reference.",
         }
     )
 
@@ -34,7 +34,7 @@ class Python2025BackendScaffold(RTIBackend):
     def invoke(self, invocation: Invocation) -> Any:
         raise BackendUnavailableError(
             "backend_scaffold.py is a historical artifact only; "
-            "the live 2025 Python RTI executes from hla.backends.python2025.backend."
+            "the live 2025 Python RTI executes from hla.backends.python1516_2025.backend."
         )
 
     def create_rti_ambassador(self) -> Any:

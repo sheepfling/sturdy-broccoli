@@ -4,7 +4,7 @@ Source: IEEE 1516.1-2025 time-management service rows and the repo's current
 time-window proof families.
 
 This note records the repo's current requirement-facing time-management claim
-as a bounded proof statement for the main `hla-backend-python2025` runtime
+as a bounded proof statement for the main `hla-backend-python1516-2025` runtime
 lane. It covers service-by-service runtime traceability for the 25 time
 management service rows together with the direct and hosted proof families for
 lookahead, GALT/LITS, timestamp-order delivery, retraction, and restore
@@ -15,11 +15,11 @@ exhaustive cross-binding equivalence.
 
 | Family | Rows | Current repo evidence anchors | Current bounded reading |
 | --- | --- | --- | --- |
-| Time mode enable/disable | `HLA2025-FI-SVC-101`, `HLA2025-FI-SVC-102`, `HLA2025-FI-SVC-103`, `HLA2025-FI-SVC-104`, `HLA2025-FI-SVC-105`, `HLA2025-FI-SVC-106` | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for regulation/constrained enablement and disablement, selected logical-time factory handling, and the corresponding callbacks on the direct and hosted `python1516_2025` routes. |
-| Advance request modes | `HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-108`, `HLA2025-FI-SVC-109`, `HLA2025-FI-SVC-110`, `HLA2025-FI-SVC-111` | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for time-advance request state, next-message request stepping, flush-queue request behavior, queued timestamp-order delivery, and hosted FedPro replay of the same request surfaces. |
-| Grants and async delivery control | `HLA2025-FI-SVC-112`, `HLA2025-FI-SVC-113`, `HLA2025-FI-SVC-114`, `HLA2025-FI-SVC-115` | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for `flushQueueGrant`, `timeAdvanceGrant`, and callback-delivery control through both the in-process and hosted `python1516_2025` routes. |
-| Time queries and lookahead control | `HLA2025-FI-SVC-116`, `HLA2025-FI-SVC-117`, `HLA2025-FI-SVC-118`, `HLA2025-FI-SVC-119`, `HLA2025-FI-SVC-120` | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py`, `tests/backends/test_shim_route_trace_evidence.py` | Closed as bounded runtime proof for `queryGALT`, `queryLogicalTime`, `queryLITS`, `modifyLookahead`, and `queryLookahead`, including live lookahead changes and route-backed GALT/LITS observability. |
-| Retraction, order, and time-window safety | `HLA2025-FI-SVC-121`, `HLA2025-FI-SVC-122`, `HLA2025-FI-SVC-123`, `HLA2025-FI-SVC-124`, `HLA2025-FI-SVC-125` | `tests/test_rti1516_2025_python2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/backends/test_shim_route_trace_evidence.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for retraction, request-retraction callbacks, attribute/interaction order control, queued TSO routing, lookahead-window closure, future-exclusion, and restore rollback of dirty time state on the main `python1516_2025` lane plus hosted replay. |
+| Time mode enable/disable | `HLA2025-FI-SVC-101`, `HLA2025-FI-SVC-102`, `HLA2025-FI-SVC-103`, `HLA2025-FI-SVC-104`, `HLA2025-FI-SVC-105`, `HLA2025-FI-SVC-106` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for regulation/constrained enablement and disablement, selected logical-time factory handling, and the corresponding callbacks on the direct and hosted `python1516_2025` routes. |
+| Advance request modes | `HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-108`, `HLA2025-FI-SVC-109`, `HLA2025-FI-SVC-110`, `HLA2025-FI-SVC-111` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for time-advance request state, next-message request stepping, flush-queue request behavior, queued timestamp-order delivery, and hosted FedPro replay of the same request surfaces. |
+| Grants and async delivery control | `HLA2025-FI-SVC-112`, `HLA2025-FI-SVC-113`, `HLA2025-FI-SVC-114`, `HLA2025-FI-SVC-115` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for `flushQueueGrant`, `timeAdvanceGrant`, and callback-delivery control through both the in-process and hosted `python1516_2025` routes. |
+| Time queries and lookahead control | `HLA2025-FI-SVC-116`, `HLA2025-FI-SVC-117`, `HLA2025-FI-SVC-118`, `HLA2025-FI-SVC-119`, `HLA2025-FI-SVC-120` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py`, `tests/backends/test_shim_route_trace_evidence.py` | Closed as bounded runtime proof for `queryGALT`, `queryLogicalTime`, `queryLITS`, `modifyLookahead`, and `queryLookahead`, including live lookahead changes and route-backed GALT/LITS observability. |
+| Retraction, order, and time-window safety | `HLA2025-FI-SVC-121`, `HLA2025-FI-SVC-122`, `HLA2025-FI-SVC-123`, `HLA2025-FI-SVC-124`, `HLA2025-FI-SVC-125` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/backends/test_shim_route_trace_evidence.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for retraction, request-retraction callbacks, attribute/interaction order control, queued TSO routing, lookahead-window closure, future-exclusion, and restore rollback of dirty time state on the main `python1516_2025` lane plus hosted replay. |
 
 ## Time-Window and Logical-Time Closure Notes
 
@@ -35,7 +35,7 @@ exhaustive cross-binding equivalence.
   equivalence, and hosted FedPro remains a bounded runtime slice rather than a
   full cross-binding conformance route.
 - The primary runtime owner behind the executable anchors above is
-  `hla-backend-python2025`. `hla-backend-shim` is not a runtime owner for
+  `hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner for
   these time-management rows.
 
 ## Vendor-Credence Boundary
@@ -50,6 +50,6 @@ exhaustive cross-binding equivalence.
 - Those Pitch probes are useful vendor credence because they reuse the same
   bounded time-window closure and rollback claims with a vendor runtime small
   enough to fit the practical two-federate constraint.
-- They do not replace the broader `hla-backend-python2025` proof for
+- They do not replace the broader `hla-backend-python1516-2025` proof for
   output-delivery, consumer-order, pipeline overlap, or save/restore output
   replay, and they do not upgrade Pitch into the main 2025 Python RTI owner.

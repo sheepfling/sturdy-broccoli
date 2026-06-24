@@ -12,7 +12,7 @@ CORE_WORKSPACE_PACKAGES=(
   "packages/hla-backend-shim"
   "packages/hla-transport-common"
   "packages/hla-bridge-java-common"
-  "packages/hla-backend-inmemory"
+  "packages/hla-backend-python1516e"
   "packages/hla-backend-cpp-shim"
   "packages/hla-backend-certi"
   "packages/hla-vendor-pitch"

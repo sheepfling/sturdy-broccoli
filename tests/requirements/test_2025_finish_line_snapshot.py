@@ -972,7 +972,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         for scenario in {row["scenario"] for row in route_matrix["rows"] if row["route"] == route}:
             row = route_rows[(scenario, route)]
             assert row["runtime_provider"] == "python1516_2025"
-            assert row["implementation_lane"] == "hla-backend-python2025"
+            assert row["implementation_lane"] == "hla-backend-python1516-2025"
             assert row["counts_as_python_2025_rti"] is True
             assert row["wrapper_only"] is False
     assert "lookahead query/modify" in route_rows[("time_management", "python1516_2025-inprocess")]["notes"]
@@ -991,7 +991,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_rows[
         ("support_services", "python1516_2025-inprocess")
     ]["notes"]
-    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_rows[
+    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python1516-2025 lane" in route_rows[
         ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert "save-restore lookahead rollback with queued-TSO redelivery" in route_rows[("time_management", "python1516_2025-fedpro-grpc")]["notes"]
@@ -1018,7 +1018,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     fi_rows = {row["requirement_id"]: row for row in fi_service_audit["rows"]}
     assert fi_rows["HLA2025-FI-SVC-001"]["family"] == "federation_management"
     assert "2025-connect-and-federation-catalog-services" in fi_rows["HLA2025-FI-SVC-001"]["supporting_slice_ids"]
-    assert "tests/test_rti1516_2025_python2025_runtime.py" in fi_rows["HLA2025-FI-SVC-001"]["evidence_tests"]
+    assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in fi_rows["HLA2025-FI-SVC-001"]["evidence_tests"]
     assert fi_rows["HLA2025-FI-SVC-018"]["family"] == "save_restore"
     assert "2025-save-restore-lifecycle" in fi_rows["HLA2025-FI-SVC-018"]["supporting_slice_ids"]
     assert fi_rows["HLA2025-FI-SVC-057"]["family"] == "object_management"
@@ -1070,7 +1070,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert binding_audit["fully_traceable_requirement_count"] == 3
     assert binding_audit["ready_for_binding_traceability_claim"] is True
     assert binding_audit["ready_for_full_binding_conformance_claim"] is False
-    assert "adapter or transport seam evidence boundaries over the main hla-backend-python2025 runtime" in binding_audit["current_assessment"]
+    assert "adapter or transport seam evidence boundaries over the main hla-backend-python1516-2025 runtime" in binding_audit["current_assessment"]
     assert "not alternate ownership lanes for core 2025 RTI semantics" in binding_audit["current_assessment"]
     binding_rows = {row["requirement_id"]: row for row in binding_audit["rows"]}
     assert set(binding_rows["HLA2025-BND-001"]["routes"]) == {"java-standard-2025-jpype", "java-standard-2025-py4j"}
@@ -1228,7 +1228,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "time_management",
     )
     assert "2025-lookahead-window-proofs" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["supporting_slice_ids"]
-    assert "tests/test_rti1516_2025_python2025_runtime.py" in milestone_rows[("python1516_2025-inprocess", "lookahead_windows")]["evidence_tests"]
+    assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in milestone_rows[("python1516_2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python1516_2025-inprocess", "lookahead_windows")]["evidence_tests"]
     assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
@@ -1311,7 +1311,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ],
     }
     assert "row-level requirement-by-requirement disposition audit across all 691 tracked 2025 rows" in requirement_audit["current_assessment"]
-    assert "strengthens the bounded main-implementation claim for hla-backend-python2025" in requirement_audit["current_assessment"]
+    assert "strengthens the bounded main-implementation claim for hla-backend-python1516-2025" in requirement_audit["current_assessment"]
     assert "hla-backend-shim in a wrapper-only compatibility role" in requirement_audit["current_assessment"]
     assert any("third-party extension execution semantics" in blocker for blocker in requirement_audit["full_claim_blockers"])
     assert any("framework-rule umbrellas and callback/configuration/binding delta umbrellas" in blocker for blocker in requirement_audit["full_claim_blockers"])
@@ -1500,7 +1500,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "does not promote the Java/C++ rows into exhaustive cross-binding behavior conformance" in binding_boundary_audit["residual_boundary"]
     direct_bounded_audit = snapshot["python2025_direct_bounded_proof_audit"]
     assert direct_bounded_audit["audit_status"] == "python1516_2025-direct-bounded-proof-captured"
-    assert direct_bounded_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md"
+    assert direct_bounded_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md"
     assert direct_bounded_audit["doc_exists"] is True
     assert direct_bounded_audit["route"] == "python1516_2025-inprocess"
     assert direct_bounded_audit["scenario_count"] == 8
@@ -1527,7 +1527,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "does not convert the direct lane into a full clause-by-clause 2025 conformance statement" in direct_bounded_audit["residual_boundary"]
     exclusion_boundaries_audit = snapshot["python2025_exclusion_boundaries_audit"]
     assert exclusion_boundaries_audit["audit_status"] == "python1516_2025-exclusion-boundaries-captured"
-    assert exclusion_boundaries_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md"
+    assert exclusion_boundaries_audit["doc_path"] == "docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md"
     assert exclusion_boundaries_audit["doc_exists"] is True
     assert exclusion_boundaries_audit["required_area_labels"] == [
         "Legacy aliases and shim imports",
@@ -1654,7 +1654,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ],
         "time_management:python1516_2025-inprocess": [
             "tests/scenarios/test_python_route_parity.py",
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
         ],
     }
     assert lookahead_window_audit["missing_evidence_tests"] == {}
@@ -1704,11 +1704,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert len(boundary_statement["supported_scope"]) == 4
     assert any("196 catalog rows" in item for item in boundary_statement["supported_scope"])
     assert any("FedPro 2025 transport behavior is executable as a bounded runtime slice" in item for item in boundary_statement["supported_scope"])
-    assert any("transport-seam evidence over hla-backend-python2025" in item for item in boundary_statement["supported_scope"])
+    assert any("transport-seam evidence over hla-backend-python1516-2025" in item for item in boundary_statement["supported_scope"])
     assert len(boundary_statement["explicit_boundaries"]) == 4
     assert any("Foreign OMT xs:any extension payloads are preserved for XML round-trip" in item for item in boundary_statement["explicit_boundaries"])
     assert any("Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof" in item for item in boundary_statement["explicit_boundaries"])
-    assert any("transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics" in item for item in boundary_statement["explicit_boundaries"])
+    assert any("transport-seam proof gaps rather than evidence that hla-backend-python1516-2025 lacks the underlying semantics" in item for item in boundary_statement["explicit_boundaries"])
     assert boundary_statement["evidence_summary"] == {
         "bounded_ready_dimensions": 8,
         "dimension_count": 8,
@@ -1846,7 +1846,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_runs_shared_time_managed_declaration_independence_scenario_over_fedpro_route"
     )
     assert callback_decomposition_audit["proof_families"][4]["direct_tests"] == [
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
     ]
     assert callback_decomposition_audit["proof_families"][-1]["hosted_tests"][-1].endswith(
         "test_2025_factory_hosted_python2025_route_clears_stale_plain_callbacks_and_preserves_post_restore_routing"
@@ -1957,8 +1957,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert snapshot["route_parity_audit"] == snapshot["route_parity_matrix"]
     assert promotion_split_audit["decision_shape"] == "promote-current-lane-or-split-later-based-on-evidence"
     assert promotion_split_audit["current_lane"] == {
-        "package": "hla-backend-python2025",
-        "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
+        "package": "hla-backend-python1516-2025",
+        "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
         "spec_package": "hla-rti1516-2025",
     }
     assert promotion_split_audit["current_recommendation"] == "promote-current-lane-as-working-surface-and-keep-split-optional"
@@ -1977,7 +1977,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "future-exclusion" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
     assert "save/restore time-window proofs" in evidence_runs["target-radar-time-window-proof-ladder"]["scope"]
     assert evidence_runs["python1516_2025-split-package-surface"]["result"] == "71 passed in 0.67s"
-    assert "dedicated hla-backend-python2025 package surface plus local factory composition" in evidence_runs["python1516_2025-split-package-surface"]["scope"]
+    assert "dedicated hla-backend-python1516-2025 package surface plus local factory composition" in evidence_runs["python1516_2025-split-package-surface"]["scope"]
     assert evidence_runs["python1516_2025-import-boundary-guardrails"]["result"] == "163 passed in 40.34s"
     assert "explicit no-backflow proof" in evidence_runs["python1516_2025-import-boundary-guardrails"]["scope"]
     assert (
@@ -1996,13 +1996,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert len(promotion_split_audit["permanent_decision_blockers"]) == 4
     assert any("row-level requirement-by-requirement audit" in item for item in promotion_split_audit["permanent_decision_blockers"])
     assert any("Hosted FedPro remains a bounded runtime slice" in item for item in promotion_split_audit["permanent_decision_blockers"])
-    assert "real Python 2025 RTI implementation now owned by hla-backend-python2025" in promotion_split_audit["current_assessment"]
+    assert "real Python 2025 RTI implementation now owned by hla-backend-python1516-2025" in promotion_split_audit["current_assessment"]
     assert "hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in promotion_split_audit["current_assessment"]
     assert "main current-package pressure families" in promotion_split_audit["current_assessment"]
     concentration_audit = snapshot["implementation_concentration_audit"]
     assert concentration_audit["audit_status"] == "implementation-concentration-captured"
     assert concentration_audit["implemented_slice_count"] == 76
-    assert concentration_audit["runtime_backend_path"] == "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
+    assert concentration_audit["runtime_backend_path"] == "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py"
     assert concentration_audit["runtime_backend_slice_count"] == 42
     assert concentration_audit["runtime_backend_slice_share"] == 0.553
     assert concentration_audit["spec_package_slice_count"] == 12
@@ -2016,8 +2016,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "wrapper-only compatibility logic should keep shrinking" in concentration_audit["extraction_pressure_boundary"]
     assert concentration_audit["top_evidence_anchors"][:5] == [
         {"path": "tests/transport/test_grpc_transport_2025.py", "slice_count": 53},
-        {"path": "tests/test_rti1516_2025_python2025_runtime.py", "slice_count": 49},
-        {"path": "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py", "slice_count": 42},
+        {"path": "tests/test_rti1516_2025_python1516_2025_runtime.py", "slice_count": 49},
+        {"path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py", "slice_count": 42},
         {"path": "tests/test_rti1516_2025_validation.py", "slice_count": 12},
         {"path": "packages/hla-rti-core/src/hla/fom/__init__.py", "slice_count": 12},
     ]
@@ -2028,16 +2028,16 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         key=lambda module: (-int(module["line_count"]), str(module["path"])),
     )
     leading_paths = {module["path"] for module in leading_runtime_modules}
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/hosted_fedpro.py" in leading_paths
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/runtime_helper_surface_mixin.py" in leading_paths
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/hosted_fedpro.py" in leading_paths
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/runtime_helper_surface_mixin.py" in leading_paths
     python2025_source_audit = snapshot["python2025_source_responsibility_audit"]
-    python2025_backend_path = ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
+    python2025_backend_path = ROOT / "packages" / "hla-backend-python1516-2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
     current_python2025_line_count = sum(1 for _ in python2025_backend_path.open(encoding="utf-8"))
     assert python2025_source_audit["audit_status"] == "python1516_2025-source-responsibility-captured"
-    assert python2025_source_audit["source_path"] == "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
+    assert python2025_source_audit["source_path"] == "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py"
     assert python2025_source_audit["source_line_count"] == current_python2025_line_count
     assert python2025_source_audit["shim_wrapper_path"] == (
-        "packages/hla-backend-python2025/src/hla/backends/python2025/compatibility_wrapper.py"
+        "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/compatibility_wrapper.py"
     )
     assert python2025_source_audit["shim_wrapper_line_count"] == 63
     assert python2025_source_audit["extracted_runtime_module_count"] >= 34
@@ -2048,10 +2048,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             extracted_runtime_line_count += sum(1 for _ in handle)
     assert python2025_source_audit["extracted_runtime_module_line_count"] == extracted_runtime_line_count
     assert concentration_audit["extracted_runtime_module_line_count"] == extracted_runtime_line_count
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_policy.py" in extracted_paths
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py" in extracted_paths
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py" in extracted_paths
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py" in extracted_paths
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/attribute_policy.py" in extracted_paths
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/save_restore_lifecycle.py" in extracted_paths
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py" in extracted_paths
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/time_management_runtime.py" in extracted_paths
     assert python2025_source_audit["ambassador_class"] == "Python2025RTIAmbassador"
     assert python2025_source_audit["ambassador_line_count"] <= 24
     assert python2025_source_audit["ambassador_method_count"] == 0
@@ -2070,7 +2070,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert shim_families["time-management-runtime"]["line_count"] >= 2
     assert shim_families["misc-support"]["method_count"] >= 7
     assert shim_families["misc-support"]["line_count"] >= 70
-    assert "thin ambassador shell in hla-backend-python2025" in python2025_source_audit["current_assessment"]
+    assert "thin ambassador shell in hla-backend-python1516-2025" in python2025_source_audit["current_assessment"]
     assert "catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery" in python2025_source_audit["current_assessment"]
     assert "shrink hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities" in python2025_source_audit["extraction_use"]
     aggregation_audit = snapshot["slice_aggregation_pressure_audit"]
@@ -2398,8 +2398,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "restore-routing-and-stale-queue-cleanup",
     ]
     assert directed_audit["proof_families"][0]["direct_tests"] == [
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
     ]
     assert directed_audit["proof_families"][4]["hosted_tests"][1].endswith(
         "test_2025_transport_server_restore_clears_stale_directed_tso_and_preserves_post_restore_routing_over_fedpro_schema"
@@ -2452,7 +2452,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "ddm-restore-and-disconnect-cleanup",
     ]
     assert ddm_audit["proof_families"][0]["direct_tests"] == [
-        "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
     ]
     assert ddm_audit["proof_families"][4]["direct_tests"][0].endswith(
         "test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter"
@@ -2620,14 +2620,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert coherence_audit["all_pressure_families_route_backed_across_current_python_lanes"] is True
     assert "defensible coherence story" in coherence_audit["current_assessment"]
     assert "primary 2025 Python RTI lane" in coherence_audit["current_assessment"]
-    assert any("public hla-backend-python2025/backend.py shell is now thin" in item for item in coherence_audit["residual_blockers"])
+    assert any("public hla-backend-python1516-2025/backend.py shell is now thin" in item for item in coherence_audit["residual_blockers"])
     assert any("extracted runtime/state/surface split still needs continued discipline" in item for item in coherence_audit["residual_blockers"])
     current_lane_statement = snapshot["current_lane_working_surface_statement"]
     assert current_lane_statement["statement_status"] == "current-lane-working-surface-statement"
     assert current_lane_statement["ready"] is True
     assert "coherent bounded working Python RTI surface" in current_lane_statement["statement"]
     assert "primary 2025 Python RTI lane" in current_lane_statement["statement"]
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in current_lane_statement["statement"]
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in current_lane_statement["statement"]
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in current_lane_statement["statement"]
     assert "Java and C++ shim/binding packages remain segregated supporting lanes rather than alternate Python RTIs" in current_lane_statement["statement"]
     assert "main current-package pressure families are route-backed" in current_lane_statement["statement"]
@@ -2641,11 +2641,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert main_impl_claim["claim_shape"] == "bounded-main-python1516_2025-rti-implementation"
     assert main_impl_claim["ready_for_main_python2025_implementation_claim"] is True
     assert main_impl_claim["ready_for_full_2025_conformance_claim"] is False
-    assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
+    assert main_impl_claim["implementation_owner"] == "hla-backend-python1516-2025"
     assert main_impl_claim["compatibility_wrapper"] == "hla-backend-shim"
     assert main_impl_claim["default_operator_lane"] == "python1516_2025-main"
     assert main_impl_claim["hosted_extension_lane"] == "python1516_2025-routes"
-    assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
+    assert "hla-backend-python1516-2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
     assert "direct plus hosted Python 2025 proof lanes are sufficiently green" in main_impl_claim["claim"]
     assert len(main_impl_claim["promotion_basis"]) == 5
     assert any("verify-main-2025" in item for item in main_impl_claim["promotion_basis"])
@@ -2699,15 +2699,15 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         },
     ]
     assert "all sit outside direct main-lane python1516_2025 runtime completeness" in blocker_partition["current_assessment"]
-    assert "missing core executable behavior in hla-backend-python2025" in blocker_partition["current_assessment"]
+    assert "missing core executable behavior in hla-backend-python1516-2025" in blocker_partition["current_assessment"]
     assert "does not convert those external boundaries into a full 2025 conformance pass" in blocker_partition["residual_boundary"]
     implementation_lane_audit = snapshot["implementation_lane_audit"]
     assert implementation_lane_audit["audit_status"] == "current-lane-architecture-captured"
     assert implementation_lane_audit["current_2025_lane"] == {
-        "backend_package": "hla-backend-python2025",
+        "backend_package": "hla-backend-python1516-2025",
         "plugin_family": "python-rti-2025",
         "supports": ["rti1516_2025"],
-        "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
+        "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
         "spec_package": "hla-rti1516-2025",
     }
     assert implementation_lane_audit["compatibility_wrapper_lane"] == {
@@ -2715,10 +2715,10 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "status": "compatibility-maintained",
         "role": "compatibility-wrapper",
         "counts_as_python_2025_rti": False,
-        "delegates_runtime_semantics_to": "hla-backend-python2025",
+        "delegates_runtime_semantics_to": "hla-backend-python1516-2025",
     }
     assert implementation_lane_audit["reference_2010_lane"] == {
-        "backend_package": "hla-backend-inmemory",
+        "backend_package": "hla-backend-python1516e",
         "plugin_family": "inmemory",
         "supports": ["rti1516e"],
         "role": "2010 pure Python RTI backend",
@@ -2732,15 +2732,15 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "hla-backend-certi",
         "hla-backend-common",
         "hla-backend-cpp-shim",
-        "hla-backend-inmemory",
-        "hla-backend-python2025",
+        "hla-backend-python1516e",
+        "hla-backend-python1516-2025",
         "hla-backend-shim",
     ]
     assert backend_scan["backend_package_count"] == 6
     assert backend_scan["dedicated_python_2025_backend_candidates"] == [
         {
-            "package": "hla-backend-python2025",
-            "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "package": "hla-backend-python1516-2025",
+            "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "name": "python1516_2025",
             "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
@@ -2752,32 +2752,32 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         (record["package"], record["name"], record["family"])
         for record in backend_scan["rti1516_2025_plugin_records"]
     }
-    assert ("hla-backend-python2025", "python1516_2025", "python-rti-2025") in rti2025_plugins
+    assert ("hla-backend-python1516-2025", "python1516_2025", "python-rti-2025") in rti2025_plugins
     assert ("hla-backend-shim", "shim", "shim") not in rti2025_plugins
     assert ("hla-backend-cpp-shim", "cpp-standard-2025-pybind", "standard/cpp") in rti2025_plugins
-    assert ("hla-backend-inmemory", "inmemory", "inmemory") not in rti2025_plugins
+    assert ("hla-backend-python1516e", "inmemory", "inmemory") not in rti2025_plugins
     hosted_identity = implementation_lane_audit["hosted_runtime_identity_evidence"]
     assert hosted_identity == {
         "audit_status": "direct-server-client-identity-aligned",
         "route": "python1516_2025-fedpro-grpc",
         "claim": (
             "The hosted 2025 FedPro route is explicitly evidenced as a route variant over "
-            "hla-backend-python2025 rather than a separate shim or RTI family."
+            "hla-backend-python1516-2025 rather than a separate shim or RTI family."
         ),
         "evidence_tests": [
             "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_reports_python2025_main_lane_identity",
-            "tests/test_rti1516_2025_python2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
         ],
         "direct_runtime_report": {
             "backend_name": "python1516_2025-rti",
             "backend_kind": "python/2025",
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
         },
         "hosted_server_report": {
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
             "spec": "rti1516_2025",
@@ -2785,7 +2785,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         },
         "hosted_client_report": {
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
             "spec": "rti1516_2025",
@@ -2795,7 +2795,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "current_assessment": (
             "Hosted-client and hosted-server capability surfaces now agree with the direct 2025 ambassador "
             "that python1516_2025-fedpro-grpc is a route variant over the primary python1516_2025 RTI lane in "
-            "hla-backend-python2025 rather than a wrapper-defined implementation family."
+            "hla-backend-python1516-2025 rather than a wrapper-defined implementation family."
         ),
     }
     hosted_factory_boundary = implementation_lane_audit["hosted_factory_boundary_evidence"]
@@ -2905,7 +2905,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "python2025_runtime_report": {
             "backend_kind": "python/2025",
             "counts_as_python_2025_rti": True,
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "wrapper_only": False,
         },
         "scenario_package": "hla-fom-target-radar",
@@ -2913,7 +2913,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "shim_runtime_report": {
             "backend_kind": "shim/2025",
             "counts_as_python_2025_rti": False,
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "wrapper_only": True,
         },
         "supported_backend_names": [
@@ -2923,7 +2923,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ],
     }
     assert "hosted FedPro route is a route variant" in implementation_lane_audit["current_assessment"]
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025" in implementation_lane_audit["current_assessment"]
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025" in implementation_lane_audit["current_assessment"]
     assert "hla-backend-shim remains as a compatibility wrapper over that runtime" not in implementation_lane_audit["current_assessment"]
     assert "temporary import-compatibility scaffolding" in implementation_lane_audit["current_assessment"]
     assert "continuing to narrow hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities" in implementation_lane_audit["extraction_boundary"]
@@ -2939,13 +2939,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "docs/verification/verification_plan.md",
         "docs/backend_route_inventory.md",
         "docs/backend_route_inventory_remote.md",
-        "packages/hla-backend-python2025/pyproject.toml",
-        "packages/hla-backend-python2025/README.md",
-        "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+        "packages/hla-backend-python1516-2025/pyproject.toml",
+        "packages/hla-backend-python1516-2025/README.md",
+        "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
         "packages/hla-backend-shim/pyproject.toml",
         "packages/hla-backend-shim/README.md",
         "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py",
         "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_factory.py",
         "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_2025_adapter.py",
         "examples/target_radar_simulation.py",
@@ -3062,13 +3062,13 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert extraction_audit["extraction_needed_now"] is False
     assert extraction_audit["dedicated_python_2025_backend_present"] is True
     assert extraction_audit["recommended_current_action"] == "promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map"
-    assert extraction_audit["future_backend_package_target"] == "hla-backend-python2025"
+    assert extraction_audit["future_backend_package_target"] == "hla-backend-python1516-2025"
     assert extraction_audit["future_backend_plugin_family"] == "python-rti-2025"
     assert extraction_audit["extraction_package_contract"] == {
         "current_package_state": "live-runtime-present",
-        "target_distribution": "hla-backend-python2025",
-        "target_import_root": "hla.backends.python2025",
-        "target_plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+        "target_distribution": "hla-backend-python1516-2025",
+        "target_import_root": "hla.backends.python1516_2025",
+        "target_plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
         "target_backend_name": "python1516_2025",
         "target_plugin_family": "python-rti-2025",
         "target_supports": ["rti1516_2025"],
@@ -3086,34 +3086,34 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
         "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior",
         "the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
-        "backend plugin discovery reports hla-backend-python2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
+        "backend plugin discovery reports hla-backend-python1516-2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
     ]
     assert extraction_audit["runtime_semantics_to_extract_first_count"] == 4
     assert extraction_audit["route_backed_runtime_semantics_count"] == 4
     assert extraction_audit["all_candidate_runtime_semantics_route_backed"] is True
     migrated_runtime_modules = extraction_audit["migrated_runtime_modules"]
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_scope_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/callback_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/catalog_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/declaration_management_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/federation_management_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/interaction_policy_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/interaction_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/mom_codec.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/mom_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/object_instance_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/object_model_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/object_reflection_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/object_region_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_lookup_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_policy_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py" in migrated_runtime_modules
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/update_rate_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/attribute_scope_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/callback_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/catalog_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ddm_default_attribute_policy.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/declaration_management_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/directed_interaction_boundary.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/federation_management_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/interaction_policy_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/interaction_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/mom_codec.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/mom_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/object_instance_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/object_model_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/object_reflection_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/object_region_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ownership_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/save_restore_lifecycle.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_lookup_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_policy_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/time_management_runtime.py" in migrated_runtime_modules
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/update_rate_runtime.py" in migrated_runtime_modules
     assert extraction_audit["shim_responsibilities_after_extraction"] == [
         "standard-route adaptation and compatibility aliases",
         "transport-facing normalization that is not core RTI state",
@@ -3133,7 +3133,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "direct_test_count": 34,
             "hosted_test_count": 29,
             "route_backed": True,
-            "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
+            "candidate_runtime_module": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/save_restore_lifecycle.py",
         },
         {
             "slice_id": "2025-ownership-proof-families",
@@ -3149,7 +3149,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "direct_test_count": 20,
             "hosted_test_count": 20,
             "route_backed": True,
-            "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
+            "candidate_runtime_module": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ownership_runtime.py",
         },
         {
             "slice_id": "2025-directed-interaction-boundary",
@@ -3164,7 +3164,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "direct_test_count": 12,
             "hosted_test_count": 12,
             "route_backed": True,
-            "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py",
+            "candidate_runtime_module": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/directed_interaction_boundary.py",
         },
         {
             "slice_id": "2025-ddm-default-attribute-policy",
@@ -3180,7 +3180,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             "direct_test_count": 14,
             "hosted_test_count": 14,
             "route_backed": True,
-            "candidate_runtime_module": "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py",
+            "candidate_runtime_module": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ddm_default_attribute_policy.py",
         },
     ]
     assert extraction_audit["pressure_signal"] == {
@@ -3190,7 +3190,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "fully_route_backed_pressure_family_count": 22,
     }
     assert "The extraction cutover is materially underway" in extraction_audit["current_assessment"]
-    assert "hla-backend-python2025 now owns the live backend" in extraction_audit["current_assessment"]
+    assert "hla-backend-python1516-2025 now owns the live backend" in extraction_audit["current_assessment"]
     assert "hla-backend-shim remains only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in extraction_audit["current_assessment"]
     assert "concrete migration map for continuing to narrow those scaffolding responsibilities while preserving the direct and hosted proof families" in extraction_audit["current_assessment"]
     assert (
@@ -3350,7 +3350,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     ]
     assert "finish-line now separates that proof into named ownership families" in dimensions["ownership_management"]["current_assessment"]
     assert dimensions["time_management"]["route_summary"]["by_status"]["parity-covered"] == 12
-    assert "tests/test_rti1516_2025_python2025_runtime.py" in dimensions["time_management"]["evidence_tests"]
+    assert "tests/test_rti1516_2025_python1516_2025_runtime.py" in dimensions["time_management"]["evidence_tests"]
     assert dimensions["time_management"]["evidence_level"] == "decomposed-query-and-window-proof-backed"
     assert dimensions["time_management"]["evidence_basis"] == [
         "python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025-inprocess:bounded-lookahead-evidence,python1516_2025-inprocess:bounded-query-evidence",
@@ -3528,7 +3528,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         },
     ]
     assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_partition["current_assessment"]
-    assert "missing core executable behavior in the main hla-backend-python2025 runtime lane" in closeout_partition["current_assessment"]
+    assert "missing core executable behavior in the main hla-backend-python1516-2025 runtime lane" in closeout_partition["current_assessment"]
     assert "without treating the main python1516_2025 runtime as behaviorally unfinished" in closeout_partition["residual_boundary"]
 
 
@@ -3537,7 +3537,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     snapshot = build_spec2025_finish_line_snapshot(ROOT)
     slices = {row["id"]: row for row in snapshot["implemented_evidence_slices"]}
     python2025_backend_path = (
-        ROOT / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
+        ROOT / "packages" / "hla-backend-python1516-2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
     )
     current_python2025_line_count = sum(1 for _ in python2025_backend_path.open(encoding="utf-8"))
 
@@ -4108,7 +4108,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Runtime backend slice share: 0.553" in markdown
     assert "Semantic concentration is material: False" in markdown
     assert "Leading extracted runtime owners:" in markdown
-    assert "- packages/hla-backend-python2025/src/hla/backends/python2025/hosted_fedpro.py:" in markdown
+    assert "- packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/hosted_fedpro.py:" in markdown
     assert "Python 2025 Source Responsibility Audit" in markdown
     assert f"Source line count: {current_python2025_line_count}" in markdown
     assert (
@@ -4159,9 +4159,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
         f"time-management-runtime: {shim_families['time-management-runtime']['method_count']} methods, "
         f"{shim_families['time-management-runtime']['line_count']} lines"
     ) in markdown
-    assert "packages/hla-backend-python2025/src/hla/backends/python2025/attribute_policy.py: object-attribute-runtime" in markdown
+    assert "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/attribute_policy.py: object-attribute-runtime" in markdown
     assert (
-        "packages/hla-backend-python2025/src/hla/backends/python2025/support_services_runtime.py: "
+        "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/support_services_runtime.py: "
         "object-attribute-runtime, 28 functions"
     ) in markdown
     assert "Slice Aggregation Pressure Audit" in markdown
@@ -4280,11 +4280,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "callback_decomposition.slice_id=2025-callback-proof-families" in markdown
     assert "binding_route_decomposition.slice_id=2025-binding-route-proof-families" in markdown
     assert "Implementation Lane Audit" in markdown
-    assert "Current 2025 backend package: hla-backend-python2025" in markdown
+    assert "Current 2025 backend package: hla-backend-python1516-2025" in markdown
     assert "Compatibility wrapper package: hla-backend-shim" in markdown
     assert "Compatibility wrapper status: compatibility-maintained" in markdown
     assert "Compatibility wrapper role: compatibility-wrapper" in markdown
-    assert "Compatibility wrapper delegates runtime semantics to: hla-backend-python2025" in markdown
+    assert "Compatibility wrapper delegates runtime semantics to: hla-backend-python1516-2025" in markdown
     assert "Python2025 Proof-Lane Audit" in markdown
     assert "Ready for main-implementation operator-lane claim: True" in markdown
     assert "Direct lane: ./tools/python verify-main-2025" in markdown
@@ -4293,7 +4293,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "python1516_2025-main / ./tools/python verify-main-2025: 324 passed across wrapper subcommands plus Target/Radar example" in markdown
     assert "python1516_2025-routes / ./tools/python verify-routes-2025: 434 passed across direct-plus-hosted wrapper subcommands plus finish-line bundle and Target/Radar example" in markdown
     assert "Evidence anchors: testing/test_surface_manifest.json, tools/python, docs/test_surface.md, README.md" in markdown
-    assert "Reference 2010 backend package: hla-backend-inmemory" in markdown
+    assert "Reference 2010 backend package: hla-backend-python1516e" in markdown
     assert "Backend packages discovered: 6" in markdown
     assert "Dedicated 2025 candidates cleanly separated: True" in markdown
     assert "Dedicated 2025 legacy-package delegation violations: 0" in markdown
@@ -4318,7 +4318,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
             f"boundary={route['current_pitch_runtime_boundary']}"
         ) in markdown
     assert "Extraction Readiness Audit" in markdown
-    assert "Future backend package target: hla-backend-python2025" in markdown
+    assert "Future backend package target: hla-backend-python1516-2025" in markdown
     assert (
         "Runtime semantics to extract first: "
         f"{extraction_readiness['runtime_semantics_to_extract_first_count']}"
@@ -4333,7 +4333,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert extraction_readiness["pre_extraction_gates"][0] in markdown
     assert "Extraction package contract:" in markdown
     assert "Current package state: live-runtime-present" in markdown
-    assert "Target import root: hla.backends.python2025" in markdown
+    assert "Target import root: hla.backends.python1516_2025" in markdown
     assert "Target backend name: python1516_2025" in markdown
     assert "Must not delegate to: hla.backends.shim.backend.create_shim_backend" in markdown
     assert "Extraction cutover invariants:" in markdown
@@ -4394,11 +4394,11 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
         for row in payload["route_parity_matrix"]["rows"]
     }
     assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["runtime_provider"] == "python1516_2025"
-    assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
+    assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["implementation_lane"] == "hla-backend-python1516-2025"
     assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["counts_as_python_2025_rti"] is True
     assert payload_route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["wrapper_only"] is False
     assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["runtime_provider"] == "python1516_2025"
-    assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python2025"
+    assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python1516-2025"
     assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["counts_as_python_2025_rti"] is True
     assert payload_route_rows[("time_management", "python1516_2025-fedpro-grpc")]["wrapper_only"] is False
     assert payload["fi_service_proof_audit"]["row_count"] == 196
@@ -4419,8 +4419,8 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert payload["completion_claim_audit"]["ready_for_full_2025_conformance_claim"] is False
     assert payload["supported_boundary_statement"]["ready"] is True
     assert payload["implementation_lane_audit"]["audit_status"] == "current-lane-architecture-captured"
-    assert payload["implementation_lane_audit"]["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
-    assert payload["implementation_lane_audit"]["reference_2010_lane"]["backend_package"] == "hla-backend-inmemory"
+    assert payload["implementation_lane_audit"]["current_2025_lane"]["backend_package"] == "hla-backend-python1516-2025"
+    assert payload["implementation_lane_audit"]["reference_2010_lane"]["backend_package"] == "hla-backend-python1516e"
     assert payload["implementation_lane_audit"]["dedicated_2025_backend_package_present"] is True
     assert payload["implementation_lane_audit"]["python_2025_routes"][1]["route"] == "python1516_2025-fedpro-grpc"
     assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["route"] == "python1516_2025-fedpro-grpc"
@@ -4429,7 +4429,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     )
     assert (
         payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["hosted_client_report"]["implementation_lane"]
-        == "hla-backend-python2025"
+        == "hla-backend-python1516-2025"
     )
     assert (
         payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["hosted_server_report"]["transport_kind"]
@@ -4488,22 +4488,22 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "federation_lifecycle,java-standard-2025-jpype,parity-covered,scenario-parity" in route_matrix
     assert "federation_lifecycle,cpp-standard-2025-grpc,parity-covered,scenario-parity" in route_matrix
     assert "federation_lifecycle,python1516_2025-inprocess,parity-covered,scenario-parity" in route_matrix
-    assert ",python1516_2025,hla-backend-python2025,true,false," in route_matrix
+    assert ",python1516_2025,hla-backend-python1516-2025,true,false," in route_matrix
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_matrix
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_matrix
-    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_matrix
+    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python1516-2025 lane" in route_matrix
     assert route_matrix_markdown.startswith("# IEEE 1516-2025 Route Parity Matrix")
-    assert "python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`" in route_matrix_markdown
+    assert "python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python1516-2025`" in route_matrix_markdown
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations." in route_matrix_markdown
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in route_matrix_markdown
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in route_matrix_markdown
-    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in route_matrix_markdown
+    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules" in route_matrix_markdown
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in route_matrix_markdown
     assert "| federation_lifecycle | python1516_2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
     assert "| time_management | python1516_2025-fedpro-grpc | parity-covered | scenario-parity |" in route_matrix_markdown
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_matrix_markdown
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_matrix_markdown
-    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_matrix_markdown
+    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python1516-2025 lane" in route_matrix_markdown
 
 
 @pytest.mark.requirements("HLA2025-TRACE-001", "HLA2025-TRACE-002")
@@ -4578,13 +4578,13 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
 
     assert current_lane_statement["statement_status"] == "current-lane-working-surface-statement"
     assert current_lane_statement["ready"] is True
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in current_lane_statement["statement"]
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in current_lane_statement["statement"]
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in current_lane_statement["statement"]
     assert "use the route-parity matrix as the scenario-family ledger behind that claim" in current_lane_statement["current_assessment"]
     assert main_impl_claim["ready_for_main_python2025_implementation_claim"] is True
     assert main_impl_claim["ready_for_full_2025_conformance_claim"] is False
-    assert main_impl_claim["implementation_owner"] == "hla-backend-python2025"
-    assert "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
+    assert main_impl_claim["implementation_owner"] == "hla-backend-python1516-2025"
+    assert "hla-backend-python1516-2025 is the implementation owner for the real executable 2025 Python RTI surface" in main_impl_claim["claim"]
     assert "main python1516_2025 RTI implementation claim is ready" in main_impl_claim["current_assessment"]
     blocker_partition = payload["full_claim_blocker_partition_audit"]
     assert blocker_partition["all_current_full_claim_blockers_are_external_to_main_python2025_runtime"] is True
@@ -4596,11 +4596,11 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert "all describe requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits" in closeout_partition["current_assessment"]
 
     assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["runtime_provider"] == "python1516_2025"
-    assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["implementation_lane"] == "hla-backend-python2025"
+    assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["implementation_lane"] == "hla-backend-python1516-2025"
     assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["counts_as_python_2025_rti"] is True
     assert route_rows[("federation_lifecycle", "python1516_2025-inprocess")]["wrapper_only"] is False
     assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["runtime_provider"] == "python1516_2025"
-    assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python2025"
+    assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["implementation_lane"] == "hla-backend-python1516-2025"
     assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["counts_as_python_2025_rti"] is True
     assert route_rows[("time_management", "python1516_2025-fedpro-grpc")]["wrapper_only"] is False
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in route_rows[
@@ -4609,7 +4609,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert "snake-case alias acceptance on the primary direct-runtime surface" in route_rows[
         ("support_services", "python1516_2025-inprocess")
     ]["notes"]
-    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python2025 lane" in route_rows[
+    assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the main hla-backend-python1516-2025 lane" in route_rows[
         ("support_services", "python1516_2025-inprocess")
     ]["notes"]
     assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["audit_status"] == (
@@ -4691,7 +4691,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     ]
     assert payload["implementation_lane_audit"]["hosted_runtime_identity_evidence"]["hosted_client_report"] == {
         "runtime_provider": "python1516_2025",
-        "implementation_lane": "hla-backend-python2025",
+        "implementation_lane": "hla-backend-python1516-2025",
         "counts_as_python_2025_rti": True,
         "wrapper_only": False,
         "spec": "rti1516_2025",
@@ -4731,7 +4731,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "python2025_runtime_report": {
             "backend_kind": "python/2025",
             "counts_as_python_2025_rti": True,
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "wrapper_only": False,
         },
         "scenario_package": "hla-fom-target-radar",
@@ -4739,7 +4739,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "shim_runtime_report": {
             "backend_kind": "shim/2025",
             "counts_as_python_2025_rti": False,
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "wrapper_only": True,
         },
         "supported_backend_names": [
@@ -4760,13 +4760,13 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
         "docs/verification/verification_plan.md",
         "docs/backend_route_inventory.md",
         "docs/backend_route_inventory_remote.md",
-        "packages/hla-backend-python2025/pyproject.toml",
-        "packages/hla-backend-python2025/README.md",
-        "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+        "packages/hla-backend-python1516-2025/pyproject.toml",
+        "packages/hla-backend-python1516-2025/README.md",
+        "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
         "packages/hla-backend-shim/pyproject.toml",
         "packages/hla-backend-shim/README.md",
         "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
+        "packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py",
         "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_factory.py",
         "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_2025_adapter.py",
         "examples/target_radar_simulation.py",
@@ -4776,10 +4776,10 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
 
     assert "python1516_2025-inprocess: in-process-backend-route" in markdown
     assert "python1516_2025-fedpro-grpc: hosted-transport-route" in markdown
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in markdown
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in markdown
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in markdown
-    assert "disciplined ownership across the extracted hla-backend-python2025 runtime/state/surface modules" in markdown
-    assert "transport-seam evidence over hla-backend-python2025 rather than missing core runtime ownership" in markdown
+    assert "disciplined ownership across the extracted hla-backend-python1516-2025 runtime/state/surface modules" in markdown
+    assert "transport-seam evidence over hla-backend-python1516-2025 rather than missing core runtime ownership" in markdown
     assert "binding/adaptation-seam proof over the main python1516_2025 runtime" in markdown
     assert "Hosted runtime identity evidence:" in markdown
     assert "Hosted factory boundary evidence:" in markdown
@@ -4787,8 +4787,8 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     assert "Scenario package: hla-fom-target-radar" in markdown
     assert "Example entrypoint: python examples/target_radar_simulation.py --backend python1516_2025 --steps 5" in markdown
     assert "Adapter class: hla.foms.target_radar._internal.target_radar_2025_adapter.TargetRadar2025RTIAdapter" in markdown
-    assert "python1516_2025: python/2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False" in markdown
-    assert "shim: shim/2025 / hla-backend-python2025 / counts_as_python_2025_rti=False / wrapper_only=True" in markdown
+    assert "python1516_2025: python/2025 / hla-backend-python1516-2025 / counts_as_python_2025_rti=True / wrapper_only=False" in markdown
+    assert "shim: shim/2025 / hla-backend-python1516-2025 / counts_as_python_2025_rti=False / wrapper_only=True" in markdown
     assert "test_target_radar_example_supports_2025_backends" in markdown
     assert (
         "Unsupported factory surfaces: create_rti_ambassador(backend='shim', transport=...)"
@@ -4796,8 +4796,8 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
     )
     assert "test_2025_version_local_factory_accepts_hosted_transport_creation_on_python2025_lane" in markdown
     assert "test_2025_version_local_factory_rejects_legacy_shim_provider_name" in markdown
-    assert "Direct ambassador: python1516_2025-rti / python/2025 / python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True" in markdown
-    assert "Hosted client: python1516_2025 / hla-backend-python2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro" in markdown
+    assert "Direct ambassador: python1516_2025-rti / python/2025 / python1516_2025 / hla-backend-python1516-2025 / counts_as_python_2025_rti=True" in markdown
+    assert "Hosted client: python1516_2025 / hla-backend-python1516-2025 / counts_as_python_2025_rti=True / wrapper_only=False / rti1516_2025 / grpc / fedpro" in markdown
     assert "test_2025_transport_server_reports_python2025_main_lane_identity" in markdown
     assert "::test_2025_shim_" not in json.dumps(payload, sort_keys=True)
     assert "test_2025_shim_" not in markdown
@@ -4807,7 +4807,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
 
 
 def test_2025_backend_plugin_scan_detects_future_dedicated_python_2025_backend(tmp_path: Path) -> None:
-    plugin_dir = tmp_path / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
+    plugin_dir = tmp_path / "packages" / "hla-backend-python1516-2025" / "src" / "hla" / "backends" / "python1516_2025"
     plugin_dir.mkdir(parents=True)
     (plugin_dir / "plugin.py").write_text(
         '''"""Synthetic dedicated Python 2025 backend plugin for scanner regression tests."""
@@ -4848,18 +4848,18 @@ def plugin() -> RTIBackendPlugin:
 
     scan = _discover_backend_plugin_records(tmp_path)
 
-    assert scan["backend_package_dirs"] == ["hla-backend-python2025", "hla-backend-shim"]
+    assert scan["backend_package_dirs"] == ["hla-backend-python1516-2025", "hla-backend-shim"]
     assert scan["backend_package_count"] == 2
     assert {
         (record["package"], record["name"], record["family"])
         for record in scan["rti1516_2025_plugin_records"]
     } == {
-        ("hla-backend-python2025", "python1516_2025", "python-rti-2025"),
+        ("hla-backend-python1516-2025", "python1516_2025", "python-rti-2025"),
     }
     assert scan["dedicated_python_2025_backend_candidates"] == [
         {
-            "package": "hla-backend-python2025",
-            "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "package": "hla-backend-python1516-2025",
+            "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "name": "python1516_2025",
             "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
@@ -4870,7 +4870,7 @@ def plugin() -> RTIBackendPlugin:
 
 
 def test_2025_backend_plugin_scan_rejects_shim_delegating_python_2025_candidate(tmp_path: Path) -> None:
-    plugin_dir = tmp_path / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
+    plugin_dir = tmp_path / "packages" / "hla-backend-python1516-2025" / "src" / "hla" / "backends" / "python1516_2025"
     plugin_dir.mkdir(parents=True)
     (plugin_dir / "plugin.py").write_text(
         '''"""Synthetic invalid Python 2025 backend that delegates to the shim."""
@@ -4895,8 +4895,8 @@ def plugin() -> RTIBackendPlugin:
 
     assert scan["dedicated_python_2025_backend_candidates"] == [
         {
-            "package": "hla-backend-python2025",
-            "plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "package": "hla-backend-python1516-2025",
+            "plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "name": "python1516_2025",
             "family": "python-rti-2025",
             "supports": ["rti1516_2025"],
@@ -4905,8 +4905,8 @@ def plugin() -> RTIBackendPlugin:
     assert scan["dedicated_python_2025_candidates_cleanly_separated"] is False
     assert scan["dedicated_python_2025_legacy_package_delegation_violations"] == [
         {
-            "package": "hla-backend-python2025",
-            "path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "package": "hla-backend-python1516-2025",
+            "path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "kind": "forbidden-import",
             "target": "hla.backends.shim.backend.create_shim_backend",
         }

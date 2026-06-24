@@ -256,7 +256,7 @@ Current CERTI qualifier:
 
 ### Python RTI 2025
 
-- [test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
+- [test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py)
 - [test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)
 - [test_grpc_transport_2025.py](../tests/transport/test_grpc_transport_2025.py)
 - [test_python_route_parity.py](../tests/scenarios/test_python_route_parity.py)

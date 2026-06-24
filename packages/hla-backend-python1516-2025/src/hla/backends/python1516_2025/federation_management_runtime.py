@@ -58,7 +58,7 @@ def connect(
         configurationUsed=configuration is not None,
         addressUsed=False,
         additionalSettingsResultCode=AdditionalSettingsResultCode.SETTINGS_IGNORED,
-        message="hla-backend-python2025 accepted the 2025 Python RTI connection request",
+        message="hla-backend-python1516-2025 accepted the 2025 Python RTI connection request",
     )
 
 

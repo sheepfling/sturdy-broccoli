@@ -25,8 +25,8 @@ class PackageExpectation:
 EXPECTED_PACKAGES = {
     "hla-rti1516e": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-rti1516-2025": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
-    "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"python1516e"}), "implementation-moved"),
-    "hla-backend-python2025": PackageExpectation("rti-backend", frozenset({"python1516_2025"}), "implementation-owned"),
+    "hla-backend-python1516e": PackageExpectation("rti-backend", frozenset({"python1516e"}), "implementation-moved"),
+    "hla-backend-python1516-2025": PackageExpectation("rti-backend", frozenset({"python1516_2025"}), "implementation-owned"),
     "hla-backend-cpp-shim": PackageExpectation(
         "rti-backend",
         frozenset(
@@ -76,7 +76,7 @@ EXPECTED_PACKAGES = {
 INTERNAL_PACKAGE_VERSION = "0.13.0"
 PACKAGE_PYTHON_REQUIRES = {
     "hla-rti1516-2025": ">=3.11",
-    "hla-backend-python2025": ">=3.11",
+    "hla-backend-python1516-2025": ">=3.11",
     "hla-backend-shim": ">=3.11",
     "hla-backend-cpp-shim": ">=3.10",
 }
@@ -375,7 +375,7 @@ def test_rti1516_2025_spec_manifest_packages_typed_surface() -> None:
 
 def test_backend_family_packages_own_docs_and_verification_policy_surfaces() -> None:
     expected_docs = {
-        "hla-backend-inmemory": PACKAGES / "hla-backend-inmemory" / "docs" / "README.md",
+        "hla-backend-python1516e": PACKAGES / "hla-backend-python1516e" / "docs" / "README.md",
         "hla-backend-certi": PACKAGES / "hla-backend-certi" / "docs" / "README.md",
         "hla-vendor-pitch": PACKAGES / "hla-vendor-pitch" / "docs" / "README.md",
         "hla-vendor-pitch-jpype": PACKAGES / "hla-vendor-pitch-jpype" / "docs" / "README.md",
@@ -383,7 +383,7 @@ def test_backend_family_packages_own_docs_and_verification_policy_surfaces() -> 
         "hla-vendor-portico": PACKAGES / "hla-vendor-portico" / "docs" / "README.md",
     }
     expected_policy_modules = {
-        "hla-backend-inmemory": PACKAGES / "hla-backend-inmemory" / "src" / "hla" / "backends" / "inmemory" / "testing_policy.py",
+        "hla-backend-python1516e": PACKAGES / "hla-backend-python1516e" / "src" / "hla" / "backends" / "python1516e" / "testing_policy.py",
         "hla-backend-certi": PACKAGES / "hla-backend-certi" / "src" / "hla" / "backends" / "certi" / "testing_policy.py",
         "hla-vendor-pitch": PACKAGES / "hla-vendor-pitch" / "src" / "hla" / "vendors" / "pitch" / "testing_policy.py",
         "hla-vendor-portico": PACKAGES / "hla-vendor-portico" / "src" / "hla" / "vendors" / "portico" / "testing_policy.py",
@@ -398,7 +398,7 @@ def test_backend_family_packages_own_docs_and_verification_policy_surfaces() -> 
 
 def test_backend_doc_indexes_describe_owned_policy_and_operator_surfaces() -> None:
     required_fragments = {
-        "hla-backend-inmemory": (
+        "hla-backend-python1516e": (
             "Package-owned notes",
             "testing_policy.py",
             "./tools/python verify",
@@ -470,9 +470,9 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
             "does not own human operator entrypoints",
             "`./tools/`",
         ),
-        "hla-backend-inmemory": (
-            "`src/hla.backends.inmemory/`",
-            "`src/hla.backends.inmemory/testing_policy.py`",
+        "hla-backend-python1516e": (
+            "`src/hla.backends.python1516e/`",
+            "`src/hla.backends.python1516e/testing_policy.py`",
             "`tests/test_rti_python_split_package.py`",
             "`tests/test_python_matrix_policy.py`",
             "`./tools/python`",
@@ -876,7 +876,7 @@ def test_core_spec_doc_index_describes_the_only_root_facade_boundary() -> None:
 
 def test_backend_family_packages_have_explicit_split_package_test_surfaces() -> None:
     expected_test_surfaces = {
-        "hla-backend-inmemory": {ROOT / "tests" / "test_rti_python_split_package.py"},
+        "hla-backend-python1516e": {ROOT / "tests" / "test_rti_python_split_package.py"},
         "hla-backend-certi": {ROOT / "tests" / "test_rti_certi_split_package.py"},
         "hla-vendor-pitch": {ROOT / "tests" / "test_rti_pitch_common_split_package.py"},
         "hla-vendor-pitch-jpype": {ROOT / "tests" / "test_rti_pitch_split_packages.py"},
@@ -908,8 +908,8 @@ def test_package_split_pyprojects_have_expected_boundaries():
 
         entry_points = data.get("project", {}).get("entry-points", {}).get("hla.rti_backends", {})
         assert set(entry_points) == expected["entry_points"]
-        if package_name == "hla-backend-inmemory":
-            assert entry_points["python1516e"] == "hla.backends.inmemory.plugin:plugin"
+        if package_name == "hla-backend-python1516e":
+            assert entry_points["python1516e"] == "hla.backends.python1516e.plugin:plugin"
         if package_name == "hla-backend-certi":
             assert entry_points["certi"] == "hla.backends.certi.certi.plugin:plugin"
         if package_name == "hla-bridge-java-jpype":
@@ -944,7 +944,7 @@ def test_split_packages_publish_standalone_build_metadata() -> None:
 
 
 def test_2025_backend_package_readmes_match_promoted_runtime_split() -> None:
-    python2025_readme = (PACKAGES / "hla-backend-python2025" / "README.md").read_text(encoding="utf-8")
+    python2025_readme = (PACKAGES / "hla-backend-python1516-2025" / "README.md").read_text(encoding="utf-8")
     shim_readme = (PACKAGES / "hla-backend-shim" / "README.md").read_text(encoding="utf-8")
     normalized_python2025 = " ".join(python2025_readme.split())
     normalized_shim = " ".join(shim_readme.split())
@@ -955,7 +955,7 @@ def test_2025_backend_package_readmes_match_promoted_runtime_split() -> None:
     assert "temporary import-compatibility scaffolding" in shim_readme
     assert "not part of the repo-owned 2025 Python RTI implementation claim" in normalized_shim
     assert "main full Python 2025" in shim_readme
-    assert "`hla-backend-python2025`" in shim_readme
+    assert "`hla-backend-python1516-2025`" in shim_readme
     assert "retains import-level wrapper-facing normalization" in normalized_shim
 
 
@@ -978,9 +978,9 @@ def test_networked_python_guide_keeps_2025_backend_and_wrapper_roles_explicit() 
     guide = (ROOT / "docs" / "networked_rti_python.md").read_text(encoding="utf-8")
     normalized_guide = " ".join(guide.split())
 
-    assert "`hla-backend-python2025` implementation lane" in guide
+    assert "`hla-backend-python1516-2025` implementation lane" in guide
     assert "`hla-backend-shim` retained only as compatibility-wrapper/import-compatibility code" in normalized_guide
-    assert "`packages/hla-backend-python2025` for the main executable 2025 Python RTI lane" in guide
+    assert "`packages/hla-backend-python1516-2025` for the main executable 2025 Python RTI lane" in guide
     assert "`packages/hla-backend-shim` for the temporary import-compatibility scaffolding package" in guide
 
 
@@ -1001,7 +1001,7 @@ def test_backend_scaffolds_depend_on_their_edition_spec_package():
         if expected["role"] in {"core-spec", "runtime-support"}:
             continue
         dependencies = set(_load_project(package_name)["project"].get("dependencies", ()))
-        if package_name in {"hla-backend-python2025", "hla-backend-shim"}:
+        if package_name in {"hla-backend-python1516-2025", "hla-backend-shim"}:
             assert "hla-rti1516-2025==0.13.0" in dependencies
             assert "hla-rti1516e==0.13.0" not in dependencies
             continue
@@ -1016,7 +1016,7 @@ def test_pitch_backend_packages_depend_on_common_runtime_package():
     for package_name in ("hla-vendor-pitch-jpype", "hla-vendor-pitch-py4j"):
         dependencies = set(_load_project(package_name)["project"].get("dependencies", ()))
         assert "hla-vendor-pitch==0.13.0" in dependencies
-        assert "hla-backend-python2025==0.13.0" in dependencies
+        assert "hla-backend-python1516-2025==0.13.0" in dependencies
 
 
 def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
@@ -1040,7 +1040,7 @@ def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
     pitch_jpype_dependencies = set(_load_project("hla-vendor-pitch-jpype")["project"].get("dependencies", ()))
     pitch_py4j_dependencies = set(_load_project("hla-vendor-pitch-py4j")["project"].get("dependencies", ()))
     portico_dependencies = set(_load_project("hla-vendor-portico")["project"].get("dependencies", ()))
-    python_dependencies = set(_load_project("hla-backend-inmemory")["project"].get("dependencies", ()))
+    python_dependencies = set(_load_project("hla-backend-python1516e")["project"].get("dependencies", ()))
     certi_dependencies = set(_load_project("hla-backend-certi")["project"].get("dependencies", ()))
 
     assert "hla-bridge-java-jpype==0.13.0" in pitch_jpype_dependencies
@@ -1081,8 +1081,8 @@ def test_transport_packages_depend_only_on_spec_and_transport_common():
     }
     assert "hla-transport-common==0.13.0" in grpc_dependencies
     assert "hla-transport-common==0.13.0" in rest_dependencies
-    assert "hla-backend-inmemory==0.13.0" not in grpc_dependencies
-    assert "hla-backend-inmemory==0.13.0" not in rest_dependencies
+    assert "hla-backend-python1516e==0.13.0" not in grpc_dependencies
+    assert "hla-backend-python1516e==0.13.0" not in rest_dependencies
     assert "hla-backend-certi==0.13.0" not in grpc_dependencies
     assert "hla-backend-certi==0.13.0" not in rest_dependencies
 

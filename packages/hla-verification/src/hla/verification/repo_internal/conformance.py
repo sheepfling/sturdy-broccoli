@@ -215,7 +215,7 @@ def _evidence_for(method: str, service_group: str) -> tuple[str, ...]:
 def _implementation_refs(row: ServiceConformanceRow) -> tuple[str, ...]:
     refs = [row.python_entry_point]
     if row.interface == "RTIambassador":
-        refs.append("packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py")
+        refs.append("packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py")
     elif row.interface == "FederateAmbassador":
         refs.append("hla2010/ambassadors.py")
     return tuple(dict.fromkeys(refs))
@@ -357,7 +357,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
             source_overload_count=len(overloads),
             declared_exceptions=declared_exceptions,
             python_entry_point=(
-                f"hla.backends.inmemory.backend.PythonRTIBackend.{handler}"
+                f"hla.backends.python1516e.backend.PythonRTIBackend.{handler}"
                 if has_handler
                 else "DelegatingRTIAmbassador/backend adapter"
             ),

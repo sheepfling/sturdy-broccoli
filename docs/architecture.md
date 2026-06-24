@@ -17,7 +17,7 @@ The stricter package dependency rules live in
 
 For the primary 2025 Python RTI implementation lane, keep the ownership split explicit:
 
-- `hla-backend-python2025` is the main full Python-owned IEEE 1516.1-2025 RTI implementation package
+- `hla-backend-python1516-2025` is the main full Python-owned IEEE 1516.1-2025 RTI implementation package
 - `hla-backend-shim` is only an import-level compatibility-wrapper package over that runtime
 - Java/C++ 2025 binding routes remain segregated non-Python binding/capability lanes and should not be counted as alternate Python RTIs or as implementation-owner proof for the main Python 2025 lane
 
@@ -26,20 +26,20 @@ These facade modules are package-owned import paths under the shared PEP 420
 
 ## Domain Modules And Mixins
 
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/declaration.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/object.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/mom.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/mom_actions.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/mom_reporting.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/ownership.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_services.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/ddm.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/federation.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/federation_lifecycle.py`
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/federation_sync.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/declaration.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/object.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/object_delivery.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/mom.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/mom_actions.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/mom_reporting.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/ownership.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/time_services.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/ddm.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/federation.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/federation_lifecycle.py`
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/federation_sync.py`
 
 These modules isolate standard HLA service families so review can happen at the service-domain level instead of inside a single backend god module.
 
@@ -58,9 +58,9 @@ Examples:
 
 ## Shared State And Engine
 
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py`: backend data model, queue state, MOM/reporting flags, save/restore snapshots, and typed support values.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/engine.py`: shared in-memory handle registry, FOM bootstrap, class/interaction lookup, and federation object model support.
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/reporting.py`: service-report file support.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/state.py`: backend data model, queue state, MOM/reporting flags, save/restore snapshots, and typed support values.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/engine.py`: shared in-memory handle registry, FOM bootstrap, class/interaction lookup, and federation object model support.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/reporting.py`: service-report file support.
 
 This layer contains reusable backend mechanics that should not be duplicated across individual service-domain modules.
 
@@ -80,8 +80,8 @@ should not be mistaken for installable package dependencies.
 
 ## Factories And Registries
 
-- `packages/hla-backend-inmemory/src/hla/backends/inmemory/factory.py`: pure-Python backend constructors.
-- `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`: main full Python 2025 backend plugin and discovery surface.
+- `packages/hla-backend-python1516e/src/hla/backends/python1516e/factory.py`: pure-Python backend constructors.
+- `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py`: main full Python 2025 backend plugin and discovery surface.
 - `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`: wrapper-only compatibility plugin for legacy shim imports around the 2025 lane.
 - `packages/hla-rti-core/src/hla/rti/`: workspace-facing backend discovery and ambassador-construction helpers.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend plugin descriptors.
@@ -111,7 +111,7 @@ gRPC are transport options underneath that backend-neutral surface, not separate
 application APIs.
 
 For IEEE 1516.1-2025 specifically, the main executable Python RTI lane is
-`hla-backend-python2025`. `hla-backend-shim` remains only as
+`hla-backend-python1516-2025`. `hla-backend-shim` remains only as
 compatibility-wrapper/import-level code and should not be treated as the
 runtime owner.
 

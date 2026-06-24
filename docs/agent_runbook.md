@@ -7,7 +7,7 @@ environment exists. Do not do that.
 
 For IEEE 1516.1-2025 work, also keep this boundary explicit:
 
-- `hla-backend-python2025` is the main executable 2025 RTI lane
+- `hla-backend-python1516-2025` is the main executable 2025 RTI lane
 - `hla-backend-shim` is only a compatibility-wrapper/import-compatibility package over that runtime
 - hosted 2025 FedPro work is a bounded route variant, not a separate RTI family
 
@@ -44,7 +44,7 @@ Do not assume:
 
 - `packages/hla-rti1516e/src/hla/rti1516e/` owns the IEEE 1516.1-2010 API
 - `packages/hla-rti-core/src/hla/rti/` owns cross-version discovery and factories
-- `packages/hla-backend-python2025/src/hla/backends/python2025/` owns the main full
+- `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/` owns the main full
   IEEE 1516.1-2025 Python RTI runtime
 - `packages/hla-backend-shim/src/hla/backends/shim/` is a wrapper-only
   compatibility surface over that runtime

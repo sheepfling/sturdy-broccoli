@@ -12,7 +12,7 @@ from hla.verification.section8_matrix import (
     run_section8_state_services_case,
     section8_matrix_config,
 )
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 from hla.transports.rest.rest_transport_host import start_python_rest_server
 
 

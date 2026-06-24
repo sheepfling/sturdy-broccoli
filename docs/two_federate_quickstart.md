@@ -62,7 +62,7 @@ This is the best entry point when you want to:
   against constrained vendor routes such as the current Pitch two-federate lane
 
 For IEEE 1516.1-2025 work, remember that the scenario may run over the main full
-`python1516_2025` lane or bounded hosted route variants, but `hla-backend-python2025`
+`python1516_2025` lane or bounded hosted route variants, but `hla-backend-python1516-2025`
 remains the main runtime and `shim` does not count as a separate RTI family.
 
 ## Read Next

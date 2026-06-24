@@ -23,7 +23,7 @@ from hla.rti1516e.handles import (
     ParameterHandle,
     TransportationTypeHandle,
 )
-from hla.backends.inmemory.mom_catalog import (
+from hla.backends.python1516e.mom_catalog import (
     MOM_BOOL_PARAMETERS,
     MOM_FLOAT_PARAMETERS,
     MOM_INTERVAL_PARAMETERS,

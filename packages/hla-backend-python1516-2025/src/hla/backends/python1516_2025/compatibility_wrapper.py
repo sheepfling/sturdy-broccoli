@@ -20,7 +20,7 @@ class ShimBackendInfo(BackendInfo):
         default_factory=lambda: {
             "spec": "rti1516_2025",
             "provider": "shim",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": False,
             "wrapper_only": True,
         }

@@ -48,8 +48,8 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "omt_xs_any_extension_tolerance.md",
         "omt.md",
         "ownership_management_bounded_proof.md",
-        "python2025_direct_bounded_proof.md",
-        "python2025_exclusion_boundaries.md",
+        "python1516_2025_direct_bounded_proof.md",
+        "python1516_2025_exclusion_boundaries.md",
         "save_restore_bounded_proof.md",
         "support_services_bounded_proof.md",
         "standard_binding_runtime_capability_bounded_proof.md",
@@ -70,7 +70,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         "callback_bounded_proof.md",
         "lookahead_window_bounded_proof.md",
         "federation_management_bounded_proof.md",
-        "python2025_direct_bounded_proof.md",
+        "python1516_2025_direct_bounded_proof.md",
         "declaration_management_bounded_proof.md",
         "object_management_bounded_proof.md",
         "ownership_management_bounded_proof.md",
@@ -80,7 +80,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         "time_management_bounded_proof.md",
         "hosted_fedpro_bounded_proof.md",
         "binding_and_hosted_route_boundaries.md",
-        "python2025_exclusion_boundaries.md",
+        "python1516_2025_exclusion_boundaries.md",
         "callback_binding_deltas.md",
         "omt_xs_any_extension_tolerance.md",
     ):
@@ -92,7 +92,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
     assert "save/restore lifecycle control, shared rollback, routing/policy rollback, ownership rollback, and time-window/time-state rollback" in normalized
     assert "callback-delivery families, callback-control hygiene, and direct-versus-hosted callback surface boundaries over the main `python1516_2025` runtime" in normalized
     assert "Target/Radar lookahead ladder, including future-exclusion, output ordering, pipeline overlap, negative-oracle guards, and bounded save/restore window rollback" in normalized
-    assert "direct `python1516_2025` main-surface runtime lane over `hla-backend-python2025`" in normalized
+    assert "direct `python1516_2025` main-surface runtime lane over `hla-backend-python1516-2025`" in normalized
     assert "Java, C++, and hosted FedPro binding/route boundaries over the main `python1516_2025` runtime" in text
     assert "explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics" in normalized
 
@@ -110,12 +110,12 @@ def test_hosted_fedpro_bounded_proof_markdown_keeps_main_runtime_identity_and_bo
     assert "`tests/scenarios/test_python_route_parity.py`" in text
     assert "`docs/backend_route_inventory_remote.md`" in text
     assert "`packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`" in text
-    assert "`docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`" in text
-    assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in text
+    assert "`docs/requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`" in text
+    assert "`docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`" in text
     assert "`federation_lifecycle`" in text
     assert "`time_management`" in text
     assert "`support_services`" in text
-    assert "`hla-backend-python2025`" in text
+    assert "`hla-backend-python1516-2025`" in text
     assert "shared Target/Radar example path" in normalized
     assert "`./tools/python verify-routes-2025`" in text
     assert "`./tools/python verify-main-2025`" in text
@@ -143,12 +143,12 @@ def test_ieee_1516_2025_requirements_readme_tracks_current_runtime_proof_lane() 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
 def test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas() -> None:
-    text = (REGISTRY_DIR / "python2025_exclusion_boundaries.md").read_text(encoding="utf-8")
+    text = (REGISTRY_DIR / "python1516_2025_exclusion_boundaries.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
     assert "This note records what the repository is explicitly **not** claiming" in text
     assert "main IEEE 1516.1-2025 Python RTI implementation statement" in text
-    assert "`hla-backend-python2025` is the sole repo-owned Python RTI implementation lane" in normalized
+    assert "`hla-backend-python1516-2025` is the sole repo-owned Python RTI implementation lane" in normalized
     assert "Legacy aliases and shim imports" in text
     assert "Java/C++ bindings" in text
     assert "Hosted transport boundaries" in text
@@ -157,7 +157,7 @@ def test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas() -> N
     assert "OMT extension semantics" in text
     assert "`hla-backend-shim` is deprecated temporary import-compatibility scaffolding and wrapper-only compatibility support" in normalized
     assert "not alternate Python RTIs and not exhaustive cross-binding behavior conformance" in normalized
-    assert "bounded hosted transport/runtime slice over `hla-backend-python2025`" in normalized
+    assert "bounded hosted transport/runtime slice over `hla-backend-python1516-2025`" in normalized
     assert "normalization aids and mapping notes rather than standalone one-row conformance assertions" in normalized
     assert "explicit exclusions from active 2025 support obligations" in normalized
     assert "Arbitrary third-party extension execution semantics remain out of scope" in text
@@ -170,13 +170,13 @@ def test_python2025_exclusion_boundaries_markdown_gathers_non_claim_areas() -> N
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-MIL-001", "HLA2025-MIL-002")
 def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit() -> None:
-    text = (REGISTRY_DIR / "python2025_direct_bounded_proof.md").read_text(encoding="utf-8")
+    text = (REGISTRY_DIR / "python1516_2025_direct_bounded_proof.md").read_text(encoding="utf-8")
     normalized = " ".join(text.split())
 
     assert "This note records the repo's current direct-lane claim for `python1516_2025`." in normalized
     assert "The direct lane is the main executable bounded proof surface for the current 2025 Python RTI." in normalized
     assert "sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane" in normalized
-    assert "`hla-backend-python2025`" in text
+    assert "`hla-backend-python1516-2025`" in text
     assert "`federation_lifecycle`" in text
     assert "`object_exchange`" in text
     assert "`ownership`" in text
@@ -186,13 +186,13 @@ def test_python2025_direct_bounded_proof_markdown_keeps_main_lane_claim_explicit
     assert "`mom`" in text
     assert "`support_services`" in text
     assert "`omt_validation`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_target_radar_scenario.py`" in text
     assert "`tests/test_fom_target_radar_split_package.py`" in text
     assert "`tests/test_rti1516_2025_validation.py`" in text
     assert "`docs/test_surface.md`" in text
     assert "`docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`" in text
-    assert "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`" in text
+    assert "`docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`" in text
     assert "verify-main-2025" in text
     assert "`./tools/python verify-routes-2025`" in text
     assert "not a wrapper-owned surface and not a full unqualified conformance claim" in normalized
@@ -216,7 +216,7 @@ def test_fom_backed_scenario_bounded_proof_markdown_keeps_tracked_suite_boundary
     assert "`Proto2025_SpaceLite.xml`" in text
     assert "`Proto2025_TimeMgmtTest.xml`" in text
     assert "It does not yet prove every conceivable example FOM scenario outside the tracked suite." in normalized
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-018", "HLA2025-FI-SVC-024", "HLA2025-FI-005", "HLA2025-REQ-002")
@@ -230,12 +230,12 @@ def test_save_restore_bounded_proof_markdown_keeps_rollback_family_boundary_expl
     assert "`HLA2025-FI-SVC-024`, `HLA2025-FI-SVC-025`, `HLA2025-FI-SVC-033`, `HLA2025-FI-SVC-034`" in text
     assert "`HLA2025-FI-005`" in text
     assert "`HLA2025-FI-001`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/scenarios/test_save_restore_backend_matrix.py`" in text
     assert "`tests/scenarios/test_python_route_parity.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
-    assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in text
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
+    assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python1516-2025`" in text
     assert "does not claim that every save/restore requirement now has its own standalone clause-by-clause conformance proof" in normalized
 
 
@@ -253,15 +253,15 @@ def test_callback_bounded_proof_markdown_keeps_callback_family_boundary_explicit
     assert "Ownership negotiation and query callbacks" in text
     assert "Time grant, regulation, and retraction callbacks" in text
     assert "Callback control and backlog hygiene" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/scenarios/test_federation_management_backend_matrix.py`" in text
     assert "`tests/scenarios/test_save_restore_backend_matrix.py`" in text
     assert "`tests/scenarios/test_ownership_management_backend_matrix.py`" in text
     assert "`tests/scenarios/test_python_route_parity.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
     assert "does not claim exhaustive callback-by-callback signature equivalence" in normalized
-    assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in text
+    assert "Hosted FedPro remains transport-seam evidence over `hla-backend-python1516-2025`" in text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-003", "HLA2025-FR-004")
@@ -295,11 +295,11 @@ def test_framework_rules_markdown_maps_umbrella_rows_to_child_evidence() -> None
     assert "`HLA2025-REQ-001`, `HLA2025-OMT-001`, `HLA2025-OMT-005`, `HLA2025-OMT-006`" in text
     assert "`HLA2025-FI-001`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064`" in text
     assert "`HLA2025-FI-009`, `HLA2025-MOD-006`, `HLA2025-FI-SVC-101`, `HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-112`, `HLA2025-FI-SVC-121`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "| HLA2025-FR-005 |" in text
     assert "| HLA2025-FR-010 |" in text
-    assert "The primary implementation lane behind the executable anchors above is `hla-backend-python2025`." in normalized
+    assert "The primary implementation lane behind the executable anchors above is `hla-backend-python1516-2025`." in normalized
     assert "`hla-backend-shim` is not a runtime owner for these framework rules." in normalized
     assert "Each rule closes only through linked child FI, OMT, and runtime evidence" in normalized
 
@@ -320,13 +320,13 @@ def test_lookahead_window_bounded_proof_markdown_keeps_proof_ladder_and_boundary
     assert "`time-window-save-restore-output-resume`" in text
     assert "`time-window-save-restore-pipeline-resume`" in text
     assert "`lookahead-processing-window-certified`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/scenarios/test_python_route_parity.py`" in text
     assert "`./tools/pitch time-window-probe`" in text
     assert "`./tools/pitch time-window-restore-state-probe`" in text
     assert "must fail if the RTI allows a future-message exclusion bug or a closed-window causality leak" in normalized
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not an implementation owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not an implementation owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-FI-CB-001", "HLA2025-BIND-FEDPRO-001", "HLA2025-BIND-JAVA-CPP-001")
@@ -340,11 +340,11 @@ def test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_bindi
     assert "`HLA2025-FI-SVC-195`, `HLA2025-FI-SVC-196`" in text
     assert "`HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064`, `HLA2025-BND-003`" in text
     assert "`HLA2025-BND-001`, `HLA2025-BND-002`, `HLA2025-FI-003`, `HLA2025-FI-004`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "| HLA2025-FI-CB-008 |" in text
     assert "| HLA2025-BIND-JAVA-CPP-001 |" in text
-    assert "The primary runtime owner behind the executable anchors above is `hla-backend-python2025`." in normalized
+    assert "The primary runtime owner behind the executable anchors above is `hla-backend-python1516-2025`." in normalized
     assert "`hla-backend-shim`, `hla-backend-cpp-shim`, and the Java bridge packages are wrapper/binding surfaces over that runtime lane;" in normalized
     assert "Each row closes only through the linked child FI/binding rows" in normalized
 
@@ -360,10 +360,10 @@ def test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_l
     assert "`tests/backends/test_standard_shim_artifacts.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto`" in text
-    assert "`hla-backend-python2025` is the only main 2025 Python RTI implementation lane" in normalized
+    assert "`hla-backend-python1516-2025` is the only main 2025 Python RTI implementation lane" in normalized
     assert "`hla-backend-shim` remains a compatibility wrapper and is not a runtime owner" in normalized
     assert "Java bridge packages and `hla-backend-cpp-shim` remain wrapper/binding surfaces" in normalized
-    assert "Hosted FedPro is a bounded transport/runtime slice over `hla-backend-python2025`;" in normalized
+    assert "Hosted FedPro is a bounded transport/runtime slice over `hla-backend-python1516-2025`;" in normalized
 
 
 @pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002")
@@ -372,7 +372,7 @@ def test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_clai
     normalized = " ".join(text.split())
 
     assert "This note records the repo's current requirement-facing claim for the standard Java and C++ 2025 binding routes." in normalized
-    assert "artifact-gated/runtime-capability traces over the main `hla-backend-python2025` runtime" in normalized
+    assert "artifact-gated/runtime-capability traces over the main `hla-backend-python1516-2025` runtime" in normalized
     assert "Both Java and C++ standard-route families are parity-covered across the tracked eight scenario families" in normalized
     assert "`java-standard-2025-jpype`" in text
     assert "`java-standard-2025-py4j`" in text
@@ -415,7 +415,7 @@ def test_support_services_bounded_proof_markdown_keeps_python_lane_and_bounded_r
     assert "`name-reservation-and-release-flows`" in text
     assert "`identity-catalog-and-handle-normalization-lookups`" in text
     assert "`factory-decode-and-hosted-support-seam`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
 
 
@@ -429,14 +429,14 @@ def test_time_management_bounded_proof_markdown_keeps_service_family_traceabilit
     assert "`HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-108`, `HLA2025-FI-SVC-109`" in text
     assert "`HLA2025-FI-SVC-116`, `HLA2025-FI-SVC-117`, `HLA2025-FI-SVC-118`" in text
     assert "`HLA2025-FI-SVC-121`, `HLA2025-FI-SVC-122`, `HLA2025-FI-SVC-123`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/backends/test_shim_route_trace_evidence.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
     assert "`./tools/pitch time-window-probe`" in text
     assert "`./tools/pitch time-window-restore-state-probe`" in text
     assert "useful vendor credence" in normalized
-    assert "do not replace the broader `hla-backend-python2025` proof" in text
+    assert "do not replace the broader `hla-backend-python1516-2025` proof" in text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -449,10 +449,10 @@ def test_federation_management_bounded_proof_markdown_keeps_service_family_trace
     assert "`HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-009`, `HLA2025-FI-SVC-010`" in text
     assert "`HLA2025-FI-SVC-013`, `HLA2025-FI-SVC-014`, `HLA2025-FI-SVC-015`" in text
     assert "`HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`tests/scenarios/test_federation_management_backend_matrix.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -464,10 +464,10 @@ def test_declaration_management_bounded_proof_markdown_keeps_service_family_trac
     assert "`HLA2025-FI-SVC-035`, `HLA2025-FI-SVC-036`, `HLA2025-FI-SVC-037`" in text
     assert "`HLA2025-FI-SVC-041`, `HLA2025-FI-SVC-042`, `HLA2025-FI-SVC-043`" in text
     assert "`HLA2025-FI-SVC-047`, `HLA2025-FI-SVC-048`, `HLA2025-FI-SVC-049`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_object_management_backend_matrix.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -480,10 +480,10 @@ def test_object_management_bounded_proof_markdown_keeps_service_family_traceabil
     assert "`HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064`" in text
     assert "`HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-066`, `HLA2025-FI-SVC-067`" in text
     assert "`HLA2025-FI-SVC-074`, `HLA2025-FI-SVC-075`, `HLA2025-FI-SVC-076`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_object_management_backend_matrix.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -496,11 +496,11 @@ def test_ownership_management_bounded_proof_markdown_keeps_service_family_tracea
     assert "`HLA2025-FI-SVC-092`, `HLA2025-FI-SVC-093`, `HLA2025-FI-SVC-094`" in text
     assert "`HLA2025-FI-SVC-085`, `HLA2025-FI-SVC-088`, `HLA2025-FI-SVC-089`" in text
     assert "`HLA2025-FI-SVC-098`, `HLA2025-FI-SVC-099`, `HLA2025-FI-SVC-100`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/scenarios/test_ownership_management_backend_matrix.py`" in text
     assert "`tests/backends/test_python_backend_object_ownership_extended.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")
@@ -513,8 +513,8 @@ def test_ddm_bounded_proof_markdown_keeps_service_family_traceability_explicit()
     assert "`HLA2025-FI-SVC-128`, `HLA2025-FI-SVC-129`, `HLA2025-FI-SVC-131`, `HLA2025-FI-SVC-132`, `HLA2025-FI-SVC-133`, `HLA2025-FI-SVC-137`" in text
     assert "`HLA2025-FI-SVC-134`, `HLA2025-FI-SVC-135`" in text
     assert "`HLA2025-FI-SVC-136`" in text
-    assert "`tests/test_rti1516_2025_python2025_runtime.py`" in text
+    assert "`tests/test_rti1516_2025_python1516_2025_runtime.py`" in text
     assert "`tests/backends/test_python_backend_time_ddm_extended.py`" in text
     assert "`tests/scenarios/test_ddm_backend_matrix.py`" in text
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
-    assert "`hla-backend-python2025`. `hla-backend-shim` is not a runtime owner" in normalized
+    assert "`hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner" in normalized

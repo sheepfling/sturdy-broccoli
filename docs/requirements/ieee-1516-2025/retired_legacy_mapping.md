@@ -6,7 +6,7 @@ rows that remain `retired/legacy-only` in the harmonization ledger.
 These rows are not active 2025 obligations for the repo's main Python RTI lane.
 They exist to keep legacy 2010 spellings and schema tokens from being
 miscounted as missing 2025 functionality. The current runtime owner for the
-native 2025 behavior is `hla-backend-python2025`. `hla-backend-shim` remains a
+native 2025 behavior is `hla-backend-python1516-2025`. `hla-backend-shim` remains a
 compatibility wrapper and is not the runtime owner for these retired rows.
 
 ## Federate Interface Legacy API Rows
@@ -48,7 +48,7 @@ compatibility wrapper and is not the runtime owner for these retired rows.
 - These 24 rows remain excluded from native 2025 normative coverage unless the
   repo intentionally adds a compatibility or migration mode and tests it.
 - The active replacement behavior belongs to the native 2025 service, time, or
-  OMT rows already carried by `hla-backend-python2025`.
+  OMT rows already carried by `hla-backend-python1516-2025`.
 - The repo should not promote these rows to `covered` merely because a similar
   2025 service exists; promotion would require an explicit compatibility claim
   plus dedicated executable evidence.

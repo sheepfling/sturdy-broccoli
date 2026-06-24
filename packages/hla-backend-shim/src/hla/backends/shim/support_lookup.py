@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hla.backends.python2025.support_lookup_runtime import (
+from hla.backends.python1516_2025.support_lookup_runtime import (
     get_attribute_handle,
     get_attribute_name,
     get_available_dimensions_for_interaction_class,

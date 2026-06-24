@@ -37,7 +37,7 @@ def make_target_radar_factory(
     backend_options = dict(backend_options or {})
     if normalized in {"python1516e", "python-1516e"}:
         pair_by_role: dict[str, Any] = {}
-        create_python_pair = import_module("hla.backends.inmemory").create_python_pair
+        create_python_pair = import_module("hla.backends.python1516e").create_python_pair
 
         def factory(role: str) -> Any:
             if role not in pair_by_role:

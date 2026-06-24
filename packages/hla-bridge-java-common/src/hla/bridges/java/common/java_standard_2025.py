@@ -56,7 +56,7 @@ class JavaStandard2025Backend:
                 "spec": "rti1516_2025",
                 "standard_backed": True,
                 "runtime_provider": "python1516_2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": False,
                 "wrapper_only": False,
                 "jar_path": str(jar_path),
@@ -66,7 +66,7 @@ class JavaStandard2025Backend:
         )
 
     def create_rti_ambassador(self) -> Any:
-        from hla.backends.python2025.backend import create_python2025_backend
+        from hla.backends.python1516_2025.backend import create_python2025_backend
 
         native_backend = create_python2025_backend(self.request)
         ambassador = native_backend.create_rti_ambassador()
@@ -105,7 +105,7 @@ def discover_java_standard_2025(route: str) -> BackendInfo:
             "route": route,
             "spec": "rti1516_2025",
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": False,
             "standard_backed": jar_path.exists() and DEFAULT_REPORT.exists(),
             "jar_path": str(jar_path),

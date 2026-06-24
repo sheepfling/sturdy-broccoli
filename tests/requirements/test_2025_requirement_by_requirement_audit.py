@@ -40,7 +40,7 @@ def test_2025_requirement_by_requirement_audit_stays_aligned_with_finish_line_sn
     assert audit["covered_rows_with_evidence_paths"] == 645
     assert audit["unsupported_rows_with_explicit_boundary_flag"] == 0
     assert "row-level requirement-by-requirement disposition audit across all 691 tracked 2025 rows" in audit["current_assessment"]
-    assert "strengthens the bounded main-implementation claim for hla-backend-python2025" in audit["current_assessment"]
+    assert "strengthens the bounded main-implementation claim for hla-backend-python1516-2025" in audit["current_assessment"]
     assert "hla-backend-shim in a wrapper-only compatibility role" in audit["current_assessment"]
     assert any("third-party extension execution semantics" in blocker for blocker in audit["full_claim_blockers"])
     assert any("duplicate/umbrella normalization aids" in blocker for blocker in audit["full_claim_blockers"])
@@ -50,7 +50,7 @@ def test_2025_requirement_by_requirement_audit_stays_aligned_with_finish_line_sn
     assert "unsupported-boundary rows: `0`" in audit_text
     assert "duplicate/umbrella rows: `22`" in audit_text
     assert "the repo no longer lacks a row-level 2025 audit" in audit_text
-    assert "strengthens the bounded main-implementation claim for `hla-backend-python2025`" in audit_text
+    assert "strengthens the bounded main-implementation claim for `hla-backend-python1516-2025`" in audit_text
     assert "`hla-backend-shim` stays in a compatibility-wrapper role" in audit_text
     assert "still not a full unconditional 2025 conformance pass" in audit_text
     assert "hla2025-omt-comp-041" in audit_text

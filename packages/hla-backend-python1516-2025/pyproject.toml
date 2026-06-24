@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hla-backend-python2025"
+name = "hla-backend-python1516-2025"
 version = "0.13.0"
 description = "Main full Python RTI backend package for HLA 1516.1-2025"
 readme = "README.md"
@@ -19,14 +19,14 @@ dependencies = [
 test = ["pytest"]
 
 [project.entry-points."hla.rti_backends"]
-python1516_2025 = "hla.backends.python2025.plugin:plugin"
+python1516_2025 = "hla.backends.python1516_2025.plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["hla.backends.python2025*"]
+include = ["hla.backends.python1516_2025*"]
 namespaces = true
 
 [tool.hla.package]
@@ -35,5 +35,5 @@ role = "rti-backend"
 backend_names = ["python1516_2025"]
 backend_aliases = ["python-1516-2025"]
 source_roots = [
-  "packages/hla-backend-python2025/src/hla/backends/python2025",
+  "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025",
 ]

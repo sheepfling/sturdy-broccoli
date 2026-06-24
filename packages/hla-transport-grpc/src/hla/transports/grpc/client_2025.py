@@ -923,7 +923,7 @@ class FedPro2025ClientAdapter:
     """Map internal backend transport envelopes onto FedPro 2025 protobuf calls."""
 
     runtime_provider = "python1516_2025"
-    implementation_lane = "hla-backend-python2025"
+    implementation_lane = "hla-backend-python1516-2025"
     counts_as_python_2025_rti = True
     wrapper_only = False
     spec = "rti1516_2025"

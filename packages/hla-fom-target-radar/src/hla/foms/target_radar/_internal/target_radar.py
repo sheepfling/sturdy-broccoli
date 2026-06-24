@@ -434,7 +434,7 @@ class RadarFederate(NullFederateAmbassador):
 def create_python_target_radar_pair() -> tuple[Any, Any]:
     """Create target/radar RTI ambassadors sharing one Python in-memory engine."""
 
-    return import_module("hla.backends.inmemory").create_python_pair()
+    return import_module("hla.backends.python1516e").create_python_pair()
 
 
 def _python_pair_factory() -> RtiFactory:

@@ -57,7 +57,7 @@ More specifically, it proves:
 This closes the missing-audit gap.
 
 It also strengthens the bounded main-implementation claim for
-`hla-backend-python2025`: the repo now has a row-level ledger behind the
+`hla-backend-python1516-2025`: the repo now has a row-level ledger behind the
 current Python 2025 RTI lane rather than only broad slice summaries, while
 `hla-backend-shim` stays in a compatibility-wrapper role instead of becoming a
 second implementation owner.

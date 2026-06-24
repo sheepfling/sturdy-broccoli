@@ -7,7 +7,7 @@ examples, tests, or backend tools.
 
 This page covers the shared Python bootstrap contract for both editions. For
 the current IEEE 1516.1-2025 runtime lane, the main executable backend remains
-`hla-backend-python2025`, while `hla-backend-shim` stays only as
+`hla-backend-python1516-2025`, while `hla-backend-shim` stays only as
 compatibility-wrapper/import-compatibility code.
 
 ## What You Need First
@@ -43,7 +43,7 @@ For the main 2025 lane after bootstrap, continue with:
 - [`python_rti_backend.md`](python_rti_backend.md) for the current runtime
   ownership and wrapper boundary
 - [`python_rti_reading_map.md`](python_rti_reading_map.md) for the shortest
-  edit path through `hla-backend-python2025`
+  edit path through `hla-backend-python1516-2025`
 - [`networked_rti_python.md`](networked_rti_python.md) for the bounded hosted
   `python1516_2025-fedpro-grpc` route
 

@@ -41,9 +41,9 @@ def test_split_grpc_transport_package_keeps_2025_hosted_server_backend_independe
         ROOT / "packages" / "hla-transport-grpc" / "src" / "hla" / "transports" / "grpc" / "python_server_2025.py"
     ).read_text(encoding="utf-8")
 
-    assert "hla-backend-python2025" not in pyproject_text
+    assert "hla-backend-python1516-2025" not in pyproject_text
     assert "hla-backend-shim" not in pyproject_text
-    assert "hla.backends.python2025" not in server_2025_text
+    assert "hla.backends.python1516_2025" not in server_2025_text
     assert "hla.backends.shim" not in server_2025_text
 
 

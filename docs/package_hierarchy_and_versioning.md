@@ -20,7 +20,7 @@ Read the repo from top to bottom like this:
 | --- | --- | --- |
 | 1. Standard surfaces | public HLA-facing Python APIs | `hla-rti1516e`, `hla-rti1516-2025` |
 | 2. Shared support | factories, registries, shared codecs, common helpers | `hla-rti-core`, `hla-backend-common`, `hla-transport-common`, `hla-bridge-java-common` |
-| 3. Concrete backends | actual HLA service behavior | `hla-backend-inmemory`, `hla-backend-python2025`, `hla-backend-certi`, `hla-backend-shim`, `hla-backend-cpp-shim` |
+| 3. Concrete backends | actual HLA service behavior | `hla-backend-python1516e`, `hla-backend-python1516-2025`, `hla-backend-certi`, `hla-backend-shim`, `hla-backend-cpp-shim` |
 | 4. Integrations | transport, vendor, and bridge routes | `hla-transport-grpc`, `hla-transport-rest`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-vendor-pitch`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`, `hla-vendor-portico` |
 | 5. Leaves | concrete FOMs, scenarios, and proof harnesses | `hla-fom-target-radar`, `hla-fom-proto2025-message-test`, `hla-fom-proto2025-space-lite`, `hla-fom-proto2025-time-mgmt-test`, `hla-verification` |
 
@@ -84,9 +84,9 @@ The most important rules are:
 There are three different structures at once:
 
 1. distribution names
-   - `hla-backend-inmemory`
+   - `hla-backend-python1516e`
 2. import paths
-   - `hla.backends.inmemory`
+   - `hla.backends.python1516e`
 3. runtime role
    - standard surface, support, backend, integration, leaf
 

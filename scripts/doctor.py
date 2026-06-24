@@ -78,7 +78,7 @@ import sys
 modules = {
     "hla2010": "hla2010",
     "hla_rti1516e": "hla.rti1516e",
-    "hla.backends.inmemory": "hla.backends.inmemory",
+    "hla.backends.python1516e": "hla.backends.python1516e",
     "pytest": "pytest",
     "jpype1": "jpype",
     "py4j": "py4j",
@@ -176,7 +176,7 @@ def check_workspace_imports(venv_python: Path) -> Check:
     required = (
         ("hla2010", "hla2010"),
         ("hla_rti1516e", "hla.rti1516e"),
-        ("hla.backends.inmemory", "hla.backends.inmemory"),
+        ("hla.backends.python1516e", "hla.backends.python1516e"),
     )
     missing = [display_name for key, display_name in required if not bool(modules.get(key))]
     if missing:

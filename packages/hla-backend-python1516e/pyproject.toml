@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hla-backend-inmemory"
+name = "hla-backend-python1516e"
 version = "0.13.0"
 description = "Pure in-memory Python RTI backend plugin for hla-rti1516e"
 readme = "README.md"
@@ -16,14 +16,14 @@ typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 
 [project.entry-points."hla.rti_backends"]
-python1516e = "hla.backends.inmemory.plugin:plugin"
+python1516e = "hla.backends.python1516e.plugin:plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["hla.backends.inmemory*"]
+include = ["hla.backends.python1516e*"]
 namespaces = true
 
 [tool.hla.package]
@@ -32,5 +32,5 @@ role = "rti-backend"
 backend_names = ["python1516e"]
 backend_aliases = ["python-1516e"]
 source_roots = [
-  "packages/hla-backend-inmemory/src/hla/backends/inmemory",
+  "packages/hla-backend-python1516e/src/hla/backends/python1516e",
 ]

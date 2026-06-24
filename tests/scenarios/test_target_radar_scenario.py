@@ -6,7 +6,7 @@ import pytest
 
 from hla.backends.common import make_rti_ambassador
 from hla.foms.target_radar._internal import run_target_radar_scenario
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 from hla.runtime.factory import create_rti_ambassador
 from hla.bridges.java.common.java_shim_factory import create_shared_java_shim_backend
 from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel

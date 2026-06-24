@@ -50,7 +50,7 @@ class SuiteRecordingFederateAmbassador(RecordingFederateAmbassador):
 
 
 def _python_pair():
-    return import_module("hla.backends.inmemory").create_python_pair()
+    return import_module("hla.backends.python1516e").create_python_pair()
 
 
 def _cleanup_pair(*rtis: Any, federation_name: str) -> None:

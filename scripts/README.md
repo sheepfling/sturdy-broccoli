@@ -17,7 +17,7 @@ The `scripts/` tree is implementation and CI plumbing, not the primary
 human-facing operator surface.
 
 For IEEE 1516.1-2025 specifically, the runtime owner behind the supported
-operator flows is `hla-backend-python2025`. `hla-backend-shim` remains
+operator flows is `hla-backend-python1516-2025`. `hla-backend-shim` remains
 wrapper-only compatibility code, and hosted 2025 FedPro routes remain bounded
 route variants rather than separate RTI families.
 

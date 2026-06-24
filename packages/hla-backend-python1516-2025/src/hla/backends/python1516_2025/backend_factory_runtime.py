@@ -19,7 +19,7 @@ class Python2025BackendInfo(BackendInfo):
         default_factory=lambda: {
             "spec": "rti1516_2025",
             "provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
         }
     )
@@ -35,7 +35,7 @@ class Python2025Backend:
 
     def create_rti_ambassador(self):  # noqa: ANN201
         Python2025RTIAmbassador = import_module(
-            "hla.backends.python2025.backend"
+            "hla.backends.python1516_2025.backend"
         ).Python2025RTIAmbassador
         ambassador = Python2025RTIAmbassador()
         ambassador.backend_info = self.info
@@ -51,7 +51,7 @@ class HostedPython2025Backend(Python2025Backend):
 
     def create_rti_ambassador(self):  # noqa: ANN201
         FedPro2025RTIAmbassador = import_module(
-            "hla.backends.python2025.hosted_fedpro"
+            "hla.backends.python1516_2025.hosted_fedpro"
         ).FedPro2025RTIAmbassador
         ambassador = FedPro2025RTIAmbassador(self.transport)
         ambassador.backend_info = replace(

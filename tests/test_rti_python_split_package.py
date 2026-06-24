@@ -7,17 +7,17 @@ from hla.backends.common import RTIBackendPlugin
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PYTHON_RTI_SRC = ROOT / "packages" / "hla-backend-inmemory" / "src"
+PYTHON_RTI_SRC = ROOT / "packages" / "hla-backend-python1516e" / "src"
 
 
 def test_split_python_rti_package_exports_backend_surface():
     assert PYTHON_RTI_SRC.exists()
-    import hla.backends.inmemory
+    import hla.backends.python1516e
 
-    backend = hla.backends.inmemory.create_python_backend()
+    backend = hla.backends.python1516e.create_python_backend()
     assert backend.info.kind == "python/1516e"
-    assert hla.backends.inmemory.rti_ambassador().backend_info.name == "python1516e-rti"
-    assert hla.backends.inmemory.prepare_python_two_federate_profile().__class__.__name__ == "InMemoryRTIEngine"
+    assert hla.backends.python1516e.rti_ambassador().backend_info.name == "python1516e-rti"
+    assert hla.backends.python1516e.prepare_python_two_federate_profile().__class__.__name__ == "InMemoryRTIEngine"
 
 
 def test_legacy_python_backend_modules_are_removed():
@@ -36,11 +36,11 @@ def test_legacy_python_backend_modules_are_removed():
 
 
 def test_split_python_rti_package_submodules_are_public():
-    from hla.backends.inmemory.backend import PythonRTIBackend
-    from hla.backends.inmemory.engine import InMemoryRTIEngine
-    from hla.backends.inmemory.factory import create_python_backend
-    from hla.backends.inmemory.state import PythonRTIConfig
-    from hla.backends.inmemory.testing_policy import prepare_python_two_federate_profile
+    from hla.backends.python1516e.backend import PythonRTIBackend
+    from hla.backends.python1516e.engine import InMemoryRTIEngine
+    from hla.backends.python1516e.factory import create_python_backend
+    from hla.backends.python1516e.state import PythonRTIConfig
+    from hla.backends.python1516e.testing_policy import prepare_python_two_federate_profile
 
     backend = create_python_backend(engine=InMemoryRTIEngine(), config=PythonRTIConfig())
     assert isinstance(backend, PythonRTIBackend)
@@ -49,7 +49,7 @@ def test_split_python_rti_package_submodules_are_public():
 
 
 def test_split_python_rti_package_plugin_descriptor_creates_backend():
-    from hla.backends.inmemory.plugin import backend_plugins, plugin
+    from hla.backends.python1516e.plugin import backend_plugins, plugin
 
     descriptor = plugin()
     assert isinstance(descriptor, RTIBackendPlugin)

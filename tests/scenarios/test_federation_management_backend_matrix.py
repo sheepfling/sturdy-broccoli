@@ -20,7 +20,7 @@ from hla.rti1516e.exceptions import (
     SaveInProgress,
 )
 from hla.runtime.factory import create_rti_ambassador
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 from hla.verification import (
     LostFederateScenarioConfig,
     SaveRestoreScenarioConfig,

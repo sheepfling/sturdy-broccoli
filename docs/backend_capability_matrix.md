@@ -26,7 +26,7 @@ For the current 2025 implementation posture, use:
 - [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
 
 Those pages record the bounded working-surface evidence for the current
-`hla-backend-python2025` 2025 lane, with `hla-backend-shim` retained only as a
+`hla-backend-python1516-2025` 2025 lane, with `hla-backend-shim` retained only as a
 compatibility-wrapper package, and the explicit promotion-versus-split decision
 criteria.
 
@@ -44,7 +44,7 @@ for clause-level status.
 
 The repo now treats the 2025 Python RTI as a primary implementation lane:
 
-- `hla-backend-python2025` for the main executable `rti1516_2025` backend
+- `hla-backend-python1516-2025` for the main executable `rti1516_2025` backend
 - `hla-backend-shim` for legacy compatibility-wrapper/import-level support
 - `python1516_2025-inprocess` for the direct runtime proof lane
 - `python1516_2025-fedpro-grpc` for the hosted FedPro route variant
@@ -91,12 +91,12 @@ This repo also has a narrower transport seam under the backend layer. That seam 
 |---|---|---:|
 | `subprocess-line` | primary local CERTI transport path | yes |
 | `rest` / `http-json` | typed remote transport exercised through the CERTI adapter path and through a transport-hosted pure-Python 2010 RTI server | yes |
-| `grpc` | typed remote transport exercised through the CERTI adapter path, through a transport-hosted pure-Python 2010 RTI server, and through the bounded `python1516_2025-fedpro-grpc` route over `hla-backend-python2025` | yes |
+| `grpc` | typed remote transport exercised through the CERTI adapter path, through a transport-hosted pure-Python 2010 RTI server, and through the bounded `python1516_2025-fedpro-grpc` route over `hla-backend-python1516-2025` | yes |
 
 These transport kinds are not separate RTI backends today. They are transport
 choices used under the backend-neutral Python HLA surface, with the current
 2025 hosted proof treated as transport-seam evidence over
-`hla-backend-python2025` rather than as a separate runtime family.
+`hla-backend-python1516-2025` rather than as a separate runtime family.
 
 ## Verification Features
 
@@ -125,7 +125,7 @@ Primary anchors:
   around `python1516_2025`; it is not a separate 2025 RTI family or public runtime
   lane.
 - `python1516_2025-fedpro-grpc` is the bounded hosted route over the same
-  `hla-backend-python2025` runtime lane. Treat its green status as hosted
+  `hla-backend-python1516-2025` runtime lane. Treat its green status as hosted
   transport-seam proof over the main 2025 RTI, not as evidence of a distinct
   hosted RTI implementation.
 - The current remote callback contract is explicit across both `rest` and `grpc`: unary transport requests plus callback polling through `evokeCallback` / `evokeMultipleCallbacks`. Callback streaming is a future design option, not the current contract.
@@ -142,7 +142,7 @@ Primary anchors:
 ## Test Coverage
 
 - Main in-process Python RTI 2025 proof suite:
-  - [test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py)
+  - [test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py)
 - 2025 route-parity and finish-line evidence:
   - [test_2025_route_parity_matrix.py](../tests/requirements/test_2025_route_parity_matrix.py)
   - [test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)

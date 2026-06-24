@@ -25,7 +25,7 @@ SOURCE_ROOTS=(
   "src"
   "packages/hla-rti1516e/src"
   "packages/hla-rti1516-2025/src"
-  "packages/hla-backend-inmemory/src"
+  "packages/hla-backend-python1516e/src"
   "packages/hla-backend-shim/src"
   "packages/hla-backend-certi/src"
   "packages/hla-backend-common/src"

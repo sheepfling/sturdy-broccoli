@@ -11,13 +11,13 @@ legacy package seam?
 ## Short Answer
 
 The repo is currently proving a real executable Python 2025 RTI surface, and
-that main full runtime now executes from `hla-backend-python2025`.
+that main full runtime now executes from `hla-backend-python1516-2025`.
 
 That means:
 
-- `hla-backend-python2025` is now the main full Python runtime package used for
+- `hla-backend-python1516-2025` is now the main full Python runtime package used for
   `rti1516_2025`
-- `hla-backend-python2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
+- `hla-backend-python1516-2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
   implementation lane
 - `hla-backend-shim` remains only as temporary import-compatibility
   scaffolding and wrapper-only compatibility support
@@ -31,8 +31,8 @@ The repo is not building two duplicate Python 2025 RTIs.
 
 The actual lanes are:
 
-- `hla-backend-inmemory`: the 2010 pure-Python RTI backend
-- `hla-backend-python2025`: the main full Python 2025 RTI implementation lane
+- `hla-backend-python1516e`: the 2010 pure-Python RTI backend
+- `hla-backend-python1516-2025`: the main full Python 2025 RTI implementation lane
 - `hla-backend-shim`: temporary import-compatibility scaffolding and a
   wrapper-only compatibility package over that live runtime
 - `python1516_2025-fedpro-grpc`: a hosted route variant over the 2025 lane, not a
@@ -45,7 +45,7 @@ The actual lanes are:
 So the practical 2025 story is:
 
 - the repo does have a working Python 2025 RTI lane
-- the repo now has a main full `hla-backend-python2025` backend package
+- the repo now has a main full `hla-backend-python1516-2025` backend package
 - that package is the sole repo-owned IEEE 1516.1-2025 Python RTI
   implementation lane
 - the legacy `hla-backend-shim` package is being retained as temporary
@@ -56,7 +56,7 @@ So the practical 2025 story is:
   compatibility surface can keep shrinking without obscuring runtime proof
 
 The implementation layout matters here too. The current 2025 lane is not just
-`hla-backend-python2025/backend.py` pretending to be a package. The public
+`hla-backend-python1516-2025/backend.py` pretending to be a package. The public
 shell now fronts extracted runtime/state/surface modules such as:
 
 - `backend_factory_runtime.py`
@@ -67,15 +67,15 @@ shell now fronts extracted runtime/state/surface modules such as:
 - `*_surface_mixin.py`
 
 That split is part of the evidence story: core RTI semantics now land in the
-main `hla-backend-python2025` package-owned runtime modules, while
+main `hla-backend-python1516-2025` package-owned runtime modules, while
 `hla-backend-shim` keeps only temporary import-compatibility scaffolding,
 wrapper-only compatibility, and forwarder concerns.
 
 ## Audit Snapshot
 
-- Main 2025 RTI package: `hla-backend-python2025`
+- Main 2025 RTI package: `hla-backend-python1516-2025`
 - Wrapper-only compatibility package: `hla-backend-shim`
-- 2010 pure Python RTI package: `hla-backend-inmemory`
+- 2010 pure Python RTI package: `hla-backend-python1516e`
 - Python 2025 route count: `2`
 - Hosted Python 2025 route: `python1516_2025-fedpro-grpc`
 - Non-Python binding lanes kept segregated: `2`
@@ -105,7 +105,7 @@ executable RTI surface across:
 
 The direct in-process proof is important here, not just the hosted route:
 
-- `tests/test_rti1516_2025_python2025_runtime.py` now includes direct
+- `tests/test_rti1516_2025_python1516_2025_runtime.py` now includes direct
   `create_rti_ambassador(backend="python1516_2025")` proof for support-service
   handle factories and decode helpers without routing through the compatibility
   wrapper
@@ -114,10 +114,10 @@ The direct in-process proof is important here, not just the hosted route:
   surface, without reclassifying the runtime as shim-owned behavior
 - the direct in-process suite now also proves raw callback-control services on
   the main lane: `disableCallbacks`, `enableCallbacks`, `evokeCallback`, and
-  `evokeMultipleCallbacks` execute against `hla-backend-python2025` itself and
+  `evokeMultipleCallbacks` execute against `hla-backend-python1516-2025` itself and
   release queued discovery/reflection callbacks only after callback delivery is
   re-enabled
-- `tests/test_rti1516_2025_python2025_runtime.py` now includes an explicit
+- `tests/test_rti1516_2025_python1516_2025_runtime.py` now includes an explicit
   partial-delivery TSO retraction proof on the main `python1516_2025` lane
 - that route verifies one constrained subscriber can receive a timestamped
   interaction, the publisher can retract it, and a lagging subscriber later
@@ -134,7 +134,7 @@ The direct in-process proof is important here, not just the hosted route:
   disconnects, and no stale `REQUEST_RETRACTION` callback is emitted
 - the same in-process suite now also proves plain timestamped retraction
   fanout across multiple already-delivered subscribers, so callback fanout for
-  that invariant is anchored to the direct `hla-backend-python2025` lane too
+  that invariant is anchored to the direct `hla-backend-python1516-2025` lane too
 - the hosted FedPro route also replays that post-delivery retraction fanout
   invariant: both already-delivered subscribers receive `REQUEST_RETRACTION`
   for the same handle
@@ -173,7 +173,7 @@ The direct in-process proof is important here, not just the hosted route:
 - the direct suite already proves restore-control negative paths too: missing
   save-label failure, restore abort, restore precondition rejection,
   restore-participant exception handling, and restore-status exception handling
-  are all exercised directly on `hla-backend-python2025`
+  are all exercised directly on `hla-backend-python1516-2025`
 - the hosted FedPro route now replays that restore-control negative surface
   too: request-precondition, missing-label failure, restore abort,
   participant-exception, and status-exception control flow are all exercised
@@ -192,7 +192,7 @@ The direct in-process proof is important here, not just the hosted route:
   one route restores in-flight ownership negotiation state, and another proves
   cross-federate owner-visibility queries return the restored ownership graph
 - this keeps a real time/retraction safety claim anchored to
-  `hla-backend-python2025` itself instead of leaving that behavior proven only
+  `hla-backend-python1516-2025` itself instead of leaving that behavior proven only
   on the hosted FedPro route
 
 For OMT specifically, the current claim is still a bounded OMT working surface:
@@ -208,23 +208,23 @@ Primary evidence anchors:
 - [../requirements/ieee-1516-2025/save_restore_bounded_proof.md](../requirements/ieee-1516-2025/save_restore_bounded_proof.md)
 - [../requirements/ieee-1516-2025/callback_bounded_proof.md](../requirements/ieee-1516-2025/callback_bounded_proof.md)
 - [../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md](../requirements/ieee-1516-2025/lookahead_window_bounded_proof.md)
-- [../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python2025_direct_bounded_proof.md)
-- [../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
-- [../packages/hla-backend-python2025/README.md](../../packages/hla-backend-python2025/README.md)
+- [../requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md](../requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md)
+- [../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
+- [../packages/hla-backend-python1516-2025/README.md](../../packages/hla-backend-python1516-2025/README.md)
 - [../packages/hla-backend-shim/README.md](../../packages/hla-backend-shim/README.md)
 - [../examples/target_radar_simulation.py](../../examples/target_radar_simulation.py)
 - [../tests/scenarios/test_target_radar_scenario.py](../../tests/scenarios/test_target_radar_scenario.py)
 - [../tests/test_fom_target_radar_split_package.py](../../tests/test_fom_target_radar_split_package.py)
-- [../tests/test_python2025_split_package.py](../../tests/test_python2025_split_package.py)
+- [../tests/test_python1516_2025_split_package.py](../../tests/test_python1516_2025_split_package.py)
 - [../tests/test_package_import_isolation.py](../../tests/test_package_import_isolation.py)
 - [../tests/test_root_facade_policy.py](../../tests/test_root_facade_policy.py)
-- [../tests/test_rti1516_2025_python2025_runtime.py](../../tests/test_rti1516_2025_python2025_runtime.py)
+- [../tests/test_rti1516_2025_python1516_2025_runtime.py](../../tests/test_rti1516_2025_python1516_2025_runtime.py)
 - [../tests/transport/test_grpc_transport_2025.py](../../tests/transport/test_grpc_transport_2025.py)
 - [../tests/requirements/test_2025_finish_line_snapshot.py](../../tests/requirements/test_2025_finish_line_snapshot.py)
 - [../tests/requirements/test_2025_route_parity_matrix.py](../../tests/requirements/test_2025_route_parity_matrix.py)
 
 For the compact excluded-area inventory behind this bounded claim, use
-[`../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python2025_exclusion_boundaries.md).
+[`../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`](../requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md).
 That requirement-facing note keeps the shim-alias, Java/C++, hosted-route,
 umbrella-row, retired-row, and OMT-extension boundaries explicit without
 forcing readers to mine the full generated finish-line bundle.
@@ -260,7 +260,7 @@ conformance proof.
 ## Current Proof Contract
 
 The operator-facing 2025 proof contract should now be read as a named
-proof-family contract for the main `hla-backend-python2025` lane, not as one
+proof-family contract for the main `hla-backend-python1516-2025` lane, not as one
 undifferentiated "bounded working surface" bucket.
 
 The current families are:
@@ -277,14 +277,14 @@ The current families are:
 
 Those families matter because they separate:
 
-- core runtime proof that belongs to `hla-backend-python2025`
+- core runtime proof that belongs to `hla-backend-python1516-2025`
 - hosted transport-seam proof that belongs to the bounded FedPro route
 - binding/adaptation-seam proof that belongs to Java/C++ wrapper lanes
 
 So when the repo says the current 2025 lane is a substantively validated
 working Python RTI surface, the strongest bounded claim is now:
 
-- the main `hla-backend-python2025` runtime clears those named proof families
+- the main `hla-backend-python1516-2025` runtime clears those named proof families
   across direct and hosted Python 2025 routes
 - `hla-backend-shim` remains a compatibility wrapper and should not be treated
   as an implementation-owner proof bucket
@@ -293,7 +293,7 @@ working Python RTI surface, the strongest bounded claim is now:
 
 Recent evidence run already recorded in this worktree:
 
-- dedicated `hla-backend-python2025` split-package surface:
+- dedicated `hla-backend-python1516-2025` split-package surface:
   `71 passed in 0.67s`
 - python1516_2025 import-boundary guardrails:
   `163 passed in 40.34s`
@@ -347,7 +347,7 @@ than core-runtime-owned:
   path
 
 That distinction matters. Those proofs still belong in the repo, but they are
-no longer the strongest evidence for whether `hla-backend-python2025` itself
+no longer the strongest evidence for whether `hla-backend-python1516-2025` itself
 is a real 2025 RTI implementation lane.
 
 The same boundary applies to the remaining non-Python binding evidence too:
@@ -356,11 +356,11 @@ The same boundary applies to the remaining non-Python binding evidence too:
 - it is not evidence that the main Python 2025 runtime is still missing core
   RTI semantics
 - those lanes should stay segregated as supporting adapter surfaces over the
-  main `hla-backend-python2025` lane
+  main `hla-backend-python1516-2025` lane
 
 And because the package boundary is now enforced, not merely described:
 
-- `hla-backend-python2025` is treated as its own owned package root in the
+- `hla-backend-python1516-2025` is treated as its own owned package root in the
   import-isolation guardrail
 - `hla-backend-shim` is allowed to depend on that main runtime package
 - the main `python1516_2025` runtime package is explicitly tested to ensure it does
@@ -370,7 +370,7 @@ And because the package boundary is now enforced, not merely described:
   `hla-fom-target-radar` compatibility adapter rather than through
   `hla-backend-shim`
 - that shared Target/Radar adapter wraps both `python1516_2025` and the wrapper-only
-  `shim` alias while still recording `hla-backend-python2025` as the real
+  `shim` alias while still recording `hla-backend-python1516-2025` as the real
   implementation lane, which keeps the example proof on the main RTI side of
   the architecture boundary
 
@@ -409,7 +409,7 @@ The newer finish-line partition audits make one more thing explicit:
 
 - the remaining full-claim blockers are now partitioned as external ownership
   boundaries rather than hidden direct-runtime incompleteness inside
-  `hla-backend-python2025`
+  `hla-backend-python1516-2025`
 - the broader closeout blockers are also partitioned as requirement-granularity,
   hosted-route, cross-binding, OMT-extension-scope, or legacy-exclusion limits
   rather than missing core executable behavior in the main Python 2025 runtime
@@ -434,7 +434,7 @@ The repo can already justify promoting the current lane as the working Python
 That promotion is justified when the claim is phrased carefully:
 
 - the main full Python 2025 RTI implementation now runs from
-  `hla-backend-python2025`
+  `hla-backend-python1516-2025`
 - `hla-backend-shim` is retained only as temporary import-compatibility
   scaffolding and wrapper-only compatibility support over that runtime
 - it is the main full backend for bounded working-surface claims
@@ -466,14 +466,14 @@ If those triggers appear, the right move is:
 
 1. keep the requirement ledgers and runtime verification as the continuity
    layer
-2. keep the main full backend in `hla-backend-python2025`
+2. keep the main full backend in `hla-backend-python1516-2025`
 3. move only the remaining compatibility-facing logic that still needs
    relocation
 4. keep the shim focused on API adaptation and route-facing normalization
 
 That work has now started in code, not just at the package-contract level:
 
-- `hla-backend-python2025` is present and discoverable as backend
+- `hla-backend-python1516-2025` is present and discoverable as backend
   `python1516_2025`
 - it owns directed-interaction target-selection, save/restore lifecycle, and
   DDM/default-policy semantics that the live Python 2025 RTI lane now consumes as shared
@@ -491,7 +491,7 @@ It is not merely polishing a fake adapter. It is proving a real executable
 
 The honest current working conclusion is:
 
-- promote `hla-backend-python2025` as the repo's working Python 2025 RTI surface
+- promote `hla-backend-python1516-2025` as the repo's working Python 2025 RTI surface
 - keep the architectural seam clear enough for continued shim narrowing
 - continue the remaining work as runtime-proof expansion and final audit
   closure, not as a naming argument

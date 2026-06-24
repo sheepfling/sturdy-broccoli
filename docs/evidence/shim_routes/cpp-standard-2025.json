@@ -9,7 +9,7 @@
   "routes": {
     "cpp-standard-2025-grpc": {
       "counts_as_python_2025_rti": false,
-      "implementation_lane": "hla-backend-python2025",
+      "implementation_lane": "hla-backend-python1516-2025",
       "parity_scope": "bounded scenario-parity evidence",
       "runtime_provider": "python1516_2025",
       "scenario": "lifecycle-core",
@@ -19,7 +19,7 @@
     },
     "cpp-standard-2025-pybind": {
       "counts_as_python_2025_rti": false,
-      "implementation_lane": "hla-backend-python2025",
+      "implementation_lane": "hla-backend-python1516-2025",
       "parity_scope": "bounded scenario-parity evidence",
       "runtime_provider": "python1516_2025",
       "scenario": "lifecycle-core",
@@ -30,7 +30,7 @@
   },
   "scenario_evidence": {
     "counts_as_python_2025_rti": false,
-    "implementation_lane": "hla-backend-python2025",
+    "implementation_lane": "hla-backend-python1516-2025",
     "runtime_provider": "python1516_2025",
     "scenarios": [
       "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",

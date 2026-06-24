@@ -42,7 +42,7 @@ class _Pitch202XJPypeAdapterBackend:
         )
 
     def create_rti_ambassador(self) -> Any:
-        from hla.backends.python2025.backend import create_python2025_backend
+        from hla.backends.python1516_2025.backend import create_python2025_backend
 
         native_backend = create_python2025_backend(self.request)
         ambassador = native_backend.create_rti_ambassador()

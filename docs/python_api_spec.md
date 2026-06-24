@@ -10,7 +10,7 @@ If you only need the supported import ladder, use:
 - `from hla.rti1516e import RTIambassador, FederateAmbassador, NullFederateAmbassador`
 - `from hla.runtime.rti1516e_ambassador import RTIambassador`
 - `from hla.rti1516e.federate_ambassador import FederateAmbassador`
-- `from hla.backends.inmemory import rti_ambassador`
+- `from hla.backends.python1516e import rti_ambassador`
 - `python examples/target_radar_simulation.py --backend python1516e --steps 5`
 
 ## Package Reality

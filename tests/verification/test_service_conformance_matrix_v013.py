@@ -24,10 +24,10 @@ def test_service_by_service_conformance_matrix_covers_generated_api_surface(tmp_
     by_method = {(row["interface"], row["method"]): row for row in matrix["rows"]}
     assert by_method[("RTIambassador", "connect")]["section"] == "1516.1-2010 (2010 edition) §4.2"
     assert by_method[("RTIambassador", "connect")]["requirement_id"] == "REQ-RTI-FM-4_2-connect"
-    assert "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py" in by_method[("RTIambassador", "connect")]["implementation_refs"]
+    assert "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py" in by_method[("RTIambassador", "connect")]["implementation_refs"]
     assert by_method[("RTIambassador", "connect")]["positive_test_refs"]
     assert by_method[("RTIambassador", "connect")]["artifact_refs"]
-    assert "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py" in by_method[("RTIambassador", "sendInteraction")]["implementation_refs"]
+    assert "packages/hla-backend-python1516e/src/hla.backends.python1516e/backend.py" in by_method[("RTIambassador", "sendInteraction")]["implementation_refs"]
     assert by_method[("RTIambassador", "sendInteraction")]["negative_evidence"]
     assert by_method[("RTIambassador", "sendInteraction")]["negative_test_refs"]
     assert by_method[("FederateAmbassador", "timeAdvanceGrant")]["callback_helper"] is True

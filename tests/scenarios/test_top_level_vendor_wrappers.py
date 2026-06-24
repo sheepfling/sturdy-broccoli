@@ -624,7 +624,7 @@ def test_bootstrap_top_level_wrapper_forwards_python_plan_json() -> None:
     assert payload["extras"] == "test"
     assert payload["profile"] == "core"
     assert "packages/hla-rti1516e" in payload["workspace_packages"]
-    assert "packages/hla-backend-inmemory" in payload["workspace_packages"]
+    assert "packages/hla-backend-python1516e" in payload["workspace_packages"]
 
 
 def test_bootstrap_top_level_wrapper_doctor_bootstraps_source_checkout(tmp_path: Path) -> None:

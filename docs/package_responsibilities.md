@@ -38,7 +38,7 @@ Distribution names are hyphenated. Import names are ordinary Python names:
 | `hla-rti1516-2025` | `hla.rti1516_2025` |
 | `hla-rti-core` | `hla.runtime`, `hla.rti`, `hla.fom`, `hla.spec` |
 | `hla-backend-common` | `hla.backends.common` |
-| `hla-backend-inmemory` | `hla.backends.inmemory` |
+| `hla-backend-python1516e` | `hla.backends.python1516e` |
 | `hla-backend-certi` | `hla.backends.certi` |
 | `hla-backend-cpp-shim` | `hla.backends.cpp_shim` |
 | `hla-transport-common` | `hla.transports.common` |
@@ -120,7 +120,7 @@ Allowed examples:
 - `hla.fom -> hla.rti1516e`
 - `hla.fom -> hla.rti1516_2025`
 - `hla.backends.common -> hla.rti1516e`
-- `hla.backends.inmemory -> hla.backends.common`
+- `hla.backends.python1516e -> hla.backends.common`
 - `hla.vendors.portico -> hla.backends.common`
 - `hla.transports.grpc -> hla.transports.common`
 

@@ -37,16 +37,16 @@ Version-local helpers live in:
 
 Plugin registration entrypoints live in:
 
-- [../packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py](../packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py)
-- [../packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py](../packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py)
+- [../packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py](../packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py)
+- [../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py](../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py)
 
 For the main 2025 runtime-construction path behind that plugin, the public
 shell now fans out into focused package-owned modules rather than one giant
 backend file. The most useful follow-on files are:
 
-- [../packages/hla-backend-python2025/src/hla/backends/python2025/backend.py](../packages/hla-backend-python2025/src/hla/backends/python2025/backend.py)
-- [../packages/hla-backend-python2025/src/hla/backends/python2025/backend_factory_runtime.py](../packages/hla-backend-python2025/src/hla/backends/python2025/backend_factory_runtime.py)
-- [../packages/hla-backend-python2025/src/hla/backends/python2025/runtime_state.py](../packages/hla-backend-python2025/src/hla/backends/python2025/runtime_state.py)
+- [../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py](../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py)
+- [../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend_factory_runtime.py](../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend_factory_runtime.py)
+- [../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/runtime_state.py](../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/runtime_state.py)
 
 ## What To Read By Question
 
@@ -54,19 +54,19 @@ If you want to know how the 2010 backend is selected:
 
 1. `packages/hla-rti-core/src/hla/runtime/rti1516e.py`
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
-3. `packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py`
+3. `packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py`
 
 If you want to know how the 2025 backend is selected:
 
 1. `packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_factory.py`
 2. `packages/hla-rti-core/src/hla/rti/factory.py`
-3. `packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py`
+3. `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py`
 
 If you want to know why `python1516_2025` is the selected 2025 provider today and
 why `hla.backends.shim` is now compatibility-only:
 
 1. [python_rti_backend.md](python_rti_backend.md)
-2. [../packages/hla-backend-python2025/README.md](../packages/hla-backend-python2025/README.md)
+2. [../packages/hla-backend-python1516-2025/README.md](../packages/hla-backend-python1516-2025/README.md)
 3. [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
 4. [plans/2025_requirements_finish_line.md](plans/2025_requirements_finish_line.md)
 
@@ -84,7 +84,7 @@ That means new 2025 runtime work should select `backend="python1516_2025"`. The
 legacy `shim` spelling is intentionally rejected on the public factory surface.
 
 So if you create a 2025 RTI ambassador through the current factory stack, you
-should expect to land on the `hla-backend-python2025` lane by default. The
+should expect to land on the `hla-backend-python1516-2025` lane by default. The
 legacy shim provider spelling is no longer part of the supported public
 factory surface. The main `python1516_2025` factory path now does accept hosted
 2025 creation through `transport=...`. The same hosted FedPro route can therefore be reached
@@ -95,7 +95,7 @@ For evidence that this is not just naming policy, follow the default-selection
 proof first and only then inspect the wrapper alias:
 
 1. `tests/test_hla_factory_composition.py`
-2. `tests/test_rti1516_2025_python2025_runtime.py` (main in-process `python1516_2025` proof suite)
+2. `tests/test_rti1516_2025_python1516_2025_runtime.py` (main in-process `python1516_2025` proof suite)
 3. `tests/requirements/test_2025_finish_line_snapshot.py`
 
 In practice, `./tools/python verify-main-2025` is the normal proof command for
@@ -108,7 +108,7 @@ The main tests that prove the current factory composition and 2025 selection
 behavior are:
 
 - [../tests/test_hla_factory_composition.py](../tests/test_hla_factory_composition.py)
-- [../tests/test_rti1516_2025_python2025_runtime.py](../tests/test_rti1516_2025_python2025_runtime.py) (main in-process `python1516_2025` proof suite)
+- [../tests/test_rti1516_2025_python1516_2025_runtime.py](../tests/test_rti1516_2025_python1516_2025_runtime.py) (main in-process `python1516_2025` proof suite)
 - [../tests/requirements/test_2025_finish_line_snapshot.py](../tests/requirements/test_2025_finish_line_snapshot.py)
 
 Use those when changing:

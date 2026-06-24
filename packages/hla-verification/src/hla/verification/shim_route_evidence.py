@@ -474,7 +474,7 @@ def _evoke_all_callbacks(*rtis: Any) -> None:
 def run_standard_2010_exchange_trace(backend_name: Any) -> dict[str, Any]:
     """Run the MVP 2010 object/interaction/time exchange and return a normalized trace."""
 
-    from hla.backends.inmemory import InMemoryRTIEngine
+    from hla.backends.python1516e import InMemoryRTIEngine
     from hla.rti import create_rti_ambassador
     from hla.rti1516e.enums import CallbackModel, ResignAction
     from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time

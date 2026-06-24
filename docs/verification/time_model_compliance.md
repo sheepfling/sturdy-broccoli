@@ -17,7 +17,7 @@ The compliance claim in this repo is bounded to the supported Python backend
 subset and the runtime paths that are backed by executable proof.
 
 For the 2025 lane, that proof is not limited to algorithm-unit coverage. The
-current `hla-backend-python2025` runtime also carries an explicit Target/Radar
+current `hla-backend-python1516-2025` runtime also carries an explicit Target/Radar
 lookahead proof ladder over both the in-process and hosted FedPro routes.
 
 ## How It Works
@@ -34,27 +34,27 @@ The implementation is split across the time-management modules:
     federate's timestamp-order sends
   - `galt_allows_requested_time(...)` and `compute_grant_decision(...)`
     normalize the time-advance request rules
-- [`hla.backends.inmemory/time.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time.py)
-  and [`hla.backends.inmemory/time_queue.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue.py)
+- [`hla.backends.python1516e/time.py`](../../packages/hla-backend-python1516e/src/hla/backends/python1516e/time.py)
+  and [`hla.backends.python1516e/time_queue.py`](../../packages/hla-backend-python1516e/src/hla/backends/python1516e/time_queue.py)
   apply those rules to the in-memory Python backend state.
-- [`hla.backends.inmemory/time_services.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time_services.py)
+- [`hla.backends.python1516e/time_services.py`](../../packages/hla-backend-python1516e/src/hla/backends/python1516e/time_services.py)
   enforces the public service preconditions, including regulation/constrained
   state, lookahead validity, and outstanding request checks.
 
 For the primary 2025 lane, the live implementation path is explicitly package
 split too:
 
-- [`hla.backends.python2025.time_management_runtime`](../../packages/hla-backend-python2025/src/hla/backends/python2025/time_management_runtime.py)
+- [`hla.backends.python1516_2025.time_management_runtime`](../../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/time_management_runtime.py)
   carries the Python 2025 time-service, grant, lookahead, GALT/LITS, and
   queued-TSO runtime behavior
-- [`hla.backends.python2025.federation_time_surface_mixin`](../../packages/hla-backend-python2025/src/hla/backends/python2025/federation_time_surface_mixin.py)
+- [`hla.backends.python1516_2025.federation_time_surface_mixin`](../../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/federation_time_surface_mixin.py)
   exposes the public 2025 ambassador-facing time surface over that runtime
-- [`hla.backends.python2025.runtime_state`](../../packages/hla-backend-python2025/src/hla/backends/python2025/runtime_state.py)
+- [`hla.backends.python1516_2025.runtime_state`](../../packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/runtime_state.py)
   owns the saved/restored logical-time, lookahead, and queued-callback state
   that the 2025 proof ladder depends on
 
 That matters because the current 2025 time claim is not just an abstract route
-claim. It is anchored to the extracted `hla-backend-python2025` runtime
+claim. It is anchored to the extracted `hla-backend-python1516-2025` runtime
 modules, not to a shim-owned path and not only to the older 2010 backend code.
 
 The behavior is intended to be straightforward:
@@ -84,7 +84,7 @@ not just a fixed constant stored once at enable-time.
 The practical enforcement point is:
 
 - `valid_tso_lower_bound(...)` in [`hla.backends.common/time_management.py`](../../packages/hla-backend-common/src/hla/backends/common/time_management.py)
-- `_validate_tso_send_time(...)` in [`hla.backends.inmemory/time_services.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time_services.py)
+- `_validate_tso_send_time(...)` in [`hla.backends.python1516e/time_services.py`](../../packages/hla-backend-python1516e/src/hla/backends/python1516e/time_services.py)
 
 The negative-path tests prove that a timestamp-order send below that bound is
 rejected.
@@ -197,7 +197,7 @@ unqualified blanket correctness claim for every possible time-policy topology.
 
 What it proves today is narrower and more honest:
 
-- the live `hla-backend-python2025` lane can close a time window only when
+- the live `hla-backend-python1516-2025` lane can close a time window only when
   GALT/LITS and lookahead state make it safe
 - the same lane can process after closure, publish legal output, and deliver it
   in order
@@ -218,7 +218,7 @@ The matching requirement-facing note for that ladder is:
 
 The main 2025 runtime evidence is:
 
-- [`../../tests/test_rti1516_2025_python2025_runtime.py`](../../tests/test_rti1516_2025_python2025_runtime.py)
+- [`../../tests/test_rti1516_2025_python1516_2025_runtime.py`](../../tests/test_rti1516_2025_python1516_2025_runtime.py)
   - direct in-process `python1516_2025` time-management services plus the
     Target/Radar time-window proof ladder and negative-oracle guards
 - [`../../tests/scenarios/test_python_route_parity.py`](../../tests/scenarios/test_python_route_parity.py)
@@ -256,7 +256,7 @@ The operator entrypoints for that bounded vendor-credence slice are:
 Use those only as narrow real-runtime probes for the two-federate closure and
 restore-state routes. They do not turn Pitch into the implementation owner for
 the 2025 lane, and they do not widen the bounded claim beyond what the direct
-and hosted `hla-backend-python2025` evidence already proves.
+and hosted `hla-backend-python1516-2025` evidence already proves.
 
 ## Where To Look Next
 

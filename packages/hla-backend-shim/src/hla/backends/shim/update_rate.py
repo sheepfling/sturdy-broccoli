@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hla.backends.python2025.update_rate_runtime import (
+from hla.backends.python1516_2025.update_rate_runtime import (
     apply_update_rate_reduction_for_subscriber,
     default_update_rate_designator_for_attribute,
     default_update_rate_for_attribute,

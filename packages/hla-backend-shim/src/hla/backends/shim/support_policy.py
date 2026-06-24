@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hla.backends.python2025.support_policy_runtime import (
+from hla.backends.python1516_2025.support_policy_runtime import (
     get_automatic_resign_directive,
     get_switch,
     normalize_service_group,

@@ -18,7 +18,7 @@ HLA_RTI1516E_SRC = ROOT / "packages/hla-rti1516e/src"
 HLA_RTI_CORE_SRC = ROOT / "packages/hla-rti-core/src"
 SOURCE_ROOTS = (
     HLA_RTI1516E_SRC,
-    ROOT / "packages/hla-backend-inmemory/src",
+    ROOT / "packages/hla-backend-python1516e/src",
     ROOT / "packages/hla-backend-common/src",
     HLA_RTI_CORE_SRC,
     ROOT / "packages/hla-transport-common/src",
@@ -26,7 +26,7 @@ SOURCE_ROOTS = (
 INTERNAL_PACKAGE_SOURCE_ROOTS = {
     "hla-rti1516e": ROOT / "packages/hla-rti1516e/src",
     "hla-rti1516-2025": ROOT / "packages/hla-rti1516-2025/src",
-    "hla-backend-inmemory": ROOT / "packages/hla-backend-inmemory/src",
+    "hla-backend-python1516e": ROOT / "packages/hla-backend-python1516e/src",
     "hla-backend-common": ROOT / "packages/hla-backend-common/src",
     "hla-bridge-java-common": ROOT / "packages/hla-bridge-java-common/src",
     "hla-rti-core": ROOT / "packages/hla-rti-core/src",
@@ -47,12 +47,12 @@ INTERNAL_PACKAGE_SOURCE_ROOTS = {
     "hla-fom-proto2025-time-mgmt-test": ROOT / "packages/hla-fom-proto2025-time-mgmt-test/src",
 }
 LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
-    "hla.backends.inmemory": {
-        "manifest_name": "hla-backend-inmemory",
+    "hla.backends.python1516e": {
+        "manifest_name": "hla-backend-python1516e",
         "source_roots": (
             HLA_RTI1516E_SRC,
             ROOT / "packages/hla-backend-common/src",
-            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-backend-python1516e/src",
         ),
         "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
@@ -175,7 +175,7 @@ LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
             HLA_RTI1516E_SRC,
             ROOT / "packages/hla-rti1516-2025/src",
             ROOT / "packages/hla-backend-common/src",
-            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-backend-python1516e/src",
             ROOT / "packages/hla-fom-proto2025-message-test/src",
         ),
         "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
@@ -186,7 +186,7 @@ LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
             HLA_RTI1516E_SRC,
             ROOT / "packages/hla-rti1516-2025/src",
             ROOT / "packages/hla-backend-common/src",
-            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-backend-python1516e/src",
             ROOT / "packages/hla-fom-proto2025-space-lite/src",
         ),
         "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
@@ -197,18 +197,18 @@ LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
             HLA_RTI1516E_SRC,
             ROOT / "packages/hla-rti1516-2025/src",
             ROOT / "packages/hla-backend-common/src",
-            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-backend-python1516e/src",
             ROOT / "packages/hla-fom-proto2025-time-mgmt-test/src",
         ),
         "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
 }
 BACKEND_SPLIT_PACKAGE_IMPORT_SPECS = {
-    "hla.backends.inmemory": {
+    "hla.backends.python1516e": {
         "source_roots": (
             HLA_RTI1516E_SRC,
             ROOT / "packages/hla-backend-common/src",
-            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-backend-python1516e/src",
         ),
         "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
@@ -262,7 +262,7 @@ BACKEND_SPLIT_PACKAGE_IMPORT_SPECS = {
     },
 }
 BACKEND_IMPORT_SPEC_BY_MANIFEST = {
-    "hla-backend-inmemory": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.backends.inmemory"],
+    "hla-backend-python1516e": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.backends.python1516e"],
     "hla-backend-certi": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.backends.certi"],
     "hla-bridge-java-jpype": {
         "source_roots": (
@@ -287,7 +287,7 @@ BACKEND_IMPORT_SPEC_BY_MANIFEST = {
     "hla-vendor-portico": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.vendors.portico"],
 }
 INTERNAL_IMPORT_ROOT_TO_PACKAGE = {
-    "hla.backends.inmemory": "hla-backend-inmemory",
+    "hla.backends.python1516e": "hla-backend-python1516e",
     "hla.backends.certi": "hla-backend-certi",
     "hla.backends.common": "hla-backend-common",
     "hla.bridges.java.common": "hla-bridge-java-common",
@@ -414,7 +414,7 @@ def _declared_internal_dependency_closure(package_name: str) -> tuple[Path, ...]
 
 def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -> None:
     expected_roots = {
-        "hla-backend-inmemory": "hla.backends.inmemory",
+        "hla-backend-python1516e": "hla.backends.python1516e",
         "hla-backend-certi": "hla.backends.certi",
         "hla-backend-common": "hla.backends.common",
         "hla-bridge-java-common": "hla.bridges.java.common",
@@ -444,7 +444,7 @@ def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -
 
 def test_split_package_python_namespaces_do_not_overlap() -> None:
     package_roots = {
-        "hla-backend-inmemory": ("packages/hla-backend-inmemory/src", "hla.backends.inmemory*"),
+        "hla-backend-python1516e": ("packages/hla-backend-python1516e/src", "hla.backends.python1516e*"),
         "hla-backend-certi": ("packages/hla-backend-certi/src", "hla.backends.certi*"),
         "hla-backend-common": ("packages/hla-backend-common/src", "hla.backends.common*"),
         "hla-bridge-java-common": ("packages/hla-bridge-java-common/src", "hla.bridges.java.common*"),
@@ -502,7 +502,7 @@ def test_lightweight_split_package_import_specs_match_declared_internal_dependen
 
 def test_backend_import_specs_match_declared_internal_dependency_closure() -> None:
     manifest_by_module = {
-        "hla.backends.inmemory": "hla-backend-inmemory",
+        "hla.backends.python1516e": "hla-backend-python1516e",
         "hla.backends.certi": "hla-backend-certi",
         "hla.vendors.pitch.jpype": "hla-vendor-pitch-jpype",
         "hla.vendors.pitch.py4j": "hla-vendor-pitch-py4j",
@@ -520,7 +520,7 @@ def test_backend_entrypoint_import_specs_match_declared_internal_dependency_clos
 
 
 def test_transitional_mega_package_includes_split_python_rti_package():
-    python_packages = set(find_packages(where="packages/hla-backend-inmemory/src", include=["hla.backends.inmemory*"]))
+    python_packages = set(find_packages(where="packages/hla-backend-python1516e/src", include=["hla.backends.python1516e*"]))
     certi_packages = set(find_packages(where="packages/hla-backend-certi/src", include=["hla.backends.certi*"]))
     backend_common_packages = set(find_packages(where="packages/hla-backend-common/src", include=["hla.backends.common*"]))
     java_common_packages = set(find_packages(where="packages/hla-bridge-java-common/src", include=["hla.bridges.java.common*"]))
@@ -539,7 +539,7 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     time_mgmt_packages = set(find_packages(where="packages/hla-fom-proto2025-time-mgmt-test/src", include=["hla.foms.proto2025_time_mgmt_test*"]))
     verification_harness_packages = set(find_packages(where="packages/hla-verification/src", include=["hla.verification*"]))
 
-    assert "hla.backends.inmemory" in python_packages
+    assert "hla.backends.python1516e" in python_packages
     assert "hla.backends.certi" in certi_packages
     assert "hla.backends.certi.certi" in certi_packages
     assert "hla.backends.common" in backend_common_packages
@@ -576,7 +576,7 @@ def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path
         [
             sys.executable,
             "-c",
-            "import hla.rti1516e; import hla.runtime.rti1516e as rti; from hla.backends.inmemory.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python1516e'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
+            "import hla.rti1516e; import hla.runtime.rti1516e as rti; from hla.backends.python1516e.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python1516e'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
         ],
         cwd=tmp_path,
         env=env,
@@ -646,7 +646,7 @@ def test_shared_split_packages_import_cleanly_without_vendor_package_leakage(tmp
 
 def test_backend_split_packages_import_cleanly_without_unrelated_vendor_family_leakage(tmp_path: Path):
     manifest_by_module = {
-        "hla.backends.inmemory": "hla-backend-inmemory",
+        "hla.backends.python1516e": "hla-backend-python1516e",
         "hla.backends.certi": "hla-backend-certi",
         "hla.vendors.pitch.jpype": "hla-vendor-pitch-jpype",
         "hla.vendors.pitch.py4j": "hla-vendor-pitch-py4j",
@@ -742,7 +742,7 @@ def test_backend_plugin_contract_import_does_not_import_rti_factory(tmp_path: Pa
         [
             sys.executable,
             "-c",
-            "import json, sys; import hla.backends.inmemory.plugin; print(json.dumps('hla.runtime.rti1516e' in sys.modules))",
+            "import json, sys; import hla.backends.python1516e.plugin; print(json.dumps('hla.runtime.rti1516e' in sys.modules))",
         ],
         cwd=tmp_path,
         env=env,

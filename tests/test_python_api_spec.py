@@ -107,7 +107,7 @@ def test_runtime_backend_listing_exposes_python1516_2025_as_primary_2025_lane() 
     assert probed["python1516_2025"].available is True
     assert probed["python1516_2025"].aliases == _PYTHON1516_2025_PROVIDER_ALIASES[1:]
     assert probed["python1516_2025"].info.kind == "python/2025"
-    assert probed["python1516_2025"].info.details["implementation_lane"] == "hla-backend-python2025"
+    assert probed["python1516_2025"].info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert probed["python1516_2025"].info.details["counts_as_python_2025_rti"] is True
     assert "wrapper_only" not in probed["python1516_2025"].info.details
 
@@ -121,7 +121,7 @@ def test_generic_runtime_creation_for_2025_accepts_python1516_2025_aliases_and_k
     runtime_rti = create_runtime_rti_ambassador(spec="2025", backend=backend_name)
 
     assert runtime_rti.backend_info.details["provider"] == "python1516_2025"
-    assert runtime_rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert runtime_rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert runtime_rti.backend_info.details["counts_as_python_2025_rti"] is True
     assert runtime_rti.backend_info.kind == "python/2025"
     assert "wrapper_only" not in runtime_rti.backend_info.details
@@ -136,7 +136,7 @@ def test_generic_runtime_creation_for_2025_rejects_legacy_shim_provider_name() -
 
 @pytest.mark.parametrize("backend_name", _PYTHON1516_2025_PROVIDER_ALIASES)
 def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python1516_2025_aliases(backend_name: str) -> None:
-    from hla.backends.python2025.hosted_fedpro import FedPro2025RTIAmbassador
+    from hla.backends.python1516_2025.hosted_fedpro import FedPro2025RTIAmbassador
     from hla.rti import create_rti_ambassador as create_runtime_rti_ambassador
 
     rti = create_runtime_rti_ambassador(
@@ -147,7 +147,7 @@ def test_generic_runtime_creation_for_2025_accepts_hosted_transport_on_python151
 
     assert isinstance(rti, FedPro2025RTIAmbassador)
     assert rti.backend_info.details["provider"] == "python1516_2025"
-    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert rti.backend_info.details["counts_as_python_2025_rti"] is True
     assert rti.backend_info.details["wrapper_only"] is False
     rti.close()

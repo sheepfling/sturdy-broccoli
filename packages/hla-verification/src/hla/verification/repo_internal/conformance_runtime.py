@@ -214,7 +214,7 @@ def python_backend_handler_names() -> set[str]:
     if _PYTHON_BACKEND_HANDLER_NAMES is not None:
         return _PYTHON_BACKEND_HANDLER_NAMES
     try:
-        module = importlib.import_module("hla.backends.inmemory.backend")
+        module = importlib.import_module("hla.backends.python1516e.backend")
     except ModuleNotFoundError:
         _PYTHON_BACKEND_HANDLER_NAMES = set()
         return _PYTHON_BACKEND_HANDLER_NAMES

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from hla.backends.python2025.attribute_policy import known_object_classes_for_federate
-from hla.backends.python2025.ddm_default_attribute_policy import (
+from hla.backends.python1516_2025.attribute_policy import known_object_classes_for_federate
+from hla.backends.python1516_2025.ddm_default_attribute_policy import (
     attribute_order_for,
     attribute_transportation_for,
     default_order_for,

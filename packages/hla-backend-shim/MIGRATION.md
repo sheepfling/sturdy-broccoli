@@ -7,15 +7,15 @@ repo-owned implementation claim, and should be removed after callers migrate.
 
 The executable runtime now lives in:
 
-- `packages/hla-backend-python2025/src/hla/backends/python2025/backend.py`
+- `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py`
 
 This package exists to preserve temporary compatibility-facing entry points
 while the main 2025 RTI implementation is carried by
-`hla-backend-python2025`, the sole repo-owned IEEE 1516.1-2025 Python RTI
+`hla-backend-python1516-2025`, the sole repo-owned IEEE 1516.1-2025 Python RTI
 implementation lane.
 
 In the current layout, most shim helper modules are intentionally thin
-re-exports of `hla.backends.python2025.*` runtime modules. The shim package
+re-exports of `hla.backends.python1516_2025.*` runtime modules. The shim package
 should not regain ownership of core RTI semantics and should be removed once
 the legacy import paths are no longer needed.
 Those helper modules are retained only for explicit legacy import

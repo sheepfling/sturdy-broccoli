@@ -30,7 +30,7 @@ For the 2025 lane specifically:
 - `java-standard-2025-jpype`, `java-standard-2025-py4j`,
   `cpp-standard-2025-pybind`, and `cpp-standard-2025-grpc` are binding routes,
   not separate RTIs
-- those routes execute over the primary `hla-backend-python2025` runtime lane
+- those routes execute over the primary `hla-backend-python1516-2025` runtime lane
 - `hla-backend-shim` remains only a compatibility-wrapper package where older
   import paths or wrapper-shaped entry points still exist
 
@@ -95,7 +95,7 @@ For 2025 standard routes, the checked-in trace and aggregate evidence also
 record:
 
 - `runtimeProvider = python1516_2025`
-- `implementationLane = hla-backend-python2025`
+- `implementationLane = hla-backend-python1516-2025`
 - `wrapperOnly = false`
 
 That contract exists to keep the route evidence explicit about the fact that

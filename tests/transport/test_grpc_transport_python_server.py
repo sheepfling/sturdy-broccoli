@@ -7,7 +7,7 @@ import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
 from hla.transports.grpc.python_server import start_python_grpc_server
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (

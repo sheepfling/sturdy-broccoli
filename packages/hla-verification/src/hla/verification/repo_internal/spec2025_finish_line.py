@@ -21,7 +21,7 @@ from hla.verification.repo_internal.verification.spec2025_route_parity_matrix im
 
 HIGH_PRIORITIES = frozenset({"high", "very-high"})
 CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary", "legacy-only"})
-PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python2025/src/hla/backends/python2025/backend.py"
+PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py"
 SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
 
 IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
@@ -58,7 +58,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-FI-005", "HLA2025-FI-006", "HLA2025-NEW-002", "HLA2025-NEW-003"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -81,7 +81,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-106",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
@@ -103,7 +103,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-111",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
@@ -124,7 +124,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-115",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
@@ -145,7 +145,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-120",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
         ),
@@ -168,7 +168,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-009",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "tests/backends/test_shim_route_trace_evidence.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py",
@@ -193,7 +193,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-MOD-006",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "tests/backends/test_shim_route_trace_evidence.py",
         ),
@@ -234,7 +234,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-REQ-002",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -265,7 +265,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-NEW-005", "HLA2025-FI-001"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/handles.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -282,7 +282,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-008", "HLA2025-FI-001"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -314,7 +314,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-002", "HLA2025-MOD-003", "HLA2025-FI-008", "HLA2025-OMT-007"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
@@ -333,7 +333,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-004", "HLA2025-RET-002", "HLA2025-FI-001"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
             "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
@@ -351,7 +351,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-004", "HLA2025-RET-002", "HLA2025-FI-001"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
             "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
@@ -381,7 +381,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-064",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
             "packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py",
@@ -784,7 +784,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "2025 FOM, resolves object/attribute/dimension/transport handles, stores default attribute policy, "
             "registers an object, divests and reacquires ownership with 2025 tag callbacks, advances logical time, "
             "and serializes a MOM service report. These binding routes execute over the primary python1516_2025 runtime "
-            "lane in hla-backend-python2025 while the Java and C++ packages stay wrapper-only adaptation surfaces. "
+            "lane in hla-backend-python1516-2025 while the Java and C++ packages stay wrapper-only adaptation surfaces. "
             "C++ artifacts exercise this locally; Java runtime evidence runs when the Java 2025 standard-route jar is built. "
             "This is not full Java/C++ behavior conformance or object exchange."
         ),
@@ -893,7 +893,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-157",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -978,7 +978,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1003,7 +1003,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1024,7 +1024,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1046,7 +1046,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1069,7 +1069,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1093,7 +1093,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1116,7 +1116,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1132,7 +1132,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-FI-SVC-051", "HLA2025-FI-SVC-052", "HLA2025-FI-SVC-053", "HLA2025-FI-001", "HLA2025-FI-005"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1149,7 +1149,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-FI-SVC-054", "HLA2025-FI-SVC-055", "HLA2025-FI-SVC-056", "HLA2025-FI-001", "HLA2025-FI-005"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1169,7 +1169,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-003",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1191,7 +1191,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-007",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1213,7 +1213,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-012",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1235,7 +1235,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-017",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1258,7 +1258,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1281,7 +1281,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1303,7 +1303,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-050",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_object_management_backend_matrix.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1329,7 +1329,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_support_services_backend_matrix.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1356,7 +1356,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_support_services_backend_matrix.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1381,7 +1381,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_support_services_backend_matrix.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1402,7 +1402,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -1426,7 +1426,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-169",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/backends/test_python_backend_time_ddm_extended.py",
             "tests/backends/test_python_backend_support_services.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1453,7 +1453,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-186",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1475,7 +1475,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-192",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1499,7 +1499,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-187",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1515,7 +1515,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-FI-SVC-181",),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
         ),
@@ -1534,7 +1534,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-SVC-196",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
@@ -1564,7 +1564,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1589,7 +1589,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1614,7 +1614,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1639,7 +1639,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1664,7 +1664,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "HLA2025-FI-005",
         ),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_ownership_management_backend_matrix.py",
             "tests/backends/test_python_backend_object_ownership_extended.py",
             "tests/transport/test_grpc_transport_2025.py",
@@ -1682,7 +1682,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-NEW-007", "HLA2025-REQ-002"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             "tests/requirements/test_2025_tail_backlog_evidence.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
@@ -1700,7 +1700,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-NEW-007", "HLA2025-REQ-002"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
@@ -1725,7 +1725,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "status": "implemented-slice",
         "requirements": ("HLA2025-NEW-007", "HLA2025-REQ-002"),
         "evidence": (
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/transport/test_grpc_transport_2025.py",
             PYTHON2025_BACKEND_EVIDENCE_PATH,
             "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
@@ -2387,7 +2387,7 @@ def _build_binding_requirement_proof_audit(route_parity_matrix: Mapping[str, Any
             "All three binding rows now have explicit slice and route-parity proof records, but Java/C++ remain "
             "artifact/runtime-capability bounded and FedPro remains a hosted runtime slice rather than full conformance. "
             "Those remaining limits are adapter or transport seam evidence boundaries over the main "
-            "hla-backend-python2025 runtime, not alternate ownership lanes for core 2025 RTI semantics."
+            "hla-backend-python1516-2025 runtime, not alternate ownership lanes for core 2025 RTI semantics."
         ),
         "rows": binding_rows,
     }
@@ -2568,9 +2568,9 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "declaration-relevance-and-interest-advisories",
             "focus": "start or stop registration plus turnInteractionsOn/off callback delivery across declaration and time-managed declaration flows",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_declaration_management_scenario_over_fedpro_route",
@@ -2581,11 +2581,11 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "federation-sync-save-restore-and-reporting",
             "focus": "synchronization registration and announce flow, federationSynchronized completion, save/restore lifecycle callbacks, connectionLost teardown, and federation execution reporting",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_synchronization_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_connection_lost_callback_tears_down_connection",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_reports_federation_executions_and_members",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_connection_lost_callback_tears_down_connection",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_reports_federation_executions_and_members",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_emits_synchronization_callbacks_over_fedpro_schema",
@@ -2599,9 +2599,9 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "object-discovery-delivery-and-removal",
             "focus": "discoverObjectInstance, reflectAttributeValues, receiveInteraction, provideAttributeValueUpdate, and removeObjectInstance delivery across plain, timed, restore, and requester-only routing paths",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_locally_deleted_object_known_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_locally_deleted_object_known_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_discovery_and_remove_only_to_subscriber_over_fedpro_schema",
@@ -2614,10 +2614,10 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "object-advisory-transport-and-name-reservation-callbacks",
             "focus": "scope advisories, update-rate advisories, transport change/query callbacks, and single or multiple object-instance name reservation callback flows",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_object_scope_relevance_scenario_over_fedpro_route",
@@ -2630,7 +2630,7 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "supplemental-context-and-region-introspection",
             "focus": "callback-context preservation for producing-federate and sent-region metadata on direct and hosted callback delivery surfaces",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_decoder_preserves_direct_callback_context_details",
@@ -2641,9 +2641,9 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "ownership-negotiation-and-query-callbacks",
             "focus": "ownership assumption, release, divestiture confirmation, acquisition notification, unavailable/query callbacks, and restore recovery of inflight ownership state",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_inflight_ownership_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_inflight_ownership_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema",
@@ -2655,9 +2655,9 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "time-grant-regulation-and-retraction",
             "focus": "time regulation/time constrained enable callbacks, timeAdvanceGrant progression, and requestRetraction delivery across direct and hosted time-window or queued-TSO flows",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_mom_time_enable_callbacks_only_to_named_federate_over_fedpro_schema",
@@ -2670,8 +2670,8 @@ def _build_callback_decomposition_audit() -> dict[str, Any]:
             "family": "callback-control-and-backlog-hygiene",
             "focus": "disableCallbacks or enableCallbacks queue control, evokeCallback ordering, and reconnect-safe stale-backlog cleanup on the hosted seam",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_raw_callback_control_flow_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_enable_disable_callbacks_controls_evoked_delivery_over_fedpro_schema",
@@ -2726,12 +2726,12 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "family": "factory-mode-enable-and-request-primitives",
             "focus": "logical-time factory selection, regulation/constrained enablement, advance-request modes, MOM time-management control routing, and typed flush-queue request handling",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_requires_valid_fom_modules_and_default_logical_time",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_state_services_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_time_bound_queries_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_available_and_flush_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_duplicate_enable_rejection_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_time_management_service_interactions",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_requires_valid_fom_modules_and_default_logical_time",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_state_services_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_time_bound_queries_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_available_and_flush_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_duplicate_enable_rejection_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_mom_time_management_service_interactions",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_time_management_services_over_fedpro_schema",
@@ -2744,10 +2744,10 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "family": "galt-lits-query-and-lookahead-observability",
             "focus": "queryLogicalTime, queryGALT, queryLITS, queryLookahead, modifyLookahead, and visible divergence or convergence of GALT/LITS under queued traffic and live lookahead changes",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_tar_galt_boundary_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_uses_selected_logical_time_factory_for_queries_and_grants",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_tar_galt_boundary_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_future_exclusion_oracle_rejects_mismatched_lits_boundary",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_lookahead_and_galt_per_federate_over_fedpro_schema",
@@ -2760,13 +2760,13 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "family": "timestamped-delivery-retraction-and-ordering",
             "focus": "queued timestamped delivery, requestRetraction fanout or suppression, lagging-subscriber behavior, and receive-order versus timestamp-order handling across direct and hosted routes",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_targets",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_ordering_and_queries_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_available_and_retraction_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_request_retraction_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_section8_order_override_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_queues_timestamped_messages_and_supports_retraction",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_fans_out_post_delivery_retraction_to_all_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_drops_retraction_callbacks_for_disconnected_delivered_targets",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_ordering_and_queries_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_available_and_retraction_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_request_retraction_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_section8_order_override_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fedpro_schema",
@@ -2779,13 +2779,13 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "family": "lookahead-window-proof-ladder",
             "focus": "Target/Radar safe-window closure, future-message exclusion, output delivery, consumer ordering, pipeline overlap, receive-order poison rejection, and the integrated lookahead-processing-window gauntlet",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_core_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_pipeline_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_core_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_future_exclusion_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_output_delivery_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_consumer_order_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_pipeline_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_receive_order_poison_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_integrated_time_window_gauntlet_end_to_end",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_time_window_core_scenario_over_fedpro_route",
@@ -2801,12 +2801,12 @@ def _build_time_management_decomposition_audit() -> dict[str, Any]:
             "family": "save-restore-time-state-and-lookahead-rollback",
             "focus": "saved logical-time, lookahead, switch-control, queued-TSO, and open or closed window state rollback, including restore resumption without dirty post-save replay",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_restore_state_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_restore_output_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_restore_state_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_restore_output_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_window_pipeline_restore_scenario_end_to_end",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_scheduled_save_restore_time_state_scenario_over_fedpro_route",
@@ -3121,7 +3121,7 @@ def _build_requirement_by_requirement_audit(
             "tracked 2025 rows: every row is reviewed, dispositioned, and linked either to repo evidence, an "
             "explicit bounded support claim, a retired exclusion, or an umbrella normalization role. That closes "
             "the missing-audit gap without turning the result into an unconditional all-covered conformance pass, "
-            "and it strengthens the bounded main-implementation claim for hla-backend-python2025 while leaving "
+            "and it strengthens the bounded main-implementation claim for hla-backend-python1516-2025 while leaving "
             "hla-backend-shim in a wrapper-only compatibility role."
         ),
         "full_claim_blockers": [
@@ -3457,7 +3457,7 @@ def _build_supported_boundary_statement(
         ),
         "supported_scope": [
             "Python 2025 in-process runtime behavior is executable and parity-covered across the tracked scenario set.",
-            "Hosted FedPro 2025 transport behavior is executable as a bounded runtime slice with explicit route parity coverage, spanning lifecycle, object, time, save/restore, support-service, and callback scenario replay over hla-backend-python2025; its remaining proof burden is transport-seam evidence over hla-backend-python2025 rather than missing core runtime ownership.",
+            "Hosted FedPro 2025 transport behavior is executable as a bounded runtime slice with explicit route parity coverage, spanning lifecycle, object, time, save/restore, support-service, and callback scenario replay over hla-backend-python1516-2025; its remaining proof burden is transport-seam evidence over hla-backend-python1516-2025 rather than missing core runtime ownership.",
             "FI service requirements are traced across all 196 catalog rows.",
             "Common delta rows, binding rows, and OMT-related rows are all represented by explicit requirement ledgers.",
         ],
@@ -3465,7 +3465,7 @@ def _build_supported_boundary_statement(
             "Foreign OMT xs:any extension payloads are preserved for XML round-trip but not interpreted as repo-native runtime semantics.",
             "Retired or legacy-only rows remain excluded from the supported 2025 working surface.",
             "Java and C++ bindings remain artifact/runtime-capability bounded as binding/adaptation-seam proof over the main python1516_2025 runtime rather than full behavior-conformance proof.",
-            "FedPro remains a hosted runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python2025 lacks the underlying semantics.",
+            "FedPro remains a hosted runtime slice rather than a full RTI semantics or exhaustive cross-binding conformance pass, and its remaining gaps are transport-seam proof gaps rather than evidence that hla-backend-python1516-2025 lacks the underlying semantics.",
         ],
         "evidence_summary": {
             "bounded_ready_dimensions": objective_audit["bounded_ready_dimension_count"],
@@ -3563,7 +3563,7 @@ def _build_python2025_proof_lane_audit(project_root: Path) -> dict[str, Any]:
             "description": hosted_lane["description"],
         },
         "shared_claim": (
-            "The repo does not treat hla-backend-python2025 as a package-only promotion. The canonical operator "
+            "The repo does not treat hla-backend-python1516-2025 as a package-only promotion. The canonical operator "
             "surface declares ./tools/python verify-main-2025 as the default direct proof lane for the real "
             "python1516_2025 runtime and ./tools/python verify-routes-2025 as the bounded hosted FedPro extension over "
             "that same runtime."
@@ -3626,7 +3626,7 @@ def _build_binding_boundary_mapping_audit(
         for requirement_id in requirement_ids
     }
     narrative_checks = [
-        "main 2025" in doc_text and "RTI implementation lane is `hla-backend-python2025`" in doc_text,
+        "main 2025" in doc_text and "RTI implementation lane is `hla-backend-python1516-2025`" in doc_text,
         "`hla-backend-shim` remains a compatibility wrapper" in doc_text
         or "`hla-backend-shim` remains a compatibility wrapper and is not a runtime owner" in doc_text,
         "not an independent Java RTI" in doc_text,
@@ -3654,7 +3654,7 @@ def _build_binding_boundary_mapping_audit(
         "current_assessment": (
             "The binding and hosted boundary rows are no longer only counted as bounded blockers in the finish-line "
             "bundle. They now have an explicit boundary note that enumerates all three rows and states that "
-            "hla-backend-python2025 is the main 2025 Python RTI lane while the Java/C++ bindings and hosted FedPro "
+            "hla-backend-python1516-2025 is the main 2025 Python RTI lane while the Java/C++ bindings and hosted FedPro "
             "route remain bounded wrapper or transport evidence over that same runtime."
         ),
         "residual_boundary": (
@@ -3691,7 +3691,7 @@ def _build_hosted_fedpro_bounded_proof_audit(
     all_rows_parity_covered = all(row["status"] == "parity-covered" for row in hosted_rows)
     identity_ready = all(
         row["runtime_provider"] == "python1516_2025"
-        and row["implementation_lane"] == "hla-backend-python2025"
+        and row["implementation_lane"] == "hla-backend-python1516-2025"
         and row["counts_as_python_2025_rti"] is True
         and row["wrapper_only"] is False
         for row in hosted_rows
@@ -3715,11 +3715,11 @@ def _build_hosted_fedpro_bounded_proof_audit(
     rows_missing_transport_seam_note = sorted(
         row["scenario"]
         for row in hosted_rows
-        if "transport-seam evidence over hla-backend-python2025" not in row["notes"]
+        if "transport-seam evidence over hla-backend-python1516-2025" not in row["notes"]
     )
     doc_checks = [
         "`python1516_2025-fedpro-grpc`" in doc_text,
-        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-python1516-2025`" in doc_text,
         "`tests/transport/test_grpc_transport_2025.py`" in doc_text,
         "`tests/scenarios/test_python_route_parity.py`" in doc_text,
         "bounded runtime slice" in doc_text,
@@ -3758,7 +3758,7 @@ def _build_hosted_fedpro_bounded_proof_audit(
             "The hosted FedPro route is no longer only implied by route-parity tables and finish-line summaries. It "
             "now has a requirement-facing proof note tied to the eight tracked hosted scenario families, explicit "
             "python1516_2025 runtime identity, per-scenario transport-plus-parity test anchors, and an auditable "
-            "statement that the route is a bounded transport/runtime slice over hla-backend-python2025."
+            "statement that the route is a bounded transport/runtime slice over hla-backend-python1516-2025."
         ),
         "residual_boundary": (
             "This audit strengthens the hosted-route proof and identity story, but it does not promote the hosted "
@@ -3771,7 +3771,7 @@ def _build_python2025_direct_bounded_proof_audit(
     project_root: Path,
     route_parity_matrix: Mapping[str, Any],
 ) -> dict[str, Any]:
-    doc_rel = "docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md"
+    doc_rel = "docs/requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md"
     doc_path = project_root / doc_rel
     doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
     normalized_doc_text = " ".join(doc_text.split())
@@ -3800,18 +3800,18 @@ def _build_python2025_direct_bounded_proof_audit(
     ]
     missing_family_labels = [label for label in required_family_labels if label not in doc_text]
     required_evidence_markers = [
-        "`tests/test_rti1516_2025_python2025_runtime.py`",
+        "`tests/test_rti1516_2025_python1516_2025_runtime.py`",
         "`tests/scenarios/test_target_radar_scenario.py`",
         "`tests/test_fom_target_radar_split_package.py`",
         "`tests/test_rti1516_2025_validation.py`",
         "`docs/requirements/ieee-1516-2025/hosted_fedpro_bounded_proof.md`",
-        "`docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`",
+        "`docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`",
     ]
     missing_evidence_markers = [marker for marker in required_evidence_markers if marker not in doc_text]
     all_rows_parity_covered = all(row["status"] == "parity-covered" for row in direct_rows)
     identity_ready = all(
         row["runtime_provider"] == "python1516_2025"
-        and row["implementation_lane"] == "hla-backend-python2025"
+        and row["implementation_lane"] == "hla-backend-python1516-2025"
         and row["counts_as_python_2025_rti"] is True
         and row["wrapper_only"] is False
         for row in direct_rows
@@ -3832,7 +3832,7 @@ def _build_python2025_direct_bounded_proof_audit(
         doc_path.exists()
         and not missing_family_labels
         and not missing_evidence_markers
-        and "`hla-backend-python2025`" in doc_text
+        and "`hla-backend-python1516-2025`" in doc_text
         and "sole repo-owned" in normalized_doc_text
         and "Python RTI implementation lane" in normalized_doc_text
         and "`./tools/python verify-main-2025`" in doc_text
@@ -3884,7 +3884,7 @@ def _build_python2025_exclusion_boundaries_audit(
     project_root: Path,
     requirement_coverage_disposition: Mapping[str, Any],
 ) -> dict[str, Any]:
-    doc_rel = "docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md"
+    doc_rel = "docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md"
     doc_path = project_root / doc_rel
     doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
     normalized_doc_text = " ".join(doc_text.split())
@@ -3910,7 +3910,7 @@ def _build_python2025_exclusion_boundaries_audit(
     direct_compat_anchor_matches = sorted(
         set(
             re.findall(
-                r'tests/test_rti1516_2025_python2025_runtime.py::([^"\n]+via_compat_adapter[^"\n]*)',
+                r'tests/test_rti1516_2025_python1516_2025_runtime.py::([^"\n]+via_compat_adapter[^"\n]*)',
                 finish_line_source_text,
             )
         )
@@ -3918,7 +3918,7 @@ def _build_python2025_exclusion_boundaries_audit(
     duplicate_umbrella_row_count = requirement_coverage_disposition["by_disposition"]["duplicate/umbrella"]
     retired_row_count = requirement_coverage_disposition["by_disposition"]["retired/legacy-only"]
     doc_checks = [
-        "`hla-backend-python2025` is the sole repo-owned Python RTI implementation lane" in doc_text,
+        "`hla-backend-python1516-2025` is the sole repo-owned Python RTI implementation lane" in doc_text,
         "Legacy provider/import aliases are not part of the implementation-owner claim" in doc_text,
         "not alternate Python RTIs and not exhaustive cross-binding behavior conformance" in doc_text,
         "not a second full RTI implementation lane and not a blanket remote-semantics conformance claim" in doc_text,
@@ -4016,7 +4016,7 @@ def _build_lookahead_window_bounded_proof_audit(
     ]
     required_evidence_tests = {
         ("time_management", "python1516_2025-inprocess"): {
-            "tests/test_rti1516_2025_python2025_runtime.py",
+            "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_python_route_parity.py",
         },
         ("time_management", "python1516_2025-fedpro-grpc"): {
@@ -4034,7 +4034,7 @@ def _build_lookahead_window_bounded_proof_audit(
         if missing:
             missing_evidence_tests[f"{key[0]}:{key[1]}"] = missing
     doc_checks = [
-        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-python1516-2025`" in doc_text,
         "`hla-backend-shim` is not an implementation owner" in doc_text,
         "`./tools/pitch time-window-probe`" in doc_text,
         "`./tools/pitch time-window-restore-state-probe`" in doc_text,
@@ -4111,16 +4111,16 @@ def _build_save_restore_bounded_proof_audit(
     ]
     missing_row_markers = [marker for marker in required_row_markers if marker not in doc_text]
     required_test_markers = [
-        "`tests/test_rti1516_2025_python2025_runtime.py`",
+        "`tests/test_rti1516_2025_python1516_2025_runtime.py`",
         "`tests/transport/test_grpc_transport_2025.py`",
         "`tests/scenarios/test_save_restore_backend_matrix.py`",
         "`tests/scenarios/test_python_route_parity.py`",
     ]
     missing_test_markers = [marker for marker in required_test_markers if marker not in doc_text]
     doc_checks = [
-        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-python1516-2025`" in doc_text,
         "`hla-backend-shim` is not an implementation owner" in doc_text,
-        "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in doc_text,
+        "Hosted FedPro remains transport-seam evidence over `hla-backend-python1516-2025`" in doc_text,
         "does not claim that every save/restore requirement now has its own standalone clause-by-clause conformance proof" in normalized_doc_text,
     ]
     return {
@@ -4178,7 +4178,7 @@ def _build_callback_bounded_proof_audit(
     ]
     missing_family_labels = [label for label in required_family_labels if label not in doc_text]
     required_test_markers = [
-        "`tests/test_rti1516_2025_python2025_runtime.py`",
+        "`tests/test_rti1516_2025_python1516_2025_runtime.py`",
         "`tests/transport/test_grpc_transport_2025.py`",
         "`tests/scenarios/test_federation_management_backend_matrix.py`",
         "`tests/scenarios/test_save_restore_backend_matrix.py`",
@@ -4187,10 +4187,10 @@ def _build_callback_bounded_proof_audit(
     ]
     missing_test_markers = [marker for marker in required_test_markers if marker not in doc_text]
     doc_checks = [
-        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-python1516-2025`" in doc_text,
         "`hla-backend-shim` is not an implementation owner" in doc_text,
         "does not claim exhaustive callback-by-callback signature equivalence" in normalized_doc_text,
-        "Hosted FedPro remains transport-seam evidence over `hla-backend-python2025`" in doc_text,
+        "Hosted FedPro remains transport-seam evidence over `hla-backend-python1516-2025`" in doc_text,
     ]
     return {
         "audit_status": "callback-bounded-proof-captured",
@@ -4280,14 +4280,14 @@ def _build_standard_binding_runtime_capability_audit(
         "`java-standard-2025-py4j`" in doc_text,
         "`cpp-standard-2025-pybind`" in doc_text,
         "`cpp-standard-2025-grpc`" in doc_text,
-        "`hla-backend-python2025`" in doc_text,
+        "`hla-backend-python1516-2025`" in doc_text,
         "`tests/backends/test_standard_shim_artifacts.py`" in doc_text,
         "artifact-gated/runtime-capability" in doc_text,
         "does not claim exhaustive cross-binding behavior equivalence" in doc_text,
     ]
     identity_ready = all(
         row["runtime_provider"] == "python1516_2025"
-        and row["implementation_lane"] == "hla-backend-python2025"
+        and row["implementation_lane"] == "hla-backend-python1516-2025"
         and row["counts_as_python_2025_rti"] is False
         and row["wrapper_only"] is False
         for row in standard_rows
@@ -4295,12 +4295,12 @@ def _build_standard_binding_runtime_capability_audit(
     rows_missing_backing_note = sorted(
         f"{row['route']}:{row['scenario']}"
         for row in standard_rows
-        if "executed over the primary python1516_2025 runtime lane in hla-backend-python2025" not in row["notes"]
+        if "executed over the primary python1516_2025 runtime lane in hla-backend-python1516-2025" not in row["notes"]
     )
     rows_missing_seam_note = sorted(
         f"{row['route']}:{row['scenario']}"
         for row in standard_rows
-        if "binding/adaptation-seam evidence over the main hla-backend-python2025 runtime" not in row["notes"]
+        if "binding/adaptation-seam evidence over the main hla-backend-python1516-2025 runtime" not in row["notes"]
     )
     return {
         "audit_status": "standard-binding-runtime-capability-captured",
@@ -4342,7 +4342,7 @@ def _build_standard_binding_runtime_capability_audit(
             "The Java and C++ standard binding lanes are no longer only described as a generic artifact-gated blocker. "
             "They now have a requirement-facing bounded-proof note tied to their route families, per-row executable "
             "plus artifact anchors, parity-covered scenario counts, and explicit main-runtime identity over "
-            "hla-backend-python2025."
+            "hla-backend-python1516-2025."
         ),
         "residual_boundary": (
             "This audit strengthens the Java/C++ binding proof story, but it does not promote standard-route traces "
@@ -4360,8 +4360,8 @@ def _build_promotion_split_audit(
     return {
         "decision_shape": "promote-current-lane-or-split-later-based-on-evidence",
         "current_lane": {
-            "package": "hla-backend-python2025",
-            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
+            "package": "hla-backend-python1516-2025",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
             "spec_package": "hla-rti1516-2025",
         },
         "current_recommendation": "promote-current-lane-as-working-surface-and-keep-split-optional",
@@ -4376,7 +4376,7 @@ def _build_promotion_split_audit(
         "promotion_basis": [
             "The primary 2025 Python RTI lane has green executable runtime coverage in the main in-process suite.",
             "Both Python 2025 routes clear the tracked bounded working-surface milestones.",
-            "The extracted hla-backend-python2025 package now has direct split-package proof instead of relying only on legacy shim-facing package evidence.",
+            "The extracted hla-backend-python1516-2025 package now has direct split-package proof instead of relying only on legacy shim-facing package evidence.",
             "The python1516_2025 runtime lane is protected by explicit import-boundary guardrails that forbid runtime backflow into hla.backends.shim modules.",
             "The repo can make a supported-boundary statement over the primary 2025 Python RTI lane without hiding legacy-only or bounded-extension areas.",
             "Route parity partial and missing counts are both zero for the tracked 2025 matrix.",
@@ -4397,7 +4397,7 @@ def _build_promotion_split_audit(
                 "name": "python1516_2025-split-package-surface",
                 "result": "71 passed in 0.67s",
                 "scope": (
-                    "dedicated hla-backend-python2025 package surface plus local factory composition, "
+                    "dedicated hla-backend-python1516-2025 package surface plus local factory composition, "
                     "split-package identity, and 2025 validation behavior over the standalone runtime lane"
                 ),
             },
@@ -4442,7 +4442,7 @@ def _build_promotion_split_audit(
         ],
         "current_assessment": (
             "Current evidence is strong enough to treat the real Python 2025 RTI implementation now owned by "
-            "hla-backend-python2025, with hla-backend-shim retained only as temporary import-compatibility "
+            "hla-backend-python1516-2025, with hla-backend-shim retained only as temporary import-compatibility "
             "scaffolding and wrapper-only compatibility support, as the live bounded working-surface lane across the "
             "main current-package pressure families, while keeping Java and C++ shim/binding packages segregated "
             "from that claim, but not strong enough to make a permanent no-split architectural decision."
@@ -4584,10 +4584,10 @@ def _build_implementation_lane_audit(
     return {
         "audit_status": "current-lane-architecture-captured",
         "current_2025_lane": {
-            "backend_package": "hla-backend-python2025",
+            "backend_package": "hla-backend-python1516-2025",
             "plugin_family": "python-rti-2025",
             "supports": ["rti1516_2025"],
-            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
             "spec_package": "hla-rti1516-2025",
         },
         "compatibility_wrapper_lane": {
@@ -4595,10 +4595,10 @@ def _build_implementation_lane_audit(
             "status": "compatibility-maintained",
             "role": "compatibility-wrapper",
             "counts_as_python_2025_rti": False,
-            "delegates_runtime_semantics_to": "hla-backend-python2025",
+            "delegates_runtime_semantics_to": "hla-backend-python1516-2025",
         },
         "reference_2010_lane": {
-            "backend_package": "hla-backend-inmemory",
+            "backend_package": "hla-backend-python1516e",
             "plugin_family": "inmemory",
             "supports": ["rti1516e"],
             "role": "2010 pure Python RTI backend",
@@ -4622,22 +4622,22 @@ def _build_implementation_lane_audit(
             "route": "python1516_2025-fedpro-grpc",
             "claim": (
                 "The hosted 2025 FedPro route is explicitly evidenced as a route variant over "
-                "hla-backend-python2025 rather than a separate shim or RTI family."
+                "hla-backend-python1516-2025 rather than a separate shim or RTI family."
             ),
             "evidence_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_reports_python2025_main_lane_identity",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_dedicated_python2025_backend_is_discoverable_and_executable",
             ],
             "direct_runtime_report": {
                 "backend_name": "python1516_2025-rti",
                 "backend_kind": "python/2025",
                 "runtime_provider": "python1516_2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": True,
             },
             "hosted_server_report": {
                 "runtime_provider": "python1516_2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": True,
                 "wrapper_only": False,
                 "spec": "rti1516_2025",
@@ -4645,7 +4645,7 @@ def _build_implementation_lane_audit(
             },
             "hosted_client_report": {
                 "runtime_provider": "python1516_2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": True,
                 "wrapper_only": False,
                 "spec": "rti1516_2025",
@@ -4655,7 +4655,7 @@ def _build_implementation_lane_audit(
             "current_assessment": (
                 "Hosted-client and hosted-server capability surfaces now agree with the direct 2025 ambassador "
                 "that python1516_2025-fedpro-grpc is a route variant over the primary python1516_2025 RTI lane in "
-                "hla-backend-python2025 rather than a wrapper-defined implementation family."
+                "hla-backend-python1516-2025 rather than a wrapper-defined implementation family."
             ),
         },
         "hosted_factory_boundary_evidence": {
@@ -4670,7 +4670,7 @@ def _build_implementation_lane_audit(
             ],
             "current_policy": (
                 "The primary python1516_2025 backend path and its supported runtime aliases now accept transport=... "
-                "and create the hosted FedPro 2025 ambassador over the main hla-backend-python2025 lane, while "
+                "and create the hosted FedPro 2025 ambassador over the main hla-backend-python1516-2025 lane, while "
                 "the legacy shim provider spelling is no longer part of the supported public backend-selection "
                 "surface and therefore rejects hosted ownership and other backend-specific factory transport "
                 "routing. "
@@ -4752,13 +4752,13 @@ def _build_implementation_lane_audit(
             ],
             "python2025_runtime_report": {
                 "backend_kind": "python/2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": True,
                 "wrapper_only": False,
             },
             "shim_runtime_report": {
                 "backend_kind": "shim/2025",
-                "implementation_lane": "hla-backend-python2025",
+                "implementation_lane": "hla-backend-python1516-2025",
                 "counts_as_python_2025_rti": False,
                 "wrapper_only": True,
             },
@@ -4812,14 +4812,14 @@ def _build_implementation_lane_audit(
         "clean_extraction_still_optional": True,
         "current_assessment": (
             "The repo's current 2025 implementation reality is explicit: the main full Python 2025 RTI implementation now "
-            "runs from hla-backend-python2025, hla-backend-shim remains only as temporary import-compatibility "
+            "runs from hla-backend-python1516-2025, hla-backend-shim remains only as temporary import-compatibility "
             "scaffolding and wrapper-only compatibility support over that runtime, the hosted FedPro route is a route "
             "variant over that implementation rather than a separate RTI family, the older pure-Python backend "
             "remains the 2010-only inmemory lane, and the Java/C++ lanes remain segregated as non-Python "
             "binding-capability surfaces rather than being mixed into the Python 2025 RTI claim."
         ),
         "extraction_boundary": (
-            "Keep using hla-backend-python2025 as the executable Python 2025 RTI surface while continuing to narrow "
+            "Keep using hla-backend-python1516-2025 as the executable Python 2025 RTI surface while continuing to narrow "
             "hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities; "
             "only reopen a deeper extraction question if future evidence shows that residual compatibility or route "
             "normalization logic is still obscuring core runtime semantics."
@@ -4836,13 +4836,13 @@ def _build_implementation_lane_audit(
             "docs/verification/verification_plan.md",
             "docs/backend_route_inventory.md",
             "docs/backend_route_inventory_remote.md",
-            "packages/hla-backend-python2025/pyproject.toml",
-            "packages/hla-backend-python2025/README.md",
-            "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "packages/hla-backend-python1516-2025/pyproject.toml",
+            "packages/hla-backend-python1516-2025/README.md",
+            "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "packages/hla-backend-shim/pyproject.toml",
             "packages/hla-backend-shim/README.md",
             "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
-            "packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py",
+            "packages/hla-backend-python1516e/src/hla/backends/python1516e/plugin.py",
             "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_factory.py",
             "packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/target_radar_2025_adapter.py",
             "examples/target_radar_simulation.py",
@@ -4997,13 +4997,13 @@ def _build_implementation_concentration_audit() -> dict[str, Any]:
     if semantic_concentration_is_material:
         current_assessment = (
             "The primary 2025 Python RTI lane is substantively executable, but the implementation proof is still "
-            "materially concentrated in hla-backend-python2025/backend.py. That concentration does not by itself "
+            "materially concentrated in hla-backend-python1516-2025/backend.py. That concentration does not by itself "
             "force a split, because spec-package and transport-layer evidence also exist, but it remains a real "
             "architectural pressure signal to monitor as more 2025 behavior lands."
         )
     else:
         current_assessment = (
-            "The primary 2025 Python RTI lane still cites hla-backend-python2025/backend.py as a frequent evidence "
+            "The primary 2025 Python RTI lane still cites hla-backend-python1516-2025/backend.py as a frequent evidence "
             "anchor, but semantic concentration is no longer material there: the ambassador shell is thin and most "
             "runtime behavior now lives in extracted python1516_2025 modules. Remaining pressure is architectural hygiene, "
             "not proof that core 2025 semantics still live in one oversized backend class."
@@ -5107,12 +5107,12 @@ def _shim_backend_method_responsibility(method_name: str) -> str:
 def _build_python2025_source_responsibility_audit(project_root: Path) -> dict[str, Any]:
     shim_backend_path = project_root / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim" / "backend.py"
     python2025_backend_path = (
-        project_root / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
+        project_root / "packages" / "hla-backend-python1516-2025" / "src" / "hla" / "backends" / "python1516_2025" / "backend.py"
     )
     python2025_wrapper_path = (
         project_root
         / "packages"
-        / "hla-backend-python2025"
+        / "hla-backend-python1516-2025"
         / "src"
         / "hla"
         / "backends"
@@ -5280,7 +5280,7 @@ def _build_python2025_source_responsibility_audit(project_root: Path) -> dict[st
         "largest_family": families[0]["family"] if families else None,
         "largest_family_line_count": families[0]["line_count"] if families else 0,
         "current_assessment": (
-            "The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python2025, while "
+            "The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python1516-2025, while "
             "the substantive runtime behavior is spread across extracted python1516_2025 modules and hla-backend-shim has "
             "been reduced to a compatibility wrapper. Save/restore lifecycle, directed-interaction routing, time "
             "management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, "
@@ -5621,20 +5621,20 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "lifecycle-control",
             "focus": "save/restore request, initiate, completion, failure, abort, and precondition control flow",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_failure_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_failure_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_abort_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_request_failure_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_request_precondition_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_request_precondition_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_participant_exception_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_status_exception_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_abort_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_participant_exception_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_abort_save_exception_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_abort_exception_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_status_exception_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_save_failure_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_failure_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_abort_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_request_failure_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_save_request_precondition_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_request_precondition_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_participant_exception_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_status_exception_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_save_abort_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_save_participant_exception_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_abort_save_exception_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_abort_exception_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_save_status_exception_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
@@ -5652,10 +5652,10 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "shared-scenario-rollback",
             "focus": "shared two-federate save/restore, object-state rollback, and federate-local rollback",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_restore_object_state_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_federate_local_state_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_restore_object_state_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_save_restore_scenario_over_fedpro_route",
@@ -5668,13 +5668,13 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "routing-policy-rollback",
             "focus": "callback policy, transport/order policy, object routing, interaction routing, directed routing, and stale queued callback cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_callback_delivery_policy",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_callback_delivery_policy",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_plain_object_subscriber_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_plain_interaction_subscriber_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_treats_callback_delivery_as_runtime_policy_not_saved_state_over_fedpro_schema",
@@ -5690,10 +5690,10 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "ownership-rollback",
             "focus": "ownership gauntlets, inflight acquisition/divestiture state, and owner-visibility rollback",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_inflight_ownership_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_inflight_ownership_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema",
@@ -5706,11 +5706,11 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
             "family": "time-window-and-time-state-rollback",
             "focus": "lookahead, queued TSO, time/switch state, open/closed window state, output resume, and pipeline resume",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restores_open_and_closed_time_window_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restores_closed_window_output_resume_without_dirty_replay",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restores_pipeline_resume_without_cross_window_replay",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_time_and_switch_control_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restores_open_and_closed_time_window_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restores_closed_window_output_resume_without_dirty_replay",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restores_pipeline_resume_without_cross_window_replay",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_reverts_dirty_lookahead_and_redelivers_presave_queued_tso_over_fedpro_schema",
@@ -5737,7 +5737,7 @@ def _build_save_restore_decomposition_audit() -> dict[str, Any]:
         ),
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these proof families before further modularizing "
-            "save/restore runtime semantics inside hla-backend-python2025."
+            "save/restore runtime semantics inside hla-backend-python1516-2025."
         ),
     }
 
@@ -5857,13 +5857,13 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "family": "connect-create-destroy-and-catalog-control",
             "focus": "connect or disconnect state, create or destroy federation control, federation listing, duplicate-create rejection, and FOM-validation or callback-model connect preconditions",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_lifecycle_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_listing_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_validates_callback_model_and_credentials_at_connect",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_rejects_duplicate_federation_and_federate_names",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_with_mim_create_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_lifecycle_negative_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_listing_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_validates_callback_model_and_credentials_at_connect",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_rejects_duplicate_federation_and_federate_names",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_federation_lifecycle_scenario_over_fedpro_route",
@@ -5878,10 +5878,10 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "family": "join-membership-and-name-preconditions",
             "focus": "join preconditions, federation-execution member reporting, multi-participation visibility, and federate-name uniqueness or joined-state constraints",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_multi_participation_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_join_precondition_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_reports_federation_executions_and_members",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_rejects_duplicate_federation_and_federate_names",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_multi_participation_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_join_precondition_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_reports_federation_executions_and_members",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_rejects_duplicate_federation_and_federate_names",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_join_precondition_scenario_over_fedpro_route",
@@ -5894,13 +5894,13 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "family": "resign-disconnect-loss-and-member-cleanup",
             "focus": "resign and disconnect preconditions, federation member cleanup after resign or loss, connectionLost teardown, and federateResigned callback or MOM cleanup behavior",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_lost_federate_mom_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_connection_lost_callback_tears_down_connection",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_resigned_federate_callback_silence_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_reports_federate_resigned_callback_with_reason_context",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_resign_precondition_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_resign_mom_cleanup_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_disconnect_mom_cleanup_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_lost_federate_mom_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_connection_lost_callback_tears_down_connection",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_resigned_federate_callback_silence_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_reports_federate_resigned_callback_with_reason_context",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_shared_resign_precondition_scenario_over_fedpro_route",
@@ -5916,12 +5916,12 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "family": "synchronization-barriers-and-targeted-callbacks",
             "focus": "sync-point registration, announce or achieved flow, federationSynchronized completion, failure cases, late joiners, multiple sync points, and targeted sync callback routing",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_synchronization_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_synchronization_registration_failure_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_late_join_synchronization_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_synchronization_registration_failure_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_failed_federate_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_late_join_synchronization_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_multiple_synchronization_points_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_mom_synchronization_point_reports_through_interactions",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_synchronization_scenario_via_runner_over_fedpro_route",
@@ -5937,11 +5937,11 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "family": "save-restore-lifecycle-control",
             "focus": "request or initiate, status, fail, abort, and completion control flow for federation save or restore across direct and hosted ambassadors",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_federation_save_restore_lifecycle",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_save_restore_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_backend_neutral_save_restore_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_save_restore_queued_callback_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_scheduled_save_restore_time_state_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema",
@@ -5957,8 +5957,8 @@ def _build_federation_management_decomposition_audit() -> dict[str, Any]:
             "family": "save-restore-participant-recovery-and-branching",
             "focus": "multi-federate participant tracking, restore after disconnect, example FOM rollback branching, and recovery of saved participant state rather than dirty future state",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_example_fom_save_restore_gauntlet",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_example_fom_save_restore_gauntlet",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_tracks_multi_federate_save_restore_per_peer_over_fedpro_schema",
@@ -6019,9 +6019,9 @@ def _build_support_services_decomposition_audit() -> dict[str, Any]:
             "family": "name-reservation-and-release-flows",
             "focus": "single and multi-name reservation success or failure callbacks, release flows, handoff behavior, and save or join preconditions around reservation state",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_supports_single_object_instance_name_reservation_callback_and_release",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_name_reservation_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_supports_single_object_instance_name_reservation_callback_and_release",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_supports_multiple_object_instance_name_reservation_and_release",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_instance_name_reservation_flow_over_fedpro_schema",
@@ -6034,8 +6034,8 @@ def _build_support_services_decomposition_audit() -> dict[str, Any]:
             "family": "identity-catalog-and-handle-normalization-lookups",
             "focus": "federate, object, interaction, parameter, and service-group lookup or normalization flows across joined runtime state and loaded catalog metadata",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_round_trips_support_services_over_fedpro_schema",
@@ -6047,10 +6047,10 @@ def _build_support_services_decomposition_audit() -> dict[str, Any]:
             "family": "transport-order-update-dimension-and-range-lookups",
             "focus": "transportation, order type, update-rate, dimension, and range-bound lookups plus requester-only transport query callback routing",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_support_lookup_and_normalization_route_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_round_trips_support_services_over_fedpro_schema",
@@ -6063,8 +6063,8 @@ def _build_support_services_decomposition_audit() -> dict[str, Any]:
             "family": "switch-inquiry-and-control-model",
             "focus": "2025 set/get support switch model for advisory, reporting, and runtime policy state, including automatic resign, with validation of switch-control inputs",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_supports_explicit_switch_inquiry_and_control_model",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_round_trips_automatic_resign_directive_support_service",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_supports_explicit_switch_inquiry_and_control_model",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_round_trips_automatic_resign_directive_support_service",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice",
@@ -6075,9 +6075,9 @@ def _build_support_services_decomposition_audit() -> dict[str, Any]:
             "family": "factory-decode-and-hosted-support-seam",
             "focus": "support handle factories, decode helpers, hosted direct support route execution, callback-backlog control around support seams, and preservation of support surfaces across transport",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_support_factory_and_decode_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_callback_control_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_enable_disable_callbacks_controls_evoked_delivery",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_factory_hosted_python2025_route_runs_shared_support_factory_and_decode_scenario",
@@ -6139,13 +6139,13 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "declaration-and-basic-exchange-gating",
             "focus": "publish and subscribe control, discovery metadata/class visibility, plain object exchange, and declaration gating or rejection paths",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_discovery_class_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_two_federate_object_and_interaction_exchange",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_declaration_management_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_discovery_class_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_declaration_invalid_attribute_publication_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_declaration_unpublish_rejection_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_time_managed_declaration_independence_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_passive_full_declaration_scenario_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_schema",
@@ -6163,12 +6163,12 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "deletion-and-local-known-state-lifecycle",
             "focus": "local delete, timed delete, orphan and remove flows, subscriber known-state rollback, and stale remove cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_local_delete_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_orphan_object_lifecycle_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_timed_delete_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_locally_deleted_object_known_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_local_delete_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_orphan_object_lifecycle_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_timed_delete_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_locally_deleted_object_known_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_clears_stale_timed_remove_and_preserves_post_restore_remove_routing",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_deletes_objects_and_queues_timed_removes_over_fedpro_schema",
@@ -6184,9 +6184,9 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "attribute-value-update-request-routing",
             "focus": "instance and class-wide requestAttributeValueUpdate callbacks, owner-only routing, and disconnected-owner suppression",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_to_end",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_request_attribute_value_update_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_request_attribute_value_update_routing_scenario_end_to_end",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_object_management_support_callbacks_over_fedpro_schema",
@@ -6200,9 +6200,9 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "advisory-and-update-rate-callbacks",
             "focus": "turnUpdatesOn/off advisories, object-scope in-scope or out-of-scope transitions, update-rate routing, and rate alias parity",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_and_universal_subscription_aliases_match_active_exchange",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_update_rate_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_object_scope_relevance_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_passive_and_universal_subscription_aliases_match_active_exchange",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_turn_updates_advisory_callbacks_over_fedpro_schema",
@@ -6215,12 +6215,12 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "transportation-query-and-policy-state",
             "focus": "attribute and interaction transportation change confirmation, requester-only query/report callbacks, rejection paths, and restore persistence",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_restore_persistence_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_transportation_type_rejection_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_restores_transportation_type_state_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_object_management_and_support_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_transport_and_order_policy_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_transportation_type_scenario_over_fedpro_route",
@@ -6234,12 +6234,12 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "object-region-scope-and-passive-alias-routing",
             "focus": "DDM object-region routing, attributesInScope and attributesOutOfScope advisories, passive region aliases, and DDM cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap",
@@ -6255,12 +6255,12 @@ def _build_object_management_decomposition_audit() -> dict[str, Any]:
             "family": "directed-and-directed-ddm-interaction-routing",
             "focus": "directed interaction delivery, timestamped directed routing and retraction, selective directed publication or subscription isolation, and directed DDM overlap routing",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_queues_timestamped_directed_interactions_until_time_advance",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_queues_timestamped_directed_interactions_until_time_advance",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema",
@@ -6300,10 +6300,10 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "divestiture-and-confirmation-flows",
             "focus": "unconditional and negotiated divestiture, requestDivestitureConfirmation, confirmDivestiture, and cancel-negotiated-offer handling",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_confirm_divestiture_negotiated_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_confirm_divestiture_negotiated_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_scenario_over_fedpro_route",
@@ -6316,9 +6316,9 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "release-and-if-wanted-flows",
             "focus": "requestAttributeOwnershipRelease, attributeOwnershipReleaseDenied, and divestiture-if-wanted transfer behavior",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_release_request_ownership_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_release_request_ownership_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_release_request_ownership_scenario_over_fedpro_route",
@@ -6330,9 +6330,9 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "acquisition-assumption-and-notification",
             "focus": "requestAttributeOwnershipAssumption, explicit acquisition requests, and ownership acquisition notification delivery",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_object_and_ownership_service_interactions",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_attribute_ownership_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_mom_object_and_ownership_service_interactions",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_scenario_over_fedpro_route",
@@ -6344,9 +6344,9 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "acquisition-availability-and-cancellation",
             "focus": "attributeOwnershipAcquisitionIfAvailable, unavailable callbacks, acquisition cancellation, and cancel-confirmation flows",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_attribute_ownership_unavailable_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_negotiated_ownership_matches_python_parity_flow",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_negotiated_ownership_flow_without_wrapper_adapter",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_attribute_ownership_unavailable_scenario_over_fedpro_route",
@@ -6358,9 +6358,9 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "query-visibility-and-resign-policies",
             "focus": "queryAttributeOwnership, attributeIsOwnedByRTI and attributeIsNotOwned callback outcomes, isAttributeOwnedByFederate, and resign-time ownership policy behavior",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_applies_resign_time_ownership_policies",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_mom_object_and_ownership_service_interactions",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_basic_ownership_divest_acquire_and_query_callbacks",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_applies_resign_time_ownership_policies",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_mom_object_and_ownership_service_interactions",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_routes_attribute_ownership_query_callbacks_only_to_requester_over_fedpro_schema",
@@ -6372,10 +6372,10 @@ def _build_ownership_decomposition_audit() -> dict[str, Any]:
             "family": "rollback-and-restore-state",
             "focus": "save/restore ownership gauntlets, inflight acquisition or divestiture state, and cross-federate owner-visibility rollback",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_inflight_ownership_state",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_runs_smoke_fom_save_restore_ownership_gauntlet",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_inflight_ownership_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restores_cross_federate_attribute_owner_visibility",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_runtime_factory_restores_cross_federate_attribute_owner_visibility",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_smoke_fom_save_restore_ownership_gauntlet_over_fedpro_schema",
@@ -6419,8 +6419,8 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "base-routing-and-callback-delivery",
             "focus": "publish, subscribe, unsubscribe, unpublish, and receiveDirectedInteraction callback delivery",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_interactions_to_object_class_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_interactions_only_to_subscribers",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_directed_interaction_exchange_over_fedpro_schema",
@@ -6431,9 +6431,9 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "timestamped-delivery-and-retraction",
             "focus": "queued timestamped directed delivery, per-subscriber routing, pre-delivery retract, and target-departure cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_queues_timestamped_directed_interactions_until_time_advance",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_delivers_and_retracts_timestamped_directed_interactions_for_all_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_queued_directed_tso_for_departed_target",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_queues_timestamped_directed_interactions_until_time_advance",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_delivers_and_retracts_timestamped_directed_interactions_for_all_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_drops_queued_directed_tso_for_departed_target",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_queues_timestamped_directed_interactions_and_retracts_over_fedpro_schema",
@@ -6445,9 +6445,9 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "ddm-overlap-filtering",
             "focus": "region-overlap filtering for directed interactions and removal of disconnected directed DDM subscribers",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_directed_interactions_by_ddm_region_overlap",
@@ -6459,8 +6459,8 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "selective-set-and-publication-isolation",
             "focus": "selective directed-interaction set unsubscribe/unpublish without collapsing sibling classes or other publishers",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_preserves_other_federate_directed_publication_after_unpublish",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_directed_interaction_set_unsubscribe_and_unpublish_are_selective",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_preserves_other_federate_directed_publication_after_unpublish",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_directed_with_set_unsubscribe_and_unpublish_are_selective",
@@ -6471,8 +6471,8 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
             "family": "restore-routing-and-stale-queue-cleanup",
             "focus": "restore recovers directed DDM subscriber routing and clears stale directed TSO without replaying dirty state",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_clears_stale_directed_tso_and_preserves_post_restore_routing",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_restore_recovers_directed_ddm_subscriber_routing_over_fedpro_schema",
@@ -6495,7 +6495,7 @@ def _build_directed_interaction_decomposition_audit() -> dict[str, Any]:
         ),
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these directed-interaction proof families before "
-            "further modularizing directed-routing semantics inside hla-backend-python2025."
+            "further modularizing directed-routing semantics inside hla-backend-python1516-2025."
         ),
     }
 
@@ -6585,7 +6585,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "lookup-and-default-policy-control",
             "focus": "FOM-backed dimension lookup, bounds queries, and default attribute transportation/order policy control",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap",
@@ -6595,7 +6595,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "object-region-routing-and-scope-advisories",
             "focus": "object reflection filtering through region overlap plus attributesInScope/attributesOutOfScope transitions",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_filters_object_reflections_by_ddm_region_overlap",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap",
@@ -6605,8 +6605,8 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "interaction-region-routing",
             "focus": "region-filtered interaction delivery, sent-region callback context, and plain interaction subscriber cleanup",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_filters_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_preserves_direct_callback_context_for_timed_region_delivery",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_interactions_by_ddm_region_overlap",
@@ -6617,9 +6617,9 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "directed-ddm-routing",
             "focus": "directed interaction delivery through object update-region and subscribeInteractionClassWithRegions overlap",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_filters_directed_interactions_by_ddm_region_overlap",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_routes_directed_ddm_interactions_only_to_overlapping_subscribers",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_removes_disconnected_directed_ddm_subscriber_from_delivery_state",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_filters_directed_interactions_by_ddm_region_overlap",
@@ -6631,11 +6631,11 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "passive-alias-and-compat-scenarios",
             "focus": "passive region subscription aliases and backend-neutral compat DDM scenarios over the same semantics",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_two_federate_suite_ddm_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_ddm_object_region_lifecycle_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_ddm_declaration_gating_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_passive_ddm_region_subscription_aliases_match_active_region_delivery",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_runs_two_federate_suite_ddm_scenario_over_fedpro_route",
@@ -6649,8 +6649,8 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
             "family": "ddm-restore-and-disconnect-cleanup",
             "focus": "restore and disconnect cleanup for queued DDM delivery and directed DDM subscriber routing state",
             "direct_tests": [
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
-                "tests/test_rti1516_2025_python2025_runtime.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_restore_recovers_directed_ddm_subscriber_routing",
+                "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_drops_queued_ddm_tso_reflect_for_departed_target",
             ],
             "hosted_tests": [
                 "tests/transport/test_grpc_transport_2025.py::test_2025_transport_server_drops_queued_ddm_tso_reflect_for_disconnected_target_over_fedpro_schema",
@@ -6673,7 +6673,7 @@ def _build_ddm_default_policy_decomposition_audit() -> dict[str, Any]:
         ),
         "next_split_boundary": (
             "If this slice needs further tightening, split it first by these DDM/default-policy proof families before "
-            "further modularizing region-routing semantics inside hla-backend-python2025."
+            "further modularizing region-routing semantics inside hla-backend-python1516-2025."
         ),
     }
 
@@ -6895,11 +6895,11 @@ def _build_current_lane_coherence_audit(
             "The primary 2025 Python RTI lane now has a defensible coherence story: its main current-package pressure slices are "
             "identified, decomposed into named proof families, and all of those families are executable across the "
             "current Python 2025 lanes. That is strong evidence for a coherent bounded working RTI surface even "
-            "though the lane still depends on disciplined ownership across the extracted hla-backend-python2025 "
+            "though the lane still depends on disciplined ownership across the extracted hla-backend-python1516-2025 "
             "runtime/state/surface modules."
         ),
         "residual_blockers": [
-            "The public hla-backend-python2025/backend.py shell is now thin, but the extracted runtime/state/surface split still needs continued discipline so coherence is not mistaken for a permanently settled architecture.",
+            "The public hla-backend-python1516-2025/backend.py shell is now thin, but the extracted runtime/state/surface split still needs continued discipline so coherence is not mistaken for a permanently settled architecture.",
             "The repo now has a row-level requirement-by-requirement audit, but it still stops at bounded disposition and supported-scope proof rather than an all-covered conformance pass.",
             "Java and C++ bindings remain artifact/runtime-capability bounded rather than exhaustive behavior-conformance proof.",
             "Hosted FedPro remains a bounded runtime slice rather than a full RTI semantics or MOM action/request conformance pass.",
@@ -6923,10 +6923,10 @@ def _build_extraction_readiness_audit(
         ddm_default_policy_decomposition_audit,
     )
     candidate_runtime_modules = {
-        "2025-save-restore-lifecycle": "packages/hla-backend-python2025/src/hla/backends/python2025/save_restore_lifecycle.py",
-        "2025-ownership-proof-families": "packages/hla-backend-python2025/src/hla/backends/python2025/ownership_runtime.py",
-        "2025-directed-interaction-boundary": "packages/hla-backend-python2025/src/hla/backends/python2025/directed_interaction_boundary.py",
-        "2025-ddm-default-attribute-policy": "packages/hla-backend-python2025/src/hla/backends/python2025/ddm_default_attribute_policy.py",
+        "2025-save-restore-lifecycle": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/save_restore_lifecycle.py",
+        "2025-ownership-proof-families": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ownership_runtime.py",
+        "2025-directed-interaction-boundary": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/directed_interaction_boundary.py",
+        "2025-ddm-default-attribute-policy": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/ddm_default_attribute_policy.py",
     }
     migration_worklist: list[dict[str, Any]] = []
     for audit in runtime_audits:
@@ -6944,7 +6944,7 @@ def _build_extraction_readiness_audit(
                 "candidate_runtime_module": candidate_runtime_modules[audit["slice_id"]],
             }
         )
-    python2025_runtime_dir = Path.cwd() / "packages" / "hla-backend-python2025" / "src" / "hla" / "backends" / "python1516_2025"
+    python2025_runtime_dir = Path.cwd() / "packages" / "hla-backend-python1516-2025" / "src" / "hla" / "backends" / "python1516_2025"
     migrated_runtime_modules = []
     migrated_runtime_module_names = {
         "attribute_scope_runtime.py",
@@ -6977,7 +6977,7 @@ def _build_extraction_readiness_audit(
             migrated_runtime_modules.append(str(module_path.relative_to(Path.cwd())))
     current_package_state = (
         "live-runtime-present"
-        if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
+        if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python1516-2025"
         else
         "semantic-slices-present"
         if migrated_runtime_modules
@@ -6991,13 +6991,13 @@ def _build_extraction_readiness_audit(
         "extraction_needed_now": False,
         "dedicated_python_2025_backend_present": implementation_lane_audit["dedicated_2025_backend_package_present"],
         "recommended_current_action": "promote-python1516_2025-as-live-lane-and-keep-shim-wrapper-narrowing-map",
-        "future_backend_package_target": "hla-backend-python2025",
+        "future_backend_package_target": "hla-backend-python1516-2025",
         "future_backend_plugin_family": "python-rti-2025",
         "extraction_package_contract": {
             "current_package_state": current_package_state,
-            "target_distribution": "hla-backend-python2025",
-            "target_import_root": "hla.backends.python2025",
-            "target_plugin_path": "packages/hla-backend-python2025/src/hla/backends/python2025/plugin.py",
+            "target_distribution": "hla-backend-python1516-2025",
+            "target_import_root": "hla.backends.python1516_2025",
+            "target_plugin_path": "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py",
             "target_backend_name": "python1516_2025",
             "target_plugin_family": "python-rti-2025",
             "target_supports": ["rti1516_2025"],
@@ -7016,7 +7016,7 @@ def _build_extraction_readiness_audit(
             "python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
             "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior",
             "the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
-            "backend plugin discovery reports hla-backend-python2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
+            "backend plugin discovery reports hla-backend-python1516-2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
         ],
         "shim_responsibilities_after_extraction": [
             "standard-route adaptation and compatibility aliases",
@@ -7039,13 +7039,13 @@ def _build_extraction_readiness_audit(
             "keep hla-backend-shim as a narrower adapter layer instead of deleting the route-normalization seam",
         ],
         "current_assessment": (
-            "The extraction cutover is materially underway: hla-backend-python2025 now owns the live backend, "
+            "The extraction cutover is materially underway: hla-backend-python1516-2025 now owns the live backend, "
             "hla-backend-shim remains only as temporary import-compatibility scaffolding and wrapper-only "
             "compatibility support, and the repo still has a concrete migration map for continuing to narrow those "
             "scaffolding responsibilities while preserving the direct and hosted proof families."
-            if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
+            if implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python1516-2025"
             else "Extraction is still not required for the current bounded working-surface claim, but the repo now has "
-            "both a concrete migration map and extracted runtime semantic slices in hla-backend-python2025. "
+            "both a concrete migration map and extracted runtime semantic slices in hla-backend-python1516-2025. "
             "Directed-interaction target-selection, interaction policy/routing, save/restore lifecycle, "
             "DDM/default-policy, object-region/DDM routing, callback delivery/control, catalog/handle lookup, "
             "attribute-scope advisories, update-rate policy, ownership acquisition/divestiture flows, MOM "
@@ -7147,7 +7147,7 @@ def _build_extraction_impact_audit(
         "current_assessment": (
             "The extraction worklist is now tied to measurable current source families. Save/restore, directed "
             "interaction, and DDM/default-policy migration candidates each identify the remaining adapter pressure "
-            "and runtime line baselines that should keep shrinking around hla-backend-python2025."
+            "and runtime line baselines that should keep shrinking around hla-backend-python1516-2025."
         ),
         "non_claim": (
             "This is an impact map, not a migration-complete claim. The dedicated backend is present, but the line "
@@ -7170,7 +7170,7 @@ def _build_current_lane_working_surface_statement(
         ),
         "statement": (
             "The primary 2025 Python RTI lane can be promoted as the repo's coherent bounded working Python RTI surface: "
-            "the main full Python 2025 RTI implementation now runs from hla-backend-python2025 while hla-backend-shim "
+            "the main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim "
             "is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support, its "
             "main current-package pressure families are route-backed across the current Python lanes and the "
             "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, "
@@ -7204,7 +7204,7 @@ def _build_main_python2025_implementation_claim_audit(
     promotion_split_audit: Mapping[str, Any],
 ) -> dict[str, Any]:
     ready = (
-        implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python2025"
+        implementation_lane_audit["current_2025_lane"]["backend_package"] == "hla-backend-python1516-2025"
         and implementation_lane_audit["dedicated_2025_backend_package_present"]
         and python2025_proof_lane_audit["ready_for_main_implementation_operator_lane_claim"]
         and objective_dimension_audit["ready_for_bounded_working_surface_claim"]
@@ -7216,18 +7216,18 @@ def _build_main_python2025_implementation_claim_audit(
         "claim_shape": "bounded-main-python1516_2025-rti-implementation",
         "ready_for_main_python2025_implementation_claim": ready,
         "ready_for_full_2025_conformance_claim": completion_claim_audit["ready_for_full_2025_conformance_claim"],
-        "implementation_owner": "hla-backend-python2025",
+        "implementation_owner": "hla-backend-python1516-2025",
         "compatibility_wrapper": "hla-backend-shim",
         "default_operator_lane": python2025_proof_lane_audit["default_direct_lane"]["lane_id"],
         "hosted_extension_lane": python2025_proof_lane_audit["hosted_extension_lane"]["lane_id"],
         "claim": (
             "The repo can now make a distinct bounded claim for the main Python 2025 RTI implementation lane: "
-            "hla-backend-python2025 is the implementation owner for the real executable 2025 Python RTI surface, "
+            "hla-backend-python1516-2025 is the implementation owner for the real executable 2025 Python RTI surface, "
             "hla-backend-shim is compatibility-wrapper-only, and the direct plus hosted Python 2025 proof lanes are "
             "sufficiently green to promote that lane as the main bounded working RTI implementation."
         ),
         "promotion_basis": [
-            "hla-backend-python2025 is the discovered dedicated rti1516_2025 backend package and current implementation owner.",
+            "hla-backend-python1516-2025 is the discovered dedicated rti1516_2025 backend package and current implementation owner.",
             "The canonical operator lane marks verify-main-2025 as the default direct proof route for the real python1516_2025 runtime.",
             "All tracked objective dimensions are bounded-ready for the Python-centered 2025 working surface.",
             "The current-lane working-surface statement is ready without relying on shim-owned runtime semantics.",
@@ -7307,7 +7307,7 @@ def _build_full_claim_blocker_partition_audit(
             "The remaining blockers in the full-2025 claim are now explicitly partitioned. On the current tree they "
             "all sit outside direct main-lane python1516_2025 runtime completeness: they are OMT extension-scope, "
             "Java/C++ binding, hosted-route, or row-granularity boundaries rather than missing core executable "
-            "behavior in hla-backend-python2025."
+            "behavior in hla-backend-python1516-2025."
         ),
         "residual_boundary": (
             "This partition audit clarifies blocker ownership. It does not convert those external boundaries into a "
@@ -7390,7 +7390,7 @@ def _build_closeout_blocker_partition_audit(
         "current_assessment": (
             "The broader closeout blockers are now explicitly partitioned too. On the current tree they all describe "
             "requirement-granularity, cross-binding, hosted-route, OMT-extension-scope, or legacy-exclusion limits "
-            "rather than missing core executable behavior in the main hla-backend-python2025 runtime lane."
+            "rather than missing core executable behavior in the main hla-backend-python1516-2025 runtime lane."
         ),
         "residual_boundary": (
             "This partition audit clarifies why closeout remains incomplete without treating the main python1516_2025 "
@@ -8189,7 +8189,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     closeout_ready = len(high_priority_open) == 0 and route_partial_count == 0 and route_missing_count == 0
     conformance_blockers = [
         "The repo now has a row-level requirement-by-requirement disposition audit across all 2025 rows, but that audit still contains retired, umbrella, and bounded-scope rows rather than an unconditional conformance pass; this is a requirement-closeout limit rather than evidence that the main python1516_2025 runtime lane is behaviorally incomplete.",
-        "Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually; that remaining gap is about requirement granularity, not about whether hla-backend-python2025 has the underlying executable behavior.",
+        "Many implemented-slice rows outside the FI service catalog still aggregate multiple requirements under bounded supported-scope language rather than proving every requirement individually; that remaining gap is about requirement granularity, not about whether hla-backend-python1516-2025 has the underlying executable behavior.",
         "Java and C++ standard-route evidence remains artifact-gated/runtime-capability evidence, not a full cross-binding behavior-conformance pass.",
         "The hosted FedPro route is verified as a runtime slice, but its own supported-scope rows explicitly stop short of full RTI semantics and full cross-binding conformance; the remaining route boundary is a hosted/cross-binding proof limit rather than evidence that the direct python1516_2025 runtime lane lacks those semantics.",
         "OMT component coverage includes foreign xs:any extension payload preservation, but arbitrary third-party extension execution semantics remain out of scope.",
@@ -8269,7 +8269,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "requirement-by-requirement disposition audit across the full 2025 universe. The remaining "
             "retired, umbrella, cross-binding, bounded-extension, and bounded-route limits still block a complete "
             "2025 claim, but those limits now sit outside the already-green primary python1516_2025 runtime lane: "
-            "hla-backend-python2025 is the repo's main 2025 Python RTI lane and hla-backend-shim is treated as a "
+            "hla-backend-python1516-2025 is the repo's main 2025 Python RTI lane and hla-backend-shim is treated as a "
             "compatibility wrapper."
         ),
         "conformance_blockers": conformance_blockers,

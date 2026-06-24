@@ -42,7 +42,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
         for scenario in {row.scenario for row in SPEC2025_ROUTE_PARITY_ROWS if row.route == route}:
             row = rows[(scenario, route)]
             assert row.runtime_provider == "python1516_2025"
-            assert row.implementation_lane == "hla-backend-python2025"
+            assert row.implementation_lane == "hla-backend-python1516-2025"
             assert row.counts_as_python_2025_rti is route.startswith("python-1516-2025")
             assert row.wrapper_only is False
 
@@ -56,7 +56,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "explicit single-FOM and createFederationExecutionWithMIM transport-command routing" in rows[
         ("federation_lifecycle", "python1516_2025-fedpro-grpc")
     ].notes
-    assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane" in rows[
+    assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python1516-2025 as the primary 2025 Python RTI implementation lane" in rows[
         ("federation_lifecycle", "python1516_2025-fedpro-grpc")
     ].notes
     assert rows[("time_management", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
@@ -80,7 +80,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "future-exclusion blocking until GALT/LITS reach the window end" in rows[("time_management", "python1516_2025-inprocess")].notes
     assert "oracle-rejection guards" in rows[("time_management", "python1516_2025-inprocess")].notes
     assert rows[("time_management", "python1516_2025-inprocess")].evidence_tests == (
-        "tests/test_rti1516_2025_python2025_runtime.py",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/scenarios/test_python_route_parity.py",
     )
     assert rows[("time_management", "python1516_2025-fedpro-grpc")].evidence_tests == (
@@ -248,17 +248,17 @@ def test_2025_route_parity_matrix_records_evidence_scope_without_flattening_java
     assert java_lifecycle.evidence_scope == "scenario-parity"
     assert java_lifecycle.evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
     assert "official API compile artifact gate" in java_lifecycle.notes
-    assert "primary python1516_2025 runtime lane in hla-backend-python2025" in java_lifecycle.notes
+    assert "primary python1516_2025 runtime lane in hla-backend-python1516-2025" in java_lifecycle.notes
 
     assert cpp_lifecycle.status == PARITY_COVERED
     assert cpp_lifecycle.evidence_scope == "scenario-parity"
     assert cpp_lifecycle.evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
     assert "connect, create, join" in cpp_lifecycle.notes
     assert "packages limited to compatibility and API adaptation" in cpp_lifecycle.notes
-    assert "binding/adaptation-seam evidence over the main hla-backend-python2025 runtime" in cpp_lifecycle.notes
+    assert "binding/adaptation-seam evidence over the main hla-backend-python1516-2025 runtime" in cpp_lifecycle.notes
 
     hosted_lifecycle = rows[("federation_lifecycle", "python1516_2025-fedpro-grpc")]
-    assert "transport-seam evidence over hla-backend-python2025" in hosted_lifecycle.notes
+    assert "transport-seam evidence over hla-backend-python1516-2025" in hosted_lifecycle.notes
 
 
 def test_2025_route_parity_matrix_never_credits_shim_as_a_2025_route_runtime_owner() -> None:
@@ -293,7 +293,7 @@ def test_2025_route_parity_matrix_rejects_runtime_claim_without_runtime_artifact
         evidence_scope="runtime-capability",
         evidence_artifacts=("docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",),
         runtime_provider="python1516_2025",
-        implementation_lane="hla-backend-python2025",
+        implementation_lane="hla-backend-python1516-2025",
         counts_as_python_2025_rti=False,
         wrapper_only=False,
     )
@@ -316,7 +316,7 @@ def test_2025_route_parity_matrix_rejects_missing_rows_with_artifacts() -> None:
         evidence_scope="gap-record",
         evidence_artifacts=("docs/evidence/shim_routes/route_traces/cpp-standard-2025-grpc.json",),
         runtime_provider="python1516_2025",
-        implementation_lane="hla-backend-python2025",
+        implementation_lane="hla-backend-python1516-2025",
         counts_as_python_2025_rti=False,
         wrapper_only=False,
     )
@@ -361,14 +361,14 @@ def test_2025_route_parity_matrix_rejects_trace_without_python2025_runtime_ident
         evidence_scope="lifecycle-trace",
         evidence_artifacts=("docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",),
         runtime_provider="python1516_2025",
-        implementation_lane="hla-backend-python2025",
+        implementation_lane="hla-backend-python1516-2025",
         counts_as_python_2025_rti=False,
         wrapper_only=False,
     )
 
     assert validate_spec2025_route_parity_evidence(tmp_path, (bad_row,)) == [
         "federation_lifecycle/java-standard-2025-jpype: route trace must record runtimeProvider=python1516_2025 in docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",
-        "federation_lifecycle/java-standard-2025-jpype: route trace must record implementationLane=hla-backend-python2025 in docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",
+        "federation_lifecycle/java-standard-2025-jpype: route trace must record implementationLane=hla-backend-python1516-2025 in docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",
         "federation_lifecycle/java-standard-2025-jpype: route trace must record countsAsPython2025Rti=false in docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",
         "federation_lifecycle/java-standard-2025-jpype: route trace must record wrapperOnly=false in docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",
     ]
@@ -412,18 +412,18 @@ def test_2025_route_parity_matrix_rejects_aggregate_report_without_python2025_ru
         evidence_scope="runtime-capability",
         evidence_artifacts=("docs/evidence/shim_routes/java-standard-2025.json",),
         runtime_provider="python1516_2025",
-        implementation_lane="hla-backend-python2025",
+        implementation_lane="hla-backend-python1516-2025",
         counts_as_python_2025_rti=False,
         wrapper_only=False,
     )
 
     assert validate_spec2025_route_parity_evidence(tmp_path, (bad_row,)) == [
         "federation_lifecycle/java-standard-2025-jpype: Java aggregate route evidence must record runtime_provider=python1516_2025",
-        "federation_lifecycle/java-standard-2025-jpype: Java aggregate route evidence must record implementation_lane=hla-backend-python2025",
+        "federation_lifecycle/java-standard-2025-jpype: Java aggregate route evidence must record implementation_lane=hla-backend-python1516-2025",
         "federation_lifecycle/java-standard-2025-jpype: Java aggregate route evidence must record wrapper_only=false",
         "federation_lifecycle/java-standard-2025-jpype: Java aggregate route evidence must record counts_as_python_2025_rti=false",
         "federation_lifecycle/java-standard-2025-jpype: Java route evidence must record runtime_provider=python1516_2025",
-        "federation_lifecycle/java-standard-2025-jpype: Java route evidence must record implementation_lane=hla-backend-python2025",
+        "federation_lifecycle/java-standard-2025-jpype: Java route evidence must record implementation_lane=hla-backend-python1516-2025",
         "federation_lifecycle/java-standard-2025-jpype: Java route evidence must record wrapper_only=false",
         "federation_lifecycle/java-standard-2025-jpype: Java route evidence must record counts_as_python_2025_rti=false",
     ]
@@ -439,7 +439,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][MISSING] == 0
     assert summary["primary_runtime_lane"] == {
         "runtime_provider": "python1516_2025",
-        "implementation_lane": "hla-backend-python2025",
+        "implementation_lane": "hla-backend-python1516-2025",
         "counts_as_python_2025_rti": True,
         "wrapper_only": False,
     }
@@ -448,7 +448,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
         "status": "compatibility-maintained",
         "role": "compatibility-wrapper",
         "counts_as_python_2025_rti": False,
-        "delegates_runtime_semantics_to": "hla-backend-python2025",
+        "delegates_runtime_semantics_to": "hla-backend-python1516-2025",
     }
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 8
     assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 8
@@ -468,18 +468,18 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
     assert "# IEEE 1516-2025 Route Parity Matrix" in md_text
     assert "This matrix is not a conformance claim" in md_text
-    assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`" in md_text
+    assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`" in md_text
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime" in md_text
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in md_text
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in md_text
-    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in md_text
-    assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`" in md_text
+    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules" in md_text
+    assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python1516-2025`" in md_text
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in md_text
     assert "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
-    assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane" in md_text
-    assert "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025" in md_text
-    assert "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main hla-backend-python2025 runtime" in md_text
+    assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python1516-2025 as the primary 2025 Python RTI implementation lane" in md_text
+    assert "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python1516-2025" in md_text
+    assert "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main hla-backend-python1516-2025 runtime" in md_text
 
 
 def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identity() -> None:
@@ -492,24 +492,24 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
     ) in csv_text
     assert "federation_lifecycle,python1516_2025-inprocess,parity-covered,scenario-parity" in csv_text
     assert "time_management,python1516_2025-fedpro-grpc,parity-covered,scenario-parity" in csv_text
-    assert ",python1516_2025,hla-backend-python2025,true,false," in csv_text
+    assert ",python1516_2025,hla-backend-python1516-2025,true,false," in csv_text
     assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
 
     assert "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
-    assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`" in md_text
+    assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`" in md_text
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime" in md_text
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in md_text
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in md_text
-    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules" in md_text
-    assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`" in md_text
+    assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules" in md_text
+    assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python1516-2025`" in md_text
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in md_text
     assert "| federation_lifecycle | python1516_2025-inprocess | parity-covered | scenario-parity |" in md_text
     assert "| time_management | python1516_2025-fedpro-grpc | parity-covered | scenario-parity |" in md_text
-    assert "| python1516_2025 | hla-backend-python2025 | true | false |" in md_text
-    assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane" in md_text
-    assert "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025" in md_text
-    assert "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main hla-backend-python2025 runtime" in md_text
+    assert "| python1516_2025 | hla-backend-python1516-2025 | true | false |" in md_text
+    assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python1516-2025 as the primary 2025 Python RTI implementation lane" in md_text
+    assert "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python1516-2025" in md_text
+    assert "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main hla-backend-python1516-2025 runtime" in md_text
 
 
 def test_2025_checked_in_route_parity_artifacts_match_live_writer(tmp_path) -> None:
@@ -543,7 +543,7 @@ def test_2025_route_parity_matrix_rejects_python_route_rows_without_main_runtime
 
     assert validate_spec2025_route_parity_evidence(ROOT, (bad_row,)) == [
         "time_management/python1516_2025-fedpro-grpc: parity row must record runtime_provider=python1516_2025",
-        "time_management/python1516_2025-fedpro-grpc: parity row must record implementation_lane=hla-backend-python2025",
+        "time_management/python1516_2025-fedpro-grpc: parity row must record implementation_lane=hla-backend-python1516-2025",
         "time_management/python1516_2025-fedpro-grpc: parity row must record counts_as_python_2025_rti=true",
         "time_management/python1516_2025-fedpro-grpc: parity row must record wrapper_only=false",
     ]

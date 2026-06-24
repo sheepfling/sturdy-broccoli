@@ -20,7 +20,7 @@ from .callback_runtime import QueuedCallback
 
 if TYPE_CHECKING:
     from hla.backends.common import BackendInfo
-    from hla.backends.python2025.runtime_state import ObjectInstanceRecord, QueuedTsoCallback
+    from hla.backends.python1516_2025.runtime_state import ObjectInstanceRecord, QueuedTsoCallback
 
 
 class AmbassadorCoreSurfaceMixin:
@@ -111,7 +111,7 @@ class AmbassadorCoreSurfaceMixin:
 
         def _unsupported(*args: Any, **kwargs: Any) -> Any:
             self._record(name, *args, **kwargs)
-            raise RTIinternalError(f"hla-backend-python2025 does not implement IEEE 1516.1-2025 service {name}")
+            raise RTIinternalError(f"hla-backend-python1516-2025 does not implement IEEE 1516.1-2025 service {name}")
 
         return _unsupported
 

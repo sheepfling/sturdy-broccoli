@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hla.backends.python2025.declaration_management_runtime import (
+from hla.backends.python1516_2025.declaration_management_runtime import (
     publish_object_class_attributes,
     release_multiple_object_instance_names,
     release_object_instance_name,

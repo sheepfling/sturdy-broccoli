@@ -66,7 +66,7 @@ It also now includes the explicit raw `python1516_2025` proofs for:
 - support-service handle-factory and decode-helper behavior without routing
   through the compatibility wrapper
 - snake-case alias acceptance on the direct `python1516_2025` runtime surface
-- callback-control behavior on `hla-backend-python2025` itself:
+- callback-control behavior on `hla-backend-python1516-2025` itself:
   `disableCallbacks`, `enableCallbacks`, `evokeCallback`, and
   `evokeMultipleCallbacks`
 
@@ -74,7 +74,7 @@ It also now includes the explicit raw `python1516_2025` proofs for:
 
 Use `./tools/python verify-routes` as the normal hygiene lane when you change:
 
-- `hla.backends.inmemory` backend behavior that should remain identical over the hosted route
+- `hla.backends.python1516e` backend behavior that should remain identical over the hosted route
 - hosted transport client/server wiring for Python RTI
 - Target/Radar hosted Python example selection
 - Python route parity fixtures, matrices, or artifacts
@@ -92,7 +92,7 @@ Pair it with:
 
 - [`python_rti_backend.md`](python_rti_backend.md)
 - [`verification/time_model_compliance.md`](verification/time_model_compliance.md)
-- [`requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md)
+- [`requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
 - [`plans/spec2025_route_parity_matrix.md`](plans/spec2025_route_parity_matrix.md)
 
 That exclusion note is the operator-facing non-claim map for legacy aliases,

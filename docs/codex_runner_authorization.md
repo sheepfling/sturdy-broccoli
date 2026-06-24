@@ -54,7 +54,7 @@ Route split:
 
 - `./tools/python verify-routes` is the older 2010 hosted Python parity lane
 - `./tools/python verify-routes-2025` is the bounded hosted IEEE 1516.1-2025
-  lane over the main `hla-backend-python2025` runtime
+  lane over the main `hla-backend-python1516-2025` runtime
 
 ## Preferred Implementation
 

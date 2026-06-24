@@ -11,7 +11,7 @@
   "routes": {
     "java-standard-2025-jpype": {
       "counts_as_python_2025_rti": false,
-      "implementation_lane": "hla-backend-python2025",
+      "implementation_lane": "hla-backend-python1516-2025",
       "parity_scope": "bounded scenario-parity evidence",
       "requirements_exercised": [
         "HLA2025-BND-001",
@@ -37,7 +37,7 @@
     },
     "java-standard-2025-py4j": {
       "counts_as_python_2025_rti": false,
-      "implementation_lane": "hla-backend-python2025",
+      "implementation_lane": "hla-backend-python1516-2025",
       "parity_scope": "bounded scenario-parity evidence",
       "requirements_exercised": [
         "HLA2025-BND-001",
@@ -64,7 +64,7 @@
   },
   "scenario_evidence": {
     "counts_as_python_2025_rti": false,
-    "implementation_lane": "hla-backend-python2025",
+    "implementation_lane": "hla-backend-python1516-2025",
     "requirements_exercised": [
       "HLA2025-BND-001",
       "HLA2025-FR-001",

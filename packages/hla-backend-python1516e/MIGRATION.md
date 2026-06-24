@@ -1,8 +1,8 @@
 # Python RTI Backend Migration Inventory
 
-The split package now owns the implementation under `hla.backends.inmemory`.
+The split package now owns the implementation under `hla.backends.python1516e`.
 `hla.rti1516e.backends.python` has been removed. Use canonical
-`hla.backends.inmemory` imports.
+`hla.backends.python1516e` imports.
 
 Moved implementation modules:
 
@@ -34,13 +34,13 @@ Moved implementation modules:
 Known import hazards:
 
 - Relative core imports such as `from ...exceptions` must become absolute
-  `from hla.rti1516e.exceptions` imports after the files move to `hla.backends.inmemory`.
+  `from hla.rti1516e.exceptions` imports after the files move to `hla.backends.python1516e`.
 - Backend-contract imports such as `from ..base` must become
   `from hla.backends.common`.
 - Java conversion imports such as `from ..java_common` must become
   `from hla.bridges.java.common`.
 - Local imports such as `from .state` can stay relative within
-  `hla.backends.inmemory`.
+  `hla.backends.python1516e`.
 - `save_restore.py` has a non-local self import:
   `from ..python.state import FederateState, FederationState`; this should become
   `from .state import FederateState, FederationState`.
@@ -48,6 +48,6 @@ Known import hazards:
 Compatibility facade status:
 
 - `hla.rti1516e.backends.python` and its submodules are intentionally absent.
-- Normal repo tests import the pure Python backend from `hla.backends.inmemory`.
+- Normal repo tests import the pure Python backend from `hla.backends.python1516e`.
 - `tests/test_rti_python_split_package.py` asserts the removed legacy path does
   not import.

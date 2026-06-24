@@ -8,7 +8,7 @@ version = "0.13.0"
 description = "Pitch Java RTI JPype backend plugin for hla-rti1516e"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-bridge-java-common==0.13.0", "hla-bridge-java-jpype==0.13.0", "hla-vendor-pitch==0.13.0", "hla-backend-python2025==0.13.0"]
+dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-bridge-java-common==0.13.0", "hla-bridge-java-jpype==0.13.0", "hla-vendor-pitch==0.13.0", "hla-backend-python1516-2025==0.13.0"]
 
 [project.optional-dependencies]
 test = ["pytest"]

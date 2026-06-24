@@ -17,7 +17,7 @@ It is not:
 - a compatibility shim
 - a transport or vendor integration package
 
-If you need executable 2025 behavior, open `hla-backend-python2025` instead.
+If you need executable 2025 behavior, open `hla-backend-python1516-2025` instead.
 
 ## When To Open It
 

@@ -20,7 +20,7 @@ The intended reading order for a new contributor is:
 For IEEE 1516.1-2025 specifically, read that flow with one explicit ownership
 boundary in mind:
 
-- `hla-backend-python2025` is the main executable RTI lane
+- `hla-backend-python1516-2025` is the main executable RTI lane
 - `hla-backend-shim` is only the compatibility wrapper around that lane
 - direct `python1516_2025` proof comes first
 - hosted FedPro proof is a bounded extension over the same runtime
@@ -65,7 +65,7 @@ surfaces are:
 - `./tools/python verify-main-2025`: normal direct `python1516_2025` proof lane for the main implementation surface
 - [docs/verification/time_model_compliance.md](verification/time_model_compliance.md): current GALT/LITS/lookahead proof ladder for the 2025 lane
 - [docs/requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): requirement index and bounded proof-note map for the 2025 runtime/support/binding evidence surface
-- [docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python2025_exclusion_boundaries.md): explicit excluded-area map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics
+- [docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md): explicit excluded-area map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics
 - `./tools/python verify-routes-2025`: bounded hosted `python1516_2025-fedpro-grpc` hygiene lane over that same runtime
 - `python3 scripts/run_spec2025_finish_line.py`: regenerate the checked-in 2025 finish-line snapshot, verification matrix, and route-parity artifacts after proof-lane changes
 - [docs/plans/spec2025_finish_line.md](plans/spec2025_finish_line.md): generated 2025 finish-line evidence snapshot

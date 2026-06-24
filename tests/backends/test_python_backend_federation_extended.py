@@ -5,7 +5,7 @@ import pytest
 import hla.fom.mom as hla_mom
 from tests.backends.python_backend_extended_support import *
 from hla.fom import FOMModule
-from hla.backends.inmemory import PythonRTIConfig
+from hla.backends.python1516e import PythonRTIConfig
 from hla.rti1516e.enums import (
     CallbackModel,
     ResignAction,

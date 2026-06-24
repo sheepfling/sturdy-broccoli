@@ -11,7 +11,7 @@ import pytest
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import make_rti_ambassador
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 from hla.transports.common.transport import TransportRequest
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti import create_backend

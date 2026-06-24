@@ -30,7 +30,7 @@ Required outcome:
 - repo-local `.venv` bootstraps successfully
 - the workspace installs in editable mode
 - the pure Python 2010 backend runs
-- the main full Python 2025 RTI lane runs from `hla-backend-python2025`
+- the main full Python 2025 RTI lane runs from `hla-backend-python1516-2025`
 - `hla-backend-shim` remains only a compatibility-wrapper/import-compatibility package
 - the example federate path runs
 
@@ -47,7 +47,7 @@ python examples/target_radar_simulation.py --backend python1516_2025 --steps 5
 
 For IEEE 1516.1-2025 specifically, treat `python1516_2025` as the main executable
 runtime lane. Do not treat `shim` as a separate RTI family; it remains a
-wrapper-only compatibility surface over `hla-backend-python2025`.
+wrapper-only compatibility surface over `hla-backend-python1516-2025`.
 
 Routine 2025 proof commands:
 
@@ -85,7 +85,7 @@ Canonical command:
 Repo-green is the standard answer to "does the repo work here?"
 
 For the 2025 lane, that answer should be grounded in the audited
-`hla-backend-python2025` runtime plus its bounded hosted route evidence, not in
+`hla-backend-python1516-2025` runtime plus its bounded hosted route evidence, not in
 shim-first wording.
 
 ### 3. Vendor Green

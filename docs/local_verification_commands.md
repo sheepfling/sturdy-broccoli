@@ -27,7 +27,7 @@ python3 -m pytest -q tests/runtime/test_real_rti.py
 Use this page when you want the exact local commands, not the broader status.
 
 For the primary 2025 Python RTI lane, interpret these commands through the
-audited `hla-backend-python2025` runtime. `hla-backend-shim` is only
+audited `hla-backend-python1516-2025` runtime. `hla-backend-shim` is only
 temporary import-compatibility scaffolding plus
 compatibility-wrapper/import-compatibility code, and the hosted 2025 gRPC
 route is a bounded route variant rather than a separate RTI family.
@@ -50,7 +50,7 @@ mixing that claim into hosted-route hygiene.
 
 That main-surface lane also includes the explicit raw `python1516_2025` proofs for
 support-service handle-factory/decode behavior, snake-case direct-surface
-aliases, and callback-control services on `hla-backend-python2025` itself.
+aliases, and callback-control services on `hla-backend-python1516-2025` itself.
 It also names the Target/Radar time-window ladder explicitly: the integrated
 lookahead-processing-window gauntlet, the core/future-exclusion/output-delivery/
 consumer-order/pipeline/receive-order-poison scenarios, the restore-state /
@@ -78,7 +78,7 @@ when you need the same normalized artifacts in a sandboxed or local
 environment that cannot satisfy the strict vendor runtime prerequisites.
 
 `./tools/python verify-routes` is the regular hygiene lane for the 2010 hosted
-Python RTI surface. Run it after changes to `hla.backends.inmemory`,
+Python RTI surface. Run it after changes to `hla.backends.python1516e`,
 `python-grpc`, the older Python direct-vs-gRPC parity fixtures, or the hosted
 2010 Target/Radar example path.
 

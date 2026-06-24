@@ -8,11 +8,15 @@ runtime lane.
 It remains temporary import-compatibility scaffolding only.
 
 It exists to preserve older imports and wrapper-facing compatibility while the
-real implementation lives in `hla-backend-python2025`.
+real implementation lives in `hla-backend-python1516-2025`.
 
 It is not part of the repo-owned 2025 Python RTI implementation claim.
 It is not the main full Python 2025 RTI runtime.
 It retains import-level wrapper-facing normalization only.
+It is the legacy compatibility-wrapper package and temporary import-compatibility scaffolding.
+The main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`.
+In short, the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`.
+This means the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`, not here.
 
 ## What This Is Not
 
@@ -41,12 +45,18 @@ The package-root compatibility surface is:
 - `Shim2025RTIAmbassador`
 - `create_shim_backend`
 
+At the package root, the shim-specific surface is only `Shim2025Backend`,
+`Shim2025RTIAmbassador`, and `create_shim_backend`.
+
 Older compatibility aliases still exist under:
 
 - `hla.backends.shim.runtime_aliases`
 
 The remaining `hla.backends.shim.*` modules should stay thin forwarders into
-`hla.backends.python2025.*`.
+`hla.backends.python1516_2025.*`.
+
+Treat the other `hla.backends.shim.*` modules outside the package root: they
+are forwarders, not implementation owners.
 
 ## Related Docs
 

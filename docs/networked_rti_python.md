@@ -13,7 +13,7 @@ Those routes are related, but they are not identical claims.
 
 - the 2010 route is the familiar hosted form of the pure Python in-memory RTI
 - the 2025 route is a typed FedPro transport-hosted slice over the current
-  `hla-backend-python2025` implementation lane, with `hla-backend-shim`
+  `hla-backend-python1516-2025` implementation lane, with `hla-backend-shim`
   retained only as compatibility-wrapper/import-compatibility code
 
 If you need the architecture and evidence posture for that 2025 lane, read
@@ -27,7 +27,7 @@ alongside this page.
 
 This is the classic hosted Python RTI path:
 
-- `hla.backends.inmemory` for the in-memory RTI implementation
+- `hla.backends.python1516e` for the in-memory RTI implementation
 - `hla.transports.grpc` for the transport host and client wiring
 - `hla.rti.create_rti_ambassador(...)` for backend selection
 
@@ -40,7 +40,7 @@ Use it when you want:
 Start a hosted Python RTI server:
 
 ```python
-from hla.backends.inmemory import InMemoryRTIEngine
+from hla.backends.python1516e import InMemoryRTIEngine
 from hla.transports.grpc import start_python_grpc_server
 
 engine = InMemoryRTIEngine()
@@ -71,13 +71,13 @@ current transport-hosted FedPro route over the main full `python1516_2025` Pytho
 lane.
 
 In other words, the hosted 2025 route is evidence over the primary
-`hla-backend-python2025` runtime. It is not a separate 2025 implementation
+`hla-backend-python1516-2025` runtime. It is not a separate 2025 implementation
 owner, and it is not a reason to describe the wrapper package as the runtime
 lane.
 
 The relevant pieces are:
 
-- `packages/hla-backend-python2025` for the main executable 2025 Python RTI lane
+- `packages/hla-backend-python1516-2025` for the main executable 2025 Python RTI lane
 - `packages/hla-backend-shim` for the temporary import-compatibility scaffolding package
 - `hla.transports.grpc.python_server_2025.start_2025_grpc_server(...)` for the
   hosted server helper
@@ -86,7 +86,7 @@ The relevant pieces are:
 
 The repo now exposes this hosted 2025 path through
 `create_rti_ambassador("python1516_2025", transport=...)`. That factory spelling
-resolves onto the same hosted FedPro route over `hla-backend-python2025`, so
+resolves onto the same hosted FedPro route over `hla-backend-python1516-2025`, so
 the explicit server-plus-typed-transport path and the factory spelling now
 describe one runtime lane rather than separate ownership paths.
 
@@ -140,7 +140,7 @@ The remaining hosted-only proof weight here is mostly transport-specific:
   `GrpcTransport(..., schema="rti1516_2025")`
 
 Those are important proofs, but they should not be confused with ownership of
-the core 2025 RTI semantics, which live in `hla-backend-python2025`.
+the core 2025 RTI semantics, which live in `hla-backend-python1516-2025`.
 They are transport-seam proof over that runtime, not evidence that the main
 2025 Python RTI lane still lacks the underlying semantics.
 

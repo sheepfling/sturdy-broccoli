@@ -5,7 +5,7 @@ package root.
 """
 from __future__ import annotations
 
-from hla.backends.python2025.backend import (
+from hla.backends.python1516_2025.backend import (
     Python2025Backend,
     Python2025BackendInfo,
     Python2025BackendScaffold,

@@ -39,7 +39,7 @@ def test_target_radar_factory_wraps_2025_backends_with_package_owned_adapter() -
     assert isinstance(runtime_rti, TargetRadar2025RTIAdapter)
     assert runtime_rti.__class__.__module__.startswith("hla.foms.target_radar._internal")
     assert runtime_rti.backend_info.kind == "python/2025"
-    assert runtime_rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+    assert runtime_rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert runtime_rti.backend_info.details["counts_as_python_2025_rti"] is True
 
 

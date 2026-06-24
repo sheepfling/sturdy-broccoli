@@ -4,7 +4,7 @@ import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
 from hla.bridges.java.common import JavaValueConverter
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel, RestoreStatus, SaveStatus
 from hla.rti1516e.exceptions import NameNotFound
 from hla.rti1516e.handles import (

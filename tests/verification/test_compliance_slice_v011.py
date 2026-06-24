@@ -10,8 +10,8 @@ from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM
 from hla.rti1516e.datatypes import RangeBounds
-from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
-from hla.backends.inmemory.state import CallbackEvent
+from hla.backends.python1516e import InMemoryRTIEngine, PythonRTIConfig
+from hla.backends.python1516e.state import CallbackEvent
 from hla.runtime.factory import create_rti_ambassador
 from hla.verification import (
     NegotiatedOwnershipScenarioConfig,

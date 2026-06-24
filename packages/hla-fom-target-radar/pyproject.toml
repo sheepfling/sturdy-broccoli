@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-python-rti = ["hla-backend-inmemory==0.13.0"]
+python-rti = ["hla-backend-python1516e==0.13.0"]
 certi = ["hla-backend-certi==0.13.0"]
 pitch = ["hla-vendor-pitch-jpype==0.13.0", "hla-vendor-pitch-py4j==0.13.0"]
 test = ["pytest"]

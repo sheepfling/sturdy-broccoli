@@ -299,7 +299,7 @@ def test_2025_transport_server_reports_python2025_main_lane_identity() -> None:
         direct_rti = create_2025_rti_ambassador()
         transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025"))
         assert server.runtime_provider == "python1516_2025"
-        assert server.implementation_lane == "hla-backend-python2025"
+        assert server.implementation_lane == "hla-backend-python1516-2025"
         assert server.counts_as_python_2025_rti is True
         assert server.wrapper_only is False
         assert server.spec == "rti1516_2025"
@@ -316,7 +316,7 @@ def test_2025_transport_server_reports_python2025_main_lane_identity() -> None:
         client_report = transport.capability_report()
         assert client_report == {
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
             "spec": "rti1516_2025",
@@ -335,7 +335,7 @@ def test_2025_transport_server_reports_python2025_main_lane_identity() -> None:
         report = server.capability_report()
         assert report == {
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
             "spec": "rti1516_2025",
@@ -356,7 +356,7 @@ def test_2025_factory_transport_route_creates_hosted_python2025_ambassador() -> 
     try:
         rti = create_2025_rti_ambassador(transport={"kind": "grpc", "target": server.target})
         assert rti.backend_info.details["provider"] == "python1516_2025"
-        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         federate = RecordingFederateAmbassador()
@@ -391,7 +391,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_sli
         )
 
         assert leader.backend_info.details["provider"] == "python1516_2025"
-        assert leader.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert leader.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert leader.backend_info.details["counts_as_python_2025_rti"] is True
 
         leader.listFederationExecutions()
@@ -459,7 +459,7 @@ def test_2025_factory_hosted_python2025_route_runs_mom_federation_management_ser
         controller_handle = controller.joinFederationExecution("HostedMomFmController", "TestFederate", federation_name)
 
         assert controller.backend_info.details["provider"] == "python1516_2025"
-        assert controller.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert controller.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert controller.backend_info.details["counts_as_python_2025_rti"] is True
         controller.requestFederationSave("MOM-SAVE")
         _drain_hosted_2025_callbacks(controller, loops=24)
@@ -1350,12 +1350,12 @@ def test_2025_factory_hosted_python2025_route_recovers_directed_ddm_subscriber_r
         )
 
         assert owner.backend_info.details["provider"] == "python1516_2025"
-        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert owner.backend_info.details["counts_as_python_2025_rti"] is True
         assert subscriber_a.backend_info.details["provider"] == "python1516_2025"
-        assert subscriber_a.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert subscriber_a.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert subscriber_b.backend_info.details["provider"] == "python1516_2025"
-        assert subscriber_b.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert subscriber_b.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
 
         summary = run_restore_directed_ddm_subscriber_routing_scenario(
             owner,
@@ -1522,10 +1522,10 @@ def test_2025_factory_hosted_python2025_route_restores_lookahead_and_redelivers_
         receiver_handle = receiver.joinFederationExecution("RestoreDivergenceReceiver", "TestFederate", federation_name)
 
         assert sender.backend_info.details["provider"] == "python1516_2025"
-        assert sender.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert sender.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert sender.backend_info.details["counts_as_python_2025_rti"] is True
         assert receiver.backend_info.details["provider"] == "python1516_2025"
-        assert receiver.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert receiver.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert receiver.backend_info.details["counts_as_python_2025_rti"] is True
 
         interaction_class = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
@@ -1761,10 +1761,10 @@ def test_2025_factory_hosted_python2025_route_runs_direct_support_service_slice(
         subscriber_handle = subscriber.joinFederationExecution("HostedSupportSubscriber", "TestFederate", federation_name)
 
         assert owner.backend_info.details["provider"] == "python1516_2025"
-        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert owner.backend_info.details["counts_as_python_2025_rti"] is True
         assert subscriber.backend_info.details["provider"] == "python1516_2025"
-        assert subscriber.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert subscriber.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert subscriber.backend_info.details["counts_as_python_2025_rti"] is True
 
         owner.setAutomaticResignDirective(ResignAction2025.DELETE_OBJECTS)
@@ -1858,7 +1858,7 @@ def test_2025_factory_hosted_python2025_route_runs_shared_support_factory_and_de
 
         assert rti.backend_info is not None
         assert rti.backend_info.details["provider"] == "python1516_2025"
-        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert rti.backend_info.details["counts_as_python_2025_rti"] is True
         assert summary["lookup_summary"]["federate_name"] == config.federate_name
         assert summary["lookup_summary"]["normalized_federate_handle"] == summary["federate_handle"].value
@@ -2015,7 +2015,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_ownership_slice() -> N
         acquirer_handle = acquirer.joinFederationExecution("HostedAcquirer", "TestFederate", federation_name)
 
         assert owner.backend_info.details["provider"] == "python1516_2025"
-        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert owner.backend_info.details["counts_as_python_2025_rti"] is True
 
         object_class = owner.getObjectClassHandle("HLAobjectRoot.SmokeObject")
@@ -2139,11 +2139,11 @@ def test_2025_factory_hosted_python2025_route_runs_direct_negotiated_ownership_f
         )
 
         assert owner.backend_info.details["provider"] == "python1516_2025"
-        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert owner.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert owner.backend_info.details["counts_as_python_2025_rti"] is True
         assert owner.backend_info.details["wrapper_only"] is False
         assert acquirer.backend_info.details["provider"] == "python1516_2025"
-        assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert acquirer.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert acquirer.backend_info.details["counts_as_python_2025_rti"] is True
         assert acquirer.backend_info.details["wrapper_only"] is False
         assert summary["release"].args[2] == config.cancel_tag
@@ -2276,7 +2276,7 @@ def test_2025_factory_hosted_python2025_route_runs_smoke_fom_save_restore_owners
 
         for rti in (owner, mirror, sender, observer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         for rti, federate in (
@@ -2539,7 +2539,7 @@ def test_2025_factory_hosted_python2025_route_restores_inflight_ownership_state(
 
         for rti in (owner, acquirer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
@@ -2676,7 +2676,7 @@ def test_2025_factory_hosted_python2025_route_restores_cross_federate_attribute_
 
         for rti in (owner, acquirer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         object_class = owner.getObjectClassHandle("HLAobjectRoot.Target")
@@ -2820,7 +2820,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_request_report_sli
         observer.joinFederationExecution("HostedMomReportObserver", "TestFederate", federation_name)
 
         assert controller.backend_info.details["provider"] == "python1516_2025"
-        assert controller.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert controller.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert controller.backend_info.details["counts_as_python_2025_rti"] is True
 
         object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
@@ -3060,7 +3060,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_mom_object_and_ownersh
         acquirer.joinFederationExecution("HostedMomObjectAcquirer", "TestFederate", federation_name)
 
         assert target.backend_info.details["provider"] == "python1516_2025"
-        assert target.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert target.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert target.backend_info.details["counts_as_python_2025_rti"] is True
 
         object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
@@ -3207,7 +3207,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_object_exchange_slice(
         subscriber_handle = subscriber.joinFederationExecution("HostedSubscriber", "TestFederate", federation_name)
 
         assert publisher.backend_info.details["provider"] == "python1516_2025"
-        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert publisher.backend_info.details["counts_as_python_2025_rti"] is True
 
         publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
@@ -3307,7 +3307,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_timestamped_delivery_a
         subscriber_b.joinFederationExecution("HostedTsoSubscriberB", "TestFederate", federation_name)
 
         assert publisher.backend_info.details["provider"] == "python1516_2025"
-        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert publisher.backend_info.details["counts_as_python_2025_rti"] is True
 
         publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
@@ -3460,7 +3460,7 @@ def test_2025_factory_hosted_python2025_route_runs_direct_directed_interaction_s
         observer.joinFederationExecution("HostedDirectedObserver", "TestFederate", federation_name)
 
         assert publisher.backend_info.details["provider"] == "python1516_2025"
-        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert publisher.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert publisher.backend_info.details["counts_as_python_2025_rti"] is True
 
         publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
@@ -8680,10 +8680,10 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_future_exclusio
         )
 
         assert slow.backend_info.details["provider"] == "python1516_2025"
-        assert slow.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert slow.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert slow.backend_info.details["counts_as_python_2025_rti"] is True
         assert radar.backend_info.details["provider"] == "python1516_2025"
-        assert radar.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert radar.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert radar.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_future_exclusion_scenario(
@@ -8757,10 +8757,10 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_restore_state_s
         )
 
         assert truth.backend_info.details["provider"] == "python1516_2025"
-        assert truth.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert truth.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert truth.backend_info.details["counts_as_python_2025_rti"] is True
         assert radar.backend_info.details["provider"] == "python1516_2025"
-        assert radar.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+        assert radar.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
         assert radar.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_restore_state_scenario(
@@ -8838,7 +8838,7 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_output_delivery
 
         for rti in (truth, radar, consumer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_output_delivery_scenario(
@@ -8918,7 +8918,7 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_consumer_order_
 
         for rti in (truth, radar, other, consumer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_consumer_order_scenario(
@@ -9011,7 +9011,7 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_time_window_gau
 
         for rti in (truth, sensor, radar, consumer, fast, slow):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_gauntlet_scenario(
@@ -9117,7 +9117,7 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_restore_output_
 
         for rti in (truth, radar, consumer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_restore_output_scenario(
@@ -9194,7 +9194,7 @@ def test_2025_factory_hosted_python2025_route_runs_package_owned_pipeline_restor
 
         for rti in (truth, radar, consumer):
             assert rti.backend_info.details["provider"] == "python1516_2025"
-            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python2025"
+            assert rti.backend_info.details["implementation_lane"] == "hla-backend-python1516-2025"
             assert rti.backend_info.details["counts_as_python_2025_rti"] is True
 
         summary = run_target_radar_time_window_pipeline_restore_scenario(

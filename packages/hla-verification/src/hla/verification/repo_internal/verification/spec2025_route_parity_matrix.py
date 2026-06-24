@@ -38,7 +38,7 @@ class Spec2025RouteParityRow:
     wrapper_only: bool | None = None
 
 
-_PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_python2025_runtime.py",)
+_PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_python1516_2025_runtime.py",)
 _FEDPRO_TESTS = ("tests/transport/test_grpc_transport_2025.py",)
 _STANDARD_SHIM_TESTS = ("tests/backends/test_standard_shim_artifacts.py",)
 _ROUTE_EVIDENCE_TESTS = (
@@ -50,22 +50,22 @@ _PYTHON_ROUTE_PARITY_TESTS = ("tests/scenarios/test_python_route_parity.py",)
 
 _STANDARD_ROUTE_BACKING_NOTE = (
     "These binding/wrapper routes are executed over the primary python1516_2025 runtime lane in "
-    "hla-backend-python2025, with the Java/C++ packages limited to compatibility and API adaptation."
+    "hla-backend-python1516-2025, with the Java/C++ packages limited to compatibility and API adaptation."
 )
 
 _STANDARD_ROUTE_SEAM_NOTE = (
     "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main "
-    "hla-backend-python2025 runtime, not as alternate ownership of core 2025 RTI semantics."
+    "hla-backend-python1516-2025 runtime, not as alternate ownership of core 2025 RTI semantics."
 )
 
 _HOSTED_PYTHON2025_IDENTITY_NOTE = (
     "Explicit hosted-route identity proof shows the direct ambassador, hosted server, and hosted client all identify "
-    "python1516_2025 / hla-backend-python2025 as the primary 2025 Python RTI implementation lane, with "
+    "python1516_2025 / hla-backend-python1516-2025 as the primary 2025 Python RTI implementation lane, with "
     "counts_as_python_2025_rti=true and wrapper_only=false where those fields apply."
 )
 
 _HOSTED_PYTHON2025_SEAM_NOTE = (
-    "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python2025 rather than "
+    "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python1516-2025 rather than "
     "evidence that the main 2025 Python RTI lane lacks the underlying semantics."
 )
 
@@ -120,7 +120,7 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
             "docs/plans/spec2025_finish_line_snapshot.json",
         )
     if route == "python1516_2025-inprocess":
-        return ("tests/test_rti1516_2025_python2025_runtime.py",)
+        return ("tests/test_rti1516_2025_python1516_2025_runtime.py",)
     return ()
 
 
@@ -142,7 +142,7 @@ def _row(
     notes: str,
 ) -> Spec2025RouteParityRow:
     runtime_provider = "python1516_2025" if route in ROUTE_IDS_2025 else ""
-    implementation_lane = "hla-backend-python2025" if route in ROUTE_IDS_2025 else ""
+    implementation_lane = "hla-backend-python1516-2025" if route in ROUTE_IDS_2025 else ""
     counts_as_python_2025_rti = True if route.startswith("python-1516-2025") else False if route in ROUTE_IDS_2025 else None
     wrapper_only = False if route in ROUTE_IDS_2025 else None
     return Spec2025RouteParityRow(
@@ -618,7 +618,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "and decode-helper proof without routing through the compatibility wrapper, snake-case alias acceptance on the "
         "primary direct-runtime surface, transportation/order lookups, automatic resign directive get/set round trips, "
         "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release on the "
-        "main hla-backend-python2025 lane, direct attribute and interaction transportation change/query callback flow, "
+        "main hla-backend-python1516-2025 lane, direct attribute and interaction transportation change/query callback flow, "
         "and single/multiple object-instance name reservation/release callback flow.",
     ),
     _row(
@@ -744,7 +744,7 @@ def summarize_spec2025_route_parity(rows: tuple[Spec2025RouteParityRow, ...] = S
         "row_count": len(rows),
         "primary_runtime_lane": {
             "runtime_provider": "python1516_2025",
-            "implementation_lane": "hla-backend-python2025",
+            "implementation_lane": "hla-backend-python1516-2025",
             "counts_as_python_2025_rti": True,
             "wrapper_only": False,
         },
@@ -753,7 +753,7 @@ def summarize_spec2025_route_parity(rows: tuple[Spec2025RouteParityRow, ...] = S
             "status": "compatibility-maintained",
             "role": "compatibility-wrapper",
             "counts_as_python_2025_rti": False,
-            "delegates_runtime_semantics_to": "hla-backend-python2025",
+            "delegates_runtime_semantics_to": "hla-backend-python1516-2025",
         },
         "by_status": by_status,
         "by_route": by_route,
@@ -829,16 +829,16 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "",
         "For the primary 2025 Python RTI claim, read the route identities narrowly:",
         "",
-        "- `python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python2025`.",
-        "- `hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python2025`; it is not a route runtime owner.",
+        "- `python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python1516-2025`.",
+        "- `hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`; it is not a route runtime owner.",
         "- Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations.",
         "- Hosted FedPro rows are transport-seam evidence over that same runtime, not a separate 2025 implementation family.",
         "",
         "For the main-implementation claim, read the scenario rows as a proof-family ledger too:",
         "",
         "- the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior",
-        "- those Python-owned rows are parity evidence over the extracted `hla-backend-python2025` runtime/state/surface modules, not just over the thin public `backend.py` shell",
-        "- Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python2025`",
+        "- those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules, not just over the thin public `backend.py` shell",
+        "- Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python1516-2025`",
         "- hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner",
         "",
         "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |",
@@ -878,9 +878,9 @@ def validate_spec2025_route_parity_evidence(
         if row.route in ROUTE_IDS_2025:
             if row.runtime_provider != "python1516_2025":
                 errors.append(f"{row.scenario}/{row.route}: parity row must record runtime_provider=python1516_2025")
-            if row.implementation_lane != "hla-backend-python2025":
+            if row.implementation_lane != "hla-backend-python1516-2025":
                 errors.append(
-                    f"{row.scenario}/{row.route}: parity row must record implementation_lane=hla-backend-python2025"
+                    f"{row.scenario}/{row.route}: parity row must record implementation_lane=hla-backend-python1516-2025"
                 )
             expected_counts_as_primary = row.route.startswith("python-1516-2025")
             if row.counts_as_python_2025_rti is not expected_counts_as_primary:
@@ -920,9 +920,9 @@ def validate_spec2025_route_parity_evidence(
                         errors.append(
                             f"{row.scenario}/{row.route}: route trace must record runtimeProvider=python1516_2025 in {artifact}"
                         )
-                    if route_selected.get("implementationLane") != "hla-backend-python2025":
+                    if route_selected.get("implementationLane") != "hla-backend-python1516-2025":
                         errors.append(
-                            f"{row.scenario}/{row.route}: route trace must record implementationLane=hla-backend-python2025 in {artifact}"
+                            f"{row.scenario}/{row.route}: route trace must record implementationLane=hla-backend-python1516-2025 in {artifact}"
                         )
                     if route_selected.get("countsAsPython2025Rti") is not False:
                         errors.append(
@@ -938,9 +938,9 @@ def validate_spec2025_route_parity_evidence(
                 scenario_evidence = payload.get("scenario_evidence", {})
                 if scenario_evidence.get("runtime_provider") != "python1516_2025":
                     errors.append(f"{row.scenario}/{row.route}: Java aggregate route evidence must record runtime_provider=python1516_2025")
-                if scenario_evidence.get("implementation_lane") != "hla-backend-python2025":
+                if scenario_evidence.get("implementation_lane") != "hla-backend-python1516-2025":
                     errors.append(
-                        f"{row.scenario}/{row.route}: Java aggregate route evidence must record implementation_lane=hla-backend-python2025"
+                        f"{row.scenario}/{row.route}: Java aggregate route evidence must record implementation_lane=hla-backend-python1516-2025"
                     )
                 if scenario_evidence.get("wrapper_only") is not False:
                     errors.append(f"{row.scenario}/{row.route}: Java aggregate route evidence must record wrapper_only=false")
@@ -951,9 +951,9 @@ def validate_spec2025_route_parity_evidence(
                 route_payload = payload.get("routes", {}).get(row.route, {})
                 if route_payload.get("runtime_provider") != "python1516_2025":
                     errors.append(f"{row.scenario}/{row.route}: Java route evidence must record runtime_provider=python1516_2025")
-                if route_payload.get("implementation_lane") != "hla-backend-python2025":
+                if route_payload.get("implementation_lane") != "hla-backend-python1516-2025":
                     errors.append(
-                        f"{row.scenario}/{row.route}: Java route evidence must record implementation_lane=hla-backend-python2025"
+                        f"{row.scenario}/{row.route}: Java route evidence must record implementation_lane=hla-backend-python1516-2025"
                     )
                 if route_payload.get("wrapper_only") is not False:
                     errors.append(f"{row.scenario}/{row.route}: Java route evidence must record wrapper_only=false")
@@ -977,9 +977,9 @@ def validate_spec2025_route_parity_evidence(
                 scenario_evidence = payload.get("scenario_evidence", {})
                 if scenario_evidence.get("runtime_provider") != "python1516_2025":
                     errors.append(f"{row.scenario}/{row.route}: C++ aggregate route evidence must record runtime_provider=python1516_2025")
-                if scenario_evidence.get("implementation_lane") != "hla-backend-python2025":
+                if scenario_evidence.get("implementation_lane") != "hla-backend-python1516-2025":
                     errors.append(
-                        f"{row.scenario}/{row.route}: C++ aggregate route evidence must record implementation_lane=hla-backend-python2025"
+                        f"{row.scenario}/{row.route}: C++ aggregate route evidence must record implementation_lane=hla-backend-python1516-2025"
                     )
                 if scenario_evidence.get("wrapper_only") is not False:
                     errors.append(f"{row.scenario}/{row.route}: C++ aggregate route evidence must record wrapper_only=false")
@@ -990,9 +990,9 @@ def validate_spec2025_route_parity_evidence(
                 route_payload = payload.get("routes", {}).get(row.route, {})
                 if route_payload.get("runtime_provider") != "python1516_2025":
                     errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record runtime_provider=python1516_2025")
-                if route_payload.get("implementation_lane") != "hla-backend-python2025":
+                if route_payload.get("implementation_lane") != "hla-backend-python1516-2025":
                     errors.append(
-                        f"{row.scenario}/{row.route}: C++ route evidence must record implementation_lane=hla-backend-python2025"
+                        f"{row.scenario}/{row.route}: C++ route evidence must record implementation_lane=hla-backend-python1516-2025"
                     )
                 if route_payload.get("wrapper_only") is not False:
                     errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record wrapper_only=false")

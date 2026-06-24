@@ -4,7 +4,7 @@ import pytest
 
 import hla.fom.mom as mom
 from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.backends.python1516e import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.enums import ResignAction
 from hla.rti1516e.exceptions import (

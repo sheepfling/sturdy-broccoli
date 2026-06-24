@@ -23,7 +23,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> dict[str, An
     for index, row in enumerate(canonical.rows, start=1):
         has_backend = (
             row.python_entry_point.startswith("PythonRTIBackend.")
-            or row.python_entry_point.startswith("hla.backends.inmemory.backend.PythonRTIBackend.")
+            or row.python_entry_point.startswith("hla.backends.python1516e.backend.PythonRTIBackend.")
         )
         has_evidence = bool(row.evidence) or row.negative_executed_count > 0
         if row.interface == "FederateAmbassador" and row.implementation_status == "callback-helper":

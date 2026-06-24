@@ -4,19 +4,19 @@ This page is the hub for the backend route story.
 
 It covers both Python RTI implementation lanes:
 
-- the 2010 Python RTI centered on `hla-backend-inmemory`
-- the main full 2025 Python RTI centered on `hla-backend-python2025`
+- the 2010 Python RTI centered on `hla-backend-python1516e`
+- the main full 2025 Python RTI centered on `hla-backend-python1516-2025`
 
 It also keeps the architectural boundary explicit:
 
-- `hla-backend-python2025` is the main `rti1516_2025` implementation lane
+- `hla-backend-python1516-2025` is the main `rti1516_2025` implementation lane
 - `hla-backend-shim` is only a compatibility-wrapper package over that lane
 - Java/C++ binding routes are route surfaces, not separate Python RTIs
 
 For shim compatibility specifically, treat `hla.backends.shim.runtime_aliases`
 as the explicit runtime-alias hatch. The other `hla.backends.shim.*` helper
 modules are retained only as thin legacy forwarders into
-`hla.backends.python2025.*`, not as the preferred import surface for new
+`hla.backends.python1516_2025.*`, not as the preferred import surface for new
 runtime code.
 
 Use it when you need to answer:
@@ -28,7 +28,7 @@ Use it when you need to answer:
 For the current 2025 proof path, treat these as the primary route identities:
 
 - `python1516_2025-inprocess`: direct executable evidence over the main
-  `hla-backend-python2025` RTI lane
+  `hla-backend-python1516-2025` RTI lane
 - `python1516_2025-fedpro-grpc`: bounded hosted route evidence over that same RTI
   lane, not a separate 2025 runtime family
 

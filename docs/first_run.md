@@ -30,7 +30,7 @@ From the repository root:
 ./tools/bootstrap doctor
 ./tools/bootstrap python
 source .venv/bin/activate
-python -m pip install --no-build-isolation -e packages/hla-rti1516e -e packages/hla-backend-common -e packages/hla-backend-inmemory -e packages/hla-rti-core -e packages/hla-fom-target-radar -e packages/hla-verification
+python -m pip install --no-build-isolation -e packages/hla-rti1516e -e packages/hla-backend-common -e packages/hla-backend-python1516e -e packages/hla-rti-core -e packages/hla-fom-target-radar -e packages/hla-verification
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python1516e --steps 5
 ```
@@ -40,7 +40,7 @@ If those commands succeed, your base environment is working.
 For the primary 2025 Python RTI lane, switch next to:
 
 - [`python_rti_backend.md`](python_rti_backend.md) for the main
-  `hla-backend-python2025` runtime lane
+  `hla-backend-python1516-2025` runtime lane
 - [`python_rti_reading_map.md`](python_rti_reading_map.md) for the shortest
   edit path through that runtime
 - [`networked_rti_python.md`](networked_rti_python.md) for the bounded hosted

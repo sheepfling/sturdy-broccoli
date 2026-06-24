@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla.backends.python2025.ownership_runtime import (
+from hla.backends.python1516_2025.ownership_runtime import (
     attribute_ownership_acquisition,
     attribute_ownership_acquisition_if_available,
     attribute_ownership_divestiture_if_wanted,

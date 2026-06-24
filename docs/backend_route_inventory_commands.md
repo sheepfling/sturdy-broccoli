@@ -50,7 +50,7 @@ Quickstart:
 For IEEE 1516.1-2025 specifically, `./tools/python verify-routes-2025` is the
 normal route-level hygiene lane for the direct `python1516_2025` runtime plus the
 bounded hosted `python1516_2025-fedpro-grpc` route over
-`hla-backend-python2025`.
+`hla-backend-python1516-2025`.
 
 ### Transport-hosted Python RTI
 

@@ -34,19 +34,19 @@ hla-rti1516e
   <- hla-verification
   <- hla-bridge-java-common <- hla-bridge-java-jpype <- hla-vendor-pitch-jpype
   <- hla-bridge-java-common <- hla-bridge-java-py4j <- hla-vendor-pitch-py4j
-  <- hla-backend-common <- hla-backend-inmemory
+  <- hla-backend-common <- hla-backend-python1516e
   <- hla-rti-core <- hla-vendor-pitch
   <- hla-rti-core <- hla-backend-certi
   <- hla-transport-common <- hla-transport-grpc
   <- hla-transport-common <- hla-transport-rest
   <- hla-rti-core <- hla-fom-target-radar
-  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-proto2025-message-test
-  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-proto2025-space-lite
-  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-proto2025-time-mgmt-test
+  <- hla-backend-common <- hla-backend-python1516e <- hla-fom-proto2025-message-test
+  <- hla-backend-common <- hla-backend-python1516e <- hla-fom-proto2025-space-lite
+  <- hla-backend-common <- hla-backend-python1516e <- hla-fom-proto2025-time-mgmt-test
 
 hla-rti1516-2025
-  <- hla-backend-python2025
-  <- hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python2025)
+  <- hla-backend-python1516-2025
+  <- hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python1516-2025)
   <- hla-fom-target-radar
 
 hla-bridge-java-jpype + hla-bridge-java-py4j
@@ -64,16 +64,16 @@ Rules for the split:
   2010 backend support utilities.
 - `hla-rti-core` owns runtime-process support plus cross-version spec/backend
   discovery and selection.
-- `hla-backend-python2025` is the main full Python 2025 RTI backend and the
+- `hla-backend-python1516-2025` is the main full Python 2025 RTI backend and the
   main full Python 2025 RTI implementation lane. It registers
   `python1516_2025` for `rti1516_2025`.
 - `hla-backend-shim` is deprecated temporary import-compatibility scaffolding.
   Its helper modules should remain wrapper-only compatibility aliases over
-  `hla.backends.python2025.*`, without reclaiming public runtime-selection
-  ownership from `hla-backend-python2025`, and should be removed after
+  `hla.backends.python1516_2025.*`, without reclaiming public runtime-selection
+  ownership from `hla-backend-python1516-2025`, and should be removed after
   migration.
 - the bounded hosted 2025 FedPro route is a route variant over
-  `hla-backend-python2025`, not a separate Python RTI family.
+  `hla-backend-python1516-2025`, not a separate Python RTI family.
 - Java and C++ 2025 binding lanes are supporting adaptation surfaces; they do
   not count as alternate Python 2025 RTIs.
 - `hla-transport-common` owns transport-neutral hosted request handling.

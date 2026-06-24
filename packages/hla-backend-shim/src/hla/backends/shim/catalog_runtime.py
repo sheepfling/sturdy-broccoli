@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hla.backends.python2025.catalog_runtime import (
+from hla.backends.python1516_2025.catalog_runtime import (
     attribute_handles,
     interaction_class_name,
     object_class_name,

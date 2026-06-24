@@ -52,7 +52,7 @@ def test_bootstrap_python_plan_for_test_is_lean_core_workspace() -> None:
         "packages/hla-backend-shim",
         "packages/hla-transport-common",
         "packages/hla-bridge-java-common",
-        "packages/hla-backend-inmemory",
+        "packages/hla-backend-python1516e",
         "packages/hla-backend-cpp-shim",
         "packages/hla-backend-certi",
         "packages/hla-vendor-pitch",

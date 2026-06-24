@@ -4,15 +4,15 @@ Source: IEEE 1516.1-2025 hosted-route and FedPro/protobuf transport evidence.
 
 This note records the repo's current hosted-route claim for
 `python1516_2025-fedpro-grpc`. The hosted FedPro lane is real executable evidence
-over the main `hla-backend-python2025` runtime, but it remains a bounded
+over the main `hla-backend-python1516-2025` runtime, but it remains a bounded
 transport/runtime slice rather than a second RTI implementation family or a
 full remote-RTI semantics claim.
 
 ## Current Bounded Claim
 
 - `python1516_2025-fedpro-grpc` is a hosted route variant over
-  `hla-backend-python2025`, not a separate 2025 RTI owner.
-- `hla-backend-python2025` remains the sole repo-owned IEEE 1516.1-2025
+  `hla-backend-python1516-2025`, not a separate 2025 RTI owner.
+- `hla-backend-python1516-2025` remains the sole repo-owned IEEE 1516.1-2025
   Python RTI implementation lane behind this hosted replay surface.
 - The hosted route is parity-covered across the tracked scenario families used
   by the current finish-line inventory.
@@ -40,8 +40,8 @@ full remote-RTI semantics claim.
 - `tests/scenarios/test_python_route_parity.py`
 - `docs/backend_route_inventory_remote.md`
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/spec2025_route_parity_matrix.py`
-- `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md`
-- `docs/requirements/ieee-1516-2025/python2025_exclusion_boundaries.md`
+- `docs/requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`
+- `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
 
 ## Reading of the Evidence
 
@@ -58,8 +58,8 @@ full remote-RTI semantics claim.
   as the direct `python1516_2025` lane.
 - `docs/backend_route_inventory_remote.md` captures the operator-facing
   boundary: the hosted FedPro route is real runtime evidence, but it is still a
-  bounded runtime slice over `hla-backend-python2025`.
-- `docs/requirements/ieee-1516-2025/python2025_direct_bounded_proof.md` is
+  bounded runtime slice over `hla-backend-python1516-2025`.
+- `docs/requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md` is
   the direct companion note. It keeps the implementation-owner claim anchored
   to the in-process `python1516_2025` lane while this note records the hosted
   replay.
@@ -78,5 +78,5 @@ full remote-RTI semantics claim.
 - The repo does not claim full remote-RTI semantics or exhaustive cross-binding
   conformance from the hosted route alone.
 - The repo does not use hosted-route proof to dilute the architectural boundary
-  that keeps `hla-backend-shim` wrapper-only and `hla-backend-python2025` as
+  that keeps `hla-backend-shim` wrapper-only and `hla-backend-python1516-2025` as
   the main 2025 Python RTI implementation lane.
