@@ -1,0 +1,293 @@
+{
+  "targets": [
+    {
+      "id": "foundation",
+      "title": "Foundation policy and package-boundary tests",
+      "description": "Cheap policy and package-structure checks for namespace, package boundaries, import hygiene, and metadata drift.",
+      "owner_packages": [
+        "hla-rti-core",
+        "hla-rti1516e",
+        "hla-rti1516-2025"
+      ],
+      "estimated_cost": "low",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/architecture"
+        ],
+        [
+          "./tools/test",
+          "tests/compat"
+        ],
+        [
+          "./tools/test",
+          "tests/test_package_boundary.py",
+          "tests/test_package_dependency_metadata.py",
+          "tests/test_package_import_isolation.py",
+          "tests/test_import_cycles.py",
+          "tests/test_namespace_policy.py",
+          "tests/test_root_facade_policy.py"
+        ]
+      ]
+    },
+    {
+      "id": "python-examples",
+      "title": "Python example route tests",
+      "description": "Focused direct Python example checks and wrapper contract tests.",
+      "owner_packages": [
+        "hla-backend-python1516e",
+        "hla-backend-python1516-2025",
+        "hla-fom-target-radar"
+      ],
+      "estimated_cost": "low",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_python_route_examples.py",
+          "tests/test_tools_python_wrapper.py"
+        ]
+      ]
+    },
+    {
+      "id": "java-bridges",
+      "title": "Java bridge wrapper tests",
+      "description": "Focused JPype and Py4J example and wrapper tests.",
+      "owner_packages": [
+        "hla-bridge-java-common",
+        "hla-bridge-java-jpype",
+        "hla-bridge-java-py4j"
+      ],
+      "estimated_cost": "low",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_java_bridge_examples.py",
+          "tests/test_tools_java_wrapper.py"
+        ]
+      ]
+    },
+    {
+      "id": "jpype",
+      "title": "JPype bridge and vendor tests",
+      "description": "Focused JPype-facing bridge and Pitch JPype surface tests.",
+      "owner_packages": [
+        "hla-bridge-java-jpype",
+        "hla-vendor-pitch-jpype"
+      ],
+      "estimated_cost": "low",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti_java_bridge_split_packages.py",
+          "tests/test_rti_java_plugin_split_packages.py",
+          "tests/test_java_bridge_examples.py",
+          "-k",
+          "jpype"
+        ]
+      ]
+    },
+    {
+      "id": "py4j",
+      "title": "Py4J bridge and vendor tests",
+      "description": "Focused Py4J-facing bridge and Pitch Py4J surface tests.",
+      "owner_packages": [
+        "hla-bridge-java-py4j",
+        "hla-vendor-pitch-py4j"
+      ],
+      "estimated_cost": "low",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti_java_bridge_split_packages.py",
+          "tests/test_rti_java_plugin_split_packages.py",
+          "tests/test_java_bridge_examples.py",
+          "-k",
+          "py4j"
+        ]
+      ]
+    },
+    {
+      "id": "fom",
+      "title": "FOM and factory tests",
+      "description": "FOM parsing, schema, validation, workbench, and packaged scenario-factory checks.",
+      "owner_packages": [
+        "hla-fom-target-radar",
+        "hla-fom-proto2025-message-test",
+        "hla-fom-proto2025-space-lite",
+        "hla-fom-proto2025-time-mgmt-test"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/factories"
+        ],
+        [
+          "./tools/test",
+          "tests/test_fom_target_radar_split_package.py",
+          "tests/test_fom_proto2025_message_test_split_package.py",
+          "tests/test_fom_proto2025_space_lite_split_package.py",
+          "tests/test_fom_proto2025_time_mgmt_test_split_package.py"
+        ]
+      ]
+    },
+    {
+      "id": "target-radar",
+      "title": "Target/Radar scenario tests",
+      "description": "Focused Target/Radar example, factory, and backend-matrix checks.",
+      "owner_packages": [
+        "hla-fom-target-radar"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_fom_target_radar_split_package.py",
+          "tests/scenarios/test_target_radar_scenario.py",
+          "tests/scenarios/test_target_radar_backend_matrix.py",
+          "tests/scenarios/test_target_radar_proof.py"
+        ]
+      ]
+    },
+    {
+      "id": "python-2025-runtime",
+      "title": "Python 2025 runtime tests",
+      "description": "Direct 2025 runtime semantics, compatibility adapter behavior, encoding, authentication context, and main-surface validation.",
+      "owner_packages": [
+        "hla-backend-python1516-2025",
+        "hla-rti1516-2025"
+      ],
+      "estimated_cost": "high",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py",
+          "tests/test_rti1516_2025_validation.py",
+          "tests/test_rti1516_2025_encoding_factory.py",
+          "tests/test_rti1516_2025_encoding_auth_contexts.py",
+          "tests/test_hla_factory_composition.py",
+          "tests/test_python1516_2025_split_package.py"
+        ]
+      ]
+    },
+    {
+      "id": "transport",
+      "title": "Hosted transport tests",
+      "description": "gRPC and REST transport tests for the hosted Python routes and shared transport boundary.",
+      "owner_packages": [
+        "hla-transport-common",
+        "hla-transport-grpc",
+        "hla-transport-rest"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/transport"
+        ]
+      ]
+    },
+    {
+      "id": "backends",
+      "title": "Backend integration tests",
+      "description": "Backend adapters, shims, and backend-oriented scenario coverage.",
+      "owner_packages": [
+        "hla-backend-common",
+        "hla-backend-shim",
+        "hla-backend-cpp-shim",
+        "hla-backend-certi"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/backends"
+        ]
+      ]
+    },
+    {
+      "id": "rti-core",
+      "title": "RTI core factory and facade tests",
+      "description": "Focused RTI core discovery, factory selection, and facade policy checks.",
+      "owner_packages": [
+        "hla-rti-core"
+      ],
+      "estimated_cost": "low",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_hla_factory_composition.py",
+          "tests/test_root_facade_policy.py",
+          "tests/test_package_import_isolation.py"
+        ]
+      ]
+    },
+    {
+      "id": "requirements-2025",
+      "title": "2025 requirements and finish-line tests",
+      "description": "Requirement registry, route parity, finish-line, imported packet, and backlog evidence checks for 2025.",
+      "owner_packages": [
+        "hla-verification",
+        "hla-rti1516-2025",
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/requirements"
+        ]
+      ]
+    },
+    {
+      "id": "verification",
+      "title": "Verification harness tests",
+      "description": "Detailed reconciliation, traceability, ledger, and verification harness checks.",
+      "owner_packages": [
+        "hla-verification"
+      ],
+      "estimated_cost": "high",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/verification"
+        ]
+      ]
+    },
+    {
+      "id": "time",
+      "title": "Time-management tests",
+      "description": "Focused time-management algorithm and backend matrix checks.",
+      "owner_packages": [
+        "hla-backend-python1516e",
+        "hla-backend-python1516-2025"
+      ],
+      "estimated_cost": "medium",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/time"
+        ]
+      ]
+    },
+    {
+      "id": "vendors",
+      "title": "Vendor runtime tests",
+      "description": "Real-runtime vendor tests and vendor-specific runtime support checks.",
+      "owner_packages": [
+        "hla-backend-certi",
+        "hla-vendor-pitch",
+        "hla-vendor-pitch-jpype",
+        "hla-vendor-pitch-py4j",
+        "hla-vendor-portico"
+      ],
+      "estimated_cost": "high",
+      "commands": [
+        [
+          "./tools/test",
+          "tests/vendors"
+        ]
+      ]
+    }
+  ]
+}

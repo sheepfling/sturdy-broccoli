@@ -10,6 +10,24 @@ Use this when you are new to the repo and the question is:
 
 This page is intentionally procedural.
 
+## The Main Fix For Slow Test Loops
+
+Do not keep rerunning full repo-green when the failure is local to one package
+or one concern. Use:
+
+```bash
+./tools/test-focus inventory
+./tools/test-focus run foundation
+./tools/test-focus run python-examples
+./tools/test-focus run java-bridges
+./tools/test-focus run jpype
+./tools/test-focus run target-radar
+./tools/test-focus run python-2025-runtime -- --maxfail=1
+./tools/test-focus resume python-2025-runtime
+```
+
+This is the shortest restartable path in the repo right now.
+
 ## The Shortest Good Path
 
 From the repo root:
@@ -84,6 +102,14 @@ Examples:
 
 Use the wrapper command first. Do not start by guessing a deep script path.
 
+If the lane is too large, switch immediately to a focused target:
+
+```bash
+./tools/test-focus inventory
+./tools/test-focus run <target>
+./tools/test-focus resume <target>
+```
+
 ## Step 3: Rerun One Failing Test File
 
 Use the generic pytest wrapper:
@@ -106,6 +132,13 @@ Use the full pytest node id:
 
 This is the normal answer when one test in a file failed.
 
+To rerun only prior failures inside the same focused target, use:
+
+```bash
+./tools/test-focus resume foundation
+./tools/test-focus resume python-2025-runtime
+```
+
 ## Step 5: Rerun By Keyword
 
 Use `-k` when you know a theme but not the exact node:
@@ -118,9 +151,31 @@ Use `-k` when you know a theme but not the exact node:
 
 This is useful when several related tests failed.
 
+You can combine that with the direct wrapper:
+
+```bash
+./tools/test -k ownership --lf
+./tools/test tests/transport --ff
+```
+
 ## Focused Commands That Already Exist
 
 Use these when you do not want the whole lane.
+
+### Named focused targets
+
+```bash
+./tools/test-focus inventory
+./tools/test-focus run foundation
+./tools/test-focus run fom
+./tools/test-focus run target-radar
+./tools/test-focus run rti-core
+./tools/test-focus run transport
+./tools/test-focus run requirements-2025
+./tools/test-focus run verification
+```
+
+Treat these as the normal package/theme restart surface.
 
 ### Direct Python example routes
 

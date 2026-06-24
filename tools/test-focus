@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/test-focus [inventory|run|resume] [options] [-- pytest-args...]
+
+Named focused-test front door for faster iteration and restartability:
+  ./tools/test-focus inventory
+  ./tools/test-focus run foundation
+  ./tools/test-focus run python-examples
+  ./tools/test-focus run java-bridges
+  ./tools/test-focus run jpype
+  ./tools/test-focus run target-radar
+  ./tools/test-focus resume python-2025-runtime
+
+This is the human-facing wrapper over `python3 scripts/test_focus.py`.
+EOF
+}
+
+case "${1:-}" in
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    exec python3 "$ROOT_DIR/scripts/test_focus.py" "$@"
+    ;;
+esac

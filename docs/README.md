@@ -48,6 +48,8 @@ If you already know what you need, pick a lane:
   [`fom_workbench.md`](fom_workbench.md)
 - run local verification:
   [`local_verification_commands.md`](local_verification_commands.md)
+- choose a lane or focused restart target:
+  [`test_surface.md`](test_surface.md)
 - get to repo-green and diagnose failures as a junior:
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - understand Java/vendor/runtime support:
@@ -63,6 +65,7 @@ Concrete operator entrypoints that matter early:
 
 - [`../tools/bootstrap`](../tools/bootstrap)
 - [`../tools/test`](../tools/test)
+- [`../tools/test-focus`](../tools/test-focus)
 - [`../tools/python`](../tools/python)
 - [`../tools/certi-easy`](../tools/certi-easy)
 - [`../tools/pitch`](../tools/pitch)

@@ -10,6 +10,9 @@ usage: ./tools/test [pytest-args...]
 Canonical local pytest wrapper:
   ./tools/test
   ./tools/test tests/test_operator_surface_policy.py
+  ./tools/test tests/test_python_route_examples.py::test_python_route_federate_example_runs_for_supported_editions
+  ./tools/test -k ownership --lf
+  ./tools/test tests/transport --ff
 
 This is the human-facing wrapper over `./scripts/ci/test.sh`.
 EOF

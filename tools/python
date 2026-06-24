@@ -20,6 +20,8 @@ Canonical Python / repo-green operator flow:
   ./tools/python smoke-examples --edition 2025
   ./tools/python smoke-examples --all    # run both direct Python example routes
   ./tools/python test-examples           # run focused Python example tests
+  ./tools/test-focus inventory           # list named focused targets by package/theme
+  ./tools/test-focus resume python-2025-runtime
 
 This is the human-facing wrapper over ./scripts/ci/repo_green.sh.
 Use ./tools/certi-easy and ./tools/pitch for vendor-runtime operator flows.

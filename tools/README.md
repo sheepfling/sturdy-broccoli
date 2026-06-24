@@ -14,6 +14,7 @@ Core operator entrypoints:
 - `./tools/python`
 - `./tools/bootstrap`
 - `./tools/test`
+- `./tools/test-focus`
 - `./tools/test-surface`
 - `./tools/lint`
 - `./tools/certi-easy`
@@ -58,6 +59,10 @@ Shortest common paths:
 - run both isolated direct Python route examples: `./tools/python smoke-examples --all`
 - run the focused direct Python example test: `./tools/python test-examples`
 - run the default test wrapper: `./tools/test`
+- list named focused test targets: `./tools/test-focus inventory`
+- rerun one named focused target: `./tools/test-focus run foundation`
+- rerun one package-aligned target: `./tools/test-focus run jpype`, `./tools/test-focus run py4j`, `./tools/test-focus run target-radar`, or `./tools/test-focus run rti-core`
+- resume only prior failures inside one focused target: `./tools/test-focus resume python-2025-runtime`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`

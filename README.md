@@ -34,6 +34,8 @@ python examples/target_radar_simulation.py --backend python1516_2025 --steps 5
 Operator commands that matter from the top level:
 
 - `./tools/python verify`
+- `./tools/test-focus inventory`
+- `./tools/test-focus run target-radar`
 - `./tools/compliance generate`
 - `./tools/compliance discover --show-backlog`
 - `./tools/certi-easy preflight`
@@ -47,6 +49,7 @@ If you want the main follow-on guides, use:
 - [`docs/first_run.md`](docs/first_run.md): shortest fresh-checkout walkthrough
 - [`docs/python_environment.md`](docs/python_environment.md): fuller environment and install story
 - [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md): shortest junior-friendly repo-green, rerun, and failure-diagnosis path
+- [`docs/test_surface.md`](docs/test_surface.md): lane and focused-target map
 - [`docs/README.md`](docs/README.md): docs index by task
 
 Read [`docs/first_run.md`](docs/first_run.md) for the 2010 pure-Python bootstrap lane.

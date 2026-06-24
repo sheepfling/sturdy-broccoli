@@ -9,6 +9,8 @@ Use it when you want the shortest answer to:
 - what lane is safe for a user or agent without real vendor runtime setup?
 
 The supported front door is [`../tools/test-surface`](../tools/test-surface).
+For named focused reruns and restartable submodule work, use
+[`../tools/test-focus`](../tools/test-focus).
 
 ## Canonical Lanes
 
@@ -118,6 +120,27 @@ Start here:
 
 Then run the recommended lane.
 
+If the lane is too large, switch to a named focused target instead of guessing
+raw pytest selectors:
+
+```bash
+./tools/test-focus inventory
+./tools/test-focus run foundation
+./tools/test-focus run python-examples
+./tools/test-focus run java-bridges
+./tools/test-focus run jpype
+./tools/test-focus run py4j
+./tools/test-focus run target-radar
+./tools/test-focus run rti-core
+./tools/test-focus run python-2025-runtime -- --maxfail=1
+./tools/test-focus resume python-2025-runtime
+```
+
+That gives you two things the lane commands do not:
+
+- a stable named target for a package/theme
+- a restart path that reuses pytest last-failed state through `resume`
+
 If you need machine-readable output for automation or agent selection:
 
 ```bash
@@ -146,3 +169,9 @@ docs, ad hoc pytest selectors, or CI plumbing.
 
 Use those artifacts to see what the lane ran and whether it passed, failed, or
 was only planned through `--dry-run`.
+
+`./tools/test-focus run <target>` writes the same kind of summary for focused
+work under:
+
+- `analysis/test_focus_status/<target>.json`
+- `analysis/test_focus_status/<target>.md`
