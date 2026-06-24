@@ -1,6 +1,18 @@
 from __future__ import annotations
 
 from hla.backends.common import RTIBackendPlugin
+from hla.rti.plugin_api import BackendRequest, HLASpec
+
+
+def _spec(name: str) -> HLASpec:
+    return HLASpec(
+        name=name,
+        year=2025 if name == "rti1516_2025" else 2010,
+        standard="IEEE 1516.1",
+        python_package=f"hla.{name}",
+        java_package="hla.rti1516_2025" if name == "rti1516_2025" else "hla.rti1516e",
+        cpp_namespace=name,
+    )
 
 
 def test_split_java_plugin_packages_export_generic_plugin_descriptors():
@@ -44,3 +56,30 @@ def test_split_java_plugin_packages_export_generic_plugin_descriptors():
     assert py4j_descriptor.name == "py4j"
     assert jpype_descriptor.family == "java"
     assert py4j_descriptor.family == "java"
+    assert jpype_descriptor.supports == ("rti1516e", "rti1516_2025")
+    assert py4j_descriptor.supports == ("rti1516e", "rti1516_2025")
+
+
+def test_generic_java_plugins_default_to_request_spec_profile(monkeypatch):
+    import hla.bridges.java.jpype.plugin as jpype_plugin_module
+    import hla.bridges.java.py4j.plugin as py4j_plugin_module
+
+    captured = {}
+
+    def fake_jpype_backend(config):
+        captured["jpype"] = config
+        return object()
+
+    def fake_py4j_backend(config):
+        captured["py4j"] = config
+        return object()
+
+    monkeypatch.setattr(jpype_plugin_module, "create_jpype_backend", fake_jpype_backend)
+    monkeypatch.setattr(py4j_plugin_module, "create_py4j_backend", fake_py4j_backend)
+
+    request = BackendRequest(spec=_spec("rti1516_2025"))
+    jpype_plugin_module.plugin().create_backend(request)
+    py4j_plugin_module.plugin().create_backend(request)
+
+    assert captured["jpype"].java_api_profile == "rti1516_2025"
+    assert captured["py4j"].java_api_profile == "rti1516_2025"

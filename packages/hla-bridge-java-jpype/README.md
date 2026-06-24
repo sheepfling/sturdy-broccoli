@@ -1,13 +1,14 @@
 # hla-bridge-java-jpype
 
-Generic JPype-backed Java RTI bridge package for `hla-rti1516e`.
+Generic JPype-backed Java RTI bridge package for `hla-rti1516e` and
+`hla-rti1516_2025`.
 
 This package owns the reusable Java bridge mechanics and the JPype-first
-standard Java HLA 1516-2010 implementation facade. For a Java RTI that follows
-the standard `hla.rti1516e` API, pass the vendor implementation string here and
-let the shared adapter wrap the standard classes once. Vendor-specific packages
-are only needed for vendor-specific runtime discovery, launch behavior, or API
-quirks.
+standard Java HLA implementation facade. For a Java RTI that follows the
+standard `hla.rti1516e` or `hla.rti1516_2025` API, pass the vendor
+implementation string here and let the shared adapter wrap the standard classes
+once. Vendor-specific packages are only needed for vendor-specific runtime
+discovery, launch behavior, or API quirks.
 Import the canonical implementation from `hla.bridges.java.jpype`.
 Boundary and import-isolation guard coverage lives in
 `tests/test_rti_java_plugin_split_packages.py` and
@@ -50,7 +51,7 @@ from hla.bridges.java.jpype import JavaRTIImplementation
 implementation = JavaRTIImplementation(
     "com.vendor.hla.RtiFactory",
     bridge="jpype",  # or "py4j" when a Py4J gateway is the right process shape
-    edition="2010",
+    edition="2010",  # use "2025" for hla.rti1516_2025
     classpath=["/path/to/vendor.jar"],
 )
 
@@ -82,11 +83,12 @@ Operational notes:
 - the first argument is forwarded to
   `RtiFactoryFactory.getRtiFactory(implementation)`.
 - `JavaRTIImplementation` carries an `edition` field so newer HLA editions can
-  be added without changing the caller-facing shape. Backend construction
-  currently accepts `2010`; debug discovery can still report future-edition
-  requests with warnings.
+  be selected without changing the caller-facing shape. Backend construction
+  accepts the configured Java API profiles such as `2010` and `2025`.
 - `java_2010_rti_ambassador("java-shim")` selects the in-process Java-shaped
   2010 shim for local test-tool development without a vendor RTI.
+- `examples/jpype_java_rti_2025.py` shows the same JPype shape with
+  `java_api_profile="2025"` for `hla.rti1516_2025`.
 
 Expected not-configured-yet behavior:
 

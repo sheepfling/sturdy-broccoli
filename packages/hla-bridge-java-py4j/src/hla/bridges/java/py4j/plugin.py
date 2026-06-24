@@ -20,13 +20,14 @@ def _optional_module_info(module_name: str, *, name: str, kind: str) -> BackendI
 
 def _py4j_backend_factory(request: BackendRequest):
     options: dict[str, Any] = dict(request.options)
+    options.setdefault("java_api_profile", request.spec.name)
     config = options.pop("config", None) or Py4JConfig(**options)
     return create_py4j_backend(config)
 
 
 def py4j_plugin() -> RTIBackendPlugin:
     return RTIBackendPlugin(
-        supports=("rti1516e",),
+        supports=("rti1516e", "rti1516_2025"),
         name="py4j",
         aliases=("java-py4j",),
         family="java",

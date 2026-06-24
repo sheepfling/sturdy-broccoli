@@ -89,6 +89,29 @@ def test_create_java_backend_forwards_selected_edition_profile(monkeypatch: pyte
     assert captured["config"].java_api_profile == "202X"
 
 
+def test_java_implementation_facade_forwards_2025_edition_profile(monkeypatch: pytest.MonkeyPatch) -> None:
+    import hla.bridges.java.jpype.factory as jpype_factory
+
+    captured: dict[str, Any] = {}
+
+    def fake_create_backend(config: Any) -> _FakeBackend:
+        captured["config"] = config
+        return _FakeBackend(BackendInfo(name=config.rti_factory_name, kind="java/jpype"))
+
+    monkeypatch.setattr(jpype_factory, "create_jpype_backend", fake_create_backend)
+
+    ambassador = JavaRTIImplementation(
+        "vendor.rti.Factory2025",
+        edition="2025",
+        classpath=("vendor-2025.jar",),
+    ).create_rti_ambassador()
+
+    assert ambassador.backend_info.kind == "java/jpype"
+    assert captured["config"].rti_factory_name == "vendor.rti.Factory2025"
+    assert tuple(captured["config"].classpath) == ("vendor-2025.jar",)
+    assert captured["config"].java_api_profile == "2025"
+
+
 def test_create_java_rti_ambassador_wraps_selected_java_backend(monkeypatch: pytest.MonkeyPatch) -> None:
     import hla.bridges.java.jpype.factory as jpype_factory
 
@@ -190,7 +213,7 @@ def test_java_2010_implementation_facade_is_jpype_first(monkeypatch: pytest.Monk
 
 
 def test_java_2010_implementation_rejects_future_edition_until_split_exists() -> None:
-    with pytest.raises(ValueError, match="only supports edition '2010' today"):
+    with pytest.raises(ValueError, match="only supports edition '2010'"):
         JavaRTI2010Implementation("vendor.rti.Factory", edition="2025").create_backend()
 
 

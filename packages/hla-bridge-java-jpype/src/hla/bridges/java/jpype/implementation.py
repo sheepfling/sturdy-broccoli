@@ -7,6 +7,7 @@ from typing import Any, Sequence
 from hla.backends.common import DelegatingRTIAmbassador
 from hla.bridges.java.common import JavaRTIDiscoveryReport, create_java_backend, create_java_rti_ambassador, discover_java_rti
 from hla.bridges.java.common.java_common import JavaRTIBackend
+from hla.bridges.java.common.java_intake import java_api_profile
 
 
 def _normalize_bridge(bridge: str) -> str:
@@ -38,9 +39,7 @@ class JavaRTIImplementation:
     shutdown_gateway_on_close: bool = False
 
     def _require_supported_edition(self) -> None:
-        normalized = self.edition.strip().lower().removeprefix("ed")
-        if normalized != "2010":
-            raise ValueError(f"JavaRTIImplementation only supports edition '2010' today; got {self.edition!r}")
+        java_api_profile(self.edition)
 
     def _explicit_bridge_options(self) -> dict[str, Any]:
         bridge = _normalize_bridge(self.bridge)
@@ -76,6 +75,7 @@ class JavaRTIImplementation:
         return create_java_backend(
             bridge=self.bridge,
             implementation=self.implementation,
+            edition=self.edition,
             **self._explicit_bridge_options(),
         )
 
@@ -86,6 +86,7 @@ class JavaRTIImplementation:
         return create_java_rti_ambassador(
             bridge=self.bridge,
             implementation=self.implementation,
+            edition=self.edition,
             **self._explicit_bridge_options(),
         )
 
@@ -105,6 +106,11 @@ class JavaRTI2010Implementation(JavaRTIImplementation):
     """Compatibility alias for the 2010 Java implementation selector."""
 
     edition: str = "2010"
+
+    def _require_supported_edition(self) -> None:
+        normalized = self.edition.strip().lower().removeprefix("ed")
+        if normalized != "2010":
+            raise ValueError(f"JavaRTI2010Implementation only supports edition '2010'; got {self.edition!r}")
 
 
 def _implementation(
