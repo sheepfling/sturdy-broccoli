@@ -38,6 +38,11 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[6]
 
 
+def tracked_siso_baseline_root(repo_root: Path | None = None) -> Path:
+    base_root = repo_root if repo_root is not None else _repo_root()
+    return base_root / "third_party" / "fom_baseline" / "siso"
+
+
 def siso_download_root(repo_root: Path | None = None) -> Path:
     base_root = repo_root if repo_root is not None else _repo_root()
     return Path(os.environ.get("HLA_SISO_DOWNLOAD_ROOT", base_root / "artifacts" / "siso_downloads"))
@@ -317,7 +322,10 @@ def discover_siso_inventory_entries(download_root: Path | None = None, *, repo_r
     """Return optional SISO inventory rows discovered under the local download root."""
 
     repo_root = Path(repo_root) if repo_root is not None else _repo_root()
-    root = Path(download_root) if download_root is not None else siso_download_root(repo_root)
+    configured_root = Path(download_root) if download_root is not None else siso_download_root(repo_root)
+    root = configured_root
+    if not root.exists() and download_root is None:
+        root = tracked_siso_baseline_root(repo_root)
     if not root.exists():
         return ()
 
@@ -371,7 +379,8 @@ def discover_siso_inventory_entries(download_root: Path | None = None, *, repo_r
         if digest in seen_digests:
             continue
         seen_digests.add(digest)
-        entries.append(_entry_from_path(xml_path, repo_root=repo_root))
+        archive_name = str(xml_path.parent.relative_to(root)) if xml_path.parent != root else xml_path.stem
+        entries.append(_entry_from_path(xml_path, repo_root=repo_root, archive_name=archive_name))
 
     deduped: list[dict[str, Any]] = []
     seen_paths: set[str] = set()
@@ -449,6 +458,7 @@ __all__ = [
     "is_high_value_siso_family",
     "render_siso_inventory_markdown",
     "siso_download_root",
+    "tracked_siso_baseline_root",
     "siso_inventory_json_path",
     "write_siso_inventory",
 ]

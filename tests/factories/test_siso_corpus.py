@@ -6,7 +6,12 @@ from pathlib import Path
 
 from hla.verification.repo_internal import fom_inventory as fom_inventory_module
 from hla.verification.repo_internal.fom_inventory import inventory_records
-from hla.verification.repo_internal.siso_corpus import discover_siso_inventory_entries, is_default_scope_record, write_siso_inventory
+from hla.verification.repo_internal.siso_corpus import (
+    discover_siso_inventory_entries,
+    is_default_scope_record,
+    tracked_siso_baseline_root,
+    write_siso_inventory,
+)
 
 
 def _make_sample_archive(archive_path: Path) -> None:
@@ -116,3 +121,18 @@ def test_discover_siso_inventory_entries_classifies_link16_underscore_variant(tm
     assert len(entries) == 1
     assert entries[0]["scenario_family"] == "siso-link-16"
     assert "high-value" in entries[0]["tags"]
+
+
+def test_discover_siso_inventory_entries_falls_back_to_tracked_baseline_root(monkeypatch, tmp_path: Path) -> None:
+    repo_root = tmp_path
+    tracked_root = tracked_siso_baseline_root(repo_root)
+    xml_path = tracked_root / "RPR FOM v2.0 Link 16 and Link 11" / "Link_16_v2.0.xml"
+    xml_path.parent.mkdir(parents=True, exist_ok=True)
+    xml_path.write_text("<objectModel/>", encoding="utf-8")
+    monkeypatch.delenv("HLA_SISO_DOWNLOAD_ROOT", raising=False)
+
+    entries = discover_siso_inventory_entries(repo_root=repo_root)
+
+    assert len(entries) == 1
+    assert entries[0]["scenario_family"] == "siso-rpr-2.0"
+    assert "third_party/fom_baseline/siso/" in entries[0]["path"]
