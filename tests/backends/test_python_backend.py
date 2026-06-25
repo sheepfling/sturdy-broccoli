@@ -104,17 +104,27 @@ def test_python_backend_validates_declared_user_tag_encoding_for_updates_and_int
         tx.send_interaction(interaction, {track_id: b"T-1"}, b"\xff")
 
 
-def test_validate_encoded_datatype_value_accepts_rpr_null_terminated_user_tag() -> None:
-    base = "artifacts/siso_downloads/_expanded/SISO-STD-001.1-2015 Annex A Files Normative/Annex A Files Normative"
-    catalog = merge_fom_modules(
-        FOMResolver().resolve_many(
-            (
-                f"{base}/RPR-Foundation_v2.0.xml",
-                f"{base}/RPR-Enumerations_v2.0.xml",
-                f"{base}/RPR-Base_v2.0.xml",
-            )
-        )
+def test_validate_encoded_datatype_value_accepts_rpr_null_terminated_user_tag(tmp_path) -> None:
+    fom_path = tmp_path / "RPRUserDefinedTagFOM.xml"
+    fom_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>RPR User Tag</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <arrayDataTypes>
+      <arrayData>
+        <name>RPRUserDefinedTag</name>
+        <dataType>HLAASCIIchar</dataType>
+        <cardinality>[8..255]</cardinality>
+        <encoding>null-terminated-array</encoding>
+      </arrayData>
+    </arrayDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
     )
+    catalog = merge_fom_modules((FOMResolver().resolve(fom_path),))
 
     validate_encoded_datatype_value(b"00000000\x00", "RPRUserDefinedTag", catalog)
     validate_encoded_datatype_value(b"00000000EXTRA\x00", "RPRUserDefinedTag", catalog)

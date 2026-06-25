@@ -30,6 +30,8 @@ dist
 
 # Generated project outputs
 analysis
+artifacts/*
+!artifacts/README.md
 /verification
 downloads
 build/generated/

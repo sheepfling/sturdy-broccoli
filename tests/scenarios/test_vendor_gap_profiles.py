@@ -88,10 +88,9 @@ def test_write_vendor_gap_profile_script_bootstraps_source_checkout(tmp_path: Pa
     assert payload["operator_state"] == "environment-blocked"
 
 
-def test_live_pitch_lost_federate_gap_profile_tracks_operator_blockers() -> None:
-    payload = json.loads(
-        (ROOT / "artifacts" / "vendor_gap_profiles" / "pitch-lost-federate.json").read_text(encoding="utf-8")
-    )
+def test_pitch_lost_federate_gap_profile_tracks_operator_blockers(tmp_path: Path) -> None:
+    path = write_vendor_gap_profile(tmp_path, "pitch-lost-federate")
+    payload = json.loads(path.read_text(encoding="utf-8"))
 
     assert payload["profile"] == "pitch-lost-federate"
     assert payload["status"] == "backend-split"

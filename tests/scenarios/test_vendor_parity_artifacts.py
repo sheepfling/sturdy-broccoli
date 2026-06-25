@@ -483,12 +483,9 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
             promotion_review_path.write_text(promotion_review_original, encoding="utf-8")
 
 
-def test_live_vendor_parity_summary_surfaces_pitch_lost_federate_gap_profile() -> None:
-    payload = json.loads(
-        (
-            Path("artifacts/vendor_parity_artifacts") / "vendor_parity_artifacts_summary.json"
-        ).read_text(encoding="utf-8")
-    )
+def test_vendor_parity_summary_surfaces_pitch_lost_federate_gap_profile(tmp_path) -> None:
+    paths = write_vendor_parity_artifacts(tmp_path)
+    payload = json.loads(paths.summary_json.read_text(encoding="utf-8"))
 
     gap_profile = payload["gap_profiles"]["pitch-lost-federate"]
     assert gap_profile is not None
@@ -503,10 +500,9 @@ def test_live_vendor_parity_summary_surfaces_pitch_lost_federate_gap_profile() -
     ]
 
 
-def test_live_vendor_parity_report_surfaces_pitch_lost_federate_operator_blockers() -> None:
-    report_text = (
-        Path("artifacts/vendor_parity_artifacts") / "vendor_parity_artifacts_report.md"
-    ).read_text(encoding="utf-8")
+def test_vendor_parity_report_surfaces_pitch_lost_federate_operator_blockers(tmp_path) -> None:
+    paths = write_vendor_parity_artifacts(tmp_path)
+    report_text = paths.report_markdown.read_text(encoding="utf-8")
 
     assert "pitch-lost-federate`: classification `known-gap`, status `backend-split`" in report_text
     assert "operator-state: `environment-blocked`" in report_text
