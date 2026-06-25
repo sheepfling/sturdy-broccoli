@@ -122,6 +122,7 @@ _PACKET_SPECS = (
         expected_buckets=("parse-fail-fast",),
         summary="Standalone Link 16 is a deliberate fail-fast template: it exposes hierarchy and parent-integration assumptions immediately.",
         member_ids=("siso-siso-link-16-link-16-v2-0",),
+        include_path_fragments=("Link_16_v2.0.xml",),
     ),
     ShowcasePacketSpec(
         id="link16-rpr2-integrated",
@@ -227,7 +228,13 @@ def _resolve_packet_records(spec: ShowcasePacketSpec) -> tuple[FOMInventoryRecor
         records = default_load_set_for_family(spec.family)
     else:
         by_id = _inventory_by_id()
-        records = tuple(by_id[member_id] for member_id in spec.member_ids)
+        records = tuple(by_id[member_id] for member_id in spec.member_ids if member_id in by_id)
+        if not records and spec.include_path_fragments:
+            records = tuple(
+                record
+                for record in inventory_records()
+                if all(fragment in record.path for fragment in spec.include_path_fragments)
+            )
     filtered: list[FOMInventoryRecord] = []
     seen_paths: set[str] = set()
     for record in records:

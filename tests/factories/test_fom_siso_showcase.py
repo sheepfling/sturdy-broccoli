@@ -104,3 +104,53 @@ def test_write_fom_siso_showcase_writes_html(monkeypatch, tmp_path: Path) -> Non
     assert "<!doctype html>" in html_text
     assert "lane legend" in html_text
     assert "template-fail-fast" in html_text
+
+
+def test_build_fom_siso_showcase_falls_back_when_inventory_id_changes(monkeypatch, tmp_path: Path) -> None:
+    record = SimpleNamespace(
+        id="siso-siso-rpr-2-0-link-16-v2-0",
+        path="third_party/fom_baseline/siso/RPR FOM v2.0 Link 16 and Link 11/Link_16_v2.0.xml",
+        edition_class="2010",
+        load_mode="ordered-family",
+        baseline_kind="third-party",
+        scenario_family="siso-rpr-2.0",
+    )
+
+    monkeypatch.setattr(fom_siso_showcase, "inventory_records", lambda: (record,))
+    monkeypatch.setattr(
+        fom_siso_showcase,
+        "write_fom_validation",
+        lambda sources, *, output_dir, edition="auto", strict_identification=False, title=None: (
+            Path(output_dir) / "fom_validation_report.json",
+            Path(output_dir) / "fom_validation_report.md",
+            SimpleNamespace(source_reports=(SimpleNamespace(passed=False, verdict="parse-failed"),), load_set_reports=()),
+        ),
+    )
+    monkeypatch.setattr(
+        fom_siso_showcase,
+        "write_fom_validation_html",
+        lambda sources, *, output_dir, edition="auto", strict_identification=False, title=None: Path(output_dir)
+        / "fom_validation_report.html",
+    )
+    monkeypatch.setattr(fom_siso_showcase, "write_fom_roundtrip", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("nope")))
+    monkeypatch.setattr(fom_siso_showcase, "build_fom_roundtrip", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("nope")))
+    monkeypatch.setattr(fom_siso_showcase, "write_fom_overview", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("nope")))
+    monkeypatch.setattr(fom_siso_showcase, "write_fom_overview_html", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("nope")))
+    monkeypatch.setattr(fom_siso_showcase, "build_fom_overview", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("nope")))
+    monkeypatch.setattr(
+        fom_siso_showcase,
+        "write_fom_workbench_snapshot",
+        lambda *, output_dir, custom_load_sets=None, diff_specs=(): Path(output_dir) / "fom_workbench_snapshot.json",
+    )
+    monkeypatch.setattr(
+        fom_siso_showcase,
+        "write_fom_workbench_html",
+        lambda *, output_dir, custom_load_sets=None, diff_specs=(): Path(output_dir) / "fom_workbench.html",
+    )
+
+    report = fom_siso_showcase.build_fom_siso_showcase(
+        output_root=tmp_path / "showcase",
+        packet_ids=("link16-standalone-template",),
+    )
+
+    assert report.packet_results[0].member_ids == ("siso-siso-rpr-2-0-link-16-v2-0",)
