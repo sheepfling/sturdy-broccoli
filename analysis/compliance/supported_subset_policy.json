@@ -1552,8 +1552,7 @@
       "broad_spec_rows": [
         {
           "artifact_refs": [
-            "analysis/compliance/service_conformance.json",
-            "analysis/two_federate_suite/two_federate_callbacks.csv"
+            "analysis/compliance/service_conformance.json"
           ],
           "certi_runtime_status": "",
           "claim_scope": "broad-spec",

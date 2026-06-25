@@ -53,10 +53,6 @@ against the repo-owned `hla.rti1516_2025` Python protocol surface.
 
 ## Bridge Blockers
 
-- `packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/factory.py`: Factory selection is hardwired to hla.rti1516e.RtiFactoryFactory instead of a profile-driven package name.
-- `packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j/factory.py`: Factory selection is hardwired to hla.rti1516e.RtiFactoryFactory instead of a profile-driven package name.
-- `packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/runtime.py`: Federate ambassador proxy creation is hardwired to the 2010 Java interface package.
-- `packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j/runtime.py`: Federate ambassador proxy creation is hardwired to the 2010 Java interface package.
 - `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py`: Common conversion and callback dispatch code imports 2010 enums, exceptions, handles, time classes, and API metadata directly.
 - `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_factory_selection.py`: Generic Java RTI discovery is still implemented as a 2010-only factory probe.
 
