@@ -77,4 +77,5 @@ Use it alongside:
 - [fom_validate.md](fom_validate.md)
 - [fom_workbench.md](fom_workbench.md)
 - [fom_reading_map.md](fom_reading_map.md)
+- [fom_siso_quirks.md](fom_siso_quirks.md)
 - [rpr_siso_feedback_log.md](rpr_siso_feedback_log.md)

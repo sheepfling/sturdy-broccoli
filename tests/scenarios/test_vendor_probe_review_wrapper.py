@@ -92,3 +92,76 @@ raise SystemExit(7)
 
     assert result.returncode == 7
     assert not (tmp_path / "record.json").exists()
+
+
+def test_vendor_probe_review_runs_non_executable_shell_stability_helper(tmp_path: Path) -> None:
+    stability = tmp_path / "stability.sh"
+    promotion = tmp_path / "promotion.py"
+    parity = tmp_path / "parity.py"
+    stability.write_text(
+        """#!/usr/bin/env bash
+set -euo pipefail
+python3 "$HLA2010_TEST_STABILITY_HELPER" "$1" "$2"
+""",
+        encoding="utf-8",
+    )
+    helper = tmp_path / "stability_helper.py"
+    _write_delegate(helper, "stability")
+    _write_delegate(promotion, "promotion")
+    _write_delegate(parity, "parity")
+    env = os.environ.copy()
+    env["HLA2010_VENDOR_PROBE_REVIEW_STABILITY_CMD"] = str(stability)
+    env["HLA2010_VENDOR_PROBE_REVIEW_PROMOTION_CMD"] = f"python3 {promotion}"
+    env["HLA2010_VENDOR_PROBE_REVIEW_PARITY_CMD"] = f"python3 {parity}"
+    env["HLA2010_TEST_STABILITY_HELPER"] = str(helper)
+    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
+
+    result = subprocess.run(
+        ["bash", "scripts/ci/vendor_probe_review.sh", "pitch-time-window-restore-state-probe", "5"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    payload = json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    assert payload == [
+        {"label": "stability", "argv": ["pitch-time-window-restore-state-probe", "5"]},
+        {"label": "promotion", "argv": []},
+        {"label": "parity", "argv": []},
+    ]
+
+
+def test_vendor_probe_review_supports_space_containing_python_command_overrides(tmp_path: Path) -> None:
+    helper_dir = tmp_path / "helper dir"
+    helper_dir.mkdir(parents=True, exist_ok=True)
+    stability = helper_dir / "stability.py"
+    promotion = helper_dir / "promotion.py"
+    parity = helper_dir / "parity.py"
+    _write_delegate(stability, "stability")
+    _write_delegate(promotion, "promotion")
+    _write_delegate(parity, "parity")
+    env = os.environ.copy()
+    env["HLA2010_VENDOR_PROBE_REVIEW_STABILITY_CMD"] = f'python3 "{stability}"'
+    env["HLA2010_VENDOR_PROBE_REVIEW_PROMOTION_CMD"] = f'python3 "{promotion}"'
+    env["HLA2010_VENDOR_PROBE_REVIEW_PARITY_CMD"] = f'python3 "{parity}"'
+    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
+
+    result = subprocess.run(
+        ["bash", "scripts/ci/vendor_probe_review.sh", "pitch-time-window-probe", "5"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    payload = json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    assert payload == [
+        {"label": "stability", "argv": ["pitch-time-window-probe", "5"]},
+        {"label": "promotion", "argv": []},
+        {"label": "parity", "argv": []},
+    ]

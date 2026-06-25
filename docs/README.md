@@ -120,6 +120,7 @@ Use these when you need structure, not onboarding:
 - [`fom_tooling_front_door.md`](fom_tooling_front_door.md): one-page routing for FOM inspection, validation, UI/workbench, and authoring
 - [`fom_reading_map.md`](fom_reading_map.md): FOM inventory, baseline, and inspection front door
 - [`fom_validate.md`](fom_validate.md): FOM validation front door and command guide
+- [`fom_siso_quirks.md`](fom_siso_quirks.md): short explanation of SISO family load order, main-vs-add-on structure, and common quirks
 - [`fom_siso_showcase.md`](fom_siso_showcase.md): standards-backed SISO showcase packet front door
 - [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md): executable SISO runtime showcase front door
 - [`fom_siso_pitch_micro_parity.md`](fom_siso_pitch_micro_parity.md): Pitch-eligible micro-scenario parity front door

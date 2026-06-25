@@ -52,6 +52,8 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
 - `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
 - `./tools/fom-siso-showcase` canonical standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM
+- `./tools/pitch fom-smoke` canonical Pitch-backed example-FOM smoke over the real 2010 bridges and explicit `pitch-202x-*` adapter routes
+- `./tools/pitch fom-smoke-compare` canonical side-by-side comparison packet over the real Pitch 2010 and `pitch-202x-*` adapter FOM smoke artifacts
 - `./tools/fom-corpus-classification` canonical corpus bucketing flow with `Edition Scope`
 - `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow with `Edition Scope`
 - `./tools/fom-roundtrip` canonical FOM round-trip packet flow with `Edition Scope`
@@ -109,6 +111,7 @@ Operator guide links:
 
 - [../packages/hla-backend-certi/docs/certi_section8_runbook.md](../packages/hla-backend-certi/docs/certi_section8_runbook.md): CERTI operator runbook
 - [../packages/hla-vendor-pitch/docs/pitch_decision_tree.md](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
+- [../docs/fom_siso_quirks.md](../docs/fom_siso_quirks.md): short map of SISO load order, main-vs-add-on structure, and common family quirks
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
 - `./tools/certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
 - `./tools/pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run

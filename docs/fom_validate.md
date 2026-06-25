@@ -17,6 +17,8 @@ Use this when you need one command that answers:
 - `./tools/fom-schema-baseline`
 - `./tools/fom-schema-audit`
 - `./tools/fom-siso-audit`
+- `./tools/pitch fom-smoke`
+- `./tools/pitch fom-smoke-compare`
 
 Generated artifacts land under:
 
@@ -159,5 +161,6 @@ SISO showcase:
 ## Read Next
 
 - [fom_reading_map.md](fom_reading_map.md)
+- [fom_siso_quirks.md](fom_siso_quirks.md)
 - [fom_workbench.md](fom_workbench.md)
 - [fom-examples/fom_inventory.md](fom-examples/fom_inventory.md)

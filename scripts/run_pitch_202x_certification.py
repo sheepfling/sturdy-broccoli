@@ -29,11 +29,35 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.verification.pitch_202x_certification import write_pitch_202x_certification
 
 
+def _split_command_with_spaceful_executable(raw: str) -> list[str]:
+    for index, character in enumerate(raw):
+        if character != " ":
+            continue
+        executable = raw[:index]
+        if not executable:
+            continue
+        executable_path = Path(executable)
+        if not executable_path.exists():
+            continue
+        remainder = raw[index + 1 :].strip()
+        parts = [str(executable_path)]
+        if remainder:
+            parts.extend(shlex.split(remainder))
+        return parts
+    return []
+
+
 def _command_from_env(name: str, default: list[str]) -> list[str]:
     raw = os.environ.get(name)
     if not raw:
         return default
-    return shlex.split(raw)
+    parts = shlex.split(raw)
+    if parts and Path(parts[0]).exists():
+        return parts
+    recovered = _split_command_with_spaceful_executable(raw)
+    if recovered:
+        return recovered
+    return parts
 
 
 def _run(label: str, command: list[str], *, cwd: Path, env: dict[str, str]) -> dict[str, object]:

@@ -25,6 +25,11 @@ their current support boundary.
   - `./tools/fom-siso-showcase`
 - runtime-backed SISO showcase:
   - [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md)
+- SISO load-shape and family-quirk explainer:
+  - [`fom_siso_quirks.md`](fom_siso_quirks.md)
+- Pitch-backed FOM smoke comparison:
+  - `./tools/pitch fom-smoke`
+  - `./tools/pitch fom-smoke-compare`
 - RPR-specific standards feedback log:
   - [`rpr_siso_feedback_log.md`](rpr_siso_feedback_log.md)
 - RPR datatype normalization note:
@@ -108,11 +113,17 @@ Scope labels used across reports:
 - high-value SISO showcase flow:
   - `./tools/fom-siso-showcase`
   - [`fom_siso_showcase.md`](fom_siso_showcase.md)
+  - [`fom_siso_quirks.md`](fom_siso_quirks.md)
 
 ## Notes
 
 - Some imported families are not valid standalone one-file parse units.
 - The public baseline manifest records the required family load order.
+- When you need to know which XML is the main root versus an add-on, read
+  `load_mode` first:
+  - `standalone`: one-file root
+  - `base-plus-extension`: shared base plus add-on deltas
+  - `ordered-family`: the family order is the real load unit
 - For the imported baseline we currently prove:
   - ordered family parse/load
   - FedPro JSON envelope round-trip for the original XML payload

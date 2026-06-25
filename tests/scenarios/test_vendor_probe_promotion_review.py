@@ -19,6 +19,7 @@ def _write_stability(
     stable: bool,
     attempt_count: int,
     success_count: int,
+    semantic_stable: bool = True,
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -29,6 +30,7 @@ def _write_stability(
                 "stable": stable,
                 "attempt_count": attempt_count,
                 "success_count": success_count,
+                "semantic_stable": semantic_stable,
             },
             indent=2,
             sort_keys=True,
@@ -83,10 +85,11 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
     _write_stability(
         pitch_time_window,
         profile="pitch-time-window-probe",
-        promotion_readiness="candidate",
+        promotion_readiness="semantic-instability",
         stable=True,
         attempt_count=5,
         success_count=5,
+        semantic_stable=False,
     )
     _write_stability(
         pitch_time_window_restore,
@@ -116,7 +119,7 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
         paths = write_vendor_probe_promotion_review(tmp_path)
         payload = json.loads(paths.summary_json.read_text(encoding="utf-8"))
         assert payload["suite_name"] == "vendor-probe-promotion-review"
-        assert payload["candidate_count"] == 4
+        assert payload["candidate_count"] == 3
         rows = {row["profile"]: row for row in payload["profiles"]}
         assert rows["certi-save-restore-probe"]["review_decision"] == "candidate-review"
         assert "docs/backend_conformance_matrix.md" in rows["certi-save-restore-probe"]["next_action"]
@@ -128,8 +131,8 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
         assert rows["pitch-save-restore-probe"]["review_decision"] == "needs-more-runs"
         assert rows["pitch-save-restore-probe"]["next_action"] == "./tools/pitch save-restore-review 5"
         assert rows["pitch-ddm-probe"]["review_decision"] == "needs-more-runs"
-        assert rows["pitch-time-window-probe"]["review_decision"] == "candidate-review"
-        assert "pitch_decision_tree.md" in rows["pitch-time-window-probe"]["next_action"]
+        assert rows["pitch-time-window-probe"]["review_decision"] == "semantic-instability"
+        assert "xpass" in rows["pitch-time-window-probe"]["next_action"]
         assert rows["pitch-time-window-restore-state-probe"]["review_decision"] == "candidate-review"
         assert "pitch_decision_tree.md" in rows["pitch-time-window-restore-state-probe"]["next_action"]
         report = paths.report_markdown.read_text(encoding="utf-8")
@@ -137,8 +140,9 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
         assert "candidate-review" in report
         assert "blocked-by-documented-gap" in report
         assert "needs-more-runs" in report
+        assert "semantic-instability" in report
         assert "next: compare certi-ddm-probe against docs/backend_conformance_matrix.md" in report
-        assert "next: compare pitch-time-window-probe against packages/hla-vendor-pitch/docs/pitch_decision_tree.md" in report
+        assert "next: inspect repeated-run outcome drift and resolve xpass or mixed semantic results before promotion" in report
         assert "next: resolve the documented bridge-divergent state before promotion" in report
     finally:
         for path, original in originals.items():

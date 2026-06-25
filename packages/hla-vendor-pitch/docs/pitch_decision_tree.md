@@ -74,6 +74,10 @@ Use the evidence notes when you need that distinction:
 
 - [`evidence/pitch_202x_probe_2026-06-23.md`](evidence/pitch_202x_probe_2026-06-23.md)
 - [`evidence/pitch_202x_surface_audit_2026-06-23.md`](evidence/pitch_202x_surface_audit_2026-06-23.md)
+- [`evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md`](evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md)
+- [`evidence/pitch_fom_smoke_failures_2026-06-24.md`](evidence/pitch_fom_smoke_failures_2026-06-24.md)
+- [`evidence/pitch_fom_smoke_comparison_2026-06-24.md`](evidence/pitch_fom_smoke_comparison_2026-06-24.md)
+- [`evidence/pitch_time_window_candidate_review_2026-06-24.md`](evidence/pitch_time_window_candidate_review_2026-06-24.md)
 
 ## Install / Build / Run / Connect
 
@@ -128,6 +132,8 @@ Use this for most work:
 ./tools/pitch verify
 ./tools/pitch 202x-certify
 ./tools/pitch doctor
+./tools/pitch fom-smoke
+./tools/pitch fom-smoke-compare
 ./tools/pitch logs
 ./tools/pitch stop
 ```
@@ -182,6 +188,52 @@ Pitch negotiated ownership is currently bridge-divergent:
 - treat the vendor bug note as the source of truth:
   - [`pitch_negotiated_ownership_vendor_bug_2026-06-07.md`](evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
 
+### Example FOM smoke
+
+The current Docker-backed `./tools/pitch fom-smoke` lane is explicit vendor
+evidence for which example FOM families currently load and resolve.
+
+Current real-runtime result:
+
+- green on both bridges:
+  - `repo-cross-target-radar`
+  - `link16-rpr2-integrated`
+  - `rpr3-merged-informative-1516-2010`
+- failed on both bridges:
+  - `repo-2010-demo`
+  - `space-fom-core`
+
+Use the checked-in evidence note for exact failure strings and the operator
+explanation:
+
+- [`pitch_fom_smoke_failures_2026-06-24.md`](evidence/pitch_fom_smoke_failures_2026-06-24.md)
+- [`pitch_202x_adapter_fom_smoke_2026-06-24.md`](evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md)
+
+If you want the side-by-side packet that compares those two lanes directly, use:
+
+```bash
+./tools/pitch fom-smoke-compare
+```
+
+That emits:
+
+- `artifacts/pitch_fom_smoke_compare/pitch_fom_smoke_compare_summary.json`
+- `artifacts/pitch_fom_smoke_compare/pitch_fom_smoke_compare_report.md`
+
+### Time-window probe status
+
+The two current Pitch-safe time-window probes have repeated-run stability
+evidence and are now documented as `candidate-review`.
+
+That means:
+
+- stable enough to cite as bounded vendor-credence evidence
+- not yet broad clause-level parity proof
+
+Use the checked-in note:
+
+- [`pitch_time_window_candidate_review_2026-06-24.md`](evidence/pitch_time_window_candidate_review_2026-06-24.md)
+
 ### What is currently promoted
 
 Pitch is currently promoted for:
@@ -221,6 +273,23 @@ Treat that packet as:
 - evidence that the bundled Pitch `202X` surface is real
 - evidence for the smallest real-runtime trial-safe example/FOM scenarios
 - not an IEEE `2025` conformance claim
+
+If you want explicit adapter-backed FOM behavior evidence for the checked-in
+`pitch-202x-*` routes, use:
+
+```bash
+./tools/pitch fom-smoke --kind pitch-202x-jpype --kind pitch-202x-py4j
+```
+
+Treat that route as:
+
+- proof that the explicit `pitch-202x-*` adapters can exercise the repo FOM
+  smoke packets
+- not proof of native Pitch `202X` vendor-runtime behavior
+
+The current checked-in adapter evidence is:
+
+- [`pitch_202x_adapter_fom_smoke_2026-06-24.md`](evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md)
 
 If you want the current explicit operator result for the negotiated-ownership
 gap, use:

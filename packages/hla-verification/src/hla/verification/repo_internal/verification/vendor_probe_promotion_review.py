@@ -107,6 +107,8 @@ def _review_decision(stability: dict[str, Any] | None, *, gap_status: str | None
         return ("candidate-review", "repeated-run stability evidence exists; perform clause-level parity review before promotion")
     if readiness == "needs-more-runs":
         return ("needs-more-runs", "the probe is green so far but below the current repetition floor")
+    if readiness == "semantic-instability":
+        return ("semantic-instability", "the probe stayed exit-green but produced unstable pytest semantics across repeated runs")
     if readiness == "unstable":
         return ("unstable", "at least one repeated-run attempt failed")
     if readiness == "incomplete":
@@ -143,6 +145,8 @@ def _next_action(
         return review_command or probe_command or "run the supported probe-review route to produce stability evidence"
     if review_decision == "unstable":
         return probe_command or "debug the probe failure path before collecting more stability evidence"
+    if review_decision == "semantic-instability":
+        return "inspect repeated-run outcome drift and resolve xpass or mixed semantic results before promotion"
     if review_decision == "incomplete":
         return review_command or "rerun the repeated probe review until every requested attempt produces an artifact"
     return "inspect the stability artifact and current docs before making a promotion claim"

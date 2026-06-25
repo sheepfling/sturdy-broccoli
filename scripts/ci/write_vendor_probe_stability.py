@@ -25,17 +25,22 @@ from hla.verification.repo_internal.verification.vendor_probe_stability import c
 
 
 def _load_attempts(path: Path) -> list[dict[str, int]]:
-    attempts: list[dict[str, int]] = []
+    attempts: list[dict[str, int | str]] = []
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         for row in reader:
-            attempts.append(
-                {
-                    "iteration": int(row["iteration"]),
-                    "exit_code": int(row["exit_code"]),
-                    "duration_seconds": int(row["duration_seconds"]),
-                }
-            )
+            attempt: dict[str, int | str] = {
+                "iteration": int(row["iteration"]),
+                "exit_code": int(row["exit_code"]),
+                "duration_seconds": int(row["duration_seconds"]),
+            }
+            stdout_path = row.get("stdout_path")
+            stderr_path = row.get("stderr_path")
+            if stdout_path:
+                attempt["stdout_path"] = stdout_path
+            if stderr_path:
+                attempt["stderr_path"] = stderr_path
+            attempts.append(attempt)
     return attempts
 
 
