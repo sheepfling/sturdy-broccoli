@@ -936,6 +936,8 @@ def test_pitch_top_level_wrapper_help_lists_best_effort_routes() -> None:
     assert "./tools/pitch smoke-best-effort" in result.stdout
     assert "./tools/pitch verify-best-effort" in result.stdout
     assert "./tools/pitch 202x-certify" in result.stdout
+    assert "./tools/pitch fom-smoke" in result.stdout
+    assert "./tools/pitch fom-smoke-compare" in result.stdout
 
 
 def test_pitch_top_level_wrapper_crc_macos_repro_is_reachable_from_outside_repo(tmp_path: Path) -> None:
