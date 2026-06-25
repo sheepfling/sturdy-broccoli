@@ -21,7 +21,7 @@ For IEEE 1516.1-2025 specifically, read that flow with one explicit ownership
 boundary in mind:
 
 - `hla-backend-python1516-2025` is the main executable RTI lane
-- `hla-backend-shim` is only the compatibility wrapper around that lane
+- `hla-backend-shim` is only the legacy compatibility shim around that lane
 - direct `python1516_2025` proof comes first
 - hosted FedPro proof is a bounded extension over the same runtime
 

@@ -66,7 +66,7 @@ The repo currently has two Python implementation lanes:
   [../packages/hla-backend-python1516e/README.md](../packages/hla-backend-python1516e/README.md)
 - 2025 primary Python RTI backend:
   [../packages/hla-backend-python1516-2025/README.md](../packages/hla-backend-python1516-2025/README.md)
-- 2025 compatibility-wrapper package:
+- 2025 legacy compatibility shim package:
   [../packages/hla-backend-shim/README.md](../packages/hla-backend-shim/README.md)
 
 Important distinction:

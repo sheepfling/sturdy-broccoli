@@ -18,7 +18,7 @@ FedPro route remains a transport-facing runtime slice over the same lane.
 
 - `hla-backend-python1516-2025` is the only main 2025 Python RTI implementation lane
   behind these rows.
-- `hla-backend-shim` remains a compatibility wrapper and is not a runtime owner
+- `hla-backend-shim` remains a legacy compatibility shim and is not a runtime owner
   for the binding rows above.
 - Java bridge packages and `hla-backend-cpp-shim` remain wrapper/binding
   surfaces over the main Python 2025 runtime rather than alternate 2025 RTIs.

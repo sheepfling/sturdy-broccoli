@@ -27,10 +27,9 @@ python3 -m pytest -q tests/runtime/test_real_rti.py
 Use this page when you want the exact local commands, not the broader status.
 
 For the primary 2025 Python RTI lane, interpret these commands through the
-audited `hla-backend-python1516-2025` runtime. `hla-backend-shim` is only
-temporary import-compatibility scaffolding plus
-compatibility-wrapper/import-compatibility code, and the hosted 2025 gRPC
-route is a bounded route variant rather than a separate RTI family.
+audited `hla-backend-python1516-2025` runtime. `hla-backend-shim` is only a
+legacy compatibility shim, and the hosted 2025 gRPC route is a bounded route
+variant rather than a separate RTI family.
 
 Use this operator rule consistently:
 

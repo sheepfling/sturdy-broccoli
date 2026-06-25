@@ -19,8 +19,7 @@ That means:
   `rti1516_2025`
 - `hla-backend-python1516-2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI
   implementation lane
-- `hla-backend-shim` remains only as temporary import-compatibility
-  scaffolding and wrapper-only compatibility support
+- `hla-backend-shim` remains only as a legacy compatibility shim
 - the repo is no longer relying on a shim-named package as the source of truth
 - the architecture should still preserve a clean enough seam that the shim can
   continue shrinking toward wrapper-only responsibilities
@@ -33,8 +32,7 @@ The actual lanes are:
 
 - `hla-backend-python1516e`: the 2010 pure-Python RTI backend
 - `hla-backend-python1516-2025`: the main full Python 2025 RTI implementation lane
-- `hla-backend-shim`: temporary import-compatibility scaffolding and a
-  wrapper-only compatibility package over that live runtime
+- `hla-backend-shim`: a legacy compatibility shim over that live runtime
 - `python1516_2025-fedpro-grpc`: a hosted route variant over the 2025 lane, not a
   separate RTI family
 - `hla-bridge-java-common`: Java 2025 binding-surface and artifact/intake
@@ -68,7 +66,7 @@ shell now fronts extracted runtime/state/surface modules such as:
 
 That split is part of the evidence story: core RTI semantics now land in the
 main `hla-backend-python1516-2025` package-owned runtime modules, while
-`hla-backend-shim` keeps only temporary import-compatibility scaffolding,
+`hla-backend-shim` keeps only legacy compatibility behavior,
 wrapper-only compatibility, and forwarder concerns.
 
 ## Audit Snapshot
@@ -286,7 +284,7 @@ working Python RTI surface, the strongest bounded claim is now:
 
 - the main `hla-backend-python1516-2025` runtime clears those named proof families
   across direct and hosted Python 2025 routes
-- `hla-backend-shim` remains a compatibility wrapper and should not be treated
+- `hla-backend-shim` remains a legacy compatibility shim and should not be treated
   as an implementation-owner proof bucket
 - Java/C++ and other wrapper lanes remain supporting seam evidence over the
   main Python 2025 runtime rather than alternate owners of the core 2025 RTI
@@ -436,7 +434,7 @@ That promotion is justified when the claim is phrased carefully:
 - the main full Python 2025 RTI implementation now runs from
   `hla-backend-python1516-2025`
 - `hla-backend-shim` is retained only as temporary import-compatibility
-  scaffolding and wrapper-only compatibility support over that runtime
+  legacy compatibility behavior over that runtime
 - it is the main full backend for bounded working-surface claims
 - direct and hosted proof should continue to stay green as the shim narrows
 

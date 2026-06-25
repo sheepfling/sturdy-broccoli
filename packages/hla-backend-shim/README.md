@@ -2,23 +2,20 @@
 
 ## What This Is
 
-`hla-backend-shim` is deprecated compatibility scaffolding for the 2025 Python
-runtime lane.
+`hla-backend-shim` is the legacy compatibility shim for the 2025 Python RTI
+lane.
 
-It remains temporary import-compatibility scaffolding only.
-It is kept only as temporary, test-backed import-compatibility scaffolding.
-
-It exists to preserve older imports and wrapper-facing compatibility while the
-real implementation lives in `hla-backend-python1516-2025`.
+It exists to preserve older imports and wrapper-facing aliases while the real
+implementation lives in `hla-backend-python1516-2025`.
 
 It is not part of the repo-owned 2025 Python RTI implementation claim.
-It is not the main full Python 2025 RTI runtime.
-It retains import-level wrapper-facing normalization only.
-It is the legacy compatibility-wrapper package and temporary import-compatibility scaffolding.
-The main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`.
-In short, the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`.
-This means the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`, not here.
-The architectural split that matters is already in place: `hla-backend-python1516-2025` is the real 2025 RTI runtime owner and the sole repo-owned 2025 Python RTI lane.
+It is not the main 2025 runtime.
+It should remain wrapper-only.
+
+The important split is already in place:
+
+- `hla-backend-python1516-2025` owns the real 2025 runtime
+- `hla-backend-shim` is the legacy compatibility layer in front of it
 
 ## What This Is Not
 
@@ -57,4 +54,4 @@ They should be removed once no callers depend on the legacy import paths.
 - [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
 - [`../../docs/plans/2025_python_rti_backend_audit.md`](../../docs/plans/2025_python_rti_backend_audit.md)
 
-Future work here is boundary cleanup and removal, not deciding whether a dedicated Python 2025 backend should exist.
+Future work here is boundary cleanup and removal, not new runtime ownership.

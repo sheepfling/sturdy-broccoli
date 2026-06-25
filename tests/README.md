@@ -4,8 +4,7 @@ Reserved for deterministic checks that are specific to the HLA 2010 workspace.
 
 The repo also carries the current IEEE 1516.1-2025 Python RTI lane. Treat
 `hla-backend-python1516-2025` as the main 2025 runtime behind those tests and treat
-`hla-backend-shim` only as a compatibility-wrapper/import-compatibility
-package.
+`hla-backend-shim` only as a legacy compatibility shim.
 
 ## Start Here
 

@@ -15,7 +15,7 @@ Those routes are related, but they are not identical claims.
   in-memory RTI
 - the 2025 route is a typed FedPro transport-hosted slice over the current
   `hla-backend-python1516-2025` implementation lane, with `hla-backend-shim`
-  retained only as compatibility-wrapper/import-compatibility code
+  retained only as a legacy compatibility shim
 
 If you need the architecture and evidence posture for that 2025 lane, read
 [`python_rti_backend.md`](python_rti_backend.md) and
@@ -79,7 +79,7 @@ lane.
 The relevant pieces are:
 
 - `packages/hla-backend-python1516-2025` for the main executable 2025 Python RTI lane
-- `packages/hla-backend-shim` for the temporary import-compatibility scaffolding package
+- `packages/hla-backend-shim` for the legacy compatibility shim package
 - `hla.transports.grpc.python_server_2025.start_2025_grpc_server(...)` for the
   hosted server helper
 - `GrpcTransport(GrpcTransportConfig(..., schema="rti1516_2025"))` for the
@@ -94,7 +94,7 @@ describe one runtime lane rather than separate ownership paths.
 Keep the ownership wording strict here:
 
 - use `python1516_2025` when naming the hosted 2025 route
-- treat `hla.backends.shim` as compatibility-wrapper code, not as the hosted
+- treat `hla.backends.shim` as legacy compatibility code, not as the hosted
   runtime lane
 - do not describe historical `shim`-named compatibility paths as the main 2025
   operator path

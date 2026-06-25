@@ -27,7 +27,7 @@ For the current 2025 implementation posture, use:
 
 Those pages record the bounded working-surface evidence for the current
 `hla-backend-python1516-2025` 2025 lane, with `hla-backend-shim` retained only as a
-compatibility-wrapper package, and the explicit promotion-versus-split decision
+legacy compatibility shim, and the explicit promotion-versus-split decision
 criteria.
 
 Use this file to answer:
@@ -45,7 +45,7 @@ for clause-level status.
 The repo now treats the 2025 Python RTI as a primary implementation lane:
 
 - `hla-backend-python1516-2025` for the main executable `rti1516_2025` backend
-- `hla-backend-shim` for legacy compatibility-wrapper/import-level support
+- `hla-backend-shim` for legacy compatibility support
 - `python1516_2025` for the direct runtime proof lane
 - `python1516_2025-fedpro-grpc` for the hosted FedPro route variant
 
@@ -127,7 +127,7 @@ Primary anchors:
 - `python1516_2025` is a first-class operator-facing runtime family in this repo,
   not a provisional alias. Use it as the primary IEEE 1516.1-2025 Python RTI
   lane.
-- `hla-backend-shim` remains only as compatibility-wrapper/import-level code
+- `hla-backend-shim` remains only as a legacy compatibility shim
   around `python1516_2025`; it is not a separate 2025 RTI family or public runtime
   lane.
 - `python1516_2025-fedpro-grpc` is the bounded hosted route over the same

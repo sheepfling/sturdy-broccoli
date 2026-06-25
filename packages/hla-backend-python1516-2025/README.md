@@ -5,8 +5,6 @@
 `hla-backend-python1516-2025` owns the main full Python 2025 RTI runtime.
 
 It is the main full Python RTI backend for IEEE 1516.1-2025.
-It is the main full Python RTI backend package for IEEE 1516.1-2025.
-This package now owns the main full Python 2025 RTI runtime.
 
 This is the promoted Python-owned 2025 RTI implementation lane where 2025
 runtime semantics actually execute.
@@ -21,7 +19,7 @@ It is not:
 - an alternate route family beside itself
 
 `hla-rti1516-2025` owns the standard-facing API surface.
-`hla-backend-shim` is compatibility scaffolding and should stay wrapper-only.
+`hla-backend-shim` is the legacy compatibility shim and should stay wrapper-only.
 
 ## When To Open It
 
@@ -63,6 +61,6 @@ Current status:
 - discoverable as backend `python1516_2025`
 - executes the main 2025 runtime directly
 - is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane
-- `hla-backend-shim` package is deprecated compatibility scaffolding for older route and provider names that should be removed after migration
+- `hla-backend-shim` remains only as a legacy compatibility shim for older route and provider names
 - must not delegate runtime ownership back to `hla-backend-shim`
 - must not delegate back to `hla.backends.shim.backend.create_shim_backend`

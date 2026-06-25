@@ -49,7 +49,7 @@ hla-rti1516e
 
 hla-rti1516-2025
   <- hla-backend-python1516-2025
-  <- hla-backend-shim (deprecated compatibility scaffolding over hla-backend-python1516-2025)
+  <- hla-backend-shim (legacy compatibility shim over hla-backend-python1516-2025)
   <- hla-fom-target-radar
 
 hla-bridge-java-jpype + hla-bridge-java-py4j
@@ -70,9 +70,9 @@ Rules for the split:
 - `hla-backend-python1516-2025` is the main full Python 2025 RTI backend and the
   main full Python 2025 RTI implementation lane. It registers
   `python1516_2025` for `rti1516_2025`.
-- `hla-backend-shim` is deprecated temporary import-compatibility scaffolding.
-  Its helper modules should remain wrapper-only compatibility aliases over
-  `hla.backends.python1516_2025.*`, without reclaiming public runtime-selection
+- `hla-backend-shim` is a legacy compatibility shim.
+  Its helper modules should remain wrapper-only aliases over
+  `hla.backends.python1516_2025.*`, without reclaiming runtime-selection
   ownership from `hla-backend-python1516-2025`, and should be removed after
   migration.
 - the bounded hosted 2025 FedPro route is a route variant over

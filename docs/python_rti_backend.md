@@ -21,7 +21,7 @@ It contains:
 
 - a 2010 pure Python RTI backend: `hla-backend-python1516e`
 - a primary 2025 Python RTI backend: `hla-backend-python1516-2025`
-- a legacy 2025 compatibility-wrapper package: `hla-backend-shim`
+- a legacy 2025 compatibility shim package: `hla-backend-shim`
 - hosted 2025 transport routes, such as `python1516_2025-fedpro-grpc`, that are
   route variants over the 2025 lane rather than a separate RTI
 
@@ -41,9 +41,8 @@ The important distinction is architectural, not naming-based:
   the repo's real and sole repo-owned Python RTI implementation lane for
   `rti1516_2025`
 - the main full runtime now executes from `hla-backend-python1516-2025`
-- `hla-backend-shim` remains as a compatibility wrapper so legacy import paths
-  and wrapper-facing normalization do not get confused with core RTI
-  ownership
+- `hla-backend-shim` remains as a legacy compatibility shim so old imports do
+  not get confused with core RTI ownership
 
 That runtime is no longer concentrated in one monolithic backend file. The
 current package shape uses a thin public `backend.py` shell plus focused
@@ -66,8 +65,8 @@ ownership.
   stays in `hla-backend-python1516-2025`
 
 But the repo no longer treats it as the implementation owner. The verification
-surface now exercises the primary runtime in `hla-backend-python1516-2025`, while
-retaining `hla-backend-shim` as a compatibility surface.
+surface now exercises the primary runtime in `hla-backend-python1516-2025`,
+while retaining `hla-backend-shim` only as a compatibility surface.
 
 That separation applies to hosted operator paths too: the maintained 2025
 transport-hosted lane is named and evidenced as `python1516_2025`, while
@@ -78,7 +77,7 @@ That means the practical repo stance is:
 
 - current reality: `hla-backend-python1516-2025` is the main full Python 2025 RTI implementation lane
 - ownership reality: `hla-backend-python1516-2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane
-- compatibility reality: `hla-backend-shim` is a legacy wrapper over that lane
+- compatibility reality: `hla-backend-shim` is a legacy compatibility shim over that lane
 - architectural caution: do not collapse shim concerns and RTI concerns so
   tightly that a later extraction becomes impossible
 
@@ -474,7 +473,7 @@ layer.
 Based on the current repo evidence, the practical recommendation is:
 
 - treat `hla-backend-python1516-2025` as the repo's main full executable Python 2025 RTI implementation
-- keep `hla-backend-shim` as compatibility-wrapper/import-compatibility code
+- keep `hla-backend-shim` as a legacy compatibility shim
 - continue proving behavior against the live backend while keeping wrapper and RTI ownership separate
 - preserve a clean enough internal boundary that later wrapper narrowing or
   extraction remains possible

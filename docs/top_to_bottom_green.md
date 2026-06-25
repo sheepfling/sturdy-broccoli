@@ -31,7 +31,7 @@ Required outcome:
 - the workspace installs in editable mode
 - the pure Python 2010 backend runs
 - the main full Python 2025 RTI lane runs from `hla-backend-python1516-2025`
-- `hla-backend-shim` remains only a compatibility-wrapper/import-compatibility package
+- `hla-backend-shim` remains only a legacy compatibility shim
 - the example federate path runs
 
 Canonical commands:

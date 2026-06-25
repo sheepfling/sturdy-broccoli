@@ -8,7 +8,7 @@ environment exists. Do not do that.
 For IEEE 1516.1-2025 work, also keep this boundary explicit:
 
 - `hla-backend-python1516-2025` is the main executable 2025 RTI lane
-- `hla-backend-shim` is only a compatibility-wrapper/import-compatibility package over that runtime
+- `hla-backend-shim` is only a legacy compatibility shim over that runtime
 - hosted 2025 FedPro work is a bounded route variant, not a separate RTI family
 
 ## First Sequence

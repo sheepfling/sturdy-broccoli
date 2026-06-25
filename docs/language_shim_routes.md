@@ -31,7 +31,7 @@ For the 2025 lane specifically:
   `cpp-standard-2025-pybind`, and `cpp-standard-2025-grpc` are binding routes,
   not separate RTIs
 - those routes execute over the primary `hla-backend-python1516-2025` runtime lane
-- `hla-backend-shim` remains only a compatibility-wrapper package where older
+- `hla-backend-shim` remains only a legacy compatibility shim where older
   import paths or wrapper-shaped entry points still exist
 
 `java-standard-2010-jpype` and `java-standard-2010-py4j` are real plugin

@@ -75,7 +75,7 @@ backend-neutral ambassador surface.
 
 - `packages/hla-backend-python1516e/src/hla/backends/python1516e/`: canonical pure in-memory RTI backend implementation package.
 - `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/`: main full Python-owned IEEE 1516.1-2025 RTI implementation package.
-- `packages/hla-backend-shim/src/hla/backends/shim/`: maintained compatibility-wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`.
+- `packages/hla-backend-shim/src/hla/backends/shim/`: legacy compatibility shim that delegates runtime semantics to `hla-backend-python1516-2025`.
 - `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py`, `backend_factory_runtime.py`, `runtime_state.py`, `*_runtime.py`, and `*_surface_mixin.py`: thin public shell plus the focused runtime/state/surface split that now carries the main 2025 RTI implementation.
 - `packages/hla-backend-python1516e/src/hla/backends/python1516e/state.py`, `engine.py`, `reporting.py`: shared backend state, handle registry, and service-report support.
 - `packages/hla-backend-python1516e/src/hla/backends/python1516e/federation.py`, `federation_lifecycle.py`, `federation_sync.py`: federation lifecycle and synchronization services.
@@ -159,7 +159,7 @@ The current package set is:
 | `hla-bridge-java-common` | vendor/common | `hla-rti1516e`, `hla-backend-common` | python backend, transport, leaf packages |
 | `hla-backend-python1516e` | backend | `hla-rti1516e`, `hla-backend-common` | java-common, vendor, transport, leaf packages |
 | `hla-backend-python1516-2025` | backend | `hla-rti1516-2025`, `hla-backend-common`, `hla-rti-core` | shim backflow, vendor, transport, leaf packages |
-| `hla-backend-shim` | compatibility-wrapper | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python1516-2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |
+| `hla-backend-shim` | legacy-compatibility | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python1516-2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |
 | `hla-backend-certi` | backend | `hla-rti1516e`, `hla-bridge-java-common`, `hla-rti-core` | python backend, transport, leaf packages |
 | `hla-bridge-java-jpype` | backend | `hla-rti1516e`, `hla-bridge-java-common` | python backend, transport, leaf packages |
 | `hla-bridge-java-py4j` | backend | `hla-rti1516e`, `hla-bridge-java-common` | python backend, transport, leaf packages |

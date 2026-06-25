@@ -18,7 +18,7 @@ The stricter package dependency rules live in
 For the primary 2025 Python RTI implementation lane, keep the ownership split explicit:
 
 - `hla-backend-python1516-2025` is the main full Python-owned IEEE 1516.1-2025 RTI implementation package
-- `hla-backend-shim` is only an import-level compatibility-wrapper package over that runtime
+- `hla-backend-shim` is only a legacy compatibility shim over that runtime
 - Java/C++ 2025 binding routes remain segregated non-Python binding/capability lanes and should not be counted as alternate Python RTIs or as implementation-owner proof for the main Python 2025 lane
 
 These facade modules are package-owned import paths under the shared PEP 420
@@ -112,7 +112,7 @@ application APIs.
 
 For IEEE 1516.1-2025 specifically, the main executable Python RTI lane is
 `hla-backend-python1516-2025`. `hla-backend-shim` remains only as
-compatibility-wrapper/import-level code and should not be treated as the
+legacy compatibility code and should not be treated as the
 runtime owner.
 
 The remaining documented version-local facade is intentionally narrow:
