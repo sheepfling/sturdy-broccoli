@@ -1,6 +1,7 @@
 """Entry point descriptor for the Pitch JPype RTI backend."""
 from __future__ import annotations
 
+from dataclasses import replace
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -9,6 +10,19 @@ from hla.rti.plugin_api import BackendRequest
 from hla.bridges.java.common import BackendInfo, BackendUnavailableError, RTIBackendPlugin
 
 from .factory import create_jpype_backend
+
+
+def _pitch_native_202x_details(*, bridge: str, home: str, surface: str) -> dict[str, Any]:
+    return {
+        "spec": "rti1516_2025",
+        "vendor_surface": "hla.rti1516_202X",
+        "bridge": bridge,
+        "pitch_home": home,
+        "native_hla4": True,
+        "surface_mode": surface,
+        "bridge_ready": False,
+        "counts_as_vendor_runtime": surface == "fedpro",
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,6 +98,21 @@ def _discover_pitch_202x_runtime() -> BackendInfo | None:
     )
 
 
+def _discover_pitch_native_202x_runtime() -> BackendInfo | None:
+    runtime = _discover_pitch_runtime()
+    if runtime is None:
+        return None
+    return BackendInfo(
+        name="pitch-native-202x-jpype",
+        kind="vendor/pitch/java-202x-native/jpype",
+        details={
+            **dict(runtime.details),
+            **_pitch_native_202x_details(bridge="jpype", home=str(runtime.details["home"]), surface="direct"),
+            "supported_surface_modes": ("direct", "fedpro"),
+        },
+    )
+
+
 def _pitch_jpype_backend_factory(request: BackendRequest):
     options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
     from hla.vendors.pitch import discover_pitch_runtime, pitch_fedpro_local_settings_designator
@@ -105,6 +134,51 @@ def _pitch_202x_jpype_backend_factory(request: BackendRequest):
     pitch_home = options.pop("pitch_home", None)
     runtime = discover_pitch_runtime(pitch_home)
     return _Pitch202XJPypeAdapterBackend(request, home=str(runtime.home))
+
+
+def _pitch_native_202x_jpype_backend_factory(request: BackendRequest):
+    if request.spec.name != "rti1516_2025":
+        raise ValueError(f"pitch-native-202x-jpype only supports HLA spec {request.spec.name!r}")
+    options: dict[str, Any] = dict(request.options if hasattr(request, "options") else request)
+    from hla.vendors.pitch import (
+        discover_pitch_runtime,
+        pitch_hla4_direct_classpath,
+        pitch_hla4_fedpro_classpath,
+        pitch_fedpro_local_settings_designator,
+    )
+
+    pitch_home = options.pop("pitch_home", None)
+    runtime = discover_pitch_runtime(pitch_home)
+    surface = str(options.pop("surface", "direct")).strip().lower().replace("_", "-")
+    if surface not in {"direct", "fedpro"}:
+        raise ValueError(f"Unsupported native Pitch HLA4 surface {surface!r}; expected 'direct' or 'fedpro'")
+    classpath = pitch_hla4_direct_classpath(runtime) if surface == "direct" else pitch_hla4_fedpro_classpath(runtime)
+    base_config = runtime.jpype_config(**options)
+    rti_factory_name = options.get("rti_factory_name")
+    if rti_factory_name is None and surface == "fedpro":
+        rti_factory_name = "Federate Protocol"
+    config = replace(
+        base_config,
+        classpath=tuple(str(path) for path in classpath),
+        rti_factory_name=rti_factory_name,
+        connect_local_settings_designator=(
+            pitch_fedpro_local_settings_designator() if surface == "fedpro" else options.get("connect_local_settings_designator")
+        ),
+        java_api_profile="202X",
+    )
+    backend = create_jpype_backend(config)
+    backend.info = BackendInfo(
+        name="pitch-native-202x-jpype",
+        kind="vendor/pitch/java-202x-native/jpype",
+        version=backend.info.version,
+        details={
+            **dict(backend.info.details),
+            **_pitch_native_202x_details(bridge="jpype", home=str(runtime.home), surface=surface),
+            "classpath": [str(path) for path in classpath],
+            "supported_surface_modes": ("direct", "fedpro"),
+        },
+    )
+    return backend
 
 
 def pitch_jpype_plugin() -> RTIBackendPlugin:
@@ -135,6 +209,15 @@ def backend_plugins() -> tuple[RTIBackendPlugin, ...]:
             create_backend=_pitch_202x_jpype_backend_factory,
             discover=_discover_pitch_202x_runtime,
         ),
+        RTIBackendPlugin(
+            supports=("rti1516_2025",),
+            name="pitch-native-202x-jpype",
+            aliases=("java-pitch-native-202x-jpype",),
+            family="pitch/java-202x-native",
+            description="Pitch native HLA4 Java surface exposed directly through JPype.",
+            create_backend=_pitch_native_202x_jpype_backend_factory,
+            discover=_discover_pitch_native_202x_runtime,
+        ),
     )
 
 
@@ -142,4 +225,8 @@ def pitch_202x_plugin() -> RTIBackendPlugin:
     return backend_plugins()[1]
 
 
-__all__ = ["backend_plugins", "pitch_202x_plugin", "pitch_jpype_plugin", "plugin"]
+def pitch_native_202x_plugin() -> RTIBackendPlugin:
+    return backend_plugins()[2]
+
+
+__all__ = ["backend_plugins", "pitch_202x_plugin", "pitch_jpype_plugin", "pitch_native_202x_plugin", "plugin"]

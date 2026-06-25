@@ -74,6 +74,31 @@ class PitchRuntime:
         ]
 
 
+def pitch_hla4_direct_classpath(runtime: PitchRuntime) -> tuple[Path, ...]:
+    """Return the smallest native HLA4 Java API classpath."""
+    jar_path = runtime.home / "lib" / "prti1516_202X.jar"
+    if not jar_path.is_file():
+        raise BackendUnavailableError(f"Pitch HLA4 direct jar is missing: {jar_path}")
+    return (jar_path,)
+
+
+def pitch_hla4_fedpro_classpath(runtime: PitchRuntime) -> tuple[Path, ...]:
+    """Return the native HLA4 FedPro client classpath."""
+    jar_names = (
+        "fedpro-client-hla4.jar",
+        "fedpro-session.jar",
+        "protobuf-java-3.21.7.jar",
+        "protobuf.jar",
+        "slf4j-api-2.0.5.jar",
+        "slf4j-nop-2.0.5.jar",
+    )
+    paths = tuple(runtime.home / "lib" / name for name in jar_names)
+    missing = [str(path) for path in paths if not path.is_file()]
+    if missing:
+        raise BackendUnavailableError(f"Pitch HLA4 FedPro jars are missing: {', '.join(missing)}")
+    return paths
+
+
 @dataclass(frozen=True)
 class PitchLicenseRecord:
     license_id: str
@@ -467,6 +492,47 @@ def launch_pitch_py4j_gateway(
     )
 
 
+def launch_pitch_hla4_py4j_gateway(
+    *,
+    pitch_home: str | os.PathLike[str] | None = None,
+    port: int = 25333,
+    die_on_exit: bool = True,
+    return_proc: bool = False,
+    surface: str = "direct",
+):
+    """Launch a Py4J gateway JVM with the native Pitch HLA4 jars on its classpath."""
+    try:
+        from py4j.java_gateway import launch_gateway
+    except Exception as exc:
+        raise BackendUnavailableError("Py4J is not installed") from exc
+
+    runtime = discover_pitch_runtime(pitch_home)
+    ensure_java_home()
+    java_path = discover_java_tool("java")
+    if surface == "direct":
+        classpath_entries = pitch_hla4_direct_classpath(runtime)
+    elif surface == "fedpro":
+        classpath_entries = pitch_hla4_fedpro_classpath(runtime)
+    else:
+        raise BackendUnavailableError(f"Unsupported native Pitch HLA4 surface {surface!r}; expected 'direct' or 'fedpro'")
+    classpath = os.pathsep.join(str(item) for item in classpath_entries)
+    user_home = prepare_pitch_user_home(runtime)
+    javaopts = [
+        f"-Duser.home={user_home}",
+        f"-Djava.library.path={os.pathsep.join(str(item) for item in runtime.java_library_path)}",
+        "-Dse.pitch.prti1516e.useSystemWideLicenseFile=true",
+    ]
+    os.environ["HLA2010_PITCH_USER_HOME"] = str(user_home)
+    return launch_gateway(
+        port=port,
+        classpath=classpath,
+        java_path=java_path,
+        die_on_exit=die_on_exit,
+        javaopts=javaopts,
+        return_proc=return_proc,
+    )
+
+
 def launch_pitch_runtime(
     *,
     pitch_home: str | os.PathLike[str] | None = None,
@@ -652,8 +718,11 @@ __all__ = [
     "discover_pitch_runtime",
     "list_pitch_licenses",
     "prepare_pitch_user_home",
+    "pitch_hla4_direct_classpath",
+    "pitch_hla4_fedpro_classpath",
     "pitch_connect_local_settings_designator",
     "pitch_fedpro_local_settings_designator",
+    "launch_pitch_hla4_py4j_gateway",
     "launch_pitch_py4j_gateway",
     "launch_pitch_runtime",
     "_parse_pitch_license_list",

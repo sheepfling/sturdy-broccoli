@@ -70,6 +70,7 @@ Example:
 | Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
 | CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
 | Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
+| Pitch pRTI native HLA4 | real vendor HLA4 Java surface through JPype or Py4J | `pitch-native-202x-jpype`, `pitch-native-202x-py4j` | native 202X/HLA4 route spike; direct and FedPro surface modes now wired |
 | Portico | real vendor runtime through Java adapters | `portico-jpype`, `portico-py4j` | wiring exists; use only if a real local Portico install is present |
 
 For CERTI specifically, keep two runtime baselines distinct:
@@ -145,6 +146,12 @@ These are only useful when you provide a Java RTI configuration explicitly.
 - `java-pitch-jpype`
 - `pitch-jpype`
 
+- `java-pitch-native-202x-jpype`
+- `pitch-native-202x-jpype`
+
+- `java-pitch-native-202x-py4j`
+- `pitch-native-202x-py4j`
+
 - `java-pitch-py4j`
 - `pitch-py4j`
 
@@ -205,7 +212,8 @@ Use this simpler classification in practice:
 | Python RTI 2025 | `python1516_2025`, `python-1516-2025`, `python-1516-2025` |
 | Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
 | Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
-| Real Pitch | `pitch-jpype`, `pitch-py4j` |
+| Real Pitch 2010/FedPro adapter lane | `pitch-jpype`, `pitch-py4j` |
+| Real Pitch native HLA4 lane | `pitch-native-202x-jpype`, `pitch-native-202x-py4j` |
 | Real Portico | `portico-jpype`, `portico-py4j` |
 
 That is the easiest level for planning and reporting.
@@ -229,6 +237,8 @@ This is the practical matrix to use when deciding what to run.
 | Python RTI hosted | none | `rest` | yes | yes | not yet explicit | not yet explicit | not yet explicit | no |
 | Pitch | JPype | none | yes | yes | yes | yes | bridge-divergent | yes |
 | Pitch | Py4J | none | yes | yes | yes | yes | bridge-divergent | yes |
+| Pitch native HLA4 | JPype | direct or FedPro | smoke | smoke | not yet explicit | not yet explicit | no | yes |
+| Pitch native HLA4 | Py4J | direct or FedPro | smoke | smoke | not yet explicit | not yet explicit | no | yes |
 | Portico | JPype | none | install-dependent | install-dependent | install-dependent | install-dependent | no | yes |
 | Portico | Py4J | none | install-dependent | install-dependent | install-dependent | install-dependent | no | yes |
 

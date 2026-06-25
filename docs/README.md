@@ -69,6 +69,8 @@ If you already know what you need, pick a lane:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
+- investigate a native Pitch HLA4/202X route beyond the current adapter-backed 2025 path:
+  [`pitch_hla4_native_investigation.md`](pitch_hla4_native_investigation.md)
 - keep the 2010 and 2025 Python routes structurally similar:
   [`python_route_wrapping_guide.md`](python_route_wrapping_guide.md)
 - extend ambassador connection or wire-format routes without changing RTI semantics:
@@ -106,6 +108,7 @@ Use these when you need structure, not onboarding:
 - [extending_ambassador_transports.md](extending_ambassador_transports.md): one-page guide to in-process vs remote routes, transport seams, and where to extend ambassador connection or wire-format logic
 - [transport_extension_playbook.md](transport_extension_playbook.md): concrete implementation playbook for variant `grpc` layers, new transport kinds, and hosted route adapters
 - [python_route_wrapping_guide.md](python_route_wrapping_guide.md): keep 2010 and 2025 Python wrapper examples aligned at the factory/import edge
+- [pitch_hla4_native_investigation.md](pitch_hla4_native_investigation.md): spike map for native Pitch HLA4/202X JPype and Py4J routes beyond the current adapter-backed 2025 path
 - [federation_orchestration.md](federation_orchestration.md): startup order, `ReadyToRun` synchronization, callback pumping, local execution topology, parallelism limits, and the performance tradeoff between deterministic proof lanes and higher-throughput routes
 - [`package_layout.md`](package_layout.md): package ownership map
 - [`repo_mental_model.md`](repo_mental_model.md): shortest explanation of the layers

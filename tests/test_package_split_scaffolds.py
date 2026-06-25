@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / "packages"
+ICLOUD_DUPLICATE_SUFFIX = re.compile(r" \d+(?=\.[^.]+$|$)")
 
 
 @dataclass(frozen=True)
@@ -58,8 +59,8 @@ EXPECTED_PACKAGES = {
     "hla-bridge-java-jpype": PackageExpectation("java-bridge", frozenset({"jpype"}), "implementation-moved"),
     "hla-bridge-java-py4j": PackageExpectation("java-bridge", frozenset({"py4j"}), "implementation-moved"),
     "hla-vendor-pitch": PackageExpectation("runtime-common", frozenset(), "implementation-moved"),
-    "hla-vendor-pitch-jpype": PackageExpectation("rti-backend", frozenset({"pitch-jpype", "pitch-202x-jpype"}), "implementation-moved"),
-    "hla-vendor-pitch-py4j": PackageExpectation("rti-backend", frozenset({"pitch-py4j", "pitch-202x-py4j"}), "implementation-moved"),
+    "hla-vendor-pitch-jpype": PackageExpectation("rti-backend", frozenset({"pitch-jpype", "pitch-202x-jpype", "pitch-native-202x-jpype"}), "implementation-moved"),
+    "hla-vendor-pitch-py4j": PackageExpectation("rti-backend", frozenset({"pitch-py4j", "pitch-202x-py4j", "pitch-native-202x-py4j"}), "implementation-moved"),
     "hla-vendor-portico": PackageExpectation(
         "rti-backend",
         frozenset({"portico-jpype", "portico-py4j"}),
@@ -148,6 +149,7 @@ def _live_rti1516e_package_files() -> set[str]:
         path.relative_to(root).as_posix()
         for path in root.iterdir()
         if path.is_file()
+        and not ICLOUD_DUPLICATE_SUFFIX.search(path.name)
     }
 
 
@@ -157,6 +159,7 @@ def _live_rti1516_2025_package_files() -> set[str]:
         path.relative_to(root).as_posix()
         for path in root.iterdir()
         if path.is_file()
+        and not ICLOUD_DUPLICATE_SUFFIX.search(path.name)
     }
 
 
@@ -919,9 +922,11 @@ def test_package_split_pyprojects_have_expected_boundaries():
         if package_name == "hla-vendor-pitch-jpype":
             assert entry_points["pitch-jpype"] == "hla.vendors.pitch.jpype.plugin:plugin"
             assert entry_points["pitch-202x-jpype"] == "hla.vendors.pitch.jpype.plugin:pitch_202x_plugin"
+            assert entry_points["pitch-native-202x-jpype"] == "hla.vendors.pitch.jpype.plugin:pitch_native_202x_plugin"
         if package_name == "hla-vendor-pitch-py4j":
             assert entry_points["pitch-py4j"] == "hla.vendors.pitch.py4j.plugin:plugin"
             assert entry_points["pitch-202x-py4j"] == "hla.vendors.pitch.py4j.plugin:pitch_202x_plugin"
+            assert entry_points["pitch-native-202x-py4j"] == "hla.vendors.pitch.py4j.plugin:pitch_native_202x_plugin"
         if package_name == "hla-vendor-portico":
             assert entry_points["portico-jpype"] == "hla.vendors.portico.plugin:portico_jpype_plugin"
             assert entry_points["portico-py4j"] == "hla.vendors.portico.plugin:portico_py4j_plugin"

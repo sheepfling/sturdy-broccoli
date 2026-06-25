@@ -4,6 +4,8 @@ from pathlib import Path
 
 from hla.vendors.pitch import (
     PitchRuntime,
+    pitch_hla4_direct_classpath,
+    pitch_hla4_fedpro_classpath,
     launch_pitch_two_federate_profile,
     pitch_fedpro_local_settings_designator,
 )
@@ -26,8 +28,10 @@ def test_split_pitch_common_package_exports_runtime_helpers():
 
 
 def test_pitch_plugins_import_common_runtime_helpers():
+    from hla.vendors.pitch.jpype.plugin import pitch_native_202x_plugin as jpype_native_202x_plugin
     from hla.vendors.pitch.jpype.plugin import pitch_202x_plugin as jpype_202x_plugin
     from hla.vendors.pitch.jpype.plugin import plugin as jpype_plugin
+    from hla.vendors.pitch.py4j.plugin import pitch_native_202x_plugin as py4j_native_202x_plugin
     from hla.vendors.pitch.py4j.plugin import pitch_202x_plugin as py4j_202x_plugin
     from hla.vendors.pitch.py4j.plugin import plugin as py4j_plugin
 
@@ -35,6 +39,42 @@ def test_pitch_plugins_import_common_runtime_helpers():
     assert py4j_plugin().name == "pitch-py4j"
     assert jpype_202x_plugin().name == "pitch-202x-jpype"
     assert py4j_202x_plugin().name == "pitch-202x-py4j"
+    assert jpype_native_202x_plugin().name == "pitch-native-202x-jpype"
+    assert py4j_native_202x_plugin().name == "pitch-native-202x-py4j"
+
+
+def test_pitch_hla4_classpath_helpers_split_direct_and_fedpro_surfaces(tmp_path: Path):
+    runtime = PitchRuntime(
+        home=tmp_path / "pitch",
+        java_home=tmp_path / "java-home",
+        classpath=(tmp_path / "lib" / "pitch.jar",),
+        java_library_path=(tmp_path / "lib",),
+    )
+    lib_dir = runtime.home / "lib"
+    lib_dir.mkdir(parents=True)
+    (lib_dir / "prti1516_202X.jar").write_text("", encoding="utf-8")
+    for name in (
+        "fedpro-client-hla4.jar",
+        "fedpro-session.jar",
+        "protobuf-java-3.21.7.jar",
+        "protobuf.jar",
+        "slf4j-api-2.0.5.jar",
+        "slf4j-nop-2.0.5.jar",
+    ):
+        (lib_dir / name).write_text("", encoding="utf-8")
+
+    direct = pitch_hla4_direct_classpath(runtime)
+    fedpro = pitch_hla4_fedpro_classpath(runtime)
+
+    assert [path.name for path in direct] == ["prti1516_202X.jar"]
+    assert [path.name for path in fedpro] == [
+        "fedpro-client-hla4.jar",
+        "fedpro-session.jar",
+        "protobuf-java-3.21.7.jar",
+        "protobuf.jar",
+        "slf4j-api-2.0.5.jar",
+        "slf4j-nop-2.0.5.jar",
+    ]
 
 
 def test_launch_pitch_py4j_gateway_can_return_process_handle(monkeypatch, tmp_path: Path):

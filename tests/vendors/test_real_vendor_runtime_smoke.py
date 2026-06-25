@@ -8,6 +8,10 @@ import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.common import BackendUnavailableError
+from hla.rti1516_2025 import CallbackModel as CallbackModel2025
+from hla.rti1516_2025 import RtiConfiguration as RtiConfiguration2025
+from hla.rti1516_2025.federate_ambassador import NullFederateAmbassador as NullFederateAmbassador2025
+from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
 from hla.rti1516e.enums import ResignAction
 from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.datatypes import RangeBounds
@@ -23,7 +27,7 @@ from hla.verification import (
 )
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla.backends.certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
-from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
+from hla.vendors.pitch.real_rti_pitch import discover_pitch_runtime, launch_pitch_runtime
 from tests.vendors.runtime_support import (
     cleanup_federation,
     isolated_vendor_runtime_test_state,
@@ -112,6 +116,44 @@ def test_certi_real_lifecycle_smoke():
             assert summary["federate_handle"] is not None
         finally:
             shutdown_runtime_resources(close_resources=(rti,))
+
+
+@pytest.mark.parametrize(
+    ("backend_name", "surface"),
+    (
+        ("pitch-native-202x-jpype", "direct"),
+        ("pitch-native-202x-jpype", "fedpro"),
+        ("pitch-native-202x-py4j", "direct"),
+        ("pitch-native-202x-py4j", "fedpro"),
+    ),
+)
+def test_pitch_native_202x_real_connect_smoke(backend_name: str, surface: str) -> None:
+    _require_real_rti_smoke("pitch")
+    with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=f"{backend_name}-{surface}")):
+        runtime_process = None
+        rti = None
+        try:
+            runtime_process = launch_pitch_runtime()
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+
+        try:
+            pitch_runtime = discover_pitch_runtime()
+            rti = create_2025_rti_ambassador(backend=backend_name, surface=surface)
+            assert "202" in rti.getHLAversion()
+            assert rti.backend_info.details["spec"] == "rti1516_2025"
+            assert rti.backend_info.details["vendor_surface"] == "hla.rti1516_202X"
+            assert rti.backend_info.details["native_hla4"] is True
+            assert rti.backend_info.details["surface_mode"] == surface
+            assert rti.backend_info.details["pitch_home"] == str(pitch_runtime.home)
+            rti.connect(
+                NullFederateAmbassador2025(),
+                CallbackModel2025.HLA_IMMEDIATE,
+                RtiConfiguration2025.createConfiguration().withRtiAddress("localhost"),
+            )
+            rti.disconnect()
+        finally:
+            shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime_process,))
 
 
 def test_certi_real_exchange_smoke():

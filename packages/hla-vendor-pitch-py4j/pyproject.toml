@@ -16,6 +16,7 @@ test = ["pytest"]
 [project.entry-points."hla.rti_backends"]
 pitch-py4j = "hla.vendors.pitch.py4j.plugin:plugin"
 pitch-202x-py4j = "hla.vendors.pitch.py4j.plugin:pitch_202x_plugin"
+pitch-native-202x-py4j = "hla.vendors.pitch.py4j.plugin:pitch_native_202x_plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -28,8 +29,8 @@ namespaces = true
 [tool.hla.package]
 status = "implementation-moved"
 role = "rti-backend"
-backend_names = ["pitch-py4j", "pitch-202x-py4j"]
-backend_aliases = ["java-pitch-py4j", "java-pitch-202x-py4j"]
+backend_names = ["pitch-py4j", "pitch-202x-py4j", "pitch-native-202x-py4j"]
+backend_aliases = ["java-pitch-py4j", "java-pitch-202x-py4j", "java-pitch-native-202x-py4j"]
 source_roots = [
   "packages/hla-vendor-pitch-py4j/src/hla/vendors/pitch/py4j",
 ]
