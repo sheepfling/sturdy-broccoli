@@ -12,6 +12,26 @@ Scope:
   - `pitch-202x-jpype`
   - `pitch-202x-py4j`
 
+## Requirement-Facing Anchors
+
+These adapter-backed rows are still bounded route evidence, not native vendor
+2025 conformance rows.
+
+Use the nearest existing anchors instead:
+
+- `repo-2010-demo` contrast with the real Pitch runtime still speaks to the
+  `createFederationExecution` (`§4.5`) / `joinFederationExecution` (`§4.9`)
+  parse surface because the real vendor runtime is where `ErrorReadingFDD`
+  occurs
+- `space-fom-core` still lands on `getInteractionClassHandle` (`§10.15`) with
+  `NameNotFound`
+
+Current traceability boundary:
+
+- this note explains bounded adapter contrast against the Python RTI baseline
+- it does not create a new dedicated generated requirement row for the
+  `pitch-202x-*` FOM packet lane
+
 ## Claim boundary
 
 These are explicit adapter-backed results.
@@ -64,3 +84,8 @@ Observed captured message:
 Operator explanation:
 - even through the explicit `pitch-202x-*` adapter routes, the current probe
   still cannot resolve `ReferenceFrameAnnouncement` in the Space FOM family
+
+Nearest requirement-facing anchor:
+- `§10.15` `getInteractionClassHandle`
+- explicit exception surface:
+  - `NameNotFound`

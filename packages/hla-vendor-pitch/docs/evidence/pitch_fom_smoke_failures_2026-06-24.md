@@ -12,6 +12,30 @@ Scope:
   - `pitch-jpype`
   - `pitch-py4j`
 
+## Requirement-Facing Anchors
+
+These packet failures are requirement-relevant, but they do not yet map to one
+clean generated "Pitch FOM family" requirement row.
+
+Use the nearest existing anchors instead:
+
+- `repo-2010-demo` parse failure:
+  - closest service anchors are `createFederationExecution` (`§4.5`) and
+    `joinFederationExecution` (`§4.9`)
+  - `ErrorReadingFDD` is an allowed exception surface on both services; see
+    `packages/hla-rti1516e/SOURCE_TRACE.md`
+- `space-fom-core` lookup failure:
+  - closest service anchor is `getInteractionClassHandle` (`§10.15`)
+  - `NameNotFound` is an allowed exception surface there; see
+    `packages/hla-rti1516e/SOURCE_TRACE.md`
+
+Current traceability boundary:
+
+- these notes are vendor-divergence evidence for FOM-backed executable packets
+- they are not yet dedicated generated requirement rows for those packet IDs
+- the Python-owned bounded scenario note remains
+  `docs/requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md`
+
 ## Summary
 
 The current Pitch real-runtime FOM smoke lane is partially green, but two
@@ -55,6 +79,12 @@ Operator explanation:
   `HLAdefaultRoutingSpace` dimension is treated as invalid without an explicit
   datatype
 
+Nearest requirement-facing anchors:
+- `§4.5` `createFederationExecution`
+- `§4.9` `joinFederationExecution`
+- explicit exception surface:
+  - `ErrorReadingFDD`
+
 ## Failure 2: `space-fom-core`
 
 Packet:
@@ -83,6 +113,11 @@ Operator explanation:
 - the current Pitch runtime can load the Space FOM family far enough to start,
   but it does not resolve `ReferenceFrameAnnouncement` through the tested lookup
   path
+
+Nearest requirement-facing anchor:
+- `§10.15` `getInteractionClassHandle`
+- explicit exception surface:
+  - `NameNotFound`
 
 ## Claim boundary
 
