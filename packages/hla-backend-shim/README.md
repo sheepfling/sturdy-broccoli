@@ -12,10 +12,10 @@ It is not part of the repo-owned 2025 Python RTI implementation claim.
 It is not the main 2025 runtime.
 It should remain wrapper-only.
 It is kept only as temporary, test-backed import-compatibility scaffolding.
-It is the legacy compatibility-wrapper package and temporary
-import-compatibility scaffolding.
+It is the legacy compatibility-wrapper package and temporary import-compatibility scaffolding.
 the main full Python 2025 RTI implementation executes from
 `hla-backend-python1516-2025`.
+It retains import-level wrapper-facing normalization only.
 
 The important split is already in place:
 
