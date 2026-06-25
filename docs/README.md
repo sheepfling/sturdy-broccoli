@@ -17,7 +17,8 @@ If you are new, use these in order:
 2. [`onboarding.md`](onboarding.md)
 3. [`first_run.md`](first_run.md)
 4. [`python_environment.md`](python_environment.md)
-5. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+5. [`repo_green_quickstart.md`](repo_green_quickstart.md)
+6. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 
 Read [`first_run.md`](first_run.md) for the 2010 pure-Python bootstrap lane.
 Read [`python_rti_backend.md`](python_rti_backend.md) for the main 2025 Python RTI lane in `hla-backend-python1516-2025`.
@@ -55,11 +56,15 @@ If you already know what you need, pick a lane:
 - choose a lane or focused restart target:
   [`test_surface.md`](test_surface.md)
 - get to repo-green and diagnose failures as a junior:
+  [`repo_green_quickstart.md`](repo_green_quickstart.md),
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - understand Java/vendor/runtime support:
   [`java_toolchain.md`](java_toolchain.md),
   [`vendor_runtime_runner_guide.md`](vendor_runtime_runner_guide.md),
-  [`backend_conformance_matrix.md`](backend_conformance_matrix.md)
+  [`backend_conformance_matrix.md`](backend_conformance_matrix.md),
+  [`../packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md),
+  [`../packages/hla-vendor-pitch/docs/pitch_behavior_matrix.md`](../packages/hla-vendor-pitch/docs/pitch_behavior_matrix.md),
+  [`../packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`](../packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md)
 - minimally wrap Java RTIs through JPype or Py4J:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
@@ -110,6 +115,7 @@ Use these when you need structure, not onboarding:
 - [`package_responsibilities.md`](package_responsibilities.md): where code belongs
 - [`callback_model_guide.md`](callback_model_guide.md): callback behavior
 - [`language_shim_routes.md`](language_shim_routes.md): Java/C++ route surfaces
+- [`repo_green_quickstart.md`](repo_green_quickstart.md): one-page junior path for bootstrap, repo-green, focused reruns, and failure meaning
 - [`workspace_layout.md`](workspace_layout.md): repo topography and where code, docs, tools, and generated evidence live
 - [`repo_seed_scope.md`](repo_seed_scope.md): bounded seed-surface statement for the repo
 - [`spec_reading_map.md`](spec_reading_map.md): shortest path into standards-facing reading and traceability
@@ -148,6 +154,6 @@ These are useful, but they are not start-here docs:
 
 1. [`onboarding.md`](onboarding.md)
 2. [`first_run.md`](first_run.md)
-3. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
-4. [`repo_mental_model.md`](repo_mental_model.md)
-5. [`package_layout.md`](package_layout.md)
+3. [`repo_green_quickstart.md`](repo_green_quickstart.md)
+4. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+5. [`repo_mental_model.md`](repo_mental_model.md)

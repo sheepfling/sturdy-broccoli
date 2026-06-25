@@ -37,8 +37,9 @@ Pick the closest match:
      [`transport_extension_playbook.md`](transport_extension_playbook.md), or
      [`fom_reading_map.md`](fom_reading_map.md) as needed
 7. I need to run verification
-   - read [`local_verification_commands.md`](local_verification_commands.md)
-   - read [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+   - read [`repo_green_quickstart.md`](repo_green_quickstart.md)
+   - then read [`local_verification_commands.md`](local_verification_commands.md)
+   - then read [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
    - then use [`../tools/python`](../tools/python) or [`../tools/test`](../tools/test)
 8. I need vendor or Java routes
    - read [`java_toolchain.md`](java_toolchain.md)
@@ -80,6 +81,7 @@ For the cleaner version of that model, use
 - operator:
   [`../README.md`](../README.md),
   [`first_run.md`](first_run.md),
+  [`repo_green_quickstart.md`](repo_green_quickstart.md),
   [`local_verification_commands.md`](local_verification_commands.md),
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - runtime engineer:

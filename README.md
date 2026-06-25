@@ -19,6 +19,18 @@ everything.
 
 ## Start Here
 
+If you want the shortest path to repo green:
+
+```bash
+./tools/bootstrap doctor
+./tools/bootstrap python
+source .venv/bin/activate
+./tools/python verify
+```
+
+Use [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md) for the
+shortest junior-friendly verification path.
+
 If you want the shortest path to something running:
 
 ```bash
@@ -46,6 +58,7 @@ Operator commands that matter from the top level:
 
 If you want the main follow-on guides, use:
 
+- [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md): one-page junior path to repo green
 - [`docs/onboarding.md`](docs/onboarding.md): choose the right path for your goal
 - [`docs/first_run.md`](docs/first_run.md): shortest fresh-checkout walkthrough
 - [`docs/python_environment.md`](docs/python_environment.md): fuller environment and install story
@@ -105,6 +118,6 @@ The repo becomes manageable once the scope is that small.
 ## Read Next
 
 1. [`docs/onboarding.md`](docs/onboarding.md)
-2. [`docs/first_run.md`](docs/first_run.md)
-3. [`docs/python_environment.md`](docs/python_environment.md)
-4. [`packages/README.md`](packages/README.md)
+2. [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md)
+3. [`docs/first_run.md`](docs/first_run.md)
+4. [`docs/python_environment.md`](docs/python_environment.md)
