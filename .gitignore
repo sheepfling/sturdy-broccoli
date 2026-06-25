@@ -30,6 +30,8 @@ dist
 
 # Generated project outputs
 analysis
+# `artifacts/` is always ignored run-output space.
+# Only the README stays tracked so the policy is visible in-tree.
 artifacts/*
 !artifacts/README.md
 /verification

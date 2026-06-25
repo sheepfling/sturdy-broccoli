@@ -19,7 +19,7 @@ No distribution owns `src/hla/__init__.py`.
 - `tools/`: canonical human-facing operator entrypoints.
 - `tests/`: executable verification for the package and the workspace helpers.
 - `docs/`: navigation, runbooks, architecture notes, and evidence maps.
-- `artifacts/`: default home for fresh generated run outputs and local report packets.
+- `artifacts/`: ignored run-output space for fresh generated outputs and local report packets.
 - `analysis/`: curated and promoted evidence packets, compliance rollups, and referenced verification outputs.
 - `.local/`: machine-local runtime/build state for CERTI, Pitch, and similar vendor tools.
 - `requirements/`: seed requirement catalogs and traceability bridges.
@@ -42,6 +42,7 @@ No distribution owns `src/hla/__init__.py`.
 - Keep implementation helpers and CI wrappers in `scripts/`.
 - Keep generated outputs out of the installable package.
 - Keep fresh generated run outputs under `artifacts/` by default.
+- Treat `artifacts/` as Git-ignored scratch/report space, not repository content.
 - Promote only intentionally retained, docs-referenced, or CI-cited evidence packets into `analysis/`.
 - Keep vendor runtime/build state out of the repo root and under `.local/`.
 - Keep the `tools/` directory narrow and operator-facing; do not let it become a second implementation tree.
@@ -64,6 +65,6 @@ Not every top-level directory should be collapsed.
 The vendor trees and evidence archives are separate on purpose so the runtime
 package stays reviewable and the imported source/provenance stays auditable.
 Likewise, `.local/` is intentionally separate from `artifacts/` and
-`analysis/`: runtime/build state is machine-local, `artifacts/` is the default
-landing zone for fresh generated outputs, and `analysis/` is the promoted
-evidence surface.
+`analysis/`: runtime/build state is machine-local, `artifacts/` is the
+Git-ignored landing zone for fresh generated outputs, and `analysis/` is the
+promoted evidence surface.

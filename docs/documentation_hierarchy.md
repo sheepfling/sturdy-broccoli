@@ -97,7 +97,7 @@ surfaces are:
 
 Use the artifact directories with one explicit boundary:
 
-- `artifacts/`: default destination for fresh generated run outputs
+- `artifacts/`: Git-ignored default destination for fresh generated run outputs
 - `analysis/`: promoted and cited evidence packets
 
 When a tool supports `--output-dir`, prefer `artifacts/...` unless you are

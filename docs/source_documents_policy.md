@@ -8,6 +8,7 @@ Policy notes:
 - keep the canonical unpacked standards bundle in `specs/ieee-1516-2010/`
 - keep the retained PDF archive in `docs/reference/`
 - keep default generated run outputs under `artifacts/`
+- treat `artifacts/` as ignored run-output space rather than a checked-in evidence surface
 - promote generated verification packets, matrices, and reports into
   `analysis/` only when they become retained evidence or are cited by docs,
   tests, or CI
