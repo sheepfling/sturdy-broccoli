@@ -72,6 +72,8 @@ That surface is currently discoverable and auditable, but it is not yet wired
 as a promoted backend lane because the bridge stack is still 2010-shaped.
 Use the evidence notes when you need that distinction:
 
+- [`pitch_behavior_matrix.md`](pitch_behavior_matrix.md)
+- [`pitch_vs_python_baseline.md`](pitch_vs_python_baseline.md)
 - [`evidence/pitch_202x_probe_2026-06-23.md`](evidence/pitch_202x_probe_2026-06-23.md)
 - [`evidence/pitch_202x_surface_audit_2026-06-23.md`](evidence/pitch_202x_surface_audit_2026-06-23.md)
 - [`evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md`](evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md)
@@ -220,6 +222,37 @@ That emits:
 - `artifacts/pitch_fom_smoke_compare/pitch_fom_smoke_compare_summary.json`
 - `artifacts/pitch_fom_smoke_compare/pitch_fom_smoke_compare_report.md`
 
+### SISO micro delivery alignment
+
+The bounded SISO micro comparison lane now passes on:
+
+- real Pitch 2010:
+  - `pitch-jpype`
+  - `pitch-py4j`
+- bounded adapter routes:
+  - `pitch-202x-jpype`
+  - `pitch-202x-py4j`
+
+Important behavior note:
+
+- the earlier real Pitch 2010 failure was not a `2025` adapter defect and not
+  an XML/FOM decode issue
+- it was an executable-lane callback wait issue
+- the passing result came from using the same explicit callback wait discipline
+  as the already-passing real Pitch exchange smoke
+
+Use:
+
+```bash
+./tools/pitch 202x-micro-certify
+```
+
+See:
+
+- [`pitch_behavior_matrix.md`](pitch_behavior_matrix.md)
+- [`pitch_vs_python_baseline.md`](pitch_vs_python_baseline.md)
+- [`evidence/pitch_siso_micro_delivery_alignment_2026-06-24.md`](evidence/pitch_siso_micro_delivery_alignment_2026-06-24.md)
+
 ### Time-window probe status
 
 The two current Pitch-safe time-window probes have repeated-run stability
@@ -290,6 +323,7 @@ Treat that route as:
 The current checked-in adapter evidence is:
 
 - [`pitch_202x_adapter_fom_smoke_2026-06-24.md`](evidence/pitch_202x_adapter_fom_smoke_2026-06-24.md)
+- [`pitch_siso_micro_delivery_alignment_2026-06-24.md`](evidence/pitch_siso_micro_delivery_alignment_2026-06-24.md)
 
 If you want the current explicit operator result for the negotiated-ownership
 gap, use:
