@@ -83,11 +83,15 @@ def _iter_markdown_files() -> list[Path]:
     for pattern in DOC_GLOBS:
         for path in ROOT.glob(pattern):
             resolved = path.resolve()
-            if resolved in seen or not path.is_file():
+            if resolved in seen or not path.is_file() or _is_ignored_workspace_duplicate(path):
                 continue
             seen.add(resolved)
             files.append(path)
     return sorted(files)
+
+
+def _is_ignored_workspace_duplicate(path: Path) -> bool:
+    return bool(re.search(r" \d+\.[^.]+$", path.name))
 
 
 def _is_ignored_target(target: str) -> bool:
@@ -166,7 +170,13 @@ def _find_broken_links(path: Path) -> list[LinkViolation]:
 def _iter_curated_doc_files() -> list[Path]:
     files = [ROOT / "README.md"]
     files.extend(ROOT.glob("docs/**/*.md"))
-    return sorted({path.resolve(): path for path in files if path.is_file()}.values())
+    return sorted(
+        {
+            path.resolve(): path
+            for path in files
+            if path.is_file() and not _is_ignored_workspace_duplicate(path)
+        }.values()
+    )
 
 
 def _extract_markdown_doc_targets(path: Path, allowed_paths: set[Path]) -> set[Path]:

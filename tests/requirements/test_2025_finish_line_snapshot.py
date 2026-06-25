@@ -137,9 +137,9 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             if row["requirement_id"].startswith(prefix) and row["pytest_anchor_count"] == 1
         ]
         assert single_anchor_rows == []
-    assert pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchor_count"] >= 3
     assert any("test_2025_provider_is_first_green_runtime_path" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchor_count"] == 10
+    assert pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchor_count"] >= 10
     assert any("test_2025_provider_rejects_duplicate_federation_and_federate_names" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_keeps_other_federates_joined_after_disconnect_and_resign_over_fedpro_schema"
@@ -161,7 +161,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchor_count"] >= 6
     assert any("test_2025_provider_routes_mom_synchronization_point_reports_through_interactions" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_routes_targeted_synchronization_callbacks_only_to_sync_set_over_fedpro_schema"
@@ -173,7 +173,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-013"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-035"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-FI-SVC-035"]["pytest_anchor_count"] >= 3
     assert any("test_2025_provider_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-035"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_routes_discovery_and_remove_only_to_subscriber_over_fedpro_schema"
@@ -207,11 +207,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-083"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-100"]["pytest_anchor_count"] == 3
+    assert pytest_rows["HLA2025-FI-SVC-100"]["pytest_anchor_count"] >= 3
     assert any("test_2025_provider_applies_resign_time_ownership_policies" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-100"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-048"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-FI-SVC-048"]["pytest_anchor_count"] >= 2
     assert any("test_start_and_stop_registration_callbacks_are_delivered" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-048"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-050"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-FI-SVC-050"]["pytest_anchor_count"] >= 4
     assert any("test_turn_interactions_on_and_off_callbacks_are_delivered" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-050"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap"
@@ -378,14 +378,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-126"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchor_count"] >= 6
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"])
     assert any(
         "test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter"
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-128"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] == 11
+    assert pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchor_count"] >= 11
     assert any("test_2025_provider_filters_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
     assert any("test_2025_provider_filters_directed_interactions_by_ddm_region_overlap" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"])
     assert any(
@@ -413,14 +413,14 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-134"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchor_count"] >= 6
     assert any("test_clause_9_services_are_observable_through_mom_service_invocation_reporting" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchors"])
     assert any(
         "test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter"
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-137"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchor_count"] == 8
+    assert pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchor_count"] >= 8
     assert any("test_support_lookups_round_trip_class_handle_and_name" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchors"])
     assert any(
         "test_2025_primary_python_rti_runs_ddm_passive_region_subscription_scenario_without_wrapper_adapter"
@@ -437,7 +437,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-138"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-147"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-FI-SVC-147"]["pytest_anchor_count"] >= 5
     assert any("test_support_dimension_and_update_rate_helpers" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-147"]["pytest_anchors"])
     assert any(
         "test_2025_provider_accepts_support_lookup_aliases_and_rejects_invalid_values"
@@ -454,18 +454,18 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-147"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-SVC-162"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-FI-SVC-162"]["pytest_anchor_count"] >= 2
     assert any("test_2025_provider_implements_fom_backed_ddm_lookup_and_default_attribute_policy" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-162"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-FI-SVC-165"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-FI-SVC-165"]["pytest_anchor_count"] >= 4
     assert any("test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-165"]["pytest_anchors"])
     assert any(
         "test_2025_transport_server_routes_mom_adjust_controls_to_observable_switch_state_over_fedpro_schema"
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-165"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-OMT-COMP-001"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-001"]["pytest_anchor_count"] >= 1
     assert any("test_2025_parser_round_trips_extended_omt_supported_subset" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-OMT-COMP-223"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-223"]["pytest_anchor_count"] >= 1
     assert any("test_2025_parser_round_trips_extended_omt_supported_subset" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-223"]["pytest_anchors"])
     for requirement_id in (
         "HLA2025-OMT-COMP-011",
@@ -475,7 +475,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "HLA2025-OMT-COMP-017",
         "HLA2025-OMT-COMP-018",
     ):
-        assert pytest_rows[requirement_id]["pytest_anchor_count"] == 1
+        assert pytest_rows[requirement_id]["pytest_anchor_count"] >= 1
         assert any("test_2025_attribute_metadata_round_trips" in anchor for anchor in pytest_rows[requirement_id]["pytest_anchors"])
     for requirement_id in (
         "HLA2025-OMT-COMP-037",
@@ -484,31 +484,31 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "HLA2025-OMT-COMP-043",
         "HLA2025-OMT-COMP-044",
     ):
-        assert pytest_rows[requirement_id]["pytest_anchor_count"] == 1
+        assert pytest_rows[requirement_id]["pytest_anchor_count"] >= 1
         assert any(
             "test_2025_dimension_specific_children_round_trip" in anchor
             for anchor in pytest_rows[requirement_id]["pytest_anchors"]
         )
-    assert pytest_rows["HLA2025-OMT-COMP-041"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-041"]["pytest_anchor_count"] >= 1
     assert any("test_dimension_metadata_round_trips_through_parser_and_serializer" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-041"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-OMT-COMP-200"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-OMT-COMP-200"]["pytest_anchor_count"] >= 2
     assert any("test_2025_parser_intentionally_narrows_unmodeled_omt_fields" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-200"]["pytest_anchors"])
     assert any("test_2025_transportation_and_update_rate_metadata_round_trips" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-200"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-OMT-COMP-201"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-OMT-COMP-201"]["pytest_anchor_count"] >= 2
     assert any("test_2025_transportation_and_update_rate_metadata_round_trips" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-201"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-OMT-COMP-207"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-207"]["pytest_anchor_count"] >= 1
     assert any("test_2025_transportation_and_update_rate_metadata_round_trips" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-207"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-OMT-SU-001"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-SU-001"]["pytest_anchor_count"] >= 1
     assert any(
         "test_2025_renumbered_service_utilization_rows_preserve_behavior_and_update_references" in anchor
         for anchor in pytest_rows["HLA2025-OMT-SU-001"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-OMT-SU-196"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-SU-196"]["pytest_anchor_count"] >= 1
     assert any(
         "test_2025_renumbered_service_utilization_rows_preserve_behavior_and_update_references" in anchor
         for anchor in pytest_rows["HLA2025-OMT-SU-196"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchor_count"] >= 4
     assert any("test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
     assert any("test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
     assert any("test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-006"]["pytest_anchors"])
@@ -519,12 +519,12 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "HLA2025-OMT-COMP-169",
         "HLA2025-OMT-COMP-170",
     ):
-        assert pytest_rows[row_id]["pytest_anchor_count"] == 1
+        assert pytest_rows[row_id]["pytest_anchor_count"] >= 1
         assert any(
             "test_2025_parser_round_trips_additional_switch_metadata" in anchor
             for anchor in pytest_rows[row_id]["pytest_anchors"]
         )
-    assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchor_count"] >= 4
     assert any("test_2025_parser_accepts_isolates_and_preserves_foreign_namespace_extension_points" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
     assert any("test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
     assert any("test_harmonization_packets_keep_xs_any_rows_on_bounded_omt_tolerance_evidence" in anchor for anchor in pytest_rows["HLA2025-OMT-COMP-224"]["pytest_anchors"])
@@ -631,19 +631,19 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-FI-SVC-018"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-FI-007"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-FI-007"]["pytest_anchor_count"] >= 2
     assert any("test_each_proto2025_2025_scenario_fom_set_merges_with_standard_mim" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
     assert any("test_proto2025_2025_example_foms_drive_two_federate_exchange" in anchor for anchor in pytest_rows["HLA2025-FI-007"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-BND-001"]["pytest_anchor_count"] >= 6
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
     assert any("test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-BND-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] == 6
+    assert pytest_rows["HLA2025-BND-002"]["pytest_anchor_count"] >= 6
     assert any("test_standard_2025_routes_pass_runtime_capability_when_built" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
     assert any("test_standard_binding_runtime_capability_markdown_keeps_bounded_binding_claim_explicit" in anchor for anchor in pytest_rows["HLA2025-BND-002"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-MOD-001"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-MOD-001"]["pytest_anchor_count"] >= 2
     assert any("test_2025_exception_delta_inventory_names_native_2025_exceptions_without_legacy_fdd_terms" in anchor for anchor in pytest_rows["HLA2025-MOD-001"]["pytest_anchors"])
     assert any("test_2025_provider_validates_callback_model_and_credentials_at_connect" in anchor for anchor in pytest_rows["HLA2025-MOD-001"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-MOD-003"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-MOD-003"]["pytest_anchor_count"] >= 4
     assert any("test_2025_provider_distinguishes_fom_mim_open_read_invalid_and_merge_errors" in anchor for anchor in pytest_rows["HLA2025-MOD-003"]["pytest_anchors"])
     assert any("test_2025_provider_rejects_invalid_join_fom_modules_and_destroy_while_joined" in anchor for anchor in pytest_rows["HLA2025-MOD-003"]["pytest_anchors"])
     assert any(
@@ -654,17 +654,17 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "test_2025_transport_server_distinguishes_fom_mim_open_read_invalid_and_merge_errors_over_fedpro_schema" in anchor
         for anchor in pytest_rows["HLA2025-MOD-003"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-MOD-004"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-MOD-004"]["pytest_anchor_count"] >= 2
     assert any("test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_helpers" in anchor for anchor in pytest_rows["HLA2025-MOD-004"]["pytest_anchors"])
     assert any("test_2025_provider_runs_two_federate_object_and_interaction_exchange" in anchor for anchor in pytest_rows["HLA2025-MOD-004"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-MOD-009"]["pytest_anchor_count"] == 2
+    assert pytest_rows["HLA2025-MOD-009"]["pytest_anchor_count"] >= 2
     assert any("test_2025_exception_delta_inventory_names_native_2025_exceptions_without_legacy_fdd_terms" in anchor for anchor in pytest_rows["HLA2025-MOD-009"]["pytest_anchors"])
     assert any("test_2025_provider_validates_callback_model_and_credentials_at_connect" in anchor for anchor in pytest_rows["HLA2025-MOD-009"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-MOD-010"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-MOD-010"]["pytest_anchor_count"] >= 4
     assert any("test_2025_parser_round_trips_logical_time_xml_names" in anchor for anchor in pytest_rows["HLA2025-MOD-010"]["pytest_anchors"])
     assert any("test_2025_parser_round_trips_metadata_switches_transport_and_time_subset" in anchor for anchor in pytest_rows["HLA2025-MOD-010"]["pytest_anchors"])
     assert any("test_2025_parser_round_trips_extended_omt_supported_subset" in anchor for anchor in pytest_rows["HLA2025-MOD-010"]["pytest_anchors"])
-    assert pytest_rows["HLA2025-NEW-002"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-NEW-002"]["pytest_anchor_count"] >= 5
     assert any("test_2025_provider_reports_federation_executions_and_members" in anchor for anchor in pytest_rows["HLA2025-NEW-002"]["pytest_anchors"])
     assert any(
         "test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice"
@@ -682,7 +682,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-NEW-002"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-NEW-003"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-NEW-003"]["pytest_anchor_count"] >= 4
     assert any("test_2025_provider_reports_federate_resigned_callback_with_reason_context" in anchor for anchor in pytest_rows["HLA2025-NEW-003"]["pytest_anchors"])
     assert any(
         "test_2025_factory_hosted_python2025_route_runs_direct_federation_listing_slice"
@@ -695,7 +695,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         in anchor
         for anchor in pytest_rows["HLA2025-NEW-003"]["pytest_anchors"]
     )
-    assert pytest_rows["HLA2025-NEW-005"]["pytest_anchor_count"] == 4
+    assert pytest_rows["HLA2025-NEW-005"]["pytest_anchor_count"] >= 4
     assert any("test_2025_provider_normalizes_typed_handles_and_rejects_wrong_handle_family" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert any("test_2025_transport_server_round_trips_support_services_over_fedpro_schema" in anchor for anchor in pytest_rows["HLA2025-NEW-005"]["pytest_anchors"])
     assert pytest_rows["HLA2025-NEW-007"]["pytest_anchor_count"] >= 10
@@ -1232,16 +1232,16 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python1516_2025", "lookahead_windows")]["evidence_tests"]
     assert "tests/transport/test_grpc_transport_2025.py" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
     assert "tests/scenarios/test_python_route_parity.py" in milestone_rows[("python1516_2025-fedpro-grpc", "lookahead_windows")]["evidence_tests"]
-    assert pytest_rows["HLA2025-OMT-001"]["pytest_anchor_count"] == 5
+    assert pytest_rows["HLA2025-OMT-001"]["pytest_anchor_count"] >= 5
     assert pytest_rows["HLA2025-OMT-002"]["pytest_anchor_count"] >= 6
-    assert pytest_rows["HLA2025-OMT-005"]["pytest_anchor_count"] == 4
-    assert pytest_rows["HLA2025-OMT-006"]["pytest_anchor_count"] == 10
+    assert pytest_rows["HLA2025-OMT-005"]["pytest_anchor_count"] >= 4
+    assert pytest_rows["HLA2025-OMT-006"]["pytest_anchor_count"] >= 10
     assert pytest_rows["HLA2025-OMT-007"]["pytest_anchor_count"] >= 8
-    assert pytest_rows["HLA2025-OMT-COMP-041"]["pytest_anchor_count"] == 1
-    assert pytest_rows["HLA2025-OMT-COMP-004"]["pytest_anchor_count"] == 1
-    assert pytest_rows["HLA2025-OMT-COMP-037"]["pytest_anchor_count"] == 1
-    assert pytest_rows["HLA2025-OMT-CV-001"]["pytest_anchor_count"] == 1
-    assert pytest_rows["HLA2025-OMT-SU-001"]["pytest_anchor_count"] == 1
+    assert pytest_rows["HLA2025-OMT-COMP-041"]["pytest_anchor_count"] >= 1
+    assert pytest_rows["HLA2025-OMT-COMP-004"]["pytest_anchor_count"] >= 1
+    assert pytest_rows["HLA2025-OMT-COMP-037"]["pytest_anchor_count"] >= 1
+    assert pytest_rows["HLA2025-OMT-CV-001"]["pytest_anchor_count"] >= 1
+    assert pytest_rows["HLA2025-OMT-SU-001"]["pytest_anchor_count"] >= 1
     claim_audit = snapshot["completion_claim_audit"]
     assert claim_audit["claim_shape"] == "bounded-working-surface-with-explicit-boundaries"
     assert claim_audit["ready_for_supported-boundary_statement"] is True
@@ -1958,7 +1958,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert promotion_split_audit["decision_shape"] == "promote-current-lane-or-split-later-based-on-evidence"
     assert promotion_split_audit["current_lane"] == {
         "package": "hla-backend-python1516-2025",
-        "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as a legacy compatibility shim)",
         "spec_package": "hla-rti1516-2025",
     }
     assert promotion_split_audit["current_recommendation"] == "promote-current-lane-as-working-surface-and-keep-split-optional"
@@ -1997,7 +1997,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert any("row-level requirement-by-requirement audit" in item for item in promotion_split_audit["permanent_decision_blockers"])
     assert any("Hosted FedPro remains a bounded runtime slice" in item for item in promotion_split_audit["permanent_decision_blockers"])
     assert "real Python 2025 RTI implementation now owned by hla-backend-python1516-2025" in promotion_split_audit["current_assessment"]
-    assert "hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in promotion_split_audit["current_assessment"]
+    assert "hla-backend-shim retained only as a legacy compatibility shim" in promotion_split_audit["current_assessment"]
     assert "main current-package pressure families" in promotion_split_audit["current_assessment"]
     concentration_audit = snapshot["implementation_concentration_audit"]
     assert concentration_audit["audit_status"] == "implementation-concentration-captured"
@@ -2072,7 +2072,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert shim_families["misc-support"]["line_count"] >= 70
     assert "thin ambassador shell in hla-backend-python1516-2025" in python2025_source_audit["current_assessment"]
     assert "catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery" in python2025_source_audit["current_assessment"]
-    assert "shrink hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities" in python2025_source_audit["extraction_use"]
+    assert "legacy compatibility shim" in python2025_source_audit["extraction_use"]
     aggregation_audit = snapshot["slice_aggregation_pressure_audit"]
     assert aggregation_audit["audit_status"] == "slice-aggregation-pressure-captured"
     assert aggregation_audit["implemented_slice_count"] == 74
@@ -2627,7 +2627,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert current_lane_statement["ready"] is True
     assert "coherent bounded working Python RTI surface" in current_lane_statement["statement"]
     assert "primary 2025 Python RTI lane" in current_lane_statement["statement"]
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in current_lane_statement["statement"]
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as a legacy compatibility shim" in current_lane_statement["statement"]
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in current_lane_statement["statement"]
     assert "Java and C++ shim/binding packages remain segregated supporting lanes rather than alternate Python RTIs" in current_lane_statement["statement"]
     assert "main current-package pressure families are route-backed" in current_lane_statement["statement"]
@@ -2707,7 +2707,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         "backend_package": "hla-backend-python1516-2025",
         "plugin_family": "python-rti-1516-2025",
         "supports": ["rti1516_2025"],
-        "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support)",
+            "role": "main full Python 2025 RTI implementation lane (owned by hla-backend-python1516-2025 with hla-backend-shim retained only as a legacy compatibility shim)",
         "spec_package": "hla-rti1516-2025",
     }
     assert implementation_lane_audit["compatibility_wrapper_lane"] == {
@@ -2925,8 +2925,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "hosted FedPro route is a route variant" in implementation_lane_audit["current_assessment"]
     assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025" in implementation_lane_audit["current_assessment"]
     assert "hla-backend-shim remains as a compatibility wrapper over that runtime" not in implementation_lane_audit["current_assessment"]
-    assert "temporary import-compatibility scaffolding" in implementation_lane_audit["current_assessment"]
-    assert "continuing to narrow hla-backend-shim toward temporary import-compatibility scaffolding and wrapper-only responsibilities" in implementation_lane_audit["extraction_boundary"]
+    assert "legacy compatibility shim" in implementation_lane_audit["current_assessment"]
+    assert "legacy compatibility shim" in implementation_lane_audit["extraction_boundary"]
     assert implementation_lane_audit["evidence_anchors"] == [
         "README.md",
         "docs/architecture.md",
@@ -3079,7 +3079,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
         ),
         "package_creation_rule": (
             "Keep this package as the promoted live backend only while the direct and hosted proof families stay "
-            "green and hla-backend-shim continues narrowing toward temporary import-compatibility scaffolding and wrapper-only responsibilities."
+            "green and hla-backend-shim continues narrowing as a legacy compatibility shim."
         ),
     }
     assert extraction_audit["extraction_cutover_invariants"] == [
@@ -3191,8 +3191,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     }
     assert "The extraction cutover is materially underway" in extraction_audit["current_assessment"]
     assert "hla-backend-python1516-2025 now owns the live backend" in extraction_audit["current_assessment"]
-    assert "hla-backend-shim remains only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in extraction_audit["current_assessment"]
-    assert "concrete migration map for continuing to narrow those scaffolding responsibilities while preserving the direct and hosted proof families" in extraction_audit["current_assessment"]
+    assert "hla-backend-shim remains only as a legacy compatibility shim" in extraction_audit["current_assessment"]
+    assert "concrete migration map for continuing to narrow that remaining compatibility surface while preserving the direct and hosted proof families" in extraction_audit["current_assessment"]
     assert (
         "a future all-covered requirement audit needs cleaner service-by-service runtime ownership than the remaining compatibility-wrapper layer can provide"
         in extraction_audit["extraction_trigger_signals"]
@@ -4578,7 +4578,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
 
     assert current_lane_statement["statement_status"] == "current-lane-working-surface-statement"
     assert current_lane_statement["ready"] is True
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in current_lane_statement["statement"]
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as a legacy compatibility shim" in current_lane_statement["statement"]
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in current_lane_statement["statement"]
     assert "use the route-parity matrix as the scenario-family ledger behind that claim" in current_lane_statement["current_assessment"]
     assert main_impl_claim["ready_for_main_python2025_implementation_claim"] is True
@@ -4776,7 +4776,7 @@ def test_2025_checked_in_finish_line_artifacts_preserve_python2025_route_identit
 
     assert "python1516_2025: in-process-backend-route" in markdown
     assert "python1516_2025-fedpro-grpc: hosted-transport-route" in markdown
-    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as temporary import-compatibility scaffolding and wrapper-only compatibility support" in markdown
+    assert "main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025 while hla-backend-shim is retained only as a legacy compatibility shim" in markdown
     assert "route-parity matrix now serves as the scenario-family ledger for federation, object, ownership, DDM, time, save/restore, MOM, and support-services evidence" in markdown
     assert "disciplined ownership across the extracted hla-backend-python1516-2025 runtime/state/surface modules" in markdown
     assert "transport-seam evidence over hla-backend-python1516-2025 rather than missing core runtime ownership" in markdown

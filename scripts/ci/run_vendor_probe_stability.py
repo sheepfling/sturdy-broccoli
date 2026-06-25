@@ -33,6 +33,8 @@ from hla.verification.repo_internal.verification.vendor_probe_stability import c
 def _resolve_command_argv(command_text: str, extra_args: Sequence[str] = ()) -> list[str]:
     raw_path = Path(command_text)
     if raw_path.is_file():
+        if raw_path.suffix == ".py":
+            return [sys.executable, str(raw_path), *extra_args]
         if raw_path.suffix == ".sh":
             return ["bash", str(raw_path), *extra_args]
         return [str(raw_path), *extra_args]
@@ -40,6 +42,8 @@ def _resolve_command_argv(command_text: str, extra_args: Sequence[str] = ()) -> 
     if not tokens:
         raise ValueError("command text resolved to no argv tokens")
     command_path = Path(tokens[0])
+    if command_path.is_file() and command_path.suffix == ".py":
+        return [sys.executable, str(command_path), *tokens[1:], *extra_args]
     if command_path.is_file() and command_path.suffix == ".sh":
         return ["bash", str(command_path), *tokens[1:], *extra_args]
     if command_path.is_file():
@@ -164,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
     profile = args.profile
     vendor_green_cmd = env.get(
         "HLA2010_VENDOR_PROBE_STABILITY_VENDOR_GREEN",
-        str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh"),
+        str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"),
     )
     output_base_dir = Path(
         env.get("HLA2010_VENDOR_PROBE_STABILITY_DIR", str(PROJECT_ROOT / "artifacts" / "vendor_probe_stability"))

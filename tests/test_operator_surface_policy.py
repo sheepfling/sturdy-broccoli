@@ -5,6 +5,7 @@ import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ICLOUD_DUPLICATE_TOOL_SUFFIX = re.compile(r" \d+$")
 
 
 def _read(path: Path) -> str:
@@ -49,7 +50,10 @@ def _actual_top_level_tool_wrappers() -> set[str]:
     return {
         path.name
         for path in (ROOT / "tools").iterdir()
-        if path.is_file() and path.name != "README.md" and "." not in path.name
+        if path.is_file()
+        and path.name != "README.md"
+        and "." not in path.name
+        and not ICLOUD_DUPLICATE_TOOL_SUFFIX.search(path.name)
     }
 
 
@@ -205,7 +209,7 @@ def test_operator_docs_keep_verify_main_and_routes_2025_on_python2025_main_lane(
     assert "./tools/python verify-main-2025" in tools_text
     assert "./tools/python verify-routes-2025" in tools_text
     assert "interpre these commands through the audited `hla-backend-python1516-2025` runtime".replace("interpre", "interpret") in normalized_commands
-    assert "`hla-backend-shim` is only temporary import-compatibility scaffolding plus compatibility-wrapper/import-compatibility code" in normalized_commands
+    assert "`hla-backend-shim` is only a legacy compatibility shim" in normalized_commands
     assert "the hosted 2025 grpc route is a bounded route variant rather than a separate rti family" in normalized_commands
     assert "`./tools/python verify-main-2025` is the default proof path for the real 2025 python rti" in normalized_commands
     assert "`./tools/python verify-routes-2025` extends that proof across the hosted fedpro route" in normalized_commands
@@ -236,8 +240,8 @@ def test_package_dependency_tree_generator_keeps_python2025_as_runtime_owner() -
 
     expected = (
         "`hla-backend-python1516-2025` is the sole repo-owned IEEE 1516.1-2025 Python RTI implementation lane, and "
-        "`hla-backend-shim` is temporary import-compatibility scaffolding plus a "
-        "legacy compatibility wrapper that depends on it rather than a peer RTI lane or part of the implementation claim."
+        "`hla-backend-shim` is a legacy compatibility shim that depends on it rather than a peer RTI lane or part "
+        "of the implementation claim."
     )
     assert expected in script_text
     assert expected in doc_text

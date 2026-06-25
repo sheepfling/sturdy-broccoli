@@ -13,12 +13,13 @@ The front door is route-oriented:
 
 - use `./tools/...` commands for operator workflows
 - use `hla.rti`, `hla.rti1516e`, and `hla.rti1516_2025` for code-facing RTI entrypoints
+- use `hla.backends.python1516_2025` for the main Python RTI backend for IEEE 1516.1-2025
 - pass backend or route names such as `python1516e`, `python1516_2025`, `pitch-jpype`, or `certi` as selector strings
 
 Those names are lookup strings that select a route. They are not all separate RTI
 implementations.
 
-## Fastest Paths
+## Start Here
 
 ### Get Repo Green
 
@@ -28,6 +29,8 @@ If you want the shortest path to repo green:
 ./tools/bootstrap doctor
 ./tools/bootstrap python
 source .venv/bin/activate
+./tools/test-surface validate
+./tools/python verify-smoke
 ./tools/python verify
 ```
 
@@ -74,9 +77,10 @@ rti_pitch = create_rti_ambassador("pitch-jpype")
 
 Important architecture rule:
 
-- `hla-backend-python1516-2025` is the implementation-owning 2025 Python RTI package
-- `hla-backend-shim` and `hla.backends.shim` are legacy compatibility layers, not separate RTI families
-- Java and C++ 2025 bindings are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs
+- `hla-backend-python1516-2025` is the main full executable Python RTI implementation lane
+- `python1516_2025` is the main Python RTI implementation lane for IEEE 1516.1-2025
+- `hla-backend-shim` and `hla.backends.shim` are legacy compatibility shim layers, not separate RTI families
+- Java and C++ 2025 binding routes are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs
 
 Practical rule:
 

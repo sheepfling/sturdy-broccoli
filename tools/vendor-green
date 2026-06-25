@@ -12,8 +12,19 @@ Canonical strict vendor-runtime lane:
   ./tools/vendor-green certi
   ./tools/vendor-green pitch
 
-This is the human-facing wrapper over `./scripts/ci/vendor_green.sh`.
+This is the human-facing wrapper over `./scripts/ci/vendor_green.py`, with
+`./scripts/ci/vendor_green.sh` retained as a compatibility alias.
 EOF
+}
+
+python_bin() {
+  if [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+    printf '%s\n' "$ROOT_DIR/.venv/bin/python"
+  elif command -v python3 >/dev/null 2>&1; then
+    command -v python3
+  else
+    command -v python
+  fi
 }
 
 case "${1:-}" in
@@ -21,6 +32,6 @@ case "${1:-}" in
     usage
     ;;
   *)
-    exec bash "$ROOT_DIR/scripts/ci/vendor_green.sh" "$@"
+    exec "$(python_bin)" "$ROOT_DIR/scripts/ci/vendor_green.py" "$@"
     ;;
 esac

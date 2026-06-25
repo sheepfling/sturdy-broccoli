@@ -97,6 +97,17 @@ Common lanes:
 If you do not know where to start, `./tools/python verify` is the default
 repo-green lane.
 
+If the repo-green unit phase is too broad, use:
+
+```bash
+./tools/test-surface run repo-green-units
+```
+
+If you need to maintain that sweep:
+
+- reorder shards in `testing/test_surface_manifest.json` under `repo-green-units.include_lanes`
+- edit one shard by changing the matching `unit-*` lane in the same manifest
+
 ## Step 2: Rerun The Failing Lane
 
 Examples:

@@ -2,8 +2,8 @@
 
 ## What This Is
 
-`hla-backend-shim` is the legacy compatibility shim for the 2025 Python RTI
-lane.
+`hla-backend-shim` is the legacy compatibility-wrapper package for the 2025
+Python RTI lane.
 
 It exists to preserve older imports and wrapper-facing aliases while the real
 implementation lives in `hla-backend-python1516-2025`.
@@ -11,10 +11,16 @@ implementation lives in `hla-backend-python1516-2025`.
 It is not part of the repo-owned 2025 Python RTI implementation claim.
 It is not the main 2025 runtime.
 It should remain wrapper-only.
+It is kept only as temporary, test-backed import-compatibility scaffolding.
+It is the legacy compatibility-wrapper package and temporary
+import-compatibility scaffolding.
+the main full Python 2025 RTI implementation executes from
+`hla-backend-python1516-2025`.
 
 The important split is already in place:
 
-- `hla-backend-python1516-2025` owns the real 2025 runtime
+- the architectural split that matters is already in place: `hla-backend-python1516-2025` is the real 2025 RTI runtime owner and the sole repo-owned 2025 Python RTI lane
+- `hla-backend-python1516-2025` is the real 2025 RTI runtime owner and the sole repo-owned 2025 Python RTI lane
 - `hla-backend-shim` is the legacy compatibility layer in front of it
 
 ## What This Is Not
@@ -54,4 +60,4 @@ They should be removed once no callers depend on the legacy import paths.
 - [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
 - [`../../docs/plans/2025_python_rti_backend_audit.md`](../../docs/plans/2025_python_rti_backend_audit.md)
 
-Future work here is boundary cleanup and removal, not new runtime ownership.
+Future work here is boundary cleanup and removal, not deciding whether a dedicated Python 2025 backend should exist.

@@ -14,8 +14,9 @@ Canonical repeated vendor probe review flow:
   ./tools/vendor-probe-review certi-ddm-probe 3
   ./tools/vendor-probe-review promotion-review
 
-This is the human-facing wrapper over `./scripts/ci/vendor_probe_review.sh`
-and `scripts/ci/write_vendor_probe_promotion_review.py`.
+This is the human-facing wrapper over `./scripts/ci/run_vendor_probe_review.py`
+and `scripts/ci/write_vendor_probe_promotion_review.py`, with
+`./scripts/ci/vendor_probe_review.sh` retained as a compatibility alias.
 EOF
 }
 
@@ -30,6 +31,6 @@ case "${1:-help}" in
     "$python_bin" "$ROOT_DIR/scripts/ci/write_vendor_probe_promotion_review.py" "$@"
     ;;
   *)
-    exec bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" "$@"
+    exec "$python_bin" "$ROOT_DIR/scripts/ci/run_vendor_probe_review.py" "$@"
     ;;
 esac

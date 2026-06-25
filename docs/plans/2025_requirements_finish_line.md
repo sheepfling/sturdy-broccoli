@@ -487,7 +487,7 @@ Leading extracted runtime owners:
 - Responsibility families: 11
 - Largest family: misc-support (2300 lines)
 - Assessment: The live Python 2025 RTI source now presents a thin ambassador shell in hla-backend-python1516-2025, while the substantive runtime behavior is spread across extracted python1516_2025 modules and hla-backend-shim has been reduced to a legacy compatibility shim. Save/restore lifecycle, directed-interaction routing, time management, declaration/DDM surfaces, ownership, MOM/reporting, federation bootstrap/state handling, catalog access, object lifecycle/update handling, attribute policy/scope, and callback delivery are now measurable as named source-owned families under the main python1516_2025 runtime package.
-- Extraction use: Use these families as the source ownership baseline while continuing to narrow hla-backend-shim as a legacy compatibility shim; new runtime movement should reduce compatibility-surface pressure without weakening direct or hosted route evidence.
+- Extraction use: Use these families as the source ownership baseline while continuing to shrink hla-backend-shim toward a legacy compatibility shim; new runtime movement should reduce compatibility-surface pressure without weakening direct or hosted route evidence.
 
 Python 2025 source responsibility families:
 
@@ -1380,7 +1380,7 @@ Partitioned blockers:
 - Ready for working-surface promotion: True
 - Ready for permanent no-split decision: False
 - Clean extraction still optional: True
-- Assessment: The repo's current 2025 implementation reality is explicit: the main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025, hla-backend-shim remains only as a legacy compatibility shim over that runtime, the hosted FedPro route is a route variant over that implementation rather than a separate RTI family, the older pure-Python backend remains the 2010-only inmemory lane, and the Java/C++ lanes remain segregated as non-Python binding-capability surfaces rather than being mixed into the Python 2025 RTI claim.
+- Assessment: The repo's current 2025 implementation reality is explicit: the main full Python 2025 RTI implementation now runs from hla-backend-python1516-2025, hla-backend-shim remains only as temporary import-compatibility a legacy compatibility shim over that runtime, the hosted FedPro route is a route variant over that implementation rather than a separate RTI family, the older pure-Python backend remains the 2010-only inmemory lane, and the Java/C++ lanes remain segregated as non-Python binding-capability surfaces rather than being mixed into the Python 2025 RTI claim.
 - Extraction boundary: Keep using hla-backend-python1516-2025 as the executable Python 2025 RTI surface while continuing to narrow hla-backend-shim as a legacy compatibility shim; only reopen a deeper extraction question if future evidence shows that residual compatibility or route normalization logic is still obscuring core runtime semantics.
 
 Discovered backend packages:

@@ -26,7 +26,7 @@ _bootstrap_source_checkout()
 
 
 def _default_stability_command() -> str:
-    return str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_stability.sh")
+    return str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_stability.py")
 
 
 def _default_promotion_command() -> str:
@@ -58,6 +58,8 @@ def _split_command_with_spaceful_executable(raw: str) -> list[str]:
 def _resolve_command_argv(command_text: str, extra_args: Sequence[str] = ()) -> list[str]:
     raw_path = Path(command_text)
     if raw_path.is_file():
+        if raw_path.suffix == ".py":
+            return [sys.executable, str(raw_path), *extra_args]
         if raw_path.suffix == ".sh":
             return ["bash", str(raw_path), *extra_args]
         return [str(raw_path), *extra_args]
@@ -69,6 +71,8 @@ def _resolve_command_argv(command_text: str, extra_args: Sequence[str] = ()) -> 
     if not tokens:
         raise ValueError("command text resolved to no argv tokens")
     command_path = Path(tokens[0])
+    if command_path.is_file() and command_path.suffix == ".py":
+        return [sys.executable, str(command_path), *tokens[1:], *extra_args]
     if command_path.is_file() and command_path.suffix == ".sh":
         return ["bash", str(command_path), *tokens[1:], *extra_args]
     if command_path.is_file():

@@ -91,7 +91,7 @@ def _local_run_defs(module: ast.Module) -> list[str]:
 
 
 def test_required_vendor_lane_promotes_only_certi_grpc_exchange() -> None:
-    source = (ROOT / "scripts" / "ci" / "vendor_runtime_smoke.sh").read_text(encoding="utf-8")
+    source = (ROOT / "scripts" / "ci" / "vendor_runtime_smoke.py").read_text(encoding="utf-8")
 
     promoted = "tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_exchange_end_to_end"
     assert promoted in source

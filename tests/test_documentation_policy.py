@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ICLOUD_DUPLICATE_SUFFIX = " 2.md"
 KEY_PUBLIC_DOCS = (
     ROOT / "README.md",
     ROOT / "docs/README.md",
@@ -117,7 +118,9 @@ def test_repo_does_not_keep_duplicate_markdown_copies() -> None:
     duplicates = sorted(
         path.relative_to(ROOT).as_posix()
         for path in ROOT.glob("**/* 2.md")
-        if path.is_file() and ".venv" not in path.parts
+        if path.is_file()
+        and ".venv" not in path.parts
+        and not path.name.endswith(ICLOUD_DUPLICATE_SUFFIX)
     )
     assert duplicates == [], f"duplicate markdown copies remain: {duplicates}"
 

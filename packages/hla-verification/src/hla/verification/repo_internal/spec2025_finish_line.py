@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import ast
+import copy
 import csv
 import json
 import re
 import tempfile
 from collections import Counter
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -23,6 +25,15 @@ HIGH_PRIORITIES = frozenset({"high", "very-high"})
 CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary", "legacy-only"})
 PYTHON2025_BACKEND_EVIDENCE_PATH = "packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/backend.py"
 SHIM_BACKEND_EVIDENCE_PATH = "packages/hla-backend-shim/src/hla/backends/shim/backend.py"
+ICLOUD_DUPLICATE_SUFFIX = re.compile(r" \d+(?=\.[^.]+$|$)")
+
+
+def _is_icloud_duplicate_path(path: Path) -> bool:
+    return bool(ICLOUD_DUPLICATE_SUFFIX.search(path.name))
+
+
+def _iter_canonical_python_modules(directory: Path) -> list[Path]:
+    return [path for path in sorted(directory.glob("*.py")) if not _is_icloud_duplicate_path(path)]
 
 IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
@@ -5227,7 +5238,7 @@ def _build_python2025_source_responsibility_audit(project_root: Path) -> dict[st
         "update_rate": "object-attribute-runtime",
         "update_rate_runtime": "object-attribute-runtime",
     }
-    for helper_path in sorted(runtime_dir.glob("*.py")):
+    for helper_path in _iter_canonical_python_modules(runtime_dir):
         if helper_path.name in {"__init__.py", "backend.py", "backend_scaffold.py", "compatibility_wrapper.py", "plugin.py"}:
             continue
         helper_text = helper_path.read_text(encoding="utf-8")
@@ -6984,7 +6995,7 @@ def _build_extraction_readiness_audit(
         "update_rate_runtime.py",
     }
     if python2025_runtime_dir.exists():
-        for module_path in sorted(python2025_runtime_dir.glob("*.py")):
+        for module_path in _iter_canonical_python_modules(python2025_runtime_dir):
             if module_path.name not in migrated_runtime_module_names:
                 continue
             migrated_runtime_modules.append(str(module_path.relative_to(Path.cwd())))
@@ -8152,9 +8163,11 @@ def _build_verification_matrix(
     }
 
 
-def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
+@lru_cache(maxsize=None)
+def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[str, Any]:
     """Return the current 2025 requirements finish-line inventory."""
 
+    project_root = Path(project_root_text)
     paths = _paths(project_root)
     completion_rows = _read_csv(paths.completion_backlog)
     executable_summary = json.loads(paths.executable_summary.read_text(encoding="utf-8"))
@@ -8511,6 +8524,10 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         ),
     }
     return _portable_snapshot(snapshot, project_root)
+
+
+def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
+    return copy.deepcopy(_build_spec2025_finish_line_snapshot_cached(str(project_root.resolve())))
 
 
 def _portable_snapshot(value: Any, project_root: Path) -> Any:

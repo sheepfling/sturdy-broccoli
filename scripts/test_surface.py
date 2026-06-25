@@ -9,6 +9,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from validate_test_surface_manifest import manifest_path as validator_manifest_path
+from validate_test_surface_manifest import validate_manifest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "testing" / "test_surface_manifest.json"
@@ -22,6 +25,7 @@ class Lane:
     description: str
     owner_command: tuple[str, ...]
     commands: tuple[tuple[str, ...], ...]
+    include_lanes: tuple[str, ...]
     docs: tuple[str, ...]
     estimated_cost: str
     audience: tuple[str, ...]
@@ -35,6 +39,7 @@ class Lane:
             description=str(payload["description"]),
             owner_command=tuple(str(item) for item in payload.get("owner_command", [])),
             commands=tuple(tuple(str(part) for part in command) for command in payload.get("commands", [])),
+            include_lanes=tuple(str(item) for item in payload.get("include_lanes", [])),
             docs=tuple(str(item) for item in payload.get("docs", [])),
             estimated_cost=str(payload.get("estimated_cost", "")),
             audience=tuple(str(item) for item in payload.get("audience", [])),
@@ -53,6 +58,43 @@ def lane_by_id() -> dict[str, Lane]:
 
 def _json_dump(payload: Any) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+
+def _normalize_command_argv(argv: tuple[str, ...]) -> tuple[str, ...]:
+    if not argv:
+        return argv
+    candidate = argv[0]
+    if not candidate.startswith("./"):
+        return argv
+    path = ROOT / candidate[2:]
+    if not path.is_file():
+        return argv
+    if os.access(path, os.X_OK):
+        return argv
+    return ("bash", *argv)
+
+
+def manifest_validation_payload() -> dict[str, Any]:
+    path = validator_manifest_path()
+    errors = validate_manifest(path)
+    return {
+        "status": "passed" if not errors else "failed",
+        "manifest": str(path),
+        "errors": errors,
+    }
+
+
+def ensure_manifest_valid() -> None:
+    payload = manifest_validation_payload()
+    errors = payload["errors"]
+    if errors:
+        message = "\n".join(
+            [
+                f"test surface manifest invalid: {payload['manifest']}",
+                *[f"- {error}" for error in errors],
+            ]
+        )
+        raise SystemExit(message)
 
 
 def _classify_payload(payload: Any, *, returncode: int) -> tuple[str, bool, str]:
@@ -176,13 +218,27 @@ def print_usage() -> None:
                 "",
                 "Canonical test-surface discovery and orchestration front door:",
                 "  ./tools/test-surface inventory",
+                "  ./tools/test-surface validate",
                 "  ./tools/test-surface recommend",
                 "  ./tools/test-surface preflight",
+                "  ./tools/test-surface run smoke",
                 "  ./tools/test-surface run fast",
+                "  ./tools/test-surface run repo-green-units",
+                "  ./tools/test-surface run unit-foundation",
+                "  ./tools/test-surface run unit-python-core",
+                "  ./tools/test-surface run unit-fom-tooling",
+                "  ./tools/test-surface run unit-python-2025-core",
+                "  ./tools/test-surface run unit-transport-local",
+                "  ./tools/test-surface run unit-scenarios-light",
                 "  ./tools/test-surface run python1516_2025-main",
                 "  ./tools/test-surface run python-routes",
                 "  ./tools/test-surface run python1516_2025-routes",
                 "  ./tools/test-surface run matrix",
+                "",
+                "Extension rule:",
+                "  - reorder unit shards in repo-green-units.include_lanes",
+                "  - edit shard contents inside the matching unit-* lane",
+                "  - do not edit full_sequence.py just to reshuffle unit slices",
                 "",
                 "Use --json for machine-readable output.",
             ]
@@ -238,6 +294,17 @@ def command_inventory(*, as_json: bool) -> int:
     return 0
 
 
+def command_validate(*, as_json: bool) -> int:
+    payload = manifest_validation_payload()
+    if as_json:
+        _emit(payload, as_json=True)
+    else:
+        sys.stdout.write(f"{payload['status']}: {payload['manifest']}\n")
+        for error in payload["errors"]:
+            sys.stdout.write(f"- {error}\n")
+    return 0 if payload["status"] == "passed" else 1
+
+
 def command_preflight(*, as_json: bool, lane_id: str | None) -> int:
     lanes = lane_by_id()
     selected = [lanes[lane_id]] if lane_id else list(lanes.values())
@@ -264,18 +331,61 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
     lane = lanes[lane_id]
     steps: list[dict[str, Any]] = []
     status = "passed"
-    lane_override = os.environ.get(f"HLA2010_TEST_SURFACE_{lane_id.upper().replace('-', '_')}_CMD")
-    commands = (("sh", "-c", lane_override),) if lane_override else lane.commands
-    for argv in commands:
-        if dry_run:
-            steps.append({"argv": list(argv), "returncode": 0, "status": "planned"})
-            continue
-        result = subprocess.run(argv, cwd=ROOT, text=True, check=False)
-        step_status = "passed" if result.returncode == 0 else "failed"
-        steps.append({"argv": list(argv), "returncode": result.returncode, "status": step_status})
-        if result.returncode != 0:
-            status = "failed"
-            break
+
+    def run_lane(current_lane: Lane) -> bool:
+        nonlocal status
+        lane_override = os.environ.get(
+            f"HLA2010_TEST_SURFACE_{current_lane.lane_id.upper().replace('-', '_')}_CMD"
+        )
+        if lane_override:
+            commands = (("sh", "-c", lane_override),)
+        elif current_lane.include_lanes:
+            commands = ()
+        else:
+            commands = current_lane.commands
+
+        if current_lane.include_lanes:
+            for nested_lane_id in current_lane.include_lanes:
+                nested_lane = lanes[nested_lane_id]
+                if dry_run:
+                    steps.append(
+                        {
+                            "lane": nested_lane.lane_id,
+                            "argv": list(nested_lane.owner_command),
+                            "returncode": 0,
+                            "status": "planned",
+                        }
+                    )
+                    continue
+                nested_status = command_run(lane_id=nested_lane.lane_id, as_json=False, dry_run=False)
+                step_status = "passed" if nested_status == 0 else "failed"
+                steps.append(
+                    {
+                        "lane": nested_lane.lane_id,
+                        "argv": list(nested_lane.owner_command),
+                        "returncode": 0 if nested_status == 0 else 1,
+                        "status": step_status,
+                    }
+                )
+                if nested_status != 0:
+                    status = "failed"
+                    return False
+            return True
+
+        for argv in commands:
+            normalized_argv = _normalize_command_argv(argv)
+            if dry_run:
+                steps.append({"argv": list(normalized_argv), "returncode": 0, "status": "planned"})
+                continue
+            result = subprocess.run(normalized_argv, cwd=ROOT, text=True, check=False)
+            step_status = "passed" if result.returncode == 0 else "failed"
+            steps.append({"argv": list(normalized_argv), "returncode": result.returncode, "status": step_status})
+            if result.returncode != 0:
+                status = "failed"
+                return False
+        return True
+
+    run_lane(lane)
     payload = {
         "lane": lane.lane_id,
         "title": lane.title,
@@ -293,6 +403,7 @@ def main(argv: list[str]) -> int:
     if len(argv) < 2 or argv[1] in {"help", "-h", "--help"}:
         print_usage()
         return 0
+    ensure_manifest_valid()
 
     args = list(argv[1:])
     as_json = False
@@ -313,6 +424,8 @@ def main(argv: list[str]) -> int:
         del args[index : index + 2]
 
     command = args[0]
+    if command == "validate":
+        return command_validate(as_json=as_json)
     if command == "inventory":
         return command_inventory(as_json=as_json)
     if command == "preflight":

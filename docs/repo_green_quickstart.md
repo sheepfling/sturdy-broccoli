@@ -77,14 +77,56 @@ If you are unsure whether the verification lane passed, the simplest rule is:
 Use:
 
 ```bash
+./tools/python verify-smoke
 ./tools/python verify-fast
+```
+
+`verify-smoke` now validates `testing/test_surface_manifest.json` before pytest
+starts, so broken shard definitions fail immediately.
+
+That validation also writes front-door proof artifacts to:
+
+- `artifacts/test_surface_status/validate_manifest.json`
+- `artifacts/test_surface_status/validate_manifest.md`
+
+If the broad unit chunk is too large, start with the composite unit sweep:
+
+```bash
+./tools/test-surface run repo-green-units
+```
+
+If you need a smaller bite than that, chew through the named unit shards before
+you rerun full repo-green:
+
+```bash
+./tools/test-surface run unit-foundation
+./tools/test-surface run unit-python-core
+./tools/test-surface run unit-fom-tooling
+./tools/test-surface run unit-python-2025-core
+./tools/test-surface run unit-transport-local
+./tools/test-surface run unit-scenarios-light
 ```
 
 Use this when:
 
+- you want structural failures before the broader policy/doc lane
 - you changed docs
 - you changed wrappers or light plumbing
 - you want a cheap confidence pass before full repo-green
+- you want smaller named unit bites before full repo-green
+
+Junior maintenance rule:
+
+- reorder unit shards in `repo-green-units`
+- edit shard contents in the matching `unit-*` lane
+- leave `scripts/ci/full_sequence.py` alone unless the top-level lifecycle itself changes
+
+Agent discovery rule:
+
+- start with `./tools/test-surface inventory`
+- inspect `testing/test_surface_manifest.json`
+- edit `repo-green-units.include_lanes` for shard order or membership
+- edit the matching `unit-*` lane for shard contents
 
 ## What "Green" Means Here
 
@@ -126,6 +168,7 @@ Use:
 
 Common lanes:
 
+- `./tools/python verify-smoke`
 - `./tools/python verify-fast`
 - `./tools/python verify`
 - `./tools/python verify-main-2025`
@@ -158,6 +201,7 @@ Use:
 
 ```bash
 ./tools/test tests/test_python_route_examples.py
+./tools/test -x
 ```
 
 ### Step 4: Rerun One Failing Test
@@ -176,6 +220,7 @@ Use:
 ./tools/test -k java_bridge
 ./tools/test -k python_route
 ./tools/test -k ownership --lf
+./tools/test -x
 ```
 
 ## Failure Meaning Cheatsheet

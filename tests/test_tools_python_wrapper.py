@@ -17,10 +17,65 @@ def test_tools_python_help_describes_example_smoke_commands() -> None:
     )
 
     assert result.returncode == 0
+    assert "./tools/python verify-smoke" in result.stdout
     assert "./tools/python smoke-examples --edition 2010" in result.stdout
     assert "./tools/python smoke-examples --edition 2025" in result.stdout
     assert "./tools/python smoke-examples --all" in result.stdout
     assert "./tools/python test-examples" in result.stdout
+
+
+def test_tools_python_verify_smoke_delegate_is_supported(tmp_path: Path) -> None:
+    log_path = tmp_path / "verify-smoke.log"
+    delegate = tmp_path / "delegate.sh"
+    delegate.write_text(f"#!/usr/bin/env bash\nprintf '%s\\n' verify-smoke > '{log_path}'\n", encoding="utf-8")
+    delegate.chmod(0o755)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-smoke"],
+        cwd=ROOT,
+        env={"PATH": str(Path("/usr/bin:/bin:/usr/sbin:/sbin")), "HLA2010_PYTHON_VERIFY_SMOKE_DELEGATE": str(delegate)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    assert log_path.read_text(encoding="utf-8").strip() == "verify-smoke"
+
+
+def test_tools_python_verify_smoke_validates_manifest_before_pytest(tmp_path: Path) -> None:
+    log_path = tmp_path / "python.log"
+    fake_python = tmp_path / "fake-python"
+    fake_python.write_text(
+        "\n".join(
+            [
+                "#!/usr/bin/env python3",
+                "from pathlib import Path",
+                "import sys",
+                f"log_path = Path({str(log_path)!r})",
+                "with log_path.open('a', encoding='utf-8') as handle:",
+                "    handle.write(' '.join(sys.argv[1:]) + '\\n')",
+                "sys.exit(0)",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o755)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-smoke"],
+        cwd=ROOT,
+        env={"PATH": str(Path("/usr/bin:/bin:/usr/sbin:/sbin")), "HLA2010_PYTHON_VERIFY_ROUTES_PYTHON": str(fake_python)},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    lines = [line.strip() for line in log_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    assert lines[0].endswith("scripts/validate_test_surface_manifest.py")
+    assert lines[1].startswith("-m pytest -q ")
 
 
 def test_tools_python_smoke_examples_all_dry_run_lists_both_editions() -> None:

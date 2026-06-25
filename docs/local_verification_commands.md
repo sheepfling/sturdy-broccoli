@@ -4,6 +4,8 @@ These are the commands captured in the latest local verification note.
 
 ```bash
 ./tools/test-surface recommend
+./tools/test-surface run repo-green-units
+./tools/python verify-smoke
 ./tools/python verify-fast
 ./tools/python verify-main-2025
 ./tools/python verify-routes-preflight

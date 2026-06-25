@@ -118,10 +118,10 @@ Operator guide links:
 - `./tools/vendor-state ci-state --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
 - `scripts/ci/write_vendor_runtime_job_summary.py`: CI helper that renders normalized vendor runtime status into GitHub-job-friendly Markdown
 - `scripts/check_vendor_runner_template_drift.py`: CI helper that verifies the runner provisioning template, validator profiles, and workflow env contracts stay aligned
-- `scripts/ci/vendor_runtime_smoke.sh`: implementation wrapper behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `artifacts/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
+- `scripts/ci/vendor_runtime_smoke.py`: Python implementation behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `artifacts/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
 - `./tools/python verify`: canonical Python / repo-green wrapper around the default full verification lane
 - `./tools/vendor-green [profile]`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it self-validates the dedicated runner contract before trying the runtime lane
-- `scripts/ci/vendor_probe_stability.sh`: repeated probe implementation used by the promotion-review flow; under CI it validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
+- `scripts/ci/run_vendor_probe_stability.py`: repeated probe implementation used by the promotion-review flow; under CI it validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
 - `./tools/vendor-probe-review <profile> [repeat-count]`: canonical repeated-run probe review wrapper over the promotion path
 - `./tools/vendor-probe-review promotion-review`: canonical promotion-review artifact generator
 - `./tools/vendor-edge [time-query|negotiated-ownership|save-restore|ddm|all]`: canonical high-value vendor edge packet refresh
@@ -130,7 +130,7 @@ CI lane rule:
 
 - use `./tools/python verify` for the default repo-green lane
 - use `./tools/vendor-green [profile]` for dedicated real-runtime runners
-- treat `scripts/ci/vendor_runtime_smoke.sh` as the shared implementation
+- treat `scripts/ci/vendor_runtime_smoke.py` as the shared implementation
   behind the vendor-green lane, not as the preferred top-level CI contract
 
 Copy-paste preflight artifact flow:
@@ -174,8 +174,8 @@ These are reference families, not parallel front doors.
 - `rebuild_certi_upstream.sh`: pristine upstream CERTI build/install
 - `run_certi_local.sh`: launch local `rtig` / `rtia`
 - `check_certi_preflight.py`: host/session readiness probe
-- `ci/vendor_runtime_smoke.sh`: CERTI and Pitch runtime smoke matrix with mandatory preflight and artifact emission
-- `ci/vendor_green.sh`: strict vendor-runtime gate for dedicated real-runtime runners
+- `ci/vendor_runtime_smoke.py`: CERTI and Pitch runtime smoke matrix with mandatory preflight and artifact emission
+- `ci/vendor_green.py`: strict vendor-runtime gate for dedicated real-runtime runners
 
 ### Pitch Runtime
 
@@ -245,8 +245,8 @@ New generated backlog artifacts:
 
 - [ci/README.md](ci/README.md): CI wrapper family index
 - `ci/install_python.sh`: local QA environment install
-- `ci/full_sequence.sh`: full verification sequence with lint and type annotations
-- `ci/repo_green.sh`: explicit repo-green wrapper around `full_sequence.sh`
+- `ci/full_sequence.py`: full verification sequence with lint and type annotations
+- `ci/repo_green.py`: explicit repo-green wrapper around `full_sequence.py`
 - `ci/lint.sh`: required lint/syntax gate
 - `ci/requirements_lint.sh`: canonical imported requirements packet gate
 - `ci/lint_backlog.sh`: broader Ruff backlog report
@@ -257,7 +257,7 @@ New generated backlog artifacts:
 - `ci/target_radar_backend_matrix.sh`: target/radar backend smoke matrix
 - `ci/target_radar_proof.sh`: target/radar proof packet
 - `ci/section8_backend_matrix_gate.sh`: cross-backend Section 8 matrix
-- `ci/vendor_edge_matrix.sh`: vendor edge slice with `time-query` and `negotiated-ownership` subprofiles
+- `ci/vendor_edge_matrix.py`: vendor edge slice with `time-query` and `negotiated-ownership` subprofiles
 - `ci/check_generated_docs.sh`: generated backend alias inventory sync
 
 ### Local State And Repo Plumbing

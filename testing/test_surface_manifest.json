@@ -1,6 +1,35 @@
 {
   "lanes": [
     {
+      "id": "smoke",
+      "title": "Repo smoke lane",
+      "description": "Fast-fail repo smoke lane for operator wrappers, package-boundary policy, portability, and top-level vendor wrapper contracts before expensive depth runs.",
+      "owner_command": [
+        "./tools/python",
+        "verify-smoke"
+      ],
+      "commands": [
+        [
+          "./tools/python",
+          "verify-smoke"
+        ]
+      ],
+      "docs": [
+        "README.md",
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "low",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Fast-fail smoke lane stays within repo-owned Python checks."
+      }
+    },
+    {
       "id": "fast",
       "title": "Fast Python/operator lane",
       "description": "Low-cost contributor lane for operator wrappers, docs hygiene, and Python matrix policy checks.",
@@ -56,6 +85,215 @@
       "preflight": {
         "kind": "always-ready",
         "reason": "Repo-green wrapper handles vendor blocking internally."
+      }
+    },
+    {
+      "id": "repo-green-units",
+      "title": "Repo-green unit shard sweep",
+      "description": "Composite repo-green unit sweep. Edit this lane's include_lanes list to add, remove, or reorder the unit shards without touching CI code.",
+      "owner_command": [
+        "./tools/test-surface",
+        "run",
+        "repo-green-units"
+      ],
+      "include_lanes": [
+        "unit-foundation",
+        "unit-python-core",
+        "unit-fom-tooling",
+        "unit-python-2025-core",
+        "unit-transport-local",
+        "unit-scenarios-light"
+      ],
+      "commands": [],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md",
+        "docs/verification/run_sequence.md"
+      ],
+      "estimated_cost": "high",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Composite repo-owned unit shard sweep."
+      }
+    },
+    {
+      "id": "unit-foundation",
+      "title": "Unit foundation shard",
+      "description": "Cheap policy, package-boundary, import-hygiene, and operator-wrapper shard for the first unit-level failure signal.",
+      "owner_command": ["./tools/test-surface", "run", "unit-foundation"],
+      "commands": [
+        [
+          "./tools/test-focus",
+          "run",
+          "foundation"
+        ],
+        [
+          "./tools/test",
+          "tests/test_operator_surface_policy.py",
+          "tests/test_documentation_policy.py",
+          "tests/test_tools_test_wrapper.py",
+          "tests/test_tools_python_wrapper.py",
+          "tests/scenarios/test_test_surface_wrapper.py",
+          "tests/scenarios/test_ci_green_wrappers.py",
+          "tests/test_backend_wrapper_policy.py"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "low",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned unit shard."
+      }
+    },
+    {
+      "id": "unit-python-core",
+      "title": "Unit Python core shard",
+      "description": "Direct Python example, facade, and RTI-core shard for cheap core-runtime regressions before broader scenario depth.",
+      "owner_command": ["./tools/test-surface", "run", "unit-python-core"],
+      "commands": [
+        [
+          "./tools/test-focus",
+          "run",
+          "python-examples"
+        ],
+        [
+          "./tools/test-focus",
+          "run",
+          "rti-core"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "low",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned unit shard."
+      }
+    },
+    {
+      "id": "unit-fom-tooling",
+      "title": "Unit FOM tooling shard",
+      "description": "FOM parsing, validation, workbench, and packaged-factory shard for OMT and example-family regressions.",
+      "owner_command": ["./tools/test-surface", "run", "unit-fom-tooling"],
+      "commands": [
+        [
+          "./tools/test-focus",
+          "run",
+          "fom"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned unit shard."
+      }
+    },
+    {
+      "id": "unit-python-2025-core",
+      "title": "Unit Python 2025 core shard",
+      "description": "Primary python1516_2025 unit shard for direct runtime semantics, validation, encoding, and facade composition.",
+      "owner_command": ["./tools/test-surface", "run", "unit-python-2025-core"],
+      "commands": [
+        [
+          "./tools/test-focus",
+          "run",
+          "python-2025-runtime"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "high",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned unit shard."
+      }
+    },
+    {
+      "id": "unit-transport-local",
+      "title": "Unit transport shard",
+      "description": "Hosted transport and route-boundary shard for gRPC and REST tests without invoking vendor-runtime lanes.",
+      "owner_command": ["./tools/test-surface", "run", "unit-transport-local"],
+      "commands": [
+        [
+          "./tools/test-focus",
+          "run",
+          "transport"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned unit shard."
+      }
+    },
+    {
+      "id": "unit-scenarios-light",
+      "title": "Unit scenario-light shard",
+      "description": "Repo-owned backend and Target/Radar scenario-light shard for higher-level behavior that still belongs before vendor smoke.",
+      "owner_command": ["./tools/test-surface", "run", "unit-scenarios-light"],
+      "commands": [
+        [
+          "./tools/test-focus",
+          "run",
+          "target-radar"
+        ],
+        [
+          "./tools/test-focus",
+          "run",
+          "backends"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/repo_green_quickstart.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned unit shard."
       }
     },
     {

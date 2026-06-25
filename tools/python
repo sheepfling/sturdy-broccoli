@@ -7,10 +7,11 @@ hla2010_shell_init "tools/python"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/python [verify|verify-fast|verify-main-2025|verify-routes|verify-routes-2025|verify-routes-preflight|smoke-examples|test-examples|help]
+usage: ./tools/python [verify|verify-smoke|verify-fast|verify-main-2025|verify-routes|verify-routes-2025|verify-routes-preflight|smoke-examples|test-examples|help]
 
 Canonical Python / repo-green operator flow:
   ./tools/python verify                  # run the repo-green verification lane
+  ./tools/python verify-smoke            # run the fast-fail repo smoke lane before expensive integration depth
   ./tools/python verify-fast             # run the low-cost operator/docs/Python-matrix lane
   ./tools/python verify-main-2025        # run the primary 2025 Python RTI main-surface proof lane (python1516_2025)
   ./tools/python verify-routes           # run 2010 Python direct-vs-gRPC route parity checks
@@ -23,7 +24,9 @@ Canonical Python / repo-green operator flow:
   ./tools/test-focus inventory           # list named focused targets by package/theme
   ./tools/test-focus resume python-2025-runtime
 
-This is the human-facing wrapper over ./scripts/ci/repo_green.sh.
+This is the human-facing wrapper over the Python-backed repo-green lane in
+`./scripts/ci/repo_green.py`, with `./scripts/ci/repo_green.sh` retained as a
+compatibility alias.
 Use ./tools/certi-easy and ./tools/pitch for vendor-runtime operator flows.
 EOF
 }
@@ -106,13 +109,39 @@ test_examples_cmd() {
   run_or_print "$dry_run" hla2010_shell_run_workspace_python "$python_bin" -m pytest -q tests/test_python_route_examples.py
 }
 
+verify_smoke_cmd() {
+  local python_bin
+  python_bin="${HLA2010_PYTHON_VERIFY_ROUTES_PYTHON:-python3}"
+  hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/validate_test_surface_manifest.py"
+  hla2010_shell_run_workspace_python "$python_bin" -m pytest -q \
+    tests/test_operator_surface_policy.py \
+    tests/test_package_import_isolation.py \
+    tests/test_package_dependency_metadata.py \
+    tests/architecture/test_path_portability_policy.py \
+    tests/scenarios/test_ci_green_wrappers.py \
+    tests/scenarios/test_test_surface_wrapper.py \
+    tests/test_tools_python_wrapper.py \
+    tests/test_tools_test_focus.py \
+    tests/scenarios/test_top_level_vendor_wrappers.py \
+    tests/scenarios/test_pitch_tool_router.py \
+    "$@"
+}
+
 case "${1:-verify}" in
   help|-h|--help)
     usage
     ;;
   verify)
     shift
-    exec bash "$ROOT_DIR/scripts/ci/repo_green.sh" "$@"
+    exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/ci/repo_green.py" "$@"
+    ;;
+  verify-smoke)
+    shift
+    if [[ -n "${HLA2010_PYTHON_VERIFY_SMOKE_DELEGATE:-}" ]]; then
+      exec "${HLA2010_PYTHON_VERIFY_SMOKE_DELEGATE}" "$@"
+    fi
+    verify_smoke_cmd "$@"
+    exit $?
     ;;
   verify-fast)
     shift

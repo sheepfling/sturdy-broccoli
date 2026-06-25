@@ -14,19 +14,23 @@ For named focused reruns and restartable submodule work, use
 
 ## Canonical Lanes
 
-Use these seven lanes and treat lower-level scripts as implementation detail:
+Use these repo lanes and treat lower-level scripts as implementation detail:
 
-1. `./tools/python verify-fast`
-2. `./tools/python verify`
-3. `./tools/python verify-main-2025`
-4. `./tools/python verify-routes`
-5. `./tools/python verify-routes-2025`
-6. `./tools/vendor-green matrix`
-7. `./tools/test-surface run matrix`
+1. `./tools/python verify-smoke`
+2. `./tools/test-surface validate`
+3. `./tools/python verify-fast`
+4. `./tools/python verify`
+5. `./tools/test-surface run repo-green-units`
+6. `./tools/python verify-main-2025`
+7. `./tools/python verify-routes`
+8. `./tools/python verify-routes-2025`
+9. `./tools/vendor-green matrix`
+10. `./tools/test-surface run matrix`
 
 The matching discovery commands are:
 
 ```bash
+./tools/test-surface validate
 ./tools/test-surface inventory
 ./tools/test-surface recommend
 ./tools/test-surface preflight
@@ -37,8 +41,16 @@ The matching discovery commands are:
 
 | Lane | Primary command | Purpose |
 |---|---|---|
+| `smoke` | `./tools/python verify-smoke` | fast-fail repo smoke lane for operator wrappers, package-boundary policy, portability, and top-level vendor wrapper contracts before expensive depth |
 | `fast` | `./tools/python verify-fast` | low-cost operator, docs, Python matrix, and 2025 requirements-evidence index checks |
 | `repo-green` | `./tools/python verify` | full supported local repo-green lane |
+| `repo-green-units` | `./tools/test-surface run repo-green-units` | composite repo-green unit sweep; edit this lane to add, remove, or reorder unit shards |
+| `unit-foundation` | `./tools/test-surface run unit-foundation` | cheap policy, package-boundary, import-hygiene, and operator-wrapper shard |
+| `unit-python-core` | `./tools/test-surface run unit-python-core` | direct Python example and RTI-core shard |
+| `unit-fom-tooling` | `./tools/test-surface run unit-fom-tooling` | FOM parsing, validation, workbench, and packaged-factory shard |
+| `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | primary `python1516_2025` unit shard for direct runtime semantics and validation |
+| `unit-transport-local` | `./tools/test-surface run unit-transport-local` | hosted transport shard for gRPC and REST tests without vendor-runtime lanes |
+| `unit-scenarios-light` | `./tools/test-surface run unit-scenarios-light` | repo-owned backend and Target/Radar scenario-light shard |
 | `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and OMT evidence |
 | `python-routes` | `./tools/python verify-routes` | hosted 2010 Python RTI parity, transport-route semantics, and hosted example checks |
 | `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and the README-advertised `python1516_2025` Target/Radar example path |
@@ -120,6 +132,44 @@ Start here:
 
 Then run the recommended lane.
 
+`./tools/test-surface` validates `testing/test_surface_manifest.json` before
+inventory, recommend, preflight, or run, so broken shard composition fails at
+the front door instead of inside later orchestration.
+
+If you want the fastest structural failure signal before broader reruns, start with:
+
+```bash
+./tools/test-surface validate
+./tools/python verify-smoke
+./tools/test -x
+```
+
+`verify-smoke` validates `testing/test_surface_manifest.json` before running the
+smoke pytest set, so shard wiring mistakes fail before the broader lane runs.
+
+If the broad unit phase is too large, start with the composite unit sweep:
+
+```bash
+./tools/test-surface run repo-green-units
+```
+
+If you need a smaller bite than that, run the named shards directly:
+
+```bash
+./tools/test-surface run unit-foundation
+./tools/test-surface run unit-python-core
+./tools/test-surface run unit-fom-tooling
+./tools/test-surface run unit-python-2025-core
+./tools/test-surface run unit-transport-local
+./tools/test-surface run unit-scenarios-light
+```
+
+The junior rule is simple:
+
+- change shard membership or order in `repo-green-units`
+- change shard contents inside the individual `unit-*` lane
+- do not edit `full_sequence.py` just to reshuffle unit slices
+
 If the lane is too large, switch to a named focused target instead of guessing
 raw pytest selectors:
 
@@ -172,9 +222,22 @@ Agents should prefer:
 1. `./tools/test-surface inventory --json`
 2. `./tools/test-surface preflight --json`
 3. `./tools/test-surface recommend --json`
+4. inspect `repo-green-units` when changing unit shard order or membership
+5. inspect the matching `unit-*` lane when changing shard contents
 
 That keeps lane selection machine-readable and avoids guessing from scattered
 docs, ad hoc pytest selectors, or CI plumbing.
+
+Agent maintenance rule:
+
+- the authoritative shard inventory and shard order live in
+  `testing/test_surface_manifest.json`
+- `repo-green-units.include_lanes` is the only place an agent should edit to
+  add, remove, or reorder repo-green unit shards
+- the `commands` of each `unit-*` lane are the only place an agent should edit
+  to change what one shard runs
+- `scripts/ci/full_sequence.py` should change only when the top-level lifecycle
+  changes, not when unit shards are reshuffled
 
 ## Artifacts
 
@@ -182,9 +245,12 @@ docs, ad hoc pytest selectors, or CI plumbing.
 
 - `artifacts/test_surface_status/<lane>.json`
 - `artifacts/test_surface_status/<lane>.md`
+- `artifacts/test_surface_status/validate_manifest.json`
+- `artifacts/test_surface_status/validate_manifest.md`
 
 Use those artifacts to see what the lane ran and whether it passed, failed, or
-was only planned through `--dry-run`.
+was only planned through `--dry-run`, plus whether the manifest itself was
+structurally valid at the front door.
 
 `./tools/test-focus run <target>` writes the same kind of summary for focused
 work under:

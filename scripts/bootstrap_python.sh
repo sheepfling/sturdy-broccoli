@@ -237,12 +237,19 @@ run_venv_python() {
 site_packages_dir="$(run_venv_python -c 'import site; print(next(path for path in site.getsitepackages() if path.endswith("site-packages")))' )"
 
 hla2010_shell_log "removing stale editable dist-info entries"
-run_venv_python -c 'from pathlib import Path; import shutil, sys; site_packages = Path(sys.argv[1]); removed = [];
+run_venv_python -c 'from pathlib import Path; import re, shutil, sys; site_packages = Path(sys.argv[1]); removed = []; icloud_duplicate = re.compile(r" \d+(?=\.[^.]+$|$)");
 for dist_info in sorted(site_packages.glob("*.dist-info")):
     metadata = dist_info / "METADATA"
     if metadata.exists():
         continue
     shutil.rmtree(dist_info, ignore_errors=True); removed.append(dist_info.name)
+for path in sorted(site_packages.iterdir()):
+    if path.name.startswith("~") or icloud_duplicate.search(path.name):
+        if path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
+        else:
+            path.unlink(missing_ok=True)
+        removed.append(path.name)
 for stale_path in sorted(site_packages.glob("__editable__.* *.pth")):
     stale_path.unlink(missing_ok=True); removed.append(stale_path.name)
 for stale_path in sorted(site_packages.glob("__editable___*_finder *.py")):
@@ -261,13 +268,21 @@ hyperspec_count="${#workspace_packages[@]}"
 hla2010_shell_log "installing editable split packages count=${hyperspec_count}"
 for package_dir in "${workspace_packages[@]}"; do
   hla2010_shell_log "installing editable package ${package_dir}"
-  run_venv_python -c 'from pathlib import Path; import shutil, sys, tomllib; pyproject_path = Path(sys.argv[1]); site_packages = Path(sys.argv[2]); project = tomllib.loads(pyproject_path.read_text(encoding="utf-8")); project_name = project["project"]["name"]; normalized = project_name.replace("-", "_"); finder_prefix = normalized.replace(".", "_");
+  run_venv_python -c 'from pathlib import Path; import re, shutil, sys, tomllib; pyproject_path = Path(sys.argv[1]); site_packages = Path(sys.argv[2]); project = tomllib.loads(pyproject_path.read_text(encoding="utf-8")); project_name = project["project"]["name"]; normalized = project_name.replace("-", "_"); finder_prefix = normalized.replace(".", "_"); icloud_duplicate = re.compile(r" \d+(?=\.[^.]+$|$)");
 for path in sorted(site_packages.glob(f"{normalized}-*.dist-info")):
     shutil.rmtree(path, ignore_errors=True)
 for path in sorted(site_packages.glob(f"__editable__.{normalized}-*.pth")):
     path.unlink(missing_ok=True)
 for path in sorted(site_packages.glob(f"__editable___{finder_prefix}_*_finder.py")):
-    path.unlink(missing_ok=True)' "$ROOT_DIR/$package_dir/pyproject.toml" "$site_packages_dir"
+    path.unlink(missing_ok=True)
+for path in sorted(site_packages.iterdir()):
+    if not icloud_duplicate.search(path.name):
+        continue
+    if normalized in path.name or finder_prefix in path.name:
+        if path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
+        else:
+            path.unlink(missing_ok=True)' "$ROOT_DIR/$package_dir/pyproject.toml" "$site_packages_dir"
   run_venv_python -m pip install --no-build-isolation --no-deps -e "$ROOT_DIR/$package_dir"
 done
 

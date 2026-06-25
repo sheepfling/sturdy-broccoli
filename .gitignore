@@ -9,6 +9,7 @@ Thumbs.db
 *.tmp
 *.swp
 *.swo
+* 2.*
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints/

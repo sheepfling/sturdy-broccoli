@@ -263,7 +263,7 @@ def build(edition: str) -> None:
     ar = _tool("ar")
     build_root = ROOT / f"build/shim_routes/{config['key']}"
     if build_root.exists():
-        shutil.rmtree(build_root)
+        shutil.rmtree(build_root, ignore_errors=True)
     build_root.mkdir(parents=True)
     api_dir = _extract_api(edition, build_root)
     if edition == "2010":

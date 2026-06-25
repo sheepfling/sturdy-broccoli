@@ -159,7 +159,7 @@ The current package set is:
 | `hla-bridge-java-common` | vendor/common | `hla-rti1516e`, `hla-backend-common` | python backend, transport, leaf packages |
 | `hla-backend-python1516e` | backend | `hla-rti1516e`, `hla-backend-common` | java-common, vendor, transport, leaf packages |
 | `hla-backend-python1516-2025` | backend | `hla-rti1516-2025`, `hla-backend-common`, `hla-rti-core` | shim backflow, vendor, transport, leaf packages |
-| `hla-backend-shim` | legacy-compatibility | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python1516-2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |
+| `hla-backend-shim` | compatibility-wrapper | `hla-rti1516-2025`, `hla-rti-core`, `hla-backend-python1516-2025` | any path that would re-own core 2025 runtime semantics, plus vendor, transport, leaf packages |
 | `hla-backend-certi` | backend | `hla-rti1516e`, `hla-bridge-java-common`, `hla-rti-core` | python backend, transport, leaf packages |
 | `hla-bridge-java-jpype` | backend | `hla-rti1516e`, `hla-bridge-java-common` | python backend, transport, leaf packages |
 | `hla-bridge-java-py4j` | backend | `hla-rti1516e`, `hla-bridge-java-common` | python backend, transport, leaf packages |

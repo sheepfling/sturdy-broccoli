@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import socket
 import subprocess
 import sys
@@ -50,6 +51,16 @@ def _wait_for_port(host: str, port: int, timeout: float) -> bool:
     return False
 
 
+def _terminate_process_group(process: subprocess.Popen[str], timeout: float) -> tuple[str, str]:
+    if process.poll() is None:
+        os.killpg(process.pid, signal.SIGTERM)
+    try:
+        return process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGKILL)
+        return process.communicate(timeout=timeout)
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     runtime = discover_pitch_runtime(args.pitch_home)
@@ -71,6 +82,7 @@ def main(argv: list[str] | None = None) -> int:
     env = dict(os.environ)
     env["HLA2010_PITCH_HOME"] = str(runtime.home)
     env["HLA2010_PITCH_USER_HOME"] = str(user_home)
+    env.setdefault("HLA2010_PITCH_DOCKER_BUILD", "0")
     process = subprocess.Popen(
         [str(REPO_ROOT / "scripts" / "run_pitch_docker_crc.sh")],
         cwd=REPO_ROOT,
@@ -78,14 +90,10 @@ def main(argv: list[str] | None = None) -> int:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
+        start_new_session=True,
     )
     opened_8989 = _wait_for_port("127.0.0.1", 8989, 45.0)
-    try:
-        process.terminate()
-        stdout, stderr = process.communicate(timeout=10)
-    except subprocess.TimeoutExpired:
-        process.kill()
-        stdout, stderr = process.communicate(timeout=10)
+    stdout, stderr = _terminate_process_group(process, timeout=10)
     result.update(
         {
             "opened_8989": opened_8989,

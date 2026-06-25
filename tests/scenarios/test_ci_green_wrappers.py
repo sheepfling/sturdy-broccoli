@@ -21,12 +21,19 @@ def test_repo_green_default_suite_includes_2010_and_2025_grpc_route_tests() -> N
     testpaths = pyproject["tool"]["pytest"]["ini_options"]["testpaths"]
     assert "tests" in testpaths
 
-    full_sequence = (ROOT / "scripts/ci/full_sequence.sh").read_text(encoding="utf-8")
-    assert 'run_step "standard shim route artifacts" "$ROOT_DIR/scripts/ci/build_standard_shims_if_available.sh"' in full_sequence
-    assert 'run_step "unit tests" "$ROOT_DIR/scripts/ci/test.sh"' in full_sequence
+    full_sequence = (ROOT / "scripts" / "ci" / "full_sequence.py").read_text(encoding="utf-8")
+    assert '"standard shim route artifacts"' in full_sequence
+    assert '"repo-green smoke"' in full_sequence
+    assert '"unit shard sweep"' in full_sequence
+    assert '"repo-green-units"' in full_sequence
+    assert 'vendor_runtime_smoke.py"), "matrix"' in full_sequence
 
     test_script = (ROOT / "scripts/ci/test.sh").read_text(encoding="utf-8")
-    assert "python -m pytest -q" in test_script
+    test_python = (ROOT / "scripts" / "ci" / "test.py").read_text(encoding="utf-8")
+    assert 'exec "$PYTHON_BIN" "$ROOT_DIR/scripts/ci/test.py" "$@"' in test_script
+    assert "python -m pytest -q" in test_python
+    assert "./tools/test -x" in test_python
+    assert "./tools/test --lf" in test_python
 
     default_suite_files = [
         ROOT / "tests/transport/test_grpc_transport.py",
@@ -50,8 +57,8 @@ def test_repo_green_help_describes_repo_green_lane() -> None:
 
     assert result.returncode == 0
     assert "repo-green" in result.stdout
-    assert "./scripts/ci/full_sequence.sh" in result.stdout
-    assert "./scripts/ci/vendor_green.sh" in result.stdout
+    assert "./scripts/ci/full_sequence.py" in result.stdout
+    assert "./scripts/ci/vendor_green.py" in result.stdout
 
 
 def test_tools_python_help_describes_repo_green_operator_lane() -> None:
@@ -70,9 +77,59 @@ def test_tools_python_help_describes_repo_green_operator_lane() -> None:
     assert "./tools/python verify-routes" in result.stdout
     assert "./tools/python verify-routes-2025" in result.stdout
     assert "./tools/python verify-routes-preflight" in result.stdout
-    assert "./scripts/ci/repo_green.sh" in result.stdout
+    assert "./scripts/ci/repo_green.py" in result.stdout
     assert "./tools/certi-easy" in result.stdout
     assert "./tools/pitch" in result.stdout
+
+
+def test_repo_green_runs_manifest_validation_before_delegate(tmp_path: Path) -> None:
+    log_path = tmp_path / "repo_green.log"
+    validator = tmp_path / "validator.py"
+    validator.write_text(
+        "\n".join(
+            [
+                "#!/usr/bin/env python3",
+                "from pathlib import Path",
+                "import sys",
+                f"Path({str(log_path)!r}).open('a', encoding='utf-8').write('validate\\n')",
+                "sys.exit(0)",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    validator.chmod(0o755)
+    delegate = tmp_path / "delegate.py"
+    delegate.write_text(
+        "\n".join(
+            [
+                "#!/usr/bin/env python3",
+                "from pathlib import Path",
+                f"Path({str(log_path)!r}).open('a', encoding='utf-8').write('delegate\\n')",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    delegate.chmod(0o755)
+
+    result = subprocess.run(
+        ["python3", "scripts/ci/repo_green.py"],
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "HLA2010_REPO_GREEN_MANIFEST_VALIDATE_CMD": str(validator),
+            "HLA2010_REPO_GREEN_DELEGATE": str(delegate),
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    assert log_path.read_text(encoding="utf-8").splitlines() == ["validate", "delegate"]
+    assert "[repo-green] validate test-surface manifest:" in result.stdout
+    assert "[repo-green] run full sequence:" in result.stdout
 
 
 def test_vendor_green_help_describes_strict_vendor_lane() -> None:
@@ -87,7 +144,7 @@ def test_vendor_green_help_describes_strict_vendor_lane() -> None:
     assert result.returncode == 0
     assert "vendor-green" in result.stdout
     assert "HLA2010_VENDOR_PREFLIGHT_STRICT=1" in result.stdout
-    assert "./scripts/ci/repo_green.sh" in result.stdout
+    assert "./scripts/ci/repo_green.py" in result.stdout
 
 
 def test_github_ci_local_help_describes_modes() -> None:

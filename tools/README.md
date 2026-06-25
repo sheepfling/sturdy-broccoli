@@ -6,7 +6,7 @@ If you are deciding what command to run, start here, not in `scripts/`.
 
 For IEEE 1516.1-2025 specifically, interpret the operator surface through
 `hla-backend-python1516-2025` as the main runtime lane. `hla-backend-shim` remains
-only as compatibility-wrapper/import-compatibility code, and hosted FedPro
+only as compatibility-wrapper/import-compatibility code, only as a legacy compatibility shim, and hosted FedPro
 routes are bounded route variants rather than separate RTI families.
 
 Core operator entrypoints:
@@ -56,6 +56,8 @@ Shortest common paths:
 
 - bootstrap and activate: `./tools/bootstrap python`
 - get the default recommended verification lane: `./tools/test-surface recommend`
+- inspect or extend the repo-green unit sweep: `./tools/test-surface run repo-green-units`
+- discover where unit shard order lives: `testing/test_surface_manifest.json` -> `repo-green-units.include_lanes`
 - get the junior-friendly rerun and failure-diagnosis workflow: `docs/junior_test_diagnosis_runbook.md`
 - run one 2010 example: `python examples/target_radar_simulation.py --backend python1516e --steps 5`
 - run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python1516_2025 --steps 5`
@@ -64,6 +66,7 @@ Shortest common paths:
 - run both isolated direct Python route examples: `./tools/python smoke-examples --all`
 - run the focused direct Python example test: `./tools/python test-examples`
 - run the default test wrapper: `./tools/test`
+- stop the default test wrapper at the first failure: `./tools/test -x`
 - list named focused test targets: `./tools/test-focus inventory`
 - rerun one named focused target: `./tools/test-focus run foundation`
 - rerun one package-aligned target: `./tools/test-focus run jpype`, `./tools/test-focus run py4j`, `./tools/test-focus run target-radar`, or `./tools/test-focus run rti-core`
@@ -71,6 +74,8 @@ Shortest common paths:
 - use submodule-style aliases when that is easier to remember: `./tools/test-focus run fom-target-radar`, `./tools/test-focus run rti-factory`, `./tools/test-focus run bridge-jpype`, `./tools/test-focus run save-restore-2025`
 - resume only prior failures inside one focused target: `./tools/test-focus resume python-2025-runtime`
 - discover the canonical verification lanes: `./tools/test-surface recommend`
+- validate the named test-surface manifest without running tests: `./tools/test-surface validate`
+- run the fast-fail repo smoke lane before expensive depth: `./tools/python verify-smoke`
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - run bounded hosted 2025 Python/FedPro route checks: `./tools/python verify-routes-2025`

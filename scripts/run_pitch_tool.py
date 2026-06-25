@@ -313,7 +313,7 @@ def _logs_pitch_docker() -> int:
 
 
 def _run_best_effort(profile: str) -> int:
-    status = _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_runtime_smoke.sh", profile)).returncode
+    status = _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_runtime_smoke.py"), profile]).returncode
     _emit_runtime_reports(profile)
     return status
 
@@ -425,13 +425,13 @@ def main(argv: list[str] | None = None) -> int:
         return _logs_pitch_docker()
     if command == "smoke":
         _log("running Pitch smoke")
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-smoke")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-smoke"]).returncode
     if command == "smoke-best-effort":
         _log("running Pitch smoke (best-effort)")
         return _run_best_effort("pitch-smoke")
     if command == "verify":
         _log("running Pitch verify")
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-verify")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-verify"]).returncode
     if command == "verify-best-effort":
         _log("running Pitch verify (best-effort)")
         return _run_best_effort("pitch-verify")
@@ -450,37 +450,37 @@ def main(argv: list[str] | None = None) -> int:
     if command == "fom-smoke-compare":
         return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "generate_pitch_fom_smoke_comparison.py"), *rest]).returncode
     if command == "save-restore":
-        return _run_with_preflight("pitch-save-restore", _shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-save-restore"))
+        return _run_with_preflight("pitch-save-restore", [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-save-restore"])
     if command == "save-restore-probe":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-save-restore-probe")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-save-restore-probe"]).returncode
     if command == "save-restore-review":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_review.sh", "pitch-save-restore-probe", rest[0] if rest else "5")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_review.py"), "pitch-save-restore-probe", rest[0] if rest else "5"]).returncode
     if command == "ddm":
-        return _run_with_preflight("pitch-ddm", _shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-ddm"))
+        return _run_with_preflight("pitch-ddm", [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-ddm"])
     if command == "ddm-probe":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-ddm-probe")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-ddm-probe"]).returncode
     if command == "ddm-review":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_review.sh", "pitch-ddm-probe", rest[0] if rest else "5")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_review.py"), "pitch-ddm-probe", rest[0] if rest else "5"]).returncode
     if command == "negotiated":
-        return _run_with_preflight("pitch-negotiated", _shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-negotiated"))
+        return _run_with_preflight("pitch-negotiated", [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-negotiated"])
     if command == "negotiated-probe":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-negotiated-probe")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-negotiated-probe"]).returncode
     if command == "negotiated-review":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_review.sh", "pitch-negotiated-probe", rest[0] if rest else "5")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_review.py"), "pitch-negotiated-probe", rest[0] if rest else "5"]).returncode
     if command == "time-window-probe":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-time-window-probe")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-time-window-probe"]).returncode
     if command == "time-window-review":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_review.sh", "pitch-time-window-probe", rest[0] if rest else "5")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_review.py"), "pitch-time-window-probe", rest[0] if rest else "5"]).returncode
     if command == "time-window-restore-state-probe":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-time-window-restore-state-probe")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-time-window-restore-state-probe"]).returncode
     if command == "time-window-restore-state-review":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_review.sh", "pitch-time-window-restore-state-probe", rest[0] if rest else "5")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_review.py"), "pitch-time-window-restore-state-probe", rest[0] if rest else "5"]).returncode
     if command == "lost-federate":
-        return _run_with_preflight("pitch-lost-federate", _shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-lost-federate"))
+        return _run_with_preflight("pitch-lost-federate", [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-lost-federate"])
     if command == "lost-federate-probe":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-lost-federate-probe")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-lost-federate-probe"]).returncode
     if command == "lost-federate-review":
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_probe_review.sh", "pitch-lost-federate-probe", rest[0] if rest else "5")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "run_vendor_probe_review.py"), "pitch-lost-federate-probe", rest[0] if rest else "5"]).returncode
     if command == "crc-macos-repro":
         return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "repro_pitch_crc_macos.py"), *rest]).returncode
     if command == "crc-docker-repro":
@@ -489,10 +489,10 @@ def main(argv: list[str] | None = None) -> int:
         install_status = _install_pitch_docker()
         if install_status != 0:
             return install_status
-        smoke_status = _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-smoke")).returncode
+        smoke_status = _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-smoke"]).returncode
         if smoke_status != 0:
             return smoke_status
-        return _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.sh", "pitch-verify")).returncode
+        return _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "ci" / "vendor_green.py"), "pitch-verify"]).returncode
     if command == "doctor":
         return _doctor_pitch_docker()
     print(_usage(), end="")

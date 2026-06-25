@@ -71,7 +71,7 @@ Rules for the split:
   main full Python 2025 RTI implementation lane. It registers
   `python1516_2025` for `rti1516_2025`.
 - `hla-backend-shim` is a legacy compatibility shim.
-  Its helper modules should remain wrapper-only aliases over
+  Its helper modules should remain wrapper-only compatibility aliases over
   `hla.backends.python1516_2025.*`, without reclaiming runtime-selection
   ownership from `hla-backend-python1516-2025`, and should be removed after
   migration.

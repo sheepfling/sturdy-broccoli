@@ -14,8 +14,19 @@ Canonical local pytest wrapper:
   ./tools/test -k ownership --lf
   ./tools/test tests/transport --ff
 
-This is the human-facing wrapper over `./scripts/ci/test.sh`.
+This is the human-facing wrapper over `./scripts/ci/test.py`, with
+`./scripts/ci/test.sh` retained as a compatibility alias.
 EOF
+}
+
+python_bin() {
+  if [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+    printf '%s\n' "$ROOT_DIR/.venv/bin/python"
+  elif command -v python3 >/dev/null 2>&1; then
+    command -v python3
+  else
+    command -v python
+  fi
 }
 
 case "${1:-}" in
@@ -23,6 +34,6 @@ case "${1:-}" in
     usage
     ;;
   *)
-    exec bash "$ROOT_DIR/scripts/ci/test.sh" "$@"
+    exec "$(python_bin)" "$ROOT_DIR/scripts/ci/test.py" "$@"
     ;;
 esac

@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import importlib
 import json
+import re
 import socket
 from pathlib import Path
 from typing import Any, Callable
@@ -15,6 +16,7 @@ TESTS_ROOT = REPO_ROOT / "tests"
 FIXTURES_ROOT = TESTS_ROOT / "fixtures"
 COMPLIANCE_ROOT = REPO_ROOT / "analysis" / "compliance"
 TRACEABILITY_ROOT = REPO_ROOT / "analysis" / "traceability"
+ICLOUD_DUPLICATE_SUFFIX = re.compile(r" \d+(?=\.[^.]+$|$)")
 
 
 def _resolve_repo_path(path: str | Path) -> Path:
@@ -95,6 +97,11 @@ def pytest_configure(config: pytest.Config) -> None:
         "markers",
         "requirements(*requirement_ids): explicit requirement IDs covered by the test",
     )
+
+
+def pytest_ignore_collect(collection_path: Path, config: pytest.Config) -> bool:
+    del config
+    return bool(ICLOUD_DUPLICATE_SUFFIX.search(collection_path.name))
 
 
 def pytest_runtest_setup(item: pytest.Item) -> None:

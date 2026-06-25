@@ -13,7 +13,8 @@ Canonical vendor edge matrix flow:
   ./tools/vendor-edge negotiated-ownership
   ./tools/vendor-edge all
 
-This is the human-facing wrapper over `./scripts/ci/vendor_edge_matrix.sh`.
+This is the human-facing wrapper over `./scripts/ci/vendor_edge_matrix.py`,
+with `./scripts/ci/vendor_edge_matrix.sh` retained as a compatibility alias.
 EOF
 }
 
@@ -22,6 +23,6 @@ case "${1:-help}" in
     usage
     ;;
   *)
-    exec bash "$ROOT_DIR/scripts/ci/vendor_edge_matrix.sh" "$@"
+    exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/ci/vendor_edge_matrix.py" "$@"
     ;;
 esac
