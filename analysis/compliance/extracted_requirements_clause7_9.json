@@ -702,7 +702,7 @@
       "vendor_evidence_refs": [],
       "vendor_notes": "",
       "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -744,7 +744,7 @@
       ],
       "vendor_notes": "shared ownership scenario verifies real Pitch ownership transfer and later ownership query visibility",
       "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -785,7 +785,7 @@
       ],
       "vendor_notes": "shared ownership scenario verifies Pitch moves a single attribute to one winning owner at a time",
       "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -827,7 +827,7 @@
       ],
       "vendor_notes": "shared non-owner-update scenario verifies real Pitch rejects attribute updates from non-owners",
       "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -868,7 +868,7 @@
       ],
       "vendor_notes": "callback path covered in Python; real negotiated-flow parity is still vendor/runtime-dependent",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -915,7 +915,7 @@
       ],
       "vendor_notes": "Python release-request path is exercised; direct CERTI probe now proves owner-side release callback delivery on owned-attribute acquisition; the current Pitch result is bridge-divergent because `pitch-py4j` reaches this callback on the release-request path while `pitch-jpype` does not",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -957,7 +957,7 @@
       ],
       "vendor_notes": "shared ownership scenario verifies real Pitch ownership query reporting after transfer",
       "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -999,7 +999,7 @@
       ],
       "vendor_notes": "shared ownership-query callback scenario verifies real Pitch inform/not-owned/RTI-owned callback coverage",
       "vendor_profile_bucket": "Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Pitch native HLA4 (JPype, direct or FedPro): not yet explicit; Pitch native HLA4 (Py4J, direct or FedPro): not yet explicit; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1044,7 +1044,7 @@
       ],
       "vendor_notes": "current real ownership smoke anchor",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1094,7 +1094,7 @@
       ],
       "vendor_notes": "Python tracks divesting state and assumption callbacks; current CERTI native, JPype, and Py4J matrix runs still diverge before the expected negotiated release/acquisition handshake completes; Pitch is also bridge-divergent here, with `pitch-jpype` and `pitch-py4j` exposing different partial callback surfaces on the same Docker-backed runtime",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1141,7 +1141,7 @@
       ],
       "vendor_notes": "backend-neutral Python path is exercised; current CERTI runs show that negotiated ownership remains unstable end to end even though lower-level callback probes exist; both Pitch bridges reach the assumption callback on the offer path, but they diverge immediately after that point",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1182,7 +1182,7 @@
       ],
       "vendor_notes": "shared release-request ownership scenario verifies real Pitch attribute acquisition through the standard request path",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1223,7 +1223,7 @@
       ],
       "vendor_notes": "shared ownership scenario verifies real Pitch acquisition-if-available transfer and resulting ownership state",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1264,7 +1264,7 @@
       ],
       "vendor_notes": "shared ownership and release-request scenarios verify real Pitch acquisition-notification callbacks on successful transfer",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1305,7 +1305,7 @@
       ],
       "vendor_notes": "shared release-denied scenario verifies Pitch does not emit acquisition notification after denied release",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1346,7 +1346,7 @@
       ],
       "vendor_notes": "shared ownership-unavailable scenario verifies real Pitch acquisition-failure callbacks",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1391,7 +1391,7 @@
       ],
       "vendor_notes": "exercised end to end",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
@@ -1436,7 +1436,7 @@
       ],
       "vendor_notes": "exercised end to end",
       "vendor_profile_bucket": "Negotiated Ownership",
-      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_notes": "Python RTI 2010 (none, none): yes; Python RTI 2025 (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Pitch native HLA4 (JPype, direct or FedPro): no; Pitch native HLA4 (Py4J, direct or FedPro): no; Portico (JPype, none): no; Portico (Py4J, none): no",
       "vendor_profile_refs": [
         "docs/rti_options_and_test_matrix.md"
       ],
