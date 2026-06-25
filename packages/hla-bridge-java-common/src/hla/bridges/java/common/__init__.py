@@ -16,7 +16,9 @@ from hla.backends.common import (
 )
 from .java_common import (
     JavaBridge,
+    JavaEncoderOracle,
     JavaRTIBackend,
+    JavaVendorEncoding,
     JavaValueConverter,
     PythonFederateAmbassadorDispatcher,
     ResolvedJavaInvocation,
@@ -64,9 +66,11 @@ __all__ = [
     "CALLBACK_METHOD_NAMES",
     "Invocation",
     "JavaBridge",
+    "JavaEncoderOracle",
     "JavaByteArray",
     "JavaLikeException",
     "JavaLikeObject",
+    "JavaVendorEncoding",
     "JavaToolchainArtifact",
     "JavaToolchainInventory",
     "RTIBackend",

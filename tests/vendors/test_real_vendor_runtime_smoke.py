@@ -8,10 +8,16 @@ import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.common import BackendUnavailableError
+from hla.rti1516_2025.auth import HLAnoCredentials, HLAplainTextPassword
 from hla.rti1516_2025 import CallbackModel as CallbackModel2025
 from hla.rti1516_2025 import RtiConfiguration as RtiConfiguration2025
+from hla.rti1516_2025.encoding import HLAASCIIstring as HLAASCIIstring2025
+from hla.rti1516_2025.encoding import HLAfixedRecord as HLAfixedRecord2025
+from hla.rti1516_2025.encoding import HLAoctet as HLAoctet2025
+from hla.rti1516_2025.encoding import HLAunicodeString as HLAunicodeString2025
 from hla.rti1516_2025.federate_ambassador import NullFederateAmbassador as NullFederateAmbassador2025
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
+from hla.rti1516e.encoding import HLAASCIIstring, HLAfixedRecord, HLAoctet, HLAunicodeString
 from hla.rti1516e.enums import ResignAction
 from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.datatypes import RangeBounds
@@ -52,6 +58,33 @@ def _runtime_state_root(vendor: str, *, kind: str | None = None) -> Path:
     return Path(__file__).resolve().parents[2] / ".pytest-runtime-state" / suffix
 
 
+def _bridge_class_name(rti: object, value: object) -> str | None:
+    backend = getattr(rti, "backend", None)
+    bridge = getattr(backend, "bridge", None)
+    if bridge is None:
+        return None
+    full_name = getattr(bridge, "full_class_name", lambda obj: None)(value)
+    return full_name or getattr(bridge, "simple_class_name", lambda obj: None)(value)
+
+
+def _bridge_to_python_bytes(rti: object, value: object) -> bytes:
+    backend = getattr(rti, "backend", None)
+    bridge = getattr(backend, "bridge", None)
+    assert bridge is not None
+    return bridge.to_python_bytes(value)
+
+
+def _exploding_ascii_element(payload: str) -> object:
+    return type(
+        "HLAASCIIstring",
+        (),
+        {
+            "getValue": lambda self: payload,
+            "toByteArray": lambda self: (_ for _ in ()).throw(AssertionError("python toByteArray should not run")),
+        },
+    )()
+
+
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_lifecycle_smoke(kind: str):
     _require_real_rti_smoke("pitch")
@@ -81,6 +114,46 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
             )
             assert summary["federation_name"] == federation_name
             assert summary["federate_handle"] is not None
+        finally:
+            shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime,))
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+def test_pitch_java_real_vendor_encoder_proof(kind: str) -> None:
+    _require_real_rti_smoke("pitch")
+    with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=f"{kind}-encoder-proof")):
+        runtime = None
+        rti = None
+        try:
+            runtime = launch_pitch_runtime()
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+
+        try:
+            rti = create_rti_ambassador(kind)
+            backend = rti.backend
+            oracle = getattr(backend, "java_encoder_oracle", None)
+            assert oracle is not None
+
+            ascii_element = oracle.materialize(HLAASCIIstring("radar"))
+            unicode_element = oracle.materialize(HLAunicodeString("lambda"))
+            record_element = oracle.materialize(HLAfixedRecord([HLAoctet(7), HLAASCIIstring("space")]))
+
+            assert _bridge_class_name(rti, ascii_element) == "se.pitch.prti1516e.util.HLAASCIIstringImpl"
+            assert _bridge_class_name(rti, unicode_element) == "se.pitch.prti1516e.util.HLAunicodeStringImpl"
+            assert _bridge_class_name(rti, record_element) == "se.pitch.prti1516e.util.HLAfixedRecordImpl"
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(ascii_element, "toByteArray")) == HLAASCIIstring(
+                "radar"
+            ).encode()
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(unicode_element, "toByteArray")) == HLAunicodeString(
+                "lambda"
+            ).encode()
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(record_element, "toByteArray")) == HLAfixedRecord(
+                [HLAoctet(7), HLAASCIIstring("space")]
+            ).encode()
+
+            java_bytes = backend.converter.to_backend(_exploding_ascii_element("vendor-only"), expected_type_name="byte[]")
+            assert _bridge_to_python_bytes(rti, java_bytes) == HLAASCIIstring("vendor-only").encode()
         finally:
             shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime,))
 
@@ -157,6 +230,67 @@ def test_pitch_native_202x_real_connect_smoke(backend_name: str, surface: str) -
             )
             if not (backend_name == "pitch-native-202x-py4j" and surface == "fedpro"):
                 rti.disconnect()
+        finally:
+            shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime_process,))
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "pitch-native-202x-jpype",
+        "pitch-native-202x-py4j",
+    ],
+)
+def test_pitch_native_202x_vendor_auth_and_encoder_proof(backend_name: str) -> None:
+    _require_real_rti_smoke("pitch")
+    with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=f"{backend_name}-vendor-proof")):
+        runtime_process = None
+        rti = None
+        try:
+            runtime_process = launch_pitch_runtime()
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+        try:
+            rti = create_2025_rti_ambassador(backend=backend_name, surface="direct")
+            backend = rti.backend
+            oracle = getattr(backend, "java_encoder_oracle", None)
+            assert oracle is not None
+
+            ascii_element = oracle.materialize(HLAASCIIstring2025("radar"))
+            unicode_element = oracle.materialize(HLAunicodeString2025("lambda"))
+            record_element = oracle.materialize(
+                HLAfixedRecord2025([HLAoctet2025(7), HLAASCIIstring2025("space")])
+            )
+
+            assert _bridge_class_name(rti, ascii_element) == "hla.rti1516_202X.encoding.HLAASCIIstringImpl"
+            assert _bridge_class_name(rti, unicode_element) == "hla.rti1516_202X.encoding.HLAunicodeStringImpl"
+            assert _bridge_class_name(rti, record_element) == "hla.rti1516_202X.encoding.HLAfixedRecordImpl"
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(ascii_element, "toByteArray")) == HLAASCIIstring2025(
+                "radar"
+            ).encode()
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(unicode_element, "toByteArray")) == HLAunicodeString2025(
+                "lambda"
+            ).encode()
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(record_element, "toByteArray")) == HLAfixedRecord2025(
+                [HLAoctet2025(7), HLAASCIIstring2025("space")]
+            ).encode()
+
+            java_bytes = backend.converter.to_backend(_exploding_ascii_element("vendor-only"), expected_type_name="byte[]")
+            assert _bridge_to_python_bytes(rti, java_bytes) == HLAASCIIstring2025("vendor-only").encode()
+
+            no_credentials = backend.converter.to_backend(HLAnoCredentials(), expected_type_name="Credentials")
+            password_credentials = backend.converter.to_backend(
+                HLAplainTextPassword("secret"),
+                expected_type_name="Credentials",
+            )
+            assert _bridge_class_name(rti, no_credentials) == "hla.rti1516_202X.auth.HLAnoCredentials"
+            assert _bridge_class_name(rti, password_credentials) == "hla.rti1516_202X.auth.HLAplainTextPassword"
+            assert str(backend.bridge.call(no_credentials, "getType")) == "HLAnoCredentials"
+            assert str(backend.bridge.call(password_credentials, "getType")) == "HLAplainTextPassword"
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(no_credentials, "getData")) == b""
+            assert _bridge_to_python_bytes(rti, backend.bridge.call(password_credentials, "getData")) == HLAplainTextPassword(
+                "secret"
+            ).data
         finally:
             shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime_process,))
 

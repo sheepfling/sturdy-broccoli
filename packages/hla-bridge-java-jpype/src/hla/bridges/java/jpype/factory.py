@@ -38,6 +38,7 @@ def create_jpype_backend(config: JPypeConfig = JPypeConfig()) -> JPypeRTIBackend
     return JPypeRTIBackend(
         java_rti_ambassador=java_rti,
         bridge=bridge,
+        java_factory=factory,
         info=info,
         connect_local_settings_designator=config.connect_local_settings_designator,
     )

@@ -107,10 +107,10 @@ class HLAunicodeString(DataElement):
     value: str = ''
     def encode(self) -> bytes:
         payload = self.value.encode('utf-16-be')
-        return struct.pack('>I', len(payload)) + payload
+        return struct.pack('>I', len(payload) // 2) + payload
     def decode(self, data: bytes) -> None:
         n = struct.unpack('>I', data[:4])[0]
-        self.value = data[4:4+n].decode('utf-16-be')
+        self.value = data[4:4+(n * 2)].decode('utf-16-be')
 
 @dataclass
 class HLAopaqueData(DataElement):

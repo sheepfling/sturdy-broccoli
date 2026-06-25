@@ -24,6 +24,8 @@ def test_repo_green_default_suite_includes_2010_and_2025_grpc_route_tests() -> N
 
     full_sequence = (ROOT / "scripts" / "ci" / "full_sequence.py").read_text(encoding="utf-8")
     assert '"standard shim route artifacts"' in full_sequence
+    assert '"live java bridge proof"' in full_sequence
+    assert 'tests/runtime/test_optional_real_java_bridges.py' in full_sequence
     assert '"repo-green smoke"' in full_sequence
     assert '"unit shard sweep"' in full_sequence
     assert '"repo-green-units"' in full_sequence

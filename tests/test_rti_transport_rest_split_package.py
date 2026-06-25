@@ -22,9 +22,15 @@ def test_split_rest_transport_package_exports_transport_surface():
 
 def test_split_rest_transport_package_exports_host_surface():
     from hla.transports.rest.client import RestTransportClientAdapter
+    from hla.transports.rest.rest_transport_host import Python2025RestServer
     from hla.transports.rest.rest_transport_host import PythonRTIRestServer
+    from hla.transports.rest.rest_transport_host import RTI2025RestServer
+    from hla.transports.rest.rest_transport_host import start_2025_rest_server
     from hla.transports.rest.rest_transport_host import start_python_rest_server
 
     assert RestTransportClientAdapter.__module__ == "hla.transports.rest.client"
     assert PythonRTIRestServer.__module__ == "hla.transports.rest.rest_transport_host"
+    assert Python2025RestServer.__module__ == "hla.transports.rest.rest_transport_host"
+    assert RTI2025RestServer.__module__ == "hla.transports.rest.rest_transport_host"
+    assert start_2025_rest_server.__module__ == "hla.transports.rest.rest_transport_host"
     assert start_python_rest_server.__module__ == "hla.transports.rest.rest_transport_host"

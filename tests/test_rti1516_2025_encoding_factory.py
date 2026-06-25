@@ -42,7 +42,7 @@ def test_strings_opaque_data_and_variable_length_data_helpers() -> None:
     assert factory.createHLAASCIIstring().decode(ascii_value.toByteArray()).getValue() == "radar"
 
     unicode_value = factory.createHLAunicodeString("λ")
-    assert unicode_value.toByteArray() == b"\x00\x00\x00\x02\x03\xbb"
+    assert unicode_value.toByteArray() == b"\x00\x00\x00\x01\x03\xbb"
     assert factory.createHLAunicodeString().decode(unicode_value.toByteArray()).getValue() == "λ"
 
     opaque = factory.createHLAopaqueData([1, 2, 3])

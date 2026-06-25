@@ -114,6 +114,10 @@ class JavaBridge(ABC):
         """Create a Java byte[] from Python bytes.  Default passes bytes through."""
         return data
 
+    def encoder_factory(self, java_factory: Any) -> Any:
+        """Return the Java EncoderFactory bound to a live RTI factory."""
+        return self.call(java_factory, "getEncoderFactory")
+
     def is_byte_array(self, value: Any) -> bool:
         """Best-effort detection for Java byte[] values returned by a backend."""
         if isinstance(value, (bytes, bytearray, memoryview)):
@@ -178,6 +182,10 @@ class JavaBridge(ABC):
 
     def rti_configuration(self, value: Any) -> Any:
         """Convert a Python RtiConfiguration model to a Java-side configuration object."""
+        return value
+
+    def credentials(self, value: Any) -> Any:
+        """Convert a Python Credentials model to a Java-side credentials object."""
         return value
 
     def range_bounds(self, value: Any) -> Any:
@@ -294,17 +302,50 @@ class JavaValueConverter(ValueConverter):
         *,
         handle_registry: NativeHandleRegistry | None = None,
         rti_ambassador: Any | None = None,
+        java_encoder_oracle: JavaEncoderOracle | None = None,
     ):
         super().__init__(handle_registry=handle_registry)
         self.bridge = bridge
         self.python_binding = bridge.python_binding
         self.rti_ambassador = rti_ambassador
+        self.java_encoder_oracle = java_encoder_oracle
+
+    def _data_element_factory_method(self, value: Any) -> str | None:
+        if type(value).__name__ in {"HLAfixedRecord", "HLAfixedArray", "HLAvariableArray", "HLAvariantRecord", "HLAextendableVariantRecord"}:
+            return None
+        method_name = f"create{type(value).__name__}"
+        oracle = self.java_encoder_oracle
+        if oracle is None or not hasattr(oracle.encoder_factory, method_name):
+            return None
+        if not callable(getattr(value, "getValue", None)) and not hasattr(value, "value"):
+            return None
+        return method_name
+
+    def _data_element_value(self, value: Any) -> Any:
+        getter = getattr(value, "getValue", None)
+        if callable(getter):
+            return getter()
+        if hasattr(value, "value"):
+            return getattr(value, "value")
+        raise BackendConversionError(f"Cannot extract a value from Python data element {type(value).__name__}")
+
+    def _encode_data_element_with_java_factory(self, value: Any) -> bytes | None:
+        method_name = self._data_element_factory_method(value)
+        if self.java_encoder_oracle is None:
+            return None
+        if method_name is not None:
+            return self.java_encoder_oracle.encode_element(method_name, self._data_element_value(value))
+        try:
+            return self.java_encoder_oracle.encode_python_data_element(value)
+        except BackendConversionError:
+            return None
 
     def to_backend(self, value: Any, *, expected_type_name: str | None = None) -> Any:  # noqa: D401 - inherited contract
         handle_type = self.python_binding.python_type_or_none("Handle")
         range_bounds_type = self.python_binding.python_type("RangeBounds")
         attribute_region_association_type = self.python_binding.python_type("AttributeRegionAssociation")
         rti_configuration_type = self.python_binding.python_type_or_none("RtiConfiguration")
+        credentials_type = self.python_binding.python_type_or_none("Credentials")
         logical_time_types = tuple(
             self.python_binding.python_type(name)
             for name in ("HLAinteger64Time", "HLAinteger64Interval", "HLAfloat64Time", "HLAfloat64Interval")
@@ -312,6 +353,10 @@ class JavaValueConverter(ValueConverter):
 
         expected = _clean_java_type(expected_type_name)
 
+        if expected == "byte[]":
+            encoded = self._encode_data_element_with_java_factory(value)
+            if encoded is not None:
+                return self.to_backend_bytes(encoded)
         if expected == "URL":
             return self.bridge.fom_url(value)
         if expected == "URL[]":
@@ -319,8 +364,12 @@ class JavaValueConverter(ValueConverter):
             return self.bridge.fom_url_array(values)
         if expected == "RtiConfiguration":
             return self.bridge.rti_configuration(value)
+        if expected == "Credentials":
+            return self.bridge.credentials(value)
         if rti_configuration_type is not None and isinstance(value, rti_configuration_type):
             return self.bridge.rti_configuration(value)
+        if credentials_type is not None and isinstance(value, credentials_type):
+            return self.bridge.credentials(value)
 
         if handle_type is not None and isinstance(value, handle_type):
             return self.handle_registry.to_native(value)
@@ -336,7 +385,7 @@ class JavaValueConverter(ValueConverter):
             return self.bridge.new_handle_set(expected, values, rti_ambassador=self.rti_ambassador)
 
         if expected in _JAVA_HANDLE_VALUE_MAP_TYPES and isinstance(value, Mapping):
-            items = [(self.to_backend(k), self.to_backend(v)) for k, v in value.items()]
+            items = [(self.to_backend(k), self.to_backend(v, expected_type_name="byte[]")) for k, v in value.items()]
             return self.bridge.new_handle_value_map(expected, items, rti_ambassador=self.rti_ambassador)
 
         if expected == "AttributeSetRegionSetPairList":
@@ -1109,6 +1158,137 @@ class PythonFederateAmbassadorDispatcher:
         return self._invoke_callback("requestRetraction", *args)
 
 
+class JavaEncoderOracle:
+    """Live Java ``EncoderFactory`` helper bound to one backend runtime."""
+
+    def __init__(self, bridge: JavaBridge, encoder_factory: Any) -> None:
+        self.bridge = bridge
+        self.encoder_factory = encoder_factory
+
+    def _python_elements(self, value: Any) -> list[Any]:
+        for attr_name in ("_elements", "elements", "fields"):
+            elements = getattr(value, attr_name, None)
+            if elements is not None:
+                return list(elements)
+        if isinstance(value, Iterable):
+            return list(value)
+        raise BackendConversionError(f"Cannot enumerate elements from Python data element {type(value).__name__}")
+
+    def materialize(self, value: Any) -> Any:
+        type_name = type(value).__name__
+        if type_name == "HLAfixedRecord":
+            java_record = self.bridge.call(self.encoder_factory, "createHLAfixedRecord")
+            for element in self._python_elements(value):
+                self.bridge.call(java_record, "add", self.materialize(element))
+            return java_record
+
+        if type_name == "HLAfixedArray":
+            return self.bridge.call(
+                self.encoder_factory,
+                "createHLAfixedArray",
+                *(self.materialize(element) for element in self._python_elements(value)),
+            )
+
+        if type_name == "HLAvariantRecord":
+            python_discriminant = getattr(value, "_discriminant", None)
+            if python_discriminant is None:
+                raise BackendConversionError("Python HLAvariantRecord is missing an active discriminant")
+            active_value = getattr(value, "_value", None)
+            if active_value is None:
+                getter = getattr(value, "getValue", None)
+                if callable(getter):
+                    active_value = getter()
+            if active_value is None:
+                raise BackendConversionError("Python HLAvariantRecord has no active value")
+            java_discriminant = self.materialize(python_discriminant)
+            java_variant = self.bridge.call(self.encoder_factory, "createHLAvariantRecord", java_discriminant)
+            self.bridge.call(java_variant, "setVariant", java_discriminant, self.materialize(active_value))
+            self.bridge.call(java_variant, "setDiscriminant", java_discriminant)
+            return java_variant
+
+        if hasattr(self.encoder_factory, f"create{type_name}"):
+            getter = getattr(value, "getValue", None)
+            if callable(getter):
+                return self.bridge.call(self.encoder_factory, f"create{type_name}", getter())
+            if hasattr(value, "value"):
+                return self.bridge.call(self.encoder_factory, f"create{type_name}", getattr(value, "value"))
+
+        raise BackendConversionError(f"Java encoder oracle cannot materialize {type_name}")
+
+    def encode_element(self, factory_method: str, *args: Any) -> bytes:
+        element = self.bridge.call(self.encoder_factory, factory_method, *args)
+        return self.bridge.to_python_bytes(self.bridge.call(element, "toByteArray"))
+
+    def encode_python_data_element(self, value: Any) -> bytes:
+        return self.bridge.to_python_bytes(self.bridge.call(self.materialize(value), "toByteArray"))
+
+    def encode_ascii_string(self, value: str) -> bytes:
+        return self.encode_element("createHLAASCIIstring", value)
+
+    def encode_unicode_string(self, value: str) -> bytes:
+        return self.encode_element("createHLAunicodeString", value)
+
+
+class JavaVendorEncoding:
+    """Python-facing helper that routes final encoding through a live vendor runtime."""
+
+    def __init__(self, backend: "JavaRTIBackend") -> None:
+        self.backend = backend
+        self.python_binding = backend.bridge.python_binding
+
+    def _oracle(self) -> JavaEncoderOracle:
+        oracle = self.backend.java_encoder_oracle
+        if oracle is None:
+            raise BackendConversionError("Vendor encoding requires a live Java factory with an EncoderFactory")
+        return oracle
+
+    def _python_type(self, name: str) -> Any:
+        python_type = self.python_binding.python_type_or_none(name)
+        if python_type is None:
+            raise BackendConversionError(f"Python binding does not export data element {name!r}")
+        return python_type
+
+    def element(self, type_name: str, value: Any | None = None) -> Any:
+        python_type = self._python_type(type_name)
+        return python_type() if value is None else python_type(value)
+
+    def ascii_string(self, value: str) -> Any:
+        return self.element("HLAASCIIstring", value)
+
+    def unicode_string(self, value: str) -> Any:
+        return self.element("HLAunicodeString", value)
+
+    def octet(self, value: int) -> Any:
+        return self.element("HLAoctet", value)
+
+    def opaque_data(self, value: bytes | bytearray | memoryview | Sequence[int]) -> Any:
+        return self.element("HLAopaqueData", value)
+
+    def fixed_record(self, *elements: Any) -> Any:
+        return self._python_type("HLAfixedRecord")(elements)
+
+    def fixed_array(self, *elements: Any) -> Any:
+        return self._python_type("HLAfixedArray")(elements)
+
+    def variable_array(self, *elements: Any) -> Any:
+        return self._python_type("HLAvariableArray")(elements)
+
+    def variant_record(self, discriminant: Any, value: Any, *, extendable: bool = False) -> Any:
+        type_name = "HLAextendableVariantRecord" if extendable else "HLAvariantRecord"
+        record = self._python_type(type_name)(discriminant)
+        set_variant = getattr(record, "setVariant", None)
+        if not callable(set_variant):
+            raise BackendConversionError(f"Python binding data element {type_name!r} does not support setVariant")
+        set_variant(discriminant, value)
+        return record
+
+    def encode(self, value: Any) -> bytes:
+        return self._oracle().encode_python_data_element(value)
+
+    def byte_array(self, value: Any) -> Any:
+        return self.backend.bridge.byte_array(self.encode(value))
+
+
 class JavaRTIBackend(RTIBackend):
     """RTIBackend implementation for an already-created Java RTIambassador."""
 
@@ -1117,14 +1297,23 @@ class JavaRTIBackend(RTIBackend):
         *,
         java_rti_ambassador: Any,
         bridge: JavaBridge,
+        java_factory: Any | None = None,
         converter: JavaValueConverter | None = None,
         info: BackendInfo | None = None,
         connect_local_settings_designator: str | None = None,
     ) -> None:
         self.java_rti_ambassador = java_rti_ambassador
         self.bridge = bridge
-        self.converter = converter or JavaValueConverter(bridge, rti_ambassador=java_rti_ambassador)
+        self.java_factory = java_factory
+        self._java_encoder_oracle: JavaEncoderOracle | None = None
+        self._vendor_encoding: JavaVendorEncoding | None = None
+        self.converter = converter or JavaValueConverter(
+            bridge,
+            rti_ambassador=java_rti_ambassador,
+            java_encoder_oracle=self.java_encoder_oracle,
+        )
         self.converter.rti_ambassador = java_rti_ambassador
+        self.converter.java_encoder_oracle = self.java_encoder_oracle
         self.info = info or BackendInfo(name=bridge.name, kind="java")
         self.connect_local_settings_designator = connect_local_settings_designator
         self._connected_ambassador_proxies: list[tuple[NullFederateAmbassador, PythonFederateAmbassadorDispatcher, Any]] = []
@@ -1160,6 +1349,23 @@ class JavaRTIBackend(RTIBackend):
         if callable(close):
             close()
 
+    @property
+    def java_encoder_oracle(self) -> JavaEncoderOracle | None:
+        if self.java_factory is None:
+            return None
+        if self._java_encoder_oracle is None:
+            self._java_encoder_oracle = JavaEncoderOracle(
+                self.bridge,
+                self.bridge.encoder_factory(self.java_factory),
+            )
+        return self._java_encoder_oracle
+
+    @property
+    def vendor_encoding(self) -> JavaVendorEncoding:
+        if self._vendor_encoding is None:
+            self._vendor_encoding = JavaVendorEncoding(self)
+        return self._vendor_encoding
+
     def translate_exception(self, exc: BaseException, invocation: Invocation) -> RTIexception:
         if isinstance(exc, RTIexception):
             return exc
@@ -1179,7 +1385,9 @@ class JavaRTIBackend(RTIBackend):
 
 __all__ = [
     "JavaBridge",
+    "JavaEncoderOracle",
     "JavaRTIBackend",
+    "JavaVendorEncoding",
     "JavaValueConverter",
     "PythonFederateAmbassadorDispatcher",
     "expected_java_callback_parameter_types",

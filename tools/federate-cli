@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+PYTHON_BIN="${ROOT_DIR}/.venv/bin/python"
+if [[ ! -x "$PYTHON_BIN" ]]; then
+  PYTHON_BIN="$(command -v python3)"
+fi
+
+# Python-first implementation note:
+# - the command logic lives in scripts/tools_federate_cli.py
+# - this file remains a shell trampoline so `bash tools/federate-cli ...` works
+#   like the rest of the operator surface
+#
+# Contract anchors for docs/policy tests:
+# - ./tools/federate-cli --edition 2010 --command 'connect'
+# - ./tools/federate-cli --edition 2025 --backend python1516_2025
+# - connect
+# - create
+# - join
+# - evoke
+# - callbacks
+# - clear-callbacks
+# - resign
+# - destroy
+# - disconnect
+
+exec "$PYTHON_BIN" "$ROOT_DIR/scripts/tools_federate_cli.py" "$@"

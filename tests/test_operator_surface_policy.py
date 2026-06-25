@@ -90,6 +90,7 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/target-radar" in text
     assert "./tools/lint" in text
     assert "./tools/two-federate" in text
+    assert "./tools/federate-cli" in text
     assert "./tools/test" in text
     assert "./tools/java" in text
     assert "./tools/examples" not in text
@@ -137,6 +138,7 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "./tools/fom-stress" in text
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text
+    assert "./tools/federate-cli" in text
     assert "./scripts/certi_easy.sh" in text
     assert "./scripts/pitch_docker_easy.sh" in text
     assert "python3 scripts/ci/check_doc_links.py" not in text

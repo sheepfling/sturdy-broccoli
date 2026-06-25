@@ -13,8 +13,13 @@ from .client import RestTransportClientAdapter
 from .rest_transport_host import (
     CERTIRestServer,
     CERTIRestServerConfig,
+    Python2025RestServer,
+    Python2025RestServerConfig,
     PythonRTIRestServer,
     PythonRTIRestServerConfig,
+    RTI2025RestServer,
+    RTI2025RestServerConfig,
+    start_2025_rest_server,
     start_certi_rest_server,
     start_python_rest_server,
 )
@@ -73,19 +78,30 @@ def create_rest_transport(config: RestTransportConfig) -> RestTransport:
     return RestTransport(config)
 
 
-register_transport_factory("rest", lambda spec: create_rest_transport(RestTransportConfig(**dict(spec.options))))
-register_transport_factory("http-json", lambda spec: create_rest_transport(RestTransportConfig(**dict(spec.options))))
+def _rest_transport_config_from_spec(spec) -> RestTransportConfig:  # noqa: ANN001 - transport registry protocol
+    options = dict(spec.options)
+    options.pop("schema", None)
+    return RestTransportConfig(**options)
+
+
+register_transport_factory("rest", lambda spec: create_rest_transport(_rest_transport_config_from_spec(spec)))
+register_transport_factory("http-json", lambda spec: create_rest_transport(_rest_transport_config_from_spec(spec)))
 
 
 __all__ = [
     "CERTIRestServer",
     "CERTIRestServerConfig",
+    "Python2025RestServer",
+    "Python2025RestServerConfig",
     "PythonRTIRestServer",
+    "RTI2025RestServer",
+    "RTI2025RestServerConfig",
     "PythonRTIRestServerConfig",
     "RestTransport",
     "RestTransportClientAdapter",
     "RestTransportConfig",
     "create_rest_transport",
+    "start_2025_rest_server",
     "start_certi_rest_server",
     "start_python_rest_server",
 ]

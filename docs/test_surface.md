@@ -47,6 +47,7 @@ The matching discovery commands are:
 | `repo-green-units` | `./tools/test-surface run repo-green-units` | composite repo-green unit sweep; edit this lane to add, remove, or reorder unit shards |
 | `unit-foundation` | `./tools/test-surface run unit-foundation` | cheap policy, package-boundary, import-hygiene, and operator-wrapper shard |
 | `unit-python-core` | `./tools/test-surface run unit-python-core` | direct Python example and RTI-core shard |
+| `unit-federate-examples` | `./tools/test-surface run unit-federate-examples` | interactive federate CLI, walkthrough, TUI, and change-map shard for the examples/help surface |
 | `unit-fom-tooling` | `./tools/test-surface run unit-fom-tooling` | FOM parsing, validation, workbench, and packaged-factory shard |
 | `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | primary `python1516_2025` unit shard for direct runtime semantics and validation |
 | `unit-transport-local` | `./tools/test-surface run unit-transport-local` | hosted transport shard for gRPC and REST tests without vendor-runtime lanes |
@@ -158,6 +159,7 @@ If you need a smaller bite than that, run the named shards directly:
 ```bash
 ./tools/test-surface run unit-foundation
 ./tools/test-surface run unit-python-core
+./tools/test-surface run unit-federate-examples
 ./tools/test-surface run unit-fom-tooling
 ./tools/test-surface run unit-python-2025-core
 ./tools/test-surface run unit-transport-local

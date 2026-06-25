@@ -202,6 +202,24 @@ class JPypeBridge(JavaBridge):
         except Exception:
             return value
 
+    def credentials(self, value: Any) -> Any:
+        try:
+            credential_type = str(getattr(value, "type"))
+            credential_data = bytes(getattr(value, "data"))
+        except Exception:
+            return value
+        try:
+            if credential_type == "HLAnoCredentials":
+                return self.JClass(f"{self.api_profile.java_package}.auth.HLAnoCredentials")()
+            if credential_type == "HLAplainTextPassword":
+                return self.JClass(f"{self.api_profile.java_package}.auth.HLAplainTextPassword")(self.byte_array(credential_data))
+        except Exception:
+            pass
+        try:
+            return self.JClass(f"{self.api_profile.java_package}.Credentials")(credential_type, self.byte_array(credential_data))
+        except Exception:
+            return value
+
     def full_class_name(self, obj: Any) -> str | None:
         if obj is None:
             return None

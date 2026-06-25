@@ -47,6 +47,7 @@ def main(argv: list[str]) -> int:
         ("compilation", [str(ROOT / "scripts" / "ci" / "lint.sh")]),
         ("lint / type annotations", [str(ROOT / "scripts" / "ci" / "pyright.sh")]),
         ("standard shim route artifacts", [str(ROOT / "scripts" / "ci" / "build_standard_shims_if_available.sh")]),
+        ("live java bridge proof", [sys.executable, str(ROOT / "scripts" / "ci" / "test.py"), "tests/runtime/test_optional_real_java_bridges.py"]),
         ("repo-green smoke", ["bash", str(ROOT / "tools" / "python"), "verify-smoke"]),
         ("unit shard sweep", ["bash", str(ROOT / "tools" / "test-surface"), "run", "repo-green-units"]),
         ("integration smoke", [sys.executable, str(ROOT / "scripts" / "ci" / "vendor_runtime_smoke.py"), "matrix"]),

@@ -16,6 +16,7 @@ from hla.transports.common.transport import TransportRequest
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti import create_backend
 from hla.runtime.factory import create_rti_ambassador
+from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
 from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
@@ -28,8 +29,9 @@ from hla.verification import (
     run_synchronization_scenario,
 )
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.rti1516_2025.federate_ambassador import NullFederateAmbassador as NullFederateAmbassador2025
 from hla.transports.rest import RestTransport, RestTransportConfig
-from hla.transports.rest.rest_transport_host import start_python_rest_server
+from hla.transports.rest.rest_transport_host import start_2025_rest_server, start_python_rest_server
 
 pytestmark = pytest.mark.requires_loopback_server
 
@@ -125,6 +127,19 @@ def test_rest_transport_registers_with_backend_factory():
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_rest_transport_registers_with_2025_backend_factory():
+    server = start_2025_rest_server()
+    try:
+        rti = create_2025_rti_ambassador(transport={"kind": "rest", "base_url": server.base_url})
+
+        assert rti._transport.__class__.__name__ == "RestTransport"
+        assert rti._transport.config.base_url == server.base_url
+        rti.connect(NullFederateAmbassador2025(), CallbackModel.HLA_EVOKED)
+        rti.disconnect()
+    finally:
+        server.close()
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])

@@ -1,6 +1,6 @@
 from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import Invocation
-from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
+from hla.bridges.java.common import JavaBridge, JavaRTIBackend, JavaValueConverter, resolve_java_invocation
 from hla.foms.target_radar._internal import target_radar_fom_path
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.handles import (
@@ -11,6 +11,8 @@ from hla.rti1516e.handles import (
     RegionHandle,
     RegionHandleSet,
 )
+from hla.rti1516_2025.encoding import HLAfixedArray as HLA2025FixedArray, HLAoctet as HLA2025Octet, HLAvariantRecord as HLA2025VariantRecord
+from hla.rti1516e.encoding import HLAASCIIstring, HLAfixedRecord, HLAunicodeString
 from hla.rti1516e.raw_api import API_METADATA
 from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.datatypes import AttributeRegionAssociation
@@ -91,9 +93,10 @@ class RecordingBridge(JavaBridge):
     def __init__(self, api_profile="2010"):
         super().__init__(api_profile=api_profile)
         self.calls = []
+        self.fake_factory = _FakeJavaFactory()
 
     def call(self, obj, method_name, *args):
-        return None
+        return getattr(obj, method_name)(*args)
 
     def create_federate_proxy(self, dispatcher):
         return dispatcher
@@ -125,6 +128,79 @@ class RecordingBridge(JavaBridge):
         self.calls.append(("rti_configuration", value))
         return ("rti_configuration", value.configuration_name, value.rti_address, value.additional_settings)
 
+    def encoder_factory(self, java_factory):
+        self.calls.append(("encoder_factory", java_factory))
+        return java_factory.getEncoderFactory()
+
+
+class _FakeEncodedElement:
+    def __init__(self, payload: bytes) -> None:
+        self.payload = payload
+
+    def toByteArray(self) -> bytes:  # noqa: N802
+        return self.payload
+
+
+class _FakeEncoderFactory:
+    def createHLAoctet(self, value: int):  # noqa: N802
+        return _FakeEncodedElement(bytes([value]))
+
+    def createHLAASCIIstring(self, value: str):  # noqa: N802
+        return _FakeEncodedElement(b"java-ascii:" + value.encode("ascii"))
+
+    def createHLAunicodeString(self, value: str):  # noqa: N802
+        return _FakeEncodedElement(b"java-unicode:" + value.encode("utf-8"))
+
+    def createHLAfixedRecord(self):  # noqa: N802
+        return _FakeJavaFixedRecord()
+
+    def createHLAfixedArray(self, *elements):  # noqa: N802
+        return _FakeJavaFixedArray(elements)
+
+    def createHLAvariantRecord(self, discriminant):  # noqa: N802
+        return _FakeJavaVariantRecord(discriminant)
+
+
+class _FakeJavaFixedRecord:
+    def __init__(self) -> None:
+        self.elements: list[_FakeEncodedElement] = []
+
+    def add(self, element) -> None:
+        self.elements.append(element)
+
+    def toByteArray(self) -> bytes:  # noqa: N802
+        return b"".join(element.toByteArray() for element in self.elements)
+
+
+class _FakeJavaFixedArray:
+    def __init__(self, elements) -> None:
+        self.elements = list(elements)
+
+    def toByteArray(self) -> bytes:  # noqa: N802
+        return b"".join(element.toByteArray() for element in self.elements)
+
+
+class _FakeJavaVariantRecord:
+    def __init__(self, discriminant) -> None:
+        self.discriminant = discriminant
+        self.value = None
+
+    def setVariant(self, discriminant, value) -> None:  # noqa: N802
+        self.discriminant = discriminant
+        self.value = value
+
+    def setDiscriminant(self, discriminant) -> None:  # noqa: N802
+        self.discriminant = discriminant
+
+    def toByteArray(self) -> bytes:  # noqa: N802
+        assert self.value is not None
+        return self.discriminant.toByteArray() + self.value.toByteArray()
+
+
+class _FakeJavaFactory:
+    def getEncoderFactory(self):  # noqa: N802
+        return _FakeEncoderFactory()
+
 
 def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections():
     overloads = tuple(API_METADATA["RTIambassador"]["createFederationExecution"])
@@ -150,6 +226,50 @@ def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections
     converted_map = converter.to_backend({py_attr: b"abc"}, expected_type_name="AttributeHandleValueMap")
     assert converted_map[0] == "handle_map"
     assert bridge.calls[-1][1] == "AttributeHandleValueMap"
+
+
+def test_java_converter_uses_encoder_oracle_for_data_element_payload_slots():
+    bridge = RecordingBridge()
+    converter = JavaValueConverter(
+        bridge,
+        rti_ambassador=object(),
+        java_encoder_oracle=JavaRTIBackend(
+            java_rti_ambassador=object(),
+            java_factory=bridge.fake_factory,
+            bridge=bridge,
+            info=None,
+        ).java_encoder_oracle,
+    )
+
+    native_attr = ("native-attribute", 7)
+    py_attr = converter.handle_registry.to_python(AttributeHandle, native_attr)
+
+    converted_map = converter.to_backend(
+        {py_attr: HLAunicodeString("lambda-\u03bb")},
+        expected_type_name="AttributeHandleValueMap",
+    )
+    assert converted_map == (
+        "handle_map",
+        "AttributeHandleValueMap",
+        ((native_attr, b"java-unicode:lambda-\xce\xbb"),),
+    )
+
+    converted_tag = converter.to_backend(HLAASCIIstring("tagged"), expected_type_name="byte[]")
+    assert converted_tag == b"java-ascii:tagged"
+
+    record = HLAfixedRecord([HLAASCIIstring("left"), HLAunicodeString("right-\u03bb")])
+    converted_record = converter.to_backend(record, expected_type_name="byte[]")
+    assert converted_record == b"java-ascii:leftjava-unicode:right-\xce\xbb"
+
+    fixed_array = HLA2025FixedArray([HLA2025Octet(1), HLA2025Octet(2), HLA2025Octet(3)])
+    converted_array = converter.to_backend(fixed_array, expected_type_name="byte[]")
+    assert converted_array == b"\x01\x02\x03"
+
+    discriminant = HLA2025Octet(7)
+    variant = HLA2025VariantRecord(discriminant)
+    variant.setVariant(HLA2025Octet(7), HLAASCIIstring("armed"))
+    converted_variant = converter.to_backend(variant, expected_type_name="byte[]")
+    assert converted_variant == b"\x07java-ascii:armed"
 
 
 def test_java_converter_prepares_attribute_region_association_pair_lists():

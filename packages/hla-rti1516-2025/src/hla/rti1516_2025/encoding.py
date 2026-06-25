@@ -849,6 +849,7 @@ class HLAunicodeChar(_ScalarElement):
 class _LengthPrefixedString(_DataElement):
     _encoding = "ascii"
     _octet_boundary = 4
+    _length_unit_bytes = 1
 
     def __init__(self, value: str = "") -> None:
         self._value = value
@@ -862,15 +863,22 @@ class _LengthPrefixedString(_DataElement):
 
     def toByteArray(self) -> bytes:  # noqa: N802
         payload = self._value.encode(self._encoding)
-        return struct.pack(">I", len(payload)) + payload
+        if len(payload) % self._length_unit_bytes != 0:
+            raise EncoderException(
+                f"{type(self).__name__} payload length {len(payload)} is not a multiple of {self._length_unit_bytes}"
+            )
+        return struct.pack(">I", len(payload) // self._length_unit_bytes) + payload
 
     def _decode_from(self, data: bytes) -> None:
         if len(data) < 4:
             raise DecoderException(f"{type(self).__name__} needs a 4-byte length prefix")
         size = struct.unpack(">I", data[:4])[0]
-        payload = data[4 : 4 + size]
-        if len(payload) != size:
-            raise DecoderException(f"{type(self).__name__} expected {size} payload bytes, got {len(payload)}")
+        payload_size = size * self._length_unit_bytes
+        payload = data[4 : 4 + payload_size]
+        if len(payload) != payload_size:
+            raise DecoderException(
+                f"{type(self).__name__} expected {payload_size} payload bytes, got {len(payload)}"
+            )
         self._value = payload.decode(self._encoding)
 
 
@@ -880,6 +888,7 @@ class HLAASCIIstring(_LengthPrefixedString):
 
 class HLAunicodeString(_LengthPrefixedString):
     _encoding = "utf-16-be"
+    _length_unit_bytes = 2
 
 
 class HLAopaqueData(_DataElement):

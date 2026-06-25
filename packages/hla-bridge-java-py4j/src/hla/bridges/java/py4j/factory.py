@@ -40,6 +40,7 @@ def create_py4j_backend(config: Py4JConfig = Py4JConfig()) -> Py4JRTIBackend:
     return Py4JRTIBackend(
         java_rti_ambassador=java_rti,
         bridge=bridge,
+        java_factory=factory,
         info=info,
         connect_local_settings_designator=config.connect_local_settings_designator,
     )

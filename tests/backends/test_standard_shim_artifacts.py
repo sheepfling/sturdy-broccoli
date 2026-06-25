@@ -63,12 +63,43 @@ def test_java_standard_2025_build_tool_reads_official_api_surface() -> None:
         nested = outer.read(module.NESTED_API_ZIP)
     with module.zipfile.ZipFile(module.io.BytesIO(nested)) as inner:
         text = inner.read(f"{module.API_PREFIX}/java/hla/rti1516_2025/RTIambassador.java").decode("utf-8")
-    methods = module._parse_methods(text)
+    methods = module._parse_methods(text, "RTIambassador")
     names = {method.name for method in methods}
 
     assert len(methods) > 100
     assert {"connect", "joinFederationExecution", "timeAdvanceRequest", "getHLAversion"} <= names
     assert "saveFederation" not in module.IMPLEMENTED
+
+
+def test_java_standard_2025_build_tool_generates_minimal_encoder_support_sources(tmp_path: Path) -> None:
+    module = _load_module(JAVA_2025_BUILD, "shim_routes_build_java_2025_standard_shim_encoder_support")
+    with module.zipfile.ZipFile(module.API_ZIP) as outer:
+        nested = outer.read(module.NESTED_API_ZIP)
+    with module.zipfile.ZipFile(module.io.BytesIO(nested)) as inner:
+        text = inner.read(f"{module.API_PREFIX}/java/hla/rti1516_2025/encoding/EncoderFactory.java").decode("utf-8")
+    methods = module._parse_methods(text, "EncoderFactory")
+
+    src = tmp_path / "generated-src"
+    src.mkdir()
+    module._write_support_sources(src, methods)
+
+    package_path = src / module.PACKAGE.replace(".", "/")
+    factory_source = (package_path / "StandardShimRtiFactory.java").read_text(encoding="utf-8")
+    encoder_source = (package_path / "StandardShimEncoderFactory.java").read_text(encoding="utf-8")
+    auth_source = (
+        package_path / "StandardShimHLAunicodeString.java"
+    ).read_text(encoding="utf-8")
+
+    assert "return new StandardShimEncoderFactory();" in factory_source
+    assert "createHLAASCIIstring(String s)" in encoder_source
+    assert "throw unsupported(\"createHLAboolean\")" in encoder_source
+    assert "class StandardShimHLAvariableArray" in (
+        package_path / "StandardShimHLAvariableArray.java"
+    ).read_text(encoding="utf-8")
+    assert "implements HLAunicodeString" in auth_source
+    assert "credentialClassName" in (
+        package_path / "StandardShimProbe.java"
+    ).read_text(encoding="utf-8")
 
 
 def test_java_standard_2025_route_uses_python2025_runtime_lane(tmp_path: Path) -> None:

@@ -76,6 +76,7 @@ class Method:
     name: str
     params: str
     throws: str
+    type_params: str = ""
 
 
 def _repo_rel(path: Path) -> str:
@@ -133,23 +134,32 @@ def _strip_comments(text: str) -> str:
     return text
 
 
-def _parse_methods(interface_text: str) -> list[Method]:
+def _parse_methods(interface_text: str, interface_name: str) -> list[Method]:
     clean = _strip_comments(interface_text)
-    clean = clean[clean.index("public interface RTIambassador") :]
+    clean = clean[clean.index(f"public interface {interface_name}") :]
+    body = clean[clean.index("{") + 1 : clean.rindex("}")]
     pattern = re.compile(
+        r"(?:(?P<type_params><.*?>)\s+)?"
         r"(?P<ret>[A-Za-z0-9_<>, ?\[\].]+?)\s+"
         r"(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*"
-        r"\((?P<params>.*?)\)\s*"
-        r"(?:throws\s*(?P<throws>.*?))?;",
+        r"\((?P<params>.*)\)\s*"
+        r"(?:throws\s*(?P<throws>.*))?",
         re.S,
     )
     methods: list[Method] = []
-    for match in pattern.finditer(clean):
+    for statement in body.split(";"):
+        statement = " ".join(statement.split())
+        if not statement:
+            continue
+        match = pattern.fullmatch(statement)
+        if match is None:
+            continue
         ret = " ".join(match.group("ret").split())
         if ret in {"return", "throw", "interface"}:
             continue
         methods.append(
             Method(
+                type_params=" ".join((match.group("type_params") or "").split()),
                 return_type=ret,
                 name=match.group("name"),
                 params=" ".join(match.group("params").split()),
@@ -181,17 +191,61 @@ def _render_ambassador(methods: list[Method]) -> str:
         "    }",
     ]
     for method in methods:
+        type_params = f"{method.type_params} " if method.type_params else ""
         throws = f" throws {method.throws}" if method.throws else ""
         parts.append("")
         parts.append("    @Override")
-        parts.append(f"    public {method.return_type} {method.name}({method.params}){throws} {{")
+        parts.append(f"    public {type_params}{method.return_type} {method.name}({method.params}){throws} {{")
         parts.append(f"        {_method_body(method)}")
         parts.append("    }")
     parts.append("}")
     return "\n".join(parts) + "\n"
 
 
-def _write_support_sources(src: Path) -> None:
+def _encoder_method_body(method: Method) -> str:
+    signature = f"{method.name}({method.params})"
+    supported = {
+        "createHLAASCIIstring()": "return new StandardShimHLAASCIIstring();",
+        "createHLAASCIIstring(String s)": "return new StandardShimHLAASCIIstring(s);",
+        "createHLAunicodeString()": "return new StandardShimHLAunicodeString();",
+        "createHLAunicodeString(String s)": "return new StandardShimHLAunicodeString(s);",
+        "createHLAoctet()": "return new StandardShimHLAoctet();",
+        "createHLAoctet(byte b)": "return new StandardShimHLAoctet(b);",
+        "createHLAopaqueData()": "return new StandardShimHLAopaqueData();",
+        "createHLAopaqueData(byte[] b)": "return new StandardShimHLAopaqueData(b);",
+        "createHLAfixedRecord()": "return new StandardShimHLAfixedRecord();",
+        "createHLAfixedArray(DataElementFactory<T> factory, int size)": "return new StandardShimHLAfixedArray<T>(factory, size);",
+        "createHLAfixedArray(T... elements)": "return new StandardShimHLAfixedArray<T>(elements);",
+        "createHLAvariableArray(DataElementFactory<T> factory, T... elements)": "return new StandardShimHLAvariableArray<T>(factory, elements);",
+    }
+    return supported.get(signature, f'throw unsupported("{method.name}");')
+
+
+def _render_encoder_factory(methods: list[Method]) -> str:
+    parts = [
+        f"package {PACKAGE};",
+        "",
+        "import hla.rti1516_2025.*;",
+        "import hla.rti1516_2025.encoding.*;",
+        "import hla.rti1516_2025.time.*;",
+        "",
+        "public final class StandardShimEncoderFactory implements EncoderFactory {",
+        "    private RuntimeException unsupported(String service) {",
+        '        return new UnsupportedOperationException("Java 2025 Standard Shim intentionally does not implement encoder factory method " + service);',
+        "    }",
+    ]
+    for method in methods:
+        type_params = f"{method.type_params} " if method.type_params else ""
+        parts.append("")
+        parts.append("    @Override")
+        parts.append(f"    public {type_params}{method.return_type} {method.name}({method.params}) {{")
+        parts.append(f"        {_encoder_method_body(method)}")
+        parts.append("    }")
+    parts.append("}")
+    return "\n".join(parts) + "\n"
+
+
+def _write_support_sources(src: Path, encoder_methods: list[Method]) -> None:
     pkg = src / PACKAGE.replace(".", "/")
     pkg.mkdir(parents=True, exist_ok=True)
     (pkg / "StandardShimRtiFactory.java").write_text(
@@ -207,7 +261,7 @@ public final class StandardShimRtiFactory implements RtiFactory {{
     }}
 
     public EncoderFactory getEncoderFactory() throws RTIinternalError {{
-        return null;
+        return new StandardShimEncoderFactory();
     }}
 
     public String rtiName() {{
@@ -216,6 +270,661 @@ public final class StandardShimRtiFactory implements RtiFactory {{
 
     public String rtiVersion() {{
         return "0.13.0";
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimEncoderFactory.java").write_text(_render_encoder_factory(encoder_methods), encoding="utf-8")
+    (pkg / "StandardShimAbstractDataElement.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DataElement;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+
+abstract class StandardShimAbstractDataElement implements DataElement {{
+    @Override
+    public ByteWrapper encode() throws EncoderException {{
+        ByteWrapper byteWrapper = new ByteWrapper(getEncodedLength());
+        encode(byteWrapper);
+        return byteWrapper;
+    }}
+
+    @Override
+    public byte[] toByteArray() throws EncoderException {{
+        return encode().array();
+    }}
+
+    @Override
+    public DataElement decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAASCIIstring.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAASCIIstring;
+import java.nio.charset.StandardCharsets;
+
+public final class StandardShimHLAASCIIstring extends StandardShimAbstractDataElement implements HLAASCIIstring {{
+    private String value;
+
+    public StandardShimHLAASCIIstring() {{
+        this("");
+    }}
+
+    public StandardShimHLAASCIIstring(String value) {{
+        this.value = value == null ? "" : value;
+    }}
+
+    @Override
+    public int getOctetBoundary() {{
+        return 4;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        byte[] payload = value.getBytes(StandardCharsets.US_ASCII);
+        byteWrapper.putInt(payload.length);
+        byteWrapper.put(payload);
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        return 4 + value.getBytes(StandardCharsets.US_ASCII).length;
+    }}
+
+    @Override
+    public String getValue() {{
+        return value;
+    }}
+
+    @Override
+    public HLAASCIIstring setValue(String value) {{
+        this.value = value == null ? "" : value;
+        return this;
+    }}
+
+    @Override
+    public HLAASCIIstring decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            int length = byteWrapper.getInt();
+            byte[] payload = new byte[length];
+            byteWrapper.get(payload);
+            value = new String(payload, StandardCharsets.US_ASCII);
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAASCIIstring", exc);
+        }}
+    }}
+
+    @Override
+    public HLAASCIIstring decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAunicodeString.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAunicodeString;
+import java.nio.charset.StandardCharsets;
+
+public final class StandardShimHLAunicodeString extends StandardShimAbstractDataElement implements HLAunicodeString {{
+    private String value;
+
+    public StandardShimHLAunicodeString() {{
+        this("");
+    }}
+
+    public StandardShimHLAunicodeString(String value) {{
+        this.value = value == null ? "" : value;
+    }}
+
+    @Override
+    public int getOctetBoundary() {{
+        return 4;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        byte[] payload = value.getBytes(StandardCharsets.UTF_16BE);
+        byteWrapper.putInt(payload.length / 2);
+        byteWrapper.put(payload);
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        return 4 + value.getBytes(StandardCharsets.UTF_16BE).length;
+    }}
+
+    @Override
+    public String getValue() {{
+        return value;
+    }}
+
+    @Override
+    public HLAunicodeString setValue(String value) {{
+        this.value = value == null ? "" : value;
+        return this;
+    }}
+
+    @Override
+    public HLAunicodeString decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            int length = byteWrapper.getInt();
+            byte[] payload = new byte[length * 2];
+            byteWrapper.get(payload);
+            value = new String(payload, StandardCharsets.UTF_16BE);
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAunicodeString", exc);
+        }}
+    }}
+
+    @Override
+    public HLAunicodeString decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAoctet.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAoctet;
+
+public final class StandardShimHLAoctet extends StandardShimAbstractDataElement implements HLAoctet {{
+    private byte value;
+
+    public StandardShimHLAoctet() {{
+        this((byte) 0);
+    }}
+
+    public StandardShimHLAoctet(byte value) {{
+        this.value = value;
+    }}
+
+    @Override
+    public int getOctetBoundary() {{
+        return 1;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        byteWrapper.put(value & 0xFF);
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        return 1;
+    }}
+
+    @Override
+    public byte getValue() {{
+        return value;
+    }}
+
+    @Override
+    public HLAoctet setValue(byte value) {{
+        this.value = value;
+        return this;
+    }}
+
+    @Override
+    public HLAoctet decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            value = (byte) byteWrapper.get();
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAoctet", exc);
+        }}
+    }}
+
+    @Override
+    public HLAoctet decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAopaqueData.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAopaqueData;
+import java.util.Arrays;
+import java.util.Iterator;
+
+public final class StandardShimHLAopaqueData extends StandardShimAbstractDataElement implements HLAopaqueData {{
+    private byte[] value;
+
+    public StandardShimHLAopaqueData() {{
+        this(new byte[0]);
+    }}
+
+    public StandardShimHLAopaqueData(byte[] value) {{
+        this.value = value == null ? new byte[0] : value.clone();
+    }}
+
+    @Override
+    public int getOctetBoundary() {{
+        return 4;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        byteWrapper.putInt(value.length);
+        byteWrapper.put(value);
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        return 4 + value.length;
+    }}
+
+    @Override
+    public int size() {{
+        return value.length;
+    }}
+
+    @Override
+    public byte get(int index) {{
+        return value[index];
+    }}
+
+    @Override
+    public Iterator<Byte> iterator() {{
+        return Arrays.asList(boxed()).iterator();
+    }}
+
+    private Byte[] boxed() {{
+        Byte[] bytes = new Byte[value.length];
+        for (int i = 0; i < value.length; i++) {{
+            bytes[i] = value[i];
+        }}
+        return bytes;
+    }}
+
+    @Override
+    public byte[] getValue() {{
+        return value.clone();
+    }}
+
+    @Override
+    public HLAopaqueData setValue(byte[] value) {{
+        this.value = value == null ? new byte[0] : value.clone();
+        return this;
+    }}
+
+    @Override
+    public HLAopaqueData decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            int length = byteWrapper.getInt();
+            byte[] payload = new byte[length];
+            byteWrapper.get(payload);
+            value = payload;
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAopaqueData", exc);
+        }}
+    }}
+
+    @Override
+    public HLAopaqueData decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAfixedRecord.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DataElement;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAfixedRecord;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public final class StandardShimHLAfixedRecord extends StandardShimAbstractDataElement implements HLAfixedRecord {{
+    private final List<DataElement> elements = new ArrayList<DataElement>();
+
+    @Override
+    public int getOctetBoundary() {{
+        int boundary = 1;
+        for (DataElement element : elements) {{
+            boundary = Math.max(boundary, element.getOctetBoundary());
+        }}
+        return boundary;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        for (DataElement element : elements) {{
+            byteWrapper.align(element.getOctetBoundary());
+            element.encode(byteWrapper);
+        }}
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        int total = 0;
+        for (DataElement element : elements) {{
+            int alignment = element.getOctetBoundary();
+            while (total % alignment != 0) {{
+                total += 1;
+            }}
+            total += element.getEncodedLength();
+        }}
+        return total;
+    }}
+
+    @Override
+    public void add(DataElement dataElement) {{
+        elements.add(dataElement);
+    }}
+
+    @Override
+    public int size() {{
+        return elements.size();
+    }}
+
+    @Override
+    public DataElement get(int index) {{
+        return elements.get(index);
+    }}
+
+    @Override
+    public Iterator<DataElement> iterator() {{
+        return elements.iterator();
+    }}
+
+    @Override
+    public HLAfixedRecord decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            for (DataElement element : elements) {{
+                byteWrapper.align(element.getOctetBoundary());
+                element.decode(byteWrapper);
+            }}
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAfixedRecord", exc);
+        }}
+    }}
+
+    @Override
+    public HLAfixedRecord decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAfixedArray.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DataElement;
+import hla.rti1516_2025.encoding.DataElementFactory;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAfixedArray;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+public class StandardShimHLAfixedArray<T extends DataElement> extends StandardShimAbstractDataElement implements HLAfixedArray<T> {{
+    protected final List<T> elements = new ArrayList<T>();
+    protected final DataElementFactory<T> factory;
+
+    public StandardShimHLAfixedArray(DataElementFactory<T> factory, int size) {{
+        this.factory = factory;
+        if (factory != null) {{
+            for (int i = 0; i < size; i++) {{
+                elements.add(factory.createElement(i));
+            }}
+        }}
+    }}
+
+    @SafeVarargs
+    public StandardShimHLAfixedArray(T... elements) {{
+        this.factory = null;
+        this.elements.addAll(Arrays.asList(elements));
+    }}
+
+    @Override
+    public int getOctetBoundary() {{
+        int boundary = 1;
+        for (T element : elements) {{
+            boundary = Math.max(boundary, element.getOctetBoundary());
+        }}
+        return boundary;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        for (T element : elements) {{
+            byteWrapper.align(element.getOctetBoundary());
+            element.encode(byteWrapper);
+        }}
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        int total = 0;
+        for (T element : elements) {{
+            int alignment = element.getOctetBoundary();
+            while (total % alignment != 0) {{
+                total += 1;
+            }}
+            total += element.getEncodedLength();
+        }}
+        return total;
+    }}
+
+    @Override
+    public int size() {{
+        return elements.size();
+    }}
+
+    @Override
+    public T get(int index) {{
+        return elements.get(index);
+    }}
+
+    @Override
+    public Iterator<T> iterator() {{
+        return elements.iterator();
+    }}
+
+    @Override
+    public HLAfixedArray<T> decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            for (T element : elements) {{
+                byteWrapper.align(element.getOctetBoundary());
+                element.decode(byteWrapper);
+            }}
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAfixedArray", exc);
+        }}
+    }}
+
+    @Override
+    public HLAfixedArray<T> decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimHLAvariableArray.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.encoding.ByteWrapper;
+import hla.rti1516_2025.encoding.DataElement;
+import hla.rti1516_2025.encoding.DataElementFactory;
+import hla.rti1516_2025.encoding.DecoderException;
+import hla.rti1516_2025.encoding.EncoderException;
+import hla.rti1516_2025.encoding.HLAvariableArray;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public final class StandardShimHLAvariableArray<T extends DataElement> extends StandardShimAbstractDataElement implements HLAvariableArray<T> {{
+    private final List<T> elements = new ArrayList<T>();
+    private final DataElementFactory<T> factory;
+
+    @SafeVarargs
+    public StandardShimHLAvariableArray(DataElementFactory<T> factory, T... elements) {{
+        this.factory = factory;
+        for (T element : elements) {{
+            this.elements.add(element);
+        }}
+    }}
+
+    @Override
+    public int getOctetBoundary() {{
+        int boundary = 4;
+        for (T element : elements) {{
+            boundary = Math.max(boundary, element.getOctetBoundary());
+        }}
+        return boundary;
+    }}
+
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {{
+        byteWrapper.putInt(elements.size());
+        for (T element : elements) {{
+            byteWrapper.align(element.getOctetBoundary());
+            element.encode(byteWrapper);
+        }}
+    }}
+
+    @Override
+    public int getEncodedLength() throws EncoderException {{
+        int total = 4;
+        for (T element : elements) {{
+            int alignment = element.getOctetBoundary();
+            while (total % alignment != 0) {{
+                total += 1;
+            }}
+            total += element.getEncodedLength();
+        }}
+        return total;
+    }}
+
+    @Override
+    public HLAvariableArray<T> addElement(T dataElement) {{
+        elements.add(dataElement);
+        return this;
+    }}
+
+    @Override
+    public int size() {{
+        return elements.size();
+    }}
+
+    @Override
+    public T get(int index) {{
+        return elements.get(index);
+    }}
+
+    @Override
+    public Iterator<T> iterator() {{
+        return elements.iterator();
+    }}
+
+    @Override
+    public HLAvariableArray<T> resize(int newSize) {{
+        if (newSize < 0) {{
+            throw new IllegalArgumentException("newSize must be non-negative");
+        }}
+        if (newSize > elements.size() && factory == null) {{
+            throw new UnsupportedOperationException("Cannot grow StandardShimHLAvariableArray without a DataElementFactory");
+        }}
+        while (elements.size() < newSize) {{
+            elements.add(factory.createElement(elements.size()));
+        }}
+        while (elements.size() > newSize) {{
+            elements.remove(elements.size() - 1);
+        }}
+        return this;
+    }}
+
+    @Override
+    public HLAvariableArray<T> decode(ByteWrapper byteWrapper) throws DecoderException {{
+        try {{
+            int count = byteWrapper.getInt();
+            resize(count);
+            for (T element : elements) {{
+                byteWrapper.align(element.getOctetBoundary());
+                element.decode(byteWrapper);
+            }}
+            return this;
+        }} catch (RuntimeException exc) {{
+            throw new DecoderException("Failed to decode HLAvariableArray", exc);
+        }}
+    }}
+
+    @Override
+    public HLAvariableArray<T> decode(byte[] bytes) throws DecoderException {{
+        return decode(new ByteWrapper(bytes));
+    }}
+}}
+''',
+        encoding="utf-8",
+    )
+    (pkg / "StandardShimProbe.java").write_text(
+        f'''package {PACKAGE};
+
+import hla.rti1516_2025.auth.Credentials;
+import hla.rti1516_2025.encoding.DataElement;
+
+public final class StandardShimProbe {{
+    public String className(Object value) {{
+        return value == null ? "null" : value.getClass().getName();
+    }}
+
+    public byte[] encode(DataElement element) {{
+        return element.toByteArray();
+    }}
+
+    public String credentialClassName(Credentials credentials) {{
+        return credentials.getClass().getName();
+    }}
+
+    public String credentialType(Credentials credentials) {{
+        return credentials.getType();
+    }}
+
+    public byte[] credentialData(Credentials credentials) {{
+        return credentials.getData();
     }}
 }}
 ''',
@@ -325,8 +1034,10 @@ def build() -> None:
     classes.mkdir(parents=True)
     _extract_api(api_dir)
     interface_path = api_dir / f"{API_PREFIX}/java/hla/rti1516_2025/RTIambassador.java"
-    methods = _parse_methods(interface_path.read_text(encoding="utf-8"))
-    _write_support_sources(src)
+    encoder_factory_path = api_dir / f"{API_PREFIX}/java/hla/rti1516_2025/encoding/EncoderFactory.java"
+    methods = _parse_methods(interface_path.read_text(encoding="utf-8"), "RTIambassador")
+    encoder_methods = _parse_methods(encoder_factory_path.read_text(encoding="utf-8"), "EncoderFactory")
+    _write_support_sources(src, encoder_methods)
     ambassador_path = src / PACKAGE.replace(".", "/") / "StandardShimRTIambassador.java"
     ambassador_path.write_text(_render_ambassador(methods), encoding="utf-8")
     java_files = [str(path) for path in (api_dir / f"{API_PREFIX}/java").rglob("*.java")]

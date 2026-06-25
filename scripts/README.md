@@ -69,7 +69,18 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/lint` canonical local lint, link, and generated-doc hygiene flow
 - `./tools/test-focus` canonical targeted pytest focus wrapper
 - `./tools/two-federate` canonical generic two-federate artifact flow
+- `./tools/federate-cli` canonical interactive/scripted lifecycle and callback-pumping federate shell
 - `./tools/test` canonical direct pytest wrapper
+
+The federate shell is intentionally layered:
+
+- scripted CLI / REPL for lifecycle, callback pumping, and backend/route setup
+- FOM-aware inventory commands for classes, interactions, and datatypes
+- exact inspect commands for one object class, interaction class, or datatype
+- bounded publish/subscribe and object/interaction send helpers
+- guided walkthrough mode for stepwise learning, pause points, and staged inspection
+- thin dashboard/TUI over the same session core for operator inspection, header badges, walkthrough menu selection, help overlay, adapter-boundary inspection, and key-driven walkthrough stepping
+- tiny change-routing companion doc: [../docs/federate_cli_change_map.md](../docs/federate_cli_change_map.md)
 
 When a script or wrapper touches the 2025 runtime lane, interpret that work
 through these surfaces first:

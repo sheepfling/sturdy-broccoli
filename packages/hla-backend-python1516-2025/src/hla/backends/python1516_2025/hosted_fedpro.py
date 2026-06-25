@@ -407,8 +407,7 @@ class FedPro2025RTIAmbassador:
 
     @staticmethod
     def _callback_model_name(model: Any) -> str:
-        name = getattr(model, "name", str(model))
-        return "EVOKED" if "EVOKED" in name else "IMMEDIATE"
+        return str(getattr(model, "name", model))
 
     @staticmethod
     def _time_kind_and_value(value: Any) -> tuple[str, str]:

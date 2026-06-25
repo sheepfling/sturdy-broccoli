@@ -299,6 +299,33 @@ class Py4JBridge(JavaBridge):
         except Exception:
             return value
 
+    def credentials(self, value: Any) -> Any:
+        try:
+            credential_type = str(getattr(value, "type"))
+            credential_data = bytes(getattr(value, "data"))
+        except Exception:
+            return value
+        try:
+            current = self.gateway.jvm
+            if credential_type == "HLAnoCredentials":
+                for part in f"{self.api_profile.java_package}.auth.HLAnoCredentials".split("."):
+                    current = getattr(current, part)
+                return current()
+            if credential_type == "HLAplainTextPassword":
+                current = self.gateway.jvm
+                for part in f"{self.api_profile.java_package}.auth.HLAplainTextPassword".split("."):
+                    current = getattr(current, part)
+                return current(self.byte_array(credential_data))
+        except Exception:
+            pass
+        try:
+            current = self.gateway.jvm
+            for part in f"{self.api_profile.java_package}.Credentials".split("."):
+                current = getattr(current, part)
+            return current(credential_type, self.byte_array(credential_data))
+        except Exception:
+            return value
+
     def _factory_collection(
         self,
         rti_ambassador: Any,

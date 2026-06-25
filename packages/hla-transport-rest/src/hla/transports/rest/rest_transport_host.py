@@ -10,6 +10,7 @@ from hla.transports.common.hosted_server import HostedRTICommandProcessor
 
 from hla.transports.common import TransportRequest
 from hla.runtime.factory import create_rti_ambassador
+from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_2025_rti_ambassador
 
 from .client import RestTransportClientAdapter
 
@@ -28,6 +29,13 @@ class CERTIRestServerConfig:
     host: str = "127.0.0.1"
     port: int = 0
     backend_options: Mapping[str, Any] = field(default_factory=dict)
+    request_path: str = "/rti/request"
+
+
+@dataclass(frozen=True)
+class RTI2025RestServerConfig:
+    host: str = "127.0.0.1"
+    port: int = 0
     request_path: str = "/rti/request"
 
 
@@ -115,6 +123,16 @@ class CERTIRestServer(_BaseRestServer):
         )
 
 
+class RTI2025RestServer(_BaseRestServer):
+    def __init__(self, config: RTI2025RestServerConfig = RTI2025RestServerConfig()) -> None:
+        super().__init__(
+            request_path=config.request_path,
+            processor=HostedRTICommandProcessor(create_2025_rti_ambassador("python1516_2025")),
+            host=config.host,
+            port=config.port,
+        )
+
+
 def start_python_rest_server(
     *,
     engine: Any | None = None,
@@ -146,11 +164,29 @@ def start_certi_rest_server(
     ).start()
 
 
+Python2025RestServer = RTI2025RestServer
+Python2025RestServerConfig = RTI2025RestServerConfig
+
+
+def start_2025_rest_server(
+    *,
+    host: str = "127.0.0.1",
+    port: int = 0,
+    request_path: str = "/rti/request",
+) -> RTI2025RestServer:
+    return RTI2025RestServer(RTI2025RestServerConfig(host=host, port=port, request_path=request_path)).start()
+
+
 __all__ = [
     "CERTIRestServer",
     "CERTIRestServerConfig",
+    "Python2025RestServer",
+    "Python2025RestServerConfig",
+    "RTI2025RestServer",
+    "RTI2025RestServerConfig",
     "PythonRTIRestServer",
     "PythonRTIRestServerConfig",
+    "start_2025_rest_server",
     "start_certi_rest_server",
     "start_python_rest_server",
 ]

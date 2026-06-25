@@ -20,6 +20,7 @@ Use this rule:
 | wrap a Java RTI with JPype or Py4J as lightly as possible | `Backend` -> [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md) |
 | understand the fuller Java adaptation and management story | `Backend` -> [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) |
 | extend or swap a transport or variant gRPC layer | `Transport` -> [`extending_ambassador_transports.md`](extending_ambassador_transports.md) -> [`transport_extension_playbook.md`](transport_extension_playbook.md) |
+| decide whether a change belongs to FOM shape, transport wiring, or adapter dialect | `Runtime` -> [`federate_cli_change_map.md`](federate_cli_change_map.md) |
 | work on FOM validation, inspection, or UI/tooling | `FOM` -> [`fom_tooling_front_door.md`](fom_tooling_front_door.md) |
 | run focused tests, rerun failures, or pick a restart lane | `Testing` -> [`test_surface.md`](test_surface.md) -> [`local_verification_commands.md`](local_verification_commands.md) |
 | understand orchestration, callback pumping, and performance limits | `Runtime` -> [`federation_orchestration.md`](federation_orchestration.md) |
@@ -57,6 +58,8 @@ If you already know what you need, pick a lane:
 - `Runtime` -> understand startup order, `ReadyToRun`, callback pumping, local execution
   topology, and how to improve performance without changing RTI semantics:
   [`federation_orchestration.md`](federation_orchestration.md)
+- `Runtime` -> route one change to the right lab seam:
+  [`federate_cli_change_map.md`](federate_cli_change_map.md)
 - `Runtime` -> edit one runtime service:
   [`python_rti_edit_one_service.md`](python_rti_edit_one_service.md)
 - `Architecture` -> get the repo mental model first:
@@ -133,6 +136,7 @@ Use these when you need structure, not onboarding:
 - [python_route_wrapping_guide.md](python_route_wrapping_guide.md): keep 2010 and 2025 Python wrapper examples aligned at the factory/import edge
 - [pitch_hla4_native_investigation.md](pitch_hla4_native_investigation.md): spike map for native Pitch HLA4/202X JPype and Py4J routes beyond the current adapter-backed 2025 path
 - [federation_orchestration.md](federation_orchestration.md): startup order, `ReadyToRun` synchronization, callback pumping, local execution topology, parallelism limits, and the performance tradeoff between deterministic proof lanes and higher-throughput routes
+- [federate_cli_change_map.md](federate_cli_change_map.md): tiny golden map from FOM shape vs transport vs adapter-dialect changes to exact files and walkthroughs
 - [`package_layout.md`](package_layout.md): package ownership map
 - [`repo_mental_model.md`](repo_mental_model.md): shortest explanation of the layers
 - [`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md): package family overview

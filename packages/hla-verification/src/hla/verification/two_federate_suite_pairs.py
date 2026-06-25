@@ -104,8 +104,8 @@ def _make_real_pair(
     left_fed = SuiteRecordingFederateAmbassador(profile=profile, scenario=scenario, role="left", timeline=timeline)
     right_fed = SuiteRecordingFederateAmbassador(profile=profile, scenario=scenario, role="right", timeline=timeline)
     return (
-        create_rti_ambassador(kind, **options),
-        create_rti_ambassador(kind, **options),
+        create_rti_ambassador(spec="rti1516e", backend=kind, **options),
+        create_rti_ambassador(spec="rti1516e", backend=kind, **options),
         left_fed,
         right_fed,
     )

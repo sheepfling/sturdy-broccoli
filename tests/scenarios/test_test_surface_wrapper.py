@@ -26,6 +26,7 @@ def test_tools_test_surface_help_describes_inventory_and_run_lanes() -> None:
     assert "./tools/test-surface run repo-green-units" in result.stdout
     assert "./tools/test-surface run unit-foundation" in result.stdout
     assert "./tools/test-surface run unit-python-core" in result.stdout
+    assert "./tools/test-surface run unit-federate-examples" in result.stdout
     assert "./tools/test-surface run unit-fom-tooling" in result.stdout
     assert "./tools/test-surface run unit-python-2025-core" in result.stdout
     assert "./tools/test-surface run unit-transport-local" in result.stdout
@@ -55,6 +56,7 @@ def test_tools_test_surface_inventory_json_lists_canonical_lanes() -> None:
         "repo-green-units",
         "unit-foundation",
         "unit-python-core",
+        "unit-federate-examples",
         "unit-fom-tooling",
         "unit-python-2025-core",
         "unit-transport-local",
@@ -203,6 +205,30 @@ def test_tools_test_surface_run_unit_foundation_uses_bash_for_non_executable_wra
     assert payload["steps"][0]["argv"] == ["bash", "./tools/test-focus", "run", "foundation"]
 
 
+def test_tools_test_surface_run_unit_federate_examples_dry_run_writes_summary_artifacts() -> None:
+    result = subprocess.run(
+        ["bash", "tools/test-surface", "run", "unit-federate-examples", "--dry-run", "--json"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["lane"] == "unit-federate-examples"
+    assert payload["status"] == "passed"
+    assert payload["dry_run"] is True
+    assert payload["steps"][0]["argv"] == [
+        "./tools/test",
+        "tests/test_tools_federate_cli_wrapper.py",
+        "tests/test_operator_surface_policy.py",
+    ]
+    assert all(step["status"] == "planned" for step in payload["steps"])
+    assert (ROOT / payload["artifacts"]["json"]).is_file()
+    assert (ROOT / payload["artifacts"]["markdown"]).is_file()
+
+
 def test_tools_test_surface_run_repo_green_units_dry_run_writes_summary_artifacts() -> None:
     result = subprocess.run(
         ["bash", "tools/test-surface", "run", "repo-green-units", "--dry-run", "--json"],
@@ -220,6 +246,7 @@ def test_tools_test_surface_run_repo_green_units_dry_run_writes_summary_artifact
     assert [step["lane"] for step in payload["steps"]] == [
         "unit-foundation",
         "unit-python-core",
+        "unit-federate-examples",
         "unit-fom-tooling",
         "unit-python-2025-core",
         "unit-transport-local",

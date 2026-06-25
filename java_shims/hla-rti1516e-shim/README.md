@@ -6,6 +6,18 @@ small service subset used by `hla.rti1516e.testing.scenarios.run_basic_federate_
 connection, create/join/resign/destroy, handle lookup, object update callbacks,
 interaction callbacks, and basic time-management callbacks.
 
+It also includes a small `hla.rti1516e.encoding` package so JPype/Py4J routes
+can prove Java-owned payload encoding without vendor jars. The shim
+`EncoderFactory` currently covers:
+
+- `HLAASCIIstring`
+- `HLAunicodeString`
+- `HLAoctet`
+- `HLAopaqueData`
+- `HLAfixedRecord`
+- `HLAfixedArray`
+- `HLAvariableArray`
+
 Build it with:
 
 ```bash

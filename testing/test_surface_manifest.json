@@ -99,6 +99,7 @@
       "include_lanes": [
         "unit-foundation",
         "unit-python-core",
+        "unit-federate-examples",
         "unit-fom-tooling",
         "unit-python-2025-core",
         "unit-transport-local",
@@ -185,6 +186,33 @@
       "preflight": {
         "kind": "always-ready",
         "reason": "Pure repo-owned unit shard."
+      }
+    },
+    {
+      "id": "unit-federate-examples",
+      "title": "Unit federate examples shard",
+      "description": "Interactive federate CLI, walkthrough, TUI, and change-map shard for the full examples/help surface across the supported options.",
+      "owner_command": ["./tools/test-surface", "run", "unit-federate-examples"],
+      "commands": [
+        [
+          "./tools/test",
+          "tests/test_tools_federate_cli_wrapper.py",
+          "tests/test_operator_surface_policy.py"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/federate_cli_change_map.md",
+        "tools/README.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned operator/examples shard."
       }
     },
     {

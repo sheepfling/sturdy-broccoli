@@ -438,7 +438,17 @@ def _run_pitch_smoke(profile: str) -> int:
         return _handle_skip(status)
     _setup_pitch_runtime_env()
     if profile in {"pitch", "pitch-smoke"}:
-        status = _run_pytest(["-q", "tests/vendors/test_real_vendor_runtime_smoke.py", "-k", "pitch_java_real_lifecycle_smoke or pitch_java_real_exchange_smoke"])
+        status = _run_pytest(
+            [
+                "-q",
+                "tests/vendors/test_real_vendor_runtime_smoke.py",
+                "-k",
+                "pitch_java_real_lifecycle_smoke or "
+                "pitch_java_real_exchange_smoke or "
+                "pitch_java_real_vendor_encoder_proof or "
+                "pitch_native_202x_vendor_auth_and_encoder_proof",
+            ]
+        )
         if status != 0:
             return status
     if profile in {"pitch", "pitch-verify"}:

@@ -45,6 +45,7 @@ Core operator entrypoints:
 - `./tools/section8-gate`
 - `./tools/target-radar`
 - `./tools/two-federate`
+- `./tools/federate-cli`
 - `./tools/shim-routes`
 - `./tools/java`
 
@@ -58,12 +59,29 @@ Shortest common paths:
 - get the default recommended verification lane: `./tools/test-surface recommend`
 - inspect or extend the repo-green unit sweep: `./tools/test-surface run repo-green-units`
 - discover where unit shard order lives: `testing/test_surface_manifest.json` -> `repo-green-units.include_lanes`
+- rerun the federate examples / walkthrough / TUI shard directly: `./tools/test-surface run unit-federate-examples`
 - get the junior-friendly rerun and failure-diagnosis workflow: `docs/junior_test_diagnosis_runbook.md`
 - run one 2010 example: `python examples/target_radar_simulation.py --backend python1516e --steps 5`
 - run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python1516_2025 --steps 5`
 - run the isolated 2010 direct Python route example: `./tools/python smoke-examples --edition 2010`
 - run the isolated 2025 direct Python route example: `./tools/python smoke-examples --edition 2025`
 - run both isolated direct Python route examples: `./tools/python smoke-examples --all`
+- run one scripted interactive federate lifecycle on the 2010 lane: `./tools/federate-cli --edition 2010 --command 'connect' --command 'create demo2010' --command 'join alice operator demo2010' --command 'status' --json`
+- run one scripted interactive federate lifecycle on the 2025 lane: `./tools/federate-cli --edition 2025 --backend python1516_2025 --command 'connect' --command 'create demo2025 --fom-scenario message-test' --command 'join observer analysis demo2025' --command 'evoke 0 0' --command 'status' --json`
+- inspect FOM classes and datatypes through the same interactive shell: `./tools/federate-cli --edition 2025 --command 'create demo2025 --fom-scenario message-test' --command 'list-classes object MessageTest' --command 'list-interactions MessageTest' --command 'list-datatypes Proto2025' --json`
+- inspect one exact FOM entity while you learn the route: `./tools/federate-cli --edition 2025 --command 'create demo2025 --fom-scenario message-test' --command 'inspect-class HLAobjectRoot.Proto2025.MessageTest.VerificationStatus' --command 'inspect-interaction HLAinteractionRoot.Proto2025.MessageTest.VerificationResult' --command 'inspect-datatype Proto2025Verdict' --json`
+- exercise publish/register/update/send on a bounded 2025 object/interaction lane: `./tools/federate-cli --edition 2025 --command 'create demo2025 --fom-scenario message-test' --command 'join owner analysis demo2025' --command 'publish-object HLAobjectRoot.Proto2025.MessageTest.VerificationStatus TestCaseId,StepId,Verdict,Reason,ExpectedValueJson,ActualValueJson,CheckedLogicalTime' --command 'register-object HLAobjectRoot.Proto2025.MessageTest.VerificationStatus verdict-1' --command 'update-object verdict-1 TestCaseId=case-1 StepId=step-1 Verdict=PASS Reason=ready ExpectedValueJson=expected ActualValueJson=actual CheckedLogicalTime=1' --command 'publish-interaction HLAinteractionRoot.Proto2025.MessageTest.VerificationResult' --command 'send-interaction HLAinteractionRoot.Proto2025.MessageTest.VerificationResult TestCaseId=case-1 StepId=step-1 Verdict=PASS Reason=ready EvidenceArtifactId=evidence-1' --json`
+- run the same 2025 lane as a guided learning walkthrough: `./tools/federate-cli --edition 2025 --backend python1516_2025 --command 'walkthrough message-test-tour' --command 'next-step' --command 'next-step' --command 'next-step' --command 'walkthrough-status' --json`
+- run a two-federate callback walkthrough with a managed receiver peer: `./tools/federate-cli --edition 2025 --backend python1516_2025 --command 'walkthrough two-federate-callback-tour' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'walkthrough-status' --json`
+- run a direct-vs-hosted route walkthrough on the same 2025 lab surface: `./tools/federate-cli --edition 2025 --backend python1516_2025 --command 'walkthrough route-variation-tour' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'walkthrough-status' --json`
+- prove the 2025 hosted transport routes directly, including both hosted gRPC and hosted REST: `./tools/federate-cli --edition 2025 --backend python1516_2025 --federation route-matrix-2025 --command 'create route-matrix-2025 --fom-scenario message-test' --command 'join alpha analysis route-matrix-2025' --command '@route-ensure hosted-grpc grpc' --command '@route-connect hosted-grpc' --command '@route-ensure hosted-rest rest' --command '@route-connect hosted-rest' --command '@route-status hosted-grpc' --command '@route-status hosted-rest' --command 'status' --json`
+- run an adapter-boundary walkthrough that points at the exact files and swap points for a slightly different gRPC dialect: `./tools/federate-cli --edition 2025 --backend python1516_2025 --command 'walkthrough adapter-boundary-tour' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'walkthrough-status' --json`
+- run a 2010 transport-substitution walkthrough that compares hosted gRPC vs hosted REST over the same Python-backed transport pattern: `./tools/federate-cli --edition 2010 --backend python1516e --command 'walkthrough transport-substitution-tour' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'next-step' --command 'walkthrough-status' --json`
+- inspect the adapter boundary directly without the walkthrough: `./tools/federate-cli --edition 2025 --command 'inspect-adapter grpc-fedpro-2025' --command 'inspect-adapter grpc-quirky-vendor' --json`
+- pause deliberately between lifecycle or send steps: `./tools/federate-cli --edition 2025 --command 'create demo2025 --fom-scenario message-test' --command 'pause Review the FOM and press Enter when ready.'`
+- open the thin dashboard/TUI over the same session core: `./tools/federate-cli --edition 2025`, then run `tui`
+- inside the TUI use `m` for the walkthrough menu, then `1-9` or shortcuts like `a` and `r` to select a walkthrough; the header now shows `menu=on|off` and `help=on|off`; use `h` or `?` for the help overlay, `n` for next walkthrough step, `o|i|d` to inspect the featured object/interaction/datatype, `p` to inspect the first managed peer callback pane, `s` for status, `e` to evoke, and `c` to clear callbacks
+- use the tiny golden routing map when deciding whether a change belongs to FOM shape, transport wiring, or adapter dialect: `docs/federate_cli_change_map.md`
 - run the focused direct Python example test: `./tools/python test-examples`
 - run the default test wrapper: `./tools/test`
 - stop the default test wrapper at the first failure: `./tools/test -x`

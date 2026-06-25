@@ -16,6 +16,12 @@ from validate_test_surface_manifest import validate_manifest
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "testing" / "test_surface_manifest.json"
 ARTIFACT_DIR = ROOT / "artifacts" / "test_surface_status"
+_PRESERVE_DRY_RUN_FRONT_DOORS = {
+    "./tools/compliance",
+    "./tools/python",
+    "./tools/section8-gate",
+    "./tools/test",
+}
 
 
 @dataclass(frozen=True)
@@ -72,6 +78,12 @@ def _normalize_command_argv(argv: tuple[str, ...]) -> tuple[str, ...]:
     if os.access(path, os.X_OK):
         return argv
     return ("bash", *argv)
+
+
+def _display_command_argv(argv: tuple[str, ...]) -> tuple[str, ...]:
+    if argv and argv[0] in _PRESERVE_DRY_RUN_FRONT_DOORS:
+        return argv
+    return _normalize_command_argv(argv)
 
 
 def manifest_validation_payload() -> dict[str, Any]:
@@ -226,6 +238,7 @@ def print_usage() -> None:
                 "  ./tools/test-surface run repo-green-units",
                 "  ./tools/test-surface run unit-foundation",
                 "  ./tools/test-surface run unit-python-core",
+                "  ./tools/test-surface run unit-federate-examples",
                 "  ./tools/test-surface run unit-fom-tooling",
                 "  ./tools/test-surface run unit-python-2025-core",
                 "  ./tools/test-surface run unit-transport-local",
@@ -375,7 +388,7 @@ def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
         for argv in commands:
             normalized_argv = _normalize_command_argv(argv)
             if dry_run:
-                steps.append({"argv": list(normalized_argv), "returncode": 0, "status": "planned"})
+                steps.append({"argv": list(_display_command_argv(argv)), "returncode": 0, "status": "planned"})
                 continue
             result = subprocess.run(normalized_argv, cwd=ROOT, text=True, check=False)
             step_status = "passed" if result.returncode == 0 else "failed"
