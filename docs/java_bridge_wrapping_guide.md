@@ -3,8 +3,14 @@
 Use this guide when you want one place that shows how Python wraps the HLA
 surface for both Java bridge routes and both supported editions.
 
+This document belongs to the backend and route wrapping surface described in
+[`work_surfaces.md`](work_surfaces.md).
+
 If you need the architecture-level explanation of how the adaptation works,
 read `docs/java_rti_adaptation_architecture.md` next.
+
+If your main question is how the repo chooses the correct Java overload across
+JPype and Py4J, read `docs/java_bridge_overload_resolution.md`.
 
 If you need the shortest possible "how do I minimally wrap this?" teaching
 version, start with `docs/java_bridge_minimal_protocol_recipe.md`.
@@ -87,6 +93,11 @@ The normalized wrapper surface on the Python side is the same:
 - `rti.publishObjectClassAttributes(...)`
 - `rti.sendInteraction(...)`
 
+What is not left to the concrete route is overload policy. The repo resolves
+Java overload intent in Python first, then hands the chosen call shape to
+JPype or Py4J. That policy is described in
+[`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md).
+
 ## Edition Differences
 
 2010 and 2025 share the same wrapper strategy, but 2025 adds a broader spec
@@ -119,5 +130,6 @@ rti = implementation.create_rti_ambassador()
 3. `packages/hla-bridge-java-jpype/README.md`
 4. `packages/hla-bridge-java-py4j/README.md`
 5. `docs/java_bridge_minimal_protocol_recipe.md`
-6. `docs/java_rti_adaptation_architecture.md`
-7. `docs/language_shim_routes.md`
+6. `docs/java_bridge_overload_resolution.md`
+7. `docs/java_rti_adaptation_architecture.md`
+8. `docs/language_shim_routes.md`

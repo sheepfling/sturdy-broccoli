@@ -7,6 +7,11 @@ Use this when you need one command that answers:
 - does it pass the repo's semantic validator?
 - what should I do next if it fails?
 
+This page is part of the FOM surface. If you are still deciding whether the
+problem is mostly backend, transport, or FOM, start at
+[`work_surfaces.md`](work_surfaces.md). For the FOM front door, start at
+[`fom_tooling_front_door.md`](fom_tooling_front_door.md).
+
 ## Front Door
 
 - `./tools/fom-validate DemoFOMmodule.xml`

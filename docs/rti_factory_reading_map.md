@@ -4,6 +4,12 @@ Use this page when you want to understand how the repo chooses an RTI
 implementation from `hla.rti.create_rti_ambassador(...)` or the version-local
 factory helpers.
 
+This page is part of the backend and route-wrapping surface. If you are still
+deciding whether the problem is mostly backend, transport, or FOM, start at
+[`work_surfaces.md`](work_surfaces.md). For the combined backend decision
+guide, start at
+[`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md).
+
 ## Start Here
 
 Read these first:

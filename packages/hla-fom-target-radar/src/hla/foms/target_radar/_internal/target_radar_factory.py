@@ -47,6 +47,29 @@ def make_target_radar_factory(
 
         return factory
 
+    if normalized in {"python1516e-grpc", "python-grpc"}:
+        pair_by_role: dict[str, Any] = {}
+        servers_by_role: dict[str, Any] = {}
+        create_rti_ambassador = import_module("hla.runtime.factory").create_rti_ambassador
+        start_python_grpc_server = import_module("hla.transports.grpc.python_server").start_python_grpc_server
+        in_memory_rti_engine = import_module("hla.backends.python1516e").InMemoryRTIEngine
+        engine = in_memory_rti_engine()
+
+        def factory(role: str) -> Any:
+            if role not in pair_by_role:
+                left_server = start_python_grpc_server(engine=engine)
+                right_server = start_python_grpc_server(engine=engine)
+                servers_by_role.update({"target": left_server, "radar": right_server})
+                pair_by_role.update(
+                    {
+                        "target": create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target}),
+                        "radar": create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target}),
+                    }
+                )
+            return pair_by_role[role]
+
+        return factory
+
     if normalized in {"jpype", "java-jpype"}:
         java_jpype = import_module("hla.bridges.java.jpype")
 

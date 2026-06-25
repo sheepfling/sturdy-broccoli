@@ -3,6 +3,11 @@
 Use this guide when you want a Python-backed RTI surface to run behind a
 transport host instead of directly in-process.
 
+This page sits under the transport surface. If you are still sorting backend
+versus transport versus FOM, start at [`work_surfaces.md`](work_surfaces.md).
+If you need the transport front door first, read
+[`extending_ambassador_transports.md`](extending_ambassador_transports.md).
+
 This repo currently has two different hosted Python RTI stories:
 
 - the hosted `python1516e` route over gRPC
@@ -100,6 +105,10 @@ Keep the ownership wording strict here:
 - do not describe historical `shim`-named compatibility paths as the main 2025
   operator path
 - do not refer to the primary 2025 runtime lane itself as a shim
+
+If the main question becomes "which backend lane should I pick?" rather than
+"how do I host it?", branch back to
+[`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md).
 
 Minimal server shape:
 

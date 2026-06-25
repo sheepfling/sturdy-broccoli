@@ -3,6 +3,11 @@
 This page defines the intended UI/UX front door for displaying, inspecting,
 joining, overlaying, editing, and searching FOM XML content.
 
+This page is part of the FOM surface. If you are still deciding whether the
+problem is mostly backend, transport, or FOM, start at
+[`work_surfaces.md`](work_surfaces.md). For the FOM front door, start at
+[`fom_tooling_front_door.md`](fom_tooling_front_door.md).
+
 The repo does not yet ship a full browser application. The current first slice
 is a stable JSON snapshot that a future UI can consume.
 

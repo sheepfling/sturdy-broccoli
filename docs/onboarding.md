@@ -9,6 +9,8 @@ follow only that path.
 
 Pick the closest match:
 
+1. I need to know which work surface I am in
+   - read [`work_surfaces.md`](work_surfaces.md)
 1. I want to run something
    - read [`first_run.md`](first_run.md)
    - then run `./tools/bootstrap python`
@@ -42,6 +44,7 @@ Pick the closest match:
    - then read [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
    - then use [`../tools/python`](../tools/python) or [`../tools/test`](../tools/test)
 8. I need vendor or Java routes
+   - read [`work_surfaces.md`](work_surfaces.md)
    - read [`java_toolchain.md`](java_toolchain.md)
    - read [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
    - then read [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)

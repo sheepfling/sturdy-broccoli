@@ -7,6 +7,9 @@ start with?"
 
 This is the shortest combined routing guide for those three decisions.
 
+If you have not already classified the problem, start one step higher at
+[`work_surfaces.md`](work_surfaces.md).
+
 ## One-Page Summary
 
 Pick in this order:
@@ -23,6 +26,15 @@ Keep the decisions separate:
 
 Do not choose a transport because you need different RTI semantics.
 Do not choose a FOM because you think it changes transport behavior.
+
+If the question turns out to be mostly about one surface, branch early:
+
+- mostly backend or Java wrapping:
+  [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
+- mostly transport or wire format:
+  [`extending_ambassador_transports.md`](extending_ambassador_transports.md)
+- mostly FOM inspection, validation, or UI:
+  [`fom_tooling_front_door.md`](fom_tooling_front_door.md)
 
 ## Quick Decision Table
 
@@ -55,6 +67,12 @@ Use these default answers.
 
 - use JPype when you want the clearest in-process Java wrapping path
 - use Py4J when you need JVM process separation
+
+If the backend question is really a Java wrapping question, branch here:
+
+1. [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
+2. [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
+3. [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
 
 Read next for backend choice:
 
@@ -204,6 +222,6 @@ So today:
 
 ## Read Next
 
-1. [rti_factory_reading_map.md](rti_factory_reading_map.md)
-2. [transport_extension_playbook.md](transport_extension_playbook.md)
-3. [fom_reading_map.md](fom_reading_map.md)
+1. [rti_factory_reading_map.md](rti_factory_reading_map.md) if the next question is still mostly backend selection
+2. [extending_ambassador_transports.md](extending_ambassador_transports.md) if the next question is mostly transport shape
+3. [fom_tooling_front_door.md](fom_tooling_front_door.md) if the next question is mostly FOM work

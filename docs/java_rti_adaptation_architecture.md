@@ -12,6 +12,9 @@ This is the architecture-level explanation behind:
 - `examples/py4j_java_rti_2025.py`
 - `examples/java_shim_federate.py`
 
+This document belongs to the backend and route wrapping surface described in
+[`work_surfaces.md`](work_surfaces.md).
+
 ## One-Page Summary
 
 This repository wraps standard Java HLA RTI implementations into one normalized
@@ -47,6 +50,7 @@ What does not change:
 - the normalized Python-facing RTI contract
 - the shared callback dispatch policy
 - the shared Java/Python value conversion layer
+- the shared overload-resolution policy
 - the top-level wrapping strategy
 
 Management-level takeaway:
@@ -65,7 +69,8 @@ Recommended explanation order for a non-implementer:
 2. show that 2025 is the same shape with a different package/profile
 3. show that Py4J is the same shape with a different connection/callback
    transport
-4. show that shared conversion and dispatch logic keeps the behavior aligned
+4. show that shared conversion, overload resolution, and dispatch logic keep
+   the behavior aligned
 
 ## Short Version
 
@@ -76,8 +81,9 @@ The adaptation strategy is the same in all four cases:
 3. load the edition-specific Java `RtiFactoryFactory`
 4. obtain a Java `RTIambassador`
 5. wrap that Java ambassador in a Python `DelegatingRTIAmbassador`
-6. convert Python arguments to Java values on call-in
-7. convert Java callback arguments, return values, and exceptions back to
+6. resolve Java overload intent in Python
+7. convert Python arguments to Java values on call-in
+8. convert Java callback arguments, return values, and exceptions back to
    Python on call-out
 
 The important design point is that edition selection and route selection happen
@@ -166,6 +172,36 @@ Vendor RTI or test shim
 
 The adaptation is not hard-coded separately for every Java RTI method. The repo
 centralizes most of the policy in the shared Java bridge layer.
+
+## Where Overload Resolution Happens
+
+This is a major part of the bridge design.
+
+The Java HLA APIs contain overload families where the correct call cannot be
+described by method name alone. The repo therefore does not rely on JPype or
+Py4J to infer the intended overload from raw Python arguments.
+
+Instead, the shared layer resolves the Java call in Python first:
+
+1. the Python-facing RTI facade records an `Invocation`
+2. Java overload metadata is loaded for that method
+3. candidate overloads are filtered by arity and parameter names
+4. ambiguous candidates are scored by expected Java parameter types
+5. arguments are converted for the chosen overload
+6. the concrete JPype or Py4J route executes the already-resolved call
+
+The main files behind that policy are:
+
+- `packages/hla-backend-common/src/hla/backends/common/invocation.py`
+- `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py`
+- `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_binding_profile.py`
+
+Inbound callbacks use the same general idea in reverse: the shared dispatcher
+looks up the expected Java callback signature and converts values before
+calling the normalized Python callback method.
+
+Read [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+for the concrete JPype versus Py4J comparison at that boundary.
 
 ## Where Edition Selection Happens
 

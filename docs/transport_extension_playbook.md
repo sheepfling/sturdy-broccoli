@@ -5,6 +5,11 @@ Use this page when the question is:
 "We have a transport that is close to the current `grpc` or `rest` route, but
 not identical. How do we adapt it without rewriting the RTI?"
 
+This page is part of the transport surface. If you are still deciding whether
+the problem is mostly backend, transport, or FOM, start at
+[`work_surfaces.md`](work_surfaces.md). For the shorter transport front door,
+start at [`extending_ambassador_transports.md`](extending_ambassador_transports.md).
+
 This is the concrete implementation guide for transport changes that are likely
 to happen next:
 

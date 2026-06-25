@@ -3,6 +3,11 @@
 Use this page when you need the shortest path to the repo's FOM artifacts and
 their current support boundary.
 
+This page is part of the FOM surface. If you are still deciding whether the
+problem is mostly backend, transport, or FOM, start at
+[`work_surfaces.md`](work_surfaces.md). For the FOM front door, start at
+[`fom_tooling_front_door.md`](fom_tooling_front_door.md).
+
 ## Start Here
 
 - bundled repo-owned FOMs:
@@ -138,10 +143,17 @@ Scope labels used across reports:
 - The showcase surface turns the strongest of those packets into a presentable narrative with workbench-backed custom load sets and expected outcome buckets.
 - RPR complaints and clarification requests that should flow back to SISO
   belong in [`rpr_siso_feedback_log.md`](rpr_siso_feedback_log.md), not as
-  silent family-specific assumptions in generic parser/runtime code.
+  ad hoc notes in unrelated docs or silent family-specific assumptions in
+  generic parser/runtime code.
 - Parser architecture and the proposed “stop using RPR-owned type labels for
   generic structure” substitutions are documented in
   [`rpr_type_normalization_notes.md`](rpr_type_normalization_notes.md).
 - We do not currently claim:
   - full serializer-normalization parity for every imported corpus
   - runnable example federate scenarios for every third-party FOM packet
+
+## Read Next
+
+1. [`fom_validate.md`](fom_validate.md) for validate-first operator flow
+2. [`fom_workbench.md`](fom_workbench.md) for the inspection and UI lane
+3. [`fom_tooling_front_door.md`](fom_tooling_front_door.md) if you need to branch back out

@@ -7,6 +7,13 @@ Py4J without getting lost in the full architecture?"
 
 This is the shortest teaching version of the wrapping model.
 
+This document belongs to the backend and route wrapping surface described in
+[`work_surfaces.md`](work_surfaces.md).
+
+If your real question is overload choice rather than bootstrap shape, read
+[`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
+after this page.
+
 ## The Core Idea
 
 For both JPype and Py4J, the minimum protocol shape is:
@@ -19,6 +26,10 @@ For both JPype and Py4J, the minimum protocol shape is:
 6. call `connect(...)`
 
 Everything else is detail.
+
+One of those details matters a lot for this project: the repo does not rely on
+JPype or Py4J alone to guess which Java overload to call. It resolves that
+policy in Python first.
 
 ## The Minimum JPype Shape
 
@@ -177,4 +188,5 @@ Choose Py4J when you specifically need:
 3. `examples/jpype_java_rti_2025.py`
 4. `examples/py4j_java_rti_2025.py`
 5. `docs/java_bridge_wrapping_guide.md`
-6. `docs/java_rti_adaptation_architecture.md`
+6. `docs/java_bridge_overload_resolution.md`
+7. `docs/java_rti_adaptation_architecture.md`

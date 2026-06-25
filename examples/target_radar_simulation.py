@@ -23,6 +23,8 @@ from hla.foms.target_radar._internal import (
 
 _BACKEND_CHOICES = [
     "python1516e",
+    "python1516e-grpc",
+    "python-grpc",
     "python-1516e",
     "python1516_2025",
     "python-1516-2025",

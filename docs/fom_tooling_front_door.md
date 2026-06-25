@@ -7,6 +7,9 @@ Use this page when the question is simply:
 Do not start by reading every FOM document. Pick the job first, then take the
 matching path.
 
+If you have not already classified the problem, start one step higher at
+[`work_surfaces.md`](work_surfaces.md).
+
 ## One-Page Summary
 
 Use this routing:
@@ -21,6 +24,13 @@ Use this routing:
    [`create_federate_and_fom.md`](create_federate_and_fom.md)
 5. choose backend, transport, and FOM together:
    [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
+
+If the question turns out not to be mostly about FOM work:
+
+- for backend or route selection:
+  [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
+- for transport or hosted route shape:
+  [`extending_ambassador_transports.md`](extending_ambassador_transports.md)
 
 ## Pick The Shortest Lane
 
@@ -104,3 +114,9 @@ When in doubt, do this:
 2. validate with [`fom_validate.md`](fom_validate.md)
 3. inspect merged behavior with [`fom_workbench.md`](fom_workbench.md)
 4. wire code with [`create_federate_and_fom.md`](create_federate_and_fom.md)
+
+## Read Next
+
+1. [`fom_reading_map.md`](fom_reading_map.md)
+2. [`fom_validate.md`](fom_validate.md)
+3. [`fom_workbench.md`](fom_workbench.md)

@@ -9,6 +9,21 @@ Use this rule:
 - read one short guide
 - move to reference only when blocked
 
+## Docs By Task
+
+| If you need to... | Start here |
+| --- | --- |
+| understand the three main work lanes in the repo | `Routing` -> [`work_surfaces.md`](work_surfaces.md) |
+| get a new machine or junior setup to repo-green | `Testing` -> [`repo_green_quickstart.md`](repo_green_quickstart.md) -> [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md) |
+| run the first pure-Python example | `2010 | 2025` -> [`first_run.md`](first_run.md) |
+| choose among backend, transport, and FOM lanes from one page | `Backend | Transport | FOM` -> [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) |
+| wrap a Java RTI with JPype or Py4J as lightly as possible | `Backend` -> [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md) |
+| understand the fuller Java adaptation and management story | `Backend` -> [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md) |
+| extend or swap a transport or variant gRPC layer | `Transport` -> [`extending_ambassador_transports.md`](extending_ambassador_transports.md) -> [`transport_extension_playbook.md`](transport_extension_playbook.md) |
+| work on FOM validation, inspection, or UI/tooling | `FOM` -> [`fom_tooling_front_door.md`](fom_tooling_front_door.md) |
+| run focused tests, rerun failures, or pick a restart lane | `Testing` -> [`test_surface.md`](test_surface.md) -> [`local_verification_commands.md`](local_verification_commands.md) |
+| understand orchestration, callback pumping, and performance limits | `Runtime` -> [`federation_orchestration.md`](federation_orchestration.md) |
+
 ## Start Here
 
 If you are new, use these in order:
@@ -29,53 +44,56 @@ Read [`verification/time_model_compliance.md`](verification/time_model_complianc
 
 If you already know what you need, pick a lane:
 
-- choose backend, transport, and FOM together from one page:
+- `Routing` -> choose among the three main work surfaces first:
+  [`work_surfaces.md`](work_surfaces.md)
+- `Backend | Transport | FOM` -> choose backend, transport, and FOM together from one page:
   [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
-- run the base Python example:
+- `2010 | 2025` -> run the base Python example:
   [`first_run.md`](first_run.md)
-- set up or repair the environment:
+- `Env` -> set up or repair the environment:
   [`python_environment.md`](python_environment.md)
-- run the two-federate flow:
+- `Examples` -> run the two-federate flow:
   [`two_federate_quickstart.md`](two_federate_quickstart.md)
-- understand startup order, `ReadyToRun`, callback pumping, local execution
+- `Runtime` -> understand startup order, `ReadyToRun`, callback pumping, local execution
   topology, and how to improve performance without changing RTI semantics:
   [`federation_orchestration.md`](federation_orchestration.md)
-- edit one runtime service:
+- `Runtime` -> edit one runtime service:
   [`python_rti_edit_one_service.md`](python_rti_edit_one_service.md)
-- get the repo mental model first:
+- `Architecture` -> get the repo mental model first:
   [`repo_mental_model.md`](repo_mental_model.md)
-- inspect package boundaries:
+- `Architecture` -> inspect package boundaries:
   [`package_layout.md`](package_layout.md),
   [`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md),
   [`import_boundary_rules.md`](import_boundary_rules.md),
   [`package_dependency_tree.md`](package_dependency_tree.md)
-- work on FOM tooling:
+- `FOM` -> work on FOM tooling:
   [`fom_tooling_front_door.md`](fom_tooling_front_door.md)
-- run local verification:
+- `Testing` -> run local verification:
   [`local_verification_commands.md`](local_verification_commands.md)
-- choose a lane or focused restart target:
+- `Testing` -> choose a lane or focused restart target:
   [`test_surface.md`](test_surface.md)
-- get to repo-green and diagnose failures as a junior:
+- `Testing` -> get to repo-green and diagnose failures as a junior:
   [`repo_green_quickstart.md`](repo_green_quickstart.md),
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
-- understand Java/vendor/runtime support:
+- `Backend` -> understand Java/vendor/runtime support:
   [`java_toolchain.md`](java_toolchain.md),
   [`vendor_runtime_runner_guide.md`](vendor_runtime_runner_guide.md),
   [`backend_conformance_matrix.md`](backend_conformance_matrix.md),
   [`../packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md),
   [`../packages/hla-vendor-pitch/docs/pitch_behavior_matrix.md`](../packages/hla-vendor-pitch/docs/pitch_behavior_matrix.md),
   [`../packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`](../packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md)
-- minimally wrap Java RTIs through JPype or Py4J:
+- `Backend` -> minimally wrap Java RTIs through JPype or Py4J:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
+  [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
-- investigate a native Pitch HLA4/202X route beyond the current adapter-backed 2025 path:
+- `Backend` -> investigate a native Pitch HLA4/202X route beyond the current adapter-backed 2025 path:
   [`pitch_hla4_native_investigation.md`](pitch_hla4_native_investigation.md)
-- keep the 2010 and 2025 Python routes structurally similar:
+- `Backend` -> keep the 2010 and 2025 Python routes structurally similar:
   [`python_route_wrapping_guide.md`](python_route_wrapping_guide.md)
-- extend ambassador connection or wire-format routes without changing RTI semantics:
+- `Transport` -> extend ambassador connection or wire-format routes without changing RTI semantics:
   [`extending_ambassador_transports.md`](extending_ambassador_transports.md)
-- adapt a slightly different `grpc` layer or add a whole new transport route:
+- `Transport` -> adapt a slightly different `grpc` layer or add a whole new transport route:
   [`transport_extension_playbook.md`](transport_extension_playbook.md)
 
 Concrete operator entrypoints that matter early:
@@ -91,6 +109,7 @@ Concrete operator entrypoints that matter early:
 
 Use these when you need structure, not onboarding:
 
+- [work_surfaces.md](work_surfaces.md): the three main repo work surfaces: backend/route wrapping, transport options, and FOM/tooling
 - [python_rti_backend.md](python_rti_backend.md): main 2025 Python RTI lane, wrapper boundary, and bounded working-surface claim
 - [backend_transport_fom_selection_guide.md](backend_transport_fom_selection_guide.md): combined decision guide for backend selection, transport selection, and FOM starting points
 - [python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python1516_2025` RTI lane
@@ -107,6 +126,10 @@ Use these when you need structure, not onboarding:
 - [language_shim_routes.md](language_shim_routes.md): Java/C++ standard-surface binding routes and evidence contract
 - [extending_ambassador_transports.md](extending_ambassador_transports.md): one-page guide to in-process vs remote routes, transport seams, and where to extend ambassador connection or wire-format logic
 - [transport_extension_playbook.md](transport_extension_playbook.md): concrete implementation playbook for variant `grpc` layers, new transport kinds, and hosted route adapters
+- [java_bridge_minimal_protocol_recipe.md](java_bridge_minimal_protocol_recipe.md): shortest JPype/Py4J wrapping recipe for standard Java RTIs
+- [java_bridge_wrapping_guide.md](java_bridge_wrapping_guide.md): fuller JPype/Py4J wrapping guide
+- [java_bridge_overload_resolution.md](java_bridge_overload_resolution.md): how shared Python-side overload selection and callback signature handling keep JPype and Py4J aligned
+- [java_rti_adaptation_architecture.md](java_rti_adaptation_architecture.md): management-readable Java RTI adaptation architecture
 - [python_route_wrapping_guide.md](python_route_wrapping_guide.md): keep 2010 and 2025 Python wrapper examples aligned at the factory/import edge
 - [pitch_hla4_native_investigation.md](pitch_hla4_native_investigation.md): spike map for native Pitch HLA4/202X JPype and Py4J routes beyond the current adapter-backed 2025 path
 - [federation_orchestration.md](federation_orchestration.md): startup order, `ReadyToRun` synchronization, callback pumping, local execution topology, parallelism limits, and the performance tradeoff between deterministic proof lanes and higher-throughput routes
@@ -156,7 +179,7 @@ These are useful, but they are not start-here docs:
 ## Read Next
 
 1. [`onboarding.md`](onboarding.md)
-2. [`first_run.md`](first_run.md)
-3. [`repo_green_quickstart.md`](repo_green_quickstart.md)
-4. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
-5. [`repo_mental_model.md`](repo_mental_model.md)
+2. [`work_surfaces.md`](work_surfaces.md)
+3. [`first_run.md`](first_run.md)
+4. [`repo_green_quickstart.md`](repo_green_quickstart.md)
+5. [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)

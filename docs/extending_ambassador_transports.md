@@ -12,6 +12,9 @@ This is the consolidated extension guide for:
 - Java bridge routes
 - wire-format extension points
 
+If you have not already classified the problem, start one step higher at
+[`work_surfaces.md`](work_surfaces.md).
+
 ## One-Page Summary
 
 The repo has one main rule:
@@ -25,6 +28,15 @@ That means:
 - `grpc`, `rest`, JPype, and Py4J belong in transport or bridge packages
 - a new connection route should reuse the same normalized Python-facing RTI
   contract instead of inventing a new ambassador API
+
+If the problem is not mostly transport, branch early:
+
+- mostly backend or route selection:
+  [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
+- mostly Java RTI wrapping through JPype or Py4J:
+  [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
+- mostly FOM shape or authoring:
+  [`fom_tooling_front_door.md`](fom_tooling_front_door.md)
 
 If you are deciding where code belongs:
 
@@ -273,6 +285,12 @@ For hosted transports:
 1. [`networked_rti_python.md`](networked_rti_python.md)
 2. [`../packages/hla-transport-grpc/README.md`](../packages/hla-transport-grpc/README.md)
 3. [`../packages/hla-transport-rest/README.md`](../packages/hla-transport-rest/README.md)
+
+## Read Next
+
+1. [`transport_extension_playbook.md`](transport_extension_playbook.md)
+2. [`networked_rti_python.md`](networked_rti_python.md)
+3. [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md) if the question broadens back out to backend plus transport plus FOM choice
 
 ## Do Not Do This
 

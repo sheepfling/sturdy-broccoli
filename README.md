@@ -128,14 +128,16 @@ bootstrap lane.
 
 If you need a specific lane or deeper task guide:
 
+- three main work surfaces: [`docs/work_surfaces.md`](docs/work_surfaces.md)
 - repo-green failure diagnosis: [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md)
 - lane and focused-target map: [`docs/test_surface.md`](docs/test_surface.md)
 - repo mental model: [`docs/repo_mental_model.md`](docs/repo_mental_model.md)
 - runtime editing: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
 - package structure and imports: [`docs/package_layout.md`](docs/package_layout.md), [`docs/import_boundary_rules.md`](docs/import_boundary_rules.md)
 - FOM tooling: [`docs/fom_workbench.md`](docs/fom_workbench.md)
+- transport options and extension: [`docs/extending_ambassador_transports.md`](docs/extending_ambassador_transports.md), [`docs/transport_extension_playbook.md`](docs/transport_extension_playbook.md)
 - two-federate flow: [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md)
-- Java bridge work: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md), [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md), [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
+- Java bridge work: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md), [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md), [`docs/java_bridge_overload_resolution.md`](docs/java_bridge_overload_resolution.md), [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
 - package inventory: [`packages/README.md`](packages/README.md)
 - full docs index: [`docs/README.md`](docs/README.md)
 

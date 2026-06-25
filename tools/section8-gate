@@ -21,7 +21,9 @@ case "${1:-run}" in
     usage
     ;;
   run)
-    shift
+    if [ "${1:-}" = "run" ]; then
+      shift
+    fi
     exec bash "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh" "$@"
     ;;
   *)

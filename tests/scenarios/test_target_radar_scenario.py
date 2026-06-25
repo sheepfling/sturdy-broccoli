@@ -70,6 +70,19 @@ def test_target_radar_example_supports_2025_backends(backend_name: str, expected
     assert "tracks=2" in stdout
 
 
+@pytest.mark.requires_loopback_server
+def test_target_radar_example_supports_hosted_python2010_backend(capsys) -> None:
+    module = _load_target_radar_example_module()
+
+    exit_code = module.main(["--backend", "python1516e-grpc", "--steps", "2"])
+
+    assert exit_code == 0
+    stdout = capsys.readouterr().out
+    assert "backend=" in stdout
+    assert "federation=TargetRadarFederation" in stdout
+    assert "tracks=2" in stdout
+
+
 @pytest.mark.parametrize("kind,profile", [("java-shim-jpype", "jpype"), ("java-shim-py4j", "py4j")])
 def test_target_radar_same_code_runs_on_shared_java_shim(kind, profile):
     kernel = SharedJavaShimKernel()
