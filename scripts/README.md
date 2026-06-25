@@ -169,17 +169,18 @@ These are reference families, not parallel front doors.
 
 ### CERTI Runtime
 
-- `check_certi_preflight.sh`: loopback, venv, and CERTI readiness probe
+- `check_certi_preflight.py`: loopback, venv, and CERTI readiness probe
+- `check_certi_preflight.sh`: compatibility alias to the Python preflight
 - `rebuild_certi.sh`: patched CERTI build/install
 - `rebuild_certi_upstream.sh`: pristine upstream CERTI build/install
 - `run_certi_local.sh`: launch local `rtig` / `rtia`
-- `check_certi_preflight.py`: host/session readiness probe
 - `ci/vendor_runtime_smoke.py`: CERTI and Pitch runtime smoke matrix with mandatory preflight and artifact emission
 - `ci/vendor_green.py`: strict vendor-runtime gate for dedicated real-runtime runners
 
 ### Pitch Runtime
 
-- `check_pitch_preflight.sh`: Docker and bundled Pitch readiness probe
+- `check_pitch_preflight.py`: Docker and bundled Pitch readiness probe
+- `check_pitch_preflight.sh`: compatibility alias to the Python preflight
 - `setup_pitch_state.sh`: persistent Pitch `user.home`
 - `run_pitch_local.sh`: launch extracted Pitch runtime
 - `pitch_docker_easy.sh`: compatibility alias behind the top-level `./tools/pitch` operator flow
@@ -256,7 +257,7 @@ New generated backlog artifacts:
 - `ci/seed_suite.sh`: default CI quality gate
 - `ci/target_radar_backend_matrix.sh`: target/radar backend smoke matrix
 - `ci/target_radar_proof.sh`: target/radar proof packet
-- `ci/section8_backend_matrix_gate.sh`: cross-backend Section 8 matrix
+- `ci/section8_backend_matrix_gate.py`: cross-backend Section 8 matrix
 - `ci/vendor_edge_matrix.py`: vendor edge slice with `time-query` and `negotiated-ownership` subprofiles
 - `ci/check_generated_docs.sh`: generated backend alias inventory sync
 

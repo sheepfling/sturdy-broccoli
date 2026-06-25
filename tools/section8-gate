@@ -1,32 +1,24 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env python3
+from __future__ import annotations
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-source "$ROOT_DIR/scripts/lib/shell.sh"
-hla2010_shell_init "tools/section8-gate"
+import subprocess
+import sys
+from pathlib import Path
 
-usage() {
-  cat <<'EOF'
-usage: ./tools/section8-gate [args...]
 
-Canonical Section 8 backend-matrix gate:
-  ./tools/section8-gate
+ROOT = Path(__file__).resolve().parents[1]
 
-This is the human-facing wrapper over `./scripts/ci/section8_backend_matrix_gate.sh`.
-EOF
-}
 
-case "${1:-run}" in
-  help|-h|--help)
-    usage
-    ;;
-  run)
-    if [ "${1:-}" = "run" ]; then
-      shift
-    fi
-    exec bash "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh" "$@"
-    ;;
-  *)
-    exec bash "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh" "$@"
-    ;;
-esac
+def main(argv: list[str]) -> int:
+    args = argv[1:]
+    if args and args[0] == "run":
+        args = args[1:]
+    return subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "ci" / "section8_backend_matrix_gate.py"), *args],
+        cwd=ROOT,
+        check=False,
+    ).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

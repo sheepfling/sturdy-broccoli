@@ -53,7 +53,7 @@ def _run(
 
 
 def _shell_script(path: Path, *args: str) -> list[str]:
-    return ["bash", str(path), *args]
+    return [str(path), *args]
 
 
 def _log(message: str) -> None:
@@ -78,7 +78,7 @@ def _preflight_has_json_file(args: Sequence[str]) -> bool:
 
 def _run_persisted_preflight(extra_args: Sequence[str]) -> int:
     _preflight_artifact_dir().mkdir(parents=True, exist_ok=True)
-    command = _shell_script(SCRIPT_REPO_ROOT / "scripts" / "check_pitch_preflight.sh", *extra_args)
+    command = [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "check_pitch_preflight.py"), *extra_args]
     if not _preflight_has_json_file(extra_args):
         command.extend(["--json-file", str(_preflight_artifact_path())])
     return _run(command).returncode
@@ -106,7 +106,8 @@ def _require_preflight() -> bool:
     _preflight_artifact_dir().mkdir(parents=True, exist_ok=True)
     result = _run(
         [
-            *_shell_script(SCRIPT_REPO_ROOT / "scripts" / "check_pitch_preflight.sh"),
+            _python_bin(),
+            str(SCRIPT_REPO_ROOT / "scripts" / "check_pitch_preflight.py"),
             "--json-file",
             str(_preflight_artifact_path()),
         ]
@@ -319,7 +320,10 @@ def _run_best_effort(profile: str) -> int:
 
 
 def _doctor_pitch_docker() -> int:
-    preflight = _run(_shell_script(SCRIPT_REPO_ROOT / "scripts" / "check_pitch_preflight.sh", "--json"), capture_output=True)
+    preflight = _run(
+        [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "check_pitch_preflight.py"), "--json"],
+        capture_output=True,
+    )
     pitch_home = _resolve_pitch_home()
     pitch_user_home = _resolve_pitch_user_home()
     _log(f"Pitch runtime: {pitch_home}")

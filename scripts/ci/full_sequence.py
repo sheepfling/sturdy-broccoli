@@ -54,7 +54,7 @@ def main(argv: list[str]) -> int:
         ("other tests", [str(ROOT / "scripts" / "ci" / "target_radar_backend_matrix.sh")]),
         ("other tests", [str(ROOT / "scripts" / "ci" / "target_radar_proof.sh")]),
         ("Proto2025 FOM showcase", [str(ROOT / "scripts" / "ci" / "proto2025_fom_showcase.sh")]),
-        ("compliance matrices", [str(ROOT / "scripts" / "ci" / "section8_backend_matrix_gate.sh")]),
+        ("compliance matrices", [sys.executable, str(ROOT / "scripts" / "ci" / "section8_backend_matrix_gate.py")]),
         ("full backend matrixed compliance", [sys.executable, str(ROOT / "scripts" / "ci" / "vendor_runtime_smoke.py"), "all"]),
     ]
     for label, step_argv in steps:

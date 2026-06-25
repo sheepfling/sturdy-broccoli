@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import tomllib
 from pathlib import Path
 
@@ -27,6 +28,8 @@ def test_repo_green_default_suite_includes_2010_and_2025_grpc_route_tests() -> N
     assert '"unit shard sweep"' in full_sequence
     assert '"repo-green-units"' in full_sequence
     assert 'vendor_runtime_smoke.py"), "matrix"' in full_sequence
+    assert "section8_backend_matrix_gate.py" in full_sequence
+    assert "section8_backend_matrix_gate.sh" not in full_sequence
 
     test_script = (ROOT / "scripts/ci/test.sh").read_text(encoding="utf-8")
     test_python = (ROOT / "scripts" / "ci" / "test.py").read_text(encoding="utf-8")
@@ -80,6 +83,44 @@ def test_tools_python_help_describes_repo_green_operator_lane() -> None:
     assert "./scripts/ci/repo_green.py" in result.stdout
     assert "./tools/certi-easy" in result.stdout
     assert "./tools/pitch" in result.stdout
+
+
+def test_tools_section8_gate_help_describes_python_backed_gate() -> None:
+    result = subprocess.run(
+        [sys.executable, "tools/section8-gate", "--help"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert "./tools/section8-gate" in result.stdout
+    assert "tests/time/test_section8_backend_matrix.py" in result.stdout
+    assert "analysis/compliance/section8_backend_matrix.{json,md}" in result.stdout
+
+
+def test_tools_section8_gate_is_python_first_alias() -> None:
+    tool_text = (ROOT / "tools" / "section8-gate").read_text(encoding="utf-8")
+    compat_text = (ROOT / "scripts" / "ci" / "section8_backend_matrix_gate.sh").read_text(encoding="utf-8")
+
+    assert "#!/usr/bin/env python3" in tool_text
+    assert "section8_backend_matrix_gate.py" in tool_text
+    assert 'exec python3 "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.py" "$@"' in compat_text
+
+
+def test_vendor_preflight_aliases_are_python_first() -> None:
+    certi_alias = (ROOT / "scripts" / "check_certi_preflight.sh").read_text(encoding="utf-8")
+    pitch_alias = (ROOT / "scripts" / "check_pitch_preflight.sh").read_text(encoding="utf-8")
+    certi_tool = (ROOT / "scripts" / "run_certi_tool.py").read_text(encoding="utf-8")
+    pitch_tool = (ROOT / "scripts" / "run_pitch_tool.py").read_text(encoding="utf-8")
+
+    assert 'exec "$VENV_PYTHON" "$ROOT_DIR/scripts/check_certi_preflight.py" "$@"' in certi_alias
+    assert 'exec "$VENV_PYTHON" "$ROOT_DIR/scripts/check_pitch_preflight.py" "$@"' in pitch_alias
+    assert '"scripts" / "check_certi_preflight.py"' in certi_tool
+    assert '"scripts" / "check_pitch_preflight.py"' in pitch_tool
+    assert "check_certi_preflight.sh" not in certi_tool
+    assert "check_pitch_preflight.sh" not in pitch_tool
 
 
 def test_repo_green_runs_manifest_validation_before_delegate(tmp_path: Path) -> None:

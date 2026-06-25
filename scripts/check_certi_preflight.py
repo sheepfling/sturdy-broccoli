@@ -249,6 +249,10 @@ def main() -> int:
         payload = portable_jsonable(payload)
         args.json_file.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
+    script_name = os.environ.get("HLA2010_SCRIPT_NAME", Path(__file__).name)
+    print(f"[{script_name}] CERTI preflight: starting")
+    print(f"[{script_name}] platform: {' '.join(os.uname())}")
+
     for item in checks:
         print(str(item["message"]))
 

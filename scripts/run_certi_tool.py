@@ -183,7 +183,7 @@ def _preflight_has_json_file(args: Sequence[str]) -> bool:
 
 def _run_persisted_certi_preflight(extra_args: Sequence[str]) -> int:
     _preflight_artifact_dir().mkdir(parents=True, exist_ok=True)
-    command = _shell_script(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.sh", *extra_args)
+    command = [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.py"), *extra_args]
     if not _preflight_has_json_file(extra_args):
         command.extend(["--json-file", str(_certi_preflight_artifact_path())])
     return _run(command).returncode
@@ -259,7 +259,7 @@ def _show_doctor() -> int:
     print()
 
     summary = _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.py"), "--json"], capture_output=True)
-    preflight = _run([str(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.sh")], capture_output=True)
+    preflight = _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.py")], capture_output=True)
     if summary.stdout.strip():
         payload = json.loads(summary.stdout)
         environment = payload.get("environment", "unknown")
@@ -278,7 +278,7 @@ def _show_doctor() -> int:
 
 
 def _run_variant_binary(variant: str, binary: str, args: Sequence[str]) -> int:
-    preflight = _run([str(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.sh")])
+    preflight = _run([_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "check_certi_preflight.py")])
     if preflight.returncode != 0:
         return preflight.returncode
     env = _env_with_script_name()

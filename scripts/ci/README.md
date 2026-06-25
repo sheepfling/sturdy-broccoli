@@ -39,7 +39,7 @@ The rule is simple:
 - `write_vendor_runtime_job_summary.py`: render normalized runtime-status artifacts into a GitHub job summary
 - `check_vendor_runtime_ci_state.py`: validate dedicated runner runtime env/path state before vendor-green jobs
 - `../check_vendor_runner_template_drift.py`: verify the runner provisioning template, validator profiles, and workflow env contracts stay aligned
-- `section8_backend_matrix_gate.sh`: Section 8 cross-backend matrix gate
+- `section8_backend_matrix_gate.py`: Section 8 cross-backend matrix gate
 - `target_radar_backend_matrix.sh`: target/radar backend matrix gate
 - `target_radar_proof.sh`: target/radar proof packet gate
 

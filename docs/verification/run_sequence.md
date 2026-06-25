@@ -31,7 +31,7 @@ Canonical order of the underlying steps:
 7. `scripts/run_two_federate_suite.py`
 8. `scripts/ci/target_radar_backend_matrix.sh --backend python1516e --backend java-shim-jpype --backend java-shim-py4j`
 9. `scripts/ci/target_radar_proof.sh`
-10. `scripts/ci/section8_backend_matrix_gate.sh`
+10. `scripts/ci/section8_backend_matrix_gate.py`
 11. `scripts/ci/vendor_runtime_smoke.py all`
 
 What each stage means:
