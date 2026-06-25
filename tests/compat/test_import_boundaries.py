@@ -150,3 +150,14 @@ def test_contract_snapshots_live_under_compat_and_have_metadata() -> None:
         assert payload["package"].startswith("upstream_reference.")
         assert "contract_facts" in payload
         assert "modules" in payload
+
+
+def test_2010_public_docs_advertise_canonical_camelcase_names() -> None:
+    interface_contracts = (ROOT / "docs" / "reference" / "hla_interface_contracts.md").read_text(encoding="utf-8")
+    orchestration = (ROOT / "docs" / "federation_orchestration.md").read_text(encoding="utf-8")
+    java_bridge = (ROOT / "docs" / "java_bridge_wrapping_guide.md").read_text(encoding="utf-8")
+
+    assert "snake_case" not in interface_contracts
+    assert "evoke_multiple_callbacks(...)" not in orchestration
+    assert "create_federation_execution" not in java_bridge
+    assert "join_federation_execution" not in java_bridge

@@ -40,7 +40,7 @@ def _repo_root() -> Path:
 
 def siso_download_root(repo_root: Path | None = None) -> Path:
     base_root = repo_root if repo_root is not None else _repo_root()
-    return Path(os.environ.get("HLA_SISO_DOWNLOAD_ROOT", base_root / "analysis" / "siso_downloads"))
+    return Path(os.environ.get("HLA_SISO_DOWNLOAD_ROOT", base_root / "artifacts" / "siso_downloads"))
 
 
 def siso_inventory_json_path(download_root: Path | None = None, *, repo_root: Path | None = None) -> Path:
@@ -339,7 +339,12 @@ def discover_siso_inventory_entries(download_root: Path | None = None, *, repo_r
         if not xml_files:
             continue
         for xml_path in xml_files:
-            digest = _content_digest(xml_path)
+            if not xml_path.exists():
+                continue
+            try:
+                digest = _content_digest(xml_path)
+            except FileNotFoundError:
+                continue
             if digest in seen_digests:
                 continue
             seen_digests.add(digest)
@@ -357,7 +362,12 @@ def discover_siso_inventory_entries(download_root: Path | None = None, *, repo_r
             continue
         if _is_metadata_path(xml_path.relative_to(root)):
             continue
-        digest = _content_digest(xml_path)
+        if not xml_path.exists():
+            continue
+        try:
+            digest = _content_digest(xml_path)
+        except FileNotFoundError:
+            continue
         if digest in seen_digests:
             continue
         seen_digests.add(digest)

@@ -1,0 +1,1907 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CapabilitiesDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/gdl/CapabilitiesDefinition.xsd">
+ <Version>
+  0.1
+ </Version>
+ <Capability>
+  <ReferenceID>
+   FC-ST-1
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to perform unit conversion on a single attribute (SDEM element).
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate meters to feet, or a similar direct algorithmic conversion.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No Unit Conversion
+    </Level0>
+    <Level1>
+     Single attribute conversion for 5 or fewer defined types
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Single attribute conversion for fewer than 15 fixed types
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Conversion between arbitrary units
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-ST-2
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to perform complex data type conversions from single to multiple, multiple to single or different numbers of multiple attributes. This includes coordinate systems with different numbers of components
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate between coordinate systems with different numbers of components, such as Euler angles (3 elements) to quaternions (4 elements), or articulated parts versus single frame reference.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No multiple attribute conversion
+    </Level0>
+    <Level1>
+     Multiple attribute conversion for 5 or fewer fixed types
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Multiple attribute conversion for fewer than 15 fixed types
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Arbitrary multiple attribute coordinate conversion
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-ST-3
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate single component enumerations between SDEMs. This includes the cases where one SDEM has more than one enumeration value that maps to a single enumeration value in the other SDEM.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate from Entity Health Status enumeration (healthy, sick, dead) to a different enumeration (mobility, firepower, total kill).
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No single enumeration mapping
+    </Level0>
+    <Level1>
+     One-to-one enumeration mapping
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Many-to-one enumeration mapping
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Arbitrary enumeration mapping
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-ST-4
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate multi-component enumerations between SDEMs
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate between two components of differing SDEMs with a different number of elements, such as a Distributed Interactive Simulation (DIS) PDU enumeration to a Modeling Architecture for Technology, Research, and Experimentation (MATREX) enumeration.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No multi-component enumeration mapping
+    </Level0>
+    <Level1>
+     1 type of multi-component enumeration mapping
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     5 types of multi-component enumeration mapping
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Arbitrary multi-component enumeration mapping
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-ST-5
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate identifiers between SDEMs.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate between a DIS three-element identifier and another architecture's single-element identifier.
+   This does not refer to the object handle that is assigned by the architecture, for example, High Level Architecture (HLA) Run Time Infrastructure (RTI) object handle.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No translation of SDEM identifiers
+    </Level0>
+    <Level1>
+     1 Specific translation
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     5 specific translations
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to provide an arbitrary number of identifier translations
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-ST-6
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to provide static default information that is required by one SDEM but not present in the other. Can the gateway provide the user a mechanism for specifying this information
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate from an SDEM that requires a specific attribute to an SDEM that does not require the attribute. This may be performed by adding values for attributes that are required in the 'translated from'  SDEM to the 'translated to' SDEM.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to add data
+    </Level0>
+    <Level1>
+     Ability to add 1 fixed type of data
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to add 15 fixed types of data
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to add arbitrary data
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-ST-7
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to calculate dynamic information that is required by one SDEM but not present in the other. To perform this, the gateway must provide the user a mechanism for specifying this information.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate between an SDEM that calculates velocity from two points over time and another SDEM that calculates velocity using orientation based on position relative to the earth.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to add dynamic information
+    </Level0>
+    <Level1>
+     1 defined dynamic translation
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     15 defined dynamic translations
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Arbitrary ability to add dynamic information
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-SB-1
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to provide dead-reckoning between SDEMs that use different dead-reckoning mechanisms.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate between one SDEM that uses the DIS-defined dead-reckoning algorithms and another SDEM that uses a different set of dead-reckoning algorithms. Another example is where both SDEMs use DIS dead-reckoning schemes but use different algorithms.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No dead-reckoning support
+    </Level0>
+    <Level1>
+     Map between different DIS dead-reckoning algorithms (up to 4)
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Map between all DIS dead-reckoning algorithms
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to map between arbitrary dead-reckoning algorithms
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-SB-2
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to provide dead-reckoning when required by one SDEM and not the other.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway could properly translate between an SDEM that does not require dead-reckoning and an SDEM that does. In this example, the gateway might be able to emulate the required dead-reckoning.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No support for emulating dead-reckoning
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Provides support for emulating DIS dead-reckoning algorithms
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Provides support for emulating arbitrary dead-reckoning algorithms
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-SB-3
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to publish attributes based on updates exceeding thresholds. This does not include thresholds associated with dead-reckoning, which is covered in FC-SB-1.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway could properly translate between DIS entity heart-beating or transmitter status and an architecture that did not require heart-beats, but did need updates when thresholds were exceeded.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to publish attributes based on thresholds
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     5 fixed thresholds to publish attributes
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to publish attributes based on arbitrary thresholds
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-SB-4
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to support behaviors defined in one SDEM but not in the other.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway could properly translate behaviors of the SDEM such as collision detection, damage assessment, radio communications degradation, or mobility.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No capability to support required SDEM behaviors
+    </Level0>
+    <Level1>
+     Capability to support 1 fixed behavior
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Capability to support 5 fixed behaviors
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to support an arbitrary number of behaviors
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-SB-5
+  </ReferenceID>
+  <Category>
+   <Functional>SDEM Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to support differing SDEM defined publication rates. This does not include dead-reckoning or thresholding, which is covered in FC-SB-1.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway could properly translate two different SDEMs that require higher or lower publication rates at which certain objects or attributes have to be updated.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No support for SDEM publication rates
+    </Level0>
+    <Level1>
+     Supported for 1 fixed publication rate
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Supported for 5 fixed publication rates
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Arbitrary SDEM publication rates
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AT-1
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Translations</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate identifiers between Architectures.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway supports the mapping between an HLA Object Handle to a Test and Training Enabling Architecture (TENA) Unique Identification (ID).
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to translate architecture ids
+    </Level0>
+    <Level1>
+     Ability for scheme based on 2 architectures/ implementations
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability for scheme based on 5 architectures/ implementations
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Arbitrary identifier translation
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-1
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to support architecture-defined publication rates.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can translate between one architecture that operates under one publication rate and another architecture that operates under a different rate or does not define a rate at all.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     Cannot support architecture publication rates
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Can support 5 fixed architecture publication rates
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Can support an arbitrary set of publication rates
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-2
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to publish all the attributes of an object in an Architecture that does not support partial updates when translating from an Architecture that permits partial updates.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can receive a partial update of an HLA object and correctly translate it to a completely filled out DIS Protocol Data Unit (PDU).
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     Cannot support publishing all attributes
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Can publish all attributes for 5 selected object types
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Can publish all attributes based on partial attribute update
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-3
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to publish only changed attributes of an object in a Architecture that permits partial updates when translating from an Architecture that requires publication of all attributes for each update.
+  </CapabilityDefinition>
+  <Example>
+   For example, a gateway receives a DIS PDU where only one element has changed and updates the only changed attribute in HLA.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     Cannot publish only changed attributes
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Can publish only changed attributes for 5 selected objects
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Can publish only changed attributes for an arbitrary number of objects
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-4
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to support responding to publication requests.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between TENA and HLA, and TENA makes a 'Request Attribute Update' service call on an object, the gateway will request that the appropriate member applications provide updated attribute values.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     Cannot respond to publication requests
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Can respond to publication requests
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-5
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate Remote Procedure Calls (RPCs) between architectures that support RPCs.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway, acting as a bridge, correctly translates between two or more architectures that support some form of RPCs but not in the same manner.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No support for RPCs when both architectures do not support
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to translate 5 selected RPCs
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to translate an arbitrary number and type of RPCs
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-6
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate RPCs from architectures that support RPCs to an architecture that does not support RPCs. This may require translating RPCs to other types of SDEM elements for SDEMs/protocols that do not natively support RPCs.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can convert a TENA Remote Method Invocation (RMI) to an HLA/Federation Object Model (FOM) specific interaction.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No support for translating RPCs to a non-RPC architecture
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to support translating 5 selected RPCs to a non-RPC architecture
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Unrestricted ability to support translating RPCs to a non-RPC architecture
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-7
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate RPCs from an architecture that does not support RPCs to one that does.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway can support an HLA/FOM specific interaction to a TENA RMI.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No support for translating RPCs from an architecture that does not support RPCs to one that does
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to support 5 selected RPCs from an architecture that does not support RPCs to one that does
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Unrestricted ability to support translating RPCs from an architecture that does not support RPCs to one that does
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-AB-8
+  </ReferenceID>
+  <Category>
+   <Functional>Architectural Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to remove translated objects based on the rules of the original publisher architecture.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between HLA and DIS and an HLA object is deleted, it allows DIS to set the 'final' PDU bit. A similar example is if a gateway could allow TENA to remove a Stateful Distributed Object (SDO) pointer.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to remove objects based on original publisher's rules
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to remove a limited set of object types based on 5
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Unrestricted ability to support removal rules
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-EMB-1
+  </ReferenceID>
+  <Category>
+   <Functional>Exercise Management Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to set publication rates for object classes
+  </CapabilityDefinition>
+  <Example>
+   For example, a gateway that supports an exercise manager that might choose to reduce update rates from one side of the gateway to the other for a particular class of objects.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No support for exercise management rates
+    </Level0>
+    <Level1>
+     Support for setting publication rates for 1 type of object class
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Support for setting publication rates for 5 object classes
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Unrestricted support for setting publication rates for object classes
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-EMB-2
+  </ReferenceID>
+  <Category>
+   <Functional>Exercise Management Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to filter (i.e., not translate) specified objects between SDEMs based on their attributes or classes
+  </CapabilityDefinition>
+  <Example>
+   For example, a gateway that supports filtering out all air platforms from being passed from one SDEM to another SDEM.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to filter
+    </Level0>
+    <Level1>
+     Ability to filter based on 1 class or attribute
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to filter based on 5 attributes or classes
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Unrestricted ability to filter objects based on their attributes or classes
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-EMB-3
+  </ReferenceID>
+  <Category>
+   <Functional>Exercise Management Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to filter updates from specified senders (i.e., simulations)
+  </CapabilityDefinition>
+  <Example>
+   For example, a gateway with the ability to filter any updates published by a specific sender/simulation.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to filter based on sender
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Can only filter all classes from sender
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Can filter selected classes from sender
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-EMB-4
+  </ReferenceID>
+  <Category>
+   <Functional>Exercise Management Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to filter updates based on conditions or events
+  </CapabilityDefinition>
+  <Example>
+   For example, a gateway that supports proximity filtering to ignore air platforms outside of a sensor's range.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to filter based on conditions or events
+    </Level0>
+    <Level1>
+     Ability to filter based on 1 fixed events or conditions
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to filter based on 5 fixed events or conditions
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to filter on arbitrary conditions or events
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-1
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle invalid data in SDEM fields that is required for translation or conversion.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway expects data received for a field to be a floating point value, and can detect that the data received does not represent a floating point value (i.e., data type mismatch).
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to handle invalid data and the outcome is that the gateway crashes
+    </Level0>
+    <Level1>
+     Can handle some invalid fields, but crashes on others
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Detects invalid data but does not translate update, and consequently does not crash
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Detects invalid data and translates update using user-specified data
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-2
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle missing SDEM data that is required for translation or conversion.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway does not crash even though it translates an HLA or TENA SDEM where an object references another object by its SDEM-defined identifier, and the reference is to a nonexistent object.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to handle missing data; gateway crashes
+    </Level0>
+    <Level1>
+     Can handle some missing fields, but crashes on others
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Detects missing data and does not translate update; does not crash
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Detects missing data and translates update using user-specified data
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-3
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle invalid SDEM-defined identifiers. This includes duplicate identifiers or identifiers that do not exist.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway does not crash even though it translates an HLA or TENA SDEM where an object references another object by its SDEM-defined identifier, and the reference is to a nonexistent object.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to handle invalid identifiers, and crashes
+    </Level0>
+    <Level1>
+     Detects some invalid identifiers, but crashes on others
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Detects invalid identifier - does not translate update and does not crash
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Corrects the identifiers based on user-defined scheme and translates the update
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-4
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle invalid architecture-defined identifiers; this includes duplicate identifiers or identifiers that do not exist.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway does not crash even though it translates an HLA or TENA SDEM where an object references another object by its architecture-defined identifier, and the reference is to a nonexistent object.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to handle invalid identifiers, and crashes
+    </Level0>
+    <Level1>
+     Detects some invalid identifiers, but crashes on others
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Detects invalid identifier - does not translate update and does not crash
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Corrects the identifier and translates the update
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-5
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle the result of a simulation incorrectly using an architecture-defined service.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway does not crash even though it translates from the SDEM of a simulation that updates an object that does not exist.
+   Note: This may imply that the underlying architecture middleware is not correctly implemented.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to handle and crashes
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Has the ability to handle some results of incorrect use of architecture services
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Handles and does not crash
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-6
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle incomplete enumeration mapping tables.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway does not crash even though the enumeration mapping provided it does not provide a map for all enumeration values in use.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to handle incomplete enumeration mapping tables, and crashes if translating using such a table
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Does not translate, and does not crash
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Makes a user-defined translation and does not crash
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   FC-FTB-7
+  </ReferenceID>
+  <Category>
+   <Functional>Fault Tolerance Behaviors</Functional>
+  </Category>
+  <CapabilityDefinition>
+   Capability to handle data overflow.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway does not crash even though the rate of incoming data exceeds the ability of the gateway to process.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to correct for data rates in excess of capability
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Gateway takes action to prevent crashing
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Gateway follows a user-defined behavior to take actions
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-1
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to configure the gateway via a Graphical User Interface (GUI).
+  </CapabilityDefinition>
+  <Example>
+   For example, if the user can define which objects are to be translated via a GUI.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No GUI for configuration
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     A GUI is provided for some configuration parameters
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     A GUI is provided for all configuration parameters
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-2
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to guide the user in the setup of gateway via an interactive GUI.
+  </CapabilityDefinition>
+  <Example>
+   For example, if the user can define which objects are to be translated via a GUI.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No guided setup GUI
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Guided setup GUI for some options
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Full guided setup GUI
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-3
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to provide translation statistics during runtime.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway has the ability to display the number of entities being translated, or the number of translation failures or dropped messages.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No translation statistics provided during runtime
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     5 translation statistics provided during runtime
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     10 or more translations statistics provided during runtime
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-4
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to guide the user in the setup of gateway via an interactive GUI.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway configuration system has a wizard-like user interface that asks simple questions and then creates the gateway's configuration files.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     no status provided during runtime
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     5 status indicators during runtime
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     10 or more status indicator during runtime
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-5
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to display anomaly detection and actions taken during runtime. Note: This assumes the gateway has the ability to detect the anomaly. See Fault Tolerant Behaviors.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway has the ability to display the anomaly of expecting floating point data for a field, but the data does not represent a floating point value.  This is reported to the user and information about how the gateway handled the invalid data.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No anomaly reporting during runtime
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Reports anomaly to the user
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Reports anomaly to the user including error handling details
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-6
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to generate debug log and allow the user to specify its level of logging.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway supports the generation of a log file of non-translatable objects.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No debug log generated
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Debug log generated
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Debug log generated with user-specified level of detail
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-7
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to allow a user to modify translation rules during runtime.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway allows a user to change filtering preferences during runtime, such as the blocking of any data from a simulation.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to modify translation rules at runtime
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to modify 5 translation rules at runtime
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to modify 10 or more translation rules at runtime
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-8
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to use multiple gateway instances to partition and distribute the translation function.
+  </CapabilityDefinition>
+  <Example>
+   For example, if two gateway instances are used where one performs the translation of objects of only one class and the other gateway instance performs the translation of all other SDEM data.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No capability to partition object class translations across gateway instances
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to partition and distribute object class translations between 2 gateway instances
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to partition and distribute object class translations across more than 2 gateway instances
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-9
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to control one or more gateways during runtime remotely.
+  </CapabilityDefinition>
+  <Example>
+   For example, if during runtime, a gateway directs one or more gateways to filter updates from a specified sender, assuming the controlled gateway has this capability.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to remotely control the gateway
+    </Level0>
+    <Level1>
+     Ability to remotely start and stop a gateway
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to remotely control 5 functions
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to remotely control all gateway functions
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-10
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to remotely configure one or more gateways before runtime.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway has the capability to push configuration files to multiple gateway instances before the start of the event.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to remotely configure the gateway
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to remotely configure 5 gateway parameters
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to remotely configure all gateway parameters
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-UI-11
+  </ReferenceID>
+  <Category>
+   <Operational>User Interface</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to remotely monitor one or more gateways during runtime.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a user can monitor the memory utilization of the gateway from a remote location.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No ability to remotely monitor the gateway
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Ability to remotely monitor 5 gateway characteristics
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Ability to remotely monitor all gateway characteristics
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-OM-1
+  </ReferenceID>
+  <Category>
+   <Operational>Operation Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate between two different SDEMs that are using the same architecture (two-sided gateway).
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between Realtime Platform Reference (RPR) FOM and MATREX FOM using HLA.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-OM-2
+  </ReferenceID>
+  <Category>
+   <Operational>Operation Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate between two different SDEMs that are using two different architectures (two-sided gateway).
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between an HLA using the RPR FOM and TENA using the TENA Standard Object Model 'TENA-Platform DIS-EntityType-v1.'
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-OM-3
+  </ReferenceID>
+  <Category>
+   <Operational>Operation Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate between three different SDEMs that are using up to three different architectures (3-sided gateway).
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between DIS, an HLA using the RPR FOM, and TENA using TENA Standard Logical Range Object Model(LROM).
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-OM-4
+  </ReferenceID>
+  <Category>
+   <Operational>Operation Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate between more than three different SDEMs that are using more than three different architectures (n-sided gateway).
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between DIS, an HLA using the RPR FOM, TENA using TENA Standard LROM, and Common Training Instrumentation Architecture (CTIA).
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-OM-5
+  </ReferenceID>
+  <Category>
+   <Operational>Operation Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate between different versions of an architecture using the same SDEM.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates between TENA 5.2.2 and TENA 6.0.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-OM-6
+  </ReferenceID>
+  <Category>
+   <Operational>Operation Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Capability to translate between two different architectures using equivalent SDEMs.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway translates HLA and TENA using the same SDEM. This example assumes a SDEM that has equivalent representations as a HLA FOM and TENA LROM.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-EM-1
+  </ReferenceID>
+  <Category>
+   <Operational>Extension Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   The gateway has a single code base and is extended by modifying that code.
+  </CapabilityDefinition>
+  <Example>
+   For example, a gateway that can be modified only by having access to its source code.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-EM-2
+  </ReferenceID>
+  <Category>
+   <Operational>Extension Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   The gateway has its core translations provided by the developer, where extensions can be made via an Application Programming Interface/Software Development Kit (API/SDK) plug-in.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway developer provides a base set of translations, and a capability is provided to the end user to implement new translations that are then linked in to the base capability.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-EM-3
+  </ReferenceID>
+  <Category>
+   <Operational>Extension Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   The gateway has its core translations provided by the developer, and allows extensions that can be made via a developer-provided code generator.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway developer provides a base set of translations, and the gateway developer also provides a code generator to the end user to extend the gateway's capabilities.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-EM-4
+  </ReferenceID>
+  <Category>
+   <Operational>Extension Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   The gateway has all its translations created by a developer-provided code generator.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway developer provides a code-generator that the end user uses to configure the required translation for the gateway.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-EM-5
+  </ReferenceID>
+  <Category>
+   <Operational>Extension Modes</Operational>
+  </Category>
+  <CapabilityDefinition>
+   The gateway allows a runtime translation to be performed using interpreted mapping files.
+  </CapabilityDefinition>
+  <Example>
+   For example, if a gateway interprets a mapping file to perform translations at run time.
+  </Example>
+  <ImplementationLevels>
+   <YesNoImplementationLevel/>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-1
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Available documentation for the gateway
+  </CapabilityDefinition>
+  <Example>
+   For example, if user manuals, training materials, podcasts, installation guides, release notes, and/or programming guides are provided as part of the acquisition of the gateway.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No documentation
+    </Level0>
+    <Level1>
+     Informal documentation (i.e., some slides or notes)
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     3 formal documents (user manual, training package, or online help)
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     More than 5 formal documents
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-2
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Help Desk / Support available
+  </CapabilityDefinition>
+  <Example>
+   For example, if a phone number is supplied to gateway users for a fee that gives normal business day support for bug fixes, usage questions, and troubleshooting.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No Help Desk
+    </Level0>
+    <Level1>
+     E-mail, but no funded support to answer questions
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     E-mail-only response that is funded
+    </Level3>
+    <Level4>
+     E-mail and telephone support manned during normal business hours
+    </Level4>
+    <Level5>
+     Funded onsite support
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-3
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Feature request form or process
+  </CapabilityDefinition>
+  <Example>
+   For example, the gateway has an associated web page allowing users to request new features in an informal manner to an email address of the development team.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No feature request process
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Informal feature request process
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Formal feature request process
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-4
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Problem report form or process
+  </CapabilityDefinition>
+  <Example>
+   For example, the gateway has an associated web page allowing users to request new features in an informal manner to an email address of the development team.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No problem report process
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Informal problem reporting
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Formal problem report process
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-5
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Sustainment or maintenance process
+  </CapabilityDefinition>
+  <Example>
+   For example, the gateway was developed for a single use, and has no sustainment or maintenance process or plan.
+  </Example>
+  <ImplementationLevels>
+   <NumericalImplementationLevel>
+    <Level0>
+     No sustainment or maintenance process
+    </Level0>
+    <Level1>
+    </Level1>
+    <Level2>
+    </Level2>
+    <Level3>
+     Informal sustainment or maintenance process
+    </Level3>
+    <Level4>
+    </Level4>
+    <Level5>
+     Formal sustainment or maintenance process
+    </Level5>
+   </NumericalImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-6
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Ownership model
+  </CapabilityDefinition>
+  <Example>
+   For example, if the development of the gateway has been funded by the United States (US) government, making it a Government Off-The-Shelf (GOTS) product.
+  </Example>
+  <ImplementationLevels>
+   <TextImplementationLevel>
+    Select:
+        *	GOTS
+        *	Commercial Off-The-Shelf (COTS)
+        *	Open Source
+        *	Mixed GOTS/COTS
+   </TextImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-7
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Licensing requirement
+  </CapabilityDefinition>
+  <Example>
+   For example, the end user may have to buy a license based on the number of simulation components that communicate to the gateway.
+  </Example>
+  <ImplementationLevels>
+   <TextImplementationLevel>
+    Select:
+        *	No License required
+        *	No-cost end user license required
+        *	License required at a cost to the end user
+   </TextImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-8
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   What architectures are supported
+  </CapabilityDefinition>
+  <Example>
+   For example, the gateway may support a DIS-to-HLA communication.
+  </Example>
+  <ImplementationLevels>
+   <TextImplementationLevel>
+    Select all that apply:
+        *	DIS
+        *	HLA
+        *	TENA
+        *	CTIA
+        *	Other
+   </TextImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-9
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   List of SDEMs supported
+  </CapabilityDefinition>
+  <Example>
+   For example, the gateway may support RPR FOM, TENA Standard Platform Object Model
+  </Example>
+  <ImplementationLevels>
+   <TextImplementationLevel>
+    Developer provides a list of SDEMs supported
+   </TextImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+ <Capability>
+  <ReferenceID>
+   OC-S-10
+  </ReferenceID>
+  <Category>
+   <Operational>Support</Operational>
+  </Category>
+  <CapabilityDefinition>
+   Operating systems that are supported by the gateway
+  </CapabilityDefinition>
+  <Example>
+   For example: Windows, Linux, OS X, Solaris, VX Works, etc.
+  </Example>
+  <ImplementationLevels>
+   <TextImplementationLevel>
+    Developer provides a list of operating systems on which the gateway can operate
+   </TextImplementationLevel>
+  </ImplementationLevels>
+ </Capability>
+</CapabilitiesDefinition>

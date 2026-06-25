@@ -24,7 +24,7 @@ Commands:
   ./tools/shim-routes cpp certify-core --edition 2010 --artifact standard-shim --transports pybind,grpc
   ./tools/shim-routes demo mixed-language-target-radar --edition 2010
   ./tools/shim-routes demo mixed-language-target-radar --edition 2025
-  ./tools/shim-routes demo fom-showcase --edition 2025 --output-dir analysis/proto2025_fom_showcase
+  ./tools/shim-routes demo fom-showcase --edition 2025 --output-dir artifacts/proto2025_fom_showcase
 EOF
 }
 

@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<Request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://www.sisostds.org/schemas/c-bml/1.0" xsi:schemaLocation="http://www.sisostds.org/schemas/c-bml/1.0 ../../example-expressions-schema/cbml-example-expressions.xsd">
+	<Context xsi:type="OtherContext">
+		<OID>0</OID>
+		<NameText>C-BML Order Examples</NameText>
+		<ContextCategoryCode>NOS</ContextCategoryCode>
+	</Context>
+	<SupportingType xsi:type="AircraftType">
+		<OID>1080: Heavy Load Medivac Helicopter</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Heavy Load Medivac Helicopter</NameText>
+		<AircraftTypeCategoryCode>AIRRW</AircraftTypeCategoryCode>
+		<AirframeDesignCode>HELO</AirframeDesignCode>
+		<ModelCode>UH60</ModelCode><!-- UH-60 Blackhawk -->
+		<MainPurposeCode>MEDEVC</MainPurposeCode>
+		<LoadCategoryCode>HEAVY</LoadCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="ChemicalMaterielType">
+		<OID>Tear Gas</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Tear Gas</NameText>
+		<ChemicalMaterielTypeCategoryCode>IRRTNT</ChemicalMaterielTypeCategoryCode>
+		<ChemicalMaterielTypeSubcategoryCode>TRGAS</ChemicalMaterielTypeSubcategoryCode>
+	</SupportingType>
+	<!-- Medical Evacuation “Nine Line” format -->
+	<Task>
+		<Where>
+			<!-- 1) Location of casualties -->
+			<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+				<OID>1078:  Landing Zone</OID>
+			</DerivedLocationRef>
+		</Where>
+		<AffectedWho>
+			<ActionObjective xsi:type="Target">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>AUTH</ActionObjectiveQualifierCode>
+				<ObjectItemRef xsi:type="OtherControlFeatureRef">
+					<OID>1078:  Landing Zone</OID>
+				</ObjectItemRef>
+				<Marking>
+					<OID>0</OID>
+					<!-- 7) Method of Marking the Site -->
+					<MethodCode>SMOKE</MethodCode>
+					<RecognitionSignalColourCode>RED</RecognitionSignalColourCode>
+					<UsingOrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</UsingOrganisationRef>
+				</Marking>
+			</ActionObjective>
+		</AffectedWho>
+		<Resource xsi:type="ActionResourceType">
+			<ActionResourceQuantity>1</ActionResourceQuantity>
+			<!-- 4) Special Equipment  -->
+			<ObjectTypeRef xsi:type="AircraftTypeRef">
+				<OID>1080: Heavy Load Medivac Helicopter</OID>
+			</ObjectTypeRef>
+		</Resource>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1077: Medical Evacuation</OID>
+				<NameText>Medical Evacuation C-BML Example</NameText>
+				<ActivityCode>MEDEVC</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartAbsoluteTime>
+					<StartUnspecifiedTime>
+						<StartQualifierCode>ASAP</StartQualifierCode>
+					</StartUnspecifiedTime>
+				</StartAbsoluteTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<RequesterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1065: 1st Platoon</OID>
+			</OrganisationRef>
+		</RequesterWho>
+		<RequestedWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</RequestedWho>
+	</Task>
+	<CurrentState>
+		<Report>
+			<Context xsi:type="OtherContext">
+				<OID>0</OID>
+				<NameText>Actual State of the Situation</NameText>
+				<ContextCategoryCode>NOS</ContextCategoryCode>
+			</Context>
+			<SupportingType xsi:type="OtherControlFeatureType">
+				<OID>1079: Landing Zone</OID>
+				<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+				<NameText>Landing Zone</NameText>
+				<ControlFeatureTypeCategoryCode>LZ</ControlFeatureTypeCategoryCode>
+			</SupportingType>
+			<SupportingType xsi:type="OtherFacilityType">
+				<OID>1082: Field Hospital</OID>
+				<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+				<NameText>Field Hospital</NameText>
+				<FacilityTypeCategoryCode>HSPFLD</FacilityTypeCategoryCode>
+			</SupportingType>
+			<SupportingType xsi:type="OtherFacilityType">
+				<OID>1108: Network</OID>
+				<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+				<NameText>Network</NameText>
+				<FacilityTypeCategoryCode>NETWRK</FacilityTypeCategoryCode>
+			</SupportingType>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1084</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherControlFeature">
+						<OID>1078:  Landing Zone</OID>
+						<NameText>Landing Zone 1078</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+					<OID>1079: Landing Zone</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1085</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>1078:  Landing Zone</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="PolygonArea">
+						<OID>0</OID>
+						<BoundingLine>
+							<OID>0</OID>
+								<Point xsi:type="GeographicPoint">
+									<OID>0</OID>
+									<LatitudeCoordinate>60.32</LatitudeCoordinate>
+									<LongitudeCoordinate>80.3</LongitudeCoordinate>
+								</Point>
+								<Point xsi:type="GeographicPoint">
+									<OID>0</OID>
+									<LatitudeCoordinate>60.32</LatitudeCoordinate>
+									<LongitudeCoordinate>80.3</LongitudeCoordinate>
+								</Point>
+								<Point xsi:type="GeographicPoint">
+									<OID>0</OID>
+									<LatitudeCoordinate>60.32</LatitudeCoordinate>
+									<LongitudeCoordinate>80.33</LongitudeCoordinate>
+								</Point>
+								<Point xsi:type="GeographicPoint">
+									<OID>0</OID>
+									<LatitudeCoordinate>60.22</LatitudeCoordinate>
+									<LongitudeCoordinate>80.3</LongitudeCoordinate>
+								</Point>
+						</BoundingLine>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1086</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherFacility">
+						<OID>1081:  Medical Facility</OID>
+						<NameText>Medical Facility 1081</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherFacilityTypeRef">
+					<OID>1082: Field Hospital</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1087</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherFacilityRef">
+						<OID>1081:  Medical Facility</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>
+						<LatitudeCoordinate>60.32</LatitudeCoordinate>
+						<LongitudeCoordinate>80.3</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoStatusType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+					<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1088</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherFacilityRef">
+						<OID>1081:  Medical Facility</OID>
+					</ObjectItemRef>
+				</WhoRef>
+				<AbstractObjectItemStatus xsi:type="MedicalFacilityStatus">
+					<!-- 6) Security of Pick-up Site -->
+					<EnemyActivityConditionCode>COLD</EnemyActivityConditionCode>
+					<OperationalStatusCode>OPR</OperationalStatusCode>
+					<SurgeryBacklogDuration>3600</SurgeryBacklogDuration>
+					<!-- 5) Number casualties by type 3) Casualties  by precedence  8) Nationality and status of casualties  -->
+					<IntervalCasualtyGroup>
+						<OID>0</OID>
+						<CasualtyGroupCode>FRFOR</CasualtyGroupCode>
+						<CompletedSurgeryCount>2</CompletedSurgeryCount>
+						<DeathCount>1</DeathCount>
+					</IntervalCasualtyGroup>
+					<PendingCasualtyEvacuation>
+						<OID>0</OID>
+						<DestinationCode>MEDTHT</DestinationCode>
+						<SittingCount>0</SittingCount>
+						<StretcherCount>3</StretcherCount>
+					</PendingCasualtyEvacuation>
+					<PendingSurgery>
+						<OID>0</OID>
+						<TriageCode>T2</TriageCode>
+						<PendingSurgeryCount>3</PendingSurgeryCount>
+					</PendingSurgery>
+				</AbstractObjectItemStatus>
+			</Report>
+			<Report xsi:type="EventWhatLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1089</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<Event>
+					<Where>
+						<DerivedLocationRef xsi:type="GeographicFeatureRef">
+							<OID>Hill 123</OID>
+						</DerivedLocationRef>
+					</Where>
+					<AffectedWho>
+						<ActionObjective xsi:type="OtherActionObjectiveItem">
+							<OID>0</OID>
+							<ObjectItemRef xsi:type="GeographicFeatureRef">
+								<OID>Hill 123</OID>
+							</ObjectItemRef>
+						</ActionObjective>
+					</AffectedWho>
+					<Resource xsi:type="ActionResourceType">
+						<ObjectTypeRef xsi:type="ChemicalMaterielTypeRef">
+							<OID>Tear Gas</OID>
+						</ObjectTypeRef>
+					</Resource>
+					<EventWhat>
+						<!-- 9) Contamination (Biological, radiation, chemical) -->
+						<ActionEvent xsi:type="ChemicalBiologicalEvent">
+						<OID>1083: Air Chemical Attack</OID>
+						<NameText>Chemical Event</NameText>
+						<CbrnEventSubcategoryCode>AIRSMP</CbrnEventSubcategoryCode>
+						<ChemicalBiologicalEventCategoryCode>CHMATT</ChemicalBiologicalEventCategoryCode>
+						</ActionEvent>
+					</EventWhat>
+				</Event>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1105</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Network">
+						<OID>1102: Network</OID>
+						<NameText>Network 1102</NameText>
+						<NetworkCategoryCode>PTTOPT</NetworkCategoryCode>
+						<ArchitectureCode>WRLESS</ArchitectureCode>
+						<MeansCode>RDLNKS</MeansCode>
+						<Frequency>
+							<OID>0</OID>
+							<BandCode>UHF</BandCode>
+							<BandLowerFrequencyQuantity>22000</BandLowerFrequencyQuantity>
+							<BandUpperFrequencyQuantity>60000</BandUpperFrequencyQuantity>
+							<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+							<EffectiveEndDatetime>20100525163000.000</EffectiveEndDatetime>
+						</Frequency>
+						<Service>
+							<OID>1103: Voice Service</OID>
+							<NetworkServiceCategoryCode>VOCSVC</NetworkServiceCategoryCode>
+							<SecurityClassification>
+								<OID>0</OID>
+								<LevelCode>2</LevelCode>
+							</SecurityClassification>
+						</Service>
+						<Service>
+							<OID>1104: Voice Service</OID>
+							<NetworkServiceCategoryCode>VOCSVC</NetworkServiceCategoryCode>
+							<SecurityClassification>
+								<OID>0</OID>
+								<LevelCode>1</LevelCode>
+							</SecurityClassification>
+						</Service>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherFacilityTypeRef">
+					<OID>1108: Network</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="NetworkServiceStatusType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1106</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+				</ReportingData>
+				<NetworkServiceRef>
+					<OID>1103: Voice Service</OID>
+				</NetworkServiceRef>
+				<StatusIndicatorCode>YES</StatusIndicatorCode>
+			</Report>
+			<Report xsi:type="WhoAddressType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+					<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1107</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Address xsi:type="ElectronicAddress">
+						<OID>0</OID>
+						<NetworkServiceRef>
+							<OID>1103: Voice Service</OID>
+						</NetworkServiceRef>
+					</Address>
+					<ObjectItemAddress>
+						<!-- 2) Frequency, call sign and suffix -->
+						<CallSignText>Romeo6Foxtrot</CallSignText>
+						<TransmitReceiveCode>TRNREC</TransmitReceiveCode>
+						<NetworkFrequency>
+							<OID>0</OID>
+							<DiscreteFrequencyQuantity>445000</DiscreteFrequencyQuantity>
+							<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+							<EffectiveEndDatetime>20100525163000.000</EffectiveEndDatetime>
+						</NetworkFrequency>
+					</ObjectItemAddress>
+			</Report>
+		</Report>
+	</CurrentState>
+</Request>

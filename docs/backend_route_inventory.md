@@ -14,10 +14,9 @@ It also keeps the architectural boundary explicit:
 - Java/C++ binding routes are route surfaces, not separate Python RTIs
 
 For shim compatibility specifically, treat `hla.backends.shim.runtime_aliases`
-as the explicit runtime-alias hatch. The other `hla.backends.shim.*` helper
-modules are retained only as thin legacy forwarders into
-`hla.backends.python1516_2025.*`, not as the preferred import surface for new
-runtime code.
+as the explicit runtime-alias hatch. No shim helper modules remain beyond
+`hla.backends.shim.runtime_aliases`, and new runtime code should not import
+through `hla.backends.shim.*`.
 
 Use it when you need to answer:
 
@@ -27,10 +26,14 @@ Use it when you need to answer:
 
 For the current 2025 proof path, treat these as the primary route identities:
 
-- `python1516_2025-inprocess`: direct executable evidence over the main
+- `python1516_2025`: direct executable evidence over the main
   `hla-backend-python1516-2025` RTI lane
 - `python1516_2025-fedpro-grpc`: bounded hosted route evidence over that same RTI
   lane, not a separate 2025 runtime family
+
+For 2010, use `python1516e` as the canonical direct Python route name. Treat
+legacy `python` spellings as compatibility aliases rather than the preferred
+documentation label.
 
 Canonical order:
 

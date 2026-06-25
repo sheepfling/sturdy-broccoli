@@ -28,12 +28,17 @@ Read [`verification/time_model_compliance.md`](verification/time_model_complianc
 
 If you already know what you need, pick a lane:
 
+- choose backend, transport, and FOM together from one page:
+  [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
 - run the base Python example:
   [`first_run.md`](first_run.md)
 - set up or repair the environment:
   [`python_environment.md`](python_environment.md)
 - run the two-federate flow:
   [`two_federate_quickstart.md`](two_federate_quickstart.md)
+- understand startup order, `ReadyToRun`, callback pumping, local execution
+  topology, and how to improve performance without changing RTI semantics:
+  [`federation_orchestration.md`](federation_orchestration.md)
 - edit one runtime service:
   [`python_rti_edit_one_service.md`](python_rti_edit_one_service.md)
 - get the repo mental model first:
@@ -44,8 +49,7 @@ If you already know what you need, pick a lane:
   [`import_boundary_rules.md`](import_boundary_rules.md),
   [`package_dependency_tree.md`](package_dependency_tree.md)
 - work on FOM tooling:
-  [`create_federate_and_fom.md`](create_federate_and_fom.md),
-  [`fom_workbench.md`](fom_workbench.md)
+  [`fom_tooling_front_door.md`](fom_tooling_front_door.md)
 - run local verification:
   [`local_verification_commands.md`](local_verification_commands.md)
 - choose a lane or focused restart target:
@@ -60,6 +64,12 @@ If you already know what you need, pick a lane:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
+- keep the 2010 and 2025 Python routes structurally similar:
+  [`python_route_wrapping_guide.md`](python_route_wrapping_guide.md)
+- extend ambassador connection or wire-format routes without changing RTI semantics:
+  [`extending_ambassador_transports.md`](extending_ambassador_transports.md)
+- adapt a slightly different `grpc` layer or add a whole new transport route:
+  [`transport_extension_playbook.md`](transport_extension_playbook.md)
 
 Concrete operator entrypoints that matter early:
 
@@ -75,6 +85,7 @@ Concrete operator entrypoints that matter early:
 Use these when you need structure, not onboarding:
 
 - [python_rti_backend.md](python_rti_backend.md): main 2025 Python RTI lane, wrapper boundary, and bounded working-surface claim
+- [backend_transport_fom_selection_guide.md](backend_transport_fom_selection_guide.md): combined decision guide for backend selection, transport selection, and FOM starting points
 - [python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python1516_2025` RTI lane
 - [../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`
 - [verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, GALT/LITS, and radar-window proof front door for the primary 2025 Python RTI lane
@@ -87,6 +98,10 @@ Use these when you need structure, not onboarding:
 - [requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md](requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md)
 - [requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md): explicit non-claim map for shim aliases, Java/C++ bindings, hosted-route boundaries, umbrella rows, retired rows, and OMT extension semantics around the main `python1516_2025` lane
 - [language_shim_routes.md](language_shim_routes.md): Java/C++ standard-surface binding routes and evidence contract
+- [extending_ambassador_transports.md](extending_ambassador_transports.md): one-page guide to in-process vs remote routes, transport seams, and where to extend ambassador connection or wire-format logic
+- [transport_extension_playbook.md](transport_extension_playbook.md): concrete implementation playbook for variant `grpc` layers, new transport kinds, and hosted route adapters
+- [python_route_wrapping_guide.md](python_route_wrapping_guide.md): keep 2010 and 2025 Python wrapper examples aligned at the factory/import edge
+- [federation_orchestration.md](federation_orchestration.md): startup order, `ReadyToRun` synchronization, callback pumping, local execution topology, parallelism limits, and the performance tradeoff between deterministic proof lanes and higher-throughput routes
 - [`package_layout.md`](package_layout.md): package ownership map
 - [`repo_mental_model.md`](repo_mental_model.md): shortest explanation of the layers
 - [`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md): package family overview
@@ -95,7 +110,23 @@ Use these when you need structure, not onboarding:
 - [`package_responsibilities.md`](package_responsibilities.md): where code belongs
 - [`callback_model_guide.md`](callback_model_guide.md): callback behavior
 - [`language_shim_routes.md`](language_shim_routes.md): Java/C++ route surfaces
+- [`workspace_layout.md`](workspace_layout.md): repo topography and where code, docs, tools, and generated evidence live
+- [`repo_seed_scope.md`](repo_seed_scope.md): bounded seed-surface statement for the repo
+- [`spec_reading_map.md`](spec_reading_map.md): shortest path into standards-facing reading and traceability
+- [`requirements_trace_one_method.md`](requirements_trace_one_method.md): method-level traceability workflow
+- [`supported_subset_policy.md`](supported_subset_policy.md): supported-scope policy and non-claim boundary
+- [`upstream_compliance.md`](upstream_compliance.md): frozen `upstream_reference` contract boundary and layout rules
 - [`fom_workbench.md`](fom_workbench.md): FOM workbench scope and operator path
+- [`fom_tooling_front_door.md`](fom_tooling_front_door.md): one-page routing for FOM inspection, validation, UI/workbench, and authoring
+- [`fom_reading_map.md`](fom_reading_map.md): FOM inventory, baseline, and inspection front door
+- [`fom_validate.md`](fom_validate.md): FOM validation front door and command guide
+- [`fom_siso_showcase.md`](fom_siso_showcase.md): standards-backed SISO showcase packet front door
+- [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md): executable SISO runtime showcase front door
+- [`fom_siso_pitch_micro_parity.md`](fom_siso_pitch_micro_parity.md): Pitch-eligible micro-scenario parity front door
+- [`create_federate_and_fom.md`](create_federate_and_fom.md): authoring workflow for choosing, validating, and wiring a FOM into a federate or scenario
+- [`preflight_artifacts.md`](preflight_artifacts.md): quick map for environment and runtime preflight artifacts
+- [`top_to_bottom_green.md`](top_to_bottom_green.md): top-level repo-green path summary
+- [`codex_runner_authorization.md`](codex_runner_authorization.md): copyable runner-policy request for hosted-route loopback authorization
 - [`reference/README.md`](reference/README.md): reference index
 - [`verification/README.md`](verification/README.md): verification doc index
 - [`compliance/README.md`](compliance/README.md): retained compliance packet index

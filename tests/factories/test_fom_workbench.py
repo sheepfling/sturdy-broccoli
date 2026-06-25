@@ -136,6 +136,7 @@ def test_fom_workbench_snapshot_groups_families_and_precomputes_default_load_set
     assert "ownership:" in html_text
     assert "Conflict state" in html_text
     assert "Validation state" in html_text
+    assert "Datatype normalization" in html_text
     assert "Object deltas" in html_text
     assert "Investigate Symbol" in html_text
     assert "Open Validation Report" in html_text

@@ -1,0 +1,24 @@
+{
+  "dry_run": true,
+  "lane": "python1516_2025-routes",
+  "status": "passed",
+  "steps": [
+    {
+      "argv": [
+        "./tools/python",
+        "verify-routes-preflight"
+      ],
+      "returncode": 0,
+      "status": "planned"
+    },
+    {
+      "argv": [
+        "./tools/python",
+        "verify-routes-2025"
+      ],
+      "returncode": 0,
+      "status": "planned"
+    }
+  ],
+  "title": "Hosted Python 2025 route lane"
+}

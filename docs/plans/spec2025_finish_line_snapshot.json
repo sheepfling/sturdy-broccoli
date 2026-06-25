@@ -206,7 +206,7 @@
         "family": "cross-route-scenario-parity-ledger",
         "focus": "the explicit parity ledger across federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, and support_services for all current 2025 routes",
         "route_groups": [
-          "python1516_2025-inprocess",
+          "python1516_2025",
           "python1516_2025-fedpro-grpc",
           "java-standard-2025-jpype",
           "java-standard-2025-py4j",
@@ -2654,7 +2654,7 @@
     "current_assessment": "The extraction cutover is materially underway: hla-backend-python1516-2025 now owns the live backend, hla-backend-shim remains only as temporary import-compatibility scaffolding and wrapper-only compatibility support, and the repo still has a concrete migration map for continuing to narrow those scaffolding responsibilities while preserving the direct and hosted proof families.",
     "dedicated_python_2025_backend_present": true,
     "extraction_cutover_invariants": [
-      "python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
+      "python1516_2025 and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
       "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior",
       "the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
       "backend plugin discovery reports hla-backend-python1516-2025 as a dedicated rti1516_2025 candidate before any promotion claim changes"
@@ -8286,15 +8286,6 @@
           "supports": [
             "rti1516_2025"
           ]
-        },
-        {
-          "family": "compatibility-wrapper-2025",
-          "name": "shim",
-          "package": "hla-backend-shim",
-          "plugin_path": "packages/hla-backend-shim/src/hla/backends/shim/plugin.py",
-          "supports": [
-            "rti1516_2025"
-          ]
         }
       ],
       "rti1516_2025_plugin_records": [
@@ -8555,7 +8546,7 @@
         "all_route_parity_covered": true,
         "is_separate_rti_family": false,
         "kind": "in-process-backend-route",
-        "route": "python1516_2025-inprocess"
+        "route": "python1516_2025"
       },
       {
         "all_route_parity_covered": true,
@@ -10348,13 +10339,13 @@
     "proof_level_count": 10,
     "ready_for_lookahead_window_bounded_proof_claim": true,
     "required_evidence_tests": {
+      "time_management:python1516_2025": [
+        "tests/scenarios/test_python_route_parity.py",
+        "tests/test_rti1516_2025_python1516_2025_runtime.py"
+      ],
       "time_management:python1516_2025-fedpro-grpc": [
         "tests/scenarios/test_python_route_parity.py",
         "tests/transport/test_grpc_transport_2025.py"
-      ],
-      "time_management:python1516_2025-inprocess": [
-        "tests/scenarios/test_python_route_parity.py",
-        "tests/test_rti1516_2025_python1516_2025_runtime.py"
       ]
     },
     "required_proof_levels": [
@@ -10373,10 +10364,10 @@
     "route_note_checks_ready": true,
     "route_row_count": 4,
     "routes": [
+      "save_restore:python1516_2025",
       "save_restore:python1516_2025-fedpro-grpc",
-      "save_restore:python1516_2025-inprocess",
-      "time_management:python1516_2025-fedpro-grpc",
-      "time_management:python1516_2025-inprocess"
+      "time_management:python1516_2025",
+      "time_management:python1516_2025-fedpro-grpc"
     ]
   },
   "main_python2025_implementation_claim_audit": {
@@ -10641,10 +10632,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 2
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 2
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 2
             }
           },
@@ -10652,7 +10643,7 @@
             "parity-covered": 12
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -10743,10 +10734,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 3
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 3
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 3
             }
           },
@@ -10754,7 +10745,7 @@
             "parity-covered": 18
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -10774,7 +10765,7 @@
         "bounded_working_surface_ready": true,
         "current_assessment": "Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, the Target/Radar lookahead-window proof ladder, matching negative-oracle guards across the current Python 2025 lanes, and named runtime proof families instead of one flat bounded time bucket.",
         "evidence_basis": [
-          "python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025-inprocess:bounded-lookahead-evidence,python1516_2025-inprocess:bounded-query-evidence",
+          "python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025:bounded-lookahead-evidence,python1516_2025:bounded-query-evidence",
           "time_window_vendor_parity_audit.audit_status=time-window-vendor-parity-captured",
           "time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion",
           "time_management_decomposition.slice_id=2025-time-management-proof-families",
@@ -10842,10 +10833,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 2
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 2
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 2
             }
           },
@@ -10853,7 +10844,7 @@
             "parity-covered": 12
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -10948,10 +10939,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 1
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 1
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 1
             }
           },
@@ -10959,7 +10950,7 @@
             "parity-covered": 6
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -11039,10 +11030,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 2
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 2
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 2
             }
           },
@@ -11050,7 +11041,7 @@
             "parity-covered": 12
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -11146,10 +11137,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 7
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 7
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 7
             }
           },
@@ -11157,7 +11148,7 @@
             "parity-covered": 42
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -11311,10 +11302,10 @@
             "java-standard-2025-py4j": {
               "parity-covered": 8
             },
-            "python1516_2025-fedpro-grpc": {
+            "python1516_2025": {
               "parity-covered": 8
             },
-            "python1516_2025-inprocess": {
+            "python1516_2025-fedpro-grpc": {
               "parity-covered": 8
             }
           },
@@ -11322,7 +11313,7 @@
             "parity-covered": 48
           },
           "routes_with_full_parity": [
-            "python1516_2025-inprocess",
+            "python1516_2025",
             "python1516_2025-fedpro-grpc",
             "java-standard-2025-jpype",
             "java-standard-2025-py4j",
@@ -18085,7 +18076,7 @@
       "`omt_validation`"
     ],
     "residual_boundary": "This audit makes the direct bounded proof claim explicit and reviewable, but it does not convert the direct lane into a full clause-by-clause 2025 conformance statement or erase the separate hosted, binding, umbrella-row, retired-row, and OMT-extension boundaries.",
-    "route": "python1516_2025-inprocess",
+    "route": "python1516_2025",
     "rows_missing_direct_note": [],
     "rows_missing_identity_note": [],
     "scenario_count": 8,
@@ -19080,7 +19071,7 @@
   "python_rti_milestone_audit": {
     "audit_status": "bounded-python-rti-milestones",
     "by_route": {
-      "python1516_2025-fedpro-grpc": {
+      "python1516_2025": {
         "all_route_parity_covered": true,
         "current_assessment": "The route clears the tracked milestone gates as a bounded Python 2025 working surface.",
         "milestone_count": 6,
@@ -19093,7 +19084,7 @@
           "covered-time-advance-slice": 1
         }
       },
-      "python1516_2025-inprocess": {
+      "python1516_2025-fedpro-grpc": {
         "all_route_parity_covered": true,
         "current_assessment": "The route clears the tracked milestone gates as a bounded Python 2025 working surface.",
         "milestone_count": 6,
@@ -19110,7 +19101,7 @@
     "current_assessment": "Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. The time milestones now explicitly include Target/Radar future-exclusion, output-delivery, consumer-order, pipeline, receive-order poison, save/restore window-state, save/restore output resume, save/restore pipeline resume, and time-window proof, paired with negative-oracle rejection guards, but the last four remain bounded-evidence milestones rather than blanket correctness claims.",
     "milestone_count": 6,
     "routes": [
-      "python1516_2025-inprocess",
+      "python1516_2025",
       "python1516_2025-fedpro-grpc"
     ],
     "row_count": 12,
@@ -19129,7 +19120,7 @@
           "HLA2025-FI-005",
           "HLA2025-FI-009"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "route_notes": [
           "Current Python 2025 RTI covers connect, create, createFederationExecutionWithMIM, join, resign, destroy, disconnect, evoked callback polling, and direct inline immediate callback delivery.",
           "Current Python 2025 RTI covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, universal directed subscribe alias, discovery, attribute reflection, interaction receipt, and directed interaction receipt.",
@@ -19175,7 +19166,7 @@
           "HLA2025-FR-004",
           "HLA2025-REQ-002"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "route_notes": [
           "Current Python 2025 RTI covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, universal directed subscribe alias, discovery, attribute reflection, interaction receipt, and directed interaction receipt.",
           "Current Python 2025 RTI covers federation save/restore lifecycle, rollback callback slices, callback-delivery runtime-policy preservation, plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, in-flight ownership and owner-visibility rollback, time/switch-control rollback, saved lookahead recovery, transport/order policy rollback including transportation-type restore persistence, restore failure/abort plus restore-precondition/participant/status negative control flow, exact status-clear transitions back to NO_SAVE_IN_PROGRESS/NO_RESTORE_IN_PROGRESS, full initiate/save/restore callback contracts, local-delete object-known-state recovery, and pre-save queued-TSO redelivery after restore.",
@@ -19212,7 +19203,7 @@
           "HLA2025-FI-SVC-126",
           "HLA2025-FI-SVC-134"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "route_notes": [
           "Current Python 2025 RTI covers FOM-backed publish/subscribe, passive object and interaction subscribe aliases, universal directed subscribe alias, discovery, attribute reflection, interaction receipt, and directed interaction receipt.",
           "Current Python 2025 RTI covers object-region filtering, passive object and interaction region-subscribe aliases, scope advisory callbacks, and 2025 default attribute policy calls.",
@@ -19251,7 +19242,7 @@
           "HLA2025-FI-SVC-121",
           "HLA2025-FI-SVC-123"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "route_notes": [
           "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the Target/Radar integrated lookahead-processing-window gauntlet together with the time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion blocking until GALT/LITS reach the window end, save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, save-restore-output-resume, and save-restore-pipeline-resume scenarios backed by falsifiable oracle-rejection guards.",
           "Current Python 2025 RTI covers federation save/restore lifecycle, rollback callback slices, callback-delivery runtime-policy preservation, plain object/interaction subscriber-routing rollback, directed DDM subscriber-routing rollback, in-flight ownership and owner-visibility rollback, time/switch-control rollback, saved lookahead recovery, transport/order policy rollback including transportation-type restore persistence, restore failure/abort plus restore-precondition/participant/status negative control flow, exact status-clear transitions back to NO_SAVE_IN_PROGRESS/NO_RESTORE_IN_PROGRESS, full initiate/save/restore callback contracts, local-delete object-known-state recovery, and pre-save queued-TSO redelivery after restore."
@@ -19287,7 +19278,7 @@
           "HLA2025-FI-SVC-122",
           "HLA2025-FI-SVC-123"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "route_notes": [
           "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the Target/Radar integrated lookahead-processing-window gauntlet together with the time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion blocking until GALT/LITS reach the window end, save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, save-restore-output-resume, and save-restore-pipeline-resume scenarios backed by falsifiable oracle-rejection guards."
         ],
@@ -19321,7 +19312,7 @@
           "HLA2025-FI-SVC-108",
           "HLA2025-FI-SVC-121"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "route_notes": [
           "Current Python 2025 RTI covers logical-time factories, regulation/constrained mode, lookahead query/modify, advance and flush grants, queued TSO delivery, GALT/LITS/logical-time queries, retraction, and the Target/Radar integrated lookahead-processing-window gauntlet together with the time-window core, output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion blocking until GALT/LITS reach the window end, save-restore-window-state, save-restore lookahead rollback with queued-TSO redelivery, save-restore-output-resume, and save-restore-pipeline-resume scenarios backed by falsifiable oracle-rejection guards."
         ],
@@ -23225,24 +23216,24 @@
         "pytest_anchor_count": 49,
         "pytest_anchors": [
           "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_finish_line_documents_off_stale_shim_runtime_language",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_validation_suite_free_of_shim_named_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_named_raw_python2025_support_and_callback_proofs",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runtime_and_wrapper",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_public_2025_factory_defaults_and_discovery_order_python2025_first",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_raw_primary_runtime_evidence_on_python2025_path",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrapper_only",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_compatibility_modules_as_thin_forwarders",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_as_pure_python2025_re_exports",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_mapped_to_declared_runtime_sources",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_runtime_plugin_and_retires_shim_plugin_surface",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_out_of_repo_runtime_import_paths",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_marks_java_and_cpp_2025_routes_as_non_primary_binding_lanes",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_from_shim_backend_path",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_prevents_fake_dual_provider_tests_with_hardcoded_runtime_selection",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_removes_shim_helper_modules",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_retires_shim_backend_module_to_importable_tombstone",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_is_the_only_remaining_shim_helper_module",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_reexport_points_at_python2025_backend",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_state",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_verification_readme_indexes_2025_exclusion_boundary",
@@ -23280,24 +23271,24 @@
         "pytest_anchor_count": 26,
         "pytest_anchors": [
           "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_finish_line_documents_off_stale_shim_runtime_language",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_validation_suite_free_of_shim_named_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_named_raw_python2025_support_and_callback_proofs",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runtime_and_wrapper",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_public_2025_factory_defaults_and_discovery_order_python2025_first",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_raw_primary_runtime_evidence_on_python2025_path",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrapper_only",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_compatibility_modules_as_thin_forwarders",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_as_pure_python2025_re_exports",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_mapped_to_declared_runtime_sources",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_runtime_plugin_and_retires_shim_plugin_surface",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_out_of_repo_runtime_import_paths",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_marks_java_and_cpp_2025_routes_as_non_primary_binding_lanes",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_from_shim_backend_path",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_prevents_fake_dual_provider_tests_with_hardcoded_runtime_selection",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_removes_shim_helper_modules",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_retires_shim_backend_module_to_importable_tombstone",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_is_the_only_remaining_shim_helper_module",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_reexport_points_at_python2025_backend",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_state",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_verification_run_sequence_keeps_pitch_time_window_probe_boundary_explicit",
@@ -23312,23 +23303,23 @@
         "pytest_anchor_count": 22,
         "pytest_anchors": [
           "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit_wrapper_consumption_test",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_runtime_suite_free_of_shim_named_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_main_validation_suite_free_of_shim_named_tests",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_named_raw_python2025_support_and_callback_proofs",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runtime_and_wrapper",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_public_2025_factory_defaults_and_discovery_order_python2025_first",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_raw_primary_runtime_evidence_on_python2025_path",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrapper_only",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_compatibility_modules_as_thin_forwarders",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_as_pure_python2025_re_exports",
-          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_mapped_to_declared_runtime_sources",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_runtime_plugin_and_retires_shim_plugin_surface",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_shim_helper_modules_out_of_repo_runtime_import_paths",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_marks_java_and_cpp_2025_routes_as_non_primary_binding_lanes",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_normalizes_primary_runtime_evidence_away_from_shim_backend_path",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_prevents_fake_dual_provider_tests_with_hardcoded_runtime_selection",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_removes_shim_helper_modules",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_retires_shim_backend_module_to_importable_tombstone",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_is_the_only_remaining_shim_helper_module",
+          "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_runtime_aliases_reexport_points_at_python2025_backend",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_snapshot_block_matches_live_finish_line_state",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
           "tests/test_hla_factory_composition.py::test_2025_version_local_factory_rejects_legacy_shim_provider_name",
@@ -23474,34 +23465,14 @@
         "requirement_id": "HLA2025-MIL-005"
       },
       {
-        "pytest_anchor_count": 81,
+        "pytest_anchor_count": 61,
         "pytest_anchors": [
           "tests/requirements/test_2025_finish_line_snapshot.py::test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_finish_line_documents_off_stale_shim_runtime_language",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_wrapper_boundary",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_oracle_guards",
           "tests/requirements/test_2025_python_rti_backend_audit.py::test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_attribute_scope_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_callback_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_catalog_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_ddm_default_policy_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_declaration_management_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_directed_interaction_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_federation_management_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_policy_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_runtime_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_codec_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_runtime_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_object_instance_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_object_model_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_object_reflection_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_object_region_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_ownership_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_save_restore_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_support_lookup_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_support_policy_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_time_management_semantics",
-          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_compatibility_wrapper_consumes_extracted_python2025_update_rate_semantics",
+          "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_legacy_shim_helper_modules_are_removed",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_blocks_window_closure_until_future_inputs_are_excluded",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_delivers_post_closure_timestamped_output_to_consumer",
           "tests/test_rti1516_2025_python1516_2025_runtime.py::test_2025_provider_ignores_receive_order_poison_after_window_close",
@@ -27333,12 +27304,12 @@
         "parity-covered": 8,
         "partial": 0
       },
-      "python1516_2025-fedpro-grpc": {
+      "python1516_2025": {
         "missing": 0,
         "parity-covered": 8,
         "partial": 0
       },
-      "python1516_2025-inprocess": {
+      "python1516_2025-fedpro-grpc": {
         "missing": 0,
         "parity-covered": 8,
         "partial": 0
@@ -27363,7 +27334,7 @@
       "wrapper_only": false
     },
     "routes": [
-      "python1516_2025-inprocess",
+      "python1516_2025",
       "python1516_2025-fedpro-grpc",
       "java-standard-2025-jpype",
       "java-standard-2025-py4j",
@@ -27388,7 +27359,7 @@
           "HLA2025-NEW-004",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "ddm",
         "status": "parity-covered",
@@ -27520,7 +27491,7 @@
           "HLA2025-FI-005",
           "HLA2025-FI-006"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "federation_lifecycle",
         "status": "parity-covered",
@@ -27665,7 +27636,7 @@
           "HLA2025-NEW-004",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "mom",
         "status": "parity-covered",
@@ -27802,7 +27773,7 @@
           "HLA2025-FR-004",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "object_exchange",
         "status": "parity-covered",
@@ -27936,7 +27907,7 @@
           "HLA2025-FR-008",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "ownership",
         "status": "parity-covered",
@@ -28073,7 +28044,7 @@
           "HLA2025-FI-005",
           "HLA2025-REQ-002"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "save_restore",
         "status": "parity-covered",
@@ -28213,7 +28184,7 @@
           "HLA2025-FI-001",
           "HLA2025-MOD-007"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "support_services",
         "status": "parity-covered",
@@ -28351,7 +28322,7 @@
           "HLA2025-FI-009",
           "HLA2025-MOD-006"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "time_management",
         "status": "parity-covered",
@@ -28498,12 +28469,12 @@
         "parity-covered": 8,
         "partial": 0
       },
-      "python1516_2025-fedpro-grpc": {
+      "python1516_2025": {
         "missing": 0,
         "parity-covered": 8,
         "partial": 0
       },
-      "python1516_2025-inprocess": {
+      "python1516_2025-fedpro-grpc": {
         "missing": 0,
         "parity-covered": 8,
         "partial": 0
@@ -28528,7 +28499,7 @@
       "wrapper_only": false
     },
     "routes": [
-      "python1516_2025-inprocess",
+      "python1516_2025",
       "python1516_2025-fedpro-grpc",
       "java-standard-2025-jpype",
       "java-standard-2025-py4j",
@@ -28553,7 +28524,7 @@
           "HLA2025-NEW-004",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "ddm",
         "status": "parity-covered",
@@ -28685,7 +28656,7 @@
           "HLA2025-FI-005",
           "HLA2025-FI-006"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "federation_lifecycle",
         "status": "parity-covered",
@@ -28830,7 +28801,7 @@
           "HLA2025-NEW-004",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "mom",
         "status": "parity-covered",
@@ -28967,7 +28938,7 @@
           "HLA2025-FR-004",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "object_exchange",
         "status": "parity-covered",
@@ -29101,7 +29072,7 @@
           "HLA2025-FR-008",
           "HLA2025-FI-001"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "ownership",
         "status": "parity-covered",
@@ -29238,7 +29209,7 @@
           "HLA2025-FI-005",
           "HLA2025-REQ-002"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "save_restore",
         "status": "parity-covered",
@@ -29378,7 +29349,7 @@
           "HLA2025-FI-001",
           "HLA2025-MOD-007"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "support_services",
         "status": "parity-covered",
@@ -29516,7 +29487,7 @@
           "HLA2025-FI-009",
           "HLA2025-MOD-006"
         ],
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "runtime_provider": "python1516_2025",
         "scenario": "time_management",
         "status": "parity-covered",

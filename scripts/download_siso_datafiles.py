@@ -153,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--out",
-        default=os.environ.get("SISO_DOWNLOAD_DIR", str(SCRIPT_REPO_ROOT / "analysis" / "siso_downloads")),
+        default=os.environ.get("SISO_DOWNLOAD_DIR", str(SCRIPT_REPO_ROOT / "artifacts" / "siso_downloads")),
         help="Destination directory for downloaded files.",
     )
     parser.add_argument(

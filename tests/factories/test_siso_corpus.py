@@ -20,7 +20,7 @@ def _make_sample_archive(archive_path: Path) -> None:
 
 def test_discover_siso_inventory_entries_expands_zip_archives(tmp_path: Path) -> None:
     repo_root = tmp_path
-    download_root = repo_root / "analysis" / "siso_downloads"
+    download_root = repo_root / "artifacts" / "siso_downloads"
     _make_sample_archive(download_root / "SISO-STD-001-1-2025-RPR.zip")
 
     entries = discover_siso_inventory_entries(download_root=download_root, repo_root=repo_root)
@@ -29,14 +29,14 @@ def test_discover_siso_inventory_entries_expands_zip_archives(tmp_path: Path) ->
     assert {entry["scenario_family"] for entry in entries} == {"siso-rpr-3.0"}
     assert {entry["edition_class"] for entry in entries} == {"2025"}
     assert all(entry["baseline_kind"] == "third-party" for entry in entries)
-    assert all(entry["path"].startswith("analysis/siso_downloads/_expanded/") for entry in entries)
+    assert all(entry["path"].startswith("artifacts/siso_downloads/_expanded/") for entry in entries)
     assert all("rpr" in entry["tags"] for entry in entries)
     assert all("high-value" in entry["tags"] for entry in entries)
 
 
 def test_write_siso_inventory_emits_json_and_markdown(tmp_path: Path) -> None:
     repo_root = tmp_path
-    download_root = repo_root / "analysis" / "siso_downloads"
+    download_root = repo_root / "artifacts" / "siso_downloads"
     _make_sample_archive(download_root / "SISO-STD-001-1-2025-RPR.zip")
 
     json_path, md_path, entries = write_siso_inventory(download_root=download_root, repo_root=repo_root)
@@ -54,7 +54,7 @@ def test_write_siso_inventory_emits_json_and_markdown(tmp_path: Path) -> None:
 
 def test_inventory_records_include_discovered_siso_entries(monkeypatch, tmp_path: Path) -> None:
     repo_root = tmp_path
-    download_root = repo_root / "analysis" / "siso_downloads"
+    download_root = repo_root / "artifacts" / "siso_downloads"
     _make_sample_archive(download_root / "SISO-STD-001-1-2025-RPR.zip")
     monkeypatch.setenv("HLA_SISO_DOWNLOAD_ROOT", str(download_root))
 
@@ -67,7 +67,7 @@ def test_inventory_records_include_discovered_siso_entries(monkeypatch, tmp_path
 
 def test_discover_siso_inventory_entries_skips_archive_metadata(tmp_path: Path) -> None:
     repo_root = tmp_path
-    download_root = repo_root / "analysis" / "siso_downloads"
+    download_root = repo_root / "artifacts" / "siso_downloads"
     _make_sample_archive(download_root / "SISO-STD-001-1-2025-RPR.zip")
 
     entries = discover_siso_inventory_entries(download_root=download_root, repo_root=repo_root)
@@ -107,7 +107,7 @@ def test_default_scope_keeps_only_high_value_siso_families() -> None:
 
 def test_discover_siso_inventory_entries_classifies_link16_underscore_variant(tmp_path: Path) -> None:
     repo_root = tmp_path
-    download_root = repo_root / "analysis" / "siso_downloads"
+    download_root = repo_root / "artifacts" / "siso_downloads"
     (download_root / "Link_16_v2.0.xml").parent.mkdir(parents=True, exist_ok=True)
     (download_root / "Link_16_v2.0.xml").write_text("<objectModel/>", encoding="utf-8")
 

@@ -108,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the Proto2025 v0.1 FOM simulation showcase and write chart-ready artifacts.")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "proto2025_fom_showcase"),
+        default=str(PROJECT_ROOT / "artifacts" / "proto2025_fom_showcase"),
         help="Directory for generated showcase artifacts",
     )
     parser.add_argument("--steps", type=int, default=3, help="Target/Radar steps to run inside the showcase")

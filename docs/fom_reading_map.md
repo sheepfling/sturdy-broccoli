@@ -12,7 +12,7 @@ their current support boundary.
   - [`../third_party/fom_baseline/README.md`](../third_party/fom_baseline/README.md)
   - [`../third_party/fom_baseline/SOURCE_INDEX.md`](../third_party/fom_baseline/SOURCE_INDEX.md)
 - optional local SISO DataFiles corpus:
-  - `analysis/siso_downloads/`
+  - `artifacts/siso_downloads/`
   - `python3 scripts/generate_siso_inventory.py`
 - dedicated schema-validation baseline:
   - `third_party/fom_schema_baseline/`
@@ -23,9 +23,16 @@ their current support boundary.
   - `./tools/fom-siso-audit`
 - high-value SISO showcase:
   - `./tools/fom-siso-showcase`
+- runtime-backed SISO showcase:
+  - [`fom_siso_runtime_showcase.md`](fom_siso_runtime_showcase.md)
+- RPR-specific standards feedback log:
+  - [`rpr_siso_feedback_log.md`](rpr_siso_feedback_log.md)
+- RPR datatype normalization note:
+  - [`rpr_type_normalization_notes.md`](rpr_type_normalization_notes.md)
 - edition/classification inventory:
   - [`fom-examples/fom_inventory.json`](fom-examples/fom_inventory.json)
   - [`fom-examples/fom_inventory.md`](fom-examples/fom_inventory.md)
+  - [`fom-examples/proto2025-v0.1/README.md`](fom-examples/proto2025-v0.1/README.md)
   - inventory and report surfaces now also carry `edition_scope`
 - workbench contract:
   - [`fom_workbench.md`](fom_workbench.md)
@@ -42,7 +49,7 @@ their current support boundary.
   - no federate simulations or behavior claims attached
   - family-aware parse/load coverage plus FedPro JSON envelope round-trip
 - local SISO DataFiles corpus:
-  - discovered from `analysis/siso_downloads/` when present
+  - discovered from `artifacts/siso_downloads/` when present
   - automatically folded into `inventory_records()`, validation families, workbench snapshots, and parser stress runs
   - generated inventory files live next to the downloads when you run `python3 scripts/generate_siso_inventory.py`
   - default stress/workbench scope is trimmed to the high-value families: RPR 2.0, RPR 3.0, Space FOM, standard MIM, and U-FOM
@@ -86,6 +93,7 @@ Scope labels used across reports:
 - public baseline stress flow:
   - `./tools/fom-stress`
   - `./tools/fom-stress --refresh-baseline`
+  - the report now annotates each family with a stress lane such as `modular-load-merge`, `roundtrip-stress`, or `runtime-federate-scenarios`
 - bundled validation flow:
   - `./tools/fom-validate DemoFOMmodule.xml`
   - `./tools/fom-validate packages/hla-rti1516-2025/src/hla/rti1516_2025/resources/foms/Proto2025_Base.xml --edition 2025 --strict-identification`
@@ -99,6 +107,7 @@ Scope labels used across reports:
   - `./tools/fom-siso-audit`
 - high-value SISO showcase flow:
   - `./tools/fom-siso-showcase`
+  - [`fom_siso_showcase.md`](fom_siso_showcase.md)
 
 ## Notes
 
@@ -108,7 +117,20 @@ Scope labels used across reports:
   - ordered family parse/load
   - FedPro JSON envelope round-trip for the original XML payload
 - For the optional SISO corpus we prove the same parser/load and round-trip behaviors when the downloads are present locally.
+- The repo now distinguishes test intent explicitly:
+  - `template-fail-fast`
+  - `modular-load-merge`
+  - `roundtrip-stress`
+  - `schema-lane`
+  - `runtime-federate-scenarios`
+  - `showcase-packets`
 - The showcase surface turns the strongest of those packets into a presentable narrative with workbench-backed custom load sets and expected outcome buckets.
+- RPR complaints and clarification requests that should flow back to SISO
+  belong in [`rpr_siso_feedback_log.md`](rpr_siso_feedback_log.md), not as
+  silent family-specific assumptions in generic parser/runtime code.
+- Parser architecture and the proposed “stop using RPR-owned type labels for
+  generic structure” substitutions are documented in
+  [`rpr_type_normalization_notes.md`](rpr_type_normalization_notes.md).
 - We do not currently claim:
   - full serializer-normalization parity for every imported corpus
   - runnable example federate scenarios for every third-party FOM packet

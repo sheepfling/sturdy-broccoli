@@ -46,13 +46,13 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
             assert row.counts_as_python_2025_rti is route.startswith("python1516_2025")
             assert row.wrapper_only is False
 
-    assert rows[("object_exchange", "python1516_2025-inprocess")].status == PARITY_COVERED
-    assert rows[("object_exchange", "python1516_2025-inprocess")].evidence_scope == "scenario-parity"
+    assert rows[("object_exchange", "python1516_2025")].status == PARITY_COVERED
+    assert rows[("object_exchange", "python1516_2025")].evidence_scope == "scenario-parity"
     assert rows[("object_exchange", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("object_exchange", "python1516_2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert rows[("federation_lifecycle", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("federation_lifecycle", "python1516_2025-fedpro-grpc")].evidence_scope == "scenario-parity"
-    assert "createFederationExecutionWithMIM" in rows[("federation_lifecycle", "python1516_2025-inprocess")].notes
+    assert "createFederationExecutionWithMIM" in rows[("federation_lifecycle", "python1516_2025")].notes
     assert "explicit single-FOM and createFederationExecutionWithMIM transport-command routing" in rows[
         ("federation_lifecycle", "python1516_2025-fedpro-grpc")
     ].notes
@@ -77,9 +77,9 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "factory-hosted create_rti_ambassador('python1516_2025', transport=...) execution of the shared support factory/decode scenario plus automatic-resign get/set, multiple-name reservation callbacks, object-instance name lookup, and queued reflection release on re-enabled callbacks" in rows[
         ("support_services", "python1516_2025-fedpro-grpc")
     ].notes
-    assert "future-exclusion blocking until GALT/LITS reach the window end" in rows[("time_management", "python1516_2025-inprocess")].notes
-    assert "oracle-rejection guards" in rows[("time_management", "python1516_2025-inprocess")].notes
-    assert rows[("time_management", "python1516_2025-inprocess")].evidence_tests == (
+    assert "future-exclusion blocking until GALT/LITS reach the window end" in rows[("time_management", "python1516_2025")].notes
+    assert "oracle-rejection guards" in rows[("time_management", "python1516_2025")].notes
+    assert rows[("time_management", "python1516_2025")].evidence_tests == (
         "tests/test_rti1516_2025_python1516_2025_runtime.py",
         "tests/scenarios/test_python_route_parity.py",
     )
@@ -99,34 +99,34 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "smoke save/restore ownership rollback gauntlet" in rows[("ownership", "python1516_2025-fedpro-grpc")].notes
     assert "negotiated divestiture" in rows[("ownership", "python1516_2025-fedpro-grpc")].notes
     assert "resign-time divest/delete/cancel ownership policies" in rows[("ownership", "python1516_2025-fedpro-grpc")].notes
-    assert "in-flight acquisition/divestiture state" in rows[("ownership", "python1516_2025-inprocess")].notes
-    assert "owner-visibility recovery" in rows[("ownership", "python1516_2025-inprocess")].notes
+    assert "in-flight acquisition/divestiture state" in rows[("ownership", "python1516_2025")].notes
+    assert "owner-visibility recovery" in rows[("ownership", "python1516_2025")].notes
     assert rows[("ddm", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("ddm", "python1516_2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "interaction class, and directed interaction region-overlap filtering" in rows[("ddm", "python1516_2025-fedpro-grpc")].notes
     assert "conveyed region evidence" in rows[("ddm", "python1516_2025-fedpro-grpc")].notes
     assert "delete-region cleanup" in rows[("ddm", "python1516_2025-fedpro-grpc")].notes
-    assert rows[("mom", "python1516_2025-inprocess")].status == PARITY_COVERED
-    assert rows[("mom", "python1516_2025-inprocess")].evidence_scope == "scenario-parity"
-    assert "routes MIM data, FOM module data" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "synchronization point MOM request/report interactions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "service/exception reporting MOM adjust interactions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "exposed HLAsetSwitches adjust interactions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "HLAsetTiming/HLAmodifyAttributeState adjust interactions" in rows[("mom", "python1516_2025-inprocess")].notes
+    assert rows[("mom", "python1516_2025")].status == PARITY_COVERED
+    assert rows[("mom", "python1516_2025")].evidence_scope == "scenario-parity"
+    assert "routes MIM data, FOM module data" in rows[("mom", "python1516_2025")].notes
+    assert "synchronization point MOM request/report interactions" in rows[("mom", "python1516_2025")].notes
+    assert "service/exception reporting MOM adjust interactions" in rows[("mom", "python1516_2025")].notes
+    assert "exposed HLAsetSwitches adjust interactions" in rows[("mom", "python1516_2025")].notes
+    assert "HLAsetTiming/HLAmodifyAttributeState adjust interactions" in rows[("mom", "python1516_2025")].notes
     assert "federate-level FOM module data, publication/subscription, and object-instance information MOM reports" in rows[
-        ("mom", "python1516_2025-inprocess")
+        ("mom", "python1516_2025")
     ].notes
-    assert "declaration-management MOM service actions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "federation-management MOM service actions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "supported time-management MOM service actions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "disable/asynchronous/TARA/NMR/NMRA" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "supported object-management MOM service actions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "transportation/order-type changes" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "supported ownership MOM service actions" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "activity/count MOM reports" in rows[("mom", "python1516_2025-inprocess")].notes
-    assert "MOM exception reports for failed routed MOM actions" in rows[("mom", "python1516_2025-inprocess")].notes
+    assert "declaration-management MOM service actions" in rows[("mom", "python1516_2025")].notes
+    assert "federation-management MOM service actions" in rows[("mom", "python1516_2025")].notes
+    assert "supported time-management MOM service actions" in rows[("mom", "python1516_2025")].notes
+    assert "disable/asynchronous/TARA/NMR/NMRA" in rows[("mom", "python1516_2025")].notes
+    assert "supported object-management MOM service actions" in rows[("mom", "python1516_2025")].notes
+    assert "transportation/order-type changes" in rows[("mom", "python1516_2025")].notes
+    assert "supported ownership MOM service actions" in rows[("mom", "python1516_2025")].notes
+    assert "activity/count MOM reports" in rows[("mom", "python1516_2025")].notes
+    assert "MOM exception reports for failed routed MOM actions" in rows[("mom", "python1516_2025")].notes
     assert "every non-report manager command leaf in the bundled MIM is declared routed" in rows[
-        ("mom", "python1516_2025-inprocess")
+        ("mom", "python1516_2025")
     ].notes
     assert rows[("mom", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("mom", "python1516_2025-fedpro-grpc")].evidence_scope == "scenario-parity"
@@ -143,22 +143,22 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "reports synchronization points/status" in rows[("mom", "python1516_2025-fedpro-grpc")].notes
     assert rows[("support_services", "python1516_2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("support_services", "python1516_2025-fedpro-grpc")].evidence_scope == "scenario-parity"
-    assert rows[("support_services", "python1516_2025-inprocess")].status == PARITY_COVERED
-    assert rows[("support_services", "python1516_2025-inprocess")].evidence_scope == "scenario-parity"
-    assert "FOM handle/name round trips" in rows[("support_services", "python1516_2025-inprocess")].notes
+    assert rows[("support_services", "python1516_2025")].status == PARITY_COVERED
+    assert rows[("support_services", "python1516_2025")].evidence_scope == "scenario-parity"
+    assert "FOM handle/name round trips" in rows[("support_services", "python1516_2025")].notes
     assert "raw support-service handle-factory and decode-helper proof without routing through the compatibility wrapper" in rows[
-        ("support_services", "python1516_2025-inprocess")
+        ("support_services", "python1516_2025")
     ].notes
     assert "snake-case alias acceptance on the primary direct-runtime surface" in rows[
-        ("support_services", "python1516_2025-inprocess")
+        ("support_services", "python1516_2025")
     ].notes
-    assert "transportation/order lookups" in rows[("support_services", "python1516_2025-inprocess")].notes
-    assert "automatic resign directive get/set round trips" in rows[("support_services", "python1516_2025-inprocess")].notes
+    assert "transportation/order lookups" in rows[("support_services", "python1516_2025")].notes
+    assert "automatic resign directive get/set round trips" in rows[("support_services", "python1516_2025")].notes
     assert "raw callback-delivery enable/disable and evoke callback control with queued discovery/reflection release" in rows[
-        ("support_services", "python1516_2025-inprocess")
+        ("support_services", "python1516_2025")
     ].notes
     assert "single/multiple object-instance name reservation/release callback flow" in rows[
-        ("support_services", "python1516_2025-inprocess")
+        ("support_services", "python1516_2025")
     ].notes
     assert "2025 switch get/set plus read-only switch inquiry services" in rows[("support_services", "python1516_2025-fedpro-grpc")].notes
     assert "logical-time query" in rows[("support_services", "python1516_2025-fedpro-grpc")].notes
@@ -188,16 +188,16 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "bounded radar-window state rollback" in rows[("save_restore", "python1516_2025-fedpro-grpc")].notes
     assert "plain object/interaction subscriber-routing rollback" in rows[("save_restore", "python1516_2025-fedpro-grpc")].notes
     assert "directed DDM subscriber-routing rollback" in rows[("save_restore", "python1516_2025-fedpro-grpc")].notes
-    assert "callback-delivery runtime-policy preservation" in rows[("save_restore", "python1516_2025-inprocess")].notes
-    assert "plain object/interaction subscriber-routing rollback" in rows[("save_restore", "python1516_2025-inprocess")].notes
-    assert "saved lookahead recovery" in rows[("save_restore", "python1516_2025-inprocess")].notes
-    assert "transportation-type restore persistence" in rows[("save_restore", "python1516_2025-inprocess")].notes
+    assert "callback-delivery runtime-policy preservation" in rows[("save_restore", "python1516_2025")].notes
+    assert "plain object/interaction subscriber-routing rollback" in rows[("save_restore", "python1516_2025")].notes
+    assert "saved lookahead recovery" in rows[("save_restore", "python1516_2025")].notes
+    assert "transportation-type restore persistence" in rows[("save_restore", "python1516_2025")].notes
     assert "restore failure/abort plus restore-precondition/participant/status negative control flow" in rows[
-        ("save_restore", "python1516_2025-inprocess")
+        ("save_restore", "python1516_2025")
     ].notes
-    assert "local-delete object-known-state recovery" in rows[("save_restore", "python1516_2025-inprocess")].notes
-    assert "exact status-clear transitions back to NO_SAVE_IN_PROGRESS/NO_RESTORE_IN_PROGRESS" in rows[("save_restore", "python1516_2025-inprocess")].notes
-    assert "full initiate/save/restore callback contracts" in rows[("save_restore", "python1516_2025-inprocess")].notes
+    assert "local-delete object-known-state recovery" in rows[("save_restore", "python1516_2025")].notes
+    assert "exact status-clear transitions back to NO_SAVE_IN_PROGRESS/NO_RESTORE_IN_PROGRESS" in rows[("save_restore", "python1516_2025")].notes
+    assert "full initiate/save/restore callback contracts" in rows[("save_restore", "python1516_2025")].notes
     assert "bounded radar-window state rollback" in rows[("save_restore", "python1516_2025-fedpro-grpc")].notes
 
     for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
@@ -490,7 +490,7 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
         "scenario,route,status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
         "runtime_provider,implementation_lane,counts_as_python_2025_rti,wrapper_only,notes"
     ) in csv_text
-    assert "federation_lifecycle,python1516_2025-inprocess,parity-covered,scenario-parity" in csv_text
+    assert "federation_lifecycle,python1516_2025,parity-covered,scenario-parity" in csv_text
     assert "time_management,python1516_2025-fedpro-grpc,parity-covered,scenario-parity" in csv_text
     assert ",python1516_2025,hla-backend-python1516-2025,true,false," in csv_text
     assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
@@ -504,7 +504,7 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
     assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules" in md_text
     assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python1516-2025`" in md_text
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in md_text
-    assert "| federation_lifecycle | python1516_2025-inprocess | parity-covered | scenario-parity |" in md_text
+    assert "| federation_lifecycle | python1516_2025 | parity-covered | scenario-parity |" in md_text
     assert "| time_management | python1516_2025-fedpro-grpc | parity-covered | scenario-parity |" in md_text
     assert "| python1516_2025 | hla-backend-python1516-2025 | true | false |" in md_text
     assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python1516-2025 as the primary 2025 Python RTI implementation lane" in md_text

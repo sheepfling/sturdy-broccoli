@@ -5,8 +5,8 @@ ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PROFILE="${1:-}"
 REPEAT_COUNT="${2:-3}"
 VENDOR_GREEN_CMD="${HLA2010_VENDOR_PROBE_STABILITY_VENDOR_GREEN:-$ROOT_DIR/scripts/ci/vendor_green.sh}"
-OUTPUT_BASE_DIR="${HLA2010_VENDOR_PROBE_STABILITY_DIR:-$ROOT_DIR/analysis/vendor_probe_stability}"
-CI_STATE_OUTPUT_DIR="${HLA2010_VENDOR_RUNTIME_CI_STATE_DIR:-$ROOT_DIR/analysis/vendor_runtime_ci_state}"
+OUTPUT_BASE_DIR="${HLA2010_VENDOR_PROBE_STABILITY_DIR:-$ROOT_DIR/artifacts/vendor_probe_stability}"
+CI_STATE_OUTPUT_DIR="${HLA2010_VENDOR_RUNTIME_CI_STATE_DIR:-$ROOT_DIR/artifacts/vendor_runtime_ci_state}"
 CI_STATE_REQUIRED="${HLA2010_VENDOR_PROBE_REQUIRE_CI_STATE:-auto}"
 CI_STATE_CMD="${HLA2010_VENDOR_PROBE_CI_STATE_CMD:-}"
 
@@ -99,8 +99,8 @@ Examples:
   ./scripts/ci/vendor_probe_stability.sh certi-ddm-probe 3
 
 Artifacts:
-  analysis/vendor_probe_stability/<profile>/vendor_probe_stability_summary.json
-  analysis/vendor_probe_stability/<profile>/vendor_probe_stability_report.md
+  artifacts/vendor_probe_stability/<profile>/vendor_probe_stability_summary.json
+  artifacts/vendor_probe_stability/<profile>/vendor_probe_stability_report.md
 EOF
   exit 0
 fi

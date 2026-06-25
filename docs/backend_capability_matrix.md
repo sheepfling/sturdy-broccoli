@@ -46,8 +46,11 @@ The repo now treats the 2025 Python RTI as a primary implementation lane:
 
 - `hla-backend-python1516-2025` for the main executable `rti1516_2025` backend
 - `hla-backend-shim` for legacy compatibility-wrapper/import-level support
-- `python1516_2025-inprocess` for the direct runtime proof lane
+- `python1516_2025` for the direct runtime proof lane
 - `python1516_2025-fedpro-grpc` for the hosted FedPro route variant
+
+For the 2010 lane, use `python1516e` as the canonical direct Python route
+name. Legacy `python` spellings remain compatibility aliases only.
 
 Current evidence does support a bounded claim for that lane:
 
@@ -72,7 +75,7 @@ Legend:
 
 | Runtime / Route | Common Exchange | Timed Exchange | Sync Scenario | Ownership Scenario | Real RTI Process |
 |---|---|---:|---:|---:|---:|
-| `python` | yes | yes | yes | yes | no |
+| `python1516e` | yes | yes | yes | yes | no |
 | `python1516_2025` | yes | yes | yes | yes | no |
 | `python1516_2025-fedpro-grpc` | yes | yes | yes | yes | no |
 | `java-shim-jpype` | yes | partial | yes | yes | no |
@@ -118,6 +121,9 @@ Primary anchors:
 - `certi`, `certi-jpype`, and `certi-py4j` are covered by real synchronization and ownership smoke tests, but the current shared timed-exchange route is only partial because CERTI does not implement `changeAttributeOrderType`.
 - `rest` remains a transport seam, not an additional runtime family. It now has a transport-hosted pure-Python RTI proving server and uses the same polling callback contract as gRPC.
 - `grpc` now goes one step further: a transport-hosted pure-Python RTI server proves that the existing backend-neutral exchange path can run end to end over the gRPC wire without changing federate code.
+- `python1516e` is the canonical operator-facing runtime name for the IEEE
+  1516.1-2010 pure-Python RTI lane. Legacy `python` spellings remain alias
+  compatibility, not the preferred documentation label.
 - `python1516_2025` is a first-class operator-facing runtime family in this repo,
   not a provisional alias. Use it as the primary IEEE 1516.1-2025 Python RTI
   lane.

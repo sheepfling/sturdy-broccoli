@@ -39,7 +39,7 @@ def _write_stability(
 
 
 def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> None:
-    root = Path("analysis/vendor_probe_stability")
+    root = Path("artifacts/vendor_probe_stability")
     certi_save_restore = root / "certi-save-restore-probe" / "vendor_probe_stability_summary.json"
     pitch_neg = root / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
     pitch_time_window = root / "pitch-time-window-probe" / "vendor_probe_stability_summary.json"

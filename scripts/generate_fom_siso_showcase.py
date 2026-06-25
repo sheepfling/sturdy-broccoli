@@ -23,7 +23,7 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.fom_siso_showcase import write_fom_siso_showcase
 
 
-DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_siso_showcase"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "artifacts" / "fom_siso_showcase"
 PACKET_CHOICES = (
     "link16-standalone-template",
     "link16-rpr2-integrated",
@@ -58,7 +58,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    json_path, md_path, report = write_fom_siso_showcase(
+    json_path, md_path, html_path, report = write_fom_siso_showcase(
         args.output_dir,
         packet_ids=tuple(args.packet) if args.packet else None,
         strict_identification=args.strict_identification,
@@ -66,6 +66,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(json_path)
     print(md_path)
+    print(html_path)
     print(report.workbench_snapshot_path)
     print(report.workbench_html_path)
     print(f"packets: {len(report.packet_results)}")

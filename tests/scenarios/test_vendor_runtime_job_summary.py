@@ -69,7 +69,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
                 "missing_required_count": 0,
                 "probe_promotion_review": {
                     "candidate_count": 1,
-                    "path": "analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json",
+                    "path": "artifacts/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json",
                     "profiles": [
                         {
                             "profile": "pitch-negotiated-probe",
@@ -88,7 +88,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
                         "attempt_count": 5,
                         "stable": True,
                         "promotion_readiness": "candidate",
-                        "path": "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
+                        "path": "artifacts/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
                     }
                 },
             },
@@ -121,8 +121,8 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
     assert "probe / candidate" in rendered
     assert "candidate-review" in rendered
     assert "next: resolve the documented bridge-divergent state before promotion; keep the lane at probe status" in rendered
-    assert "analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json" in rendered
-    assert "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" in rendered
+    assert "artifacts/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json" in rendered
+    assert "artifacts/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" in rendered
 
 
 def test_job_summary_script_bootstraps_source_checkout_and_writes_output_file(tmp_path: Path) -> None:

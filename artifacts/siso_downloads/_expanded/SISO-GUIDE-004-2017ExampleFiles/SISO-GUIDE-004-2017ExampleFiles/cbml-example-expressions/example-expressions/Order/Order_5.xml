@@ -1,0 +1,1930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<CBML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://www.sisostds.org/schemas/c-bml/1.0" xsi:schemaLocation="http://www.sisostds.org/schemas/c-bml/1.0 ../../example-expressions-schema/cbml-example-expressions.xsd">
+<Order>
+	<Context xsi:type="OperationalInformationGroup">
+		<OID>0</OID>
+		<NameText>C-BML Order Examples</NameText>
+		<OperationalInformationGroupCategoryCode>PLNORD</OperationalInformationGroupCategoryCode> <!-- Plans/Orders -->
+	</Context>
+	<SupportingType xsi:type="OtherFacilityType">
+		<OID>1034: Observation Post</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Observation Post</NameText>
+		<FacilityTypeCategoryCode>OBSP</FacilityTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="GeographicFeatureType">
+		<OID>1037: Hill</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Hill</NameText>
+		<GeographicFeatureTypeCategoryCode>LNDFRM</GeographicFeatureTypeCategoryCode>
+		<GeographicFeatureTypeSubcategoryCode>HILL</GeographicFeatureTypeSubcategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>1043: Phaseline</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Phaseline</NameText>
+		<ControlFeatureTypeCategoryCode>PHLINE</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>4043: Organisation Boundary</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Boundary</NameText>
+		<ControlFeatureTypeCategoryCode>BDYOR</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="UnitType">
+		<OID>1061: Battalion</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Battalion</NameText>
+		<CommandFunctionIndicatorCode>YES</CommandFunctionIndicatorCode>
+		<ServiceCode>ARMY</ServiceCode>
+		<UnitTypeCategoryCode>NKN</UnitTypeCategoryCode>
+		<ArmCategoryCode>NKN</ArmCategoryCode>
+		<SizeCode>BN</SizeCode>
+	</SupportingType>
+	<SupportingType xsi:type="UnitType">
+		<OID>1063: Company</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Company</NameText>
+		<CommandFunctionIndicatorCode>YES</CommandFunctionIndicatorCode>
+		<ServiceCode>ARMY</ServiceCode>
+		<UnitTypeCategoryCode>NKN</UnitTypeCategoryCode>
+		<ArmCategoryCode>NKN</ArmCategoryCode>
+		<SizeCode>COY</SizeCode>
+	</SupportingType>
+	<SupportingType xsi:type="UnitType">
+		<OID>1064: Platoon</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Company</NameText>
+		<CommandFunctionIndicatorCode>YES</CommandFunctionIndicatorCode>
+		<ServiceCode>ARMY</ServiceCode>
+		<UnitTypeCategoryCode>NKN</UnitTypeCategoryCode>
+		<ArmCategoryCode>NKN</ArmCategoryCode>
+		<SizeCode>PLT</SizeCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherFeatureType">
+		<OID>1208: Meteo</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Meteo</NameText>
+		<FeatureTypeCategoryCode>MF</FeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="PersonType">
+		<OID>1230: Civilian</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Civilian</NameText>
+		<PersonTypeCategoryCode>CIV</PersonTypeCategoryCode>
+	</SupportingType>
+	<!-- Mission -->
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="OtherFacilityRef">
+				<OID>1197: Observation Post</OID>
+			</DerivedLocationRef>
+		</Where>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveItem">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>AUTH</ActionObjectiveQualifierCode>
+				<ObjectItemRef xsi:type="OtherFacilityRef">
+					<OID>1197: Observation Post</OID>
+				</ObjectItemRef>
+			</ActionObjective>
+		</AffectedWho>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveType">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>DONTAT</ActionObjectiveQualifierCode> <!-- Do not attack -->
+				<ObjectTypeRef xsi:type="PersonTypeRef">
+					<OID>1230: Civilian</OID>
+				</ObjectTypeRef>
+			</ActionObjective>
+		</AffectedWho>
+		<Why>
+				<ActionFunctionalAssociationInSubjectAction>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1214: Coy B advance to Phaseline Platinum</OID>
+					</ObjectActionRef>
+					<FunctionalAssociationCategoryCode>IOT</FunctionalAssociationCategoryCode> <!-- In order that -->
+				</ActionFunctionalAssociationInSubjectAction>
+		</Why>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1213: Coy A capture Observation Post 1197</OID>
+				<NameText>Mission: Capture Observation Post 1197</NameText>
+				<ActivityCode>CAPTUR</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartRelativeTime>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1212: Coy A assault Hill 456</OID>
+					</ObjectActionRef>
+					<StartTemporalAssociationCategoryCode>STRSNL</StartTemporalAssociationCategoryCode><!-- Starts no later than after start of -->
+					<ReferenceDuration>0</ReferenceDuration>
+				</StartRelativeTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1060: 1st Battalion</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="GeographicFeatureRef">
+				<OID>Hill 456</OID>
+			</DerivedLocationRef>
+		</Where>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveItem">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>AUTH</ActionObjectiveQualifierCode>
+				<ObjectItemRef xsi:type="GeographicFeatureRef">
+					<OID>Hill 456</OID>
+				</ObjectItemRef>
+			</ActionObjective>
+		</AffectedWho>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveType">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>DONTAT</ActionObjectiveQualifierCode> <!-- Do not attack -->
+				<ObjectTypeRef xsi:type="PersonTypeRef">
+					<OID>1230: Civilian</OID>
+				</ObjectTypeRef>
+			</ActionObjective>
+		</AffectedWho>
+		<Why>
+				<ActionFunctionalAssociationInSubjectAction>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1213: Coy A capture Observation Post 1197</OID>
+					</ObjectActionRef>
+					<FunctionalAssociationCategoryCode>IOT</FunctionalAssociationCategoryCode> <!-- In order that -->
+				</ActionFunctionalAssociationInSubjectAction>
+		</Why>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1212: Coy A assault Hill 456</OID>
+				<NameText>Mission: Assault Hill 456</NameText>
+				<ActivityCode>ARMAS</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartAbsoluteTime>
+					<StartSpecifiedTime>
+						<Datetime>20100525110000.000</Datetime>
+						<StartTimeQualifierCode>NLT</StartTimeQualifierCode>
+					</StartSpecifiedTime>
+				</StartAbsoluteTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1060: 1st Battalion</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<!-- Execution -->
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+				<OID>1190:  Phaseline PLATINUM</OID>
+			</DerivedLocationRef>
+		</Where>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1214: Coy B advance to Phaseline Platinum</OID>
+				<NameText>Advance to Phaseline PLATINUM</NameText>
+				<ActivityCode>ADVANC</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartRelativeTime>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1213: Coy A capture Observation Post 1197</OID>
+					</ObjectActionRef>
+					<StartTemporalAssociationCategoryCode>STRENL</StartTemporalAssociationCategoryCode><!-- Starts no later than after end of -->
+					<ReferenceDuration>0</ReferenceDuration>
+				</StartRelativeTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1060: 1st Battalion</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1191: Company B</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<!-- 1st Platoon's Tasks -->
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+				<OID>1042: Phaseline GOLD</OID>
+			</DerivedLocationRef>
+		</Where>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1041: 1st Platoon Move to Phaseline GOLD</OID>
+				<NameText>Move to Phaseline GOLD</NameText>
+				<ActivityCode>MOVE</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartAbsoluteTime>
+					<StartSpecifiedTime>
+						<Datetime>20100525090000.000</Datetime>
+						<StartTimeQualifierCode>AT</StartTimeQualifierCode>
+					</StartSpecifiedTime>
+				</StartAbsoluteTime>
+			</TaskStartWhen>
+			<TaskEndWhen>
+				<EndAbsoluteTime>
+					<EndSpecifiedTime>
+						<Datetime>20100525100000.000</Datetime> <!-- No Later Than 10h00 -->
+						<EndTimeQualifierCode>NLT</EndTimeQualifierCode>
+					</EndSpecifiedTime>
+				</EndAbsoluteTime>
+			</TaskEndWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1065: 1st Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="GeographicFeatureRef">
+				<OID>Hill 123</OID>
+			</DerivedLocationRef>
+		</Where>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveItem">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>AUTH</ActionObjectiveQualifierCode>
+				<ObjectItemRef xsi:type="GeographicFeatureRef">
+					<OID>Hill 123</OID>
+				</ObjectItemRef>
+			</ActionObjective>
+		</AffectedWho>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveType">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>DONTAT</ActionObjectiveQualifierCode> <!-- Do not attack -->
+				<ObjectTypeRef xsi:type="PersonTypeRef">
+					<OID>1230: Civilian</OID>
+				</ObjectTypeRef>
+			</ActionObjective>
+		</AffectedWho>
+		<Why>
+				<ActionFunctionalAssociationInSubjectAction>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1075: 2d Platoon Attack Hill 456</OID>
+					</ObjectActionRef>
+					<FunctionalAssociationCategoryCode>IOT</FunctionalAssociationCategoryCode> <!-- In order that -->
+				</ActionFunctionalAssociationInSubjectAction>
+		</Why>
+		<Why>
+				<ActionFunctionalAssociationInSubjectAction>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1076: 3d Platoon Attack Hill 456</OID>
+					</ObjectActionRef>
+					<FunctionalAssociationCategoryCode>IOT</FunctionalAssociationCategoryCode> <!-- In order that -->
+				</ActionFunctionalAssociationInSubjectAction>
+		</Why>
+		<Why>
+			<ExpectedEndState>
+					<ReportItem xsi:type="WhoTypeType">
+						<ReporterWho>
+							<OrganisationRef xsi:type="UnitRef">
+								<OID>1062: Company A</OID>
+							</OrganisationRef>
+						</ReporterWho>
+						<ReportedWhen xsi:type="ReportedWhenRelativeTimingType">
+							<ReportingDatetime>20100525163000.000</ReportingDatetime>
+							<OffsetDuration>3600000</OffsetDuration> <!-- 1 hour after the start of Task 1033 (1st Platoon Attack Hill 123) -->
+							<ReferenceActionTaskRef xsi:type="OtherActionTaskRef">
+								<OID>1033: 1st Platoon Attack Hill 123</OID>
+							</ReferenceActionTaskRef>
+						</ReportedWhen>
+						<ReportingData>
+							<OID>1050</OID>
+							<ReportingDataCategoryCode>PLAN</ReportingDataCategoryCode>
+							<CredibilityCode>RPTFCT</CredibilityCode>
+						</ReportingData>
+						<Who>
+							<ObjectItem xsi:type="OtherFacility">
+								<OID>1035: Observation Post</OID>
+								<NameText>Observation Post 1035</NameText>
+							</ObjectItem>
+						</Who>
+						<ObjectTypeRef xsi:type="OtherFacilityTypeRef">
+							<OID>1034: Observation Post</OID>
+						</ObjectTypeRef>
+					</ReportItem>
+					<ReportItem xsi:type="WhoLocationType">
+						<ReporterWho>
+							<OrganisationRef xsi:type="UnitRef">
+								<OID>1062: Company A</OID>
+							</OrganisationRef>
+						</ReporterWho>
+						<ReportedWhen xsi:type="ReportedWhenRelativeTimingType">
+							<ReportingDatetime>20100525163000.000</ReportingDatetime>
+							<OffsetDuration>3600000</OffsetDuration> <!-- 1 hours after the start of Task 1033 (1st Platoon Attack Hill 123) -->
+							<ReferenceActionTaskRef xsi:type="OtherActionTaskRef">
+								<OID>1033: 1st Platoon Attack Hill 123</OID>
+							</ReferenceActionTaskRef>
+						</ReportedWhen>
+						<ReportingData>
+							<OID>1051</OID>
+							<ReportingDataCategoryCode>PLAN</ReportingDataCategoryCode>
+							<CredibilityCode>RPTFCT</CredibilityCode>
+						</ReportingData>
+						<WhoRef>
+							<ObjectItemRef xsi:type="OtherFacilityRef">
+								<OID>1035: Observation Post</OID>
+							</ObjectItemRef>
+						</WhoRef>
+							<Location xsi:type="GeographicPoint">
+								<OID>0</OID>			
+								<LatitudeCoordinate>60.3</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Location>
+							<ObjectItemLocation>
+								<OID>0</OID>
+								<SpeedRate>0</SpeedRate>
+								<MeaningCode>ADRPRP</MeaningCode>
+							</ObjectItemLocation>
+					</ReportItem>
+					<ReportItem xsi:type="WhoHostilityType">
+						<ReporterWho>
+							<OrganisationRef xsi:type="UnitRef">
+								<OID>1062: Company A</OID>
+							</OrganisationRef>
+						</ReporterWho>
+						<ReportedWhen xsi:type="ReportedWhenRelativeTimingType">
+							<ReportingDatetime>20100525163000.000</ReportingDatetime>
+							<OffsetDuration>3600000</OffsetDuration> <!-- 1 hours after the start of Task 1033 (1st Platoon Attack Hill 123) -->
+							<ReferenceActionTaskRef xsi:type="OtherActionTaskRef">
+								<OID>1033: 1st Platoon Attack Hill 123</OID>
+							</ReferenceActionTaskRef>
+						</ReportedWhen>
+						<ReportingData>
+							<OID>0</OID>
+							<ReportingDataCategoryCode>PLAN</ReportingDataCategoryCode>
+							<CredibilityCode>RPTFCT</CredibilityCode>
+						</ReportingData>
+						<WhoRef>
+							<ObjectItemRef xsi:type="OtherFacilityRef">
+								<OID>1035: Observation Post</OID>
+							</ObjectItemRef>
+						</WhoRef>
+						<HostilityStatusCode>FR</HostilityStatusCode>
+					</ReportItem>
+					<ReportItem xsi:type="WhoAssociationType">
+						<ReporterWho>
+							<OrganisationRef xsi:type="UnitRef">
+								<OID>1062: Company A</OID>
+							</OrganisationRef>
+						</ReporterWho>
+						<ReportedWhen xsi:type="ReportedWhenRelativeTimingType">
+							<ReportingDatetime>20100525163000.000</ReportingDatetime>
+							<OffsetDuration>3600000</OffsetDuration> <!-- 1 hours after the start of Task 1033 (1st Platoon Attack Hill 123) -->
+							<ReferenceActionTaskRef xsi:type="OtherActionTaskRef">
+								<OID>1033: 1st Platoon Attack Hill 123</OID>
+							</ReferenceActionTaskRef>
+						</ReportedWhen>
+						<ReportingData>
+							<OID>0</OID>
+							<ReportingDataCategoryCode>PLAN</ReportingDataCategoryCode>
+							<CredibilityCode>RPTFCT</CredibilityCode>
+						</ReportingData>
+						<WhoRef>
+							<ObjectItemRef xsi:type="UnitRef">
+								<OID>1065: 1st Platoon</OID>
+							</ObjectItemRef>
+						</WhoRef>
+							<ObjectObjectItemRef xsi:type="OtherFacilityRef">
+								<OID>1035: Observation Post</OID>
+							</ObjectObjectItemRef>
+							<ObjectItemAssociation>
+								<OID>0</OID>
+								<ObjectItemAssociationCategoryCode>EMPLOY</ObjectItemAssociationCategoryCode>
+								<ObjectItemAssociationStatus>
+									<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+								</ObjectItemAssociationStatus>
+							</ObjectItemAssociation>
+					</ReportItem>
+			</ExpectedEndState>
+		</Why>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1033: 1st Platoon Attack Hill 123</OID>
+				<NameText>Attack Hill 123</NameText>
+				<ActivityCode>ATTACK</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartRelativeTime>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1041: 1st Platoon Move to Phaseline GOLD</OID>
+					</ObjectActionRef>
+					<StartTemporalAssociationCategoryCode>STRENL</StartTemporalAssociationCategoryCode><!-- Starts no later than after end of -->
+					<ReferenceDuration>3600000</ReferenceDuration> <!-- 1 hour -->
+				</StartRelativeTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1065: 1st Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="GeographicFeatureRef">
+				<OID>Hill 456</OID>
+			</DerivedLocationRef>
+		</Where>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1140: 1st Platoon Move to Hill 456</OID>
+				<NameText>Move to Hill 456</NameText>
+				<ActivityCode>MOVE</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartRelativeTime>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1041: 1st Platoon Move to Phaseline GOLD</OID>
+					</ObjectActionRef>
+					<StartTemporalAssociationCategoryCode>STRENL</StartTemporalAssociationCategoryCode><!-- Starts no later than after end of -->
+					<ReferenceDuration>14400000</ReferenceDuration> <!-- 4 hours -->
+				</StartRelativeTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1065: 1st Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<!-- 2d Platoon's Tasks -->
+	<Task>
+		<RouteWhere>
+			<StartWhere>
+				<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+					<OID>1042: Phaseline GOLD</OID>
+				</DerivedLocationRef>
+			</StartWhere>
+			<EndWhere>
+				<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+					<OID>1060: Phaseline SILVER</OID>
+				</DerivedLocationRef>
+			</EndWhere>
+		</RouteWhere>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1073: 2d Platoon Move from Phaseline GOLD to Phaseline SILVER</OID>
+				<NameText>Move from Phaseline GOLD to Phaseline SILVER</NameText>
+				<ActivityCode>MOVE</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartAbsoluteTime>
+					<StartSpecifiedTime>
+						<Datetime>20100525080000.000</Datetime>
+						<StartTimeQualifierCode>AT</StartTimeQualifierCode>
+					</StartSpecifiedTime>
+				</StartAbsoluteTime>
+			</TaskStartWhen>
+			<TaskEndWhen>
+				<EndAbsoluteTime>
+					<EndSpecifiedTime>
+						<Datetime>20100525100000.000</Datetime> <!-- No Later Than 10h00 -->
+						<EndTimeQualifierCode>NLT</EndTimeQualifierCode>
+					</EndSpecifiedTime>
+				</EndAbsoluteTime>
+			</TaskEndWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1066: 2d Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="GeographicFeatureRef">
+				<OID>Hill 456</OID>
+			</DerivedLocationRef>
+		</Where>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveItem">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>NEWL</ActionObjectiveQualifierCode>
+				<ObjectItemRef xsi:type="GeographicFeatureRef">
+					<OID>Hill 456</OID>
+				</ObjectItemRef>
+			</ActionObjective>
+		</AffectedWho>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveType">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>DONTAT</ActionObjectiveQualifierCode> <!-- Do not attack -->
+				<ObjectTypeRef xsi:type="PersonTypeRef">
+					<OID>1230: Civilian</OID>
+				</ObjectTypeRef>
+			</ActionObjective>
+		</AffectedWho>
+		<Why>
+				<ActionFunctionalAssociationInSubjectAction>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1213: Coy A capture Observation Post 1197</OID>
+					</ObjectActionRef>
+					<FunctionalAssociationCategoryCode>IOT</FunctionalAssociationCategoryCode> <!-- In order that -->
+				</ActionFunctionalAssociationInSubjectAction>
+		</Why>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1075: 2d Platoon Attack Hill 456</OID>
+				<NameText>Attack Hill 456</NameText>
+				<ActivityCode>ATTACK</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartRelativeTime>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1033: 1st Platoon Attack Hill 123</OID>
+					</ObjectActionRef>
+					<StartTemporalAssociationCategoryCode>STRENL</StartTemporalAssociationCategoryCode><!-- Starts no later than after end of -->
+					<ReferenceDuration>0</ReferenceDuration>
+				</StartRelativeTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1066: 2d Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<!-- 3d Platoon's Tasks -->
+	<Task>
+		<RouteWhere>
+			<StartWhere>
+				<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+					<OID>1042: Phaseline GOLD</OID>
+				</DerivedLocationRef>
+			</StartWhere>
+			<EndWhere>
+				<DerivedLocationRef xsi:type="OtherControlFeatureRef">
+					<OID>1060: Phaseline SILVER</OID>
+				</DerivedLocationRef>
+			</EndWhere>
+		</RouteWhere>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1074: 3d Platoon Move from Phaseline GOLD to Phaseline SILVER</OID>
+				<NameText>Move from Phaseline GOLD to Phaseline SILVER</NameText>
+				<ActivityCode>MOVE</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartAbsoluteTime>
+					<StartSpecifiedTime>
+						<Datetime>20100525080000.000</Datetime>
+						<StartTimeQualifierCode>AT</StartTimeQualifierCode>
+					</StartSpecifiedTime>
+				</StartAbsoluteTime>
+			</TaskStartWhen>
+			<TaskEndWhen>
+				<EndAbsoluteTime>
+					<EndSpecifiedTime>
+						<Datetime>20100525100000.000</Datetime> <!-- No Later Than 10h00 -->
+						<EndTimeQualifierCode>NLT</EndTimeQualifierCode>
+					</EndSpecifiedTime>
+				</EndAbsoluteTime>
+			</TaskEndWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1067: 3d Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<Task>
+		<Where>
+			<DerivedLocationRef xsi:type="GeographicFeatureRef">
+				<OID>Hill 456</OID>
+			</DerivedLocationRef>
+		</Where>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveItem">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>NEEL</ActionObjectiveQualifierCode>
+				<ObjectItemRef xsi:type="GeographicFeatureRef">
+					<OID>Hill 456</OID>
+				</ObjectItemRef>
+			</ActionObjective>
+		</AffectedWho>
+		<AffectedWho>
+			<ActionObjective xsi:type="OtherActionObjectiveType">
+				<OID>0</OID>
+				<ActionObjectiveQualifierCode>DONTAT</ActionObjectiveQualifierCode> <!-- Do not attack -->
+				<ObjectTypeRef xsi:type="PersonTypeRef">
+					<OID>1230: Civilian</OID>
+				</ObjectTypeRef>
+			</ActionObjective>
+		</AffectedWho>
+		<Why>
+				<ActionFunctionalAssociationInSubjectAction>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1213: Coy A capture Observation Post 1197</OID>
+					</ObjectActionRef>
+					<FunctionalAssociationCategoryCode>IOT</FunctionalAssociationCategoryCode> <!-- In order that -->
+				</ActionFunctionalAssociationInSubjectAction>
+		</Why>
+		<TaskWhat>
+			<ActionTask xsi:type="OtherActionTask">
+				<OID>1076: 3d Platoon Attack Hill 456</OID>
+				<NameText>Attack Hill 456</NameText>
+				<ActivityCode>ATTACK</ActivityCode>
+			</ActionTask>
+		</TaskWhat>
+		<TaskWhen>
+			<TaskStartWhen>
+				<StartRelativeTime>
+					<ObjectActionRef xsi:type="OtherActionTaskRef">
+						<OID>1033: 1st Platoon Attack Hill 123</OID>
+					</ObjectActionRef>
+					<StartTemporalAssociationCategoryCode>STRENL</StartTemporalAssociationCategoryCode><!-- Starts no later than after end of -->
+					<ReferenceDuration>0</ReferenceDuration>
+				</StartRelativeTime>
+			</TaskStartWhen>
+		</TaskWhen>
+		<TaskOrganisationRef>
+			<OID>1072: 1st Battalion Organisation Structure</OID>
+		</TaskOrganisationRef>
+		<TaskerWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1062: Company A</OID>
+			</OrganisationRef>
+		</TaskerWho>
+		<TaskeeWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>1067: 3d Platoon</OID>
+			</OrganisationRef>
+		</TaskeeWho>
+	</Task>
+	<CurrentState>
+		<Report>
+			<Context xsi:type="OperationalInformationGroup">
+				<OID>1194</OID>
+				<NameText>Situation Enemy Forces</NameText>
+				<OperationalInformationGroupCategoryCode>CORENU</OperationalInformationGroupCategoryCode> <!-- Correlated enemy and unknown -->
+			</Context>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1195</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1039: Small Enemy Position</OID>
+						<NameText>SEP1039</NameText>
+						<FormalAbbreviatedNameText>SEP</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1064: Platoon</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1196</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1039: Small Enemy Position</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>	
+						<VerticalDistance>
+							<OID>0</OID>
+							<ReferenceCode>WGS84G</ReferenceCode>
+							<Dimension>200.00</Dimension>
+						</VerticalDistance>			
+						<LatitudeCoordinate>60.31</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoHostilityType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1200</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1039: Small Enemy Position</OID>
+					</ObjectItemRef>
+				</WhoRef>
+				<HostilityStatusCode>HO</HostilityStatusCode>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1198</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherFacility">
+						<OID>1197: Observation Post</OID>
+						<NameText>OP1197</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherFacilityTypeRef">
+					<OID>1034: Observation Post</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1199</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherFacilityRef">
+						<OID>1197: Observation Post</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>			
+						<LatitudeCoordinate>60.3</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1201</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1039: Small Enemy Position</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="OtherFacilityRef">
+						<OID>1197: Observation Post</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>0</OID>
+						<ObjectItemAssociationCategoryCode>EMPLOY</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+		</Report>
+	</CurrentState>
+	<CurrentState>
+		<Report>
+			<Context xsi:type="OperationalInformationGroup">
+				<OID>1202: Situation Friendly Forces</OID>
+				<NameText>Situation Friendly Forces</NameText>
+				<OperationalInformationGroupCategoryCode>FRDNEU</OperationalInformationGroupCategoryCode> <!--Friendly and neutral (organisational) -->
+			</Context>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>2220</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherControlFeature">
+						<OID>2042: B Co - A Co</OID>
+						<NameText>B Co - A Co</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+					<OID>4043: Organisation Boundary</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>2221</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>2042: B Co - A Co</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="Line">
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>2222</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherControlFeature">
+						<OID>2043: 1d Bn PPLI = 5d Bn RCR</OID>
+						<NameText>1d Bn PPLI = 5d Bn RCR</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+					<OID>4043: Organisation Boundary</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>2223</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>2043: 1d Bn PPLI = 5d Bn RCR</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="Line">
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1203</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1193: 5th Battalion Royal Canadians</OID>
+						<NameText>1st Battalion</NameText>
+						<FormalAbbreviatedNameText>1st BN</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1061: Battalion</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1205</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1193: 5th Battalion Royal Canadians</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>			
+						<LatitudeCoordinate>60.3</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1204</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1191: Company B</OID>
+						<NameText>Company B</NameText>
+						<FormalAbbreviatedNameText>COY B</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1063: Company</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1206</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1191: Company B</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>			
+						<LatitudeCoordinate>60.3</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>2131</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1191: Company B</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>2042: B Co - A Co</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>2068: Company B is to the left of Organisation Boundary named B Co - A Co.</OID>
+						<ObjectItemAssociationCategoryCode>ISLOF</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>2132</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1193: 5th Battalion Royal Canadians</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>2043: 1d Bn PPLI = 5d Bn RCR</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>2069: 5th Battalion Royal Canadians is to the right of Organisation Boundary named 1d Bn PPLI = 5d Bn RCR.</OID>
+						<ObjectItemAssociationCategoryCode>ISROF</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+		</Report>
+	</CurrentState>
+	<CurrentState>
+		<Report>
+			<Context xsi:type="OperationalInformationGroup">
+				<OID>1207: Situation Environment Weather</OID>
+				<NameText>Situation Environment Weather</NameText>
+				<OperationalInformationGroupCategoryCode>GLBSGN</OperationalInformationGroupCategoryCode> <!-- Globally significant -->
+			</Context>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+					<EffectiveStartDatetime>20100525203000.000</EffectiveStartDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1210</OID>
+					<ReportingDataCategoryCode>PRDCTD</ReportingDataCategoryCode>
+					<CredibilityCode>RPTPLA</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Precipitation">
+						<OID>1209: Rain</OID>
+						<NameText>Rain Cell 1209</NameText>
+						<InterpretationCode>NOMIN</InterpretationCode>
+						<PrecipitationCategoryCode>RAINSR</PrecipitationCategoryCode>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherFeatureTypeRef">
+					<OID>1208: Meteo</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+					<EffectiveStartDatetime>20100525203000.000</EffectiveStartDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1211</OID>
+					<ReportingDataCategoryCode>PRDCTD</ReportingDataCategoryCode>
+					<CredibilityCode>RPTPLA</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="PrecipitationRef">
+						<OID>1209: Rain</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>			
+						<LatitudeCoordinate>60.3</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+		</Report>
+	</CurrentState>
+	<CurrentState>
+		<Report>
+			<Context xsi:type="OperationalInformationGroup">
+				<OID>1215: Execution</OID>
+				<NameText>Execution</NameText>
+				<OperationalInformationGroupCategoryCode>PLNORD</OperationalInformationGroupCategoryCode> <!-- Plans/Orders -->
+			</Context>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1216</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="GeographicFeature">
+						<OID>Hill 123</OID>
+						<NameText>Hill 123</NameText>
+						<SolidSurfaceCompositionCode>EARTH</SolidSurfaceCompositionCode>
+						<TerrainCode>MOUNTS</TerrainCode>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherOrganisationTypeRef">
+					<OID>1037: Hill</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1217</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="GeographicFeatureRef">
+						<OID>Hill 123</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>	
+						<VerticalDistance>
+							<OID>0</OID>
+							<ReferenceCode>WGS84G</ReferenceCode>
+							<Dimension>230.00</Dimension>
+						</VerticalDistance>			
+						<LatitudeCoordinate>60.3</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1218</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="GeographicFeature">
+						<OID>Hill 456</OID>
+						<NameText>Hill 456</NameText>
+						<SolidSurfaceCompositionCode>EARTH</SolidSurfaceCompositionCode>
+						<TerrainCode>MOUNTS</TerrainCode>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherOrganisationTypeRef">
+					<OID>1037: Hill</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1219</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="GeographicFeatureRef">
+						<OID>Hill 456</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="GeographicPoint">
+						<OID>0</OID>	
+						<VerticalDistance>
+							<OID>0</OID>
+							<ReferenceCode>WGS84G</ReferenceCode>
+							<Dimension>180.00</Dimension>
+						</VerticalDistance>			
+						<LatitudeCoordinate>60.31</LatitudeCoordinate>
+						<LongitudeCoordinate>80.2</LongitudeCoordinate>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+						<MeaningCode>ADRPRP</MeaningCode>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1220</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherControlFeature">
+						<OID>1042: Phaseline GOLD</OID>
+						<NameText>Phaseline GOLD</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+					<OID>1043: Phaseline</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1221</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>1042: Phaseline GOLD</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="Line">
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1222</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherControlFeature">
+						<OID>1060: Phaseline SILVER</OID>
+						<NameText>Phaseline SILVER</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+					<OID>1043: Phaseline</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1223</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>1060: Phaseline SILVER</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="Line">
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1224</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="OtherControlFeature">
+						<OID>1190:  Phaseline PLATINUM</OID>
+						<NameText>Phaseline GOLD</NameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+					<OID>1043: Phaseline</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoLocationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1225</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="OtherControlFeatureRef">
+						<OID>1190:  Phaseline PLATINUM</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<Location xsi:type="Line">
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>0</OID>
+								<LatitudeCoordinate>60.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</Location>
+					<ObjectItemLocation>
+						<OID>0</OID>
+					</ObjectItemLocation>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1126</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1060: 1st Battalion</OID>
+						<NameText>1st Battalion</NameText>
+						<FormalAbbreviatedNameText>1st BN</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1061: Battalion</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1127</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1062: Company A</OID>
+						<NameText>Company A</NameText>
+						<FormalAbbreviatedNameText>COY A</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1063: Company</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1128</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1065: 1st Platoon</OID>
+						<NameText>1st Platoon</NameText>
+						<FormalAbbreviatedNameText>1st PLT</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1064: Platoon</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1129</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1066: 2d Platoon</OID>
+						<NameText>2d Platoon</NameText>
+						<FormalAbbreviatedNameText>2d PLT</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1064: Platoon</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoTypeType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1130</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+				</ReportingData>
+				<Who>
+					<ObjectItem xsi:type="Unit">
+						<OID>1067: 3d Platoon</OID>
+						<NameText>3d Platoon</NameText>
+						<FormalAbbreviatedNameText>3d PLT</FormalAbbreviatedNameText>
+					</ObjectItem>
+				</Who>
+				<ObjectTypeRef xsi:type="UnitTypeRef">
+					<OID>1064: Platoon</OID>
+				</ObjectTypeRef>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1131</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>1068: 1st Battalion has C2 of Company A</OID>
+						<ObjectItemAssociationCategoryCode>CMDCTL</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1132</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="UnitRef">
+						<OID>1191: Company B</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>1192: 1st Battalion has C2 of Company B</OID>
+						<ObjectItemAssociationCategoryCode>CMDCTL</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1133</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="UnitRef">
+						<OID>1065: 1st Platoon</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>1069: Company A has C2 of 1st Platoon</OID>
+						<ObjectItemAssociationCategoryCode>CMDCTL</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1134</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="UnitRef">
+						<OID>1066: 2d Platoon</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>1070: Company A has C2 of 2d Platoon</OID>
+						<ObjectItemAssociationCategoryCode>CMDCTL</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+			<Report xsi:type="WhoAssociationType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1135</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<WhoRef>
+					<ObjectItemRef xsi:type="UnitRef">
+						<OID>1062: Company A</OID>
+					</ObjectItemRef>
+				</WhoRef>
+					<ObjectObjectItemRef xsi:type="UnitRef">
+						<OID>1067: 3d Platoon</OID>
+					</ObjectObjectItemRef>
+					<ObjectItemAssociation>
+						<OID>1071: Company A has C2 of 3d Platoon</OID>
+						<ObjectItemAssociationCategoryCode>CMDCTL</ObjectItemAssociationCategoryCode>
+						<ObjectItemAssociationStatus>
+							<AssociationStatusCategoryCode>START</AssociationStatusCategoryCode>
+						</ObjectItemAssociationStatus>
+					</ObjectItemAssociation>
+			</Report>
+			<Report xsi:type="OrganisationStructureType">
+				<ReporterWho>
+					<OrganisationRef xsi:type="UnitRef">
+						<OID>1060: 1st Battalion</OID>
+					</OrganisationRef>
+				</ReporterWho>
+				<ReportedWhen xsi:type="ReportedWhenType">
+					<ReportingDatetime>20100525163000.000</ReportingDatetime>
+				</ReportedWhen>
+				<ReportingData>
+					<OID>1136</OID>
+					<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+					<CredibilityCode>RPTFCT</CredibilityCode>
+					<ReliabilityCode>A</ReliabilityCode>
+				</ReportingData>
+				<RootOrganisationRef xsi:type="UnitRef">
+					<OID>1060: 1st Battalion</OID>
+				</RootOrganisationRef>
+				<OrganisationStructure>
+					<OID>1072: 1st Battalion Organisation Structure</OID>
+					<ObjectItemAssociationRef>
+						<OID>1068: 1st Battalion has C2 of Company A</OID>
+					</ObjectItemAssociationRef>
+					<ObjectItemAssociationRef>
+						<OID>1069: Company A has C2 of 1st Platoon</OID>
+					</ObjectItemAssociationRef>
+					<ObjectItemAssociationRef>
+						<OID>1070: Company A has C2 of 2d Platoon</OID>
+					</ObjectItemAssociationRef>
+					<ObjectItemAssociationRef>
+						<OID>1071: Company A has C2 of 3d Platoon</OID>
+					</ObjectItemAssociationRef>
+					<ObjectItemAssociationRef>
+						<OID>1192: 1st Battalion has C2 of Company B</OID>
+					</ObjectItemAssociationRef>
+				</OrganisationStructure>
+			</Report>
+		</Report>
+	</CurrentState>
+</Order>
+</CBML>

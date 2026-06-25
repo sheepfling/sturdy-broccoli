@@ -30,12 +30,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Render a GitHub-job-friendly vendor runtime summary from normalized status artifacts.")
     parser.add_argument(
         "--status-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_runtime_status"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_runtime_status"),
         help="Directory containing vendor_runtime_status summary subdirectories.",
     )
     parser.add_argument(
         "--parity-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_parity_artifacts"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_parity_artifacts"),
         help="Directory containing vendor_parity_artifacts_summary.json.",
     )
     parser.add_argument(

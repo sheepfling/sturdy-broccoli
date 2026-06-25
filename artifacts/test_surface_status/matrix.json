@@ -1,0 +1,40 @@
+{
+  "dry_run": true,
+  "lane": "matrix",
+  "status": "passed",
+  "steps": [
+    {
+      "argv": [
+        "./tools/compliance",
+        "generate"
+      ],
+      "returncode": 0,
+      "status": "planned"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/run_spec2025_finish_line.py"
+      ],
+      "returncode": 0,
+      "status": "planned"
+    },
+    {
+      "argv": [
+        "./tools/compliance",
+        "discover",
+        "--show-backlog"
+      ],
+      "returncode": 0,
+      "status": "planned"
+    },
+    {
+      "argv": [
+        "./tools/section8-gate"
+      ],
+      "returncode": 0,
+      "status": "planned"
+    }
+  ],
+  "title": "Compliance and matrix lane"
+}

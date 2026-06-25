@@ -53,8 +53,8 @@ Validate:
 
 Primary assets:
 
-- `analysis/target_radar_proof/*`
-- `analysis/target_radar_backend_matrix/*`
+- `artifacts/target_radar_proof/*`
+- `artifacts/target_radar_backend_matrix/*`
 
 ### Level 10B: Multi-Federate Mission Validation
 
@@ -142,8 +142,8 @@ Use these as the first-class validation assets:
 - `examples/target_radar_simulation.py`
 - `scripts/run_target_radar_proof.py`
 - `scripts/ci/target_radar_proof.sh`
-- `analysis/target_radar_proof/*`
-- `analysis/two_federate_suite/*`
+- `artifacts/target_radar_proof/*`
+- `artifacts/two_federate_suite/*`
 
 ## Highest-Value Missing Validation Assets
 

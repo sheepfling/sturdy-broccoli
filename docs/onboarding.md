@@ -26,13 +26,21 @@ Pick the closest match:
    - then read [`import_boundary_rules.md`](import_boundary_rules.md)
    - then read [`package_responsibilities.md`](package_responsibilities.md)
 5. I need to work on FOMs
-   - read [`create_federate_and_fom.md`](create_federate_and_fom.md)
-   - then read [`fom_workbench.md`](fom_workbench.md)
-6. I need to run verification
+   - read [`fom_tooling_front_door.md`](fom_tooling_front_door.md)
+   - then branch to [`fom_reading_map.md`](fom_reading_map.md),
+     [`fom_validate.md`](fom_validate.md),
+     [`fom_workbench.md`](fom_workbench.md), or
+     [`create_federate_and_fom.md`](create_federate_and_fom.md)
+6. I need to choose a backend, transport, and FOM together
+   - read [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
+   - then branch to [`rti_factory_reading_map.md`](rti_factory_reading_map.md),
+     [`transport_extension_playbook.md`](transport_extension_playbook.md), or
+     [`fom_reading_map.md`](fom_reading_map.md) as needed
+7. I need to run verification
    - read [`local_verification_commands.md`](local_verification_commands.md)
    - read [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
    - then use [`../tools/python`](../tools/python) or [`../tools/test`](../tools/test)
-7. I need vendor or Java routes
+8. I need vendor or Java routes
    - read [`java_toolchain.md`](java_toolchain.md)
    - read [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
    - then read [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
@@ -82,8 +90,9 @@ For the cleaner version of that model, use
   [`import_boundary_rules.md`](import_boundary_rules.md),
   [`package_dependency_tree.md`](package_dependency_tree.md)
 - FOM tooling:
-  [`create_federate_and_fom.md`](create_federate_and_fom.md),
-  [`fom_workbench.md`](fom_workbench.md)
+  [`fom_tooling_front_door.md`](fom_tooling_front_door.md)
+- combined backend + transport + FOM choice:
+  [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
 
 ## Read Next
 

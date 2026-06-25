@@ -27,7 +27,7 @@ from hla.verification.repo_internal.fom_workbench import (
 )
 
 
-DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_workbench"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "artifacts" / "fom_workbench"
 
 
 def _parse_custom_load_set_specs(values: list[str]) -> dict[str, tuple[str, ...]]:

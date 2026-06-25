@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and 
+make derivative works from this material, for all purposes, provided that any use of the material 
+contains the following attribution: “Reprinted with permission from SISO Inc.” Should 
+a reader require additional information, contact the SISO Inc. Board of Directors.
+
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+		   xmlns:gdl="http://www.sisostds.org/schemas/gdl" targetNamespace="http://www.sisostds.org/schemas/gdl">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xs:complexType name="UseCases">
+		<xs:sequence>
+			<xs:element ref="gdl:UseCase" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="UseCases" type="gdl:UseCases"/>
+	<xs:complexType name="UseCase">
+		<xs:sequence>
+			<xs:element ref="gdl:UseCaseID"/>
+			<xs:element ref="gdl:UseCaseName"/>
+			<xs:element ref="gdl:UseCaseDescription"/>
+			<xs:element ref="gdl:ScenarioParameters"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="UseCase" type="gdl:UseCase"/>
+	<xs:complexType name="ScenarioParameters">
+		<xs:sequence>
+			<xs:element ref="gdl:PersistentObjectCount"/>
+			<xs:element ref="gdl:TransientObjectCount"/>
+			<xs:element ref="gdl:UpdateRate"/>
+			<xs:element ref="gdl:TrafficPattern"/>
+			<xs:element ref="gdl:ComplexityOfTranslation"/>
+			<xs:element ref="gdl:ObjectCreation"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ScenarioParameters" type="gdl:ScenarioParameters"/>
+	<xs:element name="ObjectCreation">
+		<xsd:annotation>
+			<xsd:documentation>Object creation types are based on their creation time relative to the duration of the simulation exercise.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Static">
+					<xsd:annotation>
+						<xsd:documentation>Creation of persistent object at the beginning of the simulation execution.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Dynamic">
+					<xsd:annotation>
+						<xsd:documentation>Creation of objects dynamically during the simulation execution.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="PersistentObjectCount" type="gdl:LMH"/>
+	<xs:element name="UseCaseID" type="xs:string"/>
+	<xs:element name="TrafficPattern">
+		<xsd:annotation>
+			<xsd:documentation>Defines the pattern of communications through a gateway.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Continuous">
+					<xsd:annotation>
+						<xsd:documentation>Each second of average network traffic throughput is plus or minus 10% from the previous second.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Burst Mode">
+					<xsd:annotation>
+						<xsd:documentation>Network traffic includes bursts of 50% more packets than the average network traffic.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="UpdateRate" type="gdl:LMH"/>
+	<xs:element name="TransientObjectCount" type="gdl:LMH"/>
+	<xs:element name="UseCaseDescription" type="xs:string"/>
+	<xs:element name="ComplexityOfTranslation" type="gdl:LMH"/>
+	<xs:element name="UseCaseName" type="xs:string"/>
+	<xs:simpleType name="LMH">
+		<xsd:annotation>
+			<xsd:documentation>Sets a qualitative value for rates, counts, and algorithmic complexities that the assigner needs to compare to the current state-of-the-art, rather than fixed values.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Low">
+				<xsd:annotation>
+					<xsd:documentation>Distinctly less than the typical value for a simulation exercise.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Medium">
+				<xsd:annotation>
+					<xsd:documentation>Typical value for a simulation exercise.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="High">
+				<xsd:annotation>
+					<xsd:documentation>Distinctly greater than the typical value for a simulation exercise.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VeryHigh">
+				<xsd:annotation>
+					<xsd:documentation>Substantially greater than the typical value for a simulation exercise.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ExtremelyHigh">
+				<xsd:annotation>
+					<xsd:documentation>Monumentally greater than the typical value for a simulation exercise.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -81,11 +81,11 @@ def build_pitch_202x_certification_summary(
     surface_audit = build_pitch_202x_surface_audit(project_root)
     time_window_audit = _build_time_window_vendor_parity_audit()
 
-    preflight_artifact = project_root / "analysis" / "preflight_artifacts" / "pitch-preflight.json"
-    smoke_status_dir = project_root / "analysis" / "vendor_runtime_status" / "vendor_green_pitch_smoke"
-    time_window_status_dir = project_root / "analysis" / "vendor_runtime_status" / "vendor_green_pitch_time_window_probe"
+    preflight_artifact = project_root / "artifacts" / "preflight_artifacts" / "pitch-preflight.json"
+    smoke_status_dir = project_root / "artifacts" / "vendor_runtime_status" / "vendor_green_pitch_smoke"
+    time_window_status_dir = project_root / "artifacts" / "vendor_runtime_status" / "vendor_green_pitch_time_window_probe"
     restore_state_status_dir = (
-        project_root / "analysis" / "vendor_runtime_status" / "vendor_green_pitch_time_window_restore_state_probe"
+        project_root / "artifacts" / "vendor_runtime_status" / "vendor_green_pitch_time_window_restore_state_probe"
     )
     surface_md = project_root / "packages" / "hla-vendor-pitch" / "docs" / "evidence" / "pitch_202x_surface_audit_2026-06-23.md"
     surface_json = project_root / "packages" / "hla-vendor-pitch" / "docs" / "evidence" / "pitch_202x_surface_audit_2026-06-23.json"

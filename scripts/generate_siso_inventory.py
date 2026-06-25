@@ -23,7 +23,7 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.siso_corpus import write_siso_inventory
 
 
-DEFAULT_OUTPUT_ROOT = Path.cwd() / "analysis" / "siso_downloads"
+DEFAULT_OUTPUT_ROOT = Path.cwd() / "artifacts" / "siso_downloads"
 
 
 def main(argv: list[str] | None = None) -> int:

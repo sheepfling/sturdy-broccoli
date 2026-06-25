@@ -19,6 +19,7 @@ from typing import Any, Iterable, Sequence
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import FederationExecutionAlreadyExists, RTIexception
+from hla.rti1516_2025.exceptions import FederationExecutionAlreadyExists as FederationExecutionAlreadyExists2025
 from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.handles import FederateHandle
 
@@ -139,7 +140,7 @@ def connect_create_join(
                     *config.create_federation_args(),
                 )
             created = True
-        except FederationExecutionAlreadyExists:
+        except (FederationExecutionAlreadyExists, FederationExecutionAlreadyExists2025):
             created = False
 
     handle = _call_service(rti, "join_federation_execution", "joinFederationExecution", *config.join_args())

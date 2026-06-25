@@ -51,7 +51,26 @@ def default_load_set_records(records: tuple[FOMInventoryRecord, ...]) -> tuple[F
     if not records:
         return ()
     load_mode = records[0].load_mode
+    scenario_family = records[0].scenario_family
     if load_mode == "ordered-family":
+        if scenario_family == "siso-rpr-2.0":
+            deduped: list[FOMInventoryRecord] = []
+            seen_basenames: set[str] = set()
+            for record in records:
+                basename = Path(record.path).name.lower()
+                if basename in seen_basenames:
+                    continue
+                seen_basenames.add(basename)
+                deduped.append(record)
+            return tuple(deduped)
+        if scenario_family == "siso-rpr-3.0":
+            normative = tuple(
+                record
+                for record in records
+                if "annex b files informative" not in record.path.lower()
+                and "rpr_fom_v3.0_1516-" not in Path(record.path).name.lower()
+            )
+            return normative or records
         return records
     if load_mode == "base-plus-extension":
         all_records = _inventory_records()

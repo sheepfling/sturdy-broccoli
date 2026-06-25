@@ -72,6 +72,7 @@ class FOMWorkbenchFamily:
     validation_issue_count: int = 0
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
+    datatype_normalizations: tuple[dict[str, str], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -108,6 +109,7 @@ class FOMWorkbenchLoadSet:
     validation_issue_count: int = 0
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
+    datatype_normalizations: tuple[dict[str, str], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -403,7 +405,7 @@ def _merge_conflict_from_modules(
                         )
                         or next(
                             (
-                                {"category": "array", "data_type": spec.data_type, "cardinality": spec.cardinality, "encoding": spec.encoding, "semantics": spec.semantics}
+                                {"category": "array", "data_type": spec.data_type, "cardinality": spec.cardinality, "encoding": spec.encoding, "source_encoding": spec.source_encoding, "semantics": spec.semantics}
                                 for name, spec in module.array_datatypes.items()
                                 if name == symbol
                             ),
@@ -419,7 +421,7 @@ def _merge_conflict_from_modules(
                         )
                         or next(
                             (
-                                {"category": "variant-record", "discriminant": spec.discriminant, "data_type": spec.data_type, "encoding": spec.encoding, "semantics": spec.semantics}
+                                {"category": "variant-record", "discriminant": spec.discriminant, "data_type": spec.data_type, "encoding": spec.encoding, "source_encoding": spec.source_encoding, "semantics": spec.semantics}
                                 for name, spec in module.variant_record_datatypes.items()
                                 if name == symbol
                             ),
@@ -569,6 +571,7 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
     validation_issue_count = 0
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
+    datatype_normalizations: tuple[dict[str, str], ...] = ()
     validation_command = f"./tools/fom-validate --family {records[0].scenario_family} --html"
     try:
         resolver = FOMResolver()
@@ -599,6 +602,7 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
             )
             load_set_report = report.load_set_reports[0] if report.load_set_reports else None
             validation_verdict, validation_passed, validation_issue_count, validation_issue_layers, validation_issue_groups = _validation_summary(load_set_report)
+            datatype_normalizations = tuple(getattr(load_set_report, "datatype_normalizations", ()) or ())
             validation_json_path = str((family_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
             validation_md_path = str((family_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
             validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
@@ -642,6 +646,7 @@ def _family_summary(records: tuple[FOMInventoryRecord, ...], *, validation_outpu
         validation_issue_count=validation_issue_count,
         validation_issue_layers=validation_issue_layers,
         validation_issue_groups=validation_issue_groups,
+        datatype_normalizations=datatype_normalizations,
         module_names=module_names,
         object_class_count=object_class_count,
         interaction_class_count=interaction_class_count,
@@ -687,6 +692,7 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
     validation_issue_count = 0
     validation_issue_layers: tuple[str, ...] = ()
     validation_issue_groups: tuple[dict[str, Any], ...] = ()
+    datatype_normalizations: tuple[dict[str, str], ...] = ()
     try:
         resolver = FOMResolver()
         resolved = resolver.resolve_many(tuple((_repo_root() / record.path) for record in records))
@@ -716,6 +722,7 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
             )
             load_set_report = report.load_set_reports[0] if report.load_set_reports else None
             validation_verdict, validation_passed, validation_issue_count, validation_issue_layers, validation_issue_groups = _validation_summary(load_set_report)
+            datatype_normalizations = tuple(getattr(load_set_report, "datatype_normalizations", ()) or ())
             validation_json_path = str((load_set_dir / "fom_validation_report.json").relative_to(validation_output_dir.parent))
             validation_md_path = str((load_set_dir / "fom_validation_report.md").relative_to(validation_output_dir.parent))
             validation_html_path = str(html_path.relative_to(validation_output_dir.parent))
@@ -753,6 +760,7 @@ def _load_set_summary(name: str, records: tuple[FOMInventoryRecord, ...], *, val
         validation_issue_count=validation_issue_count,
         validation_issue_layers=validation_issue_layers,
         validation_issue_groups=validation_issue_groups,
+        datatype_normalizations=datatype_normalizations,
         module_names=module_names,
         object_class_count=object_class_count,
         interaction_class_count=interaction_class_count,
@@ -2791,6 +2799,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
         validation_issue_count: 0,
         validation_issue_layers: [],
         validation_issue_groups: [],
+        datatype_normalizations: [],
         edition_classes: editionClasses,
         edition_scope: editionScopes.length === 1 ? editionScopes[0] : "cross-edition / ambiguous",
         baseline_kinds: baselineKinds,
@@ -3293,6 +3302,7 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
       const severity = severityClass(catalogStatus(family), family.validation_verdict);
       const firstIssueSymbol = firstValidationSymbol(family.validation_issue_groups || []);
       const commandItems = family.validation_command ? [{{ label: "validation command", command: family.validation_command }}] : [];
+      const normalizationRows = family.datatype_normalizations || [];
       host.innerHTML = `
         <div class="surface-kicker">Validation state</div>
         <div class="summary-title">
@@ -3330,6 +3340,9 @@ def _render_workbench_html(snapshot: FOMWorkbenchSnapshot) -> str:
           ])
         }}
         <p><strong>Issue layers:</strong> ${{(family.validation_issue_layers || []).join(", ") || "none"}}</p>
+        <div><strong>Datatype normalization:</strong>${{normalizationRows.length
+          ? `<div class="list">${{normalizationRows.map((row) => `<div><code>${{row.datatype}}</code> <span class="muted">${{row.category}}</span><br><span class="muted">${{row.source_encoding}} -> ${{row.canonical_encoding}}</span></div>`).join("")}}</div>`
+          : `<span class="muted">No source-specific datatype normalization was needed.</span>`}}</div>
         <div><strong>Issue groups:</strong>${{validationGroupsBlock(family.validation_issue_groups || [], family.baseline_kinds || [])}}</div>
         ${{
           renderCommandDrawer("Technical commands", commandItems, "Validation command unavailable for this selection.")

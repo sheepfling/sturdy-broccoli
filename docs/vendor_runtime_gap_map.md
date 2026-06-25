@@ -166,7 +166,7 @@ That means the next deliverable should be one of:
 - a new diagnostic note
 - or an explicit supported-subset statement
 
-The machine-readable known-gap profiles under `analysis/vendor_gap_profiles/`
+The machine-readable known-gap profiles under `artifacts/vendor_gap_profiles/`
 now also carry the supported next-step chain for these unpromoted areas:
 
 - preflight

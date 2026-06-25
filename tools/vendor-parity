@@ -11,7 +11,7 @@ usage: ./tools/vendor-parity [args...]
 
 Canonical vendor parity artifact flow:
   ./tools/vendor-parity
-  ./tools/vendor-parity --output-dir analysis/my_vendor_parity_artifacts
+  ./tools/vendor-parity --output-dir artifacts/my_vendor_parity_artifacts
 
 This is the human-facing wrapper over `scripts/run_vendor_parity_artifacts.py`.
 EOF

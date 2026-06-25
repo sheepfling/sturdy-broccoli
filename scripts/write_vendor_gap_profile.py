@@ -29,7 +29,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--profile", required=True, help="Known-gap profile name")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_gap_profiles"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_gap_profiles"),
         help="Directory for generated artifacts",
     )
     args = parser.parse_args(argv)

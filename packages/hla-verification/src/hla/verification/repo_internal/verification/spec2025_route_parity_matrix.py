@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 ROUTE_IDS_2025 = (
-    "python1516_2025-inprocess",
+    "python1516_2025",
     "python1516_2025-fedpro-grpc",
     "java-standard-2025-jpype",
     "java-standard-2025-py4j",
@@ -119,7 +119,7 @@ def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ..
             "tests/transport/test_grpc_transport_2025.py",
             "docs/plans/spec2025_finish_line_snapshot.json",
         )
-    if route == "python1516_2025-inprocess":
+    if route == "python1516_2025":
         return ("tests/test_rti1516_2025_python1516_2025_runtime.py",)
     return ()
 
@@ -164,7 +164,7 @@ def _row(
 _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "federation_lifecycle",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-FI-005", "HLA2025-FI-006"),
         _PYTHON_CORE_TESTS,
@@ -224,7 +224,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "object_exchange",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -282,7 +282,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "ownership",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -347,7 +347,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "ddm",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -403,7 +403,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "time_management",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-MOD-006"),
         _PYTHON_CORE_TESTS + _PYTHON_ROUTE_PARITY_TESTS,
@@ -475,7 +475,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "save_restore",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002"),
         _PYTHON_CORE_TESTS,
@@ -541,7 +541,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "mom",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
@@ -610,7 +610,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "support_services",
-        "python1516_2025-inprocess",
+        "python1516_2025",
         PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-MOD-007"),
         _PYTHON_CORE_TESTS,
@@ -829,7 +829,7 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "",
         "For the primary 2025 Python RTI claim, read the route identities narrowly:",
         "",
-        "- `python1516_2025-inprocess` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python1516-2025`.",
+        "- `python1516_2025` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python1516-2025`.",
         "- `hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`; it is not a route runtime owner.",
         "- Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations.",
         "- Hosted FedPro rows are transport-seam evidence over that same runtime, not a separate 2025 implementation family.",

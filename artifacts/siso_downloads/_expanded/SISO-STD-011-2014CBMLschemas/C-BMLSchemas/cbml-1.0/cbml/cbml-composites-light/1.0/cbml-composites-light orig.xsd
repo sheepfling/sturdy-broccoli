@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jc3iedm="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0" targetNamespace="http://www.sisostds.org/schemas/c-bml/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Coalition Battle Management Language (C-BML) information components defined for the Simulation Interoperability Standards Organization (SISO) C-BML Phase 1 Specification.</xs:documentation>
+		<xs:documentation>This version edited by GMU C4I Center members of the C-BML DG to provide the functionality of the original in a "light" version.</xs:documentation>
+	</xs:annotation>
+	<!-- Imports and Includes -->
+	<xs:import namespace="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" schemaLocation="../../jc3iedm-simple-types/3.0.2/jc3iedm-simple-types.xsd"/>
+<!--	<xs:include schemaLocation="../../cbml-codes/1.0/cbml-codes.xsd"/> -->
+	<xs:include schemaLocation="../../cbml-composites/1.0/cbml-composites.xsd"/>
+	<!-- ***************Light Types ******************-->
+	<!-- Who Light Types -->
+	<xs:complexType name="AffectedWhoLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"> Specifies who or what is affected by the execution of
+				an action (task or event). </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectRef" type="jc3iedm:OIDType"/>
+			<xs:element name="ActionObjectiveQualifierCode" type="jc3iedm:ActionObjectiveQualifierCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents a restriction
+						or other qualification applicable to a specific ACTION-OBJECTIVE for a
+						specific ACTION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- When Light Types -->
+	<xs:complexType name="TaskWhenLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the duration and start/end time of a
+				task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MinimumDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of
+						time in milliseconds for the minimum permissible period of effectiveness of
+						a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EstimatedDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of
+						time in milliseconds for the estimated period of effectiveness of a specific
+						task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of
+						time in milliseconds for the maximum permissible period of effectiveness of
+						a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskStartWhenLight" type="cbml:TaskStartWhenLightType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of a
+						task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskEndWhenLight" type="cbml:TaskEndWhenLightType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of a
+						task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskStartWhenLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="StartAbsoluteTime" type="cbml:StartWhenAbsoluteTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of a task in absolute
+						time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartRelativeTimeLight" type="cbml:StartWhenRelativeTimeLightType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of a task in relative
+						time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="StartWhenRelativeTimeLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of an action (task or event) in
+				relative time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="TaskRef" type="jc3iedm:OIDType"/>
+				<xs:element name="EventRef" type="jc3iedm:OIDType"/>
+			</xs:choice>
+			<xs:element name="StartTemporalAssociationCategoryCode" type="cbml:ActionStartTemporalAssociationCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of
+						chronological relationship of a subject action (task or event) to an object
+						action (task or event).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of
+						time in milliseconds that elapses after the start or end of a specific
+						object action (task or event) that a subject action (task or event) is
+						referenced to for its execution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskEndWhenLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="EndAbsoluteTime" type="cbml:EndWhenAbsoluteTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of a task in absolute
+						time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndRelativeTimeLight" type="cbml:EndWhenRelativeTimeLightType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of a task in relative
+						time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="EndWhenRelativeTimeLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of an action (task or event) in
+				relative time. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="TaskRef" type="jc3iedm:OIDType"/>
+				<xs:element name="EventRef" type="jc3iedm:OIDType"/>
+			</xs:choice>
+			<xs:element name="EndTemporalAssociationCategoryCode" type="cbml:ActionEndTemporalAssociationCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of
+						chronological relationship of a subject action (task or event) to an object
+						action (task or event).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of
+						time in milliseconds that elapses after the start or end of a specific
+						object action (task or event) that a subject action (task or event) is
+						referenced to for its execution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbsoluteReportedWhenLightType">
+		<xs:annotation>
+			<xs:documentation>
+				Defines When a reported action is happened, as a standard clock reference.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EffectiveStartDateTime" type="jc3iedm:DatetimeTypeFix18"/>
+			<xs:element name="EffectiveEndDateTime" type="jc3iedm:DatetimeTypeFix18" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RelativeReportedWhenLightType">
+		<xs:annotation>
+			<xs:documentation> Provides time as an offset to a task. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OffsetDuration" type="jc3iedm:DurationType19"/>
+			<xs:element name="TaskRef" type="jc3iedm:OIDType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Where Light Types -->
+	<xs:complexType name="AtWhereLightType">
+		<xs:annotation>
+			<xs:documentation>Defines Where an action is performed</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="AtWhereRef" type="jc3iedm:OIDType"/>
+			<xs:sequence>
+				<xs:element name="OID" type="jc3iedm:OIDType" minOccurs="0"/>
+				<xs:choice>
+					<xs:element name="LocationRef" type="jc3iedm:OIDType"/>
+					<xs:element name="ObjectLocationRef" type="jc3iedm:OIDType"/>
+					<xs:element name="LocationLight" type="cbml:LocationLightType"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="LocationLightType">
+		<xs:annotation>
+			<xs:documentation> Provides a choice for the four types of locations </xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="PointLight" type="cbml:PointLightType"/>
+			<xs:element name="Line" type="cbml:LineLightType"/>
+			<xs:element name="Surface" type="cbml:SurfaceLightType"/>
+			<xs:element name="CorridorArea" type="cbml:CorridorAreaLightType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="RouteWhereLightType">
+		<xs:annotation>
+			<xs:documentation> Supports Route. Provides a choice between a reference to a route or
+				an actual route. </xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="RouteRef" type="jc3iedm:OIDType"/>
+			<xs:element name="SpecificRoute" type="cbml:RouteLightType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="RouteLightType">
+		<xs:annotation>
+			<xs:documentation>Defines a route as a series of points to be followed in
+				action</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType" minOccurs="0"/>
+			<xs:element name="FromWhere" type="cbml:AtWhereLightType"/>
+			<xs:element name="ViaWhere" type="cbml:AtWhereLightType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ToWhere" type="cbml:AtWhereLightType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Location Light Types -->
+	<xs:complexType name="PointLightType">
+		<xs:annotation>
+			<xs:documentation> Describes the location of a point using the GDC coordinate system.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GDC" type="cbml:GDCLightType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LineLightType">
+		<xs:annotation>
+			<xs:documentation> Provides the elements of a line as a series of points.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GDC" type="cbml:GDCLightType" minOccurs="2" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SurfaceLightType">
+		<xs:annotation>
+			<xs:documentation> Provides the elements of a surface as a series of points.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BoundingLineLight" type="cbml:LineLightType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CorridorAreaLightType">
+		<xs:annotation>
+			<xs:documentation> 
+				Provides the elements of a corridor area as a width and a center line. 
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Width" type="jc3iedm:DimensionType12_3"/>
+			<xs:element name="CentreLIne" type="cbml:LineLightType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GDCLightType">
+		<xs:annotation>
+			<xs:documentation> Provides the coordinates for a point using the GDC system.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType" minOccurs="0"/>
+			<xs:choice>
+				<xs:element name="SpecificPoint" type="cbml:SpecificPointLightType"/>
+				<xs:element name="PointReference" type="jc3iedm:OIDType"/>
+			</xs:choice>
+			<xs:element name="Displacement" type="cbml:DisplacementLightType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SpecificPointLightType">
+		<xs:annotation>
+			<xs:documentation> Provides details of a point in the GDC system. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Latitude" type="jc3iedm:LatitudeCoordinateTypeRangeLatitude9_6"/>
+			<xs:element name="LatitudePrecisionCode" type="jc3iedm:AnglePrecisionCode" minOccurs="0"/>
+			<xs:element name="Longitude" type="jc3iedm:LongitudeCoordinateTypeRangeLongitude10_6"/>
+			<xs:element name="LongitudePrecisionCode" type="jc3iedm:AnglePrecisionCode" minOccurs="0"/>
+			<xs:element name="ElevationAMSL" type="jc3iedm:DimensionType12_3" minOccurs="0"/>
+			<xs:element name="ElevationPrecisionCode" type="jc3iedm:DistancePrecisionCode" minOccurs="0"/>
+			<xs:element name="ElevationReferenceCode" type="jc3iedm:VerticalDistanceReferenceCode" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DisplacementLightType">
+		<xs:annotation>
+			<xs:documentation> Provides a cartesian displacement to the specified point
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="XCoordinateDimension" type="jc3iedm:DimensionType12_3"/>
+			<xs:element name="YCoordinateDimension" type="jc3iedm:DimensionType12_3"/>
+			<xs:element name="ZCoordinateDimension" type="jc3iedm:DimensionType12_3" minOccurs="0"/>
+			<xs:element name="XPrecisionCode" type="jc3iedm:DistancePrecisionCode" minOccurs="0"/>
+			<xs:element name="YPrecisionCode" type="jc3iedm:DistancePrecisionCode" minOccurs="0"/>
+			<xs:element name="ZPrecisionCode" type="jc3iedm:DistancePrecisionCode" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Why Light Type-->
+	<xs:complexType name="TaskWhyLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"> Specifies reason for the execution of the action in a
+				TaskLight. This includes the desired effect and/or the relationship to other Tasks.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="DesiredEffect" type="cbml:DesiredEffectLightType"/>
+			<xs:element name="SupportedTask" type="cbml:SupportedTaskLightType" maxOccurs="unbounded"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="DesiredEffectLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"> 
+				Identifies a WHo and specifies the desired effect on that Who.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation xml:lang="en">
+					Specifies the desired effect of an action and the AffectedWho to receive the effect.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:element name="ActionEffectDescriptionCode" type="jc3iedm:ActionEffectDescriptionCode"/>
+			<xs:element name="OID" type="jc3iedm:OIDType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SupportedTaskLightType">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation xml:lan="en">Identifies a task which is supported by another task.
+					The SupportedTaskAction identifies the action of the supported task.
+					The Category Code tells the specific relationship between the tasks.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:element name="SupportedTaskAction" type="jc3iedm:OIDType"/>
+			<xs:element name="ActionFunctionalAssociationCategoryCode" type="jc3iedm:ActionFunctionalAssociationCategoryCode"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Task Light Type -->
+	<xs:complexType name="TaskLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"> Specifies the composites making up a task. Necessary to
+                describe Tasks in Orders and Requests.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TaskID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation> ID to be assigned to this task. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskeeWhoRef" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation> Who that is to carry out the task. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActivityCode" type="jc3iedm:ActionTaskActivityCode">
+				<xs:annotation>
+					<xs:documentation> What is to be done and when the task is to begin and end.
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskWhenLight" type="cbml:TaskWhenLightType">
+				<xs:annotation>
+					<xs:documentation> What is to be done and when the task is to begin and end.
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="AtWhere" type="cbml:AtWhereLightType">
+					<xs:annotation>
+						<xs:documentation> The location of or the route to be followed in carrying
+                            out the task. </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="RouteWhereLight" type="cbml:RouteWhereLightType"/>
+			</xs:choice>
+			<xs:element name="AffectedWhoLight" type="cbml:AffectedWhoLightType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation> Units or Objects who may be affected by the task.
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WhyLight" type="cbml:TaskWhyLightType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation> Why the task is being carried out. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskControlMeasures" type="jc3iedm:OIDType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation> Geographic constraints on the task. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskLocalExtensions" type="cbml:TaskLocalExtensionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">
+						Local extensions that are not part of the standard should be added here.
+					</xs:documentation>
+				</xs:annotation> 
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Report Header Light Type -->
+	<xs:complexType name="ReportHeaderLightType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the heading data for a
+                report.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReporterWho" type="cbml:ReporterWhoType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Who is reporting.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReportingData" type="cbml:ReportingData">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Information quality that applies to what is
+                        reported.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="AbsoluteReportedWhen" type="cbml:AbsoluteReportedWhenLightType"/>
+				<xs:element name="RelativeReportedWhen" type="cbml:RelativeReportedWhenLightType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

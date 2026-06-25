@@ -1,0 +1,18 @@
+{
+  "area": "negotiated_ownership",
+  "blocker_summary": null,
+  "classification": "known-gap",
+  "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+  "next_steps": [
+    "./tools/pitch preflight",
+    "./tools/pitch negotiated-probe",
+    "./tools/pitch negotiated-review 5"
+  ],
+  "operator_artifact_refs": [],
+  "operator_state": null,
+  "profile": "pitch-negotiated",
+  "recommended_operator_route": "./tools/pitch negotiated",
+  "status": "bridge-divergent",
+  "summary": "Pitch real-runtime negotiated ownership is not yet promoted as an executable parity slice in this workspace because the current JPype and Py4J bridge paths diverge.",
+  "vendor": "pitch"
+}

@@ -10,7 +10,7 @@ import hla.verification.repo_internal.fom_siso_showcase as fom_siso_showcase
 def test_build_fom_siso_showcase_tracks_expected_bucket_and_story(monkeypatch, tmp_path: Path) -> None:
     record = SimpleNamespace(
         id="siso-siso-link-16-link-16-v2-0",
-        path="analysis/siso_downloads/Link_16_v2.0.xml",
+        path="artifacts/siso_downloads/Link_16_v2.0.xml",
         edition_class="2010",
         load_mode="ordered-family",
         baseline_kind="third-party",
@@ -81,3 +81,26 @@ def test_build_fom_siso_showcase_tracks_expected_bucket_and_story(monkeypatch, t
     assert packet.validation_verdict == "parse-failed"
     assert packet.roundtrip_passed is False
     assert packet.overview_passed is False
+
+
+def test_write_fom_siso_showcase_writes_html(monkeypatch, tmp_path: Path) -> None:
+    report = fom_siso_showcase.FOMSisoShowcaseReport(
+        title="demo",
+        packet_results=(),
+        workbench_snapshot_path="snapshot.json",
+        workbench_html_path="workbench.html",
+        workbench_error=None,
+        bucket_counts={},
+    )
+    monkeypatch.setattr(fom_siso_showcase, "build_fom_siso_showcase", lambda **kwargs: report)
+
+    json_path, md_path, html_path, written_report = fom_siso_showcase.write_fom_siso_showcase(tmp_path / "out")
+
+    assert written_report is report
+    assert json_path.exists()
+    assert md_path.exists()
+    assert html_path.exists()
+    html_text = html_path.read_text(encoding="utf-8").lower()
+    assert "<!doctype html>" in html_text
+    assert "lane legend" in html_text
+    assert "template-fail-fast" in html_text

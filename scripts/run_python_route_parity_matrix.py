@@ -28,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Write the Python direct-vs-gRPC route parity matrix artifacts.")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "traceability"),
+        default=str(PROJECT_ROOT / "artifacts" / "traceability"),
         help="Directory for generated parity matrix artifacts",
     )
     args = parser.parse_args(argv)

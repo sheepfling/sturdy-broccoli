@@ -15,7 +15,13 @@ __all__ = [
     "RTI2025GrpcServerConfig",
     "PythonRTIGrpcServer",
     "PythonRTIGrpcServerConfig",
+    "QuirkyVendorGrpcWireAdapter",
+    "VendorGrpcTransport",
+    "VendorGrpcTransportConfig",
+    "VendorGrpcWireAdapter",
     "create_grpc_transport",
+    "create_quirky_vendor_grpc_transport",
+    "create_vendor_grpc_transport",
     "fedpro2010",
     "fedpro2025",
     "start_2025_grpc_server",
@@ -36,6 +42,12 @@ _EXPORT_MODULES = {
     "GrpcTransport": "hla.transports.grpc.transport",
     "GrpcTransportConfig": "hla.transports.grpc.transport",
     "create_grpc_transport": "hla.transports.grpc.transport",
+    "QuirkyVendorGrpcWireAdapter": "hla.transports.grpc.vendor_variant",
+    "VendorGrpcTransport": "hla.transports.grpc.vendor_variant",
+    "VendorGrpcTransportConfig": "hla.transports.grpc.vendor_variant",
+    "VendorGrpcWireAdapter": "hla.transports.grpc.vendor_variant",
+    "create_quirky_vendor_grpc_transport": "hla.transports.grpc.vendor_variant",
+    "create_vendor_grpc_transport": "hla.transports.grpc.vendor_variant",
 }
 
 

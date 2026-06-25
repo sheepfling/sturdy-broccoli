@@ -3052,9 +3052,9 @@ for requirement_id in ("HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"):
     evidence = list(_merge_scenario_evidence("connection-lost-callback", "disconnect-mom-cleanup", "lost-federate-mom"))
     for ref in (
         "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
-        "analysis/preflight_artifacts/pitch-preflight.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+        "artifacts/preflight_artifacts/pitch-preflight.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
     ):
         if ref not in evidence:
             evidence.append(ref)
@@ -5768,9 +5768,9 @@ def _pitch_profile_requirement_views(
             "blocked",
             (
                 "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
-                "analysis/preflight_artifacts/pitch-preflight.json",
-                "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-                "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+                "artifacts/preflight_artifacts/pitch-preflight.json",
+                "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+                "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
                 "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
                 "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
                 "tests/test_rti_pitch_split_packages.py::test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process",
@@ -5779,9 +5779,9 @@ def _pitch_profile_requirement_views(
         views["pitch-py4j"] = (
             "blocked",
             (
-                "analysis/preflight_artifacts/pitch-preflight.json",
-                "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-                "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+                "artifacts/preflight_artifacts/pitch-preflight.json",
+                "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+                "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
                 "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
                 "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
                 "tests/test_rti_pitch_split_packages.py::test_pitch_py4j_factory_attaches_gateway_process",

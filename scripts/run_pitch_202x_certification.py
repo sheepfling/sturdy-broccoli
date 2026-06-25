@@ -66,7 +66,7 @@ def main(argv: list[str] | None = None) -> int:
         "--project-root",
         type=Path,
         default=PROJECT_ROOT,
-        help="Repository root used for analysis artifact locations.",
+        help="Repository root used for generated artifact locations.",
     )
     parser.add_argument(
         "--output-dir",
@@ -76,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     project_root = args.project_root.resolve()
-    output_dir = (args.output_dir or (project_root / "analysis" / "pitch_202x_certification")).resolve()
+    output_dir = (args.output_dir or (project_root / "artifacts" / "pitch_202x_certification")).resolve()
     shell_env = os.environ.copy()
     python_cmd = os.environ.get("PYTHON", sys.executable)
 

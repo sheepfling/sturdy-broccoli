@@ -1,0 +1,11 @@
+{
+  "attempt_count": 5,
+  "evidence_tier": "probe",
+  "failure_count": 0,
+  "profile": "pitch-time-window-probe",
+  "promotion_note": "repeated-run stability evidence is present; promotion still requires clause-level parity review",
+  "promotion_readiness": "candidate",
+  "repeat_count": 5,
+  "stable": true,
+  "success_count": 5
+}

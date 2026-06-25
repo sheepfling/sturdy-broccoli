@@ -14,10 +14,33 @@ def test_split_grpc_transport_package_exports_transport_surface():
 
     assert hla.transports.grpc.GrpcTransport.__name__ == "GrpcTransport"
     assert hla.transports.grpc.GrpcTransportConfig.__name__ == "GrpcTransportConfig"
+    assert hla.transports.grpc.QuirkyVendorGrpcWireAdapter.__name__ == "QuirkyVendorGrpcWireAdapter"
+    assert hla.transports.grpc.VendorGrpcTransport.__name__ == "VendorGrpcTransport"
+    assert hla.transports.grpc.VendorGrpcTransportConfig.__name__ == "VendorGrpcTransportConfig"
+    assert hla.transports.grpc.VendorGrpcWireAdapter.__name__ == "VendorGrpcWireAdapter"
+    assert hla.transports.grpc.create_quirky_vendor_grpc_transport.__name__ == "create_quirky_vendor_grpc_transport"
+    assert hla.transports.grpc.create_vendor_grpc_transport.__name__ == "create_vendor_grpc_transport"
     assert hasattr(hla.transports.grpc, "fedpro2010")
     assert hasattr(hla.transports.grpc, "fedpro2025")
     assert hasattr(hla.transports.grpc, "FEDPRO2010_PROTO_DESCRIPTOR")
     assert hasattr(hla.transports.grpc, "FEDPRO2025_PROTO_DESCRIPTOR")
+
+
+def test_split_grpc_transport_package_exports_vendor_variant_as_transport_seam():
+    import hla.transports.grpc
+
+    assert hla.transports.grpc.QuirkyVendorGrpcWireAdapter.__module__ == "hla.transports.grpc.vendor_variant"
+    assert hla.transports.grpc.VendorGrpcTransport.__module__ == "hla.transports.grpc.vendor_variant"
+    assert hla.transports.grpc.VendorGrpcTransportConfig.__module__ == "hla.transports.grpc.vendor_variant"
+    assert hla.transports.grpc.VendorGrpcWireAdapter.__module__ == "hla.transports.grpc.vendor_variant"
+    assert hla.transports.grpc.create_quirky_vendor_grpc_transport.__module__ == "hla.transports.grpc.vendor_variant"
+    assert hla.transports.grpc.create_vendor_grpc_transport.__module__ == "hla.transports.grpc.vendor_variant"
+    assert "QuirkyVendorGrpcWireAdapter" in hla.transports.grpc.__all__
+    assert "VendorGrpcTransport" in hla.transports.grpc.__all__
+    assert "VendorGrpcTransportConfig" in hla.transports.grpc.__all__
+    assert "VendorGrpcWireAdapter" in hla.transports.grpc.__all__
+    assert "create_quirky_vendor_grpc_transport" in hla.transports.grpc.__all__
+    assert "create_vendor_grpc_transport" in hla.transports.grpc.__all__
 
 
 def test_split_grpc_transport_package_exposes_2025_server_as_hosted_route_surface():

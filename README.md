@@ -53,7 +53,7 @@ If you want the main follow-on guides, use:
 - [`docs/test_surface.md`](docs/test_surface.md): lane and focused-target map
 - [`docs/README.md`](docs/README.md): docs index by task
 
-Read [`docs/first_run.md`](docs/first_run.md) for the 2010 pure-Python bootstrap lane.
+Read [`docs/first_run.md`](docs/first_run.md) for the direct `python1516e` bootstrap lane.
 
 If you need a specific lane:
 

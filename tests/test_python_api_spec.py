@@ -32,7 +32,7 @@ def _assert_no_generic_signature(cls: type) -> None:
         assert "kwargs" not in parameters, f"{cls.__name__}.{method_name} still accepts **kwargs"
 
 
-def test_spec_rti_is_abstract_and_pythonic():
+def test_spec_rti_is_abstract_and_camelcase_canonical():
     assert getattr(RTIambassador, "_is_protocol", False)
     assert not hasattr(RTIambassador, "get_hla_version")
     assert hasattr(RTIambassador, "getHLAversion")
@@ -57,7 +57,7 @@ def test_spec_federate_is_a_noop_prototype():
     assert NullFederateAmbassador.__name__ == "NullFederateAmbassador"
 
 
-def test_runtime_rti_alias_routes_through_pythonic_method():
+def test_runtime_rti_legacy_alias_routes_through_canonical_method():
     rti = make_rti_ambassador(RecordingBackend(results={"getHLAversion": "HLA 1516.1-2010"}))
     assert rti.get_hla_version() == "HLA 1516.1-2010"
 

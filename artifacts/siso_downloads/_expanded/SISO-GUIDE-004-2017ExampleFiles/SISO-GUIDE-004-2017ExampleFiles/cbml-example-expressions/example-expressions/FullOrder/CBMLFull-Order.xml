@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<!-- This example CBML Full Order was drawn from GMU C4I Center work in NATO MSG-085. It is provided as an example only and is not intended to represent any sort of standard for an Order. -->
+<CBMLOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sisostds.org/schemas/c-bml/1.0" 
+ xsi:schemaLocation="http://www.sisostds.org/schemas/c-bml/1.0 ../../example-expressions-schema/cbml-example-expression-types.xsd">  
+  <OrderIssuedWhen>20140401103600.024</OrderIssuedWhen>     
+  <OrderID>bb6e6082-5775-11e3-94d4-000c2975e2e5</OrderID>        
+  <Execution>
+    <TaskersIntent>Recon enemy forces</TaskersIntent>
+    <Tasks>
+      <Task>
+        <Where>
+          <SpecificLocation>
+            <Location xsi:type="GeographicPoint">
+              <OID>L00001</OID>
+              <LatitudeCoordinate>58.587169</LatitudeCoordinate>
+              <LongitudeCoordinate>15.285854</LongitudeCoordinate>
+            </Location>
+          </SpecificLocation>
+        </Where>
+        <TaskWhat>
+          <ActionTask xsi:type="OtherActionTask">
+            <OID>1-223 Phase 1</OID>
+            <ActivityCode>MOVE</ActivityCode>
+          </ActionTask>
+        </TaskWhat>
+        <TaskWhen>
+          <TaskStartWhen>
+            <StartAbsoluteTime>
+              <StartUnspecifiedTime>
+                <StartQualifierCode>ASAP</StartQualifierCode>
+              </StartUnspecifiedTime>
+            </StartAbsoluteTime>
+          </TaskStartWhen> 
+        </TaskWhen>
+        <TaskerWho>
+            <OrganisationRef xsi:type="UnitRef">
+              <OID>TG 401.01</OID>
+            </OrganisationRef>
+        </TaskerWho>
+        <TaskeeWho>
+            <OrganisationRef xsi:type="UnitRef">
+              <OID>1-223</OID>
+            </OrganisationRef>
+        </TaskeeWho>
+      </Task>
+      <Task>
+        <Where>
+          <SpecificLocation>
+            <Location xsi:type="GeographicPoint">
+              <OID>L00002</OID>
+              <LatitudeCoordinate>58.546390</LatitudeCoordinate>
+              <LongitudeCoordinate>15.088100</LongitudeCoordinate>
+            </Location>
+          </SpecificLocation>
+        </Where>
+        <TaskWhat>
+          <ActionTask xsi:type="OtherActionTask">
+            <OID>SPARTAN31 Phase 1</OID>
+            <ActivityCode>MOVE</ActivityCode>
+          </ActionTask>
+        </TaskWhat>
+        <TaskWhen>
+          <TaskStartWhen>
+            <StartAbsoluteTime>
+              <StartUnspecifiedTime>
+                <StartQualifierCode>ASAP</StartQualifierCode>
+              </StartUnspecifiedTime>
+            </StartAbsoluteTime>
+          </TaskStartWhen> 
+        </TaskWhen>
+        <TaskerWho>
+          <OrganisationRef xsi:type="UnitRef">
+            <OID>TG 401.01</OID>
+          </OrganisationRef>
+        </TaskerWho>
+        <TaskeeWho>
+          <OrganisationRef xsi:type="UnitRef">
+            <OID>SPARTAN31</OID>
+          </OrganisationRef>
+        </TaskeeWho>
+      </Task>
+      <Task>
+        <Where>
+          <SpecificLocation>
+            <Location xsi:type="GeographicPoint">
+              <OID>L00003</OID>
+              <LatitudeCoordinate>58.587169</LatitudeCoordinate>
+              <LongitudeCoordinate>15.285854</LongitudeCoordinate>
+            </Location>
+          </SpecificLocation>
+        </Where>
+        <TaskWhat>
+          <ActionTask xsi:type="OtherActionTask">
+            <OID>UAV2 Phase 1</OID>
+            <ActivityCode>MOVE</ActivityCode>
+          </ActionTask>
+        </TaskWhat>
+        <TaskWhen>
+          <TaskStartWhen>
+            <StartAbsoluteTime>
+              <StartUnspecifiedTime>
+                <StartQualifierCode>ASAP</StartQualifierCode>
+              </StartUnspecifiedTime>
+            </StartAbsoluteTime>
+          </TaskStartWhen> 
+        </TaskWhen>
+        <TaskerWho>
+          <OrganisationRef xsi:type="UnitRef">
+            <OID>TG 401.01</OID>
+          </OrganisationRef>
+        </TaskerWho>
+        <TaskeeWho>
+          <OrganisationRef xsi:type="UnitRef">
+            <OID>UAV2</OID>
+          </OrganisationRef>
+        </TaskeeWho>
+      </Task>
+    </Tasks>
+  </Execution>
+</CBMLOrder>
+

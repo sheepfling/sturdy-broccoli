@@ -238,7 +238,30 @@ def test_fom_siso_showcase_top_level_wrapper_bootstraps_source_checkout(tmp_path
     assert result.returncode == 0, result.stderr
     assert (output_dir / "fom_siso_showcase_report.json").exists()
     assert (output_dir / "fom_siso_showcase_report.md").exists()
+    assert (output_dir / "fom_siso_showcase.html").exists()
     assert (output_dir / "workbench" / "fom_workbench_snapshot.json").exists()
+
+
+def test_fom_siso_runtime_showcase_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "fom-siso-runtime-showcase"
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "fom-siso-runtime-showcase"),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert (output_dir / "siso_runtime_showcase_summary.json").exists()
+    assert (output_dir / "siso_runtime_showcase_scenarios.csv").exists()
+    assert (output_dir / "siso_runtime_showcase_report.md").exists()
 
 
 def test_fom_workbench_top_level_wrapper_writes_snapshot_and_html(tmp_path: Path) -> None:
@@ -402,9 +425,9 @@ def test_vendor_parity_top_level_wrapper_runs_with_default_args(tmp_path: Path) 
     )
 
     assert result.returncode == 0, result.stderr
-    summary_path = tmp_path / "analysis" / "vendor_parity_artifacts" / "vendor_parity_artifacts_summary.json"
-    manifest_path = tmp_path / "analysis" / "vendor_parity_artifacts" / "vendor_parity_artifacts_manifest.csv"
-    report_path = tmp_path / "analysis" / "vendor_parity_artifacts" / "vendor_parity_artifacts_report.md"
+    summary_path = tmp_path / "artifacts" / "vendor_parity_artifacts" / "vendor_parity_artifacts_summary.json"
+    manifest_path = tmp_path / "artifacts" / "vendor_parity_artifacts" / "vendor_parity_artifacts_manifest.csv"
+    report_path = tmp_path / "artifacts" / "vendor_parity_artifacts" / "vendor_parity_artifacts_report.md"
     assert summary_path.exists()
     assert manifest_path.exists()
     assert report_path.exists()
@@ -470,7 +493,7 @@ def test_vendor_parity_script_bootstraps_source_checkout(tmp_path: Path) -> None
     )
 
     assert result.returncode == 0, result.stderr
-    summary_path = tmp_path / "analysis" / "vendor_parity_artifacts" / "vendor_parity_artifacts_summary.json"
+    summary_path = tmp_path / "artifacts" / "vendor_parity_artifacts" / "vendor_parity_artifacts_summary.json"
     assert summary_path.exists()
     payload = json.loads(summary_path.read_text(encoding="utf-8"))
     assert payload["suite_name"] == "vendor-parity-artifacts"
@@ -711,7 +734,7 @@ def test_two_federate_top_level_wrapper_prints_help() -> None:
     assert result.returncode == 0
     assert "./tools/two-federate" in result.stdout
     assert "--target-radar-steps 6" in result.stdout
-    assert "--output-dir analysis/my_two_federate_suite" in result.stdout
+    assert "--output-dir artifacts/my_two_federate_suite" in result.stdout
 
 
 def test_two_federate_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:

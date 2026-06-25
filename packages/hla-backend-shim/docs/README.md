@@ -17,13 +17,12 @@ module path `hla.backends.shim.runtime_aliases`, where `Python2025Backend`,
 `Python2025RTIAmbassador`, and `create_python2025_backend` still point through
 to the real runtime package.
 
-The other `hla.backends.shim.*` helper modules are intentionally thin
-forwarders into `hla.backends.python1516_2025.*`. They remain only as temporary,
-test-backed legacy import compatibility scaffolding and should not become the
-normal import path for new runtime code. They are kept only for test-backed
-legacy import compatibility, and they are also a test-backed legacy
-compatibility surface. They are deprecated and should be removed after
-migration.
+No shim helper modules remain beyond `hla.backends.shim.runtime_aliases`.
+Legacy helper forwarders have been removed. New runtime code should not import
+through `hla.backends.shim.*`.
+This package remains a test-backed legacy compatibility surface until the last
+callers migrate away.
+It is deprecated and should be removed after migration.
 
 The architectural intent remains explicit. The real Python 2025 RTI backend
 already lives in `hla-backend-python1516-2025`; this package is the wrapper-only

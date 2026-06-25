@@ -23,7 +23,7 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.fom_roundtrip import write_fom_roundtrip
 
 
-DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_roundtrip"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "artifacts" / "fom_roundtrip"
 
 
 def main(argv: list[str] | None = None) -> int:

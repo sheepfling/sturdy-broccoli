@@ -53,9 +53,9 @@ def test_write_vendor_gap_profile_emits_known_gap_summary(tmp_path: Path) -> Non
     assert lost_federate_payload["operator_state"] == "environment-blocked"
     assert "Docker is unreachable" in lost_federate_payload["blocker_summary"]
     assert lost_federate_payload["operator_artifact_refs"] == [
-        "analysis/preflight_artifacts/pitch-preflight.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+        "artifacts/preflight_artifacts/pitch-preflight.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
     ]
     assert lost_federate_payload["next_steps"] == [
         "./tools/pitch preflight",
@@ -90,7 +90,7 @@ def test_write_vendor_gap_profile_script_bootstraps_source_checkout(tmp_path: Pa
 
 def test_live_pitch_lost_federate_gap_profile_tracks_operator_blockers() -> None:
     payload = json.loads(
-        (ROOT / "analysis" / "vendor_gap_profiles" / "pitch-lost-federate.json").read_text(encoding="utf-8")
+        (ROOT / "artifacts" / "vendor_gap_profiles" / "pitch-lost-federate.json").read_text(encoding="utf-8")
     )
 
     assert payload["profile"] == "pitch-lost-federate"
@@ -98,9 +98,9 @@ def test_live_pitch_lost_federate_gap_profile_tracks_operator_blockers() -> None
     assert payload["operator_state"] == "environment-blocked"
     assert "Docker is unreachable" in payload["blocker_summary"]
     assert payload["operator_artifact_refs"] == [
-        "analysis/preflight_artifacts/pitch-preflight.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+        "artifacts/preflight_artifacts/pitch-preflight.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
     ]
 
 

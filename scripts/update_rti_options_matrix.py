@@ -30,12 +30,25 @@ def _extract_alias_sets() -> list[tuple[str, list[str]]]:
     groups: list[tuple[str, list[str]]] = []
     for plugin in iter_rti_backend_plugins():
         aliases = sorted({plugin.name, *plugin.aliases})
-        alias_values = sorted(aliases)
-        key = _classify(alias_values)
+        key = _classify(aliases)
         if key is None:
             continue
+        alias_values = sorted(aliases, key=lambda alias: _alias_sort_key(key, alias))
         groups.append((key, alias_values))
     return groups
+
+
+def _alias_sort_key(section: str, alias: str) -> tuple[int, str]:
+    if section == "Pure Python":
+        preferred_order = {
+            "python1516e": 0,
+            "python-1516e": 1,
+            "python": 2,
+            "in-memory": 3,
+            "python-in-memory": 4,
+        }
+        return (preferred_order.get(alias, 100), alias)
+    return (0, alias)
 
 
 def _classify(aliases: list[str]) -> str | None:

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jc3iedm="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0" targetNamespace="http://www.sisostds.org/schemas/c-bml/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">XML schema defined by the Multilateral Interoperability Programme (MIP) - Editor: Dr. Michael Gerz, gerz@fgan.de, FGAN FKIE, Germany</xs:documentation>
+		<xs:documentation xml:lang="en">The following schema is directly derived from the JC3IEDM 3.0.2:oo:2.2 schema.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" schemaLocation="../../jc3iedm-simple-types/3.0.2/jc3iedm-simple-types.xsd"/>
+	<xs:include schemaLocation="../../cbml-composites/1.0/cbml-composites.xsd"/>
+	<!-- Concrete Types Definition -->
+	<xs:complexType name="PersonStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM-STATUS that is a record of condition of a specific PERSON.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemStatus">
+				<xs:sequence>
+					<xs:element name="DutyStatusCode" type="jc3iedm:PersonStatusDutyStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the availability of a specific PERSON for duty at a military or civilian post of employment.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PhysicalStatusCode" type="jc3iedm:PersonStatusPhysicalStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the general physical status of a specific PERSON.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PhysicalStatusQualifierCode" type="jc3iedm:PersonStatusPhysicalStatusQualifierCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that qualifies the health conditions of a specific PERSON at a specific point in time.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RadiationDoseQuantity" type="jc3iedm:QuantityType6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the total radiation dose to which a person has been exposed. The unit of measure is centiGray (cGy).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ReserveIndicatorCode" type="jc3iedm:PersonStatusReserveIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether a specific PERSON has been placed in reserve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Person">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM that is a human being to whom military or civilian significance is attached.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItem">
+				<xs:sequence>
+					<xs:element name="BirthDatetime" type="jc3iedm:DatetimeTypeFix18" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string representing a point in time that designates the date when a specific PERSON was born.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BloodTypeCode" type="jc3iedm:PersonBloodTypeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A code which represents the specific blood type of a PERSON.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GenderCode" type="jc3iedm:GenderCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A code that represents the classification of a PERSON based on reproductive physiological traits.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ProfessingIndicatorCode" type="jc3iedm:PersonProfessingIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether a specific PERSON professes a religious preference.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="IdentificationDocument" type="cbml:PersonIdentificationDocument">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'is-identified-by' relationship.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="IdentificationDocumentRef" type="cbml:PersonIdentificationDocumentRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'is-identified-by' relationship.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="LanguageSkill" type="cbml:PersonLanguageSkill">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'is-recognised-as-having' relationship.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="LanguageSkillRef" type="cbml:PersonLanguageSkillRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'is-recognised-as-having' relationship.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PersonRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Person - An OBJECT-ITEM that is a human being to whom military or civilian significance is attached.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PersonIdentificationDocument">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A document used to identify a specific PERSON.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonIdentificationDocumentCode" type="jc3iedm:PersonIdentificationDocumentCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the type of document used to identify a specific PERSON.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumberText" type="jc3iedm:TextTypeVar50">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent the identifying number of the specific document used to identify a PERSON.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonIdentificationDocumentRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some PersonIdentificationDocument - A document used to identify a specific PERSON.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonLanguageSkill">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A proficiency or ability of a specific PERSON with regard to a specific language.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LanguageCategoryCode" type="jc3iedm:LanguageCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the particular language of PERSON-LANGUAGE-SKILL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GeneralProficiencyCode" type="jc3iedm:PersonLanguageSkillGeneralProficiencyCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the general level of proficiency of a specific PERSON in a specific language skill.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListeningProficiencyLevelCode" type="jc3iedm:LanguageSkillProficiencyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the level of listening comprehension of a specific PERSON in a specific language skill.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReadingProficiencyLevelCode" type="jc3iedm:LanguageSkillProficiencyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the level of reading comprehension of a specific PERSON in a specific language skill.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpeakingProficiencyLevelCode" type="jc3iedm:LanguageSkillProficiencyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the level of speaking proficiency of a specific PERSON in a specific language skill.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WritingProficiencyLevelCode" type="jc3iedm:LanguageSkillProficiencyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the level of writing proficiency of a specific PERSON in a specific language skill.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonLanguageSkillRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some PersonLanguageSkill - A proficiency or ability of a specific PERSON with regard to a specific language.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-TYPE that represents human beings about whom information is to be held.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectType">
+				<xs:sequence>
+					<xs:element name="PersonTypeCategoryCode" type="jc3iedm:PersonTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of PERSON-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PersonTypeSubcategoryCode" type="jc3iedm:PersonTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of PERSON-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PersonRankCode" type="jc3iedm:PersonTypeRankCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents a designation for a military, naval, or civil grade that establishes the relative position or status of a specific PERSON-TYPE in an organisation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PersonTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some PersonType - An OBJECT-TYPE that represents human beings about whom information is to be held.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Group Account Types -->
+	<xs:complexType name="ObjectItemGroupAccount">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to accounting for a set of groups that are associated with the specific OBJECT-ITEM at the time specified by REPORTING-DATA. The accounting may result from or be affected by a specific ACTION.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar50" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific OBJECT-ITEM-GROUP-ACCOUNT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActionRef" type="cbml:AbstractActionRef" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">If the underlying cause for the reported counting needs to be specified, it can be done by reference to ACTION. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, OtherActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Detail" type="cbml:ObjectItemGroupAccountDetail">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'is-enumerated-in' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="DetailRef" type="cbml:ObjectItemGroupAccountDetailRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'is-enumerated-in' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemGroupAccountDetail">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The total count and condition of a specific group included in a specific OBJECT-ITEM-GROUP-ACCOUNT. The group is defined as a specific PERSON-TYPE that may also be categorised by a specific GROUP-CHARACTERISTIC.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GroupAccountDetailCount" type="jc3iedm:CountType9">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The integer value representing the aggregated units in a specific OBJECT-ITEM-GROUP-ACCOUNT-DETAIL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectItemGroupAccountDetailQualifierCode" type="jc3iedm:ObjectItemGroupAccountDetailQualifierCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that describes the condition of the group counted in a specific OBJECT-ITEM-GROUP-ACCOUNT-DETAIL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:element name="GroupCharacteristic" type="cbml:GroupCharacteristic">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">The GROUP-CHARACTERISTIC.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="GroupCharacteristicRef" type="cbml:GroupCharacteristicRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">The GROUP-CHARACTERISTIC.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="PersonTypeRef" type="cbml:PersonTypeRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The PERSON-TYPE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemGroupAccountDetailRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectItemGroupAccountDetail - The total count and condition of a specific group included in a specific OBJECT-ITEM-GROUP-ACCOUNT. The group is defined as a specific PERSON-TYPE that may also be categorised by a specific GROUP-CHARACTERISTIC.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GroupCharacteristic">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to a set of characteristics that may be used for identifying a distinct collection of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AgeGroupCode" type="jc3iedm:GroupCharacteristicAgeGroupCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies the age group in a specific GROUP-CHARACTERISTIC.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaladyCode" type="jc3iedm:GroupCharacteristicMaladyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies the type of ill health, ailment or disease in a specific GROUP-CHARACTERISTIC.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaladyTransmissibilityIndicatorCode" type="jc3iedm:GroupCharacteristicMaladyTransmissibilityIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies whether the type of ill health, ailment or disease in a specific GROUP-CHARACTERISTIC is communicable.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GenderCode" type="jc3iedm:GenderCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies the gender in a specific GROUP-CHARACTERISTIC.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LanguageCode" type="jc3iedm:LanguageCategoryCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies the language group in a specific GROUP-CHARACTERISTIC.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TriageCode" type="jc3iedm:GroupCharacteristicTriageCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies the triage classification in a specific GROUP-CHARACTERISTIC.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GroupCharacteristicRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some GroupCharacteristic - A reference to a set of characteristics that may be used for identifying a distinct collection of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhoGroupAccountType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the group account of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GroupAccount" type="cbml:ObjectItemGroupAccount">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to accounting for a set of groups that are associated with the specific OBJECT-ITEM at the time specified by ReportedWhen. The accounting may result from or be affected by a specific ACTION.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoGroupAccountRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoGroupAccountType - Specifies a report describing the group account of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

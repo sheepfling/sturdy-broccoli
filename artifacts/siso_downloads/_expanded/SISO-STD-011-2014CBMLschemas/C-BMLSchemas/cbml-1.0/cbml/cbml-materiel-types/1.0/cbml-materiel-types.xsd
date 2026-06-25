@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jc3iedm="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0" targetNamespace="http://www.sisostds.org/schemas/c-bml/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">XML schema defined by the Multilateral Interoperability Programme (MIP) - Editor: Dr. Michael Gerz, gerz@fgan.de, FGAN FKIE, Germany</xs:documentation>
+		<xs:documentation xml:lang="en">The following schema is directly derived from the JC3IEDM 3.0.2:oo:2.2 schema.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" schemaLocation="../../jc3iedm-simple-types/3.0.2/jc3iedm-simple-types.xsd"/>
+	<xs:include schemaLocation="../../cbml-entity-types/1.0/cbml-entity-types.xsd"/>
+	<!-- Concrete Types Definition -->
+	<xs:complexType name="AircraftType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to fly.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="AircraftTypeCategoryCode" type="jc3iedm:AircraftTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AirframeDesignCode" type="jc3iedm:AircraftTypeAirframeDesignCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the design of the airframe of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ModelCode" type="jc3iedm:AircraftTypeModelCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the specific design of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ManningCode" type="jc3iedm:AircraftTypeManningCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether an aircraft is designed to be manned or unmanned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MilitaryCivilianCode" type="jc3iedm:AircraftTypeMilitaryCivilianCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether an aircraft is primarily intended for military or civilian use.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MainPurposeCode" type="jc3iedm:AircraftTypeMainPurposeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the main purpose of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DesignRoleCode" type="jc3iedm:AircraftTypeDesignRoleCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the designed role of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DesignRangeCode" type="jc3iedm:AircraftTypeDesignRangeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the designed range of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="WeatherQualifierCode" type="jc3iedm:AircraftTypeWeatherQualifierCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the weather conditions in which an AIRCRAFT-TYPE can perform its mission.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TrainingCategoryCode" type="jc3iedm:AircraftTypeTrainingCategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes whether an aircraft can be used for training purposes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LoadCategoryCode" type="jc3iedm:AircraftTypeLoadCategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents a loading capability of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TakeoffAndLandingCode" type="jc3iedm:AircraftTypeTakeoffAndLandingCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the takeoff and landing designation of an AIRCRAFT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="WingSpanDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the spread of the wings of a specific AIRCRAFT-TYPE measured from end to end.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AircraftTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some AircraftType - An EQUIPMENT-TYPE that is designed to fly.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MaritimeEquipmentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to be used in a maritime environment.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="MaritimeEquipmentTypeCategoryCode" type="jc3iedm:MaritimeEquipmentTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of MARITIME-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaritimeEquipmentTypeSubcategoryCode" type="jc3iedm:MaritimeEquipmentTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of MARITIME-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MaritimeEquipmentTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some MaritimeEquipmentType - An EQUIPMENT-TYPE that is designed to be used in a maritime environment.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherMaterielType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-TYPE that represents equipment, apparatus or supplies of military interest without distinction to its application for administrative or combat purposes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherMaterielTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherMaterielType - An OBJECT-TYPE that represents equipment, apparatus or supplies of military interest without distinction to its application for administrative or combat purposes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RailcarType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to operate on rail tracks.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="RailcarTypeCategoryCode" type="jc3iedm:RailcarTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of RAILCAR-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RailcarTypeSubcategoryCode" type="jc3iedm:RailcarTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of RAILCAR-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GaugeDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the horizontal distance measured from side to side and perpendicular to the central axis of a specific railcar track.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RailcarTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some RailcarType - An EQUIPMENT-TYPE that is designed to operate on rail tracks.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubsurfaceVesselType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A vessel principally designed to operate under the water surface.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractVesselType">
+				<xs:sequence>
+					<xs:element name="SubsurfaceVesselTypeCategoryCode" type="jc3iedm:SubsurfaceVesselTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of subsurface vessel.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DivedDisplacementQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the volume of water that is moved by the subsurface vessel when it is entirely below the surface. The unit of measure is ton.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SpeedCavitationQuantity" type="jc3iedm:QuantityType3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the speed at which the subsurface vessel will form bubbles or a vacuum in the water. The unit of measure is knots.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TorpedoLoadingGearIndicatorCode" type="jc3iedm:SubsurfaceVesselTypeTorpedoLoadingGearIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether a subsurface vessel has torpedo loading rails and lifting bands.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubsurfaceVesselTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some SubsurfaceVesselType - A vessel principally designed to operate under the water surface.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractVesselTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SurfaceVesselType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A vessel principally designed to operate on the water surface.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractVesselType">
+				<xs:sequence>
+					<xs:element name="SurfaceVesselTypeCategoryCode" type="jc3iedm:SurfaceVesselTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of surface vessel.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DisplacementQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the maximum volume of water moved by the vessel when it is fully loaded. The unit of measure is cubic metre.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaximumDeckLoadQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the Ship's maximum allowable deck load. The unit of measure is kilogram.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SurfaceVesselTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some SurfaceVesselType - A vessel principally designed to operate on the water surface.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractVesselTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VehicleType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to operate on land routes (other than rail) with a primary role of transporting personnel, equipment or supplies.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="VehicleTypeCategoryCode" type="jc3iedm:VehicleTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of VEHICLE-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VehicleTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some VehicleType - An EQUIPMENT-TYPE that is designed to operate on land routes (other than rail) with a primary role of transporting personnel, equipment or supplies.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherMaterielStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM-STATUS that is a record of condition of a specific MATERIEL.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielStatus"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AmmunitionType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A CONSUMABLE-MATERIEL-TYPE that is a complete device charged with explosives, propellants, pyrotechnics, initiating composition, or nuclear, biological, or chemical material for use in military operations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielType">
+				<xs:sequence>
+					<xs:element name="AmmunitionTypeCategoryCode" type="jc3iedm:AmmunitionTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of AMMUNITION-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CalibreText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a specific calibre of an AMMUNITION-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MineMaritimeFiringCode" type="jc3iedm:AmmunitionTypeMineMaritimeFiringCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the firing mechanism for a maritime mine.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ExerciseMineFlareColourCode" type="jc3iedm:AmmunitionTypeExerciseMineFlareColourCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the colour of the flare released by the exercise mine.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AmmunitionTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some AmmunitionType - A CONSUMABLE-MATERIEL-TYPE that is a complete device charged with explosives, propellants, pyrotechnics, initiating composition, or nuclear, biological, or chemical material for use in military operations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MineStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MATERIEL-STATUS that is a record of condition of a specific mine.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielStatus">
+				<xs:sequence>
+					<xs:element name="MineBuriedRatio" type="jc3iedm:RatioType6_5" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric quotient value that represents the percentage of the maritime mine that is buried. The value must be in the range from 0 to 1.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MineStatusCode" type="jc3iedm:MineStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the status of a mine.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AirDropEffectCode" type="jc3iedm:MineStatusAirDropEffectCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represent the behaviour of air-delivered mine after weapon release.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaritimeMineQualifierCode" type="jc3iedm:MineStatusMaritimeMineQualifierCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the qualification status of a specific maritime mine.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherMateriel">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM that is equipment, apparatus or supplies of military interest without distinction as to its application for administrative or combat purposes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMateriel"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherMaterielRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherMateriel - An OBJECT-ITEM that is equipment, apparatus or supplies of military interest without distinction as to its application for administrative or combat purposes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherVesselType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to operate on or under the water surface.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractVesselType">
+				<xs:sequence>
+					<xs:element name="VesselTypeCategoryCode" type="jc3iedm:VesselTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of VESSEL-TYPE. It serves as a discriminator that partitions VESSEL-TYPE into subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherVesselTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherVesselType - An EQUIPMENT-TYPE that is designed to operate on or under the water surface.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractVesselTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CbrnEquipmentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed for specialised roles in detecting, decontaminating or reconnoitring CBRN agents.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="CbrnEquipmentTypeCategoryCode" type="jc3iedm:CbrnEquipmentTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of CBRN-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CbrnEquipmentTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CbrnEquipmentType - An EQUIPMENT-TYPE that is designed for specialised roles in detecting, decontaminating or reconnoitring CBRN agents.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ElectronicEquipmentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to use electronic processing to realise its primary function.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="ElectronicEquipmentTypeCategoryCode" type="jc3iedm:ElectronicEquipmentTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of ELECTRONIC-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ElectronicEquipmentTypeSubcategoryCode" type="jc3iedm:ElectronicEquipmentTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of ELECTRONIC-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ElectronicEquipmentTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ElectronicEquipmentType - An EQUIPMENT-TYPE that is designed to use electronic processing to realise its primary function.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EngineeringEquipmentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to accomplish engineering functions.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="EngineeringEquipmentTypeCategoryCode" type="jc3iedm:EngineeringEquipmentTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of ENGINEERING-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EngineeringEquipmentTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some EngineeringEquipmentType - An EQUIPMENT-TYPE that is designed to accomplish engineering functions.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InstrumentLandingSystem">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MATERIEL that provides aircraft with horizontal and vertical guidance just before landing and during landing, and at certain fixed points, indicates the distance to the reference point of landing.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMateriel">
+				<xs:sequence>
+					<xs:element name="BeamWidthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the extreme horizontal distance measured from side to side and perpendicular to the central axis of the main beam coil of a specific localiser.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GlidePathAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The rotational measurement from the horizontal plane to the glide path, where the positive angle is vertically upward.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MagneticVariationAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The rotational measurement of the angular difference between true north and magnetic north.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SlavedVariationAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The rotational measurement of the fixed value of magnetic variation applied to true direction to obtain the magnetic values for radials, courses and headings.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BearingAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The rotational measurement clockwise from true North to the localiser used for final approach guidance.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ThresholdCrossingHeightDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the height above the landing threshold on a normal glide path.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LocaliserDistanceDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the extreme horizontal distance measured perpendicular from the end of the runway to the localiser antenna position.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DistanceMeasuringEquipmentDistanceDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the distance between the distance measuring equipment and the associated landing threshold.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InstrumentLandingSystemRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some InstrumentLandingSystem - A MATERIEL that provides aircraft with horizontal and vertical guidance just before landing and during landing, and at certain fixed points, indicates the distance to the reference point of landing.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MiscellaneousEquipmentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE whose designed function does not fit in any other defined category.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="MiscellaneousEquipmentTypeCategoryCode" type="jc3iedm:MiscellaneousEquipmentTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of MISCELLANEOUS-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MiscellaneousEquipmentTypeSubcategoryCode" type="jc3iedm:MiscellaneousEquipmentTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of MISCELLANEOUS-EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MiscellaneousEquipmentTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some MiscellaneousEquipmentType - An EQUIPMENT-TYPE whose designed function does not fit in any other defined category.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WeaponType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE of any kind used in warfare or combat to attack and overcome an enemy.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="WeaponTypeCategoryCode" type="jc3iedm:WeaponTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of WEAPON-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="WeaponTypeSubcategoryCode" type="jc3iedm:WeaponTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of WEAPON-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CalibreText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a specific calibre of a WEAPON-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="FireGuidanceIndicatorCode" type="jc3iedm:WeaponTypeFireGuidanceIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether a specific WEAPON-TYPE provides fire guidance.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WeaponTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WeaponType - An EQUIPMENT-TYPE of any kind used in warfare or combat to attack and overcome an enemy.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RadioactiveMaterielType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A CONSUMABLE-MATERIEL-TYPE that is a substance which spontaneously emits radiation, and which may kill, seriously injure, or incapacitate personnel through its physiological effects or causes the deterioration of materiel.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielType">
+				<xs:sequence>
+					<xs:element name="RadioactiveMaterielTypeCategoryCode" type="jc3iedm:RadioactiveMaterielTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of RADIOACTIVE-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PrimaryRadiationCode" type="jc3iedm:RadioactiveMaterielTypePrimaryRadiationCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the most intense radiation emitted by a RADIOACTIVE-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RadioactiveMaterielTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some RadioactiveMaterielType - A CONSUMABLE-MATERIEL-TYPE that is a substance which spontaneously emits radiation, and which may kill, seriously injure, or incapacitate personnel through its physiological effects or causes the deterioration of materiel.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BiologicalMaterielType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A CONSUMABLE-MATERIEL-TYPE that is either a microorganism that causes disease in man, plants, or animals or causes the deterioration of materiel; or a toxin, produced by an animal, plant, or microorganism, which may kill, seriously injure, or incapacitate personnel through its physiological effects.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielType">
+				<xs:sequence>
+					<xs:element name="BiologicalMaterielTypeCategoryCode" type="jc3iedm:BiologicalMaterielTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of BIOLOGICAL-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BiologicalMaterielTypeSubcategoryCode" type="jc3iedm:BiologicalMaterielTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of a specific BIOLOGICAL-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PersistencyCode" type="jc3iedm:PersistencyCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the temporal variation of the effectiveness of a BIOLOGICAL-MATERIEL-TYPE under determined conditions after its dispersal.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BiologicalMaterielTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some BiologicalMaterielType - A CONSUMABLE-MATERIEL-TYPE that is either a microorganism that causes disease in man, plants, or animals or causes the deterioration of materiel; or a toxin, produced by an animal, plant, or microorganism, which may kill, seriously injure, or incapacitate personnel through its physiological effects.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChemicalMaterielType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A CONSUMABLE-MATERIEL-TYPE that is a substance that is not produced by a living organism, and does not emit radiation but may kill, seriously injure, or incapacitate personnel through its physiological effects or cause the deterioration of materiel.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielType">
+				<xs:sequence>
+					<xs:element name="ChemicalMaterielTypeCategoryCode" type="jc3iedm:ChemicalMaterielTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the general class of a specific CHEMICAL-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ChemicalMaterielTypeSubcategoryCode" type="jc3iedm:ChemicalMaterielTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of a specific CHEMICAL-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PersistencyCode" type="jc3iedm:PersistencyCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the temporal variation of the effectiveness of a CHEMICAL-MATERIEL-TYPE under determined conditions after its dispersal.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChemicalMaterielTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ChemicalMaterielType - A CONSUMABLE-MATERIEL-TYPE that is a substance that is not produced by a living organism, and does not emit radiation but may kill, seriously injure, or incapacitate personnel through its physiological effects or cause the deterioration of materiel.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="UxoStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MATERIEL-STATUS that is a record of the condition of an explosive ordnance that has been primed, fused, armed, or otherwise prepared for action, and which has been fired, dropped, launched, placed in such a manner, as to constitute a hazard to operation, and remains unexploded either by malfunction or for any other cause.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielStatus">
+				<xs:sequence>
+					<xs:element name="ExposureCode" type="jc3iedm:UxoStatusExposureCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the visual status of a specific Unexploded Explosive Ordnance.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="UxoStatusQualifierCode" type="jc3iedm:UxoStatusQualifierCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the qualification status of a specific Unexploded Explosive Ordnance.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherConsumableMaterielType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MATERIEL-TYPE that is an expendable class of supply.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielType">
+				<xs:sequence>
+					<xs:element name="ConsumableMaterielTypeCategoryCode" type="jc3iedm:ConsumableMaterielTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of CONSUMABLE-MATERIEL-TYPE. It serves as a discriminator that partitions CONSUMABLE-MATERIEL-TYPE into subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherConsumableMaterielTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherConsumableMaterielType - A MATERIEL-TYPE that is an expendable class of supply.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractConsumableMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

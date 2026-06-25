@@ -34,31 +34,21 @@ It is not:
 Open this package only when you explicitly need to:
 
 - preserve legacy imports
-- inspect wrapper-only compatibility behavior
-- remove or tighten remaining compatibility forwarders
+- remove the final compatibility scaffolding
 
 If you are changing 2025 runtime behavior, do not start here.
 
 ## Key Entrypoints
 
-The package-root compatibility surface is:
-
-- `Shim2025Backend`
-- `Shim2025RTIAmbassador`
-- `create_shim_backend`
-
-At the package root, the shim-specific surface is only `Shim2025Backend`,
-`Shim2025RTIAmbassador`, and `create_shim_backend`.
+The package root no longer exposes a backend or plugin surface.
 
 Older compatibility aliases still exist under:
 
 - `hla.backends.shim.runtime_aliases`
 
-The remaining `hla.backends.shim.*` modules should stay thin forwarders into
-`hla.backends.python1516_2025.*`.
-
-Treat the other `hla.backends.shim.*` modules outside the package root: they
-are forwarders, not implementation owners.
+No shim helper modules remain beyond `hla.backends.shim.runtime_aliases`.
+The package root and `backend.py` stay reserved for the wrapper-only surface
+and the routed-leaf compatibility constants.
 They should be removed once no callers depend on the legacy import paths.
 
 ## Related Docs

@@ -302,13 +302,13 @@ def test_pitch_profile_requirement_disposition_artifacts_surface_profile_specifi
         in py4j_rows["HLA1516.1-FM-4.1.5-001"]["evidence_refs"]
     )
     for payload in (jpype_rows["HLA1516.1-FM-4.1.5-001"], py4j_rows["HLA1516.1-FM-4.1.5-001"]):
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in payload["evidence_refs"]
+        assert "artifacts/preflight_artifacts/pitch-preflight.json" in payload["evidence_refs"]
         assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json"
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json"
             in payload["evidence_refs"]
         )
         assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
             in payload["evidence_refs"]
         )
 
@@ -356,13 +356,13 @@ def test_pitch_clause4_lost_federate_rows_pin_current_blocked_operator_evidence(
         assert "Docker is unreachable and the required CRC/FedPro loopback ports are blocked" in row["notes"]
         assert "the JPype path auto-resumed its dropped session and the Py4J path did not surface the report" in row["notes"]
         assert verification_method in row["notes"]
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in row["evidence_refs"]
+        assert "artifacts/preflight_artifacts/pitch-preflight.json" in row["evidence_refs"]
         assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json"
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json"
             in row["evidence_refs"]
         )
         assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
             in row["evidence_refs"]
         )
 
@@ -1419,8 +1419,8 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         "tests/scenarios/",
         "tests/vendors/",
         "packages/hla-vendor-pitch/docs/evidence/",
-        "analysis/preflight_artifacts/",
-        "analysis/vendor_runtime_status/",
+        "artifacts/preflight_artifacts/",
+        "artifacts/vendor_runtime_status/",
         "tests/test_rti_pitch_split_packages.py::",
     )
 
@@ -1606,9 +1606,9 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
             "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
             "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
             "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
-            "analysis/preflight_artifacts/pitch-preflight.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+            "artifacts/preflight_artifacts/pitch-preflight.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
             "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_lost_federate_mom_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
@@ -1618,14 +1618,14 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         assert not any(ref.startswith("tests/verification/") for ref in row["evidence_refs"])
         assert {
             "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
-            "analysis/preflight_artifacts/pitch-preflight.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+            "artifacts/preflight_artifacts/pitch-preflight.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
             "tests/test_rti_pitch_split_packages.py::test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process",
         }.issubset(set(row["pitch_jpype_evidence_refs"]))
         for expected_ref in {
-            "analysis/preflight_artifacts/pitch-preflight.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+            "artifacts/preflight_artifacts/pitch-preflight.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
             "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
             "tests/test_rti_pitch_split_packages.py::test_pitch_py4j_factory_attaches_gateway_process",

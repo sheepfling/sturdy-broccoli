@@ -11,8 +11,10 @@ def test_build_fom_siso_audit_runs_family_pipeline(monkeypatch, tmp_path: Path) 
     family = "siso-rpr-2.0"
     record = SimpleNamespace(
         id="siso-rpr-2.0-root",
-        path="analysis/siso_downloads/rpr/root.xml",
+        path="artifacts/siso_downloads/rpr/root.xml",
         edition_class="2010",
+        load_mode="ordered-family",
+        baseline_kind="third-party",
         scenario_family=family,
     )
 
@@ -87,6 +89,9 @@ def test_build_fom_siso_audit_runs_family_pipeline(monkeypatch, tmp_path: Path) 
     assert report.passed is True
     assert [row.family for row in report.family_results] == [family]
     assert report.family_results[0].edition_scope == "2010 only"
+    assert report.family_results[0].stress_lane == "modular-load-merge"
+    assert report.family_results[0].expected_result == "roundtrip-only-stress"
+    assert report.family_results[0].runtime_scenario_shape == "interaction-heavy"
     assert report.family_results[0].bucket == "validate-clean"
     assert report.family_results[0].validation_passed is True
     assert report.family_results[0].roundtrip_passed is True

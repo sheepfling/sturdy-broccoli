@@ -16,7 +16,7 @@ source .venv/bin/activate
 That command:
 
 - runs the composite two-federate suite
-- writes artifacts under `analysis/two_federate_suite/`
+- writes artifacts under `artifacts/two_federate_suite/`
 - exercises the pair-based scenario flow used by the verification packet
 - includes the trial-safe two-federate 2025 time-window `future-exclusion`
   and `restore-state` proofs alongside the exchange, ownership,
@@ -28,10 +28,13 @@ If you want a smaller or custom artifact set, the script also accepts:
 
 ```bash
 source .venv/bin/activate
-./tools/two-federate --output-dir analysis/my_two_federate_suite
+./tools/two-federate --output-dir artifacts/my_two_federate_suite
 source .venv/bin/activate
 ./tools/two-federate --target-radar-steps 6
 ```
+
+Use `--output-dir analysis/...` only when you are intentionally publishing a
+retained evidence packet instead of a fresh local run.
 
 ## What To Read Next
 

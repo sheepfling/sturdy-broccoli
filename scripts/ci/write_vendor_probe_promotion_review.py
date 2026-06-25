@@ -27,7 +27,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Write a promotion-review artifact over repeated-run vendor probe evidence.")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_probe_promotion_review"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_probe_promotion_review"),
         help="Directory for generated promotion-review artifacts.",
     )
     args = parser.parse_args(argv)

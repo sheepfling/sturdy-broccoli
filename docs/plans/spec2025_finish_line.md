@@ -152,7 +152,7 @@ Support-service negative-path status counts:
 ## Python RTI Milestone Audit
 
 - Audit status: bounded-python-rti-milestones
-- Routes: python1516_2025-inprocess, python1516_2025-fedpro-grpc
+- Routes: python1516_2025, python1516_2025-fedpro-grpc
 - Milestones per route: 6
 - Assessment: Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. The time milestones now explicitly include Target/Radar future-exclusion, output-delivery, consumer-order, pipeline, receive-order poison, save/restore window-state, save/restore output resume, save/restore pipeline resume, and time-window proof, paired with negative-oracle rejection guards, but the last four remain bounded-evidence milestones rather than blanket correctness claims.
 
@@ -260,7 +260,7 @@ Binding boundary rows by role:
 - Audit status: python1516_2025-direct-bounded-proof-captured
 - Doc path: docs/requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md
 - Doc exists: True
-- Route: python1516_2025-inprocess
+- Route: python1516_2025
 - Scenario count: 8
 - All rows parity-covered: True
 - Identity ready: True
@@ -386,7 +386,7 @@ Requirement universe:
 
 Full-claim blockers:
 
-### python1516_2025-inprocess
+### python1516_2025
 
 - Milestone count: 6
 - All milestone parity-covered: True
@@ -930,7 +930,7 @@ Save/restore requirement families:
 
 - Focus: the explicit parity ledger across federation_lifecycle, object_exchange, ownership, ddm, time_management, save_restore, mom, and support_services for all current 2025 routes
 - Evidence test count: 3
-- Route groups: python1516_2025-inprocess, python1516_2025-fedpro-grpc, java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
+- Route groups: python1516_2025, python1516_2025-fedpro-grpc, java-standard-2025-jpype, java-standard-2025-py4j, cpp-standard-2025-pybind, cpp-standard-2025-grpc
 
 
 ## Support-Services Decomposition Audit
@@ -1404,7 +1404,7 @@ Discovered 2025-capable backend plugin records:
 
 Python 2025 route variants:
 
-- python1516_2025-inprocess: in-process-backend-route (separate RTI family: False, all milestone parity-covered: True)
+- python1516_2025: in-process-backend-route (separate RTI family: False, all milestone parity-covered: True)
 - python1516_2025-fedpro-grpc: hosted-transport-route (separate RTI family: False, all milestone parity-covered: True)
 
 ## Python2025 Proof-Lane Audit
@@ -1582,7 +1582,7 @@ Extraction package contract:
 
 Extraction cutover invariants:
 
-- python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice
+- python1516_2025 and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice
 - hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior
 - the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics
 - backend plugin discovery reports hla-backend-python1516-2025 as a dedicated rti1516_2025 candidate before any promotion claim changes
@@ -1706,7 +1706,7 @@ Permanent-decision blockers:
 - Route scenarios: time_management, save_restore
 - Assessment: Logical-time factories, regulation/constrained mode transitions, advance-request modes, grants, lookahead/query control, timestamped delivery, retraction, and save/restore rollback are all backed by executable runtime traces. The time proof now also includes bounded GALT/LITS query evidence, the Target/Radar lookahead-window proof ladder, matching negative-oracle guards across the current Python 2025 lanes, and named runtime proof families instead of one flat bounded time bucket.
 
-- Evidence basis: python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025-inprocess:bounded-lookahead-evidence,python1516_2025-inprocess:bounded-query-evidence
+- Evidence basis: python_rti_milestone_audit bounded time rows=python1516_2025-fedpro-grpc:bounded-lookahead-evidence,python1516_2025-fedpro-grpc:bounded-query-evidence,python1516_2025:bounded-lookahead-evidence,python1516_2025:bounded-query-evidence
 - Evidence basis: time_window_vendor_parity_audit.audit_status=time-window-vendor-parity-captured
 - Evidence basis: time_window_vendor_parity_audit.current_trial_candidate.scenario_id=time-window-future-exclusion
 - Evidence basis: time_management_decomposition.slice_id=2025-time-management-proof-families

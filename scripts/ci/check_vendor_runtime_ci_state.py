@@ -34,7 +34,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_runtime_ci_state"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_runtime_ci_state"),
         help="Directory for generated CI runtime-state artifacts.",
     )
     parser.add_argument("--json", action="store_true", help="Print JSON summary to stdout.")

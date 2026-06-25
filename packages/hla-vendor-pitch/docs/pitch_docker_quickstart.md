@@ -26,10 +26,10 @@ That runs:
 `./tools/pitch preflight` also persists the default preflight artifact and normalized
 status reports under:
 
-- `analysis/preflight_artifacts/`
-- `analysis/vendor_runtime_ci_state/` on dedicated vendor CI jobs
-- `analysis/vendor_runtime_status/`
-- `analysis/vendor_parity_artifacts/`
+- `artifacts/preflight_artifacts/`
+- `artifacts/vendor_runtime_ci_state/` on dedicated vendor CI jobs
+- `artifacts/vendor_runtime_status/`
+- `artifacts/vendor_parity_artifacts/`
 
 If you want the staged flow:
 
@@ -146,8 +146,8 @@ Validate that runner state directly with:
 
 Those checks emit:
 
-- `analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_summary.json`
-- `analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md`
+- `artifacts/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_summary.json`
+- `artifacts/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md`
 
 ## If it fails
 

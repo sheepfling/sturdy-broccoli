@@ -23,7 +23,7 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.fom_validate import write_fom_validation, write_fom_validation_html
 
 
-DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_validation"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "artifacts" / "fom_validation"
 
 
 def main(argv: list[str] | None = None) -> int:

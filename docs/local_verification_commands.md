@@ -14,7 +14,7 @@ python3 scripts/run_spec2025_finish_line.py
 ./tools/test
 ./tools/python verify
 ./tools/vendor-green matrix
-./tools/two-federate --output-dir analysis/python_two_federate_suite_2026-06-07
+./tools/two-federate --output-dir artifacts/python_two_federate_suite_2026-06-07
 python3 -m pytest -q tests/runtime/test_real_rti.py
 ./tools/certi-easy verify-best-effort
 ./tools/pitch preflight

@@ -58,8 +58,8 @@ The rule is simple:
   exchange. CERTI gRPC synchronization and ownership remain probe-only until the
   native runtime behavior is stable enough to promote.
 - Both wrappers now emit normalized post-run artifacts:
-  - `analysis/vendor_runtime_status/...`
-  - `analysis/vendor_parity_artifacts/...`
+  - `artifacts/vendor_runtime_status/...`
+  - `artifacts/vendor_parity_artifacts/...`
   even when the underlying lane fails or skips after preflight.
 - `.github/workflows/ci.yml` now reflects that split directly:
   it also runs a lightweight `vendor-runner-contract` guard so the runner
@@ -77,7 +77,7 @@ The rule is simple:
 ### Docs / Generated Artifacts
 
 - `check_generated_docs.sh`: verify generated backend alias inventory
-- `check_doc_links.py`: verify Markdown link integrity and catch repo-root-relative assumptions in docs
+- `check_doc_links.py`: verify Markdown link integrity, catch repo-root-relative assumptions in docs, and fail when curated docs become orphaned from the main doc front doors
 
 ## Help Convention
 

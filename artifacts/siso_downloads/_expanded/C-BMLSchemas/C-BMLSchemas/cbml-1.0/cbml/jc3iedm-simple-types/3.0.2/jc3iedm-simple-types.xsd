@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:jc3iedm="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" targetNamespace="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<include schemaLocation="../../jc3iedm-codes/3.0.2/jc3iedm-codes.xsd"/>
+	<annotation>
+		<documentation xml:lang="en">XML schema defined by the Multilateral Interoperability Programme (MIP) - Editor: Dr. Michael Gerz, gerz@fgan.de, FGAN FKIE, Germany</documentation>
+	</annotation>
+	<simpleType name="AngleTypeRangeAngle7_4">
+		<annotation>
+			<documentation xml:lang="en">The rotational measurement between two lines and/or planes diverging from a common point and/or line. This measurement will be expressed in units of degrees.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="7"/>
+			<fractionDigits value="4"/>
+			<minInclusive value="0.0000"/>
+			<maxInclusive value="359.9999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DimensionType12_3">
+		<annotation>
+			<documentation xml:lang="en">A one-dimensional linear distance measure. This will be expressed in metres.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="12"/>
+			<fractionDigits value="3"/>
+			<minInclusive value="-999999999.999"/>
+			<maxInclusive value="999999999.999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="LatitudeCoordinateTypeRangeLatitude9_6">
+		<annotation>
+			<documentation xml:lang="en">The geodetic latitude of the location of a line or plane, expressed in degrees, with positive values measured northward and negative values southward from the equator.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="9"/>
+			<fractionDigits value="6"/>
+			<minInclusive value="-90.000000"/>
+			<maxInclusive value="90.000000"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="LongitudeCoordinateTypeRangeLongitude10_6">
+		<annotation>
+			<documentation xml:lang="en">The geodetic longitude of the location of a line or plane, expressed in degrees, with positive values measured eastward and negative values westward from the zero meridian.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="10"/>
+			<fractionDigits value="6"/>
+			<minInclusive value="-180.000000"/>
+			<maxInclusive value="180.000000"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType3_2">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="3"/>
+			<fractionDigits value="2"/>
+			<minInclusive value="-9.99"/>
+			<maxInclusive value="9.99"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType8_4">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="8"/>
+			<fractionDigits value="4"/>
+			<minInclusive value="-9999.9999"/>
+			<maxInclusive value="9999.9999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType12_3">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="12"/>
+			<fractionDigits value="3"/>
+			<minInclusive value="-999999999.999"/>
+			<maxInclusive value="999999999.999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType14_6">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="14"/>
+			<fractionDigits value="6"/>
+			<minInclusive value="-99999999.999999"/>
+			<maxInclusive value="99999999.999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="RateType4_1">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a physical property of an object expressed as a proportion of a physical property with respect to a unit of time. The unit of measure for class word rate must be specified on an attribute-by-attribute basis.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="4"/>
+			<fractionDigits value="1"/>
+			<minInclusive value="-999.9"/>
+			<maxInclusive value="999.9"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="RateType7_1">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a physical property of an object expressed as a proportion of a physical property with respect to a unit of time. The unit of measure for class word rate must be specified on an attribute-by-attribute basis.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="7"/>
+			<fractionDigits value="1"/>
+			<minInclusive value="-999999.9"/>
+			<maxInclusive value="999999.9"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="RateType8_4">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a physical property of an object expressed as a proportion of a physical property with respect to a unit of time. The unit of measure for class word rate must be specified on an attribute-by-attribute basis.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="8"/>
+			<fractionDigits value="4"/>
+			<minInclusive value="-9999.9999"/>
+			<maxInclusive value="9999.9999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="RateType16_7">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a physical property of an object expressed as a proportion of a physical property with respect to a unit of time. The unit of measure for class word rate must be specified on an attribute-by-attribute basis.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="16"/>
+			<fractionDigits value="7"/>
+			<minInclusive value="-999999999.9999999"/>
+			<maxInclusive value="999999999.9999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="RatioType6_5">
+		<annotation>
+			<documentation xml:lang="en">A numeric value representing the quotient of two values that have the same unit of measurement, i.e., ratio has no units of measure.  May be used to express a percentage. The allowable range must be specified on an attribute-by-attribute basis.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="6"/>
+			<fractionDigits value="5"/>
+			<minInclusive value="-9.99999"/>
+			<maxInclusive value="9.99999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="RatioType7_6">
+		<annotation>
+			<documentation xml:lang="en">A numeric value representing the quotient of two values that have the same unit of measurement, i.e., ratio has no units of measure.  May be used to express a percentage. The allowable range must be specified on an attribute-by-attribute basis.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="7"/>
+			<fractionDigits value="6"/>
+			<minInclusive value="-9.999999"/>
+			<maxInclusive value="9.999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TemperatureTypeRangeTemperature5_1">
+		<annotation>
+			<documentation xml:lang="en">A measure of degree of hotness or coldness in an object or in space. This will be expressed in degrees Celsius.</documentation>
+		</annotation>
+		<restriction base="decimal">
+			<totalDigits value="5"/>
+			<fractionDigits value="1"/>
+			<minInclusive value="-273.2"/>
+			<maxInclusive value="9999.9"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="IdentifierType20">
+		<annotation>
+			<documentation xml:lang="en">The unique value, or set of characters, assigned to represent a specific instance and to distinguish it from all other instances of the same entity.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-99999999999999999999"/>
+			<maxInclusive value="99999999999999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CountType2">
+		<annotation>
+			<documentation xml:lang="en">A counted number of non-monetary units. Counts need to be specified with a unit of the count.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-99"/>
+			<maxInclusive value="99"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CountType3">
+		<annotation>
+			<documentation xml:lang="en">A counted number of non-monetary units. Counts need to be specified with a unit of the count.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999"/>
+			<maxInclusive value="999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CountType4">
+		<annotation>
+			<documentation xml:lang="en">A counted number of non-monetary units. Counts need to be specified with a unit of the count.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-9999"/>
+			<maxInclusive value="9999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CountType6">
+		<annotation>
+			<documentation xml:lang="en">A counted number of non-monetary units. Counts need to be specified with a unit of the count.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999"/>
+			<maxInclusive value="999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CountType9">
+		<annotation>
+			<documentation xml:lang="en">A counted number of non-monetary units. Counts need to be specified with a unit of the count.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999999"/>
+			<maxInclusive value="999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DurationType19">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that represents a quantity of time expressed as milliseconds. An optional preceding minus sign ('-') is allowed, to indicate a negative duration. If the sign is omitted a positive duration is indicated.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-9999999999999999999"/>
+			<maxInclusive value="9999999999999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="IndexType20">
+		<annotation>
+			<documentation xml:lang="en">A sequence of one or more numbers, alphabetic characters and/or special characters that serve to uniquely identify some object but have no readily definable meaning. (Index enables the distinction of instances in associative entities that would otherwise be identical because the values of the other key attributes (which are all foreign-key attributes) are the same).</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-99999999999999999999"/>
+			<maxInclusive value="99999999999999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="OrdinalType6">
+		<annotation>
+			<documentation xml:lang="en">A number designating the place (as first, second, third, etc.) occupied by an item in an ordered sequence.  Units are not applicable.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999"/>
+			<maxInclusive value="999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType3">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999"/>
+			<maxInclusive value="999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType4">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-9999"/>
+			<maxInclusive value="9999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType6">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999"/>
+			<maxInclusive value="999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType9">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999999"/>
+			<maxInclusive value="999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QuantityType12">
+		<annotation>
+			<documentation xml:lang="en">A numeric value that denotes a measure of the physical property of an object. Class word quantity has a fixed unit of measure that must be specified on an attribute-by-attribute basis. Class word quantity is not to be used where class words angle, coordinate, count, dimension, and rate apply.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999999999"/>
+			<maxInclusive value="999999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="UpdateSeqnrType15">
+		<annotation>
+			<documentation xml:lang="en">An absolute sequence number, assigned to represent the validity (in terms of seniority) of a certain data item.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="-999999999999999"/>
+			<maxInclusive value="999999999999999"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="OIDType">
+		<annotation>
+			<documentation xml:lang="en">A globally unique object identifier.</documentation>
+		</annotation>
+		<restriction base="token"/>
+	</simpleType>
+	<simpleType name="DatetimeTypeFix18">
+		<annotation>
+			<documentation xml:lang="en">A designation of a specified chronological point measured using Coordinated Universal Time (UTC) ISO 8601:2000 as a standard of reference, constrained to "zero meridian" i.e. ‘Zulu’ time zone only. This is expressed as a composite field using a compacted ISO notation YYYYMMDDHHMMSS.SSS where YYYY represents a year, MM represents a month in values from 00 to 12, and DD represents a day in values from 00 to 31, HH represents an hour, MM represents a minute, and SS.SSS represents the number of seconds and milliseconds.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="18"/>
+			<maxLength value="18"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar3">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="3"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar4">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="4"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar6">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="6"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar15">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="15"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar20">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="20"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar50">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="50"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar60">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="60"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar80">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="80"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar100">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="100"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar255">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="255"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar2000">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="2000"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="TextTypeVar4000">
+		<annotation>
+			<documentation xml:lang="en">A character string (i.e. a finite set of characters) generally in the form of words of a language. This embraces notions such as description, name, comment etc.</documentation>
+		</annotation>
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="4000"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MIPKeyType">
+		<annotation>
+			<documentation xml:lang="en">An object identifier that is a MIP-compliant, 20-digit identifier</documentation>
+		</annotation>
+		<restriction base="jc3iedm:OIDType">
+			<pattern value="[0-9]{20}"/>
+		</restriction>
+	</simpleType>
+</schema>

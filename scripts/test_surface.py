@@ -12,7 +12,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "testing" / "test_surface_manifest.json"
-ARTIFACT_DIR = ROOT / "analysis" / "test_surface_status"
+ARTIFACT_DIR = ROOT / "artifacts" / "test_surface_status"
 
 
 @dataclass(frozen=True)

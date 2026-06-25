@@ -47,8 +47,8 @@ The workbench needs to support:
 - write a guarded edited copy of a repo-owned XML:
   - `./tools/fom-workbench --edit-entry repo-2010-demo --set-description "Updated description" --add-keyword workbench --add-note "N9: note"`
 - output artifact:
-  - `analysis/fom_workbench/fom_workbench_snapshot.json`
-  - `analysis/fom_workbench/fom_workbench.html`
+  - `artifacts/fom_workbench/fom_workbench_snapshot.json`
+  - `artifacts/fom_workbench/fom_workbench.html`
 
 ## Data Contract
 

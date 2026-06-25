@@ -23,7 +23,7 @@ _bootstrap_source_checkout()
 from hla.verification.repo_internal.fom_schema_audit import write_fom_schema_audit
 
 
-DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_schema_audit"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "artifacts" / "fom_schema_audit"
 
 
 def main(argv: list[str] | None = None) -> int:

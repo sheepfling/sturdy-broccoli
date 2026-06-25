@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and 
+make derivative works from this material, for all purposes, provided that any use of the material 
+contains the following attribution: “Reprinted with permission from SISO Inc.” Should 
+a reader require additional information, contact the SISO Inc. Board of Directors.
+
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+		   xmlns:gdl="http://www.sisostds.org/schemas/gdl" targetNamespace="http://www.sisostds.org/schemas/gdl">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xs:include schemaLocation="ImplementationLevels.xsd"/>
+	<xs:complexType name="GDL">
+		<xs:sequence>
+			<xs:element ref="gdl:GDLDescription"/>
+			<xs:element ref="gdl:Capability" maxOccurs="unbounded"/>
+			<xs:element ref="gdl:PerformanceResults" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GDL" type="gdl:GDL"/>
+	<xs:complexType name="GDLDescription">
+		<xs:sequence>
+			<xs:element ref="gdl:GDLCreator"/>
+			<xs:element ref="gdl:GDLTypeRecord"/>
+			<xs:element ref="gdl:References"/>
+			<xs:element name="ExternalReference" type="xs:anyURI"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="References">
+		<xs:sequence>
+			<xs:element name="CapabilitiesFileName" type="xs:string"/>
+			<xs:element name="UseCaseFileName" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="References" type="gdl:References"/>
+	<xs:element name="GDLDescription" type="gdl:GDLDescription"/>
+	<xs:element name="GDLCreator" type="xs:string"/>
+	<xs:complexType name="GDLTypeRecord">
+		<xs:choice>
+			<xs:element ref="gdl:UserTypeRecord"/>
+			<xs:element ref="gdl:DeveloperTypeRecord"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="GDLTypeRecord" type="gdl:GDLTypeRecord"/>
+	<xs:complexType name="UserTypeRecord">
+		<xs:sequence>
+			<xs:element ref="gdl:SimulationEnvironmentName"/>
+			<xs:element ref="gdl:GatewayUse" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="UserTypeRecord" type="gdl:UserTypeRecord"/>
+	<xs:element name="SimulationEnvironmentName" type="xs:string"/>
+	<xs:element name="GatewayUse" type="xs:string"/>
+	<xs:complexType name="DeveloperTypeRecord">
+		<xs:sequence>
+			<xs:element ref="gdl:DeveloperOrganization"/>
+			<xs:element ref="gdl:GatewayName"/>
+			<xs:element ref="gdl:GatewayVersion"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="DeveloperTypeRecord" type="gdl:DeveloperTypeRecord"/>
+	<xs:element name="DeveloperOrganization" type="xs:string"/>
+	<xs:element name="GatewayName" type="xs:string"/>
+	<xs:element name="GatewayVersion" type="xs:string"/>
+	<xs:element name="CapabilityID" type="xs:string"/>
+	<xs:complexType name="Capability">
+		<xs:sequence>
+			<xs:element ref="gdl:CapabilityID"/>
+			<xs:element ref="gdl:ImplementationLevel"/>
+			<xs:element ref="gdl:CapabilityPriorityLevel"/>
+			<xs:element ref="gdl:CapabilityComment" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CapabilityComment" type="xs:string"/>
+	<xs:element name="Capability" type="gdl:Capability"/>
+	<xs:element name="CapabilityPriorityLevel" type="gdl:Priority" default="Medium"/>
+	<xs:simpleType name="Priority">
+		<xsd:annotation>
+			<xsd:documentation>Sets a qualitative value for the importance of a feature.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Low">
+				<xsd:annotation>
+					<xsd:documentation>Distinctly less than the typical level of priority for a simulation feature.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Medium">
+				<xsd:annotation>
+					<xsd:documentation>Typical level of priority for a simulation feature.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="High">
+				<xsd:annotation>
+					<xsd:documentation>Distinctly greater than the typical level of priority for a simulation feature.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PerformanceResults">
+		<xs:sequence>
+			<xs:element ref="gdl:UseCaseId"/>
+			<xs:element ref="gdl:Latency"/>
+			<xs:element ref="gdl:Throughput"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PerformanceResults" type="gdl:PerformanceResults"/>
+	<xs:element name="UseCaseId" type="xs:string"/>
+	<xs:complexType name="Latency">
+		<xsd:annotation>
+			<xsd:documentation>The Latency metric can be defined as needed. As an example, Latency can be defined as the average delay in seconds introduced to the simulation communication due to the gateway processing.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:sequence>
+			<xs:element name="LatencyValue" type="xs:double"/>
+			<xs:element name="LatencyPriority" type="gdl:Priority" default="Medium"/>
+			<xs:element name="LatencyComment" minOccurs="0" type="xs:string">
+				<xsd:annotation>
+					<xsd:documentation>Use LatencyComment to define the metric and units used for Latency.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Latency" type="gdl:Latency"/>
+	<xs:element name="Throughput" type="gdl:Throughput"/>
+	<xs:complexType name="Throughput">
+		<xsd:annotation>
+			<xsd:documentation>The Throughput metric can be defined as needed. As an example, Throughput may defined as the average number of bytes that pass through the gateway in one second in a given hardware configuration, gateway configuration, and running a given exercise.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:sequence>
+			<xs:element name="ThroughputValue" type="xs:double"/>
+			<xs:element name="ThroughputPriority" type="gdl:Priority" default="Medium"/>
+			<xs:element name="ThroughputComment" minOccurs="0" type="xs:string">
+				<xsd:annotation>
+					<xsd:documentation>Use ThroughputComment to define the metric and units used for Throughput.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

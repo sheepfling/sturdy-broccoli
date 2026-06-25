@@ -1,0 +1,1225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Tram Chase (SimVentions, Inc.) -->
+<!-- created with XML Spy v4.2 U (http://www.xmlspy.com) by Björn Löfstrand (Pitch Kunskapsutveckling AB) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sisostds.org/schemas/IEEE1516.2-2006" xmlns:ns="http://www.sisostds.org/schemas/IEEE1516.2-2006" xmlns:modelID="http://www.sisostds.org/schemas/modelID" targetNamespace="http://www.sisostds.org/schemas/IEEE1516.2-2006" elementFormDefault="qualified" attributeFormDefault="unqualified" version="Draft2 v0.5">
+	<xs:import namespace="http://www.sisostds.org/schemas/modelID" schemaLocation="ModelID_v2006_FINAL.xsd"/>
+	<xs:element name="objectModel" type="objectModelType">
+		<xs:key name="representationKey">
+			<xs:annotation>
+				<xs:documentation>unique keys for identifying basic data representations</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath=".//ns:basicData"/>
+			<xs:field xpath="ns:name"/>
+		</xs:key>
+		<xs:keyref name="representationRef" refer="representationKey">
+			<xs:selector xpath=".//ns:representation"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="dimensionDatatypeKey">
+			<xs:selector xpath=".//ns:simpleData/ns:name | .//ns:enumeratedData/ns:name"/>
+			<xs:field xpath="."/>
+		</xs:key>
+		<xs:keyref name="dimensionDatatypeRef" refer="dimensionDatatypeKey">
+			<xs:selector xpath="./ns:dimensions/*/ns:dataType"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="dataTypeKey">
+			<xs:annotation>
+				<xs:documentation>unique keys for identifying datatypes</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath=".//ns:simpleData/ns:name | .//ns:enumeratedData/ns:name | .//ns:arrayData/ns:name | .//ns:fixedRecordData/ns:name | .//ns:variantRecordData/ns:name | .//ns:note/ns:label"/>
+			<xs:field xpath="."/>
+		</xs:key>
+		<xs:keyref name="dataTypeRef" refer="dataTypeKey">
+			<xs:selector xpath=".//ns:dataType"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="dimensionKey">
+			<xs:selector xpath="./ns:dimensions/ns:dimension"/>
+			<xs:field xpath="ns:name"/>
+		</xs:key>
+		<xs:keyref name="dimensionRef" refer="dimensionKey">
+			<xs:selector xpath=".//ns:attribute/ns:dimensions/ns:dimension | .//ns:interactionClass/ns:dimensions/ns:dimension"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="transportationKey">
+			<xs:selector xpath="./ns:transportations/ns:transportation"/>
+			<xs:field xpath="ns:name"/>
+		</xs:key>
+		<xs:keyref name="transportationRef" refer="transportationKey">
+			<xs:selector xpath=".//ns:attribute | .//ns:interactionClass"/>
+			<xs:field xpath="ns:transportation"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:element name="objectClass">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="objectClassType"/>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:unique name="className">
+			<xs:annotation>
+				<xs:documentation>ensures uniqueness of objectClass names among class siblings</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ns:objectClass"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+		<xs:unique name="attributeName">
+			<xs:selector xpath="./ns:attribute"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+	</xs:element>
+	<xs:element name="interactionClass">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="interactionClassType"/>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:unique name="interactionName">
+			<xs:annotation>
+				<xs:documentation>ensures uniqueness of interactionClass names among class siblings</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ns:interactionClass"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+		<xs:unique name="parameterName">
+			<xs:selector xpath="./ns:parameter"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+	</xs:element>
+	<xs:element name="attribute">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="attributeType"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="parameter">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="parameterType"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="switchType">
+		<xs:simpleContent>
+			<xs:extension base="enabled_disabledEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="tagType">
+		<xs:sequence>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype for the user-defined tag</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expands and describes the use of the datatype for the user-supplied tag</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="objectsType">
+		<xs:sequence>
+			<xs:element ref="objectClass"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="interactionsType">
+		<xs:sequence>
+			<xs:element ref="interactionClass"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="attributeType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="updateType" type="updateType">
+				<xs:annotation>
+					<xs:documentation>records the policy for updating an instance of the class attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="updateCondition" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expands and explains the policies for updating an instance of the class attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ownership" type="ownershipType">
+				<xs:annotation>
+					<xs:documentation>indicates whether ownership of an instance of the class attribute can be divested and/or acquired</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sharing" type="sharingType">
+				<xs:annotation>
+					<xs:documentation>identifies the capabilities of a federate or federation with respect to class attribute publishing and subscribing</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dimensions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>records the association of the class attribute with a set of
+dimensions if a federate or federation is using DDM services for this attribute</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dimension" type="ReferenceType" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>identifies a dimension associated with this attribute</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="transportation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>specifies the type of transportation used with this attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="order" type="orderType">
+				<xs:annotation>
+					<xs:documentation>specifies the order of delivery used with instances of this class attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for this attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="parameterType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the parameter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for the parameter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="objectClassType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="sharing" type="sharingType" default="Neither">
+				<xs:annotation>
+					<xs:documentation>specifies publication and subscription capabilities of this object class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for this object class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="attribute" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="objectClass" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="interactionClassType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="sharing" type="sharingType">
+				<xs:annotation>
+					<xs:documentation>specifies publication and subscription capabilities of this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dimensions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>records the association of the interaction class with a set of
+dimensions if a federate or federation is using DDM services for this attribute</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dimension" type="ReferenceType" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>identifies a dimension associated with this interaction class</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="transportation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>specifies the type of transportation used with this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="order" type="orderType">
+				<xs:annotation>
+					<xs:documentation>specifies the order of delivery used with instances of this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="interactionClass" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="dimensionsType">
+		<xs:sequence>
+			<xs:element name="dimension" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="dimensionType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="dimensionType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype for the federate view of the dimension</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperBound" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies the upper bound for the dimension that meets the
+federation's requirement for dimension subrange resolution</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="normalization" type="modelID:NonEmptyString">
+				<xs:annotation>
+					<xs:documentation>specifies the map from a subscription/update region's
+bounding coordinates to nonnegative integer subranges in the range [0, dimension upper bound).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="dimensionValuePattern">
+				<xs:annotation>
+					<xs:documentation>specifies a default range for the dimension that the RTI is to use in overlap calculations if the dimension is an available dimension of an attribute or interaction and has been left unspecified when a federate creates a region that is subsequently used with the attribute or interaction</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="timeType">
+		<xs:sequence>
+			<xs:element name="timeStamp" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dataType" type="ReferenceType">
+							<xs:annotation>
+								<xs:documentation>identifies the timestamp datatype</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="semantics" type="modelID:String" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>expands and describes the use of the datatype for timestamp</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="lookahead" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dataType" type="ReferenceType">
+							<xs:annotation>
+								<xs:documentation>identifies the lookahead datatype</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="semantics" type="modelID:String" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>expands and describes the use of the datatype for lookahead</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="tagsType">
+		<xs:sequence>
+			<xs:element name="updateReflectTag" type="tagType" minOccurs="0"/>
+			<xs:element name="sendReceiveTag" type="tagType" minOccurs="0"/>
+			<xs:element name="deleteRemoveTag" type="tagType" minOccurs="0"/>
+			<xs:element name="divestitureRequestTag" type="tagType" minOccurs="0"/>
+			<xs:element name="divestitureCompletionTag" type="tagType" minOccurs="0"/>
+			<xs:element name="acquisitionRequestTag" type="tagType" minOccurs="0"/>
+			<xs:element name="requestUpdateTag" type="tagType" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="synchronizationPointType">
+		<xs:sequence>
+			<xs:element name="label" type="modelID:IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the user-supplied tag for those synchronization
+points that the federate or federation designate as providing a user-supplied tag</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="capability" type="capabilityType">
+				<xs:annotation>
+					<xs:documentation>indicates the level of interaction that a federate is capable of honoring</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expands and describes the use of the synchronization point</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="synchronizationsType">
+		<xs:sequence>
+			<xs:element name="synchronizationPoint" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="synchronizationPointType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="transportationsType">
+		<xs:sequence>
+			<xs:element name="transportation" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="transportationType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="transportationType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>describes the transportation type</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="switchesType">
+		<xs:sequence>
+			<xs:element name="autoProvide" type="switchType" minOccurs="0"/>
+			<xs:element name="conveyRegionDesignatorSets" type="switchType" minOccurs="0"/>
+			<xs:element name="attributeScopeAdvisory" type="switchType" minOccurs="0"/>
+			<xs:element name="attributeRelevanceAdvisory" type="switchType" minOccurs="0"/>
+			<xs:element name="objectClassRelevanceAdvisory" type="switchType" minOccurs="0"/>
+			<xs:element name="interactionRelevanceAdvisory" type="switchType" minOccurs="0"/>
+			<xs:element name="serviceReporting" type="switchType" minOccurs="0"/>
+			<xs:element name="automaticResign" type="switchType" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="basicDataType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="size" type="Size">
+				<xs:annotation>
+					<xs:documentation>defines the size of the data representation in terms of the number of bits contained in the data representation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="interpretation" type="modelID:String">
+				<xs:annotation>
+					<xs:documentation>describes how the data representation should be interpreted</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endian" type="endianType">
+				<xs:annotation>
+					<xs:documentation>describe how multiple bytes within the representation are arranged</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="encoding" type="modelID:String">
+				<xs:annotation>
+					<xs:documentation>describes, in detail, the encoding of the data representation (e.g., the bit
+ordering) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="simpleDataType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="representation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the basic data representation of this datatype</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="units" type="modelID:NonEmptyString" default="NA" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifies the units of measure (e.g., m, km, kg) for the datatype whenever such units exist. Any units entered in this column also specify the units of Resolution and Accuracy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resolution" type="modelID:NonEmptyString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>describes the precision of measure for the datatype</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="accuracy" type="modelID:NonEmptyString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>describes maximum deviation of the value from its intended value in the
+federate or federation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="fixedRecordDataType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="encoding" type="fixedRecordEncodingType">
+				<xs:annotation>
+					<xs:documentation>describes the encoding of the fixed record datatype (i.e., the organization of fields) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="name" type="modelID:IdentifierType"/>
+						<xs:element name="dataType" type="ReferenceType"/>
+						<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="enumeratedDataType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="representation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the basic data representation that forms the basis of this
+datatype</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:element name="enumerator" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>defines the enumerators associated with this datatype</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="name" type="modelID:IdentifierType"/>
+						<xs:element name="value" type="modelID:String" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>provides values that correspond to each enumerator</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="arrayDataType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of an element of this array</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cardinality" type="cardinalityType">
+				<xs:annotation>
+					<xs:documentation>contains the number of elements that are contained in the array</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="encoding" type="arrayDatatypeEncodingType">
+				<xs:annotation>
+					<xs:documentation>describe, in detail, the encoding of the array datatype (e.g., the sequence
+of elements and the order of elements in multi-dimensional arrays) as delivered to and received from the
+RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="variantRecordDataType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="discriminant" type="modelID:IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the discriminant</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="alternative" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="enumerator" type="modelID:NonEmptyString">
+							<xs:annotation>
+								<xs:documentation>enumerators or enumerator ranges that determines the alternative</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="name" type="modelID:IdentifierType" minOccurs="0"/>
+						<xs:element name="dataType" type="ReferenceType" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>identify the datatype of the field</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="encoding" type="variantRecordEncodingType">
+				<xs:annotation>
+					<xs:documentation>describes the encoding of the variant record datatype (e.g., the location of the discriminant) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="notesType">
+		<xs:sequence>
+			<xs:element name="note" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="label" type="xs:ID"/>
+						<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="dataTypesType">
+		<xs:sequence>
+			<xs:element name="basicDataRepresentations" type="basicDataRepresentationsType">
+				<xs:annotation>
+					<xs:documentation>Basic data representation is the underpinning of all OMT datatypes. Although it is not used as a datatype, it forms the basis of the datatypes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="simpleDataTypes" type="simpleDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The simple datatypes describes simple, scalar data items.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="enumeratedDataTypes" type="enumeratedDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The enumerated datatypes describes data elements that can take on a finite discrete set of
+possible values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arrayDataTypes">
+				<xs:annotation>
+					<xs:documentation>The array datatypes describes indexed homogenous collections of datatypes; also known as arrays or sequences.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="arrayDataTypesType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="fixedRecordDataTypes" type="fixedRecordDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The fixed datatypes describes heterogeneous collections of types; also known as records or structures.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="variantRecordDataTypes" type="variantRecordDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The variant record datatypes describes discriminated unions of types; also known as variant or choice records.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="basicDataRepresentationsType">
+		<xs:sequence>
+			<xs:element name="basicData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="basicDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="simpleDataTypesType">
+		<xs:sequence>
+			<xs:element name="simpleData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="simpleDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="enumeratedDataTypesType">
+		<xs:sequence>
+			<xs:element name="enumeratedData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="enumeratedDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="arrayDataTypesType">
+		<xs:sequence>
+			<xs:element name="arrayData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="arrayDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="fixedRecordDataTypesType">
+		<xs:sequence>
+			<xs:element name="fixedRecordData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="fixedRecordDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="variantRecordDataTypesType">
+		<xs:sequence>
+			<xs:element name="variantRecordData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="variantRecordDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="objectModelType">
+		<xs:sequence>
+			<xs:element name="modelIdentification" type="modelID:modelIdentificationType">
+				<xs:annotation>
+					<xs:documentation>documents certain key identifying information within the object model description</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="conformance" type="conformanceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>conformance statement</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="objects" type="objectsType">
+				<xs:annotation>
+					<xs:documentation>specifies classes of objects and their hierarchical relationships </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="interactions" type="interactionsType">
+				<xs:annotation>
+					<xs:documentation>specifies classes of interactions and their hierarchical relationships </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dimensions" type="dimensionsType">
+				<xs:annotation>
+					<xs:documentation>specifies dimensions associated with attribute types and interaction classes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="time" type="timeType">
+				<xs:annotation>
+					<xs:documentation>specifies timestamp and lookahead datatypes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tags" type="tagsType">
+				<xs:annotation>
+					<xs:documentation>specifies the datatype of user-defined tags</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="synchronizations" type="synchronizationsType">
+				<xs:annotation>
+					<xs:documentation>specifies federate and federation capabilities for synchronization-points</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="transportations" type="transportationsType">
+				<xs:annotation>
+					<xs:documentation>documents transportation type support and agreements</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="switches" type="switchesType">
+				<xs:annotation>
+					<xs:documentation>specification of the initial setting of RTI switches</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="updateRates" type="updateRatesType"/>
+			<xs:element name="dataTypes" type="dataTypesType">
+				<xs:annotation>
+					<xs:documentation>specifies all referenced datatypes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="notes" type="notesType">
+				<xs:annotation>
+					<xs:documentation>specifies all referenced notes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="Size">
+		<xs:simpleContent>
+			<xs:extension base="xs:integer">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="RateType">
+		<xs:simpleContent>
+			<xs:extension base="xs:float">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ReferenceType">
+		<xs:simpleContent>
+			<xs:extension base="xs:NCName">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="sharingType">
+		<xs:simpleContent>
+			<xs:extension base="sharingEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="orderType">
+		<xs:simpleContent>
+			<xs:extension base="orderEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="updateType">
+		<xs:simpleContent>
+			<xs:extension base="updateEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="endianType">
+		<xs:simpleContent>
+			<xs:extension base="endianEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ownershipType">
+		<xs:simpleContent>
+			<xs:extension base="ownershipEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="capabilityType">
+		<xs:simpleContent>
+			<xs:extension base="capabilityEnumerations">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="sharingEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Publish"/>
+			<xs:enumeration value="Subscribe"/>
+			<xs:enumeration value="PublishSubscribe"/>
+			<xs:enumeration value="Neither"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="orderEnumerations">
+		<xs:annotation>
+			<xs:documentation> </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Receive"/>
+			<xs:enumeration value="TimeStamp"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="endianEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Big"/>
+			<xs:enumeration value="Little"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="capabilityEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Register"/>
+			<xs:enumeration value="Achieve"/>
+			<xs:enumeration value="RegisterAchieve"/>
+			<xs:enumeration value="NoSynch"/>
+			<xs:enumeration value="NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="updateEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Static"/>
+			<xs:enumeration value="Periodic"/>
+			<xs:enumeration value="Conditional"/>
+			<xs:enumeration value="NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ownershipEnumerations">
+		<xs:annotation>
+			<xs:documentation> </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Divest"/>
+			<xs:enumeration value="Acquire"/>
+			<xs:enumeration value="DivestAcquire"/>
+			<xs:enumeration value="NoTransfer"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="enabled_disabledEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Enabled"/>
+			<xs:enumeration value="Disabled"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="updateRateType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="rate" type="RateType"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="updateRatesType">
+		<xs:sequence>
+			<xs:element name="updateRate" type="updateRateType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="conformanceType">
+		<xs:sequence>
+			<xs:element name="implementedServices">
+				<xs:annotation>
+					<xs:documentation>RTI services implemented/used in the federation or by a federate</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:all>
+						<!-- Federation Management Services</xs:documentation -->
+						<xs:element name="createFederationExecution" minOccurs="0"/>
+						<xs:element name="destroyFederationExecution" minOccurs="0"/>
+						<xs:element name="joinFederatioExecution" minOccurs="0"/>
+						<xs:element name="resignFederationExecution" minOccurs="0"/>
+						<xs:element name="registerFederationSynchronizationPoint" minOccurs="0"/>
+						<xs:element name="confirmSynchronizationPointRegistration" minOccurs="0"/>
+						<xs:element name="announceSynchronizationPoint" minOccurs="0"/>
+						<xs:element name="synchronizationPointAchieved" minOccurs="0"/>
+						<xs:element name="federationSynchronized" minOccurs="0"/>
+						<xs:element name="requestFederationSave" minOccurs="0"/>
+						<xs:element name="initiateFederateSave" minOccurs="0"/>
+						<xs:element name="federateSaveBegun" minOccurs="0"/>
+						<xs:element name="federateSaveComplete" minOccurs="0"/>
+						<xs:element name="federationSaved" minOccurs="0"/>
+						<xs:element name="queryFederationSaveStatus" minOccurs="0"/>
+						<xs:element name="federationSaveStatusResponse" minOccurs="0"/>
+						<xs:element name="requestFederationRestore" minOccurs="0"/>
+						<xs:element name="confirmFederationRestorationRequest" minOccurs="0"/>
+						<xs:element name="federationRestoreBegun" minOccurs="0"/>
+						<xs:element name="initiateFederateRestore" minOccurs="0"/>
+						<xs:element name="federateRestoreComplete" minOccurs="0"/>
+						<xs:element name="federationRestored" minOccurs="0"/>
+						<xs:element name="queryFederationRestoreStatus" minOccurs="0"/>
+						<xs:element name="federationRestoreStatusResponse" minOccurs="0"/>
+						<xs:element name="connect" minOccurs="0"/>
+						<xs:element name="disconnect" minOccurs="0"/>
+						<xs:element name="connectionLost" minOccurs="0"/>
+						<!-- Declaration Management -->
+						<xs:element name="publishObjectClassAttributes" minOccurs="0"/>
+						<xs:element name="unpublishObjectClassAttributes" minOccurs="0"/>
+						<xs:element name="publishInteractionClass" minOccurs="0"/>
+						<xs:element name="unpublishInteractionClass" minOccurs="0"/>
+						<xs:element name="subscribeObjectClassAttributes" minOccurs="0"/>
+						<xs:element name="unsubscribeObjectClassAttributes" minOccurs="0"/>
+						<xs:element name="subscribeInteractionClass" minOccurs="0"/>
+						<xs:element name="unsubscribeInteractionClass" minOccurs="0"/>
+						<xs:element name="startRegistrationForObjectClass" minOccurs="0"/>
+						<xs:element name="stopRegistrationForObjectClass" minOccurs="0"/>
+						<xs:element name="turnInteractionsOn" minOccurs="0"/>
+						<xs:element name="turnInteractionsOff" minOccurs="0"/>
+						<!-- Object Management -->
+						<xs:element name="reserveObjectInstanceName" minOccurs="0"/>
+						<xs:element name="objectInstanceNameReserved" minOccurs="0"/>
+						<xs:element name="registerObjectInstance" minOccurs="0"/>
+						<xs:element name="discoverObjectInstance" minOccurs="0"/>
+						<xs:element name="updateAttributeValues" minOccurs="0"/>
+						<xs:element name="reflectAttributeValues" minOccurs="0"/>
+						<xs:element name="sendInteraction" minOccurs="0"/>
+						<xs:element name="receiveInteraction" minOccurs="0"/>
+						<xs:element name="deleteObjectInstance" minOccurs="0"/>
+						<xs:element name="removeObjectInstance" minOccurs="0"/>
+						<xs:element name="localDeleteObjectInstance" minOccurs="0"/>
+						<xs:element name="changeAttributeTransportationType" minOccurs="0"/>
+						<xs:element name="changeInteractionTransportationType" minOccurs="0"/>
+						<xs:element name="attributesInScope" minOccurs="0"/>
+						<xs:element name="attributesOutOfScope" minOccurs="0"/>
+						<xs:element name="requestAttributeValueUpdate" minOccurs="0"/>
+						<xs:element name="provideAttributeValueUpdate" minOccurs="0"/>
+						<xs:element name="turnUpdatesOnForObjectInstance" minOccurs="0"/>
+						<xs:element name="turnUpdatesOffForObjectInstance" minOccurs="0"/>
+						<!-- Ownership Management -->
+						<xs:element name="unconditionalAttributeOwnershipDivestiture" minOccurs="0"/>
+						<xs:element name="negotiatedAttributeOwnershipDivestiture" minOccurs="0"/>
+						<xs:element name="requestAttributeOwnershipAssumption" minOccurs="0"/>
+						<xs:element name="requestDivestitureConfirmation" minOccurs="0"/>
+						<xs:element name="confirmDivestiture" minOccurs="0"/>
+						<xs:element name="attributeOwnershipAcquisitionNotification" minOccurs="0"/>
+						<xs:element name="attributeOwnershipAcquisition" minOccurs="0"/>
+						<xs:element name="attributeOwnershipAcquisitionIfAvailable" minOccurs="0"/>
+						<xs:element name="attributeOwnershipUnavailable" minOccurs="0"/>
+						<xs:element name="requestAttributeOwnershipRelease" minOccurs="0"/>
+						<xs:element name="attributeOwnershipReleaseDenied" minOccurs="0"/>
+						<xs:element name="attributeOwnershipDivestitureIfWanted" minOccurs="0"/>
+						<xs:element name="cancelNegotiatedAttributeOwnershipDivestiture" minOccurs="0"/>
+						<xs:element name="cancelAttributeOwnershipAcquisition" minOccurs="0"/>
+						<xs:element name="confirmAttributeOwnershipAcquisitionCancellation" minOccurs="0"/>
+						<xs:element name="queryAttributeOwnership" minOccurs="0"/>
+						<xs:element name="informAttributeOwnership" minOccurs="0"/>
+						<xs:element name="isAttributeOwnedByFederate" minOccurs="0"/>
+						<!-- Time Management -->
+						<xs:element name="enableTimeRegulation" minOccurs="0"/>
+						<xs:element name="timeRegulationEnabled" minOccurs="0"/>
+						<xs:element name="disableTimeRegulation" minOccurs="0"/>
+						<xs:element name="enableTimeConstrained" minOccurs="0"/>
+						<xs:element name="timeConstrainedEnabled" minOccurs="0"/>
+						<xs:element name="disableTimeConstrained" minOccurs="0"/>
+						<xs:element name="timeAdvanceRequest" minOccurs="0"/>
+						<xs:element name="timeAdvanceRequestAvailable" minOccurs="0"/>
+						<xs:element name="nextMessageRequest" minOccurs="0"/>
+						<xs:element name="nextMessageRequestAvailable" minOccurs="0"/>
+						<xs:element name="flushQueueRequest" minOccurs="0"/>
+						<xs:element name="timeAdvanceGrant" minOccurs="0"/>
+						<xs:element name="enableAsynchronousDelivery" minOccurs="0"/>
+						<xs:element name="disableAsynchronousDelivery" minOccurs="0"/>
+						<xs:element name="queryGALT" minOccurs="0"/>
+						<xs:element name="queryLogicalTime" minOccurs="0"/>
+						<xs:element name="queryLITS" minOccurs="0"/>
+						<xs:element name="modifyLookahead" minOccurs="0"/>
+						<xs:element name="queryLookahead" minOccurs="0"/>
+						<xs:element name="retract" minOccurs="0"/>
+						<xs:element name="requestRetraction" minOccurs="0"/>
+						<xs:element name="changeAttributeOrderType" minOccurs="0"/>
+						<xs:element name="changeInteractionOrderType" minOccurs="0"/>
+						<!-- Data Distribution Management -->
+						<xs:element name="createRegion" minOccurs="0"/>
+						<xs:element name="commitRegionModifications" minOccurs="0"/>
+						<xs:element name="deleteRegion" minOccurs="0"/>
+						<xs:element name="registerObjectInstanceWithRegions" minOccurs="0"/>
+						<xs:element name="associateRegionForUpdates" minOccurs="0"/>
+						<xs:element name="unassociateRegionForUpdates" minOccurs="0"/>
+						<xs:element name="subscribeObjectClassAttributesWithRegions" minOccurs="0"/>
+						<xs:element name="unsubscribeObjectClassAttributesWithRegions" minOccurs="0"/>
+						<xs:element name="subscribeInteractionClassWithRegions" minOccurs="0"/>
+						<xs:element name="unsubscribeInteractionClassWithRegions" minOccurs="0"/>
+						<xs:element name="sendInteractionWithRegions" minOccurs="0"/>
+						<xs:element name="requestAttributeValueUpdateWithRegions" minOccurs="0"/>
+						<!-- Support Services -->
+						<xs:element name="getObjectClassHandle" minOccurs="0"/>
+						<xs:element name="getObjectClassName" minOccurs="0"/>
+						<xs:element name="getAttributeHandle" minOccurs="0"/>
+						<xs:element name="getAttributeName" minOccurs="0"/>
+						<xs:element name="getInteractionClassHandle" minOccurs="0"/>
+						<xs:element name="getInteractionClassName" minOccurs="0"/>
+						<xs:element name="getParameterHandle" minOccurs="0"/>
+						<xs:element name="getParameterName" minOccurs="0"/>
+						<xs:element name="getObjectInstanceHandle" minOccurs="0"/>
+						<xs:element name="getObjectInstanceName" minOccurs="0"/>
+						<xs:element name="getDimensionHandle" minOccurs="0"/>
+						<xs:element name="getDimensionName" minOccurs="0"/>
+						<xs:element name="getDimensionUpperBound" minOccurs="0"/>
+						<xs:element name="getAvailableDimensionsForClassAttribute" minOccurs="0"/>
+						<xs:element name="getKnownObjectClassHandle" minOccurs="0"/>
+						<xs:element name="getAvailableDimensionsForInteractionClass" minOccurs="0"/>
+						<xs:element name="getTransportationType" minOccurs="0"/>
+						<xs:element name="getTransportationName" minOccurs="0"/>
+						<xs:element name="getOrderType" minOccurs="0"/>
+						<xs:element name="getOrderName" minOccurs="0"/>
+						<xs:element name="enableObjectClassRelevanceAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="disableObjectClassRelevanceAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="enableAttributeRelevanceAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="disableAttributeRelevanceAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="enableAttributeScopeAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="disableAttributeScopeAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="enableInteractionRelevanceAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="disableInteractionRelevanceAdvisorySwitch" minOccurs="0"/>
+						<xs:element name="getDimensionHandleSet" minOccurs="0"/>
+						<xs:element name="getRangeBounds" minOccurs="0"/>
+						<xs:element name="setRangeBounds" minOccurs="0"/>
+						<xs:element name="normalizeFederateHandle" minOccurs="0"/>
+						<xs:element name="normalizeServiceGroup" minOccurs="0"/>
+						<xs:element name="evokeCallback" minOccurs="0"/>
+						<xs:element name="evokeMultipleCallback" minOccurs="0"/>
+						<xs:element name="enableCallbacks" minOccurs="0"/>
+						<xs:element name="disableCallbacks" minOccurs="0"/>
+						<xs:element name="getAutomaticResignDirective" minOccurs="0"/>
+						<xs:element name="setAutomaticResignDirective" minOccurs="0"/>
+						<xs:element name="getFederateHandle" minOccurs="0"/>
+						<xs:element name="getFederateName" minOccurs="0"/>
+						<xs:element name="getUpdateRateValueForAttribute" minOccurs="0"/>
+					</xs:all>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:simpleType name="dimensionValuePattern">
+		<xs:restriction base="xs:string">
+			<!--xs:pattern value="(\d)+|[(\d)+..(\d)+)|Excluded"/-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="cardinalityPattern">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(Dynamic|(\d)+|(\[(\d)+..(\d)+\]))(,(Dynamic|(\d)+|(\[(\d)+..(\d)+\])))*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="cardinalityType">
+		<xs:simpleContent>
+			<xs:extension base="cardinalityPattern">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="arrayDatatypeEncodingEnum">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="HLAfixedArray"/>
+			<xs:pattern value="HLAvariableArray"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="arrayDatatypeEncodingUnion">
+		<xs:union memberTypes="arrayDatatypeEncodingEnum modelID:nonEmptyString"/>
+	</xs:simpleType>
+	<xs:complexType name="arrayDatatypeEncodingType">
+		<xs:simpleContent>
+			<xs:extension base="arrayDatatypeEncodingUnion">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="fixedRecordEncodingEnumeration">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HLAfixedRecord"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="fixedRecordEncodingUnion">
+		<xs:union memberTypes="fixedRecordEncodingEnumeration modelID:nonEmptyString"/>
+	</xs:simpleType>
+	<xs:complexType name="fixedRecordEncodingType">
+		<xs:simpleContent>
+			<xs:extension base="fixedRecordEncodingUnion">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="variantRecordEnumeratorPattern">
+		<xs:restriction base="xs:NCName">
+			<xs:pattern value="HLAother|(\S)+|([(\S)+..(\S)+])"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="variantRecordEncodingEnumerator">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HLAvariantRecord"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="variantRecordEncodingUnion">
+		<xs:union memberTypes="variantRecordEncodingEnumerator modelID:nonEmptyString"/>
+	</xs:simpleType>
+	<xs:complexType name="variantRecordEncodingType">
+		<xs:simpleContent>
+			<xs:extension base="variantRecordEncodingUnion">
+				<xs:attributeGroup ref="modelID:commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

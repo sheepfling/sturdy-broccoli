@@ -27,7 +27,7 @@ def test_classify_fom_inventory_record_separates_repo_owned_support_and_standard
     )
     support_only = FOMInventoryRecord(
         id="third-party-ieee1516-omt",
-        path="analysis/siso_downloads/_expanded/example/IEEE1516-OMT-2010.xsd.xml",
+        path="artifacts/siso_downloads/_expanded/example/IEEE1516-OMT-2010.xsd.xml",
         edition_class="2010",
         load_mode="standalone",
         baseline_kind="third-party",

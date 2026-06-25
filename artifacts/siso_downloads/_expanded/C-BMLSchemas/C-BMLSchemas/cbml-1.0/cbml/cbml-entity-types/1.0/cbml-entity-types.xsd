@@ -1,0 +1,2476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jc3iedm="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0" targetNamespace="http://www.sisostds.org/schemas/c-bml/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">XML schema defined by the Multilateral Interoperability Programme (MIP) - Editor: Dr. Michael Gerz, gerz@fgan.de, FGAN FKIE, Germany</xs:documentation>
+		<xs:documentation xml:lang="en">The following schema is directly derived from the JC3IEDM 3.0.2:oo:2.2 schema.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" schemaLocation="../../jc3iedm-simple-types/3.0.2/jc3iedm-simple-types.xsd"/>
+	<xs:include schemaLocation="../../cbml-codes/1.0/cbml-codes.xsd"/>
+	<xs:complexType name="AbstractAbsolutePoint" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A POINT in a geodetic system. Concrete types are: {CartesianPoint, GeographicPoint}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractPoint">
+				<xs:sequence>
+					<xs:choice minOccurs="0">
+						<xs:element name="VerticalDistance" type="cbml:VerticalDistance">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">The vertical distance for a specific ABSOLUTE-POINT.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="VerticalDistanceRef" type="cbml:VerticalDistanceRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">The vertical distance for a specific ABSOLUTE-POINT.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractAbsolutePointRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some AbsolutePoint - A POINT in a geodetic system. Concrete types are: {CartesianPointRef, GeographicPointRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractPointRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractAction" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An activity, or the occurrence of an activity, that may utilise resources and may be focused against an objective. Concrete types are: {NuclearWeaponEvent, OtherNuclearEvent, OtherRadioactiveEvent, RadiologicalEvent, ChemicalBiologicalEvent, OtherCbrnEvent, OtherActionEvent, ActionTask, Request}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar50" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific ACTION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Action - An activity, or the occurrence of an activity, that may utilise resources and may be focused against an objective. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, ActionTaskRef, RequestRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionEffect" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A perceived effectiveness of a specific ACTION against a specific battlespace object or its class. Concrete types are: {ActionEffectItem, ActionEffectType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DescriptionCode" type="jc3iedm:ActionEffectDescriptionCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the type of outcome of a specific ACTION that is being estimated or recorded.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SeverityCode" type="jc3iedm:ActionEffectSeverityCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the degree of seriousness of a specific ACTION-EFFECT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionEvent" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An ACTION that is an incident, phenomenon, or occasion of military significance which has occurred or is occurring but for which planning is not known. Concrete types are: {NuclearWeaponEvent, OtherNuclearEvent, OtherRadioactiveEvent, RadiologicalEvent, ChemicalBiologicalEvent, OtherCbrnEvent, OtherActionEvent}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractAction"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionEventRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ActionEvent - An ACTION that is an incident, phenomenon, or occasion of military significance which has occurred or is occurring but for which planning is not known. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionObjective" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The focus, in terms of an OBJECT-ITEM, OBJECT-TYPE, or ACTION-TASK, in conducting a specific ACTION. Concrete types are: {OtherActionObjectiveType, OtherActionObjectiveItem, Target}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActionObjectiveQualifierCode" type="jc3iedm:ActionObjectiveQualifierCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents a restriction or other qualification applicable to a specific ACTION-OBJECTIVE for a specific ACTION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionObjectiveRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ActionObjective - The focus, in terms of an OBJECT-ITEM or OBJECT-TYPE, in conducting a specific ACTION. Concrete types are: {OtherActionObjectiveTypeRef, OtherActionObjectiveItemRef, TargetRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionObjectiveItem" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A battlespace object (FACILITY, FEATURE, MATERIEL, ORGANISATION or PERSON) which is the focus of a specific ACTION. Concrete types are: {OtherActionObjectiveItem, Target}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionObjective">
+				<xs:sequence>
+					<xs:element name="ActionObjectiveItemPrimacyCode" type="jc3iedm:ActionObjectiveItemPrimacyCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the relative usage of a specific ACTION-OBJECTIVE-ITEM when more than one instance of ACTION-OBJECTIVE-ITEM is designated for a specific ACTION.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CandidateTargetDetailItemRef" type="cbml:CandidateTargetDetailItemRef" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The candidate-target-detail-index that identifies specific items in a CANDIDATE-TARGET-LIST.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ObjectItemRef" type="cbml:AbstractObjectItemRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The OBJECT-ITEM. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="Marking" type="cbml:ActionObjectiveItemMarking">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'is-indicated-by' relationship.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MarkingRef" type="cbml:ActionObjectiveItemMarkingRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'is-indicated-by' relationship.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionObjectiveItemRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ActionObjectiveItem - A battlespace object (FACILITY, FEATURE, MATERIEL, ORGANISATION or PERSON) which is the focus of a specific ACTION. Concrete types are: {OtherActionObjectiveItemRef, TargetRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionObjectiveRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionObjectiveType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A class of battlespace object (FACILITY-TYPE, FEATURE-TYPE, MATERIEL-TYPE, ORGANISATION-TYPE or PERSON-TYPE) which is the focus of a specific ACTION. Concrete types are: {OtherActionObjectiveType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionObjective">
+				<xs:sequence>
+					<xs:element name="ActionObjectiveQuantity" type="jc3iedm:QuantityType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the aggregated units of a specific ACTION-OBJECTIVE-TYPE. No unit of measure is required.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CandidateTargetDetailTypeRef" type="cbml:CandidateTargetDetailTypeRef" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The candidate-target-detail-index that identifies specific types in a CANDIDATE-TARGET-LIST.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ObjectTypeRef" type="cbml:AbstractObjectTypeRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The OBJECT-TYPE. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef, OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef, OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef, AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef, OtherObjectTypeRef, PersonTypeRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionObjectiveTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ActionObjectiveType - A class of battlespace object (FACILITY-TYPE, FEATURE-TYPE, MATERIEL-TYPE, ORGANISATION-TYPE or PERSON-TYPE) which is the focus of a specific ACTION. Concrete types are: {OtherActionObjectiveTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionObjectiveRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionResource" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM or an OBJECT-TYPE that is required, requested, allocated or otherwise used or planned to be used in conducting a specific ACTION. Concrete types are: {ActionResourceItem, ActionResourceType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CriticalityIndicatorCode" type="jc3iedm:ActionResourceCriticalityIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes a judgement whether a specific resource (OBJECT-ITEM or OBJECT-TYPE) associated with a specific ACTION is essential for the effective completion of that ACTION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActionResourceQualifierCode" type="jc3iedm:ActionResourceQualifierCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the type of restriction or other qualification applicable to a specific ACTION-RESOURCE for a specific ACTION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Employment" type="cbml:AbstractActionResourceEmployment" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A child in a 'is-used-according-to' relationship. Concrete types are: {OtherActionResourceEmployment}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionResourceEmployment" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The procedure for using a specific ACTION-RESOURCE with or without dependence upon a specific ACTION-OBJECTIVE. Concrete types are: {OtherActionResourceEmployment}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionObjectiveRef" type="cbml:AbstractActionObjectiveRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The ACTION-OBJECTIVE . Concrete types are: {OtherActionObjectiveTypeRef, OtherActionObjectiveItemRef, TargetRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionTask" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An ACTION that is being or has been planned and for which the planning details are known. Concrete types are: {ActionTask, Request}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractAction">
+				<xs:sequence>
+					<xs:element name="ActivityCode" type="jc3iedm:ActionTaskActivityCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the type of activity prescribed by the ACTION-TASK.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PriorityCode" type="jc3iedm:ActionTaskPriorityCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the rank of importance of a specific ACTION-TASK in view of the planning organisation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EntailedSafetyDegreeCode" type="jc3iedm:ActionTaskEntailedSafetyDegreeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the degree of safety (or risk) entailed with an ordered operation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OvertCovertCode" type="jc3iedm:ActionTaskOvertCovertCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the property of an ACTION-TASK to be overt or covert.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MeteorologicalImpactCode" type="jc3iedm:ActionTaskMeteorologicalImpactCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents a subjective indication of the effect of weather conditions on a specific operation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalLevelCode" type="jc3iedm:ActionTaskOperationalLevelCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the operational level of the specific ACTION-TASK.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractActionTaskRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ActionTask - An ACTION that is being or has been planned and for which the planning details are known. Concrete types are: {ActionTaskRef, RequestRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractAddress" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Precise information on the basis of which a physical or electronic destination may be accessed. Concrete types are: {ElectronicAddress, OtherAddress}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlaceNameText" type="jc3iedm:TextTypeVar100" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent the name of the place related to the subject address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractAddressRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Address - Precise information on the basis of which a physical or electronic destination may be accessed. Concrete types are: {ElectronicAddressRef, OtherAddressRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractAffiliation" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A specification of a country, nationality, ethnic group, functional group, exercise group, or religion to which membership or allegiance may be ascribed. Concrete types are:
+{AffiliationEthnicGroup, AffiliationFunctionalGroup, AffiliationGeopolitical, AffiliationReligion, OtherAffiliation}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractAffiliationRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Affiliation - A specification of a country, nationality, ethnic group, functional group, exercise group, or religion to which membership or allegiance may be ascribed. Concrete types are: {AffiliationEthnicGroupRef, AffiliationFunctionalGroupRef, AffiliationGeopoliticalRef, AffiliationReligionRef, OtherAffiliationRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractCandidateTargetDetail" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An element of CANDIDATE-TARGET-LIST. Concrete types are: {CandidateTargetDetailItem, CandidateTargetDetailType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FocusTypeCode" type="jc3iedm:CandidateTargetDetailFocusTypeCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes a general class of actions intended by the nominating authority for a specific CANDIDATE-TARGET-DETAIL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LabelText" type="jc3iedm:TextTypeVar255" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent the identity of a specific CANDIDATE-TARGET-DETAIL in accordance with a specific scheme.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PriorityOrdinal" type="jc3iedm:OrdinalType6" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The integer value that indicates the rank of importance of a specific CANDIDATE-TARGET-DETAIL in the view of nominating authority.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SchemeCode" type="jc3iedm:CandidateTargetDetailSchemeCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes an identification scheme used for recording a CANDIDATE-TARGET-DETAIL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractCandidateTargetDetailRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CandidateTargetDetail - An element of CANDIDATE-TARGET-LIST. Concrete types are: {CandidateTargetDetailItemRef, CandidateTargetDetailTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractCbrnEvent" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An ACTION-EVENT that involves chemical, biological, radiological or nuclear materiel individually or in combination. Concrete types are:
+{NuclearWeaponEvent, OtherNuclearEvent, OtherRadioactiveEvent, RadiologicalEvent, ChemicalBiologicalEvent, OtherCbrnEvent}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionEvent">
+				<xs:sequence>
+					<xs:element name="CbrnEventSubcategoryCode" type="jc3iedm:CbrnEventSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class or nature of activity prescribed by CBRN-EVENT.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AlarmResultIndicatorCode" type="jc3iedm:CbrnEventAlarmResultIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes whether a detector has indicated the presence of a CBRN-EVENT.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ConfirmationTestIndicatorCode" type="jc3iedm:CbrnEventConfirmationTestIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes whether a test confirms the presence of a CBRN-EVENT.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaterielContainerTypeCode" type="jc3iedm:CbrnEventMaterielContainerTypeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the type of container that stores the materiel (agent) involved in a specific CBRN-EVENT and characterised in ATP-45.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaterielContainerTotalCount" type="jc3iedm:CountType4" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The integer value representing the number of [materiel] agent containers involved in a specific CBRN-EVENT and characterised in ATP-45.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractCbrnEventRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CbrnEvent - An ACTION-EVENT that involves chemical, biological, radiological or nuclear materiel individually or in combination. Concrete types are:
+{NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractActionEventRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractConsumableMaterielType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MATERIEL-TYPE that is an expendable class of supply. Concrete types are: {AmmunitionType, BiologicalMaterielType, ChemicalMaterielType, OtherConsumableMaterielType, RadioactiveMaterielType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielType">
+				<xs:sequence>
+					<xs:element name="ConsumableMaterielTypeSubcategoryCode" type="jc3iedm:ConsumableMaterielTypeSubcategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the detailed class of a specific CONSUMABLE-MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HazardCode" type="jc3iedm:ConsumableMaterielTypeHazardCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents a CONSUMABLE-MATERIEL-TYPE that requires special handling because of environmental or safety reasons.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingElementCode" type="jc3iedm:ConsumableMaterielTypeIssuingElementCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents a standard unit in which a specific CONSUMABLE-MATERIEL-TYPE is made available.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingCount" type="jc3iedm:CountType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The integer value representing the aggregated units in which a specific CONSUMABLE-MATERIEL-TYPE is made available.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingUnitOfMeasureCode" type="jc3iedm:ConsumableMaterielTypeIssuingUnitOfMeasureCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the unit of measure of which a standard quantity (unit) of a specific CONSUMABLE-MATERIEL-TYPE is made available.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingWeightQuantity" type="jc3iedm:QuantityType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the gravitational force exerted on an amount of a standard unit of issue for a specific CONSUMABLE-MATERIEL-TYPE when it is prepared for delivery. The unit of measure is kilogram.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PerishabilityIndicatorCode" type="jc3iedm:ConsumableMaterielTypePerishabilityIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether a particular CONSUMABLE-MATERIEL-TYPE is liable to decay or spoil.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="UnitedNationsNumberCode" type="jc3iedm:ConsumableMaterielTypeUnitedNationsNumberCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the United Nations (UN) Numbers that are four-digit numbers used world-wide in international commerce and transportation to identify hazardous chemicals or classes of hazardous materials.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractConsumableMaterielTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ConsumableMaterielType - A MATERIEL-TYPE that is an expendable class of supply. Concrete types are: {AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractContext" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A collection of information that provides in its entirety the circumstances, conditions, environment, or perspective for a situation. Concrete types are: {OperationalInformationGroup, OtherContext}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar80" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific CONTEXT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:element name="SecurityClassification" type="cbml:SecurityClassification">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">The SECURITY-CLASSIFICATION.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="SecurityClassificationRef" type="cbml:SecurityClassificationRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">The SECURITY-CLASSIFICATION.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="ActionContextInContext" type="cbml:ActionContextInContext" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A child in a 'provides-circumstances-for' relationship.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractContextRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Context - A collection of information that provides in its entirety the circumstances, conditions, environment, or perspective for a situation. Concrete types are: {OperationalInformationGroupRef, OtherContextRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractControlFeature" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A non-tangible FEATURE of military interest that is administratively specified, may be represented by a geometric figure, and is associated with the conduct of military operations. Concrete types are: {AirRouteSegment, OtherRouteSegment, AirspaceControlMeans, OtherControlFeature, Route}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFeature"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractControlFeatureRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ControlFeature - A non-tangible FEATURE of military interest that is administratively specified, may be represented by a geometric figure, and is associated with the conduct of military operations. Concrete types are: {AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFeatureRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractControlFeatureType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A non-tangible FEATURE-TYPE of military interest that may be represented as a geometric figure and is associated with the conduct of military operations. Concrete types are: {OtherControlFeatureType, RouteType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="EchelonCode" type="jc3iedm:EchelonSizeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the echelon level of an organisation that is to be associated with a specific CONTROL-FEATURE-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractControlFeatureTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ControlFeatureType - A non-tangible FEATURE-TYPE of military interest that may be represented as a geometric figure and is associated with the conduct of military operations. Concrete types are: {OtherControlFeatureTypeRef, RouteTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFeatureTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractEquipmentType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MATERIEL-TYPE that is not intended for consumption. Concrete types are: {OtherVesselType, SubsurfaceVesselType, SurfaceVesselType, AircraftType, CbrnEquipmentType, ElectronicEquipmentType, EngineeringEquipmentType, MaritimeEquipmentType, MiscellaneousEquipmentType, RailcarType, VehicleType, WeaponType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielType">
+				<xs:sequence>
+					<xs:element name="LoadedWeightQuantity" type="jc3iedm:QuantityType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the weight of a specific EQUIPMENT-TYPE including the normal maximum payload, crew, and personal/organisation equipment as well as the basic issue items. The unit of measure is kilogram.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="UnloadedWeightQuantity" type="jc3iedm:QuantityType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the weight of a specific EQUIPMENT-TYPE including on-equipment materiel that is an integral part of the equipment when issued. The unit of measure is kilogram.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaximumHeightDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the maximum distance measured perpendicular to the base plane of the specific EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaximumLengthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the maximum distance measured from end to end and parallel to the central axis of a specific EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaximumWidthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the maximum distance measured from side to side and perpendicular to the central axis of a specific EQUIPMENT-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="FuelCapacityQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the usable fuel capacity of an EQUIPMENT-TYPE. The unit of measure is litre.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractEquipmentTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some EquipmentType - A MATERIEL-TYPE that is not intended for consumption. Concrete types are: {OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMaterielTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFacility" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM that is built, installed or established to serve some particular purpose and is identified by the service it provides rather than by its content. Concrete types are: {MinefieldLand, MinefieldMaritime, OtherMilitaryObstacle, Airfield, Anchorage, Apron, Basin, Berth, Bridge, DryDock, Harbour, Jetty, OtherFacility, Quay, Railway, Road, Slipway}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItem">
+				<xs:sequence>
+					<xs:element name="PrimaryConstructionMaterialCode" type="jc3iedm:FacilityPrimaryConstructionMaterialCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the major material used in building the specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BaseIdentificationCodeText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a designation of the common additional reference given to a specific military base/facility.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HeightDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the height of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LengthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the length of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="WidthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the width of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MajorBuildingTypeRef" type="cbml:AbstractFacilityTypeRef" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The FACILITY-TYPE that identifies the class of major buildings in a particular FACILITY. Concrete types are: {AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFacilityRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Facility - An OBJECT-ITEM that is built, installed or established to serve some particular purpose and is identified by the service it provides rather than by its content. Concrete types are: {MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFacilityStatus" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM-STATUS that is a record of condition of a specific FACILITY. Concrete types are:
+{AirfieldStatus, MedicalFacilityStatus, MinefieldMaritimeStatus, OtherFacilityStatus}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemStatus">
+				<xs:sequence>
+					<xs:element name="DemolitionStatusCode" type="jc3iedm:DemolitionStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the status of a specific FACILITY destined for demolition.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EnemyActivityConditionCode" type="jc3iedm:FacilityStatusEnemyActivityConditionCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the status of enemy activity around or at the FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MinePresenceCode" type="jc3iedm:MinePresenceCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether a specific FACILITY contains mines.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OccupationProgramIndicatorCode" type="jc3iedm:FacilityStatusOccupationProgramIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether an occupation programme is present at the facility.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalStatusCode" type="jc3iedm:FacilityStatusOperationalStatusCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the operational status of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalStatusQualifierCode" type="jc3iedm:FacilityStatusOperationalStatusQualifierCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the qualification of the operational status of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ReserveIndicatorCode" type="jc3iedm:FacilityStatusReserveIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether a specific FACILITY has been placed in reserve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SecurityStatusCode" type="jc3iedm:FacilityStatusSecurityStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the security status of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="UsageStatusCode" type="jc3iedm:UsageStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the usage of a specific FACILITY.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFacilityType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-TYPE that is intended to be built, installed or established to serve some particular purpose and is identified by the service it is intended to provide rather than by its content. Concrete types are: {AirfieldType, BridgeType, HarbourType, MilitaryObstacleType, OtherFacilityType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFacilityTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some FacilityType - An OBJECT-TYPE that is intended to be built, installed or established to serve some particular purpose and is identified by the service it is intended to provide rather than by its content. Concrete types are: {AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFeature" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM that encompasses meteorological, geographic, and control features of military significance. Concrete types are: {Atmosphere, CloudCover, Icing, Light, OtherMeteorologicFeature, Precipitation, Visibility, Wind, AirRouteSegment, OtherRouteSegment, AirspaceControlMeans, OtherControlFeature, Route, GeographicFeature, OtherFeature}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItem"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFeatureRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Feature - An OBJECT-ITEM that encompasses meteorological, geographic, and control features of military significance. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFeatureType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-TYPE that encompasses meteorological, geographic, and control features of military significance. Concrete types are: {OtherControlFeatureType, RouteType, GeographicFeatureType, OtherFeatureType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractFeatureTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some FeatureType - An OBJECT-TYPE that encompasses meteorological, geographic, and control features of military significance. Concrete types are: {OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractGeographicFeatureStatus" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM-STATUS that is a record of condition of a specific GEOGRAPHIC-FEATURE. Concrete types are: {LiquidBodyStatus, LiquidSurfaceStatus, SolidSurfaceStatus}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemStatus">
+				<xs:sequence>
+					<xs:element name="MinePresenceCode" type="jc3iedm:MinePresenceCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether a specific GEOGRAPHIC-FEATURE contains mines.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SurfaceRecirculationIndicatorCode" type="jc3iedm:GeographicFeatureStatusSurfaceRecirculationIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether the surface will recirculate as a result of rotor downwash.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractGeometricVolume" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A specific LOCATION that is a three-dimensional bounded space. Concrete types are: {ConeVolume, SphereVolume, SurfaceVolume}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractLocation">
+				<xs:sequence>
+					<xs:choice minOccurs="0">
+						<xs:element name="LowerVerticalDistance" type="cbml:VerticalDistance">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">The VERTICAL-DISTANCE that defines the altitude or height of the lower level for a specific GEOMETRIC-VOLUME.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="LowerVerticalDistanceRef" type="cbml:VerticalDistanceRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">The VERTICAL-DISTANCE that defines the altitude or height of the lower level for a specific GEOMETRIC-VOLUME.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+					<xs:choice minOccurs="0">
+						<xs:element name="UpperVerticalDistance" type="cbml:VerticalDistance">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">The VERTICAL-DISTANCE that defines the altitude or height of the upper level for a specific GEOMETRIC-VOLUME.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="UpperVerticalDistanceRef" type="cbml:VerticalDistanceRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">The VERTICAL-DISTANCE that defines the altitude or height of the upper level for a specific GEOMETRIC-VOLUME.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractGeometricVolumeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some GeometricVolume - A specific LOCATION that is a three-dimensional bounded space. Concrete types are: {ConeVolumeRef, SphereVolumeRef, SurfaceVolumeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractLocationRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractGovernmentOrganisationType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An ORGANISATION-TYPE that controls and administers public policy either under a national or international mandate. Concrete types are: {ExecutiveMilitaryOrganisationType, MilitaryPostType, OtherMilitaryOrganisationType, TaskFormationType, UnitType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractOrganisationType">
+				<xs:sequence>
+					<xs:element name="MainActivityCode" type="jc3iedm:MainActivityCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the main activity of a GOVERNMENT-ORGANISATION-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractGovernmentOrganisationTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some GovernmentOrganisationType - An ORGANISATION-TYPE that controls and administers public policy either under a national or international mandate. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractOrganisationTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractLocation" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A specification of position and geometry with respect to a specified horizontal frame of reference and a vertical distance measured from a specified datum. Concrete types are: {ConeVolume, SphereVolume, SurfaceVolume, CartesianPoint, GeographicPoint, RelativePoint, CorridorArea, Ellipse, FanArea, OrbitArea, PolyarcArea, PolygonArea, TrackArea, Line, OtherLocation}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractLocationRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Location - A specification of position and geometry with respect to a specified horizontal frame of reference and a vertical distance measured from a specified datum. Concrete types are: {ConeVolumeRef, SphereVolumeRef, SurfaceVolumeRef, CartesianPointRef, GeographicPointRef, RelativePointRef, CorridorAreaRef, EllipseRef, FanAreaRef, OrbitAreaRef, PolyarcAreaRef, PolygonAreaRef, TrackAreaRef, LineRef, OtherLocationRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractMateriel" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM that is equipment, apparatus or supplies of military interest without distinction as to its application for administrative or combat purposes. Concrete types are: {InstrumentLandingSystem, OtherMateriel}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItem">
+				<xs:sequence>
+					<xs:element name="SerialNumberIdentificationText" type="jc3iedm:TextTypeVar50" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LotIdentificationText" type="jc3iedm:TextTypeVar100" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a specific production of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HullNumberText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent the number assigned to a specific vessel, which when associated with a specific hull type or ship type, uniquely identifies that vessel.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MineRequisitionCaseNumberText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent the book/record keeping number to keep track of individual mines.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMaterielRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Materiel - An OBJECT-ITEM that is equipment, apparatus or supplies of military interest without distinction as to its application for administrative or combat purposes. Concrete types are: {InstrumentLandingSystemRef, OtherMaterielRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMaterielStatus" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM-STATUS that is a record of condition of a specific MATERIEL. Concrete types are: {MineStatus, OtherMaterielStatus, UxoStatus}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemStatus">
+				<xs:sequence>
+					<xs:element name="BodyColourCode" type="jc3iedm:MaterielStatusBodyColourCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the current colour scheme of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MarkingCode" type="jc3iedm:MaterielStatusMarkingCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the type of marking of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MarkingColourCode" type="jc3iedm:MaterielStatusMarkingColourCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the colour of the markings of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DemolitionStatusCode" type="jc3iedm:DemolitionStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the status of a specific MATERIEL destined for demolition.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ImoCompliantIndicatorCode" type="jc3iedm:MaterielStatusImoCompliantIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates whether a vessel complies with International Maritime Organisation standards.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalStatusCode" type="jc3iedm:MaterielStatusOperationalStatusCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the operational status of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalStatusQualifierCode" type="jc3iedm:MaterielStatusOperationalStatusQualifierCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the qualification of the operational status of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalStatusModeCode" type="jc3iedm:MaterielStatusOperationalStatusModeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the firepower or mobility or communications degradation of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ReserveIndicatorCode" type="jc3iedm:MaterielStatusReserveIndicatorCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents whether a specific MATERIEL has been placed in reserve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SafetyStatusCode" type="jc3iedm:MaterielStatusSafetyStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the arming state of a specific MATERIEL that is a weapon or ammunition.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="UsageStatusCode" type="jc3iedm:UsageStatusCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the usage of a specific MATERIEL.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BuoyMalfunctionCode" type="jc3iedm:MaterielStatusBuoyMalfunctionCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the type of malfunction of a buoy.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMaterielType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-TYPE that represents equipment, apparatus or supplies of military interest without distinction to its application for administrative or combat purposes. Concrete types are: {OtherVesselType, SubsurfaceVesselType, SurfaceVesselType, AircraftType, CbrnEquipmentType, ElectronicEquipmentType, EngineeringEquipmentType, MaritimeEquipmentType, MiscellaneousEquipmentType, RailcarType, VehicleType, WeaponType, AmmunitionType, BiologicalMaterielType, ChemicalMaterielType, OtherConsumableMaterielType, RadioactiveMaterielType, OtherMaterielType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectType">
+				<xs:sequence>
+					<xs:element name="ReportableItemText" type="jc3iedm:TextTypeVar6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a specific MATERIEL-TYPE, selected from the Reportable Item Code list issued by NATO.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="StockNumberText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent a specific MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SupplyClassCode" type="jc3iedm:MaterielTypeSupplyClassCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the NATO supply class of MATERIEL-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingHeightDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the maximum distance measured perpendicular to the base plane of the specific MATERIEL-TYPE when it is prepared for shipment or storage.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingLengthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the maximum distance measured from end to end and parallel to the central axis of specific MATERIEL-TYPE when it is prepared for shipment or storage.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IssuingWidthDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the maximum distance measured from side to side and perpendicular to the central axis of a specific MATERIEL-TYPE when it is prepared for shipment or storage.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMaterielTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some MaterielType - An OBJECT-TYPE that represents equipment, apparatus or supplies of military interest without distinction to its application for administrative or combat purposes. Concrete types are: {OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMeteorologicFeature" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A FEATURE that describes reported or forecast weather and light conditions. Concrete types are: {Atmosphere, CloudCover, Icing, Light, OtherMeteorologicFeature, Precipitation, Visibility, Wind}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFeature">
+				<xs:sequence>
+					<xs:element name="InterpretationCode" type="jc3iedm:MeteorologicFeatureInterpretationCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes the statistical meaning of a specified METEOROLOGIC-FEATURE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ProbabilityRatio" type="jc3iedm:RatioType6_5" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric quotient value that represents the likelihood that a specific condition will occur for a specific METEOROLOGIC-FEATURE. The value must be in the range from 0 to 1.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SourceCode" type="jc3iedm:MeteorologicFeatureSourceCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes the basis for the estimate of a condition for a specific METEOROLOGIC-FEATURE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMeteorologicFeatureRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some MeteorologicFeature - A FEATURE that describes reported or forecast weather and light conditions. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFeatureRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMilitaryObstacle" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A FACILITY designed to stop, impede, or divert movement of amphibious or ground forces. Concrete types are: {MinefieldLand, MinefieldMaritime, OtherMilitaryObstacle}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFacility"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMilitaryObstacleRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some MilitaryObstacle - A FACILITY designed to stop, impede, or divert movement of amphibious or ground forces. Concrete types are: {MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractFacilityRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMilitaryOrganisationType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A GOVERNMENT-ORGANISATION-TYPE that is officially sanctioned and is trained and equipped to exert force. Concrete types are: {ExecutiveMilitaryOrganisationType, MilitaryPostType, OtherMilitaryOrganisationType, TaskFormationType, UnitType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractGovernmentOrganisationType">
+				<xs:sequence>
+					<xs:element name="ServiceCode" type="jc3iedm:MilitaryOrganisationTypeServiceCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents a military, paramilitary, irregular force, force or group, capable of functioning as an offensive or defensive combat or support organisation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMilitaryOrganisationTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some MilitaryOrganisationType - A GOVERNMENT-ORGANISATION-TYPE that is officially sanctioned and is trained and equipped to exert force. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractGovernmentOrganisationTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMinefield" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A MILITARY-OBSTACLE that is an area or volume containing mines. Concrete types are: {MinefieldLand, MinefieldMaritime}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMilitaryObstacle">
+				<xs:sequence>
+					<xs:element name="IdentificationText" type="jc3iedm:TextTypeVar15" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent the designation of a minefield.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MineSpacingDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the distance between the mines emplaced in a specific MINEFIELD.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DestructionDatetime" type="jc3iedm:DatetimeTypeFix18" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string representing a point in time that designates the destruction of a specific MINEFIELD.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractMinefieldRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Minefield - A MILITARY-OBSTACLE that is an area or volume containing mines. Concrete types are: {MinefieldLandRef, MinefieldMaritimeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractMilitaryObstacleRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractNuclearEvent" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A RADIOACTIVE-EVENT involving nuclear materiel and/or nuclear detonation. Concrete types are: {NuclearWeaponEvent, OtherNuclearEvent}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractRadioactiveEvent"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractNuclearEventRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some NuclearEvent - A RADIOACTIVE-EVENT involving nuclear materiel and/or nuclear detonation. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractRadioactiveEventRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractObjectItem" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An individually identified object that has military or civilian significance. Concrete types are: {Atmosphere, CloudCover, Icing, Light, OtherMeteorologicFeature, Precipitation, Visibility, Wind, AirRouteSegment, OtherRouteSegment, AirspaceControlMeans, OtherControlFeature, Route, GeographicFeature, OtherFeature, InstrumentLandingSystem, OtherMateriel, MinefieldLand, MinefieldMaritime, OtherMilitaryObstacle, Airfield, Anchorage, Apron, Basin, Berth, Bridge, DryDock, Harbour, Jetty, OtherFacility, Quay, Railway, Road, Slipway, Convoy, OtherOrganisation, Unit, OtherObjectItem, Person}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar100">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific OBJECT-ITEM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Alias" type="cbml:ObjectItemAlias">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'has' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AliasRef" type="cbml:ObjectItemAliasRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'has' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="ObjectItemObjectTypeEstablishmentInObjectItem" type="cbml:ObjectItemObjectTypeEstablishmentInObjectItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A child in a 'is-assigned-establishment-through' relationship.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractObjectItemRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectItem - An individually identified object that has military or civilian significance. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractObjectItemStatus" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A record of the perceived condition of a specific OBJECT-ITEM as determined by the reporting organisation. Concrete types are: {AirfieldStatus, MedicalFacilityStatus, MinefieldMaritimeStatus, OtherFacilityStatus, LiquidBodyStatus, LiquidSurfaceStatus, SolidSurfaceStatus, MineStatus, OtherMaterielStatus, UxoStatus, ControlFeatureStatus, 
+OrganisationStatus, OtherObjectItemStatus, PersonStatus}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BoobyTrapPresenceCode" type="jc3iedm:ObjectItemStatusBoobyTrapPresenceCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that indicates whether a specific OBJECT-ITEM has been booby-trapped.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EmissionControlCode" type="jc3iedm:ObjectItemStatusEmissionControlCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the emission control status of a specific OBJECT-ITEM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractObjectType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An individually identified class of objects that has military or civilian significance. Concrete types are: {ExecutiveMilitaryOrganisationType, MilitaryPostType, OtherMilitaryOrganisationType, TaskFormationType, UnitType, PrivateSectorOrganisationType, CivilianPostType, GroupOrganisationType, OtherOrganisationType, OtherVesselType, SubsurfaceVesselType, SurfaceVesselType, AircraftType, CbrnEquipmentType, ElectronicEquipmentType, EngineeringEquipmentType, MaritimeEquipmentType, MiscellaneousEquipmentType, RailcarType, VehicleType, WeaponType, AmmunitionType, BiologicalMaterielType, ChemicalMaterielType, OtherConsumableMaterielType, RadioactiveMaterielType, OtherMaterielType, OtherControlFeatureType, RouteType, GeographicFeatureType, OtherFeatureType, AirfieldType, BridgeType, HarbourType, MilitaryObstacleType, OtherFacilityType, OtherObjectType, PersonType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DecoyIndicatorCode" type="jc3iedm:ObjectTypeDecoyIndicatorCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes whether a specific OBJECT-TYPE represents an object class acting as a decoy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar100">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific OBJECT-TYPE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Affiliation" type="cbml:AbstractAffiliation">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'has' relationship. Concrete types are: {AffiliationEthnicGroup, AffiliationFunctionalGroup, AffiliationGeopolitical, AffiliationReligion, OtherAffiliation}</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="AffiliationRef" type="cbml:AbstractAffiliationRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'has' relationship. Concrete types are: {AffiliationEthnicGroupRef, AffiliationFunctionalGroupRef, AffiliationGeopoliticalRef, AffiliationReligionRef, OtherAffiliationRef}</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Establishment" type="cbml:ObjectTypeEstablishment">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'is-made-up-through' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="EstablishmentRef" type="cbml:ObjectTypeEstablishmentRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'is-made-up-through' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractObjectTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectType - An individually identified class of objects that has military or civilian significance. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef, OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef, OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef, AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef, OtherObjectTypeRef, PersonTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractOrganisation" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-ITEM that is an administrative or functional structure. Concrete types are: {Convoy, OtherOrganisation, Unit}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItem">
+				<xs:sequence>
+					<xs:element name="OrganisationMaterielTypeAssociationInOrganisation" type="cbml:OrganisationMaterielTypeAssociationInOrganisation" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A child in a 'assigns-reporting-code-in' relationship.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractOrganisationRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Organisation - An OBJECT-ITEM that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractOrganisationType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An OBJECT-TYPE that represents administrative or functional structures. Concrete types are: {ExecutiveMilitaryOrganisationType, MilitaryPostType, OtherMilitaryOrganisationType, TaskFormationType, UnitType, PrivateSectorOrganisationType, CivilianPostType, GroupOrganisationType, OtherOrganisationType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectType">
+				<xs:sequence>
+					<xs:element name="CommandFunctionIndicatorCode" type="jc3iedm:OrganisationTypeCommandFunctionIndicatorCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes whether an ORGANISATION-TYPE has a command function.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CommandAndControlCategoryCode" type="jc3iedm:OrganisationTypeCommandAndControlCategoryCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that denotes the command and control classification of an ORGANISATION-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OrganisationDescriptionText" type="jc3iedm:TextTypeVar50" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string assigned to represent the specific ORGANISATION-TYPE.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractOrganisationTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OrganisationType - An OBJECT-TYPE that represents administrative or functional structures. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractPoint" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A zero dimensional LOCATION. Concrete types are: {CartesianPoint, GeographicPoint, RelativePoint}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractLocation"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractPointRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Point - A zero dimensional LOCATION. Concrete types are: {CartesianPointRef, GeographicPointRef, RelativePointRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractLocationRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractRadioactiveEvent" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A CBRN-EVENT involving radioactive materiel(s). Concrete types are: {NuclearWeaponEvent, OtherNuclearEvent, OtherRadioactiveEvent, RadiologicalEvent}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractCbrnEvent">
+				<xs:sequence>
+					<xs:element name="DoseQuantity" type="jc3iedm:QuantityType14_6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the total radiation dose accumulated over the duration of the RADIOACTIVE-EVENT. The unit of measure is centiGray (cGy).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DoseRate" type="jc3iedm:RateType16_7" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that denotes the radiation dose rate. The unit of measure is centiGray per Hour (cGy/h). The specified value must be greater than or equal to 0 (zero).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DoseRateTrendCode" type="jc3iedm:RadioactiveEventDoseRateTrendCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the rate of change of the ionising radiation emitted by a radioactive materiel.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="VolumeConcentrationQuantity" type="jc3iedm:QuantityType14_6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the level of radioactive contamination per unit volume in air or water. The unit of measure is Becquerels per cubic metre (BQM3).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SurfaceDepositionQuantity" type="jc3iedm:QuantityType14_6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the level of radioactive contamination per unit area on a surface. The unit of measure is Becquerels per square metre (BQM2).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RelativeDecayRateCode" type="jc3iedm:RadioactiveEventRelativeDecayRateCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the rate of decay of fallout relative to the assumed normal value of 1.2 in the Kaufmann equation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractRadioactiveEventRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some RadioactiveEvent - A CBRN-EVENT involving radioactive materiel(s). Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractCbrnEventRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractRelativeCoordinateSystem" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A rectangular frame of reference defined by an origin, x and y axes in the horizontal plane, and a z-axis. The vertical z-axis is normal to the xy-plane with positive direction determined from the right-hand rule when the x-axis is rotated toward the y-axis. Concrete types are: {ObjectReference, PointReference}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractRelativeCoordinateSystemRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some RelativeCoordinateSystem - A rectangular frame of reference defined by an origin, x and y axes in the horizontal plane, and a z-axis. The vertical z-axis is normal to the xy-plane with positive direction determined from the right-hand rule when the x-axis is rotated toward the y-axis. Concrete types are: {ObjectReferenceRef, PointReferenceRef}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractRouteSegment" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A portion of a route usually without an intermediate stop, as defined by two consecutive significant points. Concrete types are: {AirRouteSegment, OtherRouteSegment}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractControlFeature">
+				<xs:sequence>
+					<xs:element name="MobilityCode" type="jc3iedm:MobilityCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates the suitability of a specific ROUTE-SEGMENT for movement.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ModeOfTransportationCode" type="jc3iedm:ModeOfTransportationCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that indicates the mode of transportation of a specific ROUTE-SEGMENT.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractRouteSegmentRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some RouteSegment - A portion of a route usually without an intermediate stop, as defined by two consecutive significant points. Concrete types are: {AirRouteSegmentRef, OtherRouteSegmentRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractControlFeatureRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractSurface" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A two-dimensional LOCATION. Concrete types are: {CorridorArea, Ellipse, FanArea, OrbitArea, PolyarcArea, PolygonArea, TrackArea}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractLocation"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractSurfaceRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Surface - A two-dimensional LOCATION. Concrete types are: {CorridorAreaRef, EllipseRef, FanAreaRef, OrbitAreaRef, PolyarcAreaRef, PolygonAreaRef, TrackAreaRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractLocationRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractVesselType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An EQUIPMENT-TYPE that is designed to operate on or under the water surface. Concrete types are: {OtherVesselType, SubsurfaceVesselType, SurfaceVesselType}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentType">
+				<xs:sequence>
+					<xs:element name="MagneticDegaussingCodeNumberQuantity" type="jc3iedm:QuantityType12" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the peak vertical component of the magnetic field under a ship on the worst heading and at certain depth. The unit of measure is microtesla.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PrismaticCoefficientRatio" type="jc3iedm:RatioType6_5" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric quotient value that represents a ratio of the volume displaced by the hull in relation to the volume of a prism or cylinder of cross section equal to the greatest cross-section of the submerged part of the hull and of length equal to the ships length between perpendiculars. The value must be in the range from 0 to 1.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DeadWeightQuantity" type="jc3iedm:QuantityType6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the carrying capacity of a ship. Dead weight is the difference between the Full displacement (Gross weight) and the Light displacement (Net weight). The unit of measure is metric ton.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DraughtDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value of the distance from the Deep Water Line (DWL) to the lowest permanent projection on the hull of a vessel type including sonar domes, propellers, rudders, or other projections.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GrossRegisteredTonnageQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents a ship's internal cubic capacity or freight-carrying capacity. The unit of measure is Gross Registered Tonnage (GRT). A unit of Gross Registered Tonnage is equal to 2.83 cubic metres.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HeightAboveTheWaterlineDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The one-dimensional linear distance representing the distance from the waterline to the topmost point of an unloaded vessel.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PropellerCount" type="jc3iedm:CountType2" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The integer value representing the number of propellers on the ship.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PropulsionTypeCode" type="jc3iedm:VesselTypePropulsionTypeCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the type of power used to move the vessel.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OperationalDisplacementQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents the weight or volume of water moved by the vessel on the surface of the water. The unit of measure is metric ton.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MaximumSpeedRate" type="jc3iedm:RateType8_4" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value of the maximum speed that a vessel type can maintain for one hour or less with a clean hull immediately out of dry docking or refit. The speed is measured in knots. The specified value must be greater than or equal to 0 (zero).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AcousticMeritIndexQuantity" type="jc3iedm:QuantityType6" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that indicates the total acoustic level.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractVesselTypeRef" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some VesselType - An EQUIPMENT-TYPE that is designed to operate on or under the water surface. Concrete types are: {OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef}</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractEquipmentTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionContext">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A relationship between a specific ACTION and a specific CONTEXT.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionContextCategoryCode" type="jc3iedm:ActionContextCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the nature of the ACTION-CONTEXT as it relates to a specific ACTION and a specific CONTEXT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActionContextStatus" type="cbml:ActionContextStatus">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A child in a 'has' relationship.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionContextInContext">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A Context/Action association. Action is the child in a 'provides-circumstances-for' relationship; ActionContext provides additional information on the association.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionRef" type="cbml:AbstractActionRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, ActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActionContext" type="cbml:ActionContext"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionContextStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A record of the perceived state of a specific ACTION-CONTEXT as determined by the establishing organisation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AssociationStatusCategoryCode" type="jc3iedm:AssociationStatusCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that indicates whether a specific ACTION-CONTEXT-STATUS refers to the beginning or termination of the association.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EstablishingOrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The ORGANISATION that establishes a specific ACTION-CONTEXT-STATUS. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionEventStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The perceived appraisal of the actual progress of a specific ACTION-EVENT as determined by the reporting organisation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CompletionRatio" type="jc3iedm:RatioType6_5" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric quotient value that represents the portion of a whole ACTION-EVENT that is estimated to have been accomplished. The value must be in the range from 0 to 1.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FeintIndicatorCode" type="jc3iedm:FeintIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that indicates whether the ACTION-EVENT is a feint.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionFunctionalAssociationInSubjectAction">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A SubjectAction/ObjectAction association. ObjectAction is the child in a 'is-the-subject-of' relationship; ActionFunctionalAssociation provides additional information on the association.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectActionRef" type="cbml:AbstractActionRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, OtherActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FunctionalAssociationCategoryCode" type="jc3iedm:ActionFunctionalAssociationCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of relationship of subject ACTION to object ACTION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionLocation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An association of an ACTION with a LOCATION that enables the geographic position of the ACTION to be specified.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccuracyDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The one-dimensional linear distance representing the uncertainty in the estimate of a specific ACTION-LOCATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BearingAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The rotational measurement clockwise from true North to the right side of a horizontal conical section used in defining a specific ACTION-LOCATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionObjectiveItemMarking">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The technique of indicating the position of an ACTION-OBJECTIVE-ITEM at a given time for the benefit of a using ORGANISATION.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LaserCorrelationCodeText" type="jc3iedm:TextTypeVar4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent the code to be used by both the target designation system and the weapon delivery system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MethodCode" type="jc3iedm:ActionObjectiveItemMarkingMethodCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the method of marking a position.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PanelShapeCode" type="jc3iedm:ActionObjectiveItemMarkingPanelShapeCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the shape of the marking panel.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RecognitionSignalColourCode" type="jc3iedm:ActionObjectiveItemMarkingRecognitionSignalColourCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the coloration of the marking signal.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartDatetime" type="jc3iedm:DatetimeTypeFix18" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates the start of a specific ACTION-OBJECTIVE-ITEM-MARKING.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UsingOrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The ORGANISATION that makes use of marking services. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionObjectiveItemMarkingRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ActionObjectiveItemMarking - The technique of indicating the position of an ACTION-OBJECTIVE-ITEM at a given time for the benefit of a using ORGANISATION.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ActionTaskStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The perceived appraisal of the planning and execution progress of a particular ACTION-TASK as determined by the reporting organisation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionTaskStatusCategoryCode" type="jc3iedm:ActionTaskStatusCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the perceived class of a specific ACTION-TASK at a given time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CompletionRatio" type="jc3iedm:RatioType6_5" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric quotient value that represents the portion of a whole ACTION-TASK that is estimated to have occurred or been accomplished. The value must be in the range from 0 to 1.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlanningIndicatorCode" type="jc3iedm:ActionTaskStatusPlanningIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes at the reporting time whether an ACTION-TASK is completed in the planning process.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ProgressCode" type="jc3iedm:ActionTaskStatusProgressCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the perceived appraisal of the progress of a specific ACTION-TASK.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AmendTimingCode" type="jc3iedm:ActionTaskStatusAmendTimingCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes request or requirement to modify the timing associated with a specific ACTION-TASK.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ApprovalIndicatorCode" type="jc3iedm:ActionTaskStatusApprovalIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes at the reporting time whether an ACTION-TASK is approved for execution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FeintIndicatorCode" type="jc3iedm:FeintIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that indicates whether the ACTION-TASK is a feint.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetDetailItem">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An instance of CANDIDATE-TARGET-DETAIL that is an OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractCandidateTargetDetail">
+				<xs:sequence>
+					<xs:element name="ObjectItemRef" type="cbml:AbstractObjectItemRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The OBJECT-ITEM. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetDetailItemRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CandidateTargetDetailItem - An instance of CANDIDATE-TARGET-DETAIL that is an OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractCandidateTargetDetailRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetDetailType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An instance of CANDIDATE-TARGET-DETAIL that is an OBJECT-TYPE.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractCandidateTargetDetail">
+				<xs:sequence>
+					<xs:element name="ObjectTypeRef" type="cbml:AbstractObjectTypeRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The OBJECT-TYPE. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef, OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef, OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef, AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef, OtherObjectTypeRef, PersonTypeRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetDetailTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CandidateTargetDetailType - An instance of CANDIDATE-TARGET-DETAIL that is an OBJECT-TYPE.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractCandidateTargetDetailRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetList">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A list of selected battlespace objects or types that have potential value for destruction or exploitation, nominated by competent authority for consideration in planning battlespace activities.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar80" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific CANDIDATE-TARGET-LIST.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CandidateTargetDetail" type="cbml:AbstractCandidateTargetDetail" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A child in a 'consists-of' relationship. Concrete types are: {CandidateTargetDetailItem, CandidateTargetDetailType}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetListRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CandidateTargetList - A list of selected battlespace objects or types that have potential value for destruction or exploitation, nominated by competent authority for consideration in planning battlespace activities.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Holding">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The quantity of each specific OBJECT-TYPE that is held by, installed in, or included with a specific OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OperationalCount" type="jc3iedm:CountType9" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The integer value representing the number of specific OBJECT-TYPEs a specific OBJECT-ITEM has available for operations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TotalQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value representing the total quantity, to include reserves, of specific OBJECT-TYPEs physically held by a specific OBJECT-ITEM. The unit of measure is derived from the OBJECT-TYPE specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OnHandQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value representing the quantity of specific OBJECT-TYPEs physically held on-hand, not including reserves, by a specific OBJECT-ITEM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RequiredTotalQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value representing the total quantity of specific OBJECT-TYPEs required to be held on-hand and in reserve by a specific OBJECT-ITEM to meet the NATO assigned task in accordance with Force Standards or established mission requirements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RequiredOnHandQuantity" type="jc3iedm:QuantityType9" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value representing the quantity of specific OBJECT-TYPEs, not including reserves, required to be held on-hand by a specific OBJECT-ITEM in accordance with Force Standards or established mission requirements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RequiredCalculationMethodCode" type="jc3iedm:HoldingRequiredCalculationMethodCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the required stocks calculation method used for the count of OBJECT-TYPEs in a specific HOLDING.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="HoldingRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some Holding - The quantity of each specific OBJECT-TYPE that is held by, installed in, or included with a specific OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="HoldingTransfer">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The specification of the OBJECT-TYPE quantity expected to be added to or subtracted from a specific HOLDING.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReasonCode" type="jc3iedm:HoldingTransferReasonCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that characterises the basis for a specific HOLDING-TRANSFER.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HoldingTransferQuantity" type="jc3iedm:QuantityType9">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value representing the quantity of specific OBJECT-TYPE involved in a specific HOLDING-TRANSFER. A negative quantity decreases the HOLDING and a positive quantity increases the HOLDING.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CorrespondingObjectItemRef" type="cbml:AbstractObjectItemRef" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The OBJECT-ITEM that is either recipient or provider of a specific HOLDING-TRANSFER. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemAlias">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An additional name for an OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectItemAliasCategoryCode" type="jc3iedm:ObjectItemAliasCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of OBJECT-ITEM-ALIAS.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar50" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific OBJECT-ITEM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemAliasRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectItemAlias - An additional name for an OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemAssociation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A relationship of an OBJECT-ITEM as a subject with another OBJECT-ITEM as an object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectItemAssociationCategoryCode" type="jc3iedm:ObjectItemAssociationCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the type of relationship between the subject OBJECT-ITEM and the object OBJECT-ITEM in a specific OBJECT-ITEM-ASSOCIATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectItemAssociationSubcategoryCode" type="jc3iedm:ObjectItemAssociationSubcategoryCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the detailed type of relationship between the subject OBJECT-ITEM that is an ORGANISATION and the object OBJECT-ITEM that is an ORGANISATION in a specific OBJECT-ITEM-ASSOCIATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectItemAssociationStatus" type="cbml:ObjectItemAssociationStatus">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A child in a 'has' relationship.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemAssociationRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectItemAssociation - A relationship of an OBJECT-ITEM as a subject with another OBJECT-ITEM as an object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemAssociationStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A record of the perceived condition of a specific OBJECT-ITEM-ASSOCIATION as determined by the reporting organisation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AssociationStatusCategoryCode" type="jc3iedm:AssociationStatusCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that indicates if the status of a specific OBJECT-ITEM-ASSOCIATION-STATUS refers to the beginning or termination of the association.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemLocation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An association of an OBJECT-ITEM with a LOCATION that enables the geographic position of the OBJECT-ITEM to be specified. The operational meaning of geometry may also be specified.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VerticalAccuracyDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The one-dimensional linear distance representing the uncertainty in terms of probable error range for the vertical axis of a specific OBJECT-ITEM-LOCATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HorizontalAccuracyDimension" type="jc3iedm:DimensionType12_3" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The one-dimensional linear distance representing the uncertainty in the horizontal plane in terms of probable circular error for a specific OBJECT-ITEM-LOCATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BearingAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The rotational measurement clockwise from the line of true North to the direction of motion in the horizontal plane of a specific OBJECT-ITEM at a specific LOCATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BearingAccuracyAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The rotational measurement of a sector that represents the uncertainty range in the estimate of the bearing at a specific OBJECT-ITEM-LOCATION. The sector is bisected by the bearing.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BearingPrecisionCode" type="jc3iedm:AnglePrecisionCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the maximum resolution used for the expression of a bearing angle.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InclinationAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The rotational measurement from the horizontal plane to the direction of motion of a specific OBJECT-ITEM at a specific LOCATION (point or shape), where the positive angle is vertically upward.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InclinationAccuracyAngle" type="jc3iedm:AngleTypeRangeAngle7_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The rotational measurement of a vertical sector that represents the uncertainty range in the estimate of the inclination at a specific OBJECT-ITEM-LOCATION. The sector is bisected by the inclination.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InclinationPrecisionCode" type="jc3iedm:AnglePrecisionCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the maximum resolution used for the expression of an inclination angle.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpeedRate" type="jc3iedm:RateType8_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that denotes the motion of a specific OBJECT-ITEM at a specific LOCATION in terms of distance per unit time. The unit of measure is kilometres per hour. The specified value must be greater than or equal to 0 (zero).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpeedAccuracyRate" type="jc3iedm:RateType8_4" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that denotes the uncertainty range in the estimate for the speed at a specific OBJECT-ITEM-LOCATION where the speed estimate falls at the centre of the accuracy range. The unit of measure is kilometres per hour. The specified value must be greater than or equal to 0 (zero).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpeedPrecisionCode" type="jc3iedm:SpeedPrecisionCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the maximum resolution used for the expression of speed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MeaningCode" type="jc3iedm:ObjectItemLocationMeaningCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the meaning of the LOCATION geometry as it pertains to the OBJECT-ITEM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RelativeSpeedCode" type="jc3iedm:ObjectItemLocationRelativeSpeedCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the speed of the object relative to its normal speed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemLocationRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectItemLocation - An association of an OBJECT-ITEM with a LOCATION that enables the geographic position of the OBJECT-ITEM to be specified. The operational meaning of geometry may also be specified.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemObjectTypeEstablishment">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A specification of an OBJECT-TYPE-ESTABLISHMENT that is authorised for a specific OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EffectiveDatetime" type="jc3iedm:DatetimeTypeFix18">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates the effective assignment date of a specific OBJECT-TYPE-ESTABLISHMENT to a specific OBJECT-ITEM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectItemObjectTypeEstablishmentInObjectItem">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A ObjectItem/ObjectTypeEstablishment association. ObjectTypeEstablishment is the child in a 'is-assigned-establishment-through' relationship; ObjectItemObjectTypeEstablishment provides additional information on the association.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="ObjectTypeEstablishment" type="cbml:ObjectTypeEstablishment"/>
+				<xs:element name="ObjectTypeEstablishmentRef" type="cbml:ObjectTypeEstablishmentRef"/>
+			</xs:choice>
+			<xs:element name="ObjectItemObjectTypeEstablishment" type="cbml:ObjectItemObjectTypeEstablishment"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectTypeEstablishment">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The authorisation or other form of specification that associates with the established OBJECT-TYPE numbers of specific OBJECT-TYPEs under specified conditions.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EffectiveDatetime" type="jc3iedm:DatetimeTypeFix18">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates the beginning date of the period of effectiveness of a specific OBJECT-TYPE-ESTABLISHMENT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectTypeEstablishmentCategoryCode" type="jc3iedm:ObjectTypeEstablishmentCategoryCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of OBJECT-TYPE-ESTABLISHMENT when the established and detail OBJECT-TYPEs are instances of MATERIEL-TYPE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EnvironmentConditionCode" type="jc3iedm:ObjectTypeEstablishmentEnvironmentConditionCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the environmental conditions for which a specific OBJECT-TYPE-ESTABLISHMENT is authorised.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar80" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific OBJECT-TYPE-ESTABLISHMENT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OperationalModeCode" type="jc3iedm:ObjectTypeEstablishmentOperationalModeCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the operational mode for which a specific OBJECT-TYPE-ESTABLISHMENT is authorised.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="ObjectTypeDetail" type="cbml:ObjectTypeEstablishmentObjectTypeDetail">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'is-specified-through' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ObjectTypeDetailRef" type="cbml:ObjectTypeEstablishmentObjectTypeDetailRef">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">A child in a 'is-specified-through' relationship.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectTypeEstablishmentRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectTypeEstablishment - The authorisation or other form of specification that associates with the established OBJECT-TYPE numbers of specific OBJECT-TYPEs under specified conditions.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectTypeEstablishmentObjectTypeDetail">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The number of a specific OBJECT-TYPE that is authorised by a specific OBJECT-TYPE-ESTABLISHMENT.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MajorPartIndicatorCode" type="jc3iedm:ObjectTypeEstablishmentObjectTypeDetailMajorPartIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes whether a detail is a ‘major part’ when the established and detail OBJECT-TYPEs are instances of MATERIEL-TYPE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EstablishmentObjectTypeDetailCount" type="jc3iedm:CountType9">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The integer value representing the count of the numbers of a specific OBJECT-TYPE authorised to be part of a specific OBJECT-TYPE-ESTABLISHMENT-OBJECT-TYPE-DETAIL.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectTypeRef" type="cbml:AbstractObjectTypeRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The OBJECT-TYPE that is authorised to be held in the establishment of a specific OBJECT-TYPE. Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef, OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef, OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef, AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef, OtherObjectTypeRef, PersonTypeRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObjectTypeEstablishmentObjectTypeDetailRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ObjectTypeEstablishmentObjectTypeDetail - The number of a specific OBJECT-TYPE that is authorised by a specific OBJECT-TYPE-ESTABLISHMENT.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OperationalInformationGroup">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A CONTEXT that encompasses a set of pre-defined operational information.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractContext">
+				<xs:sequence>
+					<xs:element name="OperationalInformationGroupCategoryCode" type="jc3iedm:OperationalInformationGroupCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of OPERATIONAL-INFORMATION-GROUP.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OperationalInformationGroupRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OperationalInformationGroup - A CONTEXT that encompasses a set of pre-defined operational information.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractContextRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrganisationMaterielTypeAssociation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A relationship of an ORGANISATION as a subject with a MATERIEL-TYPE as an object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReportableTypeCode" type="jc3iedm:OrganisationMaterielTypeAssociationReportableTypeCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of ORGANISATION-MATERIEL-TYPE-ASSOCIATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReportableTypeText" type="jc3iedm:TextTypeVar6">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent the Reportable type code for a specific MATERIEL-TYPE, as assigned by a specific ORGANISATION.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReportableTypeDatetime" type="jc3iedm:DatetimeTypeFix18">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates when the Reportable type code referenced by the ORGANISATION-MATERIEL-TYPE-ASSOCIATION is assigned.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrganisationMaterielTypeAssociationInOrganisation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A Organisation/MaterielType association. MaterielType is the child in a 'assigns-reporting-code-in' relationship; OrganisationMaterielTypeAssociation provides additional information on the association.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MaterielTypeRef" type="cbml:AbstractMaterielTypeRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Concrete types are: {MinefieldLand, MinefieldMaritime, OtherMilitaryObstacle, Airfield, Anchorage, Apron, Basin, Berth, Bridge, DryDock, Harbour, Jetty, OtherFacility, Quay, Railway, Road, Slipway}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrganisationMaterielTypeAssociation" type="cbml:OrganisationMaterielTypeAssociation"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrganisationStructure">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The hierarchical configuration of a specific root ORGANISATION where the configuration is specified by reference to a set of associations between instances of OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NameText" type="jc3iedm:TextTypeVar100" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string assigned to represent a specific ORGANISATION-STRUCTURE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObjectItemAssociationRef" type="cbml:ObjectItemAssociationRef" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The OBJECT-ITEM-ASSOCIATION .</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrganisationStructureRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OrganisationStructure - The hierarchical configuration of a specific root ORGANISATION where the configuration is specified by reference to a set of associations between instances of OBJECT-ITEM.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OtherContext">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A collection of information that provides in its entirety the circumstances, conditions, environment, or perspective for a situation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractContext">
+				<xs:sequence>
+					<xs:element name="ContextCategoryCode" type="jc3iedm:ContextCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of CONTEXT. It serves as a discriminator that partitions CONTEXT into subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherContextRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherContext - A collection of information that provides in its entirety the circumstances, conditions, environment, or perspective for a situation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractContextRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherObjectItem">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An individually identified object that has military or civilian significance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItem">
+				<xs:sequence>
+					<xs:element name="ObjectItemCategoryCode" type="jc3iedm:ObjectItemCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of OBJECT-ITEM. It serves as a discriminator that partitions OBJECT-ITEM into subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherObjectItemRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherObjectItem - An individually identified object that has military or civilian significance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherObjectItemStatus">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A record of the perceived condition of a specific OBJECT-ITEM as determined by the reporting organisation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectItemStatus">
+				<xs:sequence>
+					<xs:element name="ObjectItemStatusCategoryCode" type="jc3iedm:ObjectItemStatusCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of OBJECT-ITEM-STATUS. It serves as a discriminator that partitions OBJECT-ITEM-STATUS into subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherObjectType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">An individually identified class of objects that has military or civilian significance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectType">
+				<xs:sequence>
+					<xs:element name="ObjectTypeCategoryCode" type="jc3iedm:ObjectTypeCategoryCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the class of OBJECT-TYPE. It serves as a discriminator that partitions OBJECT-TYPE into subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherObjectTypeRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OtherObjectType - An individually identified class of objects that has military or civilian significance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractObjectTypeRef"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SecurityClassification">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The security classification applicable to an information resource within the domain of classified security information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LevelCode" type="jc3iedm:SecurityClassificationLevelCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the security classification level for the information resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SecurityClassificationRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some SecurityClassification - The security classification applicable to an information resource within the domain of classified security information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VerticalDistance">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A specification of the altitude or height of a point or a level as measured with respect to a specified reference datum in the direction normal to the plane that is tangent to the WGS84 ellipsoid of revolution.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceCode" type="jc3iedm:VerticalDistanceReferenceCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the reference system for a specific VERTICAL-DISTANCE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Dimension" type="jc3iedm:DimensionType12_3">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The one-dimensional linear distance representing the distance with respect to the specified vertical datum.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PrecisionCode" type="jc3iedm:DistancePrecisionCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes the precision of specifying a VERTICAL-DISTANCE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VerticalDistanceRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some VerticalDistance - A specification of the altitude or height of a point or a level as measured with respect to a specified reference datum in the direction normal to the plane that is tangent to the WGS84 ellipsoid of revolution.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier. An OID can be any globally unique string (URL, GUID...).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

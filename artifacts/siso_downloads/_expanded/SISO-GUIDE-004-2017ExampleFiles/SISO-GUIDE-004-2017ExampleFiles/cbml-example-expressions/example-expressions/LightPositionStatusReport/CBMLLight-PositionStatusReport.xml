@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<?xml-model href="../CBML_Phase1_March2013_DialloPullen/Schemas/cbml-1.0/cbml/cbml-example-expression-types/1.0/cbml-example-expression-types.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<!-- This example CBML Light Report was drawn from GMU C4I Center work in NATO MSG-085. It is provided as an example only and is not intended to represent any sort of standard for a Report. -->
+<cbml:CBMLReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.sisostds.org/schemas/c-bml/1.0 ../../example-expressions-schema/cbml-example-expression-light-types.xsd"
+ xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0">
+  <cbml:Report>
+  <cbml:CategoryOfReport>StatusReport</cbml:CategoryOfReport>         
+    <cbml:TypeOfReport>PositionStatusReport</cbml:TypeOfReport>         
+    <cbml:ReportHeader>             
+      <cbml:ReporterWho>
+        <cbml:OID>1-2211</cbml:OID>
+      </cbml:ReporterWho>             
+      <cbml:ReportingData>                 
+        <cbml:OID>20141202152728458</cbml:OID>                 
+        <cbml:ReportingDataCategoryCode>REP</cbml:ReportingDataCategoryCode>
+      </cbml:ReportingData>
+      <cbml:AbsoluteReportedWhen>                 
+        <cbml:EffectiveStartDateTime>20131203021023.721</cbml:EffectiveStartDateTime>     
+      </cbml:AbsoluteReportedWhen>         
+    </cbml:ReportHeader>         
+    <cbml:StatusReport>             
+      <cbml:PositionStatusReport>
+        <cbml:Hostility>FR</cbml:Hostility>
+        <cbml:Executer>1-2211-A</cbml:Executer>
+      <cbml:AtWhere>                     
+        <cbml:GDC>                         
+           <cbml:SpecificPoint>
+             <cbml:Latitude>58.481541</cbml:Latitude>
+             <cbml:Longitude>15.314926</cbml:Longitude>
+           </cbml:SpecificPoint>
+        </cbml:GDC>
+      </cbml:AtWhere>
+    </cbml:PositionStatusReport>
+    </cbml:StatusReport>
+  </cbml:Report>
+</cbml:CBMLReport> 

@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--attempts-file", required=True, type=Path, help="CSV file containing attempt rows.")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_probe_stability"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_probe_stability"),
         help="Directory for generated stability artifacts.",
     )
     args = parser.parse_args(argv)

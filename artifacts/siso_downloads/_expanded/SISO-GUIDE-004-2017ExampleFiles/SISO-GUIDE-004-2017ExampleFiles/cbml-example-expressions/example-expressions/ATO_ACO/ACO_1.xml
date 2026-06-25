@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://www.sisostds.org/schemas/c-bml/1.0" xsi:schemaLocation="http://www.sisostds.org/schemas/c-bml/1.0 ../../example-expressions-schema/cbml-example-expressions.xsd">
+	<Context xsi:type="OtherContext">
+		<OID>1122: ACO</OID>
+		<NameText>C-BML Air Control Order (ACO) Example</NameText>
+		<ContextCategoryCode>NOS</ContextCategoryCode>
+	</Context>
+	<SupportingType xsi:type="RouteType">
+		<OID>1123: Ingress Route</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Ingress Route</NameText>
+		<RouteTypeCategoryCode>INGRTE</RouteTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="RouteType">
+		<OID>1124: Egress Route</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Egress Route</NameText>
+		<RouteTypeCategoryCode>EGRRTU</RouteTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>1125: Takeoff point</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Takeoff point</NameText>
+		<ControlFeatureTypeCategoryCode>TKEOFF</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>1126:  Landing point</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Landing point</NameText>
+		<ControlFeatureTypeCategoryCode>LANDPT</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>1109: Entry point</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Entry Point</NameText>
+		<ControlFeatureTypeCategoryCode>ENTPT</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>1110: Exit point</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Exit Point</NameText>
+		<ControlFeatureTypeCategoryCode>EXITPT</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<SupportingType xsi:type="OtherControlFeatureType">
+		<OID>1144: Reconnaissance area</OID>
+		<DecoyIndicatorCode>NO</DecoyIndicatorCode>
+		<NameText>Reconnaissance area  </NameText>
+		<ControlFeatureTypeCategoryCode>RCNSAR</ControlFeatureTypeCategoryCode>
+	</SupportingType>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1161</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="AirspaceControlMeans">
+				<OID>1157:  Reconnaissance area</OID>
+				<NameText>Reconnaissance area </NameText>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+			<OID>1144: Reconnaissance area</OID>	
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1162</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="OtherControlFeature">
+				<OID>1128: Egress Route Entry Point</OID>
+				<NameText>Egress Route Entry Point</NameText>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+			<OID>1109: Entry point</OID>
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1163</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="OtherControlFeature">
+				<OID>1129: Ingress Route Exit Point</OID>
+				<NameText>Ingress Route Exit Point</NameText>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+			<OID>1110: Exit point</OID>
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1165</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="OtherControlFeature">
+				<OID>1131: Takeoff Point</OID>
+				<NameText>Takeoff Point</NameText>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+			<OID>1125: Takeoff point</OID>
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1166</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="OtherControlFeature">
+				<OID>1141: Landing Point</OID>
+				<NameText>Landing Point</NameText>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="OtherControlFeatureTypeRef">
+			<OID>1126:  Landing point</OID>
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1167</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="AirRouteSegment">
+				<OID>1132: Ingress Route Segment</OID>
+				<NameText>Ingress Route 1132</NameText>
+				<RequiredNavigationPerformanceCode>1NM</RequiredNavigationPerformanceCode>
+				<MaintainedSpeedRate>150.34</MaintainedSpeedRate>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="RouteTypeRef">
+			<OID>1123: Ingress Route</OID>
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoTypeType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1168</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<Who>
+			<ObjectItem xsi:type="AirRouteSegment">
+				<OID>1133: Egress Route Segment</OID>
+				<NameText>Egress Route 1133</NameText>
+				<RequiredNavigationPerformanceCode>1NM</RequiredNavigationPerformanceCode>
+				<MaintainedSpeedRate>150.34</MaintainedSpeedRate>
+			</ObjectItem>
+		</Who>
+		<ObjectTypeRef xsi:type="RouteTypeRef">
+			<OID>1124: Egress Route</OID>
+		</ObjectTypeRef>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1169</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="AirRouteSegmentRef">
+				<OID>1132: Ingress Route Segment</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="SurfaceVolume">
+				<OID>0</OID>
+				<LowerVerticalDistance>
+					<OID>0</OID>
+					<ReferenceCode>TOPOSR</ReferenceCode>
+					<Dimension>1700</Dimension>
+				</LowerVerticalDistance>
+				<UpperVerticalDistance>
+					<OID>0</OID>
+					<ReferenceCode>TOPOSR</ReferenceCode>
+					<Dimension>2000</Dimension>
+				</UpperVerticalDistance>
+				<DefiningSurface xsi:type="CorridorArea">
+					<OID>0</OID>
+					<WidthDimension>300</WidthDimension>
+					<CentreLine>
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>1134</OID> <!-- First point of Ingress Route-->
+								<VerticalDistance>
+									<OID>0</OID>
+									<ReferenceCode>TOPOSR</ReferenceCode>
+									<Dimension>0</Dimension>
+								</VerticalDistance>
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>1135</OID> <!-- Last point of Ingress Route -->
+								<LatitudeCoordinate>61.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</CentreLine>
+				</DefiningSurface>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1170</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="AirRouteSegmentRef">
+				<OID>1133: Egress Route Segment</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="SurfaceVolume">
+				<OID>0</OID>
+				<LowerVerticalDistance>
+					<OID>0</OID>
+					<ReferenceCode>TOPOSR</ReferenceCode>
+					<Dimension>1700</Dimension>
+				</LowerVerticalDistance>
+				<UpperVerticalDistance>
+					<OID>0</OID>
+					<ReferenceCode>TOPOSR</ReferenceCode>
+					<Dimension>2000</Dimension>
+				</UpperVerticalDistance>
+				<DefiningSurface xsi:type="CorridorArea">
+					<OID>0</OID>
+					<WidthDimension>300</WidthDimension>
+					<CentreLine>
+						<OID>0</OID>
+							<Point xsi:type="GeographicPoint">
+								<OID>1136</OID> <!-- First point of Egress Route-->
+								<LatitudeCoordinate>60.31</LatitudeCoordinate>
+								<LongitudeCoordinate>80.2</LongitudeCoordinate>
+							</Point>
+							<Point xsi:type="GeographicPoint">
+								<OID>1137</OID> <!-- Last point of Egress Route -->
+								<VerticalDistance>
+									<OID>0</OID>
+									<ReferenceCode>TOPOSR</ReferenceCode>
+									<Dimension>0</Dimension>
+								</VerticalDistance>
+								<LatitudeCoordinate>61.32</LatitudeCoordinate>
+								<LongitudeCoordinate>80.3</LongitudeCoordinate>
+							</Point>
+					</CentreLine>
+				</DefiningSurface>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1172</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="OtherControlFeatureRef">
+				<OID>1129: Ingress Route Exit Point</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="GeographicPoint">
+				<OID>3001</OID>
+				<LatitudeCoordinate>60.32</LatitudeCoordinate>
+				<LongitudeCoordinate>80.3</LongitudeCoordinate>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1173</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="OtherControlFeatureRef">
+				<OID>1128: Egress Route Entry Point</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="GeographicPoint">
+				<OID>1143</OID>
+				<LatitudeCoordinate>60.32</LatitudeCoordinate>
+				<LongitudeCoordinate>80.3</LongitudeCoordinate>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1175</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="OtherControlFeatureRef">
+				<OID>1131: Takeoff Point</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="GeographicPoint">
+				<OID>3000</OID>
+				<LatitudeCoordinate>60.32</LatitudeCoordinate>
+				<LongitudeCoordinate>80.3</LongitudeCoordinate>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1176</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="OtherControlFeatureRef">
+				<OID>1141: Landing Point</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="GeographicPoint">
+				<OID>3002</OID>
+				<LatitudeCoordinate>60.32</LatitudeCoordinate>
+				<LongitudeCoordinate>80.3</LongitudeCoordinate>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+	<Report xsi:type="WhoLocationType">
+		<ReporterWho>
+			<OrganisationRef xsi:type="UnitRef">
+				<OID>0001: 1st Battalion</OID>
+			</OrganisationRef>
+		</ReporterWho>
+		<ReportedWhen xsi:type="ReportedWhenAbsoluteTimingType">
+			<ReportingDatetime>20100525163000.000</ReportingDatetime>
+			<EffectiveStartDatetime>20100525163000.000</EffectiveStartDatetime>
+			<EffectiveEndDatetime>20100526163000.000</EffectiveEndDatetime>
+		</ReportedWhen>
+		<ReportingData>
+			<OID>1177</OID>
+			<ReportingDataCategoryCode>REP</ReportingDataCategoryCode>
+			<CredibilityCode>RPTFCT</CredibilityCode>
+		</ReportingData>
+		<WhoRef>
+			<ObjectItemRef xsi:type="AirspaceControlMeansRef">
+				<OID>1157:  Reconnaissance area</OID>
+			</ObjectItemRef>
+		</WhoRef>
+			<Location xsi:type="SurfaceVolume">
+				<OID>0</OID>
+				<LowerVerticalDistance>
+					<OID>0</OID>
+					<ReferenceCode>TOPOSR</ReferenceCode>
+					<Dimension>1500</Dimension>
+				</LowerVerticalDistance>
+				<UpperVerticalDistance>
+					<OID>0</OID>
+					<ReferenceCode>TOPOSR</ReferenceCode>
+					<Dimension>1800</Dimension>
+				</UpperVerticalDistance>
+				<DefiningSurface xsi:type="OrbitArea">
+					<OID>0</OID>
+					<AlignmentCode>CENTRE</AlignmentCode>
+					<WidthDimension>5000</WidthDimension>
+					<FirstPoint xsi:type="GeographicPoint">
+						<OID>1158</OID>
+						<LatitudeCoordinate>44.2</LatitudeCoordinate>
+						<LongitudeCoordinate>43.34</LongitudeCoordinate>
+					</FirstPoint>
+					<SecondPointRef xsi:type="GeographicPointRef">
+						<OID>1158</OID>
+					</SecondPointRef>
+				</DefiningSurface>
+			</Location>
+			<ObjectItemLocation>
+				<OID>0</OID>
+			</ObjectItemLocation>
+	</Report>
+</Report>

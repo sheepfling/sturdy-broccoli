@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.generate_fom_inventory_view import render_inventory_markdown
+from hla.verification.repo_internal.fom_inventory import FOMInventoryRecord, default_load_set_records
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -89,3 +90,89 @@ def test_fom_inventory_2025_and_cross_edition_entries_match_contents_or_notes() 
 
 def test_fom_inventory_markdown_view_is_regenerated_from_json_inventory() -> None:
     assert FOM_INVENTORY_MD.read_text(encoding="utf-8") == render_inventory_markdown()
+
+
+def test_default_load_set_records_deconflicts_duplicate_rpr2_members() -> None:
+    records = (
+        FOMInventoryRecord(
+            id="rpr2-foundation",
+            path="artifacts/siso_downloads/a/RPR-Foundation_v2.0.xml",
+            edition_class="2010",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-2.0",
+            notes="a",
+        ),
+        FOMInventoryRecord(
+            id="rpr2-enum-a",
+            path="artifacts/siso_downloads/a/RPR-Enumerations_v2.0.xml",
+            edition_class="2010",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-2.0",
+            notes="a",
+        ),
+        FOMInventoryRecord(
+            id="rpr2-enum-b",
+            path="artifacts/siso_downloads/b/RPR-Enumerations_v2.0.xml",
+            edition_class="2010",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-2.0",
+            notes="b",
+        ),
+        FOMInventoryRecord(
+            id="rpr2-base",
+            path="artifacts/siso_downloads/a/RPR-Base_v2.0.xml",
+            edition_class="2010",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-2.0",
+            notes="a",
+        ),
+    )
+
+    load_set = default_load_set_records(records)
+    assert tuple(record.id for record in load_set) == (
+        "rpr2-foundation",
+        "rpr2-enum-a",
+        "rpr2-base",
+    )
+
+
+def test_default_load_set_records_excludes_informative_rpr3_merged_packets() -> None:
+    records = (
+        FOMInventoryRecord(
+            id="rpr3-foundation",
+            path="artifacts/siso_downloads/annex-a/RPR-Foundation_v3.0.xml",
+            edition_class="2025",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-3.0",
+            notes="a",
+        ),
+        FOMInventoryRecord(
+            id="rpr3-base",
+            path="artifacts/siso_downloads/annex-a/RPR-Base_v3.0.xml",
+            edition_class="2025",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-3.0",
+            notes="a",
+        ),
+        FOMInventoryRecord(
+            id="rpr3-informative-2010",
+            path="artifacts/siso_downloads/annex-b/RPR_FOM_v3.0_1516-2010.xml",
+            edition_class="2025",
+            load_mode="ordered-family",
+            baseline_kind="third-party",
+            scenario_family="siso-rpr-3.0",
+            notes="b",
+        ),
+    )
+
+    load_set = default_load_set_records(records)
+    assert tuple(record.id for record in load_set) == (
+        "rpr3-foundation",
+        "rpr3-base",
+    )

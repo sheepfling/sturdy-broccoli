@@ -47,6 +47,10 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-schema-baseline` canonical positive XML/XSD baseline validation flow
 - `./tools/fom-schema-audit` canonical top-to-bottom schema-positive validation, JSON cycle, and workbench flow with `Edition Scope`
 - `./tools/fom-siso-audit` canonical top-to-bottom high-value SISO corpus validation, JSON cycle, and workbench flow with `Edition Scope`
+- `./tools/fom-siso-pitch-2010-micro-strict` canonical six-row real-2010 Pitch-only SISO micro parity flow
+- `./tools/fom-siso-pitch-micro-parity` canonical Pitch-eligible SISO micro parity flow across the bounded 2010 and 2025 micro rows
+- `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
+- `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
 - `./tools/fom-siso-showcase` canonical standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM
 - `./tools/fom-corpus-classification` canonical corpus bucketing flow with `Edition Scope`
 - `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow with `Edition Scope`
@@ -113,7 +117,7 @@ Operator guide links:
 - `./tools/vendor-state ci-state --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
 - `scripts/ci/write_vendor_runtime_job_summary.py`: CI helper that renders normalized vendor runtime status into GitHub-job-friendly Markdown
 - `scripts/check_vendor_runner_template_drift.py`: CI helper that verifies the runner provisioning template, validator profiles, and workflow env contracts stay aligned
-- `scripts/ci/vendor_runtime_smoke.sh`: implementation wrapper behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `analysis/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
+- `scripts/ci/vendor_runtime_smoke.sh`: implementation wrapper behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `artifacts/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
 - `./tools/python verify`: canonical Python / repo-green wrapper around the default full verification lane
 - `./tools/vendor-green [profile]`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it self-validates the dedicated runner contract before trying the runtime lane
 - `scripts/ci/vendor_probe_stability.sh`: repeated probe implementation used by the promotion-review flow; under CI it validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
@@ -131,13 +135,13 @@ CI lane rule:
 Copy-paste preflight artifact flow:
 
 ```bash
-mkdir -p analysis/preflight_artifacts
+mkdir -p artifacts/preflight_artifacts
 
-./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
-python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
+./tools/certi-easy preflight --json-file artifacts/preflight_artifacts/certi-preflight.json
+python3 -m json.tool artifacts/preflight_artifacts/certi-preflight.json
 
-./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
-python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
+./tools/pitch preflight --json-file artifacts/preflight_artifacts/pitch-preflight.json
+python3 -m json.tool artifacts/preflight_artifacts/pitch-preflight.json
 ```
 
 Both preflight entrypoints also accept `--json` for machine-readable output.

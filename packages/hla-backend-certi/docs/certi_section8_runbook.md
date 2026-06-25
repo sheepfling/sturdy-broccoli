@@ -144,10 +144,10 @@ You can validate that runner state directly with:
 Even without `--json-file`, `./tools/certi-easy preflight` now persists the default
 preflight artifact and normalized status reports under:
 
-- `analysis/preflight_artifacts/`
-- `analysis/vendor_runtime_ci_state/` on dedicated vendor CI jobs
-- `analysis/vendor_runtime_status/`
-- `analysis/vendor_parity_artifacts/`
+- `artifacts/preflight_artifacts/`
+- `artifacts/vendor_runtime_ci_state/` on dedicated vendor CI jobs
+- `artifacts/vendor_runtime_status/`
+- `artifacts/vendor_parity_artifacts/`
 
 For file output and inspection examples, see
 [Preflight Artifacts](../../../docs/preflight_artifacts.md).

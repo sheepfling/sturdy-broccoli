@@ -151,7 +151,7 @@ def _next_action(
 def build_vendor_probe_promotion_review() -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for spec in _PROFILE_SPECS:
-        summary_path = REPO_ROOT / "analysis" / "vendor_probe_stability" / spec["profile"] / "vendor_probe_stability_summary.json"
+        summary_path = REPO_ROOT / "artifacts" / "vendor_probe_stability" / spec["profile"] / "vendor_probe_stability_summary.json"
         stability = _load_json(summary_path)
         gap_status = None
         gap_profile_name = _gap_profile_name(spec["profile"])

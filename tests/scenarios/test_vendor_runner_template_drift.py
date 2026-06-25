@@ -78,12 +78,12 @@ def test_vendor_runtime_smoke_workflow_fans_out_explicit_probe_profiles() -> Non
     run_step = next(step for step in steps if step.get("name") == "Run explicit vendor-green smoke tests")
     assert run_step["run"] == "${{ matrix.command }}"
     publish_step = next(step for step in steps if step.get("name") == "Publish vendor smoke runtime-state summary")
-    assert publish_step["run"] == "cat analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> \"$GITHUB_STEP_SUMMARY\""
+    assert publish_step["run"] == "cat artifacts/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> \"$GITHUB_STEP_SUMMARY\""
     upload_step = next(step for step in steps if step.get("name") == "Upload vendor runtime smoke artifacts")
     assert upload_step["with"]["name"] == "vendor-runtime-smoke-${{ matrix.name }}-artifacts"
     upload_path = upload_step["with"]["path"]
-    assert "analysis/vendor_runtime_status/" in upload_path
-    assert "analysis/vendor_parity_artifacts/" in upload_path
+    assert "artifacts/vendor_runtime_status/" in upload_path
+    assert "artifacts/vendor_parity_artifacts/" in upload_path
 
 
 def test_ci_workflow_has_repeated_probe_stability_job() -> None:
@@ -107,6 +107,6 @@ def test_ci_workflow_has_repeated_probe_stability_job() -> None:
     upload_step = next(step for step in steps if step.get("name") == "Upload vendor probe stability artifact")
     assert upload_step["with"]["name"] == "vendor-probe-stability-${{ matrix.name }}"
     upload_path = upload_step["with"]["path"]
-    assert "analysis/vendor_probe_stability/" in upload_path
-    assert "analysis/vendor_probe_promotion_review/" in upload_path
-    assert "analysis/vendor_runtime_status/" in upload_path
+    assert "artifacts/vendor_probe_stability/" in upload_path
+    assert "artifacts/vendor_probe_promotion_review/" in upload_path
+    assert "artifacts/vendor_runtime_status/" in upload_path

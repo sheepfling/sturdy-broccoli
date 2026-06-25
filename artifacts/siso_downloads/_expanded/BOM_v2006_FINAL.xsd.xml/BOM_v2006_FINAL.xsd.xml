@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 sp2 (http://www.altova.com) by Bertram Chase (private) -->
+<!-- edited with XMLSpy v2006 sp1 U (http://www.altova.com) by Paul Gustavson (SimVentions, Inc.) -->
+<!-- created with XML Spy v4.2 U (http://www.xmlspy.com) by Björn Löfstrand (Pitch Kunskapsutveckling AB) -->
+<!--BOM Schema developed by the SISO BOM Product Develop Group (PDG) - version 2006 - copyright 2006 -->
+<!--Schema for BOM DIF
+
+Version 0.11 - June 29, 2005
+Version 0.12 - Sep 8, 2005 
+Version 2006 - March 25, 2006 
+Version 2006_FINAL - April 3, 2007   // Reflects and complies to the approved standard SISO-STD-003-2006 submitted March 31, 2006
+-->
+<xs:schema xmlns="http://www.sisostds.org/schemas/bom" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:omt="http://www.sisostds.org/schemas/IEEE1516.2-2006" xmlns:modelID="http://www.sisostds.org/schemas/modelID" targetNamespace="http://www.sisostds.org/schemas/bom" elementFormDefault="qualified">
+	<xs:import namespace="http://www.sisostds.org/schemas/IEEE1516.2-2006" schemaLocation="IEEE1516.2-2006-D2v0.83.xsd"/>
+	<xs:import namespace="http://www.sisostds.org/schemas/modelID" schemaLocation="ModelID_v2006_FINAL.xsd"/>
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			<xhtml:p align="center">
+				<xhtml:font face="Arial">
+					<xhtml:h2>Simulation Interoperability
+			<xhtml:br/>Standards Organization
+			<xhtml:br/>(SISO)</xhtml:h2>
+					<xhtml:h1>Base Object Model (BOM) Template Specification - 
+			<xhtml:br/>XML Schema</xhtml:h1>
+					<xhtml:h3>SISO-STD-003-2006
+			<xhtml:br/>31 March 2006</xhtml:h3>
+					<xhtml:h3>Prepared by:
+			<xhtml:br/>SISO Base Object Model Product Development Group</xhtml:h3>
+					<xhtml:br/>Copyright © 2004-2006, Simulation Interoperability Standards Organization, Inc.
+			<xhtml:br/>P.O. Box 781238, Orlando, FL 32878-1238, USA.<xhtml:br/>
+				</xhtml:font>
+				<xhtml:br/>
+				<xhtml:hr/>
+			</xhtml:p>
+			<xhtml:br/>This BOM XML Schema has been defined to support the creation and validation of BOMs.  In addition to this schema, there are two BOM related documents developed by the SISO BOM Product Development Group (PDG).  These documents include the 
+			<xhtml:a href="https://www.sisostds.org/DigitalLibrary.aspx?Command=Core_Download&amp;EntryId=30820">Base Object Model (BOM) Template Specification</xhtml:a>, for which this is a subset, and the 
+			<xhtml:a href="https://www.sisostds.org/DigitalLibrary.aspx?Command=Core_Download&amp;EntryId=30819"> Guide for Base Object Model (BOM) Use and Implementation</xhtml:a>.<xhtml:br/>
+			<xhtml:br/>More information pertaining to BOMs including access to these documents is available at <xhtml:a href="http://www.sisostds.org">www.sisostds.org</xhtml:a> and also <xhtml:a href="http://www.boms.info">www.boms.info</xhtml:a>.
+			</xs:documentation>
+	</xs:annotation>
+	<xs:element name="BOM" type="BOMType"/>
+	<xs:simpleType name="blName">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\S*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="patternInterplayType" id="patternInterplay">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="action" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="patternActionType">
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="exception" type="exceptionType"/>
+								<xs:element name="variation" type="variationType"/>
+							</xs:choice>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="patternActionType">
+		<xs:sequence>
+			<xs:element name="sequence">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="blName">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="event" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="bom" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="sender" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiver" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="exceptionType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="event" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="bom" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="sender" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiver" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="condition" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="variationType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="event" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="bom" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="sender" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiver" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="condition" type="modelID:NonEmptyString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="stateType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="exitCondition" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="exitAction" type="modelID:NonEmptyString"/>
+						<xs:element name="nextState" type="modelID:NonEmptyString"/>
+						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="stateMachineType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="conceptualEntity" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="modelID:commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="state" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="stateType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="objectModelDefinitionType">
+		<xs:all>
+			<xs:element name="objects" type="omt:objectsType" minOccurs="0"/>
+			<xs:element name="interactions" type="omt:interactionsType" minOccurs="0"/>
+			<xs:element name="dataTypes" type="omt:dataTypesType" minOccurs="0"/>
+		</xs:all>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="characteristicType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="entityCharacteristicMappingType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="hlaProperty" type="modelID:NonEmptyString" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="eventCharacteristicMappingType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="hlaProperty" type="modelID:NonEmptyString" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="entityType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="characteristic" type="characteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="eventType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="sourceCharacteristic" minOccurs="0">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="characteristicType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="targetCharacteristic" type="characteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="contentCharacteristic" type="characteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="triggerCondition" type="modelID:NonEmptyString" minOccurs="0"/>
+			<xs:element name="semantics" type="modelID:String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="entityTypeMappingsType">
+		<xs:sequence>
+			<xs:element name="entityTypeMapping" type="entityTypeMappingType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="eventTypeMappingsType">
+		<xs:sequence>
+			<xs:element name="eventTypeMapping" type="eventTypeMappingType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="entityTypeMappingType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="hlaClass" type="modelID:NonEmptyString" maxOccurs="unbounded"/>
+			<xs:element name="characteristic" type="entityCharacteristicMappingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="eventTypeMappingType">
+		<xs:sequence>
+			<xs:element name="name" type="modelID:IdentifierType"/>
+			<xs:element name="hlaClass" type="modelID:NonEmptyString" maxOccurs="unbounded"/>
+			<xs:element name="sourceCharacteristic" type="eventCharacteristicMappingType" minOccurs="0"/>
+			<xs:element name="targetCharacteristic" type="eventCharacteristicMappingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="contentCharacteristic" type="eventCharacteristicMappingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="triggerCondition" type="eventCharacteristicMappingType" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="BOMType">
+		<xs:sequence>
+			<xs:element name="modelIdentification" type="modelID:modelIdentificationType"/>
+			<xs:element name="conceptualModelDefinition" type="conceptualModelType" minOccurs="0"/>
+			<xs:element name="modelMapping" type="modelMappingType" minOccurs="0"/>
+			<xs:element name="objectModelDefinition" type="objectModelDefinitionType" minOccurs="0"/>
+			<xs:element name="notes" minOccurs="0">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="omt:notesType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="modelMappingType">
+		<xs:sequence>
+			<xs:element name="entityTypeMappings" type="entityTypeMappingsType" minOccurs="0"/>
+			<xs:element name="eventTypeMappings" type="eventTypeMappingsType" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="conceptualModelType">
+		<xs:sequence>
+			<xs:element name="patternInterplay" type="patternInterplayType" id="patternID" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="stateMachine" type="stateMachineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="entityTypes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="entityType" type="entityType" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="eventTypes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="eventType" type="eventType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="modelID:commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="modelID:commonAttributes"/>
+	</xs:complexType>
+</xs:schema>

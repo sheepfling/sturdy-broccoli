@@ -3,15 +3,16 @@
 Use this guide when you want a Python-backed RTI surface to run behind a
 transport host instead of directly in-process.
 
-This repo currently has two different hosted Python stories:
+This repo currently has two different hosted Python RTI stories:
 
-- the 2010 hosted Python RTI route over gRPC
+- the hosted `python1516e` route over gRPC
 - the bounded 2025 hosted FedPro gRPC route over the repo's main full 2025
   Python RTI lane
 
 Those routes are related, but they are not identical claims.
 
-- the 2010 route is the familiar hosted form of the pure Python in-memory RTI
+- the 2010 route is the familiar hosted form of the direct `python1516e`
+  in-memory RTI
 - the 2025 route is a typed FedPro transport-hosted slice over the current
   `hla-backend-python1516-2025` implementation lane, with `hla-backend-shim`
   retained only as compatibility-wrapper/import-compatibility code
@@ -23,9 +24,9 @@ and
 [`plans/2025_python_rti_backend_audit.md`](plans/2025_python_rti_backend_audit.md)
 alongside this page.
 
-## Hosted 2010 Python Route
+## Hosted `python1516e` Route
 
-This is the classic hosted Python RTI path:
+This is the classic hosted `python1516e` path:
 
 - `hla.backends.python1516e` for the in-memory RTI implementation
 - `hla.transports.grpc` for the transport host and client wiring
@@ -54,12 +55,12 @@ Connect a federate to that host:
 from hla.rti import create_rti_ambassador
 
 rti = create_rti_ambassador(
-    "python",
+    "python1516e",
     transport={"kind": "grpc", "target": server.target},
 )
 ```
 
-That route is the documented Python RTI over gRPC path in
+That route is the documented `python1516e` over gRPC path in
 [`backend_route_inventory_routes.md`](backend_route_inventory_routes.md).
 
 ## Hosted 2025 FedPro Route

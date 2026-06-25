@@ -19,7 +19,8 @@ No distribution owns `src/hla/__init__.py`.
 - `tools/`: canonical human-facing operator entrypoints.
 - `tests/`: executable verification for the package and the workspace helpers.
 - `docs/`: navigation, runbooks, architecture notes, and evidence maps.
-- `analysis/`: generated compliance and verification outputs.
+- `artifacts/`: default home for fresh generated run outputs and local report packets.
+- `analysis/`: curated and promoted evidence packets, compliance rollups, and referenced verification outputs.
 - `.local/`: machine-local runtime/build state for CERTI, Pitch, and similar vendor tools.
 - `requirements/`: seed requirement catalogs and traceability bridges.
 - `CERTI/`: vendored CERTI source tree.
@@ -40,7 +41,8 @@ No distribution owns `src/hla/__init__.py`.
 - Keep human-facing operator entrypoints in `tools/`.
 - Keep implementation helpers and CI wrappers in `scripts/`.
 - Keep generated outputs out of the installable package.
-- Keep generated compliance, proof, preflight, and matrix outputs under `analysis/` rather than scattered top-level report directories.
+- Keep fresh generated run outputs under `artifacts/` by default.
+- Promote only intentionally retained, docs-referenced, or CI-cited evidence packets into `analysis/`.
 - Keep vendor runtime/build state out of the repo root and under `.local/`.
 - Keep the `tools/` directory narrow and operator-facing; do not let it become a second implementation tree.
 - The backend-alias matrix generator has already been promoted into `./tools/rti-options generate` because CI and operator flows treat it as a supported entrypoint.
@@ -61,6 +63,7 @@ The canonical setup guide is [`python_environment.md`](python_environment.md).
 Not every top-level directory should be collapsed.
 The vendor trees and evidence archives are separate on purpose so the runtime
 package stays reviewable and the imported source/provenance stays auditable.
-Likewise, `.local/` is intentionally separate from `analysis/`: runtime/build
-state is machine-local, while verification outputs are part of the repo's
-documented evidence flow.
+Likewise, `.local/` is intentionally separate from `artifacts/` and
+`analysis/`: runtime/build state is machine-local, `artifacts/` is the default
+landing zone for fresh generated outputs, and `analysis/` is the promoted
+evidence surface.

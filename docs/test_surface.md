@@ -180,8 +180,8 @@ docs, ad hoc pytest selectors, or CI plumbing.
 
 `./tools/test-surface run <lane>` writes normalized run summaries to:
 
-- `analysis/test_surface_status/<lane>.json`
-- `analysis/test_surface_status/<lane>.md`
+- `artifacts/test_surface_status/<lane>.json`
+- `artifacts/test_surface_status/<lane>.md`
 
 Use those artifacts to see what the lane ran and whether it passed, failed, or
 was only planned through `--dry-run`.
@@ -189,5 +189,5 @@ was only planned through `--dry-run`.
 `./tools/test-focus run <target>` writes the same kind of summary for focused
 work under:
 
-- `analysis/test_focus_status/<target>.json`
-- `analysis/test_focus_status/<target>.md`
+- `artifacts/test_focus_status/<target>.json`
+- `artifacts/test_focus_status/<target>.md`

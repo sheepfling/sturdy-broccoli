@@ -684,13 +684,13 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
         py4j_refs = set(row.get("pitch_py4j_evidence_refs", ()))
 
         assert PITCH_LOST_FEDERATE_GAP_NOTE in family_refs
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in family_refs
+        assert "artifacts/preflight_artifacts/pitch-preflight.json" in family_refs
         assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/"
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/"
             "vendor_runtime_status_summary.json"
         ) in family_refs
         assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/"
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/"
             "vendor_runtime_status_report.md"
         ) in family_refs
         assert (
@@ -721,7 +721,7 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
         assert (
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix"
         ) in jpype_refs
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in jpype_refs
+        assert "artifacts/preflight_artifacts/pitch-preflight.json" in jpype_refs
 
         assert PITCH_LOST_FEDERATE_GAP_NOTE in py4j_refs
         assert (
@@ -735,7 +735,7 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
         assert (
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix"
         ) in py4j_refs
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in py4j_refs
+        assert "artifacts/preflight_artifacts/pitch-preflight.json" in py4j_refs
 
 
 def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() -> None:
@@ -825,8 +825,8 @@ def test_clause4_pitch_family_and_profile_evidence_stays_on_allowed_surfaces() -
         "tests/scenarios/",
         "tests/vendors/",
         "packages/hla-vendor-pitch/docs/evidence/",
-        "analysis/preflight_artifacts/",
-        "analysis/vendor_runtime_status/",
+        "artifacts/preflight_artifacts/",
+        "artifacts/vendor_runtime_status/",
         "tests/test_rti_pitch_split_packages.py::",
     )
 

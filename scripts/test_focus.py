@@ -11,7 +11,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "testing" / "test_focus_manifest.json"
-ARTIFACT_DIR = ROOT / "analysis" / "test_focus_status"
+ARTIFACT_DIR = ROOT / "artifacts" / "test_focus_status"
 
 
 @dataclass(frozen=True)

@@ -31,7 +31,7 @@ def main(argv: list[str] | None = None) -> int:
         "--project-root",
         type=Path,
         default=PROJECT_ROOT,
-        help="Repository root used for default analysis artifact locations.",
+        help="Repository root used for default generated artifact locations.",
     )
     parser.add_argument(
         "--artifact-dir",
@@ -62,8 +62,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     project_root = args.project_root.resolve()
-    artifact_dir = args.artifact_dir or str(project_root / "analysis" / "preflight_artifacts")
-    output_dir = args.output_dir or str(project_root / "analysis" / "vendor_runtime_status")
+    artifact_dir = args.artifact_dir or str(project_root / "artifacts" / "preflight_artifacts")
+    output_dir = args.output_dir or str(project_root / "artifacts" / "vendor_runtime_status")
     vendors = tuple(args.vendors or ("certi", "pitch"))
     paths = write_vendor_runtime_status(
         output_dir,

@@ -47,6 +47,8 @@ boundary in mind:
 - [docs/backend_route_inventory_routes.md](backend_route_inventory_routes.md): backend route table
 - [docs/backend_route_inventory_baselines.md](backend_route_inventory_baselines.md): CERTI baseline attribution
 - [docs/backend_route_inventory_remote.md](backend_route_inventory_remote.md): remote transport routes
+- [docs/extending_ambassador_transports.md](extending_ambassador_transports.md): where ambassador connection and wire-format extension points live
+- [docs/transport_extension_playbook.md](transport_extension_playbook.md): concrete route-adaptation patterns for variant `grpc` and new transport families
 - [docs/backend_route_inventory_commands.md](backend_route_inventory_commands.md): route test commands
 - [docs/backend_compliance_discovery.md](backend_compliance_discovery.md): one-command backend/spec compliance discovery path
 - [docs/rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): operator-facing runtime and test matrix
@@ -90,6 +92,16 @@ surfaces are:
 - [docs/verification/validation_plan.md](verification/validation_plan.md): layered scenario-validation plan
 - [docs/verification/run_sequence.md](verification/run_sequence.md): full verification sequence with lint and type annotations
 - [docs/plans/README.md](plans/README.md): implementation plans and sequencing
+
+## Artifact Storage Rule
+
+Use the artifact directories with one explicit boundary:
+
+- `artifacts/`: default destination for fresh generated run outputs
+- `analysis/`: promoted and cited evidence packets
+
+When a tool supports `--output-dir`, prefer `artifacts/...` unless you are
+deliberately publishing a stable packet for documentation, tests, or CI.
 
 ## Parallel Documentation Pattern
 

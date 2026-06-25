@@ -120,7 +120,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "shared",
         "artifact_kind": "preflight",
         "role": "preflight snapshot",
-        "path": "analysis/preflight_artifacts/certi-preflight.json",
+        "path": "artifacts/preflight_artifacts/certi-preflight.json",
         "required": False,
         "note": "Optional machine-readable CERTI environment snapshot.",
     },
@@ -129,7 +129,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "shared",
         "artifact_kind": "preflight",
         "role": "preflight snapshot",
-        "path": "analysis/preflight_artifacts/pitch-preflight.json",
+        "path": "artifacts/preflight_artifacts/pitch-preflight.json",
         "required": False,
         "note": "Optional machine-readable Pitch environment snapshot.",
     },
@@ -138,7 +138,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "certi-save-restore-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/certi-save-restore-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/certi-save-restore-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the CERTI save/restore probe.",
     },
@@ -147,7 +147,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "certi-ddm-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the CERTI DDM probe.",
     },
@@ -156,7 +156,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-save-restore-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/pitch-save-restore-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/pitch-save-restore-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the Pitch save/restore probe.",
     },
@@ -165,7 +165,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-ddm-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/pitch-ddm-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/pitch-ddm-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the Pitch DDM probe.",
     },
@@ -174,7 +174,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-negotiated-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the Pitch negotiated-ownership probe.",
     },
@@ -183,7 +183,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-time-window-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the Pitch two-federate time-window future-exclusion probe.",
     },
@@ -192,7 +192,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-time-window-restore-state-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the Pitch two-federate time-window restore-state probe.",
     },
@@ -201,7 +201,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-lost-federate-probe",
         "artifact_kind": "stability-summary",
         "role": "probe stability summary",
-        "path": "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json",
+        "path": "artifacts/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json",
         "required": False,
         "note": "Optional repeated-run stability summary for the Pitch lost-federate probe.",
     },
@@ -210,7 +210,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "shared",
         "artifact_kind": "promotion-review",
         "role": "probe promotion review summary",
-        "path": "analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json",
+        "path": "artifacts/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json",
         "required": False,
         "note": "Optional promotion-review summary comparing repeated-run probe evidence against documented conformance stance.",
     },
@@ -219,7 +219,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "certi-save-restore",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/certi-save-restore.json",
+        "path": "artifacts/vendor_gap_profiles/certi-save-restore.json",
         "required": False,
         "note": "Optional machine-readable CERTI save/restore known-gap profile.",
     },
@@ -228,7 +228,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "certi-ddm",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/certi-ddm.json",
+        "path": "artifacts/vendor_gap_profiles/certi-ddm.json",
         "required": False,
         "note": "Optional machine-readable CERTI DDM known-gap profile.",
     },
@@ -237,7 +237,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-save-restore",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/pitch-save-restore.json",
+        "path": "artifacts/vendor_gap_profiles/pitch-save-restore.json",
         "required": False,
         "note": "Optional machine-readable Pitch save/restore known-gap profile.",
     },
@@ -246,7 +246,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-ddm",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/pitch-ddm.json",
+        "path": "artifacts/vendor_gap_profiles/pitch-ddm.json",
         "required": False,
         "note": "Optional machine-readable Pitch DDM known-gap profile.",
     },
@@ -255,7 +255,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-negotiated",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/pitch-negotiated.json",
+        "path": "artifacts/vendor_gap_profiles/pitch-negotiated.json",
         "required": False,
         "note": "Optional machine-readable Pitch negotiated-ownership known-gap profile.",
     },
@@ -264,7 +264,7 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "profile": "pitch-lost-federate",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/pitch-lost-federate.json",
+        "path": "artifacts/vendor_gap_profiles/pitch-lost-federate.json",
         "required": False,
         "note": "Optional machine-readable Pitch lost-federate known-gap profile.",
     },
@@ -711,7 +711,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         if row.artifact_kind not in entry["artifact_kinds"]:
             entry["artifact_kinds"].append(row.artifact_kind)
 
-    preflight_dir = REPO_ROOT / "analysis" / "preflight_artifacts"
+    preflight_dir = REPO_ROOT / "artifacts" / "preflight_artifacts"
     preflight = {
         "certi": _load_preflight_snapshot(preflight_dir / "certi-preflight.json"),
         "pitch": _load_preflight_snapshot(preflight_dir / "pitch-preflight.json"),
@@ -723,7 +723,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
             "pitch": build_vendor_runtime_status(artifact_dir=preflight_dir, lane="vendor-green", vendors=("pitch",)),
         },
     }
-    gap_profile_dir = REPO_ROOT / "analysis" / "vendor_gap_profiles"
+    gap_profile_dir = REPO_ROOT / "artifacts" / "vendor_gap_profiles"
     gap_profiles = {
         "certi-save-restore": _load_gap_profile(gap_profile_dir / "certi-save-restore.json"),
         "certi-ddm": _load_gap_profile(gap_profile_dir / "certi-ddm.json"),
@@ -732,7 +732,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         "pitch-negotiated": _load_gap_profile(gap_profile_dir / "pitch-negotiated.json"),
         "pitch-lost-federate": _load_gap_profile(gap_profile_dir / "pitch-lost-federate.json"),
     }
-    probe_stability_dir = REPO_ROOT / "analysis" / "vendor_probe_stability"
+    probe_stability_dir = REPO_ROOT / "artifacts" / "vendor_probe_stability"
     probe_stability = {
         "certi-save-restore-probe": _load_probe_stability_summary(
             probe_stability_dir / "certi-save-restore-probe" / "vendor_probe_stability_summary.json"
@@ -760,7 +760,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         ),
     }
     probe_promotion_review = _load_probe_promotion_review(
-        REPO_ROOT / "analysis" / "vendor_probe_promotion_review" / "vendor_probe_promotion_review_summary.json"
+        REPO_ROOT / "artifacts" / "vendor_probe_promotion_review" / "vendor_probe_promotion_review_summary.json"
     )
     required_count = sum(1 for row in rows if row.required)
     existing_count = sum(1 for row in rows if row.exists)

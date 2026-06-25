@@ -446,7 +446,7 @@ def main(argv: list[str] | None = None) -> int:
     demo = subparsers.add_parser("demo")
     demo.add_argument("name")
     demo.add_argument("--edition", choices=("2010", "2025"), required=True)
-    demo.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "analysis/proto2025_fom_showcase"))
+    demo.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "artifacts/proto2025_fom_showcase"))
     demo.add_argument("--steps", type=int, default=3, help="Target/Radar steps for showcase demos")
     demo.set_defaults(func=_demo)
 

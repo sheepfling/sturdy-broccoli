@@ -20,9 +20,9 @@ Use this when you need one command that answers:
 
 Generated artifacts land under:
 
-- `analysis/fom_validation/fom_validation_report.json`
-- `analysis/fom_validation/fom_validation_report.md`
-- `analysis/fom_validation/fom_validation_report.html` when `--html` is used
+- `artifacts/fom_validation/fom_validation_report.json`
+- `artifacts/fom_validation/fom_validation_report.md`
+- `artifacts/fom_validation/fom_validation_report.html` when `--html` is used
 
 ## What It Does
 
@@ -154,7 +154,7 @@ SISO showcase:
 
 - `./tools/fom-siso-showcase` turns the strongest Link 16, RPR 3.0, and Space FOM packets into a presentable artifact bundle
 - it keeps explicit expected buckets such as `validate-clean` and `parse-fail-fast` so the demo story stays honest about template-only versus integrated packets
-- it emits validator, JSON cycle, overview, and workbench artifacts for each included packet
+- it emits validator, JSON cycle, overview, dedicated HTML showcase, and workbench artifacts for each included packet
 
 ## Read Next
 

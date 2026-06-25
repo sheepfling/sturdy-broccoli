@@ -26,8 +26,8 @@ This repository also has two distinct axes that must stay separate:
 - backend family: where HLA service semantics execute
 - transport: how a client talks to a backend
 
-Those are not the same thing. A backend is `python`, `certi`, `jpype`, or
-`py4j`. A transport is `grpc` or `rest`.
+Those are not the same thing. A backend is `python1516e`, `python1516_2025`,
+`certi`, or a Java-route-backed family. A transport is `grpc` or `rest`.
 
 The practical rule is:
 

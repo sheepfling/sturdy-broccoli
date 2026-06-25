@@ -167,6 +167,7 @@ class ArrayDatatypeSpec:
     data_type: str | None = None
     cardinality: str | None = None
     encoding: str | None = None
+    source_encoding: str | None = None
     semantics: str | None = None
 
 
@@ -199,6 +200,7 @@ class VariantRecordDatatypeSpec:
     discriminant: str | None = None
     data_type: str | None = None
     encoding: str | None = None
+    source_encoding: str | None = None
     semantics: str | None = None
     alternatives: tuple[VariantAlternativeSpec, ...] = ()
 
@@ -446,6 +448,7 @@ def _datatype_summary(spec: Any) -> dict[str, Any]:
             "data_type": spec.data_type,
             "cardinality": spec.cardinality,
             "encoding": spec.encoding,
+            "source_encoding": spec.source_encoding,
             "semantics": spec.semantics,
         }
     if isinstance(spec, FixedRecordDatatypeSpec):
@@ -462,6 +465,7 @@ def _datatype_summary(spec: Any) -> dict[str, Any]:
             "discriminant": spec.discriminant,
             "data_type": spec.data_type,
             "encoding": spec.encoding,
+            "source_encoding": spec.source_encoding,
             "semantics": spec.semantics,
             "alternatives": [
                 {
@@ -568,6 +572,68 @@ _STRICT_OMT_TRANSPORTATION_RELIABILITY = {
 _NA_DATATYPE_MARKERS = {"", "NA", "N/A"}
 _STANDARD_MIM_NAME = "HLAstandardMIM"
 _CARDINALITY_RE = re.compile(r"(Dynamic|(\d)+|(\[(\d)+\.\.(\d)+\]))(,(Dynamic|(\d)+|(\[(\d)+\.\.(\d)+\])))*$")
+_CANONICAL_ARRAY_ENCODING_BY_SOURCE = {
+    "HLAfixedArray": "fixed-array",
+    "HLAvariableArray": "variable-array",
+    "RPRlengthlessArray": "lengthless-array",
+    "RPRnullTerminatedArray": "null-terminated-array",
+    "RPRpaddingTo32Array": "padding-to-32-bit-boundary-array",
+    "RPRpaddingTo64Array": "padding-to-64-bit-boundary-array",
+}
+_SOURCE_ARRAY_ENCODING_BY_CANONICAL = {
+    canonical: source for source, canonical in _CANONICAL_ARRAY_ENCODING_BY_SOURCE.items()
+}
+_CANONICAL_VARIANT_RECORD_ENCODING_BY_SOURCE = {
+    "HLAvariantRecord": "variant-record",
+    "HLAextendableVariantRecord": "extendable-variant-record",
+    "RPRextendedVariantRecord": "extendable-variant-record",
+}
+_SOURCE_VARIANT_RECORD_ENCODING_BY_CANONICAL = {
+    canonical: source for source, canonical in _CANONICAL_VARIANT_RECORD_ENCODING_BY_SOURCE.items()
+    if not canonical.startswith("extendable-") or source == "HLAextendableVariantRecord"
+}
+
+
+def _canonicalize_array_encoding(encoding: str | None) -> str | None:
+    if encoding is None:
+        return None
+    stripped = str(encoding).strip()
+    if not stripped:
+        return None
+    return _CANONICAL_ARRAY_ENCODING_BY_SOURCE.get(stripped, stripped)
+
+
+def _array_encoding_for_xml(spec: ArrayDatatypeSpec) -> str | None:
+    if spec.source_encoding:
+        return spec.source_encoding
+    if spec.encoding in _SOURCE_ARRAY_ENCODING_BY_CANONICAL:
+        return _SOURCE_ARRAY_ENCODING_BY_CANONICAL[spec.encoding]
+    return spec.encoding
+
+
+def _canonicalize_variant_record_encoding(encoding: str | None) -> str | None:
+    if encoding is None:
+        return None
+    stripped = str(encoding).strip()
+    if not stripped:
+        return None
+    return _CANONICAL_VARIANT_RECORD_ENCODING_BY_SOURCE.get(stripped, stripped)
+
+
+def _variant_record_encoding_for_xml(spec: VariantRecordDatatypeSpec) -> str | None:
+    if spec.source_encoding:
+        return spec.source_encoding
+    if spec.encoding in _SOURCE_VARIANT_RECORD_ENCODING_BY_CANONICAL:
+        return _SOURCE_VARIANT_RECORD_ENCODING_BY_CANONICAL[spec.encoding]
+    return spec.encoding
+
+
+def _padding_alignment_bytes_for_encoding(encoding: str) -> int | None:
+    if encoding == "padding-to-32-bit-boundary-array":
+        return 4
+    if encoding == "padding-to-64-bit-boundary-array":
+        return 8
+    return None
 
 
 def _is_url_like(text: str) -> bool:
@@ -1400,16 +1466,18 @@ def _extract_array_datatypes(root: ET.Element, *, path: Path) -> dict[str, Array
             continue
         _require_unique_name(array_types, name, "array datatype", path=path)
         cardinality = (_child_text(child, "cardinality") or "").strip() or None
-        encoding = (_child_text(child, "encoding") or "").strip() or None
+        source_encoding = (_child_text(child, "encoding") or "").strip() or None
+        encoding = _canonicalize_array_encoding(source_encoding)
         if cardinality is not None and not _CARDINALITY_RE.fullmatch(cardinality):
             raise FOMResolutionError(f"Array datatype {name!r} has invalid cardinality {cardinality!r} in {path}", kind="read")
-        if encoding == "HLAfixedArray" and cardinality == "Dynamic":
-            raise FOMResolutionError(f"Array datatype {name!r} cannot use Dynamic cardinality with HLAfixedArray in {path}", kind="read")
+        if encoding == "fixed-array" and cardinality == "Dynamic":
+            raise FOMResolutionError(f"Array datatype {name!r} cannot use Dynamic cardinality with fixed-array encoding in {path}", kind="read")
         array_types[name] = ArrayDatatypeSpec(
             name=name,
             data_type=(_child_text(child, "dataType") or "").strip() or None,
             cardinality=cardinality,
             encoding=encoding,
+            source_encoding=source_encoding,
             semantics=(_child_text(child, "semantics") or "").strip() or None,
         )
     return array_types
@@ -1491,7 +1559,8 @@ def _extract_variant_record_datatypes(root: ET.Element, *, path: Path) -> dict[s
             name=name,
             discriminant=(_child_text(child, "discriminant") or "").strip() or None,
             data_type=(_child_text(child, "dataType") or "").strip() or None,
-            encoding=(_child_text(child, "encoding") or "").strip() or None,
+            encoding=_canonicalize_variant_record_encoding((_child_text(child, "encoding") or "").strip() or None),
+            source_encoding=(_child_text(child, "encoding") or "").strip() or None,
             semantics=(_child_text(child, "semantics") or "").strip() or None,
             alternatives=tuple(alternatives),
         )
@@ -2084,6 +2153,30 @@ def _cardinality_count(cardinality: str | None) -> int | None:
     return count
 
 
+def _cardinality_lower_bound(cardinality: str | None) -> int | None:
+    if not cardinality:
+        return None
+    bounds: list[int] = []
+    for token in cardinality.split(","):
+        text = token.strip()
+        if not text or text == "Dynamic":
+            return None
+        if text.isdigit():
+            bounds.append(int(text))
+            continue
+        if text.startswith("[") and text.endswith("]") and ".." in text:
+            lower, _upper = text[1:-1].split("..", 1)
+            lower = lower.strip()
+            if lower.isdigit():
+                bounds.append(int(lower))
+                continue
+        raise CouldNotDecode(f"Unsupported array cardinality component {token!r}")
+    count = 1
+    for bound in bounds:
+        count *= bound
+    return count
+
+
 def _alternative_matches(enumerator_token: str, decoded_name: str | None, enum_order: Mapping[str, int]) -> bool:
     token = enumerator_token.strip()
     if not token or token == "HLAother":
@@ -2100,7 +2193,13 @@ def _alternative_matches(enumerator_token: str, decoded_name: str | None, enum_o
     return False
 
 
-def _consume_datatype_value(payload: bytes, datatype_name: str, catalog: FOMCatalog | Mapping[str, Any] | None) -> int:
+def _consume_datatype_value(
+    payload: bytes,
+    datatype_name: str,
+    catalog: FOMCatalog | Mapping[str, Any] | None,
+    *,
+    absolute_offset: int = 0,
+) -> int:
     if datatype_name in _NA_DATATYPE_MARKERS:
         return len(payload)
     builtin_consumed = _consume_runtime_builtin(payload, datatype_name)
@@ -2116,7 +2215,7 @@ def _consume_datatype_value(payload: bytes, datatype_name: str, catalog: FOMCata
     if isinstance(spec, SimpleDatatypeSpec):
         if not spec.representation:
             raise CouldNotDecode(f"Simple datatype {spec.name!r} has no representation")
-        return _consume_datatype_value(payload, spec.representation, catalog)
+        return _consume_datatype_value(payload, spec.representation, catalog, absolute_offset=absolute_offset)
     if isinstance(spec, EnumeratedDatatypeSpec):
         if not spec.representation:
             raise CouldNotDecode(f"Enumerated datatype {spec.name!r} has no representation")
@@ -2130,28 +2229,85 @@ def _consume_datatype_value(payload: bytes, datatype_name: str, catalog: FOMCata
             raise CouldNotDecode(f"Array datatype {spec.name!r} has no element datatype")
         encoding = spec.encoding or ""
         offset = 0
-        if encoding == "HLAfixedArray":
+        if encoding == "fixed-array":
             count = _cardinality_count(spec.cardinality)
             if count is None:
                 raise CouldNotDecode(f"Fixed array datatype {spec.name!r} requires fixed cardinality")
             for _ in range(count):
-                offset += _consume_datatype_value(payload[offset:], spec.data_type, catalog)
+                offset += _consume_datatype_value(
+                    payload[offset:],
+                    spec.data_type,
+                    catalog,
+                    absolute_offset=absolute_offset + offset,
+                )
             return offset
-        if encoding == "HLAvariableArray":
+        if encoding == "variable-array":
             if len(payload) < 4:
                 raise CouldNotDecode(f"Variable array datatype {spec.name!r} is missing its element count")
             count = struct.unpack(">I", payload[:4])[0]
             offset = 4
             for _ in range(count):
-                offset += _consume_datatype_value(payload[offset:], spec.data_type, catalog)
+                offset += _consume_datatype_value(
+                    payload[offset:],
+                    spec.data_type,
+                    catalog,
+                    absolute_offset=absolute_offset + offset,
+                )
             return offset
+        if encoding == "lengthless-array":
+            while offset < len(payload):
+                offset += _consume_datatype_value(
+                    payload[offset:],
+                    spec.data_type,
+                    catalog,
+                    absolute_offset=absolute_offset + offset,
+                )
+            return offset
+        if encoding == "null-terminated-array":
+            if spec.data_type != "HLAASCIIchar":
+                raise CouldNotDecode(
+                    f"Unsupported null-terminated array element datatype {spec.data_type!r} for {spec.name!r}"
+                )
+            terminator_index = payload.find(b"\x00")
+            if terminator_index < 0:
+                raise CouldNotDecode(f"Null-terminated array datatype {spec.name!r} is missing its terminator")
+            consumed = terminator_index + 1
+            minimum = _cardinality_lower_bound(spec.cardinality)
+            if minimum is not None and consumed < minimum:
+                raise CouldNotDecode(
+                    f"Null-terminated array datatype {spec.name!r} requires at least {minimum} bytes, decoded {consumed}"
+                )
+            return consumed
+        alignment_bytes = _padding_alignment_bytes_for_encoding(encoding)
+        if alignment_bytes is not None:
+            element_consumed = _consume_datatype_value(
+                b"\x00",
+                spec.data_type,
+                catalog,
+                absolute_offset=absolute_offset,
+            )
+            if element_consumed != 1:
+                raise CouldNotDecode(
+                    f"Padding array datatype {spec.name!r} requires a single-octet element datatype, got {spec.data_type!r}"
+                )
+            consumed = (-absolute_offset) % alignment_bytes
+            if len(payload) < consumed:
+                raise CouldNotDecode(
+                    f"Padding array datatype {spec.name!r} requires {consumed} padding octets to reach the next {alignment_bytes * 8}-bit boundary"
+                )
+            return consumed
         raise CouldNotDecode(f"Unsupported array encoding {encoding!r} for datatype {spec.name!r}")
     if isinstance(spec, FixedRecordDatatypeSpec):
         offset = 0
         for field in spec.fields:
             if not field.data_type:
                 raise CouldNotDecode(f"Fixed record field {spec.name}.{field.name} has no datatype")
-            offset += _consume_datatype_value(payload[offset:], field.data_type, catalog)
+            offset += _consume_datatype_value(
+                payload[offset:],
+                field.data_type,
+                catalog,
+                absolute_offset=absolute_offset + offset,
+            )
         return offset
     if isinstance(spec, VariantRecordDatatypeSpec):
         if not spec.data_type:
@@ -2170,12 +2326,22 @@ def _consume_datatype_value(payload: bytes, datatype_name: str, catalog: FOMCata
             if _alternative_matches(alternative.enumerator, decoded_name, enum_order):
                 if not alternative.data_type:
                     return discriminant_consumed
-                return discriminant_consumed + _consume_datatype_value(remainder, alternative.data_type, catalog)
+                return discriminant_consumed + _consume_datatype_value(
+                    remainder,
+                    alternative.data_type,
+                    catalog,
+                    absolute_offset=absolute_offset + discriminant_consumed,
+                )
         for alternative in spec.alternatives:
             if alternative.enumerator.strip() == "HLAother":
                 if not alternative.data_type:
                     return discriminant_consumed
-                return discriminant_consumed + _consume_datatype_value(remainder, alternative.data_type, catalog)
+                return discriminant_consumed + _consume_datatype_value(
+                    remainder,
+                    alternative.data_type,
+                    catalog,
+                    absolute_offset=absolute_offset + discriminant_consumed,
+                )
         return discriminant_consumed
     raise CouldNotDecode(f"Unsupported datatype declaration for {datatype_name!r}")
 
@@ -2891,8 +3057,9 @@ def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
             ET.SubElement(array_data, f"{{{namespace}}}dataType").text = spec.data_type
         if spec.cardinality:
             ET.SubElement(array_data, f"{{{namespace}}}cardinality").text = spec.cardinality
-        if spec.encoding:
-            ET.SubElement(array_data, f"{{{namespace}}}encoding").text = spec.encoding
+        xml_encoding = _array_encoding_for_xml(spec)
+        if xml_encoding:
+            ET.SubElement(array_data, f"{{{namespace}}}encoding").text = xml_encoding
         if spec.semantics:
             ET.SubElement(array_data, f"{{{namespace}}}semantics").text = spec.semantics
 
@@ -2929,8 +3096,9 @@ def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
                 ET.SubElement(alternative, f"{{{namespace}}}dataType").text = alt_spec.data_type
             if alt_spec.semantics:
                 ET.SubElement(alternative, f"{{{namespace}}}semantics").text = alt_spec.semantics
-        if spec.encoding:
-            ET.SubElement(variant_record, f"{{{namespace}}}encoding").text = spec.encoding
+        xml_encoding = _variant_record_encoding_for_xml(spec)
+        if xml_encoding:
+            ET.SubElement(variant_record, f"{{{namespace}}}encoding").text = xml_encoding
         if spec.semantics:
             ET.SubElement(variant_record, f"{{{namespace}}}semantics").text = spec.semantics
 

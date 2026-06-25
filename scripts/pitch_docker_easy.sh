@@ -6,7 +6,7 @@ CONTAINER_NAME="${HLA2010_PITCH_DOCKER_NAME:-hla2010-pitch-crc}"
 IMAGE_NAME="${HLA2010_PITCH_DOCKER_IMAGE:-hla2010-pitch-prti-free-crc:5.5.10}"
 CRC_PORT="${HLA2010_PITCH_CRC_PORT:-8989}"
 FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-15164}"
-PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/analysis/preflight_artifacts}"
+PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/artifacts/preflight_artifacts}"
 
 # shellcheck source=lib/shell.sh
 source "$ROOT_DIR/scripts/lib/shell.sh"

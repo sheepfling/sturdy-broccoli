@@ -368,7 +368,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             (
                 "tests/scenarios/test_target_radar_scenario.py",
                 "tests/backends/test_python_backend_time_ddm_extended.py",
-                "analysis/two_federate_suite/two_federate_callbacks.csv",
+                "artifacts/two_federate_suite/two_federate_callbacks.csv",
             ),
             notes="This slice ties object/interaction subscriptions directly to the visible callback traffic instead of relying only on service-level existence.",
         ),
@@ -426,7 +426,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "implemented-slice",
             (
                 "tests/scenarios/test_target_radar_scenario.py",
-                "analysis/two_federate_suite/two_federate_callbacks.csv",
+                "artifacts/two_federate_suite/two_federate_callbacks.csv",
                 "tests/verification/test_compliance_slice_v011.py",
             ),
             gaps=("Closest-subscribed-superclass and immutable discovered-class semantics are still broader than the present scenario proofs.",),

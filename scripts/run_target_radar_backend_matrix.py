@@ -59,7 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the target/radar backend matrix and write diagnostic artifacts.")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "target_radar_backend_matrix"),
+        default=str(PROJECT_ROOT / "artifacts" / "target_radar_backend_matrix"),
         help="Directory for generated artifacts",
     )
     parser.add_argument("--backend", action="append", default=[], help="Backend kind to include; repeat as needed")

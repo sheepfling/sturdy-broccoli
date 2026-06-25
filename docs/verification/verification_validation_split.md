@@ -70,9 +70,9 @@ Validation evidence in this repo should include:
 
 Current validation-oriented assets include:
 
-- `analysis/target_radar_proof/*`
-- `analysis/target_radar_backend_matrix/*`
-- `analysis/two_federate_suite/*`
+- `artifacts/target_radar_proof/*`
+- `artifacts/target_radar_backend_matrix/*`
+- `artifacts/two_federate_suite/*`
 - `examples/target_radar_simulation.py`
 - `tests/scenarios/*`
 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<?xml-model href="../CBML_Phase1_March2015/Schemas/cbml-1.0/cbml/cbml-composites-light/1.0/cbml-composites-light.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="../CBML_Phase1_March2015/Schemas/cbml-1.0/cbml/cbml-example-expression-types/1.0/cbml-example-expression-light-types.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<!-- This example CBML Light Order was drawn from GMU C4I Center work in NATO MSG-085. It is provided as an example only and is not intended to represent any sort of standard for an Order. -->
+<cbml:CBMLOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.sisostds.org/schemas/c-bml/1.0 ../../example-expressions-schema/cbml-example-expression-light-types.xsd"
+ xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0">     
+  <cbml:OrderIssuedWhen>20140401103600.024</cbml:OrderIssuedWhen>     
+  <cbml:OrderID>bb6e6082-5775-11e3-94d4-000c2975e2e5</cbml:OrderID>        
+  <cbml:TaskerWho>TG 401.01</cbml:TaskerWho>
+  <cbml:Execution>
+    <cbml:TaskersIntent>Recon enemy forces</cbml:TaskersIntent>
+    <cbml:Tasks>
+      <cbml:Task>
+        <cbml:TaskID>1-223 Phase 1</cbml:TaskID>         
+        <cbml:TaskeeWhoRef>1-223</cbml:TaskeeWhoRef>         
+        <cbml:ActivityCode>MOVE</cbml:ActivityCode>       
+        <cbml:TaskWhenLight>             
+          <cbml:TaskStartWhenLight>                 
+            <cbml:StartAbsoluteTime>                     
+              <cbml:StartUnspecifiedTime>                         
+                <cbml:StartQualifierCode>ASAP</cbml:StartQualifierCode>                     
+              </cbml:StartUnspecifiedTime>                 
+            </cbml:StartAbsoluteTime>             
+          </cbml:TaskStartWhenLight>         
+        </cbml:TaskWhenLight>         
+        <cbml:AtWhere>             
+          <cbml:LocationLight>                 
+            <cbml:PointLight>                     
+              <cbml:GDC>                         
+                <cbml:SpecificPoint>                             
+                  <cbml:Latitude>58.587169</cbml:Latitude>                             
+                  <cbml:LatitudePrecisionCode>DEGREE</cbml:LatitudePrecisionCode>                             
+                  <cbml:Longitude>15.285854</cbml:Longitude>                         
+                </cbml:SpecificPoint>                     
+              </cbml:GDC>                 
+            </cbml:PointLight>             
+          </cbml:LocationLight>         
+        </cbml:AtWhere>     
+      </cbml:Task>          
+      <cbml:Task>         
+        <cbml:TaskID>SPARTAN31 Phase 1</cbml:TaskID>         
+        <cbml:TaskeeWhoRef>SPARTAN31</cbml:TaskeeWhoRef>         
+        <cbml:ActivityCode>MOVE</cbml:ActivityCode>         
+        <cbml:TaskWhenLight>             
+          <cbml:TaskStartWhenLight>                 
+            <cbml:StartAbsoluteTime>                     
+              <cbml:StartUnspecifiedTime>                         
+                <cbml:StartQualifierCode>ASAP</cbml:StartQualifierCode>                     
+              </cbml:StartUnspecifiedTime>                 
+            </cbml:StartAbsoluteTime>             
+          </cbml:TaskStartWhenLight>         
+        </cbml:TaskWhenLight>         
+        <cbml:AtWhere>             
+          <cbml:LocationLight>                 
+            <cbml:PointLight>                     
+              <cbml:GDC>                         
+                <cbml:SpecificPoint>                             
+                  <cbml:Latitude>58.546390</cbml:Latitude>                             
+                  <cbml:LatitudePrecisionCode>DEGREE</cbml:LatitudePrecisionCode>                             
+                  <cbml:Longitude>15.088100</cbml:Longitude>                         
+                </cbml:SpecificPoint>                     
+              </cbml:GDC>                 
+            </cbml:PointLight>             
+          </cbml:LocationLight>         
+        </cbml:AtWhere>     
+      </cbml:Task>        
+      <cbml:Task>         
+        <cbml:TaskID>UAV2 Phase 1</cbml:TaskID>         
+        <cbml:TaskeeWhoRef>UAV2</cbml:TaskeeWhoRef>         
+        <cbml:ActivityCode>TCARRC</cbml:ActivityCode>         
+        <cbml:TaskWhenLight>             
+          <cbml:TaskStartWhenLight>                 
+            <cbml:StartAbsoluteTime>                     
+              <cbml:StartUnspecifiedTime>                         
+                <cbml:StartQualifierCode>ASAP</cbml:StartQualifierCode>                     
+              </cbml:StartUnspecifiedTime>                 
+            </cbml:StartAbsoluteTime>             
+          </cbml:TaskStartWhenLight>         
+        </cbml:TaskWhenLight>         
+        <cbml:AtWhere>             
+          <cbml:LocationLight>                 
+            <cbml:PointLight>                     
+              <cbml:GDC>                         
+                <cbml:SpecificPoint>                             
+                  <cbml:Latitude>58.587169</cbml:Latitude>                             
+                  <cbml:LatitudePrecisionCode>DEGREE</cbml:LatitudePrecisionCode>                             
+                  <cbml:Longitude>15.285854</cbml:Longitude>                         
+                </cbml:SpecificPoint>                     
+              </cbml:GDC>                 
+            </cbml:PointLight>             
+          </cbml:LocationLight>         
+        </cbml:AtWhere>     
+      </cbml:Task>
+    </cbml:Tasks>
+  </cbml:Execution>
+</cbml:CBMLOrder>

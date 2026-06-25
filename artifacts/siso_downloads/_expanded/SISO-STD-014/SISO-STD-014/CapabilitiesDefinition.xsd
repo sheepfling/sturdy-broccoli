@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and 
+make derivative works from this material, for all purposes, provided that any use of the material 
+contains the following attribution: “Reprinted with permission from SISO Inc.” Should 
+a reader require additional information, contact the SISO Inc. Board of Directors.
+
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+		   xmlns:gdl="http://www.sisostds.org/schemas/gdl" targetNamespace="http://www.sisostds.org/schemas/gdl">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xs:include schemaLocation="ImplementationLevels.xsd"/>
+	<xs:complexType name="CapabilitiesDefinition">
+		<xs:sequence>
+			<xs:element name="Version" type="xs:string"/>
+			<xs:element ref="gdl:Capability" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CapabilitiesDefinition" type="gdl:CapabilitiesDefinition"/>
+	<xs:complexType name="Version" mixed="true"/>
+	<xs:element name="Version" type="gdl:Version"/>
+	<xs:complexType name="Capability">
+		<xs:sequence>
+			<xs:element ref="gdl:ReferenceID"/>
+			<xs:element ref="gdl:Category"/>
+			<xs:element ref="gdl:CapabilityDefinition"/>
+			<xs:element ref="gdl:Example"/>
+			<xs:element ref="gdl:ImplementationLevel"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Capability" type="gdl:Capability"/>
+	<xs:complexType name="Category">
+		<xs:choice>
+			<xs:element ref="gdl:Functional"/>
+			<xs:element ref="gdl:Operational"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="Category" type="gdl:Category"/>
+	<xs:element name="Functional">
+		<xsd:annotation>
+			<xsd:documentation>Types of translations and behaviors that a gateway may perform.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="SDEM Translations">
+					<xsd:annotation>
+						<xsd:documentation>Translation between SDEM representations for entity properties.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="SDEM Behaviors">
+					<xsd:annotation>
+						<xsd:documentation>Translation between SDEM representations for entity behavior.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Architectural Translations">
+					<xsd:annotation>
+						<xsd:documentation>Translation between SDEM architectural structures.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Architectural Behaviors">
+					<xsd:annotation>
+						<xsd:documentation>Translation between SDEM architectural behaviors.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Exercise Management Behaviors">
+					<xsd:annotation>
+						<xsd:documentation>Translation between SDEM exercise management behaviors.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Fault Tolerance Behaviors">
+					<xsd:annotation>
+						<xsd:documentation>Translation between SDEM fault tolerance behaviors.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ReferenceID" type="xs:string"/>
+	<xs:element name="Operational">
+		<xsd:annotation>
+			<xsd:documentation>Types of functional capabilities that a gateway may have.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="User Interface">
+					<xsd:annotation>
+						<xsd:documentation>Description of the gateway’s user interface.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Operation Modes">
+					<xsd:annotation>
+						<xsd:documentation>Description of the gateway’s different modes of operation.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Extension Modes">
+					<xsd:annotation>
+						<xsd:documentation>Description of the gateway’s ability to be extended for additional functionality.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="Support">
+					<xsd:annotation>
+						<xsd:documentation>Description of the support capability for gateway update, maintenance, and troubleshooting.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Example" type="xs:string"/>
+	<xs:element name="CapabilityDefinition" type="xs:string"/>
+</xs:schema>

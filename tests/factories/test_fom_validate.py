@@ -139,6 +139,7 @@ def test_build_fom_validation_adds_family_load_set_report() -> None:
     assert row.parsed is True
     assert row.passed is True
     assert len(row.source_paths) > 2
+    assert any(item["source_encoding"].startswith("RPR") for item in row.datatype_normalizations)
 
 
 def test_build_fom_validation_reports_merge_conflict_for_explicit_load_set(tmp_path: Path) -> None:
@@ -200,6 +201,7 @@ def test_write_fom_validation_html_writes_browser_report(tmp_path: Path) -> None
     assert "load_set_reports" in text
     assert "Source reports" in text
     assert "Edition scope" in text
+    assert "Datatype Normalization" in text
 
 
 def test_write_fom_validation_html_renders_merge_conflict_member_cards(tmp_path: Path) -> None:

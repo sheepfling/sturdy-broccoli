@@ -82,10 +82,10 @@ isolation between Python and Java.
 The normalized wrapper surface on the Python side is the same:
 
 - `rti.connect(...)`
-- `rti.create_federation_execution(...)`
-- `rti.join_federation_execution(...)`
-- `rti.publish_object_class_attributes(...)`
-- `rti.send_interaction(...)`
+- `rti.createFederationExecution(...)`
+- `rti.joinFederationExecution(...)`
+- `rti.publishObjectClassAttributes(...)`
+- `rti.sendInteraction(...)`
 
 ## Edition Differences
 

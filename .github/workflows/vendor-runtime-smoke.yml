@@ -64,7 +64,7 @@ jobs:
         run: ${{ matrix.command }}
       - name: Publish vendor smoke runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat artifacts/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish vendor runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -74,9 +74,9 @@ jobs:
         with:
           name: vendor-runtime-smoke-${{ matrix.name }}-artifacts
           path: |
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_ci_state/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_ci_state/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
           if-no-files-found: ignore
           retention-days: 14

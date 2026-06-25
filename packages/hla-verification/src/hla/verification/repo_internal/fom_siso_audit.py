@@ -8,8 +8,9 @@ from pathlib import Path
 from typing import Any
 
 from hla.verification.repo_internal.fom_corpus_classification import classify_edition_scope
-from hla.verification.repo_internal.fom_inventory import inventory_records_by_family
+from hla.verification.repo_internal.fom_inventory import default_load_set_records, inventory_records_by_family
 from hla.verification.repo_internal.fom_roundtrip import build_fom_roundtrip, write_fom_roundtrip
+from hla.verification.repo_internal.fom_stress import _stress_annotation
 from hla.verification.repo_internal.fom_validate import build_fom_validation, write_fom_validation
 from hla.verification.repo_internal.fom_workbench import build_fom_workbench_snapshot, write_fom_workbench_html, write_fom_workbench_snapshot
 
@@ -29,6 +30,10 @@ class FOMSisoAuditFamilyResult:
     family: str
     edition: str
     edition_scope: str
+    stress_lane: str
+    intended_role: str
+    runtime_scenario_shape: str | None
+    expected_result: str
     member_count: int
     source_paths: tuple[str, ...]
     bucket: str
@@ -125,7 +130,13 @@ def build_fom_siso_audit(
         records = available_families.get(family, ())
         if not records:
             continue
+        records = default_load_set_records(records)
         year = _family_year(records)
+        stress_lane, intended_role, runtime_scenario_shape, expected_result = _stress_annotation(
+            family,
+            str(getattr(records[0], "baseline_kind", "third-party")),
+            str(getattr(records[0], "load_mode", "ordered-family")),
+        )
         source_paths = tuple(record.path for record in records)
         member_ids = tuple(record.id for record in records)
         custom_load_sets[family] = member_ids
@@ -137,10 +148,10 @@ def build_fom_siso_audit(
         validation_report: Any | None = None
         try:
             validation_json_path, validation_md_path, validation_report = write_fom_validation(
-                source_paths,
+                (),
                 output_dir=validation_output_dir,
                 families=(family,),
-                edition=str(year),
+                edition="auto",
                 strict_identification=strict_identification,
                 title=f"{family} | FOM Validation",
             )
@@ -219,6 +230,10 @@ def build_fom_siso_audit(
                 family=family,
                 edition=str(year),
                 edition_scope=edition_scope,
+                stress_lane=stress_lane,
+                intended_role=intended_role,
+                runtime_scenario_shape=runtime_scenario_shape,
+                expected_result=expected_result,
                 member_count=len(records),
                 source_paths=source_paths,
                 bucket=bucket,
@@ -284,8 +299,8 @@ def render_fom_siso_audit_markdown(report: FOMSisoAuditReport) -> str:
     lines.extend(
         [
             "",
-        "| Family | Edition | Members | Bucket | Validation | Round Trip | Verdict |",
-            "| --- | --- | --- | ---: | --- | --- | --- | --- |",
+        "| Family | Edition | Scope | Lane | Expected | Runtime Shape | Members | Bucket | Validation | Round Trip | Verdict |",
+            "| --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |",
         ]
     )
     for row in report.family_results:
@@ -296,6 +311,9 @@ def render_fom_siso_audit_markdown(report: FOMSisoAuditReport) -> str:
                     f"`{row.family}`",
                     f"`{row.edition}`",
                     f"`{row.edition_scope}`",
+                    f"`{row.stress_lane}`",
+                    f"`{row.expected_result}`",
+                    f"`{row.runtime_scenario_shape or 'n/a'}`",
                     str(row.member_count),
                     f"`{row.bucket}`",
                     "`passed`" if row.validation_passed else "`failed`",

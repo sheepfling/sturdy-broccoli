@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vendor-runner-contract-artifacts
-          path: analysis/vendor_runner_template_drift/
+          path: artifacts/vendor_runner_template_drift/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -68,9 +68,9 @@ jobs:
         with:
           name: repo-green-runtime-artifacts
           path: |
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -128,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: target-radar-backend-matrix
-          path: analysis/target_radar_backend_matrix/
+          path: artifacts/target_radar_backend_matrix/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -154,7 +154,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: target-radar-proof
-          path: analysis/target_radar_proof/
+          path: artifacts/target_radar_proof/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -186,7 +186,7 @@ jobs:
         run: ./scripts/ci/vendor_green.sh certi
       - name: Publish CERTI runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/certi/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat artifacts/vendor_runtime_ci_state/certi/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish CERTI vendor-green runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -196,10 +196,10 @@ jobs:
         with:
           name: certi-vendor-green-artifacts
           path: |
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_ci_state/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_ci_state/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -229,7 +229,7 @@ jobs:
         run: ./scripts/ci/vendor_green.sh pitch
       - name: Publish Pitch runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat artifacts/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish Pitch vendor-green runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -239,10 +239,10 @@ jobs:
         with:
           name: pitch-vendor-green-artifacts
           path: |
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_ci_state/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_ci_state/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -278,7 +278,7 @@ jobs:
         run: ./scripts/ci/vendor_green.sh matrix
       - name: Publish real-profile matrix runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/matrix/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat artifacts/vendor_runtime_ci_state/matrix/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish vendor-green matrix runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -288,10 +288,10 @@ jobs:
         with:
           name: real-profile-matrix-runtime-artifacts
           path: |
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_ci_state/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_ci_state/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -331,7 +331,7 @@ jobs:
         run: ./scripts/ci/vendor_edge_matrix.sh ${{ matrix.profile }}
       - name: Publish vendor-edge runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat artifacts/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload vendor edge matrix artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -339,10 +339,10 @@ jobs:
           name: vendor-edge-${{ matrix.profile }}
           path: |
             analysis/compliance/
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_ci_state/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_ci_state/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -398,7 +398,7 @@ jobs:
         run: ${{ matrix.command }}
       - name: Publish vendor probe stability runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat artifacts/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish vendor probe stability runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -408,11 +408,11 @@ jobs:
         with:
           name: vendor-probe-stability-${{ matrix.name }}
           path: |
-            analysis/preflight_artifacts/
-            analysis/vendor_runtime_ci_state/
-            analysis/vendor_runtime_status/
-            analysis/vendor_parity_artifacts/
-            analysis/vendor_probe_stability/
-            analysis/vendor_probe_promotion_review/
+            artifacts/preflight_artifacts/
+            artifacts/vendor_runtime_ci_state/
+            artifacts/vendor_runtime_status/
+            artifacts/vendor_parity_artifacts/
+            artifacts/vendor_probe_stability/
+            artifacts/vendor_probe_promotion_review/
           if-no-files-found: ignore
           retention-days: 14

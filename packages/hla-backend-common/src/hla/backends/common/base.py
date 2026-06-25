@@ -99,7 +99,7 @@ class RTIBackend(ABC):
 
 
 class _SplitRuntimeRTIAmbassador(RTIambassador):
-    """Split-package runtime facade with Pythonic snake_case aliases."""
+    """Split-package runtime facade with canonical lowerCamelCase RTI services."""
 
     def __getattribute__(self, name: str) -> Any:
         try:

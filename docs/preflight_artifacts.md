@@ -4,7 +4,7 @@ The `./tools/certi-easy preflight` and `./tools/pitch preflight` commands can em
 human-readable output or machine-readable JSON.
 
 The shared vendor runtime smoke delegate now emits the same standard JSON
-files by default under `analysis/preflight_artifacts/` before it decides
+files by default under `artifacts/preflight_artifacts/` before it decides
 whether a vendor profile should run or skip. Use `./tools/vendor-green` when
 blocked prerequisites should fail the run instead of short-circuiting cleanly.
 
@@ -30,20 +30,20 @@ Use the JSON form when you want to:
 If you just want the shortest repeatable path, use this:
 
 ```bash
-mkdir -p analysis/preflight_artifacts
+mkdir -p artifacts/preflight_artifacts
 
-./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
-python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
+./tools/certi-easy preflight --json-file artifacts/preflight_artifacts/certi-preflight.json
+python3 -m json.tool artifacts/preflight_artifacts/certi-preflight.json
 
-./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
-python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
+./tools/pitch preflight --json-file artifacts/preflight_artifacts/pitch-preflight.json
+python3 -m json.tool artifacts/preflight_artifacts/pitch-preflight.json
 ```
 
 If `jq` is installed, it can inspect the same files too:
 
 ```bash
-jq . analysis/preflight_artifacts/certi-preflight.json
-jq . analysis/preflight_artifacts/pitch-preflight.json
+jq . artifacts/preflight_artifacts/certi-preflight.json
+jq . artifacts/preflight_artifacts/pitch-preflight.json
 ```
 
 If you want to keep a dated snapshot, copy the files into a timestamped
@@ -51,9 +51,9 @@ folder:
 
 ```bash
 stamp="$(date +%Y%m%d-%H%M%S)"
-mkdir -p "analysis/preflight_artifacts/$stamp"
-cp analysis/preflight_artifacts/certi-preflight.json "analysis/preflight_artifacts/$stamp/"
-cp analysis/preflight_artifacts/pitch-preflight.json "analysis/preflight_artifacts/$stamp/"
+mkdir -p "artifacts/preflight_artifacts/$stamp"
+cp artifacts/preflight_artifacts/certi-preflight.json "artifacts/preflight_artifacts/$stamp/"
+cp artifacts/preflight_artifacts/pitch-preflight.json "artifacts/preflight_artifacts/$stamp/"
 ```
 
 ## CERTI
@@ -166,13 +166,13 @@ Examples:
 
 By default the script reads:
 
-- `analysis/preflight_artifacts/certi-preflight.json`
-- `analysis/preflight_artifacts/pitch-preflight.json`
+- `artifacts/preflight_artifacts/certi-preflight.json`
+- `artifacts/preflight_artifacts/pitch-preflight.json`
 
 and writes:
 
-- `analysis/vendor_runtime_status/vendor_runtime_status_summary.json`
-- `analysis/vendor_runtime_status/vendor_runtime_status_report.md`
+- `artifacts/vendor_runtime_status/vendor_runtime_status_summary.json`
+- `artifacts/vendor_runtime_status/vendor_runtime_status_report.md`
 
 The classifier normalizes each vendor into one of:
 
@@ -203,4 +203,4 @@ For dedicated vendor CI runners, pair that with:
 
 Those dedicated-runner artifacts live under:
 
-- `analysis/vendor_runtime_ci_state/...`
+- `artifacts/vendor_runtime_ci_state/...`

@@ -7,8 +7,10 @@ Policy notes:
 
 - keep the canonical unpacked standards bundle in `specs/ieee-1516-2010/`
 - keep the retained PDF archive in `docs/reference/`
-- keep generated verification packets, matrices, and reports under `analysis/`
-  so they stay out of the tracked seed
+- keep default generated run outputs under `artifacts/`
+- promote generated verification packets, matrices, and reports into
+  `analysis/` only when they become retained evidence or are cited by docs,
+  tests, or CI
 - keep reproducible code generation under package-local `_generated/`
   directories or `build/generated/` so source-derived files can be regenerated
   instead of committed

@@ -65,7 +65,7 @@ Example:
 
 | Runtime family | What it is | Primary backend names | Current status |
 |---|---|---|---|
-| Python RTI 2010 | in-process reference RTI implemented in Python for IEEE 1516.1-2010 | `python` | strongest reference path for local 2010 semantics and clause work |
+| Python RTI 2010 | direct reference RTI implemented in Python for IEEE 1516.1-2010 | `python1516e` | strongest reference path for local 2010 semantics and clause work |
 | Python RTI 2025 | in-process Python RTI implemented in Python for IEEE 1516.1-2025 | `python1516_2025`, `python-1516-2025`, `python-1516-2025` | main executable 2025 Python RTI lane in this repo |
 | Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
 | CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
@@ -87,7 +87,7 @@ These only matter when the chosen runtime is Java-facing.
 
 | Interaction model | Meaning | Used by |
 |---|---|---|
-| none | pure Python path | `python`, `certi` |
+| none | pure Python path | `python1516e`, `certi` |
 | `jpype` | Python loads JVM in-process | `jpype`, `pitch-jpype`, `portico-jpype`, `certi-jpype`, `java-shim-jpype` |
 | `py4j` | Python talks to a separate JVM gateway process | `py4j`, `pitch-py4j`, `portico-py4j`, `certi-py4j`, `java-shim-py4j` |
 
@@ -97,7 +97,7 @@ These are transport choices under the backend layer, not separate RTI families.
 
 | Transport kind | Meaning | Typical use |
 |---|---|---|
-| implicit / none | direct in-process/backend call path | `python`, Java adapters, local `certi` default use |
+| implicit / none | direct backend call path | `python1516e`, `python1516_2025`, Java adapters, local `certi` default use |
 | `subprocess-line` | line-oriented helper transport | primary local CERTI helper path |
 | `grpc` | typed unary request/response remote transport | transport-hosted Python RTI and CERTI-hosted remote path |
 | `rest` / `http-json` | typed JSON-over-HTTP remote transport | transport-hosted Python RTI and CERTI-facing transport seam |
@@ -120,9 +120,9 @@ This section is generated from `create_backend(...)` by
 
 ### Pure Python
 
-- `python`
-- `python-1516e`
 - `python1516e`
+- `python-1516e`
+- `python`
 
 ### Generic Java Adapter Paths
 
@@ -201,7 +201,7 @@ Use this simpler classification in practice:
 
 | Operational bucket | Backend names |
 |---|---|
-| Python reference RTI 2010 | `python` |
+| Python reference RTI 2010 | `python1516e` |
 | Python RTI 2025 | `python1516_2025`, `python-1516-2025`, `python-1516-2025` |
 | Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
 | Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
@@ -301,15 +301,15 @@ Current CERTI qualifier:
 
 If the goal is a manageable default matrix, use this:
 
-1. `python`
+1. `python1516e`
 2. `java-shim-jpype`
 3. `java-shim-py4j`
 4. `certi`
 5. `certi-jpype`
 6. `certi-py4j`
 7. `certi` over `grpc`
-8. `python` hosted over `grpc`
-9. `python` hosted over `rest`
+8. `python1516e` hosted over `grpc`
+9. `python1516e` hosted over `rest`
 10. `pitch-jpype`
 11. `pitch-py4j`
 

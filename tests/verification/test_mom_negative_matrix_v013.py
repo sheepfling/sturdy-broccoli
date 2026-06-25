@@ -33,14 +33,14 @@ def _make_strict_mom_rti(name: str):
     rti = create_rti_ambassador("python1516e", engine=engine, config=PythonRTIConfig(strict_mom_parameter_decoding=True))
     fed = RecordingFederateAmbassador()
     rti.connect(fed, CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution(name, "TargetRadarFOMmodule.xml")
-    rti.join_federation_execution("fed", "type", name)
+    rti.createFederationExecution(name, "TargetRadarFOMmodule.xml")
+    rti.joinFederationExecution("fed", "type", name)
     return engine, rti, fed
 
 
 def _drain_callbacks(rti) -> None:
     for _ in range(20):
-        rti.evoke_multiple_callbacks(0.0, 0.0)
+        rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
 def _decoded_mom_exception_texts(fed: RecordingFederateAmbassador) -> list[str]:
@@ -82,11 +82,11 @@ def test_generated_mom_negative_matrix_is_materialized_as_pytest_cases():
 @pytest.mark.parametrize("case", RTI_STRICT_CASES, ids=_pytest_case_id)
 def test_generated_mom_negative_case_executes_against_strict_python_rti(case):
     _engine, rti, fed = _make_strict_mom_rti(f"fed-{case.case_id.lower()}")
-    interaction = rti.get_interaction_class_handle(case.interaction_name)
+    interaction = rti.getInteractionClassHandle(case.interaction_name)
     parameters = _rti_parameter_payload_for_negative_case(rti, case)
 
     with pytest.raises(RTIexception):
-        rti.send_interaction(interaction, parameters, b"generated-mom-negative-case")
+        rti.sendInteraction(interaction, parameters, b"generated-mom-negative-case")
 
     _drain_callbacks(rti)
     decoded = _decoded_mom_exception_texts(fed)
@@ -118,12 +118,12 @@ def test_generated_mom_service_action_rows_are_tracked_as_planned_semantics(case
 
 
 def _mom_service_params(rti, interaction_name: str, extra: dict[str, bytes] | None = None) -> dict:
-    interaction = rti.get_interaction_class_handle(interaction_name)
+    interaction = rti.getInteractionClassHandle(interaction_name)
     params = {
-        rti.get_parameter_handle(interaction, "HLAfederate"): rti.backend.state.handle.encode(),
+        rti.getParameterHandle(interaction, "HLAfederate"): rti.backend.state.handle.encode(),
     }
     for name, value in (extra or {}).items():
-        params[rti.get_parameter_handle(interaction, name)] = value
+        params[rti.getParameterHandle(interaction, name)] = value
     return params
 
 
@@ -156,14 +156,14 @@ def test_selected_mom_service_actions_execute_as_semantic_negative_cases(
 
     if interaction_name.endswith("HLAmodifyLookahead"):
         extra = {
-            "HLAlookahead": rti.get_time_factory().make_interval(1.0).encode(),
+            "HLAlookahead": rti.getTimeFactory().makeInterval(1.0).encode(),
         }
 
     payload = _mom_service_params(rti, interaction_name, extra)
-    interaction = rti.get_interaction_class_handle(interaction_name)
+    interaction = rti.getInteractionClassHandle(interaction_name)
 
     with pytest.raises(expected_exception):
-        rti.send_interaction(interaction, payload, b"mom-semantic-negative")
+        rti.sendInteraction(interaction, payload, b"mom-semantic-negative")
 
     _drain_callbacks(rti)
     decoded = _decoded_mom_exception_texts(fed)
@@ -173,18 +173,18 @@ def test_selected_mom_service_actions_execute_as_semantic_negative_cases(
 
 def test_mom_service_action_reports_runtime_precondition_failure_after_real_setup():
     _engine, rti, fed = _make_strict_mom_rti("semantic-enable-time-constrained")
-    rti.enable_time_constrained()
-    rti.enable_asynchronous_delivery()
+    rti.enableTimeConstrained()
+    rti.enableAsynchronousDelivery()
     _drain_callbacks(rti)
 
     interaction_name = (
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained"
     )
-    interaction = rti.get_interaction_class_handle(interaction_name)
+    interaction = rti.getInteractionClassHandle(interaction_name)
     payload = _mom_service_params(rti, interaction_name)
 
     with pytest.raises(TimeConstrainedAlreadyEnabled):
-        rti.send_interaction(interaction, payload, b"mom-semantic-negative-enabled")
+        rti.sendInteraction(interaction, payload, b"mom-semantic-negative-enabled")
 
     _drain_callbacks(rti)
     decoded = _decoded_mom_exception_texts(fed)

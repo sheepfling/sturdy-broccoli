@@ -33,7 +33,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_runner_template_drift"),
+        default=str(PROJECT_ROOT / "artifacts" / "vendor_runner_template_drift"),
         help="Directory for generated drift reports.",
     )
     parser.add_argument("--json", action="store_true", help="Print JSON summary to stdout.")

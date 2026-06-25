@@ -49,7 +49,7 @@ def test_target_radar_backend_matrix_artifacts_are_generated(tmp_path):
 
 def test_target_radar_backend_matrix_ci_wrapper_bootstraps_source_checkout(tmp_path):
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
-    output_dir = tmp_path / "analysis" / "target_radar_backend_matrix"
+    output_dir = tmp_path / "artifacts" / "target_radar_backend_matrix"
     result = subprocess.run(
         [
             "bash",

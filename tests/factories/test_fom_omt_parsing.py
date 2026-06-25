@@ -200,7 +200,8 @@ def test_parse_standard_mim_xml_extracts_structured_datatype_definitions():
     assert mim_module.enumerated_datatypes["HLAboolean"].representation == "HLAinteger32BE"
     assert [enum.name for enum in mim_module.enumerated_datatypes["HLAboolean"].enumerators] == ["HLAfalse", "HLAtrue"]
     assert mim_module.enumerated_datatypes["HLAboolean"].enumerators[0].values == ("0",)
-    assert mim_module.array_datatypes["HLAASCIIstring"].encoding == "HLAvariableArray"
+    assert mim_module.array_datatypes["HLAASCIIstring"].encoding == "variable-array"
+    assert mim_module.array_datatypes["HLAASCIIstring"].source_encoding == "HLAvariableArray"
     assert mim_module.array_datatypes["HLAASCIIstring"].cardinality == "Dynamic"
     assert mim_module.fixed_record_datatypes["HLAinteractionSubscription"].fields[0].name == "HLAinteractionClass"
     assert mim_module.fixed_record_datatypes["HLAinteractionSubscription"].fields[1].data_type == "HLAboolean"
@@ -1737,7 +1738,8 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
                 name="ByteVector",
                 data_type="HLAoctet",
                 cardinality="Dynamic",
-                encoding="HLAvariableArray",
+                encoding="variable-array",
+                source_encoding="HLAvariableArray",
                 semantics="Opaque payload bytes.",
             )
         },
@@ -1758,7 +1760,8 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
                 name="MeasurementValue",
                 discriminant="ExecutionState",
                 data_type="ExecutionState",
-                encoding="HLAvariantRecord",
+                encoding="variant-record",
+                source_encoding="HLAvariantRecord",
                 semantics="Tagged measurement payload.",
                 alternatives=(
                     VariantAlternativeSpec("ColdStart", "StartupVector", "Vector3", "vector startup payload"),
@@ -1788,7 +1791,8 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
     array_spec = reparsed.array_datatypes["ByteVector"]
     assert array_spec.data_type == "HLAoctet"
     assert array_spec.cardinality == "Dynamic"
-    assert array_spec.encoding == "HLAvariableArray"
+    assert array_spec.encoding == "variable-array"
+    assert array_spec.source_encoding == "HLAvariableArray"
     assert array_spec.semantics == "Opaque payload bytes."
 
     fixed_spec = reparsed.fixed_record_datatypes["Vector3"]
@@ -1803,7 +1807,8 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
     variant_spec = reparsed.variant_record_datatypes["MeasurementValue"]
     assert variant_spec.discriminant == "ExecutionState"
     assert variant_spec.data_type == "ExecutionState"
-    assert variant_spec.encoding == "HLAvariantRecord"
+    assert variant_spec.encoding == "variant-record"
+    assert variant_spec.source_encoding == "HLAvariantRecord"
     assert variant_spec.semantics == "Tagged measurement payload."
     assert [
         (alt.enumerator, alt.name, alt.data_type, alt.semantics) for alt in variant_spec.alternatives
@@ -1812,6 +1817,127 @@ def test_datatype_heavy_fom_round_trips_enumerators_arrays_records_and_variants(
         ("WarmStandby", "StandbyBytes", "ByteVector", "byte standby payload"),
         ("Hot", "HotVector", "Vector3", "vector hot payload"),
     ]
+
+
+def test_parse_fom_xml_canonicalizes_array_encoding_kinds_but_preserves_source_label(tmp_path: Path):
+    xml_path = tmp_path / "canonical-array-encoding.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Canonical Array Encoding</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <simpleDataTypes>
+      <simpleData><name>HLAASCIIchar</name><representation>HLAoctet</representation></simpleData>
+    </simpleDataTypes>
+    <arrayDataTypes>
+      <arrayData>
+        <name>RprText</name>
+        <dataType>HLAASCIIchar</dataType>
+        <cardinality>[8..255]</cardinality>
+        <encoding>RPRnullTerminatedArray</encoding>
+        <semantics>RPR-style user tag text.</semantics>
+      </arrayData>
+    </arrayDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(xml_path)
+    spec = module.array_datatypes["RprText"]
+    assert spec.encoding == "null-terminated-array"
+    assert spec.source_encoding == "RPRnullTerminatedArray"
+
+    xml_text = serialize_fom_module(module)
+    assert "<encoding>RPRnullTerminatedArray</encoding>" in xml_text
+
+
+def test_parse_fom_xml_canonicalizes_padding_array_encodings(tmp_path: Path):
+    xml_path = tmp_path / "canonical-padding-encodings.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Canonical Padding Encodings</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <simpleDataTypes>
+      <simpleData><name>Octet</name><representation>HLAoctet</representation></simpleData>
+    </simpleDataTypes>
+    <arrayDataTypes>
+      <arrayData>
+        <name>Pad32</name>
+        <dataType>Octet</dataType>
+        <cardinality>Dynamic</cardinality>
+        <encoding>RPRpaddingTo32Array</encoding>
+      </arrayData>
+      <arrayData>
+        <name>Pad64</name>
+        <dataType>Octet</dataType>
+        <cardinality>Dynamic</cardinality>
+        <encoding>RPRpaddingTo64Array</encoding>
+      </arrayData>
+    </arrayDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(xml_path)
+    assert module.array_datatypes["Pad32"].encoding == "padding-to-32-bit-boundary-array"
+    assert module.array_datatypes["Pad32"].source_encoding == "RPRpaddingTo32Array"
+    assert module.array_datatypes["Pad64"].encoding == "padding-to-64-bit-boundary-array"
+    assert module.array_datatypes["Pad64"].source_encoding == "RPRpaddingTo64Array"
+
+    xml_text = serialize_fom_module(module)
+    assert "<encoding>RPRpaddingTo32Array</encoding>" in xml_text
+    assert "<encoding>RPRpaddingTo64Array</encoding>" in xml_text
+
+
+def test_parse_fom_xml_canonicalizes_variant_record_encodings(tmp_path: Path):
+    xml_path = tmp_path / "canonical-variant-encodings.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Canonical Variant Encodings</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData><name>HLAinteger32BE</name><size>32</size><interpretation>integer</interpretation><endian>Big</endian><encoding>HLAinteger32BE</encoding></basicData>
+    </basicDataRepresentations>
+    <enumeratedDataTypes>
+      <enumeratedData><name>Choice</name><representation>HLAinteger32BE</representation><enumerator><name>A</name><value>0</value></enumerator></enumeratedData>
+    </enumeratedDataTypes>
+    <variantRecordDataTypes>
+      <variantRecordData>
+        <name>StandardVariant</name>
+        <discriminant>Choice</discriminant>
+        <dataType>Choice</dataType>
+        <alternative><enumerator>A</enumerator><name>Alpha</name><dataType>HLAinteger32BE</dataType></alternative>
+        <encoding>HLAvariantRecord</encoding>
+      </variantRecordData>
+      <variantRecordData>
+        <name>RprVariant</name>
+        <discriminant>Choice</discriminant>
+        <dataType>Choice</dataType>
+        <alternative><enumerator>A</enumerator><name>Alpha</name><dataType>HLAinteger32BE</dataType></alternative>
+        <encoding>RPRextendedVariantRecord</encoding>
+      </variantRecordData>
+    </variantRecordDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(xml_path)
+    assert module.variant_record_datatypes["StandardVariant"].encoding == "variant-record"
+    assert module.variant_record_datatypes["StandardVariant"].source_encoding == "HLAvariantRecord"
+    assert module.variant_record_datatypes["RprVariant"].encoding == "extendable-variant-record"
+    assert module.variant_record_datatypes["RprVariant"].source_encoding == "RPRextendedVariantRecord"
+
+    xml_text = serialize_fom_module(module)
+    assert "<encoding>HLAvariantRecord</encoding>" in xml_text
+    assert "<encoding>RPRextendedVariantRecord</encoding>" in xml_text
 
 
 @pytest.mark.requirements(
@@ -1926,7 +2052,8 @@ def test_parse_fom_xml_extracts_richer_datatype_semantics_and_merge_summary():
         "CalculatingBill",
         "Other",
     ]
-    assert module.array_datatypes["Employees"].encoding == "HLAfixedArray"
+    assert module.array_datatypes["Employees"].encoding == "fixed-array"
+    assert module.array_datatypes["Employees"].source_encoding == "HLAfixedArray"
     assert module.array_datatypes["AddressBook"].cardinality == "Dynamic"
     assert [field.name for field in module.fixed_record_datatypes["AddressType"].fields] == [
         "Name",

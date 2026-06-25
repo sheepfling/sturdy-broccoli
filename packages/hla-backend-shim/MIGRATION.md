@@ -14,13 +14,13 @@ while the main 2025 RTI implementation is carried by
 `hla-backend-python1516-2025`, the sole repo-owned IEEE 1516.1-2025 Python RTI
 implementation lane.
 
-In the current layout, most shim helper modules are intentionally thin
-re-exports of `hla.backends.python1516_2025.*` runtime modules. The shim package
-should not regain ownership of core RTI semantics and should be removed once
-the legacy import paths are no longer needed.
-Those helper modules are retained only for explicit legacy import
-compatibility coverage and temporary scaffolding; they should not become a
-fresh dependency surface for new runtime code.
+Legacy shim helper modules have been removed. The shim package should not
+regain ownership of core RTI semantics and should be removed once the
+remaining legacy import paths are no longer needed. The surviving wrapper
+surface is retained only for explicit legacy import compatibility coverage and
+temporary scaffolding. `runtime_aliases.py` remains as the explicit hatch for
+the few compatibility aliases that still point into
+`hla.backends.python1516_2025.backend`.
 
 If existing code imports `Python2025Backend`, `Python2025RTIAmbassador`, or
 `create_python2025_backend` through `hla.backends.shim`, update that code to

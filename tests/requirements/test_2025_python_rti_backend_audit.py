@@ -15,68 +15,33 @@ from hla.verification.repo_internal.spec2025_finish_line import (
 
 ROOT = Path(__file__).resolve().parents[2]
 
-_SHIM_HELPER_RUNTIME_MODULES = {
-    "attribute_policy": (
-        "hla.backends.python1516_2025.attribute_policy",
-        "hla.backends.python1516_2025.ddm_default_attribute_policy",
-    ),
-    "attribute_scope": ("hla.backends.python1516_2025.attribute_scope_runtime",),
-    "callback_runtime": ("hla.backends.python1516_2025.callback_runtime",),
-    "catalog_runtime": ("hla.backends.python1516_2025.catalog_runtime",),
-    "declaration_management": ("hla.backends.python1516_2025.declaration_management_runtime",),
-    "directed_interaction": ("hla.backends.python1516_2025.directed_interaction_boundary",),
-    "federation_management": ("hla.backends.python1516_2025.federation_management_runtime",),
-    "interaction_policy": ("hla.backends.python1516_2025.interaction_policy_runtime",),
-    "interaction_runtime": ("hla.backends.python1516_2025.interaction_runtime",),
-    "mom_codec": ("hla.backends.python1516_2025.mom_codec",),
-    "mom_runtime": ("hla.backends.python1516_2025.mom_runtime",),
-    "object_instance_runtime": ("hla.backends.python1516_2025.object_instance_runtime",),
-    "object_model": ("hla.backends.python1516_2025.object_model_runtime",),
-    "object_reflection": ("hla.backends.python1516_2025.object_reflection_runtime",),
-    "object_region_runtime": ("hla.backends.python1516_2025.object_region_runtime",),
-    "ownership_runtime": ("hla.backends.python1516_2025.ownership_runtime",),
-    "save_restore": ("hla.backends.python1516_2025.save_restore_lifecycle",),
-    "support_lookup": ("hla.backends.python1516_2025.support_lookup_runtime",),
-    "support_policy": ("hla.backends.python1516_2025.support_policy_runtime",),
-    "time_management": ("hla.backends.python1516_2025.time_management_runtime",),
-    "update_rate": ("hla.backends.python1516_2025.update_rate_runtime",),
-}
-
-_SHIM_HELPER_COMPAT_TESTS = {
-    "attribute_policy": "test_2025_compatibility_wrapper_consumes_extracted_python2025_ddm_default_policy_semantics",
-    "attribute_scope": "test_2025_compatibility_wrapper_consumes_extracted_python2025_attribute_scope_semantics",
-    "callback_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_callback_semantics",
-    "catalog_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_catalog_semantics",
-    "declaration_management": "test_2025_compatibility_wrapper_consumes_extracted_python2025_declaration_management_semantics",
-    "directed_interaction": "test_2025_compatibility_wrapper_consumes_extracted_python2025_directed_interaction_semantics",
-    "federation_management": "test_2025_compatibility_wrapper_consumes_extracted_python2025_federation_management_semantics",
-    "interaction_policy": "test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_policy_semantics",
-    "interaction_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_interaction_runtime_semantics",
-    "mom_codec": "test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_codec_semantics",
-    "mom_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_mom_runtime_semantics",
-    "object_instance_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_object_instance_semantics",
-    "object_model": "test_2025_compatibility_wrapper_consumes_extracted_python2025_object_model_semantics",
-    "object_reflection": "test_2025_compatibility_wrapper_consumes_extracted_python2025_object_reflection_semantics",
-    "object_region_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_object_region_semantics",
-    "ownership_runtime": "test_2025_compatibility_wrapper_consumes_extracted_python2025_ownership_semantics",
-    "save_restore": "test_2025_compatibility_wrapper_consumes_extracted_python2025_save_restore_semantics",
-    "support_lookup": "test_2025_compatibility_wrapper_consumes_extracted_python2025_support_lookup_semantics",
-    "support_policy": "test_2025_compatibility_wrapper_consumes_extracted_python2025_support_policy_semantics",
-    "time_management": "test_2025_compatibility_wrapper_consumes_extracted_python2025_time_management_semantics",
-    "update_rate": "test_2025_compatibility_wrapper_consumes_extracted_python2025_update_rate_semantics",
+_REMOVED_SHIM_HELPER_MODULES = {
+    "attribute_policy",
+    "attribute_scope",
+    "callback_runtime",
+    "catalog_runtime",
+    "declaration_management",
+    "directed_interaction",
+    "federation_management",
+    "interaction_policy",
+    "interaction_runtime",
+    "mom_codec",
+    "mom_runtime",
+    "object_instance_runtime",
+    "object_model",
+    "object_reflection",
+    "object_region_runtime",
+    "ownership_runtime",
+    "save_restore",
+    "support_lookup",
+    "support_policy",
+    "time_management",
+    "update_rate",
 }
 
 _SHIM_LEGACY_ALIAS_TESTS = {
     "runtime_aliases": "test_2025_legacy_shim_runtime_alias_module_exports_python1516_2025_symbols_as_real_runtime_aliases",
 }
-
-_SHIM_MULTI_TEST_ALLOWED_IMPORTS = {
-    "hla.backends.shim.object_region_runtime": {
-        "test_2025_compatibility_wrapper_consumes_extracted_python2025_ddm_default_policy_semantics",
-        "test_2025_compatibility_wrapper_consumes_extracted_python2025_object_region_semantics",
-    }
-}
-
 
 @pytest.mark.requirements(
     "HLA2025-MIL-001",
@@ -241,14 +206,14 @@ def test_2025_python_rti_backend_audit_stays_aligned_with_finish_line_evidence()
     assert "strict local FOM/MIM resolution" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert "directed TSO stale-queue cleanup" in evidence_runs["hosted-2025-fedpro-transport-suite"]["scope"]
     assert milestone_audit["audit_status"] == "bounded-python-rti-milestones"
-    assert milestone_audit["routes"] == ["python1516_2025-inprocess", "python1516_2025-fedpro-grpc"]
+    assert milestone_audit["routes"] == ["python1516_2025", "python1516_2025-fedpro-grpc"]
     assert milestone_audit["milestone_count"] == 6
-    assert milestone_audit["by_route"]["python1516_2025-inprocess"]["all_route_parity_covered"] is True
+    assert milestone_audit["by_route"]["python1516_2025"]["all_route_parity_covered"] is True
     assert milestone_audit["by_route"]["python1516_2025-fedpro-grpc"]["all_route_parity_covered"] is True
     milestone_rows = {(row["route"], row["milestone_id"]): row for row in milestone_audit["rows"]}
-    assert milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["status"] == "bounded-working-slice"
+    assert milestone_rows[("python1516_2025", "best_attempt_working_surface")]["status"] == "bounded-working-slice"
     assert milestone_rows[("python1516_2025-fedpro-grpc", "best_attempt_working_surface")]["status"] == "bounded-working-slice"
-    assert "full-fledged RTI" in milestone_rows[("python1516_2025-inprocess", "best_attempt_working_surface")]["boundary"]
+    assert "full-fledged RTI" in milestone_rows[("python1516_2025", "best_attempt_working_surface")]["boundary"]
     assert milestone_rows[("python1516_2025-fedpro-grpc", "best_attempt_working_surface")]["boundary"] == (
         "This milestone remains explicitly bounded to the hosted FedPro runtime slice."
     )
@@ -722,7 +687,7 @@ def test_2025_python_rti_backend_audit_keeps_time_window_proof_ladder_negative_o
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrapper_only() -> None:
+def test_2025_python_rti_backend_audit_retires_shim_backend_module_to_importable_tombstone() -> None:
     shim_backend_path = ROOT / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim" / "backend.py"
     tree = ast.parse(shim_backend_path.read_text(encoding="utf-8"))
     top_level = [
@@ -736,18 +701,9 @@ def test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrappe
     ]
 
     assert len(shim_backend_path.read_text(encoding="utf-8").splitlines()) <= 50
-    assert [type(node).__name__ for node in top_level] == [
-        "ImportFrom",
-        "ImportFrom",
-        "ImportFrom",
-        "Assign",
-    ]
+    assert [type(node).__name__ for node in top_level] == ["ImportFrom", "ImportFrom", "Assign"]
     import_from_nodes = [node for node in top_level if isinstance(node, ast.ImportFrom)]
-    assert [node.module for node in import_from_nodes] == [
-        "__future__",
-        "hla.backends.python1516_2025.backend",
-        "hla.backends.python1516_2025.compatibility_wrapper",
-    ]
+    assert [node.module for node in import_from_nodes] == ["__future__", "hla.backends.python1516_2025.backend"]
     runtime_import = import_from_nodes[1]
     assert sorted(alias.name for alias in runtime_import.names) == [
         "MOM_2025_FEDERATE_ADJUST_LEAVES",
@@ -756,12 +712,6 @@ def test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrappe
         "MOM_2025_FEDERATION_ADJUST_LEAVES",
         "MOM_2025_FEDERATION_REQUEST_LEAVES",
         "MOM_2025_INPROCESS_ROUTED_MANAGER_LEAVES",
-    ]
-    wrapper_import = import_from_nodes[2]
-    assert sorted(alias.name for alias in wrapper_import.names) == [
-        "Shim2025Backend",
-        "Shim2025RTIAmbassador",
-        "create_shim_backend",
     ]
     assert not any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) for node in ast.walk(tree))
 
@@ -793,48 +743,15 @@ def test_2025_python_rti_backend_audit_keeps_shim_backend_module_thin_and_wrappe
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_keeps_shim_compatibility_modules_as_thin_forwarders() -> None:
+def test_2025_python_rti_backend_audit_removes_shim_helper_modules() -> None:
     shim_dir = ROOT / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim"
-    forwarder_modules = sorted(
-        path
+    helper_modules = {
+        path.stem
         for path in shim_dir.glob("*.py")
         if path.name not in {"__init__.py", "backend.py", "plugin.py", "runtime_aliases.py"}
-    )
+    }
 
-    assert forwarder_modules
-
-    for path in forwarder_modules:
-        source = path.read_text(encoding="utf-8")
-        tree = ast.parse(source, filename=str(path))
-        top_level = [
-            node
-            for node in tree.body
-            if not (
-                isinstance(node, ast.Expr)
-                and isinstance(node.value, ast.Constant)
-                and isinstance(node.value.value, str)
-            )
-        ]
-
-        assert len(source.splitlines()) <= 80, path.name
-        assert not any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) for node in ast.walk(tree)), path.name
-
-        import_from_nodes = [node for node in top_level if isinstance(node, ast.ImportFrom)]
-        assign_nodes = [node for node in top_level if isinstance(node, ast.Assign)]
-        other_nodes = [node for node in top_level if not isinstance(node, (ast.ImportFrom, ast.Assign))]
-
-        assert other_nodes == [], path.name
-        assert [node.module for node in import_from_nodes][0] == "__future__", path.name
-        assert all(
-            node.module is not None and node.module.startswith("hla.backends.python1516_2025.")
-            for node in import_from_nodes[1:]
-        ), path.name
-        assert all(
-            len(node.targets) == 1
-            and isinstance(node.targets[0], ast.Name)
-            and node.targets[0].id == "__all__"
-            for node in assign_nodes
-        ), path.name
+    assert helper_modules == set()
 
 
 @pytest.mark.requirements(
@@ -842,14 +759,12 @@ def test_2025_python_rti_backend_audit_keeps_shim_compatibility_modules_as_thin_
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runtime_and_wrapper() -> None:
+def test_2025_python_rti_backend_audit_keeps_runtime_plugin_and_retires_shim_plugin_surface() -> None:
     from hla.backends.python1516_2025.plugin import plugin as python2025_plugin
-    from hla.backends.shim.plugin import plugin as shim_plugin
+    from hla.backends.shim.plugin import backend_plugins as shim_backend_plugins
     from hla.rti.plugin_api import RTIBackendDiscovery
 
     runtime_plugin = python2025_plugin()
-    wrapper_plugin = shim_plugin()
-    wrapper_discovery = wrapper_plugin.discover()
 
     assert runtime_plugin.name == "python1516_2025"
     assert runtime_plugin.family == "python-rti-1516-2025"
@@ -867,24 +782,7 @@ def test_2025_python_rti_backend_audit_keeps_plugin_discovery_split_between_runt
     assert runtime_discovery.info.kind == "python/2025"
     assert runtime_discovery.info.details["implementation_lane"] == "hla-backend-python1516-2025"
     assert runtime_discovery.info.details["counts_as_python_2025_rti"] is True
-
-    assert wrapper_plugin.name == "shim"
-    assert wrapper_plugin.family == "compatibility-wrapper-2025"
-    assert wrapper_plugin.supports == ("rti1516_2025",)
-    assert wrapper_plugin.aliases == ()
-    assert "Deprecated compatibility-wrapper alias" in wrapper_plugin.description
-    assert wrapper_plugin.create_backend.__module__ == "hla.backends.python1516_2025.compatibility_wrapper"
-    assert wrapper_plugin.create_backend.__name__ == "create_shim_backend"
-    assert wrapper_plugin.create_backend is not runtime_plugin.create_backend
-    assert isinstance(wrapper_discovery, RTIBackendDiscovery)
-    assert wrapper_discovery.name == "shim"
-    assert wrapper_discovery.family == "compatibility-wrapper-2025"
-    assert wrapper_discovery.supports == ("rti1516_2025",)
-    assert wrapper_discovery.available is True
-    assert wrapper_discovery.info.kind == "shim/2025"
-    assert wrapper_discovery.info.details["counts_as_python_2025_rti"] is False
-    assert wrapper_discovery.info.details["wrapper_only"] is True
-    assert "deprecated compatibility-wrapper alias" in wrapper_discovery.description.lower()
+    assert shim_backend_plugins() == ()
 
 
 @pytest.mark.requirements(
@@ -1081,9 +979,9 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "`hla-backend-python1516-2025` is the main `rti1516_2025` implementation lane" in normalized_route_inventory
     assert "`hla-backend-shim` is only a compatibility-wrapper package over that lane" in normalized_route_inventory
     assert "`hla.backends.shim.runtime_aliases` as the explicit runtime-alias hatch" in normalized_route_inventory
-    assert "the other `hla.backends.shim.*` helper modules are retained only as thin legacy forwarders into `hla.backends.python1516_2025.*`" in normalized_route_inventory
+    assert "no shim helper modules remain beyond `hla.backends.shim.runtime_aliases`" in normalized_route_inventory
     assert "java/c++ binding routes are route surfaces, not separate python rtis" in normalized_route_inventory
-    assert "`python1516_2025-inprocess`: direct executable evidence over the main `hla-backend-python1516-2025` rti lane" in normalized_route_inventory
+    assert "`python1516_2025`: direct executable evidence over the main `hla-backend-python1516-2025` rti lane" in normalized_route_inventory
     assert "`python1516_2025-fedpro-grpc`: bounded hosted route evidence over that same rti lane, not a separate 2025 runtime family" in normalized_route_inventory
 
     assert "| python rti 2025 |" in normalized_route_inventory_routes
@@ -1108,7 +1006,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "they are transport-seam proof over that runtime, not evidence that the main 2025 python rti lane still lacks the underlying semantics" in normalized_networked
     assert "direct `python1516_2025` time-window, save/restore, ownership, callback, support-service, and mom proof selectors" in normalized_networked
 
-    assert "most shim helper modules are intentionally thin re-exports of `hla.backends.python1516_2025.*` runtime modules" in normalized_migration
+    assert "legacy shim helper modules have been removed" in normalized_migration
     assert "not part of the repo-owned implementation claim" in normalized_migration
     assert "the shim package should not regain ownership of core rti semantics" in normalized_migration
     assert "retained only for explicit legacy import compatibility coverage and temporary scaffolding" in normalized_migration
@@ -1150,7 +1048,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "should not be counted as alternate python rtis" in normalized_architecture
     assert "implementation-owner proof for the main python 2025 lane" in normalized_architecture
     assert "`packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py`: main full python 2025 backend plugin and discovery surface." in normalized_architecture
-    assert "`packages/hla-backend-shim/src/hla/backends/shim/plugin.py`: wrapper-only compatibility plugin for legacy shim imports around the 2025 lane." in normalized_architecture
+    assert "`packages/hla-backend-shim/src/hla/backends/shim/plugin.py`: retired shim plugin module that now returns no backend plugins and remains only for import compatibility." in normalized_architecture
     assert "for ieee 1516.1-2025 specifically, the main executable python rti lane is `hla-backend-python1516-2025`" in normalized_architecture
     assert "`hla-backend-shim` remains only as compatibility-wrapper/import-level code" in normalized_architecture
 
@@ -1544,7 +1442,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "the architectural split that matters is already in place: `hla-backend-python1516-2025` is the real 2025 rti runtime owner and the sole repo-owned 2025 python rti lane" in normalized_shim_readme
     assert "kept only as temporary, test-backed import-compatibility scaffolding" in normalized_shim_readme
     assert "they should be removed once no callers depend on the legacy import paths" in normalized_shim_readme
-    assert "the other `hla.backends.shim.*` modules outside the package root: they are forwarders, not implementation owners" in normalized_shim_readme
+    assert "no shim helper modules remain beyond `hla.backends.shim.runtime_aliases`" in normalized_shim_readme
     assert "future work here is boundary cleanup and removal, not deciding whether a dedicated python 2025 backend should exist" in normalized_shim_readme
     assert 'description = "main full python rti backend package for hla 1516.1-2025"' in normalized_python2025_pyproject
     assert 'backend_names = ["python1516_2025"]' in normalized_python2025_pyproject
@@ -1559,7 +1457,7 @@ def test_2025_python_rti_backend_audit_keeps_package_docs_aligned_with_runtime_w
     assert "test-backed legacy compatibility surface" in normalized_shim_docs_readme
     assert "deprecated and should be removed after migration" in normalized_shim_docs_readme
     assert "the real python 2025 rti backend already lives in `hla-backend-python1516-2025`; this package is the wrapper-only compatibility lane" in normalized_shim_docs_readme
-    assert "the other `hla.backends.shim.*` helper modules are intentionally thin forwarders into `hla.backends.python1516_2025.*`" in normalized_shim_docs_readme
+    assert "no shim helper modules remain beyond `hla.backends.shim.runtime_aliases`" in normalized_shim_docs_readme
     assert "future work is about keeping that wrapper narrow, not about deciding whether a dedicated 2025 backend should exist, and the package should be removed after migration" in normalized_shim_docs_readme
     assert "later be split into a narrower shim plus a dedicated 2025 backend" not in normalized_shim_docs_readme
     assert "future dedicated 2025 rti backend becomes the better design" not in normalized_backend
@@ -1819,40 +1717,14 @@ def test_2025_python_rti_backend_audit_keeps_named_raw_python2025_support_and_ca
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_as_pure_python2025_re_exports() -> None:
+def test_2025_python_rti_backend_audit_runtime_aliases_is_the_only_remaining_shim_helper_module() -> None:
     shim_dir = ROOT / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim"
-    helper_paths = sorted(
-        path
-        for path in shim_dir.glob("*.py")
-        if path.name not in {"__init__.py", "backend.py", "plugin.py", "runtime_aliases.py"}
-    )
-
-    assert helper_paths, "expected wrapper helper modules to audit"
-    for helper_path in helper_paths:
-        source = helper_path.read_text(encoding="utf-8")
-        tree = ast.parse(source)
-        top_level = [
-            node
-            for node in tree.body
-            if not (
-                isinstance(node, ast.Expr)
-                and isinstance(node.value, ast.Constant)
-                and isinstance(node.value.value, str)
-            )
-        ]
-        assert len(source.splitlines()) <= 50, helper_path.name
-        assert not any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) for node in ast.walk(tree)), helper_path.name
-        import_from_nodes = [node for node in top_level if isinstance(node, ast.ImportFrom)]
-        assert import_from_nodes, helper_path.name
-        assert [node.module for node in import_from_nodes[:1]] == ["__future__"], helper_path.name
-        runtime_import_modules = [node.module for node in import_from_nodes[1:]]
-        assert runtime_import_modules, helper_path.name
-        assert all(
-            module is not None and module.startswith("hla.backends.python1516_2025.")
-            for module in runtime_import_modules
-        ), (helper_path.name, runtime_import_modules)
-        non_import_nodes = [node for node in top_level if not isinstance(node, (ast.ImportFrom, ast.Assign))]
-        assert not non_import_nodes, helper_path.name
+    assert sorted(path.name for path in shim_dir.glob("*.py")) == [
+        "__init__.py",
+        "backend.py",
+        "plugin.py",
+        "runtime_aliases.py",
+    ]
 
 
 @pytest.mark.requirements(
@@ -1860,26 +1732,21 @@ def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_as_pure_python2
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_mapped_to_declared_runtime_sources() -> None:
-    shim_dir = ROOT / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim"
-    helper_paths = sorted(
-        path
-        for path in shim_dir.glob("*.py")
-        if path.name not in {"__init__.py", "backend.py", "plugin.py", "runtime_aliases.py"}
-    )
-
-    assert {path.stem for path in helper_paths} == set(_SHIM_HELPER_RUNTIME_MODULES)
-
-    for helper_path in helper_paths:
-        tree = ast.parse(helper_path.read_text(encoding="utf-8"))
-        import_from_nodes = [
-            node for node in tree.body if isinstance(node, ast.ImportFrom) and (node.module or "") != "__future__"
-        ]
-        observed_modules = tuple(node.module for node in import_from_nodes)
-        assert observed_modules == _SHIM_HELPER_RUNTIME_MODULES[helper_path.stem], (
-            helper_path.name,
-            observed_modules,
+def test_2025_python_rti_backend_audit_runtime_aliases_reexport_points_at_python2025_backend() -> None:
+    runtime_alias_path = ROOT / "packages" / "hla-backend-shim" / "src" / "hla" / "backends" / "shim" / "runtime_aliases.py"
+    runtime_alias_tree = ast.parse(runtime_alias_path.read_text(encoding="utf-8"), filename=str(runtime_alias_path))
+    runtime_alias_top_level = [
+        node
+        for node in runtime_alias_tree.body
+        if not (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
         )
+    ]
+    assert [type(node).__name__ for node in runtime_alias_top_level] == ["ImportFrom", "ImportFrom", "Assign"]
+    runtime_alias_imports = [node for node in runtime_alias_top_level if isinstance(node, ast.ImportFrom)]
+    assert [node.module for node in runtime_alias_imports] == ["__future__", "hla.backends.python1516_2025.backend"]
 
 
 @pytest.mark.requirements("HLA2025-MIL-001", "HLA2025-MIL-002")
@@ -1908,18 +1775,10 @@ def test_verification_readme_indexes_2025_exclusion_boundary() -> None:
     "HLA2025-MIL-002",
     "HLA2025-MIL-003",
 )
-def test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_wrapper_proofs() -> None:
+def test_2025_python_rti_backend_audit_eliminates_shim_helper_imports_from_runtime_tests() -> None:
     spec_test_path = ROOT / "tests" / "test_rti1516_2025_python1516_2025_runtime.py"
     spec_text = spec_test_path.read_text(encoding="utf-8")
     tree = ast.parse(spec_text)
-
-    compatibility_functions = {
-        node.name: node
-        for node in tree.body
-        if isinstance(node, ast.FunctionDef)
-        and "compatibility_wrapper_consumes_extracted_python2025" in node.name
-    }
-    assert len(compatibility_functions) >= 10
 
     shim_helper_import_locations: list[tuple[str, str]] = []
     for node in tree.body:
@@ -1931,22 +1790,11 @@ def test_2025_python_rti_backend_audit_confines_shim_helper_imports_to_explicit_
             module = child.module or ""
             if not module.startswith("hla.backends.shim."):
                 continue
-            if module in {"hla.backends.shim.backend", "hla.backends.shim.plugin"}:
+            if module in {"hla.backends.shim.backend", "hla.backends.shim.plugin", "hla.backends.shim.runtime_aliases"}:
                 continue
             shim_helper_import_locations.append((node.name, module))
 
-    assert shim_helper_import_locations
-    expected_import_tests = {
-        **{f"hla.backends.shim.{module}": test_name for module, test_name in _SHIM_HELPER_COMPAT_TESTS.items()},
-        **{f"hla.backends.shim.{module}": test_name for module, test_name in _SHIM_LEGACY_ALIAS_TESTS.items()},
-    }
-    assert all(
-        name in _SHIM_MULTI_TEST_ALLOWED_IMPORTS.get(module, {expected_import_tests.get(module)})
-        for name, module in shim_helper_import_locations
-    )
-    assert set(module.rsplit(".", 1)[-1] for _name, module in shim_helper_import_locations) == (
-        set(_SHIM_HELPER_COMPAT_TESTS) | set(_SHIM_LEGACY_ALIAS_TESTS)
-    )
+    assert shim_helper_import_locations == []
 
 
 @pytest.mark.requirements(
@@ -1959,8 +1807,6 @@ def test_2025_python_rti_backend_audit_keeps_every_shim_helper_under_an_explicit
     spec_text = spec_test_path.read_text(encoding="utf-8")
     defined_test_names = set(re.findall(r"^def (test_2025_[A-Za-z0-9_]+)\(", spec_text, re.M))
 
-    assert set(_SHIM_HELPER_COMPAT_TESTS) == set(_SHIM_HELPER_RUNTIME_MODULES)
-    assert set(_SHIM_HELPER_COMPAT_TESTS.values()).issubset(defined_test_names)
     assert set(_SHIM_LEGACY_ALIAS_TESTS.values()).issubset(defined_test_names)
 
 
@@ -1974,9 +1820,8 @@ def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_out_of_repo_run
     helper_module_names = {
         path.stem
         for path in shim_dir.glob("*.py")
-        if path.name not in {"__init__.py", "backend.py", "plugin.py"}
+        if path.name not in {"__init__.py", "backend.py", "plugin.py", "runtime_aliases.py"}
     }
-    allowed_import_path = ROOT / "tests" / "test_rti1516_2025_python1516_2025_runtime.py"
     unexpected_locations: list[tuple[str, str]] = []
 
     for path in ROOT.rglob("*.py"):
@@ -1999,7 +1844,6 @@ def test_2025_python_rti_backend_audit_keeps_shim_helper_modules_out_of_repo_run
             leaf = module.rsplit(".", 1)[-1]
             if leaf not in helper_module_names:
                 continue
-            if path != allowed_import_path:
-                unexpected_locations.append((str(path.relative_to(ROOT)), module))
+            unexpected_locations.append((str(path.relative_to(ROOT)), module))
 
     assert unexpected_locations == []

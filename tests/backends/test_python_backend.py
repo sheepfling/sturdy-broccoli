@@ -1,5 +1,6 @@
 import pytest
 
+from hla.fom import FOMResolver, merge_fom_modules, validate_encoded_datatype_value
 from hla.rti1516e import NullFederateAmbassador
 from hla.backends.python1516e import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.encoding import HLAunicodeString
@@ -101,3 +102,76 @@ def test_python_backend_validates_declared_user_tag_encoding_for_updates_and_int
     tx.send_interaction(interaction, {track_id: b"T-1"}, good_tag)
     with pytest.raises(CouldNotDecode, match="sendReceiveTag"):
         tx.send_interaction(interaction, {track_id: b"T-1"}, b"\xff")
+
+
+def test_validate_encoded_datatype_value_accepts_rpr_null_terminated_user_tag() -> None:
+    base = "artifacts/siso_downloads/_expanded/SISO-STD-001.1-2015 Annex A Files Normative/Annex A Files Normative"
+    catalog = merge_fom_modules(
+        FOMResolver().resolve_many(
+            (
+                f"{base}/RPR-Foundation_v2.0.xml",
+                f"{base}/RPR-Enumerations_v2.0.xml",
+                f"{base}/RPR-Base_v2.0.xml",
+            )
+        )
+    )
+
+    validate_encoded_datatype_value(b"00000000\x00", "RPRUserDefinedTag", catalog)
+    validate_encoded_datatype_value(b"00000000EXTRA\x00", "RPRUserDefinedTag", catalog)
+    with pytest.raises(CouldNotDecode, match="missing its terminator"):
+        validate_encoded_datatype_value(b"00000000", "RPRUserDefinedTag", catalog)
+    with pytest.raises(CouldNotDecode, match="requires at least 8 bytes"):
+        validate_encoded_datatype_value(b"1234\x00", "RPRUserDefinedTag", catalog)
+
+
+def test_validate_encoded_datatype_value_accepts_alignment_padding_arrays(tmp_path) -> None:
+    fom_path = tmp_path / "PaddingArrayFOM.xml"
+    fom_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Padding Array FOM</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <simpleDataTypes>
+      <simpleData><name>Octet</name><representation>HLAoctet</representation></simpleData>
+    </simpleDataTypes>
+    <arrayDataTypes>
+      <arrayData><name>Pad32</name><dataType>Octet</dataType><cardinality>Dynamic</cardinality><encoding>RPRpaddingTo32Array</encoding></arrayData>
+      <arrayData><name>Pad64</name><dataType>Octet</dataType><cardinality>Dynamic</cardinality><encoding>RPRpaddingTo64Array</encoding></arrayData>
+    </arrayDataTypes>
+    <fixedRecordDataTypes>
+      <fixedRecordData>
+        <name>Aligned32Struct</name>
+        <encoding>HLAfixedRecord</encoding>
+        <field><name>Prefix</name><dataType>HLAinteger16BE</dataType></field>
+        <field><name>Padding</name><dataType>Pad32</dataType></field>
+        <field><name>Value</name><dataType>HLAinteger32BE</dataType></field>
+      </fixedRecordData>
+      <fixedRecordData>
+        <name>Aligned64Struct</name>
+        <encoding>HLAfixedRecord</encoding>
+        <field><name>Prefix</name><dataType>HLAinteger16BE</dataType></field>
+        <field><name>Padding</name><dataType>Pad64</dataType></field>
+        <field><name>Value</name><dataType>HLAinteger64BE</dataType></field>
+      </fixedRecordData>
+    </fixedRecordDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    catalog = merge_fom_modules((FOMResolver().resolve(fom_path),))
+
+    validate_encoded_datatype_value(b"\x12\x34\x00\x00\xde\xad\xbe\xef", "Aligned32Struct", catalog)
+    validate_encoded_datatype_value(
+        b"\x12\x34\x00\x00\x00\x00\x00\x00\x01\x02\x03\x04\x05\x06\x07\x08",
+        "Aligned64Struct",
+        catalog,
+    )
+    with pytest.raises(CouldNotDecode, match="requires 2 padding octets"):
+        validate_encoded_datatype_value(b"\x12\x34\x00", "Aligned32Struct", catalog)
+    with pytest.raises(CouldNotDecode, match="requires 6 padding octets"):
+        validate_encoded_datatype_value(
+            b"\x12\x34\x00\x00\x00\x00\x00",
+            "Aligned64Struct",
+            catalog,
+        )

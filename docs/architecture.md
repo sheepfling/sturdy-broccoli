@@ -82,7 +82,7 @@ should not be mistaken for installable package dependencies.
 
 - `packages/hla-backend-python1516e/src/hla/backends/python1516e/factory.py`: pure-Python backend constructors.
 - `packages/hla-backend-python1516-2025/src/hla/backends/python1516_2025/plugin.py`: main full Python 2025 backend plugin and discovery surface.
-- `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`: wrapper-only compatibility plugin for legacy shim imports around the 2025 lane.
+- `packages/hla-backend-shim/src/hla/backends/shim/plugin.py`: retired shim plugin module that now returns no backend plugins and remains only for import compatibility.
 - `packages/hla-rti-core/src/hla/rti/`: workspace-facing backend discovery and ambassador-construction helpers.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend plugin descriptors.
 

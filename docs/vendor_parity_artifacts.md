@@ -14,9 +14,9 @@ Generate the packet with:
 
 Default output:
 
-- `analysis/vendor_parity_artifacts/vendor_parity_artifacts_summary.json`
-- `analysis/vendor_parity_artifacts/vendor_parity_artifacts_manifest.csv`
-- `analysis/vendor_parity_artifacts/vendor_parity_artifacts_report.md`
+- `artifacts/vendor_parity_artifacts/vendor_parity_artifacts_summary.json`
+- `artifacts/vendor_parity_artifacts/vendor_parity_artifacts_manifest.csv`
+- `artifacts/vendor_parity_artifacts/vendor_parity_artifacts_report.md`
 
 The packet does not run vendor smoke by itself. It normalizes the current
 artifact surface so a follow-on CERTI or Pitch run can be attached to a stable
@@ -52,8 +52,8 @@ That means one generated summary can answer both:
 Typical sequence:
 
 ```bash
-./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
-./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./tools/certi-easy preflight --json-file artifacts/preflight_artifacts/certi-preflight.json
+./tools/pitch preflight --json-file artifacts/preflight_artifacts/pitch-preflight.json
 ./tools/vendor-edge all
 ./tools/vendor-parity
 ```

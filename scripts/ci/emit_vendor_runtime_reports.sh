@@ -4,9 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 LANE="${1:-repo-green}"
 PROFILE="${2:-all}"
-PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/analysis/preflight_artifacts}"
-STATUS_BASE_DIR="${HLA2010_VENDOR_RUNTIME_STATUS_DIR:-$ROOT_DIR/analysis/vendor_runtime_status}"
-PARITY_OUTPUT_DIR="${HLA2010_VENDOR_PARITY_ARTIFACT_DIR:-$ROOT_DIR/analysis/vendor_parity_artifacts}"
+PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/artifacts/preflight_artifacts}"
+STATUS_BASE_DIR="${HLA2010_VENDOR_RUNTIME_STATUS_DIR:-$ROOT_DIR/artifacts/vendor_runtime_status}"
+PARITY_OUTPUT_DIR="${HLA2010_VENDOR_PARITY_ARTIFACT_DIR:-$ROOT_DIR/artifacts/vendor_parity_artifacts}"
 
 # shellcheck source=../lib/shell.sh
 source "$ROOT_DIR/scripts/lib/shell.sh"

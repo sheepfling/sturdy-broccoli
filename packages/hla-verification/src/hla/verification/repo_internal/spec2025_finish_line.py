@@ -2921,7 +2921,7 @@ def _build_binding_route_decomposition_audit() -> dict[str, Any]:
                 "scripts/run_spec2025_route_parity_matrix.py",
             ],
             "route_groups": [
-                "python1516_2025-inprocess",
+                "python1516_2025",
                 "python1516_2025-fedpro-grpc",
                 "java-standard-2025-jpype",
                 "java-standard-2025-py4j",
@@ -3775,7 +3775,7 @@ def _build_python2025_direct_bounded_proof_audit(
     doc_path = project_root / doc_rel
     doc_text = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
     normalized_doc_text = " ".join(doc_text.split())
-    direct_rows = [row for row in route_parity_matrix["rows"] if row["route"] == "python1516_2025-inprocess"]
+    direct_rows = [row for row in route_parity_matrix["rows"] if row["route"] == "python1516_2025"]
     direct_rows.sort(key=lambda row: row["scenario"])
     expected_scenarios = [
         "ddm",
@@ -3842,7 +3842,7 @@ def _build_python2025_direct_bounded_proof_audit(
         "audit_status": "python1516_2025-direct-bounded-proof-captured",
         "doc_path": doc_rel,
         "doc_exists": doc_path.exists(),
-        "route": "python1516_2025-inprocess",
+        "route": "python1516_2025",
         "scenario_count": len(direct_rows),
         "scenarios": [row["scenario"] for row in direct_rows],
         "expected_scenarios": expected_scenarios,
@@ -3973,9 +3973,9 @@ def _build_lookahead_window_bounded_proof_audit(
         for row in route_parity_matrix["rows"]
         if (row["scenario"], row["route"])
         in {
-            ("time_management", "python1516_2025-inprocess"),
+            ("time_management", "python1516_2025"),
             ("time_management", "python1516_2025-fedpro-grpc"),
-            ("save_restore", "python1516_2025-inprocess"),
+            ("save_restore", "python1516_2025"),
             ("save_restore", "python1516_2025-fedpro-grpc"),
         }
     ]
@@ -3994,9 +3994,9 @@ def _build_lookahead_window_bounded_proof_audit(
         "lookahead-processing-window-certified",
     ]
     missing_proof_levels = [level for level in required_proof_levels if f"`{level}`" not in doc_text]
-    direct_time_row = by_route.get(("time_management", "python1516_2025-inprocess"))
+    direct_time_row = by_route.get(("time_management", "python1516_2025"))
     hosted_time_row = by_route.get(("time_management", "python1516_2025-fedpro-grpc"))
-    direct_save_restore_row = by_route.get(("save_restore", "python1516_2025-inprocess"))
+    direct_save_restore_row = by_route.get(("save_restore", "python1516_2025"))
     hosted_save_restore_row = by_route.get(("save_restore", "python1516_2025-fedpro-grpc"))
     route_note_checks = [
         direct_time_row is not None
@@ -4015,7 +4015,7 @@ def _build_lookahead_window_bounded_proof_audit(
         and "bounded radar-window state rollback" in hosted_save_restore_row["notes"],
     ]
     required_evidence_tests = {
-        ("time_management", "python1516_2025-inprocess"): {
+        ("time_management", "python1516_2025"): {
             "tests/test_rti1516_2025_python1516_2025_runtime.py",
             "tests/scenarios/test_python_route_parity.py",
         },
@@ -4369,7 +4369,7 @@ def _build_promotion_split_audit(
             closeout_readiness["ready_for_slice_closeout"]
             and claim_audit["ready_for_supported-boundary_statement"]
             and boundary_statement["ready"]
-            and milestone_audit["by_route"]["python1516_2025-inprocess"]["all_route_parity_covered"]
+            and milestone_audit["by_route"]["python1516_2025"]["all_route_parity_covered"]
             and milestone_audit["by_route"]["python1516_2025-fedpro-grpc"]["all_route_parity_covered"]
         ),
         "ready_for_permanent_no-split_decision": False,
@@ -4616,10 +4616,10 @@ def _build_implementation_lane_audit(
         },
         "python_2025_routes": [
             {
-                "route": "python1516_2025-inprocess",
+                "route": "python1516_2025",
                 "kind": "in-process-backend-route",
                 "is_separate_rti_family": False,
-                "all_route_parity_covered": milestone_audit["by_route"]["python1516_2025-inprocess"]["all_route_parity_covered"],
+                "all_route_parity_covered": milestone_audit["by_route"]["python1516_2025"]["all_route_parity_covered"],
             },
             {
                 "route": "python1516_2025-fedpro-grpc",
@@ -7024,7 +7024,7 @@ def _build_extraction_readiness_audit(
             ),
         },
         "extraction_cutover_invariants": [
-            "python1516_2025-inprocess and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
+            "python1516_2025 and python1516_2025-fedpro-grpc parity rows remain green for every migrated slice",
             "hla-backend-shim keeps only route normalization, compatibility aliases, and binding bridge behavior",
             "the dedicated python1516_2025 plugin owns core RTI state for migrated save/restore, directed interaction, DDM, and time semantics",
             "backend plugin discovery reports hla-backend-python1516-2025 as a dedicated rti1516_2025 candidate before any promotion claim changes",
@@ -7502,7 +7502,7 @@ def _objective_dimension_evidence_basis(
         bounded_time_rows = [
             row
             for row in milestone_rows
-            if row["route"] in {"python1516_2025-inprocess", "python1516_2025-fedpro-grpc"}
+            if row["route"] in {"python1516_2025", "python1516_2025-fedpro-grpc"}
             and row["status"] in {"bounded-query-evidence", "bounded-lookahead-evidence"}
         ]
         bounded_time_statuses = ",".join(
@@ -7652,7 +7652,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             ),
             "requirement_ids": ("HLA2025-FI-001", "HLA2025-FI-004", "HLA2025-FI-005", "HLA2025-FI-009"),
             "summary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "In-process Python 2025 is a best-attempt bounded working surface across the tracked runtime "
                     "scenario set, not a full requirement-by-requirement conformance claim."
                 ),
@@ -7663,7 +7663,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
             },
             "boundary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "This milestone does not certify a full-fledged RTI beyond the tracked scenario and requirement slices."
                 ),
                 "python1516_2025-fedpro-grpc": (
@@ -7679,7 +7679,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             "supporting_slice_ids": ("2025-fom-showcase", "2025-basic-object-exchange", "2025-save-restore-lifecycle"),
             "requirement_ids": ("HLA2025-FR-001", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-REQ-002"),
             "summary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "The in-process route executes the tracked repo example/FOM-backed scenarios, including object "
                     "exchange, FOM showcase, and save/restore rollback paths."
                 ),
@@ -7690,7 +7690,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
             },
             "boundary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "This does not yet prove every conceivable example FOM scenario outside the tracked suite."
                 ),
                 "python1516_2025-fedpro-grpc": (
@@ -7718,7 +7718,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 "HLA2025-FI-SVC-134",
             ),
             "summary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "The in-process route sends, receives, discovers, reflects, directs, and DDM-filters the tracked "
                     "message flows end to end."
                 ),
@@ -7728,7 +7728,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
             },
             "boundary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "Routing proof remains bounded to the executable scenario matrix rather than every FI service in isolation."
                 ),
                 "python1516_2025-fedpro-grpc": (
@@ -7751,7 +7751,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             ),
             "requirement_ids": ("HLA2025-FI-SVC-101", "HLA2025-FI-SVC-112", "HLA2025-FI-SVC-121", "HLA2025-FI-SVC-123"),
             "summary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "The in-process route exercises regulation/constrained enablement, time advance, flush queue, "
                     "timestamped delivery, retraction, restore rollback of logical time, and restore recovery of "
                     "saved lookahead plus time/switch control state."
@@ -7763,7 +7763,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
             },
             "boundary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "This is strong runtime evidence for time sync behavior, not a final per-service conformance proof."
                 ),
                 "python1516_2025-fedpro-grpc": (
@@ -7785,7 +7785,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             ),
             "requirement_ids": ("HLA2025-FI-SVC-122", "HLA2025-FI-SVC-123"),
             "summary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "The in-process route has executable GALT/LITS query evidence inside the logical-time slice and "
                     "the Target/Radar future-exclusion proof, with the integrated lookahead-processing-window gauntlet "
                     "exercising the combined closure/output/consumer-order/pipeline ladder on the actual current Python 2025 RTI lane, plus "
@@ -7804,7 +7804,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
             },
             "boundary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "Current evidence is not strong enough to claim a fully proven or universally correct GALT/LITS algorithm."
                 ),
                 "python1516_2025-fedpro-grpc": (
@@ -7826,7 +7826,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             ),
             "requirement_ids": ("HLA2025-FI-SVC-107", "HLA2025-FI-SVC-108", "HLA2025-FI-SVC-121"),
             "summary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "The in-process route exercises lookahead query/modify behavior, queued timestamped delivery, "
                     "the integrated Target/Radar lookahead-processing-window gauntlet, and the time-window core, "
                     "output-delivery, consumer-order, pipeline-two-scans, receive-order-poison, future-exclusion, "
@@ -7844,7 +7844,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
                 ),
             },
             "boundary_by_route": {
-                "python1516_2025-inprocess": (
+                "python1516_2025": (
                     "This is bounded runtime evidence for lookahead-window handling, including safe window closure and "
                     "future-message exclusion, not a final proof for every edge case."
                 ),
@@ -7857,7 +7857,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
     )
 
     rows: list[dict[str, Any]] = []
-    for route in ("python1516_2025-inprocess", "python1516_2025-fedpro-grpc"):
+    for route in ("python1516_2025", "python1516_2025-fedpro-grpc"):
         for spec in milestone_specs:
             matched_rows = [route_index[(route, scenario)] for scenario in spec["scenarios"]]
             rows.append(
@@ -7879,7 +7879,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
             )
 
     by_route: dict[str, dict[str, Any]] = {}
-    for route in ("python1516_2025-inprocess", "python1516_2025-fedpro-grpc"):
+    for route in ("python1516_2025", "python1516_2025-fedpro-grpc"):
         route_milestones = [row for row in rows if row["route"] == route]
         by_route[route] = {
             "milestone_count": len(route_milestones),
@@ -7894,7 +7894,7 @@ def _build_python_rti_milestone_audit(route_parity_matrix: Mapping[str, Any]) ->
         "audit_status": "bounded-python-rti-milestones",
         "milestone_count": len(milestone_specs),
         "row_count": len(rows),
-        "routes": ["python1516_2025-inprocess", "python1516_2025-fedpro-grpc"],
+        "routes": ["python1516_2025", "python1516_2025-fedpro-grpc"],
         "current_assessment": (
             "Both Python 2025 routes now have explicit milestone gates for working-surface breadth, FOM-backed "
             "scenario execution, message routing, time sync, GALT/LITS query evidence, and lookahead handling. "

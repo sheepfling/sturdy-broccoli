@@ -77,7 +77,8 @@ Hosted-route meaning in this guide:
 If you are using Codex interactively, the supported way to unblock those
 commands is to run them outside the managed sandbox through an approved
 escalated execution. If you are provisioning CI, grant the same loopback socket
-permission on the runner itself.
+permission on the runner itself. For a copyable request template, use
+[codex_runner_authorization.md](codex_runner_authorization.md).
 
 ## Supported Execution Surfaces
 
@@ -247,8 +248,8 @@ Profiles:
 
 Artifacts emitted by that validator:
 
-- `analysis/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_summary.json`
-- `analysis/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_report.md`
+- `artifacts/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_summary.json`
+- `artifacts/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_report.md`
 
 Those artifacts are now uploaded by the dedicated GitHub Actions vendor jobs
 alongside the existing preflight, runtime-status, and parity artifacts.
@@ -318,8 +319,8 @@ then run with redundant CI-state validation disabled for that one process tree.
 
 Artifacts:
 
-- `analysis/vendor_probe_stability/<profile>/vendor_probe_stability_summary.json`
-- `analysis/vendor_probe_stability/<profile>/vendor_probe_stability_report.md`
+- `artifacts/vendor_probe_stability/<profile>/vendor_probe_stability_summary.json`
+- `artifacts/vendor_probe_stability/<profile>/vendor_probe_stability_report.md`
 
 Those artifacts now include a small promotion-readiness assessment:
 
@@ -336,8 +337,8 @@ conformance stance, generate the promotion-review artifact:
 
 Artifacts:
 
-- `analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json`
-- `analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_report.md`
+- `artifacts/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json`
+- `artifacts/vendor_probe_promotion_review/vendor_probe_promotion_review_report.md`
 
 The dedicated repeated-run CI job now writes and uploads that promotion-review
 artifact automatically after the stability packet refresh.
@@ -356,10 +357,10 @@ Minimum useful artifact set:
 Commands:
 
 ```bash
-mkdir -p analysis/preflight_artifacts
+mkdir -p artifacts/preflight_artifacts
 
-./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
-./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./tools/certi-easy preflight --json-file artifacts/preflight_artifacts/certi-preflight.json
+./tools/pitch preflight --json-file artifacts/preflight_artifacts/pitch-preflight.json
 ```
 
 Or let the vendor-green path emit the same files automatically:
@@ -406,9 +407,9 @@ that as a runtime-reliability failure and fix it before promoting the slice.
 
 The green-lane wrappers also emit these report directories automatically:
 
-- `analysis/vendor_runtime_ci_state/...` on dedicated vendor CI jobs
-- `analysis/vendor_runtime_status/...`
-- `analysis/vendor_parity_artifacts/...`
+- `artifacts/vendor_runtime_ci_state/...` on dedicated vendor CI jobs
+- `artifacts/vendor_runtime_status/...`
+- `artifacts/vendor_parity_artifacts/...`
 
 So a normal `./tools/python verify` or `./tools/vendor-green ...`
 run now leaves behind both the raw preflight JSON and a normalized status view.
@@ -426,10 +427,10 @@ The repo workflows use the same split:
 
 Those jobs also upload:
 
-- `analysis/preflight_artifacts/`
-- `analysis/vendor_runtime_ci_state/`
-- `analysis/vendor_runtime_status/`
-- `analysis/vendor_parity_artifacts/`
+- `artifacts/preflight_artifacts/`
+- `artifacts/vendor_runtime_ci_state/`
+- `artifacts/vendor_runtime_status/`
+- `artifacts/vendor_parity_artifacts/`
 
 That is the supported contract. Treat the shared vendor runtime smoke delegate
 as the implementation behind the vendor-green lane, not the preferred

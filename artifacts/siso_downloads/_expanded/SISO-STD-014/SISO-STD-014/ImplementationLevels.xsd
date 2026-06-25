@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and 
+make derivative works from this material, for all purposes, provided that any use of the material 
+contains the following attribution: “Reprinted with permission from SISO Inc.” Should 
+a reader require additional information, contact the SISO Inc. Board of Directors.
+
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+		   xmlns:gdl="http://www.sisostds.org/schemas/gdl" targetNamespace="http://www.sisostds.org/schemas/gdl">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xs:complexType name="ImplementationLevel">
+		<xs:choice>
+			<xs:element ref="gdl:NumericImplementationLevel"/>
+			<xs:element ref="gdl:YesNoImplementationLevel"/>
+			<xs:element ref="gdl:TextImplementationLevel"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="ImplementationLevel" type="gdl:ImplementationLevel"/>
+	<xs:element name="YesNoImplementationLevel">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Yes"/>
+				<xs:enumeration value="No"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="TextImplementationLevel" type="xs:string"/>
+	<xs:element name="NumericImplementationLevel">
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:minInclusive value="0"/>
+				<xs:maxInclusive value="5"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+</xs:schema>

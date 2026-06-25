@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PROFILE="${1:-matrix}"
 DELEGATE="${HLA2010_VENDOR_GREEN_DELEGATE:-$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh}"
-CI_STATE_OUTPUT_DIR="${HLA2010_VENDOR_RUNTIME_CI_STATE_DIR:-$ROOT_DIR/analysis/vendor_runtime_ci_state}"
+CI_STATE_OUTPUT_DIR="${HLA2010_VENDOR_RUNTIME_CI_STATE_DIR:-$ROOT_DIR/artifacts/vendor_runtime_ci_state}"
 CI_STATE_REQUIRED="${HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE:-auto}"
 
 # shellcheck source=../lib/shell.sh

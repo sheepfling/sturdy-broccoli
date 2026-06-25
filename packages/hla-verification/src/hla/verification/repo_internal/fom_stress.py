@@ -38,6 +38,10 @@ class FOMStressFamilyResult:
     edition_class: str
     baseline_kind: str
     load_mode: str
+    stress_lane: str
+    intended_role: str
+    runtime_scenario_shape: str | None
+    expected_result: str
     member_ids: tuple[str, ...]
     member_paths: tuple[str, ...]
     module_names: tuple[str, ...]
@@ -79,6 +83,71 @@ def _lanes_for_edition(edition_class: str, years: tuple[int, ...]) -> tuple[int,
     return ()
 
 
+def _stress_annotation(scenario_family: str, baseline_kind: str, load_mode: str) -> tuple[str, str, str | None, str]:
+    if scenario_family == "target-radar":
+        return (
+            "runtime-federate-scenarios",
+            "Repo-owned runtime-backed object/interaction proof family.",
+            "object-state-heavy",
+            "validate-clean",
+        )
+    if scenario_family.startswith("proto2025-"):
+        return (
+            "runtime-federate-scenarios",
+            "Repo-owned packaged scenario family used for runtime and callback proof slices.",
+            "time-ordered" if "time" in scenario_family else "interaction-heavy",
+            "validate-clean",
+        )
+    if scenario_family == "rpr-normative":
+        return (
+            "modular-load-merge",
+            "Canonical public modular RPR family for ordered merge and parser coverage.",
+            None,
+            "validate-clean",
+        )
+    if scenario_family.startswith("siso-space-fom"):
+        return (
+            "roundtrip-stress",
+            "Ordered third-party domain family used to stress modular assembly and serializer normalization.",
+            "object-state-heavy",
+            "roundtrip-only-stress",
+        )
+    if scenario_family.startswith("siso-rpr"):
+        return (
+            "modular-load-merge",
+            "Third-party tactical modular family used for ordered load, merge, and standards-backed validation classification.",
+            "interaction-heavy",
+            "roundtrip-only-stress" if "3.0" in scenario_family or "2.0" in scenario_family else "validate-clean",
+        )
+    if scenario_family.startswith("siso-link-16"):
+        return (
+            "template-fail-fast",
+            "Template-like tactical link extension expected to rely on a parent radio/signal FOM.",
+            "interaction-heavy",
+            "parse-fail-fast",
+        )
+    if baseline_kind == "repo-owned":
+        return (
+            "modular-load-merge",
+            "Repo-owned parser and merge baseline family.",
+            None,
+            "validate-clean",
+        )
+    if load_mode == "ordered-family":
+        return (
+            "modular-load-merge",
+            "Ordered family used to prove merge/load semantics before runtime claims.",
+            None,
+            "validate-clean",
+        )
+    return (
+        "roundtrip-stress",
+        "General parser and JSON-cycle stress family.",
+        None,
+        "validate-clean",
+    )
+
+
 def build_fom_stress_report(
     *,
     years: Iterable[int] = (2010, 2025),
@@ -103,6 +172,11 @@ def build_fom_stress_report(
         edition_class = load_set[0].edition_class
         baseline_kind = load_set[0].baseline_kind
         load_mode = load_set[0].load_mode
+        stress_lane, intended_role, runtime_scenario_shape, expected_result = _stress_annotation(
+            scenario_family,
+            baseline_kind,
+            load_mode,
+        )
         member_ids = tuple(record.id for record in load_set)
         member_paths = tuple(record.path for record in load_set)
         lanes = _lanes_for_edition(edition_class, selected_years)
@@ -126,6 +200,10 @@ def build_fom_stress_report(
                         edition_class=edition_class,
                         baseline_kind=baseline_kind,
                         load_mode=load_mode,
+                        stress_lane=stress_lane,
+                        intended_role=intended_role,
+                        runtime_scenario_shape=runtime_scenario_shape,
+                        expected_result=expected_result,
                         member_ids=member_ids,
                         member_paths=member_paths,
                         module_names=warning_modules,
@@ -148,6 +226,10 @@ def build_fom_stress_report(
                     edition_class=edition_class,
                     baseline_kind=baseline_kind,
                     load_mode=load_mode,
+                    stress_lane=stress_lane,
+                    intended_role=intended_role,
+                    runtime_scenario_shape=runtime_scenario_shape,
+                    expected_result=expected_result,
                     member_ids=member_ids,
                     member_paths=member_paths,
                     module_names=tuple(row.name or row.source for row in report.module_reports),
@@ -162,7 +244,7 @@ def build_fom_stress_report(
                 )
             )
 
-    report_title = title or "FOM parser stress report"
+    report_title = title or "FOM stress lane report"
     return FOMStressReport(title=report_title, years=selected_years, families=tuple(family_rows))
 
 
@@ -188,8 +270,8 @@ def write_fom_stress_report(
         f"- passed: `{sum(1 for row in report.families if row.passed)}`",
         f"- failed: `{sum(1 for row in report.families if not row.passed)}`",
         "",
-        "| Year | Scenario Family | Edition | Baseline | Load Mode | Members | Modules | Schema | Objects | Interactions | Datatypes | Status |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
+        "| Year | Scenario Family | Lane | Expected | Runtime Shape | Edition | Baseline | Load Mode | Members | Modules | Schema | Objects | Interactions | Datatypes | Status |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
     ]
     for row in report.families:
         status = "passed" if row.passed and not row.warnings else f"passed with warnings: {'; '.join(row.warnings)}" if row.passed else f"failed: {row.error}"
@@ -199,6 +281,9 @@ def write_fom_stress_report(
                 (
                     str(row.year),
                     row.scenario_family,
+                    row.stress_lane,
+                    row.expected_result,
+                    row.runtime_scenario_shape or "n/a",
                     row.edition_class,
                     row.baseline_kind,
                     row.load_mode,

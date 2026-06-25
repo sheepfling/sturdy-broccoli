@@ -34,6 +34,7 @@ Open this package when you need:
 - networked RTI routes
 - gRPC client or hosted server wiring
 - protobuf schema or stub generation work
+- a thin vendor-specific gRPC variant over the same RTI semantics
 
 If you are changing runtime semantics, you probably want a backend package
 instead.
@@ -52,6 +53,32 @@ Schema imports live under:
 
 - `hla.transports.grpc.fedpro2010`
 - `hla.transports.grpc.fedpro2025`
+
+Variant-route scaffold lives under:
+
+- `hla.transports.grpc.vendor_variant`
+
+Use that module when the remote RTI speaks a gRPC dialect that is close to the
+current route but not identical. It is the copyable seam for:
+
+- service-name differences
+- protobuf field-name differences
+- metadata or header injection
+- callback-poll RPC naming differences
+
+It also now includes a maintained concrete example:
+
+- `quirky-vendor-grpc`
+
+That example intentionally uses a slightly awkward envelope shape so the repo
+shows how to isolate odd wire choices without changing RTI semantics.
+
+Quick comparison:
+
+| Route | Copy this when | Notes |
+| --- | --- | --- |
+| `vendor-grpc` | the wire is only mildly different | simplest thin-adapter starting point |
+| `quirky-vendor-grpc` | the wire has awkward wrappers or naming | maintained proof that odd envelopes can still stay at the transport edge |
 
 ## Related Docs
 

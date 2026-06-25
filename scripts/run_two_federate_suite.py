@@ -28,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the composite two-federate suite and write artifacts.")
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "two_federate_suite"),
+        default=str(PROJECT_ROOT / "artifacts" / "two_federate_suite"),
         help="Directory for generated artifacts",
     )
     parser.add_argument("--target-radar-steps", type=int, default=4)

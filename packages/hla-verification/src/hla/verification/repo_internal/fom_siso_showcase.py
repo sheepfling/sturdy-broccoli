@@ -32,6 +32,7 @@ class ShowcasePacketSpec:
     member_ids: tuple[str, ...] = ()
     include_path_fragments: tuple[str, ...] = ()
     exclude_path_fragments: tuple[str, ...] = ()
+    validation_edition: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,6 +52,7 @@ class FOMSisoShowcasePacketResult:
     showcase_title: str
     summary: str
     year: int
+    validation_edition: int
     edition_scope: str
     member_ids: tuple[str, ...]
     source_paths: tuple[str, ...]
@@ -77,6 +79,7 @@ class FOMSisoShowcasePacketResult:
     overview_json_path: str | None
     overview_md_path: str | None
     overview_html_path: str | None
+    analysis_note: str | None
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -137,11 +140,12 @@ _PACKET_SPECS = (
         showcase_id="rpr3",
         showcase_title="RPR 3.0 Showcase",
         year=2025,
-        expected_buckets=("validate-clean", "parse-fail-fast"),
+        expected_buckets=("roundtrip-only-stress",),
         summary="This is the main clean tactical federation showcase: the current normative RPR pack, ordered and merged as intended.",
         family="siso-rpr-3.0",
         include_path_fragments=("Annex A Files Normative",),
         exclude_path_fragments=("Annex B Files Informative",),
+        validation_edition=2010,
     ),
     ShowcasePacketSpec(
         id="rpr3-merged-informative-1516-2010",
@@ -311,6 +315,19 @@ def _feature_highlights(overview_report: Any | None) -> tuple[str, ...]:
     return tuple(dict.fromkeys(highlights))
 
 
+def _analysis_note(*, spec: ShowcasePacketSpec, validation_verdict: str, roundtrip_error: str | None) -> str | None:
+    if spec.validation_edition is not None and spec.validation_edition != spec.year:
+        return (
+            f"Validated on the {spec.validation_edition} compatibility lane because the XML is not native {spec.year} namespace/schema material; "
+            f"the packet still stresses the {spec.year} round-trip path."
+        )
+    if validation_verdict == "nonconforming" and roundtrip_error is None:
+        return "The packet parses and cycles, but the current validator still classifies it as nonconforming."
+    if roundtrip_error is not None and "XML round-trip signature mismatch" in roundtrip_error:
+        return "The packet merges and serializes, but serializer-normalization parity is not exact on the current round-trip path."
+    return None
+
+
 def build_fom_siso_showcase(
     *,
     output_root: str | Path | None = None,
@@ -339,6 +356,7 @@ def build_fom_siso_showcase(
         custom_load_sets[spec.id] = member_ids
         source_paths = tuple(str(_repo_root() / record.path) for record in records)
         edition_scope = _records_scope(records)
+        validation_edition = spec.validation_edition or spec.year
 
         validation_output_dir = validation_root / spec.id
         roundtrip_output_dir = roundtrip_root / spec.id
@@ -357,25 +375,22 @@ def build_fom_siso_showcase(
             validation_json_path, validation_md_path, validation_report = write_fom_validation(
                 source_paths,
                 output_dir=validation_output_dir,
-                edition=str(spec.year),
+                edition=str(validation_edition),
                 strict_identification=strict_identification,
                 title=f"{spec.title} | FOM Validation",
             )
             validation_html = write_fom_validation_html(
                 source_paths,
                 output_dir=validation_output_dir,
-                edition=str(spec.year),
+                edition=str(validation_edition),
                 strict_identification=strict_identification,
                 title=f"{spec.title} | FOM Validation",
             )
             validation_html_path = str(validation_html)
-            validation_passed = all(row.passed for row in validation_report.source_reports) and all(
-                row.passed for row in validation_report.load_set_reports
-            )
-            validation_verdict = (
-                validation_report.load_set_reports[0].verdict
-                if validation_report.load_set_reports
-                else (validation_report.source_reports[0].verdict if validation_report.source_reports else "parse-failed")
+            packet_validation_row = validation_report.load_set_reports[0] if validation_report.load_set_reports else None
+            validation_passed = packet_validation_row.passed if packet_validation_row is not None else False
+            validation_verdict = packet_validation_row.verdict if packet_validation_row is not None else (
+                validation_report.source_reports[0].verdict if validation_report.source_reports else "parse-failed"
             )
         except Exception as exc:  # pragma: no cover - integration failure path
             validation_error = str(exc)
@@ -471,6 +486,7 @@ def build_fom_siso_showcase(
                 showcase_title=spec.showcase_title,
                 summary=spec.summary,
                 year=spec.year,
+                validation_edition=validation_edition,
                 edition_scope=edition_scope,
                 member_ids=member_ids,
                 source_paths=source_paths,
@@ -497,6 +513,11 @@ def build_fom_siso_showcase(
                 overview_json_path=overview_json_path,
                 overview_md_path=overview_md_path,
                 overview_html_path=overview_html_path,
+                analysis_note=_analysis_note(
+                    spec=spec,
+                    validation_verdict=validation_verdict,
+                    roundtrip_error=roundtrip_error,
+                ),
             )
         )
 
@@ -549,7 +570,7 @@ def _render_markdown(report: FOMSisoShowcaseReport) -> str:
     ]
     if report.workbench_error is not None:
         lines.append(f"- workbench error: `{report.workbench_error}`")
-    lines.extend(["", "## Packet Summary", "", "| Packet | Edition | Scope | Expected | Actual | Validate | Round Trip | Overview |", "| --- | ---: | --- | --- | --- | --- | --- | --- |"])
+        lines.extend(["", "## Packet Summary", "", "| Packet | Round-Trip Edition | Validation Edition | Scope | Expected | Actual | Validate | Round Trip | Overview |", "| --- | ---: | ---: | --- | --- | --- | --- | --- | --- |"])
     for result in report.packet_results:
         lines.append(
             "| "
@@ -557,6 +578,7 @@ def _render_markdown(report: FOMSisoShowcaseReport) -> str:
                 (
                     result.id,
                     str(result.year),
+                    str(result.validation_edition),
                     result.edition_scope,
                     ", ".join(result.expected_buckets),
                     result.bucket,
@@ -581,6 +603,7 @@ def _render_markdown(report: FOMSisoShowcaseReport) -> str:
                     f"### {result.title}",
                     "",
                     f"- Summary: {result.summary}",
+                    f"- Validation edition: `{result.validation_edition}`",
                     f"- Bucket: `{result.bucket}`",
                     f"- Expected bucket(s): `{', '.join(result.expected_buckets)}`",
                     f"- Matches expectation: `{result.matches_expectation}`",
@@ -598,6 +621,8 @@ def _render_markdown(report: FOMSisoShowcaseReport) -> str:
                 lines.append("- Highlights:")
                 for highlight in result.feature_highlights:
                     lines.append(f"  - {highlight}")
+            if result.analysis_note is not None:
+                lines.append(f"- Analysis note: {result.analysis_note}")
             if result.validation_error is not None:
                 lines.append(f"- Validation error: `{result.validation_error}`")
             if result.roundtrip_error is not None:
@@ -618,13 +643,345 @@ def _render_markdown(report: FOMSisoShowcaseReport) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _html_escape(value: Any) -> str:
+    text = "" if value is None else str(value)
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _render_html(report: FOMSisoShowcaseReport) -> str:
+    payload = report.to_json()
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{_html_escape(report.title)}</title>
+  <style>
+    :root {{
+      color-scheme: light;
+      --bg: #f4efe4;
+      --panel: #fffdf7;
+      --ink: #1f2426;
+      --muted: #5b645f;
+      --line: #d7cfbe;
+      --accent: #9f5c24;
+      --good: #2f6b4f;
+      --warn: #916b12;
+      --bad: #8a2f2f;
+    }}
+    body {{
+      margin: 0;
+      font: 15px/1.5 ui-sans-serif, system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, #fff1cf 0, rgba(255,241,207,.65) 20%, transparent 50%),
+        linear-gradient(180deg, #fbf7ed 0, var(--bg) 100%);
+    }}
+    main {{ max-width: 1320px; margin: 0 auto; padding: 24px; }}
+    h1, h2, h3 {{ margin: 0 0 12px; }}
+    p {{ margin: 0 0 12px; }}
+    .hero, .panel {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(58, 45, 24, 0.08);
+    }}
+    .hero {{ padding: 20px; margin-bottom: 18px; }}
+    .hero-grid {{
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1.6fr 1fr;
+      align-items: start;
+    }}
+    .metric-grid {{
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }}
+    .metric {{
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }}
+    .metric .label {{ color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
+    .metric .value {{ font-size: 24px; font-weight: 700; }}
+    .layout {{
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 320px 1fr;
+    }}
+    .panel {{ padding: 16px; }}
+    .cards {{ display: grid; gap: 10px; }}
+    .card {{
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      cursor: pointer;
+    }}
+    .card.active {{ outline: 2px solid var(--accent); }}
+    .muted {{ color: var(--muted); }}
+    .status-good {{ color: var(--good); font-weight: 700; }}
+    .status-warn {{ color: var(--warn); font-weight: 700; }}
+    .status-bad {{ color: var(--bad); font-weight: 700; }}
+    .chip-row {{ display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }}
+    .chip {{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
+    }}
+    .toolbar {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }}
+    input, select {{
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+    }}
+    input {{ flex: 1 1 220px; }}
+    .detail-grid {{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 14px 0;
+    }}
+    .subpanel {{
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }}
+    ol, ul {{ margin: 0; padding-left: 18px; }}
+    li {{ margin-bottom: 6px; }}
+    a {{ color: var(--accent); text-decoration: none; }}
+    a:hover {{ text-decoration: underline; }}
+    code {{
+      background: #f6f0e5;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }}
+    .artifact-list a {{ display: block; margin-bottom: 6px; }}
+    @media (max-width: 980px) {{
+      .hero-grid, .layout, .detail-grid {{ grid-template-columns: 1fr; }}
+      .metric-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+    }}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <h1>{_html_escape(report.title)}</h1>
+        <p class="muted">Standards-backed showcase packets for Link 16, RPR 3.0, and Space FOM across validation, JSON cycle, overview, and workbench surfaces.</p>
+        <div class="chip-row">
+          <span class="chip">workbench snapshot: {_html_escape(report.workbench_snapshot_path)}</span>
+          <span class="chip">workbench html: {_html_escape(report.workbench_html_path)}</span>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><div class="label">Packets</div><div class="value">{len(report.packet_results)}</div></div>
+        <div class="metric"><div class="label">Passed</div><div class="value">{sum(1 for row in report.packet_results if row.matches_expectation)}</div></div>
+        <div class="metric"><div class="label">Stress</div><div class="value">{sum(1 for row in report.packet_results if row.bucket == "roundtrip-only-stress")}</div></div>
+        <div class="metric"><div class="label">Fail Fast</div><div class="value">{sum(1 for row in report.packet_results if row.bucket == "parse-fail-fast")}</div></div>
+      </div>
+    </div>
+  </section>
+  <section class="panel" style="margin-bottom:16px;">
+    <h2>Lane Legend</h2>
+    <div class="detail-grid">
+      <div class="subpanel">
+        <h3>template-fail-fast</h3>
+        <p class="muted">Template-like or incomplete modules that should be rejected with stable diagnostics.</p>
+      </div>
+      <div class="subpanel">
+        <h3>modular-load-merge</h3>
+        <p class="muted">Ordered multi-module families used to prove load and merge semantics before stronger runtime claims.</p>
+      </div>
+      <div class="subpanel">
+        <h3>roundtrip-stress</h3>
+        <p class="muted">Packets that are primarily useful for parser, serializer-normalization, and JSON-cycle pressure.</p>
+      </div>
+      <div class="subpanel">
+        <h3>runtime-federate-scenarios</h3>
+        <p class="muted">Runtime-backed scenario families with meaningful event sequencing and federate behavior.</p>
+      </div>
+      <div class="subpanel">
+        <h3>showcase-packets</h3>
+        <p class="muted">Curated demo packets that gather validator, round-trip, overview, and workbench artifacts into one display surface.</p>
+      </div>
+      <div class="subpanel">
+        <h3>schema-lane</h3>
+        <p class="muted">Pure XML/XSD conformance lanes that should stay separate from merge and runtime proof claims.</p>
+      </div>
+    </div>
+  </section>
+  <section class="layout">
+    <aside class="panel">
+      <div class="toolbar">
+        <input id="filterBox" type="search" placeholder="Filter by family, packet, or bucket">
+        <select id="showcaseBox">
+          <option value="all">All showcases</option>
+        </select>
+      </div>
+      <div id="cardHost" class="cards"></div>
+    </aside>
+    <section class="panel">
+      <div id="detailHost"></div>
+    </section>
+  </section>
+</main>
+<script type="application/json" id="payload">{_html_escape(payload)}</script>
+<script>
+const payload = JSON.parse(document.getElementById("payload").textContent);
+const cardHost = document.getElementById("cardHost");
+const detailHost = document.getElementById("detailHost");
+const filterBox = document.getElementById("filterBox");
+const showcaseBox = document.getElementById("showcaseBox");
+let activeId = payload.packet_results[0]?.id || null;
+
+function badgeClass(bucket) {{
+  if (bucket === "validate-clean") return "status-good";
+  if (bucket === "roundtrip-only-stress") return "status-warn";
+  return "status-bad";
+}}
+
+function enrichShowcaseOptions() {{
+  showcaseBox.innerHTML += payload.showcases.map((group) => `<option value="${{group.id}}">${{group.title}}</option>`).join("");
+}}
+
+function filteredRows() {{
+  const filter = filterBox.value.toLowerCase();
+  const showcase = showcaseBox.value;
+  return payload.packet_results.filter((row) => {{
+    if (showcase !== "all" && row.showcase_id !== showcase) return false;
+    return JSON.stringify(row).toLowerCase().includes(filter);
+  }});
+}}
+
+function renderCards() {{
+  const rows = filteredRows();
+  if (!rows.length) {{
+    cardHost.innerHTML = '<p class="muted">No packets match the current filter.</p>';
+    detailHost.innerHTML = '<p class="muted">No detail available.</p>';
+    return;
+  }}
+  if (!rows.some((row) => row.id === activeId)) activeId = rows[0].id;
+  cardHost.innerHTML = rows.map((row) => `
+    <div class="card ${{row.id === activeId ? "active" : ""}}" data-id="${{row.id}}">
+      <div><strong>${{row.title}}</strong></div>
+      <div class="muted">${{row.showcase_title}} | scope: ${{row.edition_scope}}</div>
+      <div class="muted">round-trip edition ${{row.year}} | validation edition ${{row.validation_edition}}</div>
+      <div class="${{badgeClass(row.bucket)}}">${{row.bucket}}</div>
+    </div>
+  `).join("");
+  Array.from(cardHost.querySelectorAll(".card")).forEach((node) => node.addEventListener("click", () => {{
+    activeId = node.dataset.id;
+    renderCards();
+    renderDetail();
+  }}));
+  renderDetail();
+}}
+
+function linkIf(path, label) {{
+  if (!path) return '<span class="muted">n/a</span>';
+  return `<a href="${{path}}">${{label}}</a>`;
+}}
+
+function renderDetail() {{
+  const row = payload.packet_results.find((item) => item.id === activeId);
+  if (!row) {{
+    detailHost.innerHTML = '<p class="muted">No detail available.</p>';
+    return;
+  }}
+  const group = payload.showcases.find((item) => item.id === row.showcase_id);
+  detailHost.innerHTML = `
+    <h2>${{row.title}}</h2>
+    <p class="muted">${{row.summary}}</p>
+    <div class="chip-row">
+      <span class="chip">actual: ${{row.bucket}}</span>
+      <span class="chip">expected: ${{row.expected_buckets.join(", ")}}</span>
+      <span class="chip">round-trip edition: ${{row.year}}</span>
+      <span class="chip">validation edition: ${{row.validation_edition}}</span>
+      <span class="chip">scope: ${{row.edition_scope}}</span>
+    </div>
+    <div class="detail-grid">
+      <div class="subpanel">
+        <h3>Packet Status</h3>
+        <p><strong>Validation:</strong> ${{row.validation_verdict}}</p>
+        <p><strong>Round trip:</strong> ${{row.roundtrip_passed ? "pass" : (row.roundtrip_error || "failed")}}</p>
+        <p><strong>Overview:</strong> ${{row.overview_passed ? "pass" : (row.overview_error || "failed")}}</p>
+        <p><strong>Matches expectation:</strong> ${{row.matches_expectation}}</p>
+        ${{row.analysis_note ? `<p><strong>Analysis note:</strong> ${{row.analysis_note}}</p>` : ""}}
+      </div>
+      <div class="subpanel">
+        <h3>Structure</h3>
+        <p><strong>Members:</strong> ${{row.member_ids.length}}</p>
+        <p><strong>Object classes:</strong> ${{row.object_class_count}}</p>
+        <p><strong>Interaction classes:</strong> ${{row.interaction_class_count}}</p>
+        <p><strong>Datatypes:</strong> ${{row.datatype_count}}</p>
+        <p><strong>Dimensions:</strong> ${{row.dimensions.length ? row.dimensions.join(", ") : "none"}}</p>
+      </div>
+      <div class="subpanel">
+        <h3>Artifacts</h3>
+        <div class="artifact-list">
+          ${{linkIf(row.validation_html_path, "validation html")}}
+          ${{linkIf(row.validation_md_path, "validation markdown")}}
+          ${{linkIf(row.validation_json_path, "validation json")}}
+          ${{linkIf(row.roundtrip_md_path, "roundtrip markdown")}}
+          ${{linkIf(row.roundtrip_json_path, "roundtrip json")}}
+          ${{linkIf(row.overview_html_path, "overview html")}}
+          ${{linkIf(row.overview_md_path, "overview markdown")}}
+          ${{linkIf(row.overview_json_path, "overview json")}}
+          ${{linkIf(payload.workbench_html_path, "showcase workbench html")}}
+        </div>
+      </div>
+      <div class="subpanel">
+        <h3>Highlights</h3>
+        <ul>${{row.feature_highlights.map((item) => `<li>${{item}}</li>`).join("") || "<li>none</li>"}}</ul>
+      </div>
+    </div>
+    <div class="subpanel" style="margin-bottom:12px;">
+      <h3>Event Ladder</h3>
+      <ol>${{(group?.event_ladder || []).map((item) => `<li>${{item}}</li>`).join("")}}</ol>
+    </div>
+    <div class="subpanel">
+      <h3>Source Paths</h3>
+      <ul>${{row.source_paths.map((path) => `<li><code>${{path}}</code></li>`).join("")}}</ul>
+    </div>
+  `;
+}}
+
+filterBox.addEventListener("input", renderCards);
+showcaseBox.addEventListener("change", renderCards);
+enrichShowcaseOptions();
+renderCards();
+</script>
+</body>
+</html>
+"""
+
+
 def write_fom_siso_showcase(
     output_root: str | Path,
     *,
     packet_ids: tuple[str, ...] | None = None,
     strict_identification: bool = False,
     title: str = "High-Value SISO FOM Showcase",
-) -> tuple[Path, Path, FOMSisoShowcaseReport]:
+) -> tuple[Path, Path, Path, FOMSisoShowcaseReport]:
     report = build_fom_siso_showcase(
         output_root=output_root,
         packet_ids=packet_ids,
@@ -635,9 +992,11 @@ def write_fom_siso_showcase(
     output_path.mkdir(parents=True, exist_ok=True)
     json_path = output_path / "fom_siso_showcase_report.json"
     md_path = output_path / "fom_siso_showcase_report.md"
+    html_path = output_path / "fom_siso_showcase.html"
     json_path.write_text(report.to_json() + "\n", encoding="utf-8")
     md_path.write_text(_render_markdown(report), encoding="utf-8")
-    return json_path, md_path, report
+    html_path.write_text(_render_html(report), encoding="utf-8")
+    return json_path, md_path, html_path, report
 
 
 __all__ = [

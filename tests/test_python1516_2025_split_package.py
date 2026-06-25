@@ -340,41 +340,22 @@ def test_split_python2025_runtime_centralizes_shim_specific_ownership_in_compati
     assert violations == []
 
 
-def test_split_python2025_compatibility_wrapper_owns_wrapper_symbols() -> None:
+def test_split_python2025_runtime_keeps_shim_specific_surface_off_package_roots() -> None:
     import hla.backends.python1516_2025 as python2025_package
     import hla.backends.python1516_2025.backend as runtime_backend
-    from hla.backends.python1516_2025.compatibility_wrapper import (
-        ShimBackendInfo,
-        Shim2025Backend,
-        Shim2025RTIAmbassador,
-        create_shim_backend,
-    )
+    import hla.backends.shim as shim_package
+    import hla.backends.shim.backend as shim_backend_module
     from hla.backends.shim import runtime_aliases as shim_runtime_aliases
-    from hla.backends.shim.backend import (
-        Shim2025Backend as shim_package_backend,
-        Shim2025RTIAmbassador as shim_package_rti,
-        create_shim_backend as shim_package_create_shim_backend,
-    )
 
-    assert Shim2025Backend.__module__ == "hla.backends.python1516_2025.compatibility_wrapper"
-    assert Shim2025RTIAmbassador.__module__ == "hla.backends.python1516_2025.compatibility_wrapper"
-    assert create_shim_backend.__module__ == "hla.backends.python1516_2025.compatibility_wrapper"
-    assert ShimBackendInfo.__module__ == "hla.backends.python1516_2025.compatibility_wrapper"
+    for module in (runtime_backend, python2025_package, shim_package, shim_backend_module):
+        assert not hasattr(module, "ShimBackendInfo")
+        assert not hasattr(module, "Shim2025Backend")
+        assert not hasattr(module, "Shim2025RTIAmbassador")
+        assert not hasattr(module, "create_shim_backend")
 
-    assert not hasattr(runtime_backend, "ShimBackendInfo")
-    assert not hasattr(runtime_backend, "Shim2025Backend")
-    assert not hasattr(runtime_backend, "Shim2025RTIAmbassador")
-    assert not hasattr(runtime_backend, "create_shim_backend")
-    assert not hasattr(python2025_package, "Shim2025Backend")
-    assert not hasattr(python2025_package, "Shim2025RTIAmbassador")
-    assert not hasattr(python2025_package, "create_shim_backend")
     assert shim_runtime_aliases.Python2025Backend.__module__ == "hla.backends.python1516_2025.backend"
     assert shim_runtime_aliases.Python2025RTIAmbassador.__module__ == "hla.backends.python1516_2025.backend"
     assert shim_runtime_aliases.create_python2025_backend.__module__ == "hla.backends.python1516_2025.backend"
-
-    assert shim_package_backend is Shim2025Backend
-    assert shim_package_rti is Shim2025RTIAmbassador
-    assert shim_package_create_shim_backend is create_shim_backend
 
 
 def test_split_python2025_packages_publish_primary_runtime_and_wrapper_metadata() -> None:
@@ -420,9 +401,9 @@ def test_split_python2025_packages_publish_primary_runtime_and_wrapper_metadata(
     }
 
 
-def test_split_python2025_wrapper_plugin_and_readmes_keep_runtime_wrapper_boundary_explicit() -> None:
+def test_split_python2025_wrapper_readmes_and_retired_shim_plugin_keep_boundary_explicit() -> None:
     from hla.backends.python1516_2025.plugin import plugin as python2025_plugin
-    from hla.backends.shim.plugin import plugin as shim_plugin
+    from hla.backends.shim.plugin import backend_plugins as shim_backend_plugins
 
     python2025_readme = (ROOT / "packages" / "hla-backend-python1516-2025" / "README.md").read_text(encoding="utf-8")
     shim_readme = (ROOT / "packages" / "hla-backend-shim" / "README.md").read_text(encoding="utf-8")
@@ -430,9 +411,7 @@ def test_split_python2025_wrapper_plugin_and_readmes_keep_runtime_wrapper_bounda
     normalized_shim_readme = " ".join(shim_readme.split())
 
     runtime_plugin = python2025_plugin()
-    wrapper_plugin = shim_plugin()
     runtime_discovery = runtime_plugin.discover()
-    wrapper_discovery = wrapper_plugin.discover()
 
     assert runtime_plugin.description == "Primary Python 1516.1-2025 RTI implementation package."
     assert runtime_plugin.family == "python-rti-1516-2025"
@@ -442,14 +421,7 @@ def test_split_python2025_wrapper_plugin_and_readmes_keep_runtime_wrapper_bounda
     assert runtime_discovery.info.details["counts_as_python_2025_rti"] is True
     assert "wrapper_only" not in runtime_discovery.info.details
 
-    assert wrapper_plugin.description == "Deprecated compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation; slated for removal."
-    assert wrapper_plugin.family == "compatibility-wrapper-2025"
-    assert wrapper_discovery.description == "Deprecated compatibility-wrapper alias over the primary IEEE 1516.1-2025 Python RTI implementation; slated for removal."
-    assert wrapper_discovery.family == "compatibility-wrapper-2025"
-    assert type(wrapper_discovery.info).__module__ == "hla.backends.python1516_2025.compatibility_wrapper"
-    assert wrapper_discovery.info.details["implementation_lane"] == "hla-backend-python1516-2025"
-    assert wrapper_discovery.info.details["counts_as_python_2025_rti"] is False
-    assert wrapper_discovery.info.details["wrapper_only"] is True
+    assert shim_backend_plugins() == ()
 
     assert "owns the main full Python 2025 RTI runtime" in normalized_python2025_readme
     assert "public `hla.backends.python1516_2025.backend` shell now fronts a split package layout" in normalized_python2025_readme
@@ -463,6 +435,6 @@ def test_split_python2025_wrapper_plugin_and_readmes_keep_runtime_wrapper_bounda
     assert "legacy compatibility-wrapper package and temporary import-compatibility scaffolding" in normalized_shim_readme
     assert "import-level compatibility surface" in normalized_shim_readme or "compatibility-wrapper" in normalized_shim_readme
     assert "the main full Python 2025 RTI implementation executes from `hla-backend-python1516-2025`" in normalized_shim_readme
-    assert "package root, the shim-specific surface is only `Shim2025Backend`, `Shim2025RTIAmbassador`, and `create_shim_backend`" in normalized_shim_readme
-    assert "the other `hla.backends.shim.*` modules outside the package root: they are forwarders, not implementation owners" in normalized_shim_readme
+    assert "package root no longer exposes a backend or plugin surface" in normalized_shim_readme
+    assert "No shim helper modules remain beyond `hla.backends.shim.runtime_aliases`" in normalized_shim_readme
     assert "`hla.backends.shim.runtime_aliases`" in shim_readme

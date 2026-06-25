@@ -1,0 +1,1357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?copyright statement="Copyright (c) 2018 by the Simulation Interoperability Standards Organization, Inc.
+P.O. Box 781238
+Orlando, FL 32878-1238, USA
+All rights reserved.
+SISO hereby grants a general, royalty-free license to copy, distribute, display, and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: "Reprinted with permission from SISO Inc." Should a reader require additional information, contact the SISO Inc. Board of Directors.
+SISO Inc. Board of Directors
+P.O. Box 781238
+Orlando, FL 32878-1238, USA"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jc3iedm="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" xmlns:cbml="http://www.sisostds.org/schemas/c-bml/1.0" xmlns:xml="http://www.w3.org/XML/1998/namespace" targetNamespace="http://www.sisostds.org/schemas/c-bml/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Coalition Battle Management Language (C-BML) information components defined for the Simulation Interoperability Standards Organization (SISO) C-BML Phase 1 Specification (Saikou Diallo VMASC sdiallo@odu.edu, Marc St-Onge Canadian Signals Inc, Sidney Chartrand CAE Inc, Curt Blais NPS Co-edtiors, C-BML Drafting Group). References the Joint Command, Control, and Consultation Information Exchange Data Model (JC3IEDM) XML schema defined by the Multilateral Interoperability Programme (MIP) - Editor: Dr. Michael Gerz, gerz@fgan.de, FGAN FKIE, Germany - Tue Dec 06 18:35:09 CET 2005 - </xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:int:nato:standard:mip:jc3iedm:3.0.2:oo:2.2" schemaLocation="../../jc3iedm-simple-types/3.0.2/jc3iedm-simple-types.xsd"/>
+	<xs:include schemaLocation="../../cbml-entity-types/1.0/cbml-entity-types.xsd"/>
+	<!-- ********************************************************** Detailed W's **************************************************************-->
+	<!-- ************* Who Elements *************-->
+	<xs:element name="Who" type="cbml:WhoType"/>
+	<xs:element name="WhoRef" type="cbml:WhoRefType"/>
+	<xs:element name="ExecuterWho" type="cbml:ExecuterWhoType"/>
+	<xs:element name="TaskerWho" type="cbml:TaskerWhoType"/>
+	<xs:element name="TaskeeWho" type="cbml:TaskeeWhoType"/>
+	<xs:element name="ReporterWho" type="cbml:ReporterWhoType"/>
+	<xs:element name="RequesterWho" type="cbml:RequesterWhoType"/>
+	<xs:element name="RequestedWho" type="cbml:RequestedWhoType"/>
+	<xs:element name="AffectedWho" type="cbml:AffectedWhoType"/>
+	<!-- ************** What Elements ********** -->
+	<xs:element name="What" type="cbml:WhatType"/>
+	<xs:element name="WhatRef" type="cbml:WhatRefType"/>
+	<xs:element name="TaskWhat" type="cbml:TaskWhatType"/>
+	<xs:element name="TaskWhatRef" type="cbml:TaskWhatRefType"/>
+	<xs:element name="EventWhat" type="cbml:EventWhatType"/>
+	<xs:element name="EventWhatRef" type="cbml:EventWhatRefType"/>
+	<!-- ************** When Elements ********** -->
+	<xs:element name="TaskWhen" type="cbml:TaskWhenType"/>
+	<xs:element name="EventStartWhen" type="cbml:EventStartWhenType"/>
+	<xs:element name="EventEndWhen" type="cbml:EventEndWhenType"/>
+	<xs:element name="ReportedWhen" type="cbml:AbstractReportedWhenType"/>
+	<!-- ************* Where Elements *************-->
+	<xs:element name="Where" type="cbml:WhereType"/>
+	<xs:element name="RouteWhere" type="cbml:RouteWhereType"/>
+	<!-- ************* Why Elements *************-->
+	<xs:element name="Why" type="cbml:WhyType"/>
+	<!-- ************* Who Types *************-->
+	<xs:complexType name="WhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a who.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectItem" type="cbml:AbstractObjectItem">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An individually identified object that has military or civilian significance. Concrete types are: {Atmosphere, CloudCover, Icing, Light, OtherMeteorologicFeature, Precipitation, Visibility, Wind, AirRouteSegment, OtherRouteSegment, AirspaceControlMeans, OtherControlFeature, Route, GeographicFeature, OtherFeature, InstrumentLandingSystem, OtherMateriel, MinefieldLand, MinefieldMaritime, OtherMilitaryObstacle, Airfield, Anchorage, Apron, Basin, Berth, Bridge, DryDock, Harbour, Jetty, OtherFacility, Quay, Railway, Road, Slipway, Convoy, OtherOrganisation, Unit, OtherObjectItem, Person}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhoRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a reference on a  who.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectItemRef" type="cbml:AbstractObjectItemRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some ObjectItem - An individually identified object that has military or civilian significance. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExecuterWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the who that is reported be executing an event by a ReporterWho. Note that in the case of an organization reporting its own unplanned activity (Event), the ExecuterWho and the ReporterWho are the same organization.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Organisation - An ObjectItem that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskerWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies who is ordering or authorizing execution of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Organisation - An ObjectItem that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskeeWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies who is executing a task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Organisation - An ObjectItem that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReporterWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies who is reporting.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Organisation - An ObjectItem that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequesterWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies who is making a request for a task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Organisation - An ObjectItem that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequestedWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies who is being requested to perform a task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationRef" type="cbml:AbstractOrganisationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Organisation - An ObjectItem that is an administrative or functional structure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AffectedWhoType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies who is affected by the execution of an action (task or event).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionObjective" type="cbml:AbstractActionObjective">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The focus, in terms of an ObjectItem or ObjectType, in conducting a specific task or event. Concrete types are: {OtherActionObjectiveType, OtherActionObjectiveItem, Target}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ************** What Types ********** -->
+	<xs:complexType name="WhatType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies an action.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Action" type="cbml:AbstractAction">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A task or event that may utilise resources and may be focused against an objective. Concrete types are: {NuclearWeaponEvent, OtherNuclearEvent, OtherRadioactiveEvent, RadiologicalEvent, ChemicalBiologicalEvent, OtherCbrnEvent, OtherActionEvent, OtherActionTask, Request}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhatRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a reference to an action.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionRef" type="cbml:AbstractActionRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Action - A task or event that may utilise resources and may be focused against an objective. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, OtherActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskWhatType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionTask" type="cbml:AbstractActionTask">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An task that is being or has been planned and for which the planning details are known. Concrete types are: {OtherActionTask, Request}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskWhatRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a reference to task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionTaskRef" type="cbml:AbstractActionTaskRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some ActionTask - An task that is being or has been planned and for which the planning details are known. Concrete types are: {OtherActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EventWhatType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies an event.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionEvent" type="cbml:AbstractActionEvent">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An event that is an incident, phenomenon, or occasion of military significance which has occurred or is occurring but for which planning is not known. Concrete types are: {NuclearWeaponEvent, OtherNuclearEvent, OtherRadioactiveEvent, RadiologicalEvent, ChemicalBiologicalEvent, OtherCbrnEvent, OtherActionEvent}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EventWhatRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a reference to an event.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ActionEventRef" type="cbml:AbstractActionEventRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some ActionEvent - An event that is an incident, phenomenon, or occasion of military significance which has occurred or is occurring but for which planning is not known. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ************* When Types *************-->
+	<xs:complexType name="TaskStartWhenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="StartAbsoluteTime" type="cbml:StartWhenAbsoluteTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of a task in absolute time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartRelativeTime" type="cbml:StartWhenRelativeTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of a task in relative time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="EventStartWhenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of an event.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="StartRelativeTime" type="cbml:StartWhenRelativeTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of an event in relative time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="TaskEndWhenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="EndAbsoluteTime" type="cbml:EndWhenAbsoluteTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of a task in absolute time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndRelativeTime" type="cbml:EndWhenRelativeTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of a task in relative time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="EventEndWhenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of an event.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="EndRelativeTime" type="cbml:EndWhenRelativeTimeType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of an event in relative time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="StartWhenAbsoluteTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of a task in absolute time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TimingDayCode" type="jc3iedm:ActionTaskTimingDayCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the notional start of the task in terms of a day with defined operational meaning.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimingHourCode" type="jc3iedm:ActionTaskTimingHourCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the notional start of the task in terms of an hour with defined operational meaning.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="StartSpecifiedTime" type="cbml:StartWhenAbsoluteSpecifiedTimeType">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies the start time of a task in absolute time.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="StartUnspecifiedTime" type="cbml:StartWhenAbsoluteUnspecifiedTimeType">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies the start time of a task as a category code.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StartWhenAbsoluteSpecifiedTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of a task in absolute time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Datetime" type="jc3iedm:DatetimeTypeFix18">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates the occurrence of the planned beginning of the specific task</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartTimeQualifierCode" type="cbml:ActionTaskStartTimeQualifierCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes the role of starting date and time with respect to the period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StartWhenAbsoluteUnspecifiedTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of a task as a category code.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StartQualifierCode" type="cbml:ActionTaskStartQualifierCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes the role of starting date and time with respect to the period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EndWhenAbsoluteTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of a task in absolute time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="EndSpecifiedTime" type="cbml:EndWhenAbsoluteSpecifiedTimeType">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies the end time of a task in absolute time.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="EndUnspecifiedTime" type="cbml:EndWhenAbsoluteUnspecifiedTimeType">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies the end time of a task as a qualifier code.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EndWhenAbsoluteSpecifiedTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of a task in absolute time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Datetime" type="jc3iedm:DatetimeTypeFix18">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates the occurrence of the planned conclusion of the specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndTimeQualifierCode" type="cbml:ActionTaskEndTimeQualifierCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes the role of ending date and time with respect to the period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EndWhenAbsoluteUnspecifiedTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of a task as a qualifier code.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EndQualifierCode" type="cbml:ActionTaskEndQualifierCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes the role of ending date and time with respect to the period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StartWhenRelativeTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the start time of an action (task or event) in relative time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectActionRef" type="cbml:AbstractActionRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">ObjectActionRef is the child in a 'is-the-subject-of' relationship. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, ActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartTemporalAssociationCategoryCode" type="cbml:ActionStartTemporalAssociationCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of chronological relationship of a subject action (task or event) to an object action (task or event).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of time in milliseconds that elapses after the start or end of a specific object action (task or event) that a subject action (task or event) is referenced to for its execution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EndWhenRelativeTimeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the end time of an action (task or event) in relative time. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObjectActionRef" type="cbml:AbstractActionRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">ObjectActionRef is the child in a 'is-the-subject-of' relationship. Concrete types are: {NuclearWeaponEventRef, OtherNuclearEventRef, OtherRadioactiveEventRef, RadiologicalEventRef, ChemicalBiologicalEventRef, OtherCbrnEventRef, OtherActionEventRef, ActionTaskRef, RequestRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndTemporalAssociationCategoryCode" type="cbml:ActionEndTemporalAssociationCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents the class of chronological relationship of a subject action (task or event) to an object action (task or event).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of time in milliseconds that elapses after the start or end of a specific object action (task or event) that a subject action (task or event) is referenced to for its execution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskWhenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies the duration and start/end time of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MinimumDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of time in milliseconds for the minimum permissible period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EstimatedDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of time in milliseconds for the estimated period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MaximumDuration" type="jc3iedm:DurationType19" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The numeric value that represents a quantity of time in milliseconds for the maximum permissible period of effectiveness of a specific task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskStartWhen" type="cbml:TaskStartWhenType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the start time of a task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TaskEndWhen" type="cbml:TaskEndWhenType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies the end time of a task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractReportedWhenType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies when something is reported. Concrete types are: {ReportedWhen, ReportedWhenAbsoluteTiming, ReportedWhenRelativeTiming}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReportingDatetime" type="jc3iedm:DatetimeTypeFix18">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The character string representing a point in time that designates when the data is reported.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReportedWhenType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies when something is reported.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportedWhenType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ReportedWhenAbsoluteTimingType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies when something is effective in absolute time.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportedWhenType">
+				<xs:sequence>
+					<xs:element name="EffectiveStartDatetime" type="jc3iedm:DatetimeTypeFix18" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string representing a point in time that designates the beginning of the period of effectiveness for the reported data.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EffectiveEndDatetime" type="jc3iedm:DatetimeTypeFix18" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The character string representing a point in time that designates the ending of the period of effectiveness for the reported data.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ReportedWhenRelativeTimingType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies when something is effective in relative time.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportedWhenType">
+				<xs:sequence>
+					<xs:element name="OffsetDuration" type="jc3iedm:DurationType19">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The numeric value that represents a quantity of time in milliseconds from a given reference. It designates the beginning of the period of effectiveness for the reported data. </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ReferenceActionTaskRef" type="cbml:AbstractActionTaskRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The TaskWhat that serves as the origin for the time scale. The TaskWhat's StartWhen constitutes the OffsetDuration's reference. Concrete types are: {OtherActionTaskRef, RequestRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ************* Where Types *************-->
+	<xs:complexType name="WhereType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a location.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="SpecificLocation" type="cbml:SpecificLocationType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies a location.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DerivedLocationRef" type="cbml:AbstractObjectItemRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies a location in terms of an ObjectItem's location. Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="SpecificLocationType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a Where as a location.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Location" type="cbml:AbstractLocation">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A specification of position and geometry with respect to a specified horizontal frame of reference and a vertical distance measured from a specified datum. Concrete types are: {ConeVolume, SphereVolume, SurfaceVolume, CartesianPoint, GeographicPoint, RelativePoint, CorridorArea, Ellipse, FanArea, OrbitArea, PolyarcArea, PolygonArea, TrackArea, Line, OtherLocation}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LocationRef" type="cbml:AbstractLocationRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Location - A specification of position and geometry with respect to a specified horizontal frame of reference and a vertical distance measured from a specified datum. Concrete types are: {ConeVolumeRef, SphereVolumeRef, SurfaceVolumeRef, CartesianPointRef, GeographicPointRef, RelativePointRef, CorridorAreaRef, EllipseRef, FanAreaRef, OrbitAreaRef, PolyarcAreaRef, PolygonAreaRef, TrackAreaRef, LineRef, OtherLocationRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="RouteWhereType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a Where involving a movement.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StartWhere" type="cbml:WhereType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The start of a RouteWhere.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Via" type="cbml:WhereType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An intermediate step to traverse between StartWhere and EndWhere.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndWhere" type="cbml:WhereType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The end of a RouteWhere.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ************* Why Types *************-->
+	<xs:complexType name="StateType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a state described as a set of reported data.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReportItem" type="cbml:AbstractReportType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies a report. Concrete types are: {WhatEffectType, EventWhatStatusType, WhoGroupAccountType, WhoHostilityType, WhoAddressType, WhoAffiliationType, WhoAssociationType, WhoLocationType, WhoStatusType, WhoTypeType, EventWhatLocationType, TaskWhatStatusType, WhoHoldingType, HoldingTransferType, CandidateTargetListType, NetworkServiceStatusType, TargetPersonnelProtectionType, RequestWhatAnswerType, OrganisationStructureType}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhyType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies reason for and expected end-state for the execution of this action (task or event).</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="ActionFunctionalAssociationInSubjectAction" type="cbml:ActionFunctionalAssociationInSubjectAction">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A SubjectAction/ObjectAction association. ObjectAction is the child in a 'is-the-subject-of' relationship; ActionFunctionalAssociation provides additional information on the association.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ExpectedEndState" type="cbml:StateType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An expected end state represents a state that can be reported as a fact after the execution of an action (task or event).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<!-- ************* Composition of 5Ws Types *************-->
+	<xs:complexType name="AbstractReportType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a reporting data. Concrete types are: {WhatEffectType, EventWhatStatusType, WhoGroupAccountType, WhoHostilityType, WhoAddressType, WhoAffiliationType, WhoAssociationType, WhoLocationType, WhoStatusType, WhoTypeType, EventWhatLocationType, TaskWhatStatusType, WhoHoldingType, HoldingTransferType, CandidateTargetListType, NetworkServiceStatusType, TargetPersonnelProtectionType, RequestWhatAnswerType, OrganisationStructureType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReporterWho" type="cbml:ReporterWhoType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Who is reporting.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReportedWhen" type="cbml:AbstractReportedWhenType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">When something is reported. Concrete types are: {ReportedWhen, ReportedWhenAbsoluteTiming, ReportedWhenRelativeTiming}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReportingData" type="cbml:ReportingData">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Information quality that applies to what is reported.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractReportRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"> A reference on some AbstractReportType - Specifies a reporting data. Concrete types are: {WhatEffectRefType, EventWhatStatusRefType, WhoGroupAccountRefType, WhoHostilityRefType, WhoAddressRefType, WhoAffiliationRefType, WhoAssociationRefType, WhoLocationRefType, WhoStatusRefType, WhoTypeRefType, EventWhatLocationRefType, TaskWhatStatusRefType, WhoHoldingRefType, HoldingTransferRefType, CandidateTargetListRefType, NetworkServiceStatusRefType, TargetPersonnelProtectionRefType, RequestWhatAnswerRefType, OrganisationStructureRefType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ReportingDataRef" type="cbml:ReportingDataRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference on some ReportingData. - Source and quality that applies to reported data.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReportingData">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The specification of source and quality that applies to reported data.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccuracyCode" type="jc3iedm:ReportingDataAccuracyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents, for intelligence purpose, the general appraisal of the subject matter in graded terms to indicate the extent or degree to which it has been judged to be free from mistake or error or to conform to truth or some recognised standard value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReportingDataCategoryCode" type="jc3iedm:ReportingDataCategoryCode">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents, for usual operational purposes, the nature of a specific REPORTING-DATA.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CountingIndicatorCode" type="jc3iedm:ReportingDataCountingIndicatorCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that denotes whether the data referred to by a specific REPORTING-DATA is based on a count of objects.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CredibilityCode" type="jc3iedm:ReportingDataCredibilityCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents, for normal operational use, the degree of trustworthiness of the data referenced by a specific REPORTING-DATA.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReliabilityCode" type="jc3iedm:ReportingDataReliabilityCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that represents, for intelligence purpose, the general appraisal of the source in graded terms to indicate the extent to which it has been proven it can be counted on or trusted in to do as expected.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SourceTypeCode" type="jc3iedm:ReportingDataSourceTypeCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that identifies the source type from which intelligence information is obtained and which is referred to by a specific REPORTING-DATA.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RealDataExerciseUseOnlyCode" type="jc3iedm:ReportingDataRealDataExerciseUseOnlyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The specific value that determines whether a specific REPORTING-DATA refers to real data in an exercise scenario.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReportingDataRef">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some ReportingData - The specification of source and quality that applies to reported data.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OID" type="jc3iedm:OIDType">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">The globally unique object identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhoTypeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the type of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element name="Who" type="cbml:WhoType">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">Who is being reported on.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="WhoRef" type="cbml:WhoRefType">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+					<xs:choice>
+						<xs:element name="ObjectType" type="cbml:AbstractObjectType">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">Concrete types are: {ExecutiveMilitaryOrganisationType, MilitaryPostType, OtherMilitaryOrganisationType, TaskFormationType, UnitType, PrivateSectorOrganisationType, CivilianPostType, GroupOrganisationType, OtherOrganisationType, OtherVesselType, SubsurfaceVesselType, SurfaceVesselType, AircraftType, CbrnEquipmentType, ElectronicEquipmentType, EngineeringEquipmentType, MaritimeEquipmentType, MiscellaneousEquipmentType, RailcarType, VehicleType, WeaponType, AmmunitionType, BiologicalMaterielType, ChemicalMaterielType, OtherConsumableMaterielType, RadioactiveMaterielType, OtherMaterielType, OtherControlFeatureType, RouteType, GeographicFeatureType, OtherFeatureType, AirfieldType, BridgeType, HarbourType, MilitaryObstacleType, OtherFacilityType, OtherObjectType, PersonType}</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="ObjectTypeRef" type="cbml:AbstractObjectTypeRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef, OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef, OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef, AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef, OtherObjectTypeRef, PersonTypeRef}</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoTypeRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoTypeType - Specifies a report describing the type of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoLocationType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the location of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:choice>
+						<xs:element name="Location" type="cbml:AbstractLocation">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">Concrete types are: {ConeVolume, SphereVolume, SurfaceVolume, CartesianPoint, GeographicPoint, RelativePoint, CorridorArea, Ellipse, FanArea, OrbitArea, PolyarcArea, PolygonArea, TrackArea, Line, OtherLocation}</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="LocationRef" type="cbml:AbstractLocationRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">Concrete types are: {ConeVolumeRef, SphereVolumeRef, SurfaceVolumeRef, CartesianPointRef, GeographicPointRef, RelativePointRef, CorridorAreaRef, EllipseRef, FanAreaRef, OrbitAreaRef, PolyarcAreaRef, PolygonAreaRef, TrackAreaRef, LineRef, OtherLocationRef}</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+					<xs:element name="ObjectItemLocation" type="cbml:ObjectItemLocation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoLocationRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoLocationType - Specifies a report describing the location of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoAssociationType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the association of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ObjectObjectItemRef" type="cbml:AbstractObjectItemRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Concrete types are: {AtmosphereRef, CloudCoverRef, IcingRef, LightRef, OtherMeteorologicFeatureRef, PrecipitationRef, VisibilityRef, WindRef, AirRouteSegmentRef, OtherRouteSegmentRef, AirspaceControlMeansRef, OtherControlFeatureRef, RouteRef, GeographicFeatureRef, OtherFeatureRef, InstrumentLandingSystemRef, OtherMaterielRef, MinefieldLandRef, MinefieldMaritimeRef, OtherMilitaryObstacleRef, AirfieldRef, AnchorageRef, ApronRef, BasinRef, BerthRef, BridgeRef, DryDockRef, HarbourRef, JettyRef, OtherFacilityRef, QuayRef, RailwayRef, RoadRef, SlipwayRef, ConvoyRef, OtherOrganisationRef, UnitRef, OtherObjectItemRef, PersonRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ObjectItemAssociation" type="cbml:ObjectItemAssociation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoAssociationRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoAssociationType - Specifies a report describing the association of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoHostilityType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the hostility of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HostilityStatusCode" type="jc3iedm:ObjectItemHostilityStatusCode">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specific value that represents the perceived hostility status of a specific OBJECT-ITEM.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoHostilityRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoHostilityType - Specifies a report describing the hostility of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoStatusType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the status of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AbstractObjectItemStatus" type="cbml:AbstractObjectItemStatus">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A record of the perceived condition of a specific ObjectItem as determined by the ReporterWho. Concrete types are: {AirfieldStatus, MedicalFacilityStatus, MinefieldMaritimeStatus, OtherFacilityStatus, LiquidBodyStatus, LiquidSurfaceStatus, SolidSurfaceStatus, MineStatus, OtherMaterielStatus, UxoStatus, ControlFeatureStatus, OrganisationStatus, OtherObjectItemStatus, PersonStatus}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoStatusRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoStatusType - Specifies a report describing the status of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoAffiliationType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the affiliation of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:choice>
+						<xs:element name="Affiliation" type="cbml:AbstractAffiliation">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'has' relationship. Concrete types are: {AffiliationEthnicGroup, AffiliationFunctionalGroup, AffiliationGeopolitical, AffiliationReligion, OtherAffiliation}</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="AffiliationRef" type="cbml:AbstractAffiliationRef">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A child in a 'has' relationship. Concrete types are: {AffiliationEthnicGroupRef, AffiliationFunctionalGroupRef, AffiliationGeopoliticalRef, AffiliationReligionRef, OtherAffiliationRef}</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoAffiliationRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoAffiliationType - Specifies a report describing the affiliation of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoHoldingType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the holding of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhoRef" type="cbml:WhoRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference on who is being reported on.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ObjectTypeRef" type="cbml:AbstractObjectTypeRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Concrete types are: {ExecutiveMilitaryOrganisationTypeRef, MilitaryPostTypeRef, OtherMilitaryOrganisationTypeRef, TaskFormationTypeRef, UnitTypeRef, PrivateSectorOrganisationTypeRef, CivilianPostTypeRef, GroupOrganisationTypeRef, OtherOrganisationTypeRef, OtherVesselTypeRef, SubsurfaceVesselTypeRef, SurfaceVesselTypeRef, AircraftTypeRef, CbrnEquipmentTypeRef, ElectronicEquipmentTypeRef, EngineeringEquipmentTypeRef, MaritimeEquipmentTypeRef, MiscellaneousEquipmentTypeRef, RailcarTypeRef, VehicleTypeRef, WeaponTypeRef, AmmunitionTypeRef, BiologicalMaterielTypeRef, ChemicalMaterielTypeRef, OtherConsumableMaterielTypeRef, RadioactiveMaterielTypeRef, OtherMaterielTypeRef, OtherControlFeatureTypeRef, RouteTypeRef, GeographicFeatureTypeRef, OtherFeatureTypeRef, AirfieldTypeRef, BridgeTypeRef, HarbourTypeRef, MilitaryObstacleTypeRef, OtherFacilityTypeRef, OtherObjectTypeRef, PersonTypeRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Holding" type="cbml:Holding"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhoHoldingRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhoHoldingType - Specifies a report describing the holding of an entity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="HoldingTransferType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing an holding's transfer.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="HoldingRef" type="cbml:HoldingRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to some Holding - The quantity of each specific ObjectType that is held by, installed in, or included with a specific ObjectItem.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HoldingTransfer" type="cbml:HoldingTransfer">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The specification of the ObjectType quantity expected to be added to or subtracted from a specific Holding</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="HoldingTransferRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some HoldingTransferType - Specifies a report describing an holding's transfer.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies an action. Concrete types are: {OrderTask, RequestTask, Event}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="Where" type="cbml:WhereType">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies a Where as a location.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="RouteWhere" type="cbml:RouteWhereType">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies a Where involving a movement.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="AffectedWho" type="cbml:AffectedWhoType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Who is affected by the execution of this task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Resource" type="cbml:AbstractActionResource" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">An ObjectItem or an ObjectType that is required, requested, allocated or otherwise used or planned to be used in conducting this task. Concrete types are: {ActionResourceItem, ActionResourceType}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Why" type="cbml:WhyType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Reason for and expected end-state for the execution of this task.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ActionCurrentState" type="cbml:StateType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Current state (situation awareness) of an action (event or task).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TaskType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a task.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:ActionType">
+				<xs:sequence>
+					<xs:element name="TaskWhat" type="cbml:TaskWhatType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">What to do during the execution of this task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TaskWhen" type="cbml:TaskWhenType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">When to execute this task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CandidateTargetListRef" type="cbml:CandidateTargetListRef" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to some CandidateTargetList - A list of selected battlespace objects or types that have potential value for destruction or exploitation, nominated by competent authority for consideration in planning battlespace activities.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TaskOrganisationRef" type="cbml:OrganisationStructureRef" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to some OrganisationStructure - The hierarchical configuration of a specific root Organisation where the configuration is specified by reference to a set of associations between instances of ObjectItem.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TaskLocalExtensions" type="cbml:TaskLocalExtensionsType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Local extensions that are not part of the standard should be added here.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TaskLocalExtensionsType">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Local extensions that are not part of the standard should be added here.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EventType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies an event.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:ActionType">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element name="EventWhat" type="cbml:EventWhatType">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">An event.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="WhatRef" type="cbml:EventWhatRefType">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">A reference to an event.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+					<xs:element name="EventStartWhen" type="cbml:EventStartWhenType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The start time of this event.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EventEndWhen" type="cbml:EventEndWhenType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The end time of this event.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ExecuterWho" type="cbml:ExecuterWhoType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Who executing an event.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrderTaskType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies an ordered task.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:TaskType">
+				<xs:sequence>
+					<xs:element name="TaskerWho" type="cbml:TaskerWhoType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Who is ordering or authorizing execution of this task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TaskeeWho" type="cbml:TaskeeWhoType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Who is executing this task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RequestTaskType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a requested task.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:TaskType">
+				<xs:sequence>
+					<xs:element name="RequesterWho" type="cbml:RequesterWhoType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Who is making a request for this task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RequestedWho" type="cbml:RequestedWhoType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Who is being requested to perform this task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhatEffectType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the effect of an action (task or event).</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="WhatRef" type="cbml:WhatRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to an action (task or event).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ActionEffect" type="cbml:AbstractActionEffect">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A perceived effectiveness of a specific action (task or event) against a specific battlespace object or its class. Concrete types are: {ActionEffectItem, ActionEffectType}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WhatEffectRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some WhatEffectType - Specifies a report describing the effect of an action.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EventWhatStatusType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the status an event.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="EventWhatRef" type="cbml:EventWhatRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to an event.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EventStatus" type="cbml:ActionEventStatus">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The perceived appraisal of the actual progress of a specific event as determined by the ReporterWho.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EventWhatStatusRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some EventWhatStatusType - Specifies a report describing the status an event.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TaskWhatStatusType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing the status of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="TaskWhatRef" type="cbml:TaskWhatRefType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Specifies a reference to task.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TaskStatus" type="cbml:ActionTaskStatus">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The perceived appraisal of the planning and execution progress of a particular task as determined by the ReporterWho.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TaskWhatStatusRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some TaskWhatStatusType - Specifies a report describing the status of a task.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EventWhatLocationType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report on an aspect of something which happens, by describing at least the location of an event.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="Event" type="cbml:EventType">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">An Event.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ActionLocation" type="cbml:ActionLocation" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">An association of an event with a location that enables the geographic position of the event to be specified.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EventWhatLocationRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some EventWhatLocationType - Specifies a report on an aspect of something which happens, by describing at least the location of an event.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetListType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing a candidate target list.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="CandidateTargetList" type="cbml:CandidateTargetList">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A list of selected battlespace objects or types that have potential value for destruction or exploitation, nominated by competent authority for consideration in planning battlespace activities.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CandidateTargetListRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some CandidateTargetListType - Specifies a report describing a candidate target list.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrganisationStructureType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a report describing an organisation structure.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportType">
+				<xs:sequence>
+					<xs:element name="RootOrganisationRef" type="cbml:AbstractOrganisationRef">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">A reference to some Organisation that is the root of the hierarchy for a specific OrganisationStructure. Concrete types are: {ConvoyRef, OtherOrganisationRef, UnitRef}</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OrganisationStructure" type="cbml:OrganisationStructure">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">The hierarchical configuration of a specific root Organisation where the configuration is specified by reference to a set of associations between instances of ObjectItem.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrganisationStructureRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">A reference to some OrganisationStructureType - Specifies a report describing an organisation structure.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cbml:AbstractReportRefType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractExpressionType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Specifies a C-BML Expression. Concrete types are: {OrderType, RequestType, ReportType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Context" type="cbml:AbstractContext">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Holds all information element related to a C-BML Expression. A collection of information that provides in its entirety the circumstances, conditions, environment, or perspective for a situation. Concrete types are: {OperationalInformationGroup, OtherContext}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SupportingType" type="cbml:AbstractObjectType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Instance of ObjectType required to ensure referencial integrity of a C-BML Expression. Concrete types are: {ExecutiveMilitaryOrganisationType, MilitaryPostType, OtherMilitaryOrganisationType, TaskFormationType, UnitType, PrivateSectorOrganisationType, CivilianPostType, GroupOrganisationType, OtherOrganisationType, OtherVesselType, SubsurfaceVesselType, SurfaceVesselType, AircraftType, CbrnEquipmentType, ElectronicEquipmentType, EngineeringEquipmentType, MaritimeEquipmentType, MiscellaneousEquipmentType, RailcarType, VehicleType, WeaponType, AmmunitionType, BiologicalMaterielType, ChemicalMaterielType, OtherConsumableMaterielType, RadioactiveMaterielType, OtherMaterielType, OtherControlFeatureType, RouteType, GeographicFeatureType, OtherFeatureType, AirfieldType, BridgeType, HarbourType, MilitaryObstacleType, OtherFacilityType, OtherObjectType, PersonType}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AbstractExpressionRefType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"> A reference to some AbstractExpressionType - Specifies a C-BML Expression. Concrete types are: {OrderRefType, RequestRefType, ReportRefType}</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ContextRef" type="cbml:AbstractContextRef">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">A reference to some Context - Holds all information element related to a C-BML Expression. A collection of information that provides in its entirety the circumstances, conditions, environment, or perspective for a situation. Concrete types are: {OperationalInformationGroupRef, OtherContextRef}</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ************* Coordination Composite *************-->
+	<xs:element name="CoordinatingInformation" type="cbml:CoordinatingInformationType">
+		<xs:annotation>
+			<xs:documentation> Provides information needed to coordinate the C-BML document with other documentswith other documents such as an MSDL Scenario.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="CoordinatingInformationType">
+		<xs:annotation>
+			<xs:documentation>Provides information needed to coordinate the C-BML document with other documents such as an MSDL Scenario.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation> 
+				The modelID:modelIdentificationType/name Element defined by the MSDL standard  
+			</xs:documentation>
+			</xs:annotation>
+			<xs:element name="MSDLScenarioIDName"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

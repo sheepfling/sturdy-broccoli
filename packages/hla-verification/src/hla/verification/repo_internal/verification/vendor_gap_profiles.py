@@ -115,9 +115,9 @@ _PROFILES: dict[str, VendorGapProfile] = {
         operator_state="environment-blocked",
         blocker_summary="The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.",
         operator_artifact_refs=(
-            "analysis/preflight_artifacts/pitch-preflight.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+            "artifacts/preflight_artifacts/pitch-preflight.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
         ),
     ),
 }

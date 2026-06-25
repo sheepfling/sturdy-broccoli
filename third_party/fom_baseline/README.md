@@ -34,7 +34,7 @@ Canonical files:
 
 Optional add-on corpus:
 
-- locally downloaded SISO DataFiles packages under `analysis/siso_downloads/`
+- locally downloaded SISO DataFiles packages under `artifacts/siso_downloads/`
 - when present, those downloads are discovered by the shared inventory and
   exercised by the same parser, validator, round-trip, workbench, and stress
   entrypoints

@@ -106,8 +106,8 @@ def _write_probe_stability(
 
 
 def test_vendor_parity_artifacts_are_generated(tmp_path):
-    analysis_root = Path("analysis/preflight_artifacts")
-    gap_root = Path("analysis/vendor_gap_profiles")
+    analysis_root = Path("artifacts/preflight_artifacts")
+    gap_root = Path("artifacts/vendor_gap_profiles")
     certi_path = analysis_root / "certi-preflight.json"
     pitch_path = analysis_root / "pitch-preflight.json"
     certi_gap_path = gap_root / "certi-save-restore.json"
@@ -115,7 +115,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     pitch_gap_path = gap_root / "pitch-ddm.json"
     pitch_negotiated_gap_path = gap_root / "pitch-negotiated.json"
     pitch_lost_federate_gap_path = gap_root / "pitch-lost-federate.json"
-    stability_root = Path("analysis/vendor_probe_stability")
+    stability_root = Path("artifacts/vendor_probe_stability")
     certi_ddm_stability_path = stability_root / "certi-ddm-probe" / "vendor_probe_stability_summary.json"
     pitch_stability_path = stability_root / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
     pitch_time_window_stability_path = stability_root / "pitch-time-window-probe" / "vendor_probe_stability_summary.json"
@@ -126,7 +126,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         stability_root / "pitch-lost-federate-probe" / "vendor_probe_stability_summary.json"
     )
     promotion_review_path = (
-        Path("analysis/vendor_probe_promotion_review") / "vendor_probe_promotion_review_summary.json"
+        Path("artifacts/vendor_probe_promotion_review") / "vendor_probe_promotion_review_summary.json"
     )
     certi_original = certi_path.read_text(encoding="utf-8") if certi_path.exists() else None
     pitch_original = pitch_path.read_text(encoding="utf-8") if pitch_path.exists() else None
@@ -344,9 +344,9 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert summary["gap_profiles"]["pitch-lost-federate"]["operator_state"] == "environment-blocked"
         assert "Docker is unreachable" in summary["gap_profiles"]["pitch-lost-federate"]["blocker_summary"]
         assert summary["gap_profiles"]["pitch-lost-federate"]["operator_artifact_refs"] == [
-            "analysis/preflight_artifacts/pitch-preflight.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+            "artifacts/preflight_artifacts/pitch-preflight.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+            "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
         ]
         assert summary["gap_profiles"]["pitch-lost-federate"]["next_steps"] == [
             "./tools/pitch preflight",
@@ -379,17 +379,17 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert any(row["artifact_kind"] == "promotion-review" for row in rows)
         assert any(row["evidence_tier"] == "promoted" for row in rows)
         assert any(row["evidence_tier"] == "known-gap" for row in rows)
-        assert any(row["path"] == "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(row["path"] == "artifacts/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(row["path"] == "artifacts/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(row["path"] == "artifacts/vendor_probe_stability/pitch-time-window-probe/vendor_probe_stability_summary.json" for row in rows)
         assert any(
             row["path"]
-            == "analysis/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json"
+            == "artifacts/vendor_probe_stability/pitch-time-window-restore-state-probe/vendor_probe_stability_summary.json"
             for row in rows
         )
-        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_gap_profiles/certi-save-restore.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_gap_profiles/pitch-lost-federate.json" for row in rows)
+        assert any(row["path"] == "artifacts/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(row["path"] == "artifacts/vendor_gap_profiles/certi-save-restore.json" for row in rows)
+        assert any(row["path"] == "artifacts/vendor_gap_profiles/pitch-lost-federate.json" for row in rows)
 
         report_text = paths.report_markdown.read_text()
         assert "Vendor Parity Artifacts" in report_text
@@ -411,7 +411,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert "./tools/pitch lost-federate-review 5" in report_text
         assert "operator-state: `environment-blocked`" in report_text
         assert "blocker: The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable" in report_text
-        assert "artifact: `analysis/preflight_artifacts/pitch-preflight.json`" in report_text
+        assert "artifact: `artifacts/preflight_artifacts/pitch-preflight.json`" in report_text
         assert "next: `./tools/pitch ddm-review 5`" in report_text
         assert "next: `./tools/pitch lost-federate-review 5`" in report_text
         assert "./tools/vendor-probe-review promotion-review" in report_text
@@ -486,7 +486,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
 def test_live_vendor_parity_summary_surfaces_pitch_lost_federate_gap_profile() -> None:
     payload = json.loads(
         (
-            Path("analysis/vendor_parity_artifacts") / "vendor_parity_artifacts_summary.json"
+            Path("artifacts/vendor_parity_artifacts") / "vendor_parity_artifacts_summary.json"
         ).read_text(encoding="utf-8")
     )
 
@@ -497,27 +497,27 @@ def test_live_vendor_parity_summary_surfaces_pitch_lost_federate_gap_profile() -
     assert gap_profile["operator_state"] == "environment-blocked"
     assert "Docker is unreachable" in gap_profile["blocker_summary"]
     assert gap_profile["operator_artifact_refs"] == [
-        "analysis/preflight_artifacts/pitch-preflight.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
-        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+        "artifacts/preflight_artifacts/pitch-preflight.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+        "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
     ]
 
 
 def test_live_vendor_parity_report_surfaces_pitch_lost_federate_operator_blockers() -> None:
     report_text = (
-        Path("analysis/vendor_parity_artifacts") / "vendor_parity_artifacts_report.md"
+        Path("artifacts/vendor_parity_artifacts") / "vendor_parity_artifacts_report.md"
     ).read_text(encoding="utf-8")
 
     assert "pitch-lost-federate`: classification `known-gap`, status `backend-split`" in report_text
     assert "operator-state: `environment-blocked`" in report_text
     assert "blocker: The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable" in report_text
-    assert "artifact: `analysis/preflight_artifacts/pitch-preflight.json`" in report_text
+    assert "artifact: `artifacts/preflight_artifacts/pitch-preflight.json`" in report_text
     assert (
-        "artifact: `analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json`"
+        "artifact: `artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json`"
         in report_text
     )
     assert (
-        "artifact: `analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md`"
+        "artifact: `artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md`"
         in report_text
     )
     assert "pitch-lost-federate-probe`: no stability artifact is currently present" in report_text

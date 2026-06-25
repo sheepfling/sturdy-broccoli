@@ -72,6 +72,7 @@ class FOMValidationSourceReport:
     interaction_classes: int
     datatype_names: int
     dimensions: tuple[str, ...]
+    datatype_normalizations: tuple[dict[str, str], ...]
     rationale: str
     recommended_next_step: str
     unsupported_features: tuple[str, ...]
@@ -107,6 +108,7 @@ class FOMValidationLoadSetReport:
     interaction_classes: int
     datatype_names: int
     dimensions: tuple[str, ...]
+    datatype_normalizations: tuple[dict[str, str], ...]
     rationale: str
     recommended_next_step: str
     merge_conflict_kind: str | None
@@ -191,17 +193,22 @@ def _sniff_effective_edition(source: Path) -> Edition:
 def _normalize_edition(source: Path, requested: EditionArg) -> Edition:
     if requested != "auto":
         return requested
-    inventory = lookup_fom_inventory(source)
-    if inventory is not None and inventory.edition_class in {"2010", "2025"}:
-        return inventory.edition_class
+    if source.exists():
+        return _sniff_effective_edition(source)
     if not source.exists():
         try:
             resolved = FOMResolver().resolve(str(source))
         except Exception:
+            inventory = lookup_fom_inventory(source)
+            if inventory is not None and inventory.edition_class in {"2010", "2025"}:
+                return inventory.edition_class
             return "2010"
         resolved_path = Path(str(resolved.path or resolved.source))
         if resolved_path.exists():
             return _sniff_effective_edition(resolved_path)
+    inventory = lookup_fom_inventory(source)
+    if inventory is not None and inventory.edition_class in {"2010", "2025"}:
+        return inventory.edition_class
     return _sniff_effective_edition(source)
 
 
@@ -234,6 +241,37 @@ def _module_counts(module: FOMModule | None) -> tuple[int, int, int, tuple[str, 
         len(module.datatype_names),
         tuple(module.dimensions),
     )
+
+
+def _datatype_normalizations(module: FOMModule | None) -> tuple[dict[str, str], ...]:
+    if module is None:
+        return ()
+    rows: list[dict[str, str]] = []
+    for name, spec in sorted(module.array_datatypes.items()):
+        source = getattr(spec, "source_encoding", None)
+        canonical = getattr(spec, "encoding", None)
+        if source and canonical and source != canonical:
+            rows.append(
+                {
+                    "datatype": name,
+                    "category": "array",
+                    "source_encoding": source,
+                    "canonical_encoding": canonical,
+                }
+            )
+    for name, spec in sorted(module.variant_record_datatypes.items()):
+        source = getattr(spec, "source_encoding", None)
+        canonical = getattr(spec, "encoding", None)
+        if source and canonical and source != canonical:
+            rows.append(
+                {
+                    "datatype": name,
+                    "category": "variant-record",
+                    "source_encoding": source,
+                    "canonical_encoding": canonical,
+                }
+            )
+    return tuple(rows)
 
 
 def _local_name(tag: str) -> str:
@@ -384,7 +422,7 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
             for name, spec in sorted(module.enumerated_datatypes.items())
         }
         | {
-            name: {"category": "array", "data_type": spec.data_type, "cardinality": spec.cardinality, "encoding": spec.encoding, "semantics": spec.semantics}
+            name: {"category": "array", "data_type": spec.data_type, "cardinality": spec.cardinality, "encoding": spec.encoding, "source_encoding": spec.source_encoding, "semantics": spec.semantics}
             for name, spec in sorted(module.array_datatypes.items())
         }
         | {
@@ -392,7 +430,7 @@ def _member_summary(module: FOMModule) -> dict[str, Any]:
             for name, spec in sorted(module.fixed_record_datatypes.items())
         }
         | {
-            name: {"category": "variant-record", "discriminant": spec.discriminant, "data_type": spec.data_type, "encoding": spec.encoding, "alternatives": tuple({"enumerator": alt.enumerator, "name": alt.name, "data_type": alt.data_type, "semantics": alt.semantics} for alt in spec.alternatives), "semantics": spec.semantics}
+            name: {"category": "variant-record", "discriminant": spec.discriminant, "data_type": spec.data_type, "encoding": spec.encoding, "source_encoding": spec.source_encoding, "alternatives": tuple({"enumerator": alt.enumerator, "name": alt.name, "data_type": alt.data_type, "semantics": alt.semantics} for alt in spec.alternatives), "semantics": spec.semantics}
             for name, spec in sorted(module.variant_record_datatypes.items())
         },
         "transportation_names": tuple(sorted(module.transportation_names)),
@@ -656,6 +694,21 @@ def _markdown(report: FOMValidationReport) -> str:
                 f"- Dimensions: `{', '.join(row.dimensions) if row.dimensions else 'none'}`",
             ]
         )
+        if row.datatype_normalizations:
+            lines.extend(["", "### Datatype Normalization", "", "| Datatype | Category | Source Encoding | Canonical Encoding |", "| --- | --- | --- | --- |"])
+            for item in row.datatype_normalizations:
+                lines.append(
+                    "| "
+                    + " | ".join(
+                        (
+                            item["datatype"],
+                            item["category"],
+                            item["source_encoding"],
+                            item["canonical_encoding"],
+                        )
+                    )
+                    + " |"
+                )
         if row.unsupported_features:
             lines.extend(["", "### Unsupported / Narrowed Subset Notes", ""])
             for item in row.unsupported_features:
@@ -724,6 +777,21 @@ def _markdown(report: FOMValidationReport) -> str:
                 f"- Dimensions: `{', '.join(row.dimensions) if row.dimensions else 'none'}`",
             ]
         )
+        if row.datatype_normalizations:
+            lines.extend(["", "### Datatype Normalization", "", "| Datatype | Category | Source Encoding | Canonical Encoding |", "| --- | --- | --- | --- |"])
+            for item in row.datatype_normalizations:
+                lines.append(
+                    "| "
+                    + " | ".join(
+                        (
+                            item["datatype"],
+                            item["category"],
+                            item["source_encoding"],
+                            item["canonical_encoding"],
+                        )
+                    )
+                    + " |"
+                )
         if row.issues:
             lines.extend(
                 [
@@ -855,6 +923,10 @@ function renderList() {{
 function issueTable(issues) {{
   if (!issues.length) return '<p class="muted">No issues.</p>';
   return `<table><thead><tr><th>Layer</th><th>Requirement</th><th>Field</th><th>Message</th></tr></thead><tbody>${{issues.map((issue) => `<tr><td>${{issue.layer}}</td><td>${{issue.requirement || "n/a"}}</td><td>${{issue.field || "n/a"}}</td><td>${{issue.message}}</td></tr>`).join("")}}</tbody></table>`;
+}}
+function normalizationTable(rows) {{
+  if (!rows || !rows.length) return '<p class="muted">No source-specific datatype normalization was needed.</p>';
+  return `<table><thead><tr><th>Datatype</th><th>Category</th><th>Source encoding</th><th>Canonical encoding</th></tr></thead><tbody>${{rows.map((row) => `<tr><td><code>${{row.datatype}}</code></td><td>${{row.category}}</td><td><code>${{row.source_encoding}}</code></td><td><code>${{row.canonical_encoding}}</code></td></tr>`).join("")}}</tbody></table>`;
 }}
 function formatValue(value) {{
   if (Array.isArray(value)) return value.length ? value.join(", ") : "none";
@@ -1067,6 +1139,8 @@ function renderDetail() {{
       <ul>${{row.source_paths.map((path) => `<li><code>${{path}}</code></li>`).join("")}}</ul>
       <p><strong>Counts:</strong> objects=${{row.object_classes}}, interactions=${{row.interaction_classes}}, datatypes=${{row.datatype_names}}</p>
       <p><strong>Dimensions:</strong> ${{row.dimensions.length ? row.dimensions.join(", ") : "none"}}</p>
+      <h3>Datatype Normalization</h3>
+      ${{normalizationTable(row.datatype_normalizations || [])}}
       ${{loadSetDiffWidget(row)}}
       <h3>Issues</h3>
       ${{issueTable(row.issues)}}
@@ -1091,6 +1165,8 @@ function renderDetail() {{
     </ul>
     <p><strong>Counts:</strong> objects=${{row.object_classes}}, interactions=${{row.interaction_classes}}, datatypes=${{row.datatype_names}}</p>
     <p><strong>Dimensions:</strong> ${{row.dimensions.length ? row.dimensions.join(", ") : "none"}}</p>
+    <h3>Datatype Normalization</h3>
+    ${{normalizationTable(row.datatype_normalizations || [])}}
     <h3>Issues</h3>
     ${{issueTable(row.issues)}}
   `;
@@ -1171,6 +1247,7 @@ def _assess_2010(source: Path, profile: str) -> FOMValidationSourceReport:
         interaction_classes=interaction_count,
         datatype_names=datatype_count,
         dimensions=dimensions,
+        datatype_normalizations=_datatype_normalizations(module),
         rationale=assessment.rationale,
         recommended_next_step=_recommendation(normalized_verdict, tuple(issues), unsupported),
         unsupported_features=unsupported,
@@ -1260,6 +1337,7 @@ def _assess_2025(source: Path, schema_path: Path, strict_identification: bool) -
         interaction_classes=interaction_count,
         datatype_names=datatype_count,
         dimensions=dimensions,
+        datatype_normalizations=_datatype_normalizations(module),
         rationale=rationale,
         recommended_next_step=_recommendation(verdict, tuple(issues), ()),
         unsupported_features=(),
@@ -1300,6 +1378,7 @@ def _load_set_report(
     interaction_classes = 0
     datatype_names = 0
     dimensions: tuple[str, ...] = ()
+    datatype_normalizations: tuple[dict[str, str], ...] = ()
     merge_conflict_kind: str | None = None
     merge_conflict_symbol: str | None = None
     merge_conflict_members: tuple[str, ...] = ()
@@ -1346,6 +1425,7 @@ def _load_set_report(
         interaction_classes = len(merged_catalog.interaction_classes)
         datatype_names = len(merged_catalog.datatype_names)
         dimensions = tuple(merged_catalog.dimensions)
+        datatype_normalizations = _datatype_normalizations(merged_catalog)
     except FOMMergeError as exc:
         merge_conflict_kind, merge_conflict_symbol, merge_conflict_members, merge_conflict_member_details = _extract_merge_conflict(
             str(exc),
@@ -1409,6 +1489,7 @@ def _load_set_report(
         interaction_classes=interaction_classes,
         datatype_names=datatype_names,
         dimensions=dimensions,
+        datatype_normalizations=datatype_normalizations,
         rationale=rationale,
         recommended_next_step=_merge_guidance(issues[0].message) if any(issue.layer == "merge" for issue in issues) else _load_set_recommendation(verdict, tuple(issues)),
         merge_conflict_kind=merge_conflict_kind,

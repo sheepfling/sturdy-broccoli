@@ -7,7 +7,7 @@ import tomllib
 from pathlib import Path
 
 SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_stress"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "artifacts" / "fom_stress"
 
 
 def _bootstrap_source_checkout() -> None:
@@ -37,7 +37,7 @@ def _parse_years(value: str) -> tuple[int, ...]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Refresh the public baseline and generate a FOM parser stress report with edition-scope labels in the surrounding report chain.")
+    parser = argparse.ArgumentParser(description="Refresh the public baseline and generate a FOM stress-lane report that distinguishes merge, round-trip, template-fail-fast, and runtime-backed roles.")
     parser.add_argument(
         "--output-dir",
         default=str(DEFAULT_OUTPUT_DIR),

@@ -205,8 +205,8 @@ If one of those is unset, the dedicated CI-state validator should fail before
 
 Dedicated runner validation writes:
 
-- `analysis/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_summary.json`
-- `analysis/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_report.md`
+- `artifacts/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_summary.json`
+- `artifacts/vendor_runtime_ci_state/<profile>/vendor_runtime_ci_state_report.md`
 
 Those artifacts now also restate the executable contract for the chosen
 profile:
@@ -220,9 +220,9 @@ just as a pass/fail note.
 
 Vendor preflight and status then continue with:
 
-- `analysis/preflight_artifacts/`
-- `analysis/vendor_runtime_status/`
-- `analysis/vendor_parity_artifacts/`
+- `artifacts/preflight_artifacts/`
+- `artifacts/vendor_runtime_status/`
+- `artifacts/vendor_parity_artifacts/`
 
 Read those in this order:
 

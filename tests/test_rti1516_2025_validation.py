@@ -509,7 +509,8 @@ def test_2025_parser_round_trips_typed_omt_metadata_subset(tmp_path: Path) -> No
     assert module.simple_datatypes["RouteSimple"].units == "NA"
     assert module.simple_datatypes["RouteSimple"].resolution == "1"
     assert module.simple_datatypes["RouteSimple"].accuracy == "Perfect"
-    assert module.array_datatypes["ByteVector"].encoding == "HLAvariableArray"
+    assert module.array_datatypes["ByteVector"].encoding == "variable-array"
+    assert module.array_datatypes["ByteVector"].source_encoding == "HLAvariableArray"
     assert [alt.enumerator for alt in module.variant_record_datatypes["ChoiceRecord"].alternatives] == ["A"]
 
     xml_text = serialize_fom_module(module, edition="2025")
@@ -526,7 +527,8 @@ def test_2025_parser_round_trips_typed_omt_metadata_subset(tmp_path: Path) -> No
     assert reparsed.simple_datatypes["RouteSimple"].units == "NA"
     assert reparsed.simple_datatypes["RouteSimple"].resolution == "1"
     assert reparsed.simple_datatypes["RouteSimple"].accuracy == "Perfect"
-    assert reparsed.array_datatypes["ByteVector"].encoding == "HLAvariableArray"
+    assert reparsed.array_datatypes["ByteVector"].encoding == "variable-array"
+    assert reparsed.array_datatypes["ByteVector"].source_encoding == "HLAvariableArray"
     assert [alt.enumerator for alt in reparsed.variant_record_datatypes["ChoiceRecord"].alternatives] == ["A"]
 
 
@@ -1004,7 +1006,8 @@ def test_2025_parser_round_trips_extended_omt_supported_subset(tmp_path: Path) -
         ("X", "HLAinteger32BE", "x"),
     ]
     assert module.variant_record_datatypes["MeasurementValue"].discriminant == "ChoiceEnum"
-    assert module.variant_record_datatypes["MeasurementValue"].encoding == "HLAvariantRecord"
+    assert module.variant_record_datatypes["MeasurementValue"].encoding == "variant-record"
+    assert module.variant_record_datatypes["MeasurementValue"].source_encoding == "HLAvariantRecord"
     assert [
         (alt.enumerator, alt.name, alt.data_type, alt.semantics)
         for alt in module.variant_record_datatypes["MeasurementValue"].alternatives
