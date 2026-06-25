@@ -154,6 +154,37 @@ def _parse_pitch_license_list(output: str) -> tuple[PitchLicenseRecord, ...]:
     return tuple(records)
 
 
+def _parse_published_docker_port(output: str) -> int | None:
+    for raw_line in output.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        match = re.search(r":(\d+)(?:\s*$|->)", line)
+        if match is not None:
+            return int(match.group(1))
+    return None
+
+
+def _discover_attached_pitch_docker_port(
+    container_name: str,
+    internal_port: int,
+    *,
+    _subprocess: Any = subprocess,
+) -> int | None:
+    try:
+        result = _subprocess.run(
+            ["docker", "port", container_name, f"{internal_port}/tcp"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if result.returncode != 0:
+        return None
+    return _parse_published_docker_port(result.stdout)
+
+
 def _ensure_pitch_free_eula_accepted(runtime_state_dir: Path) -> None:
     settings_path = runtime_state_dir / "prti_common.settings"
     if settings_path.exists():
@@ -573,6 +604,11 @@ def launch_pitch_runtime(
         _wait_for_tcp_listener = _wait_for_tcp_listener or _default_wait_for_tcp_listener
 
     if selected_crc_mode == "docker" and env.get("HLA2010_PITCH_DOCKER_ATTACH_EXISTING") == "1":
+        container_name = env.get("HLA2010_PITCH_DOCKER_NAME", "hla2010-pitch-crc")
+        if "HLA2010_PITCH_FEDPRO_PORT" not in env:
+            fedpro_port = _discover_attached_pitch_docker_port(container_name, 15164, _subprocess=_subprocess) or fedpro_port
+        if "HLA2010_PITCH_CRC_PORT" not in env:
+            crc_port = _discover_attached_pitch_docker_port(container_name, 8989, _subprocess=_subprocess) or crc_port
         _wait_for_tcp_listener("127.0.0.1", fedpro_port, timeout=fedpro_listener_timeout)
         _wait_for_tcp_listener("127.0.0.1", crc_port, timeout=crc_listener_timeout)
         attached_env = dict(env)
@@ -726,4 +762,5 @@ __all__ = [
     "launch_pitch_py4j_gateway",
     "launch_pitch_runtime",
     "_parse_pitch_license_list",
+    "_parse_published_docker_port",
 ]

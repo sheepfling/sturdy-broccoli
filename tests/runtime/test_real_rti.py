@@ -11,6 +11,7 @@ from hla.backends.certi.real_rti_certi import (
 )
 from hla.vendors.pitch.real_rti_pitch import (
     _parse_pitch_license_list,
+    _parse_published_docker_port,
     discover_pitch_runtime,
     list_pitch_licenses,
     launch_pitch_runtime,
@@ -63,6 +64,12 @@ def test_pitch_fedpro_local_settings_designator_uses_container_crc_loopback_in_d
     monkeypatch.setenv("HLA2010_PITCH_CRC_PORT", "18989")
 
     assert pitch_fedpro_local_settings_designator() == "localhost;;crcAddress=127.0.0.1:18989"
+
+
+def test_parse_published_docker_port_accepts_docker_port_output() -> None:
+    assert _parse_published_docker_port("127.0.0.1:64949\n") == 64949
+    assert _parse_published_docker_port("0.0.0.0:15164\n[::]:15164\n") == 15164
+    assert _parse_published_docker_port("") is None
 
 
 def test_discover_pitch_runtime_from_installed_layout(tmp_path, monkeypatch):
@@ -275,6 +282,51 @@ def test_launch_pitch_runtime_can_attach_existing_docker_crc(tmp_path, monkeypat
     assert runtime.env["HLA2010_PITCH_CRC_PORT"] == "59103"
     assert runtime.env["HLA2010_PITCH_FEDPRO_PORT"] == "59104"
     assert runtime.poll() == 0
+
+
+def test_launch_pitch_runtime_can_attach_existing_docker_crc_with_discovered_ports(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_CRC_MODE", "docker")
+    monkeypatch.setenv("HLA2010_PITCH_DOCKER_ATTACH_EXISTING", "1")
+    monkeypatch.delenv("HLA2010_PITCH_CRC_PORT", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_FEDPRO_PORT", raising=False)
+
+    def fake_run(command, check=False, capture_output=False, text=False):
+        class Result:
+            def __init__(self, returncode: int, stdout: str):
+                self.returncode = returncode
+                self.stdout = stdout
+
+        if command[:3] == ["docker", "port", "hla2010-pitch-crc"]:
+            if command[3] == "15164/tcp":
+                return Result(0, "127.0.0.1:15164\n")
+            if command[3] == "8989/tcp":
+                return Result(0, "127.0.0.1:64949\n")
+        raise AssertionError(f"unexpected docker command: {command!r}")
+
+    listener_calls: list[tuple[str, int, float]] = []
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        listener_calls.append((host, port, timeout))
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "run", fake_run)
+
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=lambda *args, **kwargs: None,
+        _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+    )
+    runtime.terminate()
+
+    assert ("127.0.0.1", 15164, 20.0) in listener_calls
+    assert ("127.0.0.1", 64949, 45.0) in listener_calls
+    assert runtime.env["HLA2010_PITCH_CRC_PORT"] == "64949"
+    assert runtime.env["HLA2010_PITCH_FEDPRO_PORT"] == "15164"
 
 
 def test_launch_pitch_runtime_honors_listener_and_boot_timeout_env(tmp_path, monkeypatch):

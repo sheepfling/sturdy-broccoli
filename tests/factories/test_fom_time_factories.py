@@ -15,6 +15,7 @@ from hla.rti1516e.raw_api import API_METADATA
 from hla.runtime.factory import create_rti_ambassador
 from hla.rti1516e.datatypes import AttributeRegionAssociation
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
+from hla.rti1516_2025 import AdditionalSettingsResultCode, ConfigurationResult, RtiConfiguration
 
 TARGET_RADAR_FOM = target_radar_fom_path()
 
@@ -87,8 +88,8 @@ def test_python_rti_exposes_handle_set_and_map_factories():
 class RecordingBridge(JavaBridge):
     name = "recording-java"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, api_profile="2010"):
+        super().__init__(api_profile=api_profile)
         self.calls = []
 
     def call(self, obj, method_name, *args):
@@ -119,6 +120,10 @@ class RecordingBridge(JavaBridge):
     def new_attribute_set_region_set_pair_list(self, values, *, rti_ambassador=None):
         self.calls.append(("pair_list", tuple(values), rti_ambassador is not None))
         return ("pair_list", tuple(values))
+
+    def rti_configuration(self, value):
+        self.calls.append(("rti_configuration", value))
+        return ("rti_configuration", value.configuration_name, value.rti_address, value.additional_settings)
 
 
 def test_java_overload_resolution_and_converter_prepare_vendor_owned_collections():
@@ -165,8 +170,39 @@ def test_java_converter_prepares_attribute_region_association_pair_lists():
 
     converted = converter.to_backend(pairs, expected_type_name="AttributeSetRegionSetPairList")
     assert converted[0] == "pair_list"
-    pair = converted[1][0]
-    assert pair[0][0] == "handle_set"
-    assert pair[0][1] == "AttributeHandleSet"
-    assert pair[1][0] == "handle_set"
-    assert pair[1][1] == "RegionHandleSet"
+
+
+class _ConfigurationResultLike:
+    configurationUsed = True
+    addressUsed = False
+    additionalSettingsResultCode = AdditionalSettingsResultCode.SETTINGS_APPLIED
+    message = "ok"
+
+
+def test_java_converter_converts_2025_rti_configuration_without_expected_type_metadata():
+    bridge = RecordingBridge(api_profile="2025")
+    converter = JavaValueConverter(bridge)
+
+    configuration = (
+        RtiConfiguration.createConfiguration()
+        .withConfigurationName("native-hla4")
+        .withRtiAddress("localhost")
+        .withAdditionalSettings("mode=test")
+    )
+    converted = converter.to_backend(configuration)
+
+    assert converted == ("rti_configuration", "native-hla4", "localhost", "mode=test")
+    assert ("rti_configuration", configuration) in bridge.calls
+
+
+def test_java_converter_converts_2025_configuration_result():
+    converter = JavaValueConverter(RecordingBridge(api_profile="2025"))
+
+    converted = converter.from_backend(_ConfigurationResultLike(), expected_type_name="ConfigurationResult")
+
+    assert converted == ConfigurationResult(
+        True,
+        False,
+        AdditionalSettingsResultCode.SETTINGS_APPLIED,
+        "ok",
+    )

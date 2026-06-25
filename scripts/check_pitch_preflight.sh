@@ -228,6 +228,17 @@ docker_container_running() {
   docker ps --format '{{.Names}}' | grep -Fxq "$CONTAINER_NAME"
 }
 
+resolve_managed_container_port() {
+  local internal_port="$1"
+  local mapping
+  mapping="$(docker port "$CONTAINER_NAME" "${internal_port}/tcp" 2>/dev/null | head -n 1 || true)"
+  if [[ "$mapping" =~ :([0-9]+)$ ]]; then
+    printf '%s\n' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+  return 1
+}
+
 check_port_available() {
   local port="$1"
   local python_bin
@@ -360,6 +371,10 @@ crc_port_check_file="$(mktemp "${TMPDIR:-/tmp}/hla2010_pitch_crc_port_check.XXXX
 fedpro_port_check_file="$(mktemp "${TMPDIR:-/tmp}/hla2010_pitch_fedpro_port_check.XXXXXX")"
 
 if [[ "$managed_container_running" -eq 1 ]]; then
+  actual_crc_port="$(resolve_managed_container_port 8989 || printf '%s' "$CRC_PORT")"
+  actual_fedpro_port="$(resolve_managed_container_port 15164 || printf '%s' "$FEDPRO_PORT")"
+  CRC_PORT="$actual_crc_port"
+  FEDPRO_PORT="$actual_fedpro_port"
   crc_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$CRC_PORT"
   fedpro_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$FEDPRO_PORT"
 elif check_port_available "$CRC_PORT" >"$crc_port_check_file" 2>&1; then

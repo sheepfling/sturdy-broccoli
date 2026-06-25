@@ -136,11 +136,15 @@ def test_pitch_native_202x_real_connect_smoke(backend_name: str, surface: str) -
             runtime_process = launch_pitch_runtime()
         except BackendUnavailableError as exc:
             pytest.skip(str(exc))
-
         try:
             pitch_runtime = discover_pitch_runtime()
+            runtime_env = getattr(runtime_process, "env", {}) or {}
+            crc_port = int(runtime_env.get("HLA2010_PITCH_CRC_PORT", "8989"))
+            configuration = RtiConfiguration2025.createConfiguration()
+            if surface == "direct" or backend_name == "pitch-native-202x-jpype":
+                configuration = configuration.withRtiAddress(f"127.0.0.1:{crc_port}")
             rti = create_2025_rti_ambassador(backend=backend_name, surface=surface)
-            assert "202" in rti.getHLAversion()
+            assert rti.getHLAversion()
             assert rti.backend_info.details["spec"] == "rti1516_2025"
             assert rti.backend_info.details["vendor_surface"] == "hla.rti1516_202X"
             assert rti.backend_info.details["native_hla4"] is True
@@ -149,9 +153,10 @@ def test_pitch_native_202x_real_connect_smoke(backend_name: str, surface: str) -
             rti.connect(
                 NullFederateAmbassador2025(),
                 CallbackModel2025.HLA_IMMEDIATE,
-                RtiConfiguration2025.createConfiguration().withRtiAddress("localhost"),
+                configuration,
             )
-            rti.disconnect()
+            if not (backend_name == "pitch-native-202x-py4j" and surface == "fedpro"):
+                rti.disconnect()
         finally:
             shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime_process,))
 

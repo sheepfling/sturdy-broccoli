@@ -229,6 +229,52 @@ def test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process(monk
     }
 
 
+def test_py4j_bridge_close_terminates_spawned_gateway_process():
+    from hla.bridges.java.py4j.runtime import Py4JBridge, Py4JConfig
+
+    events: list[str] = []
+
+    class FakeProcess:
+        def __init__(self):
+            self._alive = True
+
+        def poll(self):
+            return None if self._alive else 0
+
+        def terminate(self):
+            events.append("terminate")
+            self._alive = False
+
+        def wait(self, timeout=None):
+            events.append(f"wait:{timeout}")
+            self._alive = False
+            return 0
+
+        def kill(self):
+            events.append("kill")
+            self._alive = False
+
+    class FakeGateway:
+        def __init__(self):
+            self._hla2010_gateway_process = FakeProcess()
+
+        def shutdown_callback_server(self):
+            events.append("shutdown_callback_server")
+
+        def shutdown(self):
+            events.append("shutdown")
+
+    bridge = Py4JBridge(Py4JConfig(gateway=FakeGateway(), shutdown_gateway_on_close=True))
+    bridge.close()
+
+    assert events == [
+        "shutdown_callback_server",
+        "shutdown",
+        "terminate",
+        "wait:5",
+    ]
+
+
 def test_pitch_vendor_matrix_runtime_bootstrap_is_centralized():
     project_root = Path(__file__).resolve().parents[1]
     source = (project_root / "tests" / "vendors" / "test_pitch_real_backend_matrix.py").read_text(encoding="utf-8")

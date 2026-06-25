@@ -176,6 +176,10 @@ class JavaBridge(ABC):
         """
         return value
 
+    def rti_configuration(self, value: Any) -> Any:
+        """Convert a Python RtiConfiguration model to a Java-side configuration object."""
+        return value
+
     def range_bounds(self, value: Any) -> Any:
         """Convert Python RangeBounds to a Java RangeBounds-like object."""
         return value
@@ -300,6 +304,7 @@ class JavaValueConverter(ValueConverter):
         handle_type = self.python_binding.python_type_or_none("Handle")
         range_bounds_type = self.python_binding.python_type("RangeBounds")
         attribute_region_association_type = self.python_binding.python_type("AttributeRegionAssociation")
+        rti_configuration_type = self.python_binding.python_type_or_none("RtiConfiguration")
         logical_time_types = tuple(
             self.python_binding.python_type(name)
             for name in ("HLAinteger64Time", "HLAinteger64Interval", "HLAfloat64Time", "HLAfloat64Interval")
@@ -312,6 +317,10 @@ class JavaValueConverter(ValueConverter):
         if expected == "URL[]":
             values = _sequence_for_java_array(value)
             return self.bridge.fom_url_array(values)
+        if expected == "RtiConfiguration":
+            return self.bridge.rti_configuration(value)
+        if rti_configuration_type is not None and isinstance(value, rti_configuration_type):
+            return self.bridge.rti_configuration(value)
 
         if handle_type is not None and isinstance(value, handle_type):
             return self.handle_registry.to_native(value)
@@ -415,20 +424,22 @@ class JavaValueConverter(ValueConverter):
         if restore_status is not None:
             return restore_status
 
+        supplemental_reflect_type = self.python_binding.python_type_or_none("SupplementalReflectInfo")
         supplemental_reflect = self._from_backend_supplemental_reflect_info(
             value,
             expected_type_name=expected,
             simple_name=simple_name,
-            info_type=self.python_binding.python_type("SupplementalReflectInfo"),
+            info_type=supplemental_reflect_type,
         )
         if supplemental_reflect is not None:
             return supplemental_reflect
 
+        supplemental_receive_type = self.python_binding.python_type_or_none("SupplementalReceiveInfo")
         supplemental_receive = self._from_backend_supplemental_reflect_info(
             value,
             expected_type_name=expected,
             simple_name=simple_name,
-            info_type=self.python_binding.python_type("SupplementalReceiveInfo"),
+            info_type=supplemental_receive_type,
         )
         if supplemental_receive is not None:
             return supplemental_receive
@@ -507,6 +518,14 @@ class JavaValueConverter(ValueConverter):
         if federation_execution_info is not None:
             return federation_execution_info
 
+        configuration_result = self._from_backend_configuration_result(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if configuration_result is not None:
+            return configuration_result
+
         map_items = self.bridge.java_map_items(value)
         if map_items is not None:
             return {
@@ -583,6 +602,44 @@ class JavaValueConverter(ValueConverter):
         return self.python_binding.python_type("FederationExecutionInformation")(
             federationExecutionName=str(federation_name),
             logicalTimeImplementationName=str(logical_time_name) if logical_time_name is not None else "",
+        )
+
+    def _from_backend_configuration_result(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> Any | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "ConfigurationResult" not in class_text:
+            return None
+
+        configuration_used = self.bridge.public_field(value, "configurationUsed")
+        if configuration_used is None:
+            configuration_used = _maybe_call_noarg(value, "getConfigurationUsed", "isConfigurationUsed")
+        address_used = self.bridge.public_field(value, "addressUsed")
+        if address_used is None:
+            address_used = _maybe_call_noarg(value, "getAddressUsed", "isAddressUsed")
+        settings_result = self.bridge.public_field(value, "additionalSettingsResultCode")
+        if settings_result is None:
+            settings_result = self.bridge.public_field(value, "additionalSettingsResult")
+        if settings_result is None:
+            settings_result = _maybe_call_noarg(
+                value,
+                "getAdditionalSettingsResultCode",
+                "getAdditionalSettingsResult",
+            )
+        message = self.bridge.public_field(value, "message")
+        if message is None:
+            message = _maybe_call_noarg(value, "getMessage")
+        if configuration_used is None or address_used is None or settings_result is None or message is None:
+            return None
+        return self.python_binding.python_type("ConfigurationResult")(
+            bool(configuration_used),
+            bool(address_used),
+            self.from_backend(settings_result),
+            str(message),
         )
 
     def _from_backend_time_query_return(

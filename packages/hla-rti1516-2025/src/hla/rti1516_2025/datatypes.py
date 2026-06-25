@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import NamedTuple, Self
 
 from .enums import AdditionalSettingsResultCode, RestoreStatus, SaveStatus
-from .handles import FederateHandle, MessageRetractionHandle
+from .handles import FederateHandle, MessageRetractionHandle, RegionHandleSet
 from .logical_time import LogicalTime
 
 
@@ -136,3 +136,50 @@ class FederateRestoreStatus(NamedTuple):
 class TimeQueryReturn(NamedTuple):
     timeIsValid: bool
     time: LogicalTime | None = None
+
+
+class SupplementalReflectInfo(NamedTuple):
+    """Bridge-internal callback payload model for Java-backed 2025 routes.
+
+    The public 2025 Python callback surface flattens these fields directly into
+    callback signatures, so this type intentionally remains importable from the
+    datatypes module without being promoted at the package root.
+    """
+
+    hasProducingFederateValue: bool = False
+    hasSentRegionsValue: bool = False
+    producingFederate: FederateHandle | None = None
+    sentRegions: RegionHandleSet | None = None
+
+    def hasProducingFederate(self) -> bool:
+        return self.hasProducingFederateValue
+
+    def hasSentRegions(self) -> bool:
+        return self.hasSentRegionsValue
+
+    def getProducingFederate(self) -> FederateHandle:
+        if self.producingFederate is None:
+            raise ValueError("No producing federate is present")
+        return self.producingFederate
+
+    def getSentRegions(self) -> RegionHandleSet:
+        if self.sentRegions is None:
+            raise ValueError("No sent regions are present")
+        return self.sentRegions
+
+
+class SupplementalReceiveInfo(SupplementalReflectInfo):
+    pass
+
+
+class SupplementalRemoveInfo(NamedTuple):
+    hasProducingFederateValue: bool = False
+    producingFederate: FederateHandle | None = None
+
+    def hasProducingFederate(self) -> bool:
+        return self.hasProducingFederateValue
+
+    def getProducingFederate(self) -> FederateHandle:
+        if self.producingFederate is None:
+            raise ValueError("No producing federate is present")
+        return self.producingFederate

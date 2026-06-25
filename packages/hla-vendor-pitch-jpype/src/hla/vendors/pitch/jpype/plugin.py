@@ -166,7 +166,23 @@ def _pitch_native_202x_jpype_backend_factory(request: BackendRequest):
         ),
         java_api_profile="202X",
     )
-    backend = create_jpype_backend(config)
+    try:
+        backend = create_jpype_backend(config)
+    except BaseException as exc:
+        if surface != "fedpro" or rti_factory_name != "Federate Protocol":
+            raise
+        fallback_config = replace(config, rti_factory_name=None)
+        backend = create_jpype_backend(fallback_config)
+        backend.info = BackendInfo(
+            name="pitch-native-202x-jpype",
+            kind="vendor/pitch/java-202x-native/jpype",
+            version=backend.info.version,
+            details={
+                **dict(backend.info.details),
+                "factory_resolution_fallback": "default-rti-factory",
+                "factory_resolution_error": str(exc),
+            },
+        )
     backend.info = BackendInfo(
         name="pitch-native-202x-jpype",
         kind="vendor/pitch/java-202x-native/jpype",

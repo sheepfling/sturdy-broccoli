@@ -280,6 +280,25 @@ class Py4JBridge(JavaBridge):
             arr[idx] = self.fom_url(value)
         return arr
 
+    def rti_configuration(self, value: Any) -> Any:
+        try:
+            current = self.gateway.jvm
+            for part in f"{self.api_profile.java_package}.RtiConfiguration".split("."):
+                current = getattr(current, part)
+            config = current.createConfiguration()
+            configuration_name = getattr(value, "configuration_name", "")
+            rti_address = getattr(value, "rti_address", "")
+            additional_settings = getattr(value, "additional_settings", "")
+            if configuration_name:
+                config = config.withConfigurationName(str(configuration_name))
+            if rti_address:
+                config = config.withRtiAddress(str(rti_address))
+            if additional_settings:
+                config = config.withAdditionalSettings(str(additional_settings))
+            return config
+        except Exception:
+            return value
+
     def _factory_collection(
         self,
         rti_ambassador: Any,
@@ -431,6 +450,30 @@ class Py4JBridge(JavaBridge):
         shutdown = getattr(self.gateway, "shutdown", None)
         if callable(shutdown):
             shutdown()
+        gateway_process = getattr(self.gateway, "_hla2010_gateway_process", None)
+        if gateway_process is None:
+            return
+        try:
+            poll = getattr(gateway_process, "poll", None)
+            if callable(poll) and poll() is not None:
+                return
+            terminate = getattr(gateway_process, "terminate", None)
+            if callable(terminate):
+                terminate()
+            wait = getattr(gateway_process, "wait", None)
+            if callable(wait):
+                try:
+                    wait(timeout=5)
+                    return
+                except Exception:
+                    pass
+            kill = getattr(gateway_process, "kill", None)
+            if callable(kill):
+                kill()
+            if callable(wait):
+                wait(timeout=5)
+        except Exception:
+            pass
 
 
 __all__ = ["Py4JBridge", "Py4JConfig", "Py4JFederateAmbassadorProxy"]

@@ -186,6 +186,22 @@ class JPypeBridge(JavaBridge):
         except Exception:
             return value
 
+    def rti_configuration(self, value: Any) -> Any:
+        try:
+            config = self.JClass(f"{self.api_profile.java_package}.RtiConfiguration").createConfiguration()
+            configuration_name = getattr(value, "configuration_name", "")
+            rti_address = getattr(value, "rti_address", "")
+            additional_settings = getattr(value, "additional_settings", "")
+            if configuration_name:
+                config = config.withConfigurationName(str(configuration_name))
+            if rti_address:
+                config = config.withRtiAddress(str(rti_address))
+            if additional_settings:
+                config = config.withAdditionalSettings(str(additional_settings))
+            return config
+        except Exception:
+            return value
+
     def full_class_name(self, obj: Any) -> str | None:
         if obj is None:
             return None
