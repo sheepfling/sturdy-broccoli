@@ -6,6 +6,7 @@ import os
 import subprocess
 from pathlib import Path
 
+from hla.verification.repo_internal.verification import siso_runtime_showcase as showcase_module
 from hla.verification.repo_internal.verification.siso_runtime_showcase import (
     build_siso_runtime_showcase_manifest,
     run_siso_runtime_showcase,
@@ -15,6 +16,32 @@ from hla.verification.repo_internal.verification.siso_runtime_showcase import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+class _FakeHandle:
+    def __init__(self, owner: str, kind: str, name: str) -> None:
+        self.owner = owner
+        self.kind = kind
+        self.name = name
+
+
+class _FakeRTI:
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def getObjectClassHandle(self, class_name: str) -> _FakeHandle:
+        return _FakeHandle(self.name, "object-class", class_name)
+
+    def getAttributeHandle(self, class_handle: _FakeHandle, attribute_name: str) -> _FakeHandle:
+        assert class_handle.owner == self.name
+        return _FakeHandle(self.name, "attribute", attribute_name)
+
+    def getInteractionClassHandle(self, class_name: str) -> _FakeHandle:
+        return _FakeHandle(self.name, "interaction-class", class_name)
+
+    def getParameterHandle(self, class_handle: _FakeHandle, parameter_name: str) -> _FakeHandle:
+        assert class_handle.owner == self.name
+        return _FakeHandle(self.name, "parameter", parameter_name)
 
 
 def test_siso_runtime_showcase_completes_all_scenarios() -> None:
@@ -75,6 +102,30 @@ def test_siso_runtime_showcase_can_run_one_named_scenario() -> None:
     assert result["scenario"] == "space-fom-core-2010-micro-2"
     assert result["execution_complete"] is True
     assert result["status"] == "lifecycle-green"
+
+
+def test_siso_runtime_showcase_resolves_handles_per_rti() -> None:
+    rtis = [_FakeRTI("sender"), _FakeRTI("observer")]
+
+    object_classes, attrs_by_rti = showcase_module._resolve_attribute_handles(  # noqa: SLF001
+        rtis,
+        "HLAobjectRoot.EmbeddedSystem.RadioTransmitter",
+        ("RadioIndex", "Frequency", "WorldLocation"),
+    )
+    interaction_classes, params_by_rti = showcase_module._resolve_parameter_handles(  # noqa: SLF001
+        rtis,
+        "HLAinteractionRoot.RadioSignal.RawBinaryRadioSignal.TDLBinaryRadioSignal.Link16RadioSignal.JTIDSMessageRadioSignal",
+        ("NPGNumber", "NetNumber"),
+    )
+
+    assert object_classes[rtis[0]].owner == "sender"
+    assert object_classes[rtis[1]].owner == "observer"
+    assert attrs_by_rti[rtis[0]]["RadioIndex"].owner == "sender"
+    assert attrs_by_rti[rtis[1]]["RadioIndex"].owner == "observer"
+    assert interaction_classes[rtis[0]].owner == "sender"
+    assert interaction_classes[rtis[1]].owner == "observer"
+    assert params_by_rti[rtis[0]]["NPGNumber"].owner == "sender"
+    assert params_by_rti[rtis[1]]["NPGNumber"].owner == "observer"
 
 
 def test_siso_runtime_showcase_artifacts_are_generated(tmp_path: Path) -> None:

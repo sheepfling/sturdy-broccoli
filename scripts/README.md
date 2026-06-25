@@ -52,8 +52,6 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-siso-runtime-launcher` canonical larger-federation launcher-oriented runtime SISO packet flow
 - `./tools/fom-siso-runtime-showcase` canonical runtime-backed SISO showcase packet flow
 - `./tools/fom-siso-showcase` canonical standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM
-- `./tools/pitch fom-smoke` canonical Pitch-backed example-FOM smoke over the real 2010 bridges and explicit `pitch-202x-*` adapter routes
-- `./tools/pitch fom-smoke-compare` canonical side-by-side comparison packet over the real Pitch 2010 and `pitch-202x-*` adapter FOM smoke artifacts
 - `./tools/fom-corpus-classification` canonical corpus bucketing flow with `Edition Scope`
 - `./tools/fom-workbench` canonical FOM inspect/search/diff/edit snapshot flow with `Edition Scope`
 - `./tools/fom-roundtrip` canonical FOM round-trip packet flow with `Edition Scope`

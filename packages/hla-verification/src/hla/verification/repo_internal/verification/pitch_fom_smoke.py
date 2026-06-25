@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import uuid
 from dataclasses import dataclass
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +15,6 @@ from hla.rti1516e.enums import ResignAction
 from hla.rti1516_2025.enums import ResignAction as ResignAction2025
 from hla.verification.repo_internal.fom_inventory import inventory_records
 from hla.verification.startup import FederationStartupConfig, connect_create_join
-from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
 
 
 @dataclass(frozen=True)
@@ -78,6 +78,11 @@ def _repo_root() -> Path:
 def _call_service(target: Any, snake_name: str, camel_name: str, *args: Any) -> Any:
     method = getattr(target, snake_name, None) or getattr(target, camel_name)
     return method(*args)
+
+
+def launch_pitch_runtime() -> Any:
+    launcher = import_module("hla.vendors.pitch.real_rti_pitch").launch_pitch_runtime
+    return launcher()
 
 
 def _inventory_path(record_id: str) -> str:

@@ -37,8 +37,23 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Optional backend filter, e.g. --backend pitch-jpype",
     )
+    parser.add_argument(
+        "--require-real-vendor-preflight",
+        action="store_true",
+        help="Require a successful cached `./tools/pitch preflight` artifact and execute real Pitch 2010 vendor rows.",
+    )
+    parser.add_argument(
+        "--real-vendor-only",
+        action="store_true",
+        help="Restrict execution to the real Pitch 2010 vendor rows only.",
+    )
     args = parser.parse_args(argv)
-    paths = write_siso_pitch_micro_parity_artifacts(args.output_dir, backends=args.backends)
+    paths = write_siso_pitch_micro_parity_artifacts(
+        args.output_dir,
+        backends=args.backends,
+        require_real_vendor_preflight=args.require_real_vendor_preflight,
+        real_vendor_only=args.real_vendor_only,
+    )
     print(paths.summary_json)
     print(paths.results_csv)
     print(paths.selected_manifest_json)

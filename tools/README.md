@@ -94,6 +94,7 @@ Shortest common paths:
 - generate the runtime-backed SISO launcher packet: `./tools/fom-siso-runtime-launcher`
 - generate the Pitch-eligible SISO micro parity packet: `./tools/fom-siso-pitch-micro-parity`
 - generate the strict 2010 Pitch-only SISO micro packet: `./tools/fom-siso-pitch-2010-micro-strict`
+- generate the bounded Pitch 202X micro comparison packet: `./tools/pitch 202x-micro-certify`
 - generate the standards-backed showcase packet for Link 16, RPR 3.0, and Space FOM: `./tools/fom-siso-showcase`
 - refresh the public baseline and generate a parser stress report: `./tools/fom-stress --refresh-baseline`
 - download authenticated SISO DataFiles packages: `./tools/download-siso`

@@ -15,6 +15,7 @@ from hla.runtime.factory import create_rti_ambassador as create_rti_ambassador_2
 from hla.runtime.rti1516_2025_factory import create_rti_ambassador as create_rti_ambassador_2025
 from hla.rti1516e.enums import CallbackModel as CallbackModel2010, ResignAction as ResignAction2010
 from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025, ResignAction as ResignAction2025
+from hla.verification.scenario_support import register_named_object_instance, wait_for_callback_count_pair
 from hla.verification.repo_internal.fom_inventory import default_load_set_for_family
 from hla.verification.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
 
@@ -61,6 +62,58 @@ def _call_service(target: Any, snake_name: str, camel_name: str, *args: Any) -> 
     return method(*args)
 
 
+def _resolve_object_class_handles(rtis: Iterable[Any], class_name: str) -> dict[Any, Any]:
+    return {
+        rti: _call_service(rti, "get_object_class_handle", "getObjectClassHandle", class_name)
+        for rti in rtis
+    }
+
+
+def _resolve_attribute_handles(
+    rtis: Iterable[Any],
+    class_name: str,
+    attribute_names: Iterable[str],
+) -> tuple[dict[Any, Any], dict[Any, dict[str, Any]]]:
+    class_handles = _resolve_object_class_handles(rtis, class_name)
+    attribute_names = tuple(attribute_names)
+    return (
+        class_handles,
+        {
+            rti: {
+                name: _call_service(rti, "get_attribute_handle", "getAttributeHandle", class_handles[rti], name)
+                for name in attribute_names
+            }
+            for rti in class_handles
+        },
+    )
+
+
+def _resolve_interaction_class_handles(rtis: Iterable[Any], class_name: str) -> dict[Any, Any]:
+    return {
+        rti: _call_service(rti, "get_interaction_class_handle", "getInteractionClassHandle", class_name)
+        for rti in rtis
+    }
+
+
+def _resolve_parameter_handles(
+    rtis: Iterable[Any],
+    class_name: str,
+    parameter_names: Iterable[str],
+) -> tuple[dict[Any, Any], dict[Any, dict[str, Any]]]:
+    class_handles = _resolve_interaction_class_handles(rtis, class_name)
+    parameter_names = tuple(parameter_names)
+    return (
+        class_handles,
+        {
+            rti: {
+                name: _call_service(rti, "get_parameter_handle", "getParameterHandle", class_handles[rti], name)
+                for name in parameter_names
+            }
+            for rti in class_handles
+        },
+    )
+
+
 def _runtime_for_edition(edition: str) -> RuntimeSpec:
     if edition == "2010":
         return RUNTIME_2010
@@ -98,6 +151,53 @@ def _drain(runtime: RuntimeSpec, *rtis: Any, rounds: int = 25) -> None:
                 rti.evoke_multiple_callbacks(0.0, 0.0)
             else:
                 rti.evokeMultipleCallbacks(0.0, 0.0)
+
+
+def _callback_summary(federate: RecordingFederateAmbassador) -> dict[str, int]:
+    return {
+        "discoverObjectInstance": len(federate.callbacks_named("discoverObjectInstance")),
+        "reflectAttributeValues": len(federate.callbacks_named("reflectAttributeValues")),
+        "receiveInteraction": len(federate.callbacks_named("receiveInteraction")),
+    }
+
+
+def _wait_pair_delivery(
+    sender_rti: Any,
+    receiver_rti: Any,
+    receiver_federate: RecordingFederateAmbassador,
+    *,
+    discover_expected: int | None = None,
+    reflect_expected: int | None = None,
+    interaction_expected: int | None = None,
+    loops: int = 120,
+) -> None:
+    if discover_expected is not None:
+        wait_for_callback_count_pair(
+            sender_rti,
+            receiver_rti,
+            receiver_federate,
+            "discoverObjectInstance",
+            discover_expected,
+            loops=loops,
+        )
+    if reflect_expected is not None:
+        wait_for_callback_count_pair(
+            sender_rti,
+            receiver_rti,
+            receiver_federate,
+            "reflectAttributeValues",
+            reflect_expected,
+            loops=loops,
+        )
+    if interaction_expected is not None:
+        wait_for_callback_count_pair(
+            sender_rti,
+            receiver_rti,
+            receiver_federate,
+            "receiveInteraction",
+            interaction_expected,
+            loops=loops,
+        )
 
 
 def _dedupe_paths(paths: Iterable[str]) -> tuple[str, ...]:
@@ -339,6 +439,11 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
     federates = [RecordingFederateAmbassador() for _ in rtis]
     federation_name = f"SisoLink16-{runtime.edition}-{topology.slug}-{uuid.uuid4().hex[:8]}"
     lifecycle: list[str] = []
+    operation_attempts = {
+        "object_registrations": 0,
+        "attribute_updates": 0,
+        "interactions_sent": 0,
+    }
     sender_count = _sender_count(topology.federate_count)
     monitor = federates[-1]
     jtids_signal = "HLAinteractionRoot.RadioSignal.RawBinaryRadioSignal.TDLBinaryRadioSignal.Link16RadioSignal.JTIDSMessageRadioSignal"
@@ -353,36 +458,56 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
             federate_type_prefix="Link16Federate",
             lifecycle=lifecycle,
         )
-        object_class = _call_service(rtis[0], "get_object_class_handle", "getObjectClassHandle", "HLAobjectRoot.EmbeddedSystem.RadioTransmitter")
+        discover_baseline = len(monitor.callbacks_named("discoverObjectInstance"))
+        reflect_baseline = len(monitor.callbacks_named("reflectAttributeValues"))
+        interaction_baseline = len(monitor.callbacks_named("receiveInteraction"))
         attr_names = ("RadioIndex", "Frequency", "WorldLocation")
-        attrs = {
-            name: _call_service(rtis[0], "get_attribute_handle", "getAttributeHandle", object_class, name)
-            for name in attr_names
-        }
+        object_classes, attrs_by_rti = _resolve_attribute_handles(rtis, "HLAobjectRoot.EmbeddedSystem.RadioTransmitter", attr_names)
         for rti in rtis[:sender_count]:
-            _call_service(rti, "publish_object_class_attributes", "publishObjectClassAttributes", object_class, set(attrs.values()))
+            _call_service(
+                rti,
+                "publish_object_class_attributes",
+                "publishObjectClassAttributes",
+                object_classes[rti],
+                set(attrs_by_rti[rti].values()),
+            )
         for rti in rtis[sender_count:]:
-            _call_service(rti, "subscribe_object_class_attributes", "subscribeObjectClassAttributes", object_class, set(attrs.values()))
-        jtids_class = _call_service(rtis[0], "get_interaction_class_handle", "getInteractionClassHandle", jtids_signal)
-        jtids_params = {
-            name: _call_service(rtis[0], "get_parameter_handle", "getParameterHandle", jtids_class, name)
-            for name in ("NPGNumber", "NetNumber", "Link16Version", "JTIDSHeader", "TADILJMessage")
-        }
-        rttab_class = _call_service(rtis[0], "get_interaction_class_handle", "getInteractionClassHandle", rttab_signal)
-        rttab_params = {
-            name: _call_service(rtis[0], "get_parameter_handle", "getParameterHandle", rttab_class, name)
-            for name in ("NPGNumber", "NetNumber", "Link16Version", "RTTAB")
-        }
+            _call_service(
+                rti,
+                "subscribe_object_class_attributes",
+                "subscribeObjectClassAttributes",
+                object_classes[rti],
+                set(attrs_by_rti[rti].values()),
+            )
+        jtids_classes, jtids_params_by_rti = _resolve_parameter_handles(
+            rtis,
+            jtids_signal,
+            ("NPGNumber", "NetNumber", "Link16Version", "JTIDSHeader", "TADILJMessage"),
+        )
+        rttab_classes, rttab_params_by_rti = _resolve_parameter_handles(
+            rtis,
+            rttab_signal,
+            ("NPGNumber", "NetNumber", "Link16Version", "RTTAB"),
+        )
         for rti in rtis[:sender_count]:
-            _call_service(rti, "publish_interaction_class", "publishInteractionClass", jtids_class)
-            _call_service(rti, "publish_interaction_class", "publishInteractionClass", rttab_class)
+            _call_service(rti, "publish_interaction_class", "publishInteractionClass", jtids_classes[rti])
+            _call_service(rti, "publish_interaction_class", "publishInteractionClass", rttab_classes[rti])
         for rti in rtis[sender_count:]:
-            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", jtids_class)
-            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", rttab_class)
+            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", jtids_classes[rti])
+            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", rttab_classes[rti])
         lifecycle.append("publication-ready")
 
         for idx, rti in enumerate(rtis[:sender_count], start=1):
-            transmitter = _call_service(rti, "register_object_instance", "registerObjectInstance", object_class, f"Link16Radio-{idx}")
+            attrs = attrs_by_rti[rti]
+            jtids_params = jtids_params_by_rti[rti]
+            rttab_params = rttab_params_by_rti[rti]
+            transmitter = register_named_object_instance(
+                rti,
+                federates[idx - 1],
+                object_classes[rti],
+                f"Link16Radio-{idx}",
+            )
+            operation_attempts["object_registrations"] += 1
             _call_service(
                 rti,
                 "update_attribute_values",
@@ -395,11 +520,12 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 },
                 _rpr_tag_bytes(f"link16-transmitter-state-{idx}"),
             )
+            operation_attempts["attribute_updates"] += 1
             _call_service(
                 rti,
                 "send_interaction",
                 "sendInteraction",
-                jtids_class,
+                jtids_classes[rti],
                 {
                     jtids_params["NPGNumber"]: str(7 + idx).encode("utf-8"),
                     jtids_params["NetNumber"]: b"12",
@@ -409,11 +535,12 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 },
                 _rpr_tag_bytes(f"link16-jtids-message-{idx}"),
             )
+            operation_attempts["interactions_sent"] += 1
             _call_service(
                 rti,
                 "send_interaction",
                 "sendInteraction",
-                rttab_class,
+                rttab_classes[rti],
                 {
                     rttab_params["NPGNumber"]: str(7 + idx).encode("utf-8"),
                     rttab_params["NetNumber"]: b"12",
@@ -422,7 +549,17 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 },
                 _rpr_tag_bytes(f"link16-rttab-{idx}"),
             )
+            operation_attempts["interactions_sent"] += 1
         _drain(runtime, *rtis)
+        if topology.federate_count == 2:
+            _wait_pair_delivery(
+                rtis[0],
+                rtis[-1],
+                monitor,
+                discover_expected=discover_baseline + sender_count,
+                reflect_expected=reflect_baseline + sender_count,
+                interaction_expected=interaction_baseline + (sender_count * 2),
+            )
         lifecycle.append("message-traffic-observed")
 
         discoveries = monitor.callbacks_named("discoverObjectInstance")
@@ -458,6 +595,11 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
             "discoveries": len(discoveries),
             "reflections": len(reflections),
             "interactions": len(receives),
+            "operation_attempts": operation_attempts,
+            "federate_callback_summaries": {
+                f"Link16Federate{idx + 1}": _callback_summary(federate)
+                for idx, federate in enumerate(federates)
+            },
             "delivered_tags": [_jsonable(tag) for tag in delivered_tags],
             "key_outcome": "multiple Link 16 radio publishers reflected state and delivered JTIDS/RTTAB traffic to shared observers",
             "execution_complete": execution_complete,
@@ -473,6 +615,11 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
     federates = [RecordingFederateAmbassador() for _ in rtis]
     federation_name = f"SisoRpr-{runtime.edition}-{topology.slug}-{uuid.uuid4().hex[:8]}"
     lifecycle: list[str] = []
+    operation_attempts = {
+        "object_registrations": 0,
+        "attribute_updates": 0,
+        "interactions_sent": 0,
+    }
     shooter_count = _sender_count(topology.federate_count) if topology.federate_count > 2 else 0
     bridge_owner = rtis[0]
     monitor = federates[-1]
@@ -489,35 +636,53 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             federate_type_prefix="RprFederate",
             lifecycle=lifecycle,
         )
-        object_class = _call_service(bridge_owner, "get_object_class_handle", "getObjectClassHandle", object_class_name)
-        attrs = {
-            name: _call_service(bridge_owner, "get_attribute_handle", "getAttributeHandle", object_class, name)
-            for name in ("ObjectIdentifier", "Location", "Damage")
-        }
-        _call_service(bridge_owner, "publish_object_class_attributes", "publishObjectClassAttributes", object_class, set(attrs.values()))
+        discover_baseline = len(monitor.callbacks_named("discoverObjectInstance"))
+        reflect_baseline = len(monitor.callbacks_named("reflectAttributeValues"))
+        interaction_baseline = len(monitor.callbacks_named("receiveInteraction"))
+        object_classes, attrs_by_rti = _resolve_attribute_handles(rtis, object_class_name, ("ObjectIdentifier", "Location", "Damage"))
+        _call_service(
+            bridge_owner,
+            "publish_object_class_attributes",
+            "publishObjectClassAttributes",
+            object_classes[bridge_owner],
+            set(attrs_by_rti[bridge_owner].values()),
+        )
         for rti in rtis[1:]:
-            _call_service(rti, "subscribe_object_class_attributes", "subscribeObjectClassAttributes", object_class, set(attrs.values()))
-        fire_class = _call_service(bridge_owner, "get_interaction_class_handle", "getInteractionClassHandle", fire_name)
-        fire_params = {
-            name: _call_service(bridge_owner, "get_parameter_handle", "getParameterHandle", fire_class, name)
-            for name in ("FiringObjectIdentifier", "TargetObjectIdentifier", "EventIdentifier", "MunitionType", "QuantityFired")
-        }
-        detonation_class = _call_service(bridge_owner, "get_interaction_class_handle", "getInteractionClassHandle", detonation_name)
-        detonation_params = {
-            name: _call_service(bridge_owner, "get_parameter_handle", "getParameterHandle", detonation_class, name)
-            for name in ("EventIdentifier", "DetonationLocation", "DetonationResultCode", "TargetObjectIdentifier", "QuantityFired")
-        }
+            _call_service(
+                rti,
+                "subscribe_object_class_attributes",
+                "subscribeObjectClassAttributes",
+                object_classes[rti],
+                set(attrs_by_rti[rti].values()),
+            )
+        fire_classes, fire_params_by_rti = _resolve_parameter_handles(
+            rtis,
+            fire_name,
+            ("FiringObjectIdentifier", "TargetObjectIdentifier", "EventIdentifier", "MunitionType", "QuantityFired"),
+        )
+        detonation_classes, detonation_params_by_rti = _resolve_parameter_handles(
+            rtis,
+            detonation_name,
+            ("EventIdentifier", "DetonationLocation", "DetonationResultCode", "TargetObjectIdentifier", "QuantityFired"),
+        )
         shooter_rtis = rtis[1 : 1 + shooter_count] if shooter_count else [bridge_owner]
         observer_rtis = rtis[1 + shooter_count :] if shooter_count else rtis[1:]
         for rti in shooter_rtis:
-            _call_service(rti, "publish_interaction_class", "publishInteractionClass", fire_class)
-            _call_service(rti, "publish_interaction_class", "publishInteractionClass", detonation_class)
+            _call_service(rti, "publish_interaction_class", "publishInteractionClass", fire_classes[rti])
+            _call_service(rti, "publish_interaction_class", "publishInteractionClass", detonation_classes[rti])
         for rti in observer_rtis:
-            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", fire_class)
-            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", detonation_class)
+            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", fire_classes[rti])
+            _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", detonation_classes[rti])
         lifecycle.append("engagement-publication-ready")
 
-        bridge = _call_service(bridge_owner, "register_object_instance", "registerObjectInstance", object_class, "Bridge-Alpha")
+        attrs = attrs_by_rti[bridge_owner]
+        bridge = register_named_object_instance(
+            bridge_owner,
+            federates[0],
+            object_classes[bridge_owner],
+            "Bridge-Alpha",
+        )
+        operation_attempts["object_registrations"] += 1
         _call_service(
             bridge_owner,
             "update_attribute_values",
@@ -530,13 +695,16 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             },
             _rpr_fixed_tag(0),
         )
+        operation_attempts["attribute_updates"] += 1
         active_shooter_count = len(shooter_rtis)
         for idx, rti in enumerate(shooter_rtis, start=1):
+            fire_params = fire_params_by_rti[rti]
+            detonation_params = detonation_params_by_rti[rti]
             _call_service(
                 rti,
                 "send_interaction",
                 "sendInteraction",
-                fire_class,
+                fire_classes[rti],
                 {
                     fire_params["FiringObjectIdentifier"]: f"shooter-{idx}".encode("utf-8"),
                     fire_params["TargetObjectIdentifier"]: b"bridge-alpha",
@@ -546,11 +714,12 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
                 },
                 _rpr_fixed_tag(idx),
             )
+            operation_attempts["interactions_sent"] += 1
             _call_service(
                 rti,
                 "send_interaction",
                 "sendInteraction",
-                detonation_class,
+                detonation_classes[rti],
                 {
                     detonation_params["EventIdentifier"]: f"engagement-{idx:03d}".encode("utf-8"),
                     detonation_params["DetonationLocation"]: b"41.88,-87.63,0",
@@ -560,7 +729,17 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
                 },
                 _rpr_fixed_tag(100 + idx),
             )
+            operation_attempts["interactions_sent"] += 1
         _drain(runtime, *rtis)
+        if topology.federate_count == 2:
+            _wait_pair_delivery(
+                bridge_owner,
+                monitor_rti := rtis[-1],
+                monitor,
+                discover_expected=discover_baseline + 1,
+                reflect_expected=reflect_baseline + 1,
+                interaction_expected=interaction_baseline + (active_shooter_count * 2),
+            )
         lifecycle.append("engagement-chain-observed")
 
         discoveries = monitor.callbacks_named("discoverObjectInstance")
@@ -596,6 +775,11 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             "discoveries": len(discoveries),
             "reflections": len(reflections),
             "interactions": len(receives),
+            "operation_attempts": operation_attempts,
+            "federate_callback_summaries": {
+                f"RprFederate{idx + 1}": _callback_summary(federate)
+                for idx, federate in enumerate(federates)
+            },
             "delivered_tags": [_jsonable(tag) for tag in delivered_tags],
             "key_outcome": "bridge state and multi-shooter fire/detonation chains reached the tactical observer set",
             "execution_complete": execution_complete,
@@ -611,8 +795,14 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
     federates = [RecordingFederateAmbassador() for _ in rtis]
     federation_name = f"SisoSpace-{runtime.edition}-{topology.slug}-{uuid.uuid4().hex[:8]}"
     lifecycle: list[str] = []
+    operation_attempts = {
+        "object_registrations": 0,
+        "attribute_updates": 0,
+        "interactions_sent": 0,
+    }
     producer_count = _sender_count(topology.federate_count) if topology.federate_count > 2 else 0
     frame_authority = rtis[0]
+    federate_by_rti = dict(zip(rtis, federates, strict=True))
     monitor = federates[-1]
     reference_frame_class_name = "HLAobjectRoot.ReferenceFrame"
     entity_class_name = "HLAobjectRoot.PhysicalEntity.DynamicalEntity"
@@ -626,27 +816,56 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             federate_type_prefix="SpaceFederate",
             lifecycle=lifecycle,
         )
-        frame_class = _call_service(frame_authority, "get_object_class_handle", "getObjectClassHandle", reference_frame_class_name)
-        frame_attrs = {
-            name: _call_service(frame_authority, "get_attribute_handle", "getAttributeHandle", frame_class, name)
-            for name in ("name", "parent_name", "state")
-        }
-        entity_class = _call_service(frame_authority, "get_object_class_handle", "getObjectClassHandle", entity_class_name)
-        entity_attrs = {
-            name: _call_service(frame_authority, "get_attribute_handle", "getAttributeHandle", entity_class, name)
-            for name in ("name", "type", "status", "parent_reference_frame", "state")
-        }
-        _call_service(frame_authority, "publish_object_class_attributes", "publishObjectClassAttributes", frame_class, set(frame_attrs.values()))
+        discover_baseline = len(monitor.callbacks_named("discoverObjectInstance"))
+        reflect_baseline = len(monitor.callbacks_named("reflectAttributeValues"))
+        frame_classes, frame_attrs_by_rti = _resolve_attribute_handles(rtis, reference_frame_class_name, ("name", "parent_name", "state"))
+        entity_classes, entity_attrs_by_rti = _resolve_attribute_handles(
+            rtis,
+            entity_class_name,
+            ("name", "type", "status", "parent_reference_frame", "state"),
+        )
+        _call_service(
+            frame_authority,
+            "publish_object_class_attributes",
+            "publishObjectClassAttributes",
+            frame_classes[frame_authority],
+            set(frame_attrs_by_rti[frame_authority].values()),
+        )
         producer_rtis = rtis[1 : 1 + producer_count] if producer_count else [frame_authority]
         observer_rtis = rtis[1 + producer_count :] if producer_count else rtis[1:]
         for rti in producer_rtis:
-            _call_service(rti, "publish_object_class_attributes", "publishObjectClassAttributes", entity_class, set(entity_attrs.values()))
+            _call_service(
+                rti,
+                "publish_object_class_attributes",
+                "publishObjectClassAttributes",
+                entity_classes[rti],
+                set(entity_attrs_by_rti[rti].values()),
+            )
         for rti in observer_rtis:
-            _call_service(rti, "subscribe_object_class_attributes", "subscribeObjectClassAttributes", frame_class, set(frame_attrs.values()))
-            _call_service(rti, "subscribe_object_class_attributes", "subscribeObjectClassAttributes", entity_class, set(entity_attrs.values()))
+            _call_service(
+                rti,
+                "subscribe_object_class_attributes",
+                "subscribeObjectClassAttributes",
+                frame_classes[rti],
+                set(frame_attrs_by_rti[rti].values()),
+            )
+            _call_service(
+                rti,
+                "subscribe_object_class_attributes",
+                "subscribeObjectClassAttributes",
+                entity_classes[rti],
+                set(entity_attrs_by_rti[rti].values()),
+            )
         lifecycle.append("space-publication-ready")
 
-        frame = _call_service(frame_authority, "register_object_instance", "registerObjectInstance", frame_class, "EarthMJ2000Eq")
+        frame_attrs = frame_attrs_by_rti[frame_authority]
+        frame = register_named_object_instance(
+            frame_authority,
+            federates[0],
+            frame_classes[frame_authority],
+            "EarthMJ2000Eq",
+        )
+        operation_attempts["object_registrations"] += 1
         _call_service(
             frame_authority,
             "update_attribute_values",
@@ -659,9 +878,17 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             },
             _tag_bytes("space-reference-frame"),
         )
+        operation_attempts["attribute_updates"] += 1
         active_producer_count = len(producer_rtis)
         for idx, rti in enumerate(producer_rtis, start=1):
-            entity = _call_service(rti, "register_object_instance", "registerObjectInstance", entity_class, f"Scout-{idx}")
+            entity_attrs = entity_attrs_by_rti[rti]
+            entity = register_named_object_instance(
+                rti,
+                federate_by_rti[rti],
+                entity_classes[rti],
+                f"Scout-{idx}",
+            )
+            operation_attempts["object_registrations"] += 1
             _call_service(
                 rti,
                 "update_attribute_values",
@@ -676,6 +903,7 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 },
                 _tag_bytes(f"space-dynamics-state-{idx}"),
             )
+            operation_attempts["attribute_updates"] += 1
             _call_service(
                 rti,
                 "update_attribute_values",
@@ -687,7 +915,16 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 },
                 _tag_bytes(f"space-dynamics-update-{idx}"),
             )
+            operation_attempts["attribute_updates"] += 1
         _drain(runtime, *rtis)
+        if topology.federate_count == 2:
+            _wait_pair_delivery(
+                frame_authority,
+                rtis[-1],
+                monitor,
+                discover_expected=discover_baseline + 1 + active_producer_count,
+                reflect_expected=reflect_baseline + 1 + (active_producer_count * 2),
+            )
         lifecycle.append("space-state-reflected")
 
         discoveries = monitor.callbacks_named("discoverObjectInstance")
@@ -712,6 +949,11 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             "discoveries": len(discoveries),
             "reflections": len(reflections),
             "interactions": 0,
+            "operation_attempts": operation_attempts,
+            "federate_callback_summaries": {
+                f"SpaceFederate{idx + 1}": _callback_summary(federate)
+                for idx, federate in enumerate(federates)
+            },
             "delivered_tags": [],
             "key_outcome": "reference frame plus multi-entity orbital state updates propagated across the observer set",
             "execution_complete": execution_complete,

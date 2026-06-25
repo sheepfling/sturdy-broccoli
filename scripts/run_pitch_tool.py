@@ -358,7 +358,7 @@ def _doctor_pitch_docker() -> int:
 
 
 def _usage() -> str:
-    return f"""usage: {TOOL_LABEL} [preflight|install|start|stop|restart|status|logs|smoke|smoke-best-effort|verify|verify-best-effort|202x-certify|fom-smoke|fom-smoke-compare|all|doctor]
+    return f"""usage: {TOOL_LABEL} [preflight|install|start|stop|restart|status|logs|smoke|smoke-best-effort|verify|verify-best-effort|202x-certify|202x-micro-certify|fom-smoke|fom-smoke-compare|all|doctor]
 
 Simple Pitch Docker workflow:
   {TOOL_LABEL} preflight [--json] # check Docker and Pitch runtime prerequisites
@@ -369,6 +369,7 @@ Simple Pitch Docker workflow:
   {TOOL_LABEL} verify    # run the full real Pitch backend matrix
   {TOOL_LABEL} verify-best-effort # run Pitch verify and treat blocked local preflight as report-only
   {TOOL_LABEL} 202x-certify # run the 202X surface audit plus trial-safe real-runtime credence packet
+  {TOOL_LABEL} 202x-micro-certify # run the bounded three-family micro comparison across real Pitch 2010 and pitch-202x adapter routes
   {TOOL_LABEL} fom-smoke [--kind ...] [--packet ...] # probe example-FOM load/lookup support across the two Pitch runtimes and the explicit pitch-202x-* adapter routes
   {TOOL_LABEL} fom-smoke-compare # generate a side-by-side packet over the real Pitch 2010 and pitch-202x adapter smoke artifacts
   {TOOL_LABEL} save-restore # report the current real Pitch save/restore gap profile
@@ -436,6 +437,11 @@ def main(argv: list[str] | None = None) -> int:
         return _run_best_effort("pitch-verify")
     if command == "202x-certify":
         return _run_with_preflight("pitch-verify", [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "run_pitch_202x_certification.py")])
+    if command == "202x-micro-certify":
+        return _run_with_preflight(
+            "pitch-verify",
+            [_python_bin(), str(SCRIPT_REPO_ROOT / "scripts" / "run_pitch_202x_micro_certification.py")],
+        )
     if command == "fom-smoke":
         if not _require_preflight():
             return 1

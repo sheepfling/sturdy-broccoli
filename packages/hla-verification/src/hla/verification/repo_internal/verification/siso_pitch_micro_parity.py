@@ -153,6 +153,9 @@ def run_siso_pitch_micro_parity(
                     "reflections": int(scenario_result.get("reflections", 0)),
                     "interactions": int(scenario_result.get("interactions", 0)),
                     "lifecycle": list(scenario_result.get("lifecycle", [])),
+                    "operation_attempts": _jsonable(scenario_result.get("operation_attempts", {})),
+                    "federate_callback_summaries": _jsonable(scenario_result.get("federate_callback_summaries", {})),
+                    "delivered_tags": _jsonable(scenario_result.get("delivered_tags", [])),
                 }
             )
         except (BackendUnavailableError, ModuleNotFoundError, ImportError, OSError) as exc:
