@@ -2,22 +2,25 @@
 
 This repository is a Python-first IEEE HLA workspace.
 
-- `hla.rti1516e` is the IEEE 1516.1-2010 API package
-- `hla.rti1516_2025` is the IEEE 1516.1-2025 API package
-- `hla.rti` owns cross-version discovery and ambassador creation
-- multiple backend, transport, vendor, bridge, FOM, and verification packages
-- Use `hla.backends.python1516_2025` for the main Python RTI backend for IEEE 1516.1-2025.
-- `hla-backend-python1516-2025` is the main full executable Python RTI implementation lane.
-- `hla-backend-shim` is a compatibility-wrapper package over that runtime, not a separate RTI family.
-- Java and C++ 2025 binding routes are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs.
-- `hla-backend-shim` remains only as compatibility-wrapper/import-compatibility code around that runtime.
-- `python1516_2025` is the main Python RTI implementation lane for IEEE 1516.1-2025.
-- `hla.backends.shim` is compatibility-wrapper/import-compatibility code over `python1516_2025`.
+It gives you:
 
-The repo is large. The right way to approach it is by lane, not by reading
-everything.
+- installable IEEE HLA API packages for 2010 and 2025
+- Python RTI implementation lanes for both editions
+- vendor, bridge, hosted, and transport-backed RTI routes
+- runnable examples, FOM tooling, and verification lanes
 
-## Start Here
+The front door is route-oriented:
+
+- use `./tools/...` commands for operator workflows
+- use `hla.rti`, `hla.rti1516e`, and `hla.rti1516_2025` for code-facing RTI entrypoints
+- pass backend or route names such as `python1516e`, `python1516_2025`, `pitch-jpype`, or `certi` as selector strings
+
+Those names are lookup strings that select a route. They are not all separate RTI
+implementations.
+
+## Fastest Paths
+
+### Get Repo Green
 
 If you want the shortest path to repo green:
 
@@ -31,6 +34,8 @@ source .venv/bin/activate
 Use [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md) for the
 shortest junior-friendly verification path.
 
+### Run Something
+
 If you want the shortest path to something running:
 
 ```bash
@@ -40,8 +45,55 @@ source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python1516e --steps 5
 python examples/target_radar_simulation.py --backend python1516_2025 --steps 5
+```
+
+If you want the broader default local test surface after that:
+
+```bash
 ./tools/test
 ```
+
+## Route Mental Model
+
+The main route identities are:
+
+- `python1516e`: primary in-process IEEE 1516.1-2010 Python RTI lane
+- `python1516_2025`: primary in-process IEEE 1516.1-2025 Python RTI lane
+- `python1516_2025` with transport options: hosted 2025 route over the same runtime
+- `pitch-jpype`, `pitch-py4j`, `certi`, and similar names: vendor or bridge-backed routes
+
+Example:
+
+```python
+from hla.runtime.factory import create_rti_ambassador
+
+rti_2010 = create_rti_ambassador("python1516e")
+rti_2025 = create_rti_ambassador("python1516_2025")
+rti_pitch = create_rti_ambassador("pitch-jpype")
+```
+
+Important architecture rule:
+
+- `hla-backend-python1516-2025` is the implementation-owning 2025 Python RTI package
+- `hla-backend-shim` and `hla.backends.shim` are legacy compatibility layers, not separate RTI families
+- Java and C++ 2025 bindings are supporting route surfaces over the Python 2025 lane, not alternate Python RTIs
+
+Practical rule:
+
+- treat `python1516e`, `python1516_2025`, `pitch-jpype`, `pitch-py4j`, and `certi` as route names you choose at the edge
+- do not start by reasoning about shim packages unless you are editing bridge or compatibility code
+
+At the package level:
+
+- `hla.rti1516e` is the IEEE 1516.1-2010 API package
+- `hla.rti1516_2025` is the IEEE 1516.1-2025 API package
+- `hla.rti` owns cross-version discovery and ambassador creation
+- the repo also contains backend, transport, vendor, bridge, FOM, and verification packages
+
+The repo is large. The right way to approach it is by lane, not by reading
+everything.
+
+## Main Commands
 
 Operator commands that matter from the top level:
 
@@ -56,30 +108,34 @@ Operator commands that matter from the top level:
 - `./tools/pitch preflight`
 - `./tools/vendor-green matrix`
 
-If you want the main follow-on guides, use:
+## Read Next
+
+Start with these:
 
 - [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md): one-page junior path to repo green
 - [`docs/onboarding.md`](docs/onboarding.md): choose the right path for your goal
 - [`docs/first_run.md`](docs/first_run.md): shortest fresh-checkout walkthrough
 - [`docs/python_environment.md`](docs/python_environment.md): fuller environment and install story
-- [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md): shortest junior-friendly repo-green, rerun, and failure-diagnosis path
-- [`docs/test_surface.md`](docs/test_surface.md): lane and focused-target map
-- [`docs/README.md`](docs/README.md): docs index by task
 
-Read [`docs/first_run.md`](docs/first_run.md) for the direct `python1516e` bootstrap lane.
+Read [`docs/first_run.md`](docs/first_run.md) for the direct `python1516e`
+bootstrap lane.
 
-If you need a specific lane:
+## Common Tasks
 
+If you need a specific lane or deeper task guide:
+
+- repo-green failure diagnosis: [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md)
+- lane and focused-target map: [`docs/test_surface.md`](docs/test_surface.md)
 - repo mental model: [`docs/repo_mental_model.md`](docs/repo_mental_model.md)
 - runtime editing: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
-- package structure: [`docs/package_layout.md`](docs/package_layout.md)
-- import rules: [`docs/import_boundary_rules.md`](docs/import_boundary_rules.md)
+- package structure and imports: [`docs/package_layout.md`](docs/package_layout.md), [`docs/import_boundary_rules.md`](docs/import_boundary_rules.md)
 - FOM tooling: [`docs/fom_workbench.md`](docs/fom_workbench.md)
 - two-federate flow: [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md)
+- Java bridge work: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md), [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md), [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
 - package inventory: [`packages/README.md`](packages/README.md)
-- minimal Java bridge wrapping recipe: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md)
-- Java bridge quick guide: [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md)
-- Java bridge architecture: [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
+- full docs index: [`docs/README.md`](docs/README.md)
+
+## 2025 Verification Lanes
 
 For the main 2025 Python RTI proof lanes:
 
@@ -89,7 +145,7 @@ For the main 2025 Python RTI proof lanes:
 - Run `./tools/python verify-routes-2025` when you also need the bounded hosted `python1516_2025-fedpro-grpc` route lane.
 - Accepted runtime spellings: `python1516_2025`, `python-1516-2025`, `python-1516-2025`.
 
-## What Lives Where
+## Repository Layout
 
 - `packages/`: installable workspace packages
 - `docs/`: operator guides, architecture notes, and reference material
@@ -115,7 +171,7 @@ Pick one of these and stay in it:
 
 The repo becomes manageable once the scope is that small.
 
-## Read Next
+## Default Reading Order
 
 1. [`docs/onboarding.md`](docs/onboarding.md)
 2. [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md)
