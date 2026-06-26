@@ -3,8 +3,8 @@
 This generated backlog turns the harmonized open requirements rows into repo-native implementation queues.
 Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Transports`, because those are cross-cutting execution backlogs rather than mutually exclusive taxonomies.
 
-- Total open rows: 544
-- Total queue items: 297
+- Total open rows: 523
+- Total queue items: 276
 - Families: 11
 
 ## Queue Summary
@@ -18,10 +18,10 @@ Some rows intentionally appear in multiple queues, especially `MOM/MIM` and `Tra
 | Time Management | 38 | 19 | partial:38 | EXC:19, PRE:19 |
 | Data Distribution Management | 6 | 6 | partial:6 | EXC:6 |
 | Support Services | 86 | 43 | partial:86 | EXC:43, PRE:43 |
-| MOM/MIM | 3 | 3 | partial:3 | SEED:2, EFF:1 |
-| OMT | 16 | 16 | partial:16 | SEED:16 |
-| XML | 2 | 2 | partial:2 | SEED:2 |
-| Transports | 227 | 136 | partial:227 | PRE:104, EXC:86, EFF:22 |
+| MOM/MIM | 1 | 1 | partial:1 | EFF:1 |
+| OMT | 0 | 0 | - | - |
+| XML | 0 | 0 | - | - |
+| Transports | 226 | 135 | partial:226 | PRE:104, EXC:86, EFF:22 |
 
 ## Federation Management
 
@@ -251,67 +251,47 @@ Clause 10 packet-to-curated backlog for support services.
 
 Cross-cutting MOM observer, MOM service-reporting, and standard MIM backlog rows.
 
-- Open rows: 3
-- Queue items: 3
-- Statuses: partial:3
-- Kinds: EFF:1, SEED:2
+- Open rows: 1
+- Queue items: 1
+- Statuses: partial:1
+- Kinds: EFF:1
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
 | Create Federation Execution | 4.5 | 1 | EFF:1 | HLA1516.1-FM-4.5-EFF-001 | test_create_federation_execution_with_explicit_mim_uses_requested_module | Add focused runtime or state-transition evidence for the remaining behavioral slice. |
-| FOM module merging | 7 | 1 | SEED:1 | HLA1516.2-MERGE-001 | test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Standard MIM representation | Annex D and standard MIM handling | 1 | SEED:1 | HLA1516.2-MIM-001 | test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
 
 ## OMT
 
 Open IEEE 1516.2 OMT parser, merge, and model-structure backlog rows.
 
-- Open rows: 16
-- Queue items: 16
-- Statuses: partial:16
-- Kinds: SEED:16
+- Open rows: 0
+- Queue items: 0
+- Statuses: -
+- Kinds: -
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Attribute tables | 4.4 | 1 | SEED:1 | HLA1516.2-ATTR-001 | test_python_rti_resolves_fom_path_and_uses_requested_time_factory | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Datatype and time representation tables | 4.7 | 1 | SEED:1 | HLA1516.2-DT-001 | test_parse_fom_xml_extracts_identification_names_and_reference_datatypes | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Datatype system | 4.13 | 1 | SEED:1 | HLA1516.2-DT-002 | test_parse_standard_mim_xml_extracts_structured_datatype_definitions | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Dimension tables | 4.6 | 1 | SEED:1 | HLA1516.2-DIM-001 | test_parse_fom_xml_rejects_duplicate_dimension_names | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| FOM module merging | 7 | 1 | SEED:1 | HLA1516.2-MERGE-001 | test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Interaction class structure | 4.3 | 1 | SEED:1 | HLA1516.2-IC-001 | test_python_rti_resolves_fom_path_and_uses_requested_time_factory | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Notes tables | 4.14 | 1 | SEED:1 | HLA1516.2-NOTE-001 | test_parse_fom_xml_preserves_notes_and_catalog_notes | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| OMT merge behavior | 7 | 1 | SEED:1 | HLA1516.2-OMT-001 | test_join_fom_time_conflict_is_transactional | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Object class structure | 4.2 | 1 | SEED:1 | HLA1516.2-OC-001 | test_python_rti_resolves_fom_path_and_uses_requested_time_factory | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Object model identification | 4 | 1 | SEED:1 | HLA1516.2-ID-001 | test_parse_fom_xml_requires_and_preserves_model_identification_metadata | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Parameter tables | 4.5 | 1 | SEED:1 | HLA1516.2-PARAM-001 | test_python_rti_resolves_fom_path_and_uses_requested_time_factory | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Standard MIM representation | Annex D and standard MIM handling | 1 | SEED:1 | HLA1516.2-MIM-001 | test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Switch metadata | 4.12 | 1 | SEED:1 | HLA1516.2-SWITCH-001 | test_parse_fom_xml_extracts_switch_table_settings_and_merge_summary | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Synchronization tables | 4.9 | 1 | SEED:1 | HLA1516.2-SYNC-001 | test_parse_fom_xml_extracts_synchronization_table_and_merge_summary | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Transportation tables | 4.10 | 1 | SEED:1 | HLA1516.2-TRANS-001 | test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| Update rate designators | 4.11 | 1 | SEED:1 | HLA1516.2-URATE-001 | test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
 
 ## XML
 
 Open IEEE 1516.2 XML and schema-conformance backlog rows.
 
-- Open rows: 2
-- Queue items: 2
-- Statuses: partial:2
-- Kinds: SEED:2
+- Open rows: 0
+- Queue items: 0
+- Statuses: -
+- Kinds: -
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
-| Schema conformance | Annex E | 1 | SEED:1 | HLA1516.2-OMT-002 | test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
-| XML interchange | Annex E | 1 | SEED:1 | HLA1516.2-XML-001 | test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document | Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes. |
 
 ## Transports
 
 Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.
 
-- Open rows: 227
-- Queue items: 136
-- Statuses: partial:227
-- Kinds: ARG:4, EFF:22, EXC:86, PRE:104, SEED:1, SEM:2, SVC:8
+- Open rows: 226
+- Queue items: 135
+- Statuses: partial:226
+- Kinds: ARG:4, EFF:22, EXC:86, PRE:104, SEM:2, SVC:8
 
 | Queue item | Clause | Open rows | Kinds | Requirement IDs | Acceptance tests | Next action |
 |---|---|---:|---|---|---|---|
@@ -358,7 +338,6 @@ Cross-cutting native/gRPC/REST transport-equivalence and transportation-type bac
 | Send Interaction | 6.12 | 3 | EFF:1, EXC:1, PRE:1 | HLA1516.1-OM-6_12-PRE-004, HLA1516.1-OM-6_12-EFF-005, HLA1516.1-OM-6_12-EXC-006 | test_two_python_federates_share_in_memory_rti | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Synchronization Point Achieved | 4.14 | 1 | EFF:1 | HLA1516.1-FM-4.14-EFF-001 | test_synchronization_point_achieved_rejects_not_connected_not_joined_and_unknown_label | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Synchronization Point Registration callbacks | 4.12 | 1 | EFF:1 | HLA1516.1-FM-4.12-EFF-001 | test_register_federation_synchronization_point_reports_duplicate_and_invalid_target_failures | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
-| Transportation tables | 4.10 | 1 | SEED:1 | HLA1516.2-TRANS-001 | test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | Update Attribute Values | 6.10 | 3 | EFF:1, EXC:1, PRE:1 | HLA1516.1-OM-6_10-PRE-004, HLA1516.1-OM-6_10-EFF-005, HLA1516.1-OM-6_10-EXC-006 | test_two_python_federates_share_in_memory_rti, test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | attributeOwnershipAcquisition | 7.8 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-EXC-001, HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-PRE-001 | test_python_rti_acquisition_if_available_reports_unavailable_without_transfer | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |
 | attributeOwnershipAcquisitionIfAvailable | 7.9 | 2 | EXC:1, PRE:1 | HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-EXC-001, HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-PRE-001 | test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows, test_python_rti_acquisition_if_available_reports_unavailable_without_transfer | Add native/gRPC/REST parity coverage or carve out the supported subset explicitly. |

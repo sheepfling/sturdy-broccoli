@@ -23,8 +23,8 @@ The broader `2010` backend-compliance packet also no longer contains any
 The former OMT-area and schema-conformance placeholders are now settled
 explicitly as:
 
-- `5` `pass` OMT area rows
-- `7` bounded `partial` OMT/XML area rows
+- `7` `pass` OMT area rows
+- `5` bounded `partial` OMT/XML area rows
 - `1` `implemented-slice` schema-conformance row
 
 The remaining `2010` truth shape is already explicit and bounded:
@@ -49,10 +49,10 @@ Use this snapshot when the question is:
 Current `analysis/compliance/requirements_matrix_2010.csv` totals:
 
 - `934` matrix rows
-- `799` `pass`
+- `808` `pass`
 - `40` `implemented-slice`
 - `1` `implemented-smoke`
-- `94` `partial`
+- `85` `partial`
 
 Interpretation rule:
 
@@ -187,14 +187,14 @@ Reason:
    `43 PRE`, `43 EXC`, and `43 EXC_API` rows
 2. the current support-service shard is green, but the remaining packet rows
    still describe broader negative envelopes than the direct witnesses
-3. the two still-visible support-service factory-helper packet rows remain
-   explicitly named and bounded rather than hidden:
+3. the previously confusing factory-helper rows are no longer part of the live
+   Python residual set:
    - `REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`
    - `REQ-RTI-SS-10_44-getRegionHandleFactory`
-   - both currently rely on grouped support-service evidence from
-     `tests/scenarios/test_support_services_backend_matrix.py` plus
-     `analysis/compliance/service_conformance.json`
-   - neither row has its own narrower direct factory-helper witness yet
+   - both now read `status=pass` with `python_runtime_disposition=verified` in
+     `analysis/compliance/requirements_matrix_2010.csv`
+   - that confirms the remaining `CAP-SUP` debt is the broad negative-path
+     envelope, not missing positive-path helper coverage
 4. no narrower direct claim was identified that would preserve the current
    Clause 10 row meanings without adding new exhaustive per-service
    negative-matrix proof

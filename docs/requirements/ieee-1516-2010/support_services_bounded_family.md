@@ -83,9 +83,8 @@ The remaining `129 partial` rows are structurally narrow and uniform:
 - `43 EXC`
 - `43 EXC_API`
 
-Two still-visible `vendor-divergent` packet rows inside the broader support
-surface are worth naming explicitly because they are easy to confuse with
-missing Clause 10 support:
+Two formerly confusing support-service rows are worth naming explicitly because
+they no longer belong in the live Python residual set:
 
 - `REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`
 - `REQ-RTI-SS-10_44-getRegionHandleFactory`
@@ -94,12 +93,12 @@ Current reading for those two rows:
 
 - the Python lane has implementation hooks and group-level support-service
   evidence
-- the canonical row status still stays `partial`
-- the Python backend-compliance packet still records them as
-  `python_runtime_disposition=vendor-divergent`
-- the honest reason is not "service absent"; it is that the current evidence
-  remains a grouped support-service slice instead of a narrower per-row witness
-  with its own direct positive or negative factory-helper proof
+- the canonical row status now reads `pass`
+- the Python backend-compliance packet now records them as
+  `python_runtime_disposition=verified`
+- that promotion makes the current family boundary clearer: the remaining
+  `CAP-SUP` partial tail is the broad `PRE`/`EXC`/`EXC_API` envelope, not
+  missing positive-path factory-helper coverage
 
 Primary current artifacts for those two rows:
 

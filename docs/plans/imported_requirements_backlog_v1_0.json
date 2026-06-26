@@ -3531,11 +3531,10 @@
       "description": "Cross-cutting MOM observer, MOM service-reporting, and standard MIM backlog rows.",
       "family": "MOM/MIM",
       "kinds": {
-        "EFF": 1,
-        "SEED": 2
+        "EFF": 1
       },
-      "open_row_count": 3,
-      "queue_item_count": 3,
+      "open_row_count": 1,
+      "queue_item_count": 1,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -3557,459 +3556,29 @@
             "partial": 1
           },
           "suggested_next_action": "Add focused runtime or state-transition evidence for the remaining behavioral slice."
-        },
-        {
-          "acceptance_tests": [
-            "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
-          ],
-          "clause": "7",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "FOM module merging",
-          "requirement_ids": [
-            "HLA1516.2-MERGE-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
-          ],
-          "clause": "Annex D and standard MIM handling",
-          "implementation_areas": [
-            "hla2010/resources/foms/HLAstandardMIM.xml"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Standard MIM representation",
-          "requirement_ids": [
-            "HLA1516.2-MIM-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
         }
       ],
       "statuses": {
-        "partial": 3
+        "partial": 1
       }
     },
     {
       "description": "Open IEEE 1516.2 OMT parser, merge, and model-structure backlog rows.",
       "family": "OMT",
-      "kinds": {
-        "SEED": 16
-      },
-      "open_row_count": 16,
-      "queue_item_count": 16,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_python_rti_resolves_fom_path_and_uses_requested_time_factory"
-          ],
-          "clause": "4.4",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Attribute tables",
-          "requirement_ids": [
-            "HLA1516.2-ATTR-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_extracts_identification_names_and_reference_datatypes"
-          ],
-          "clause": "4.7",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Datatype and time representation tables",
-          "requirement_ids": [
-            "HLA1516.2-DT-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_standard_mim_xml_extracts_structured_datatype_definitions"
-          ],
-          "clause": "4.13",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Datatype system",
-          "requirement_ids": [
-            "HLA1516.2-DT-002"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_rejects_duplicate_dimension_names"
-          ],
-          "clause": "4.6",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Dimension tables",
-          "requirement_ids": [
-            "HLA1516.2-DIM-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
-          ],
-          "clause": "7",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "FOM module merging",
-          "requirement_ids": [
-            "HLA1516.2-MERGE-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_resolves_fom_path_and_uses_requested_time_factory"
-          ],
-          "clause": "4.3",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Interaction class structure",
-          "requirement_ids": [
-            "HLA1516.2-IC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_preserves_notes_and_catalog_notes"
-          ],
-          "clause": "4.14",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Notes tables",
-          "requirement_ids": [
-            "HLA1516.2-NOTE-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_join_fom_time_conflict_is_transactional"
-          ],
-          "clause": "7",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "OMT merge behavior",
-          "requirement_ids": [
-            "HLA1516.2-OMT-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_resolves_fom_path_and_uses_requested_time_factory"
-          ],
-          "clause": "4.2",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Object class structure",
-          "requirement_ids": [
-            "HLA1516.2-OC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_requires_and_preserves_model_identification_metadata"
-          ],
-          "clause": "4",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Object model identification",
-          "requirement_ids": [
-            "HLA1516.2-ID-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_python_rti_resolves_fom_path_and_uses_requested_time_factory"
-          ],
-          "clause": "4.5",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Parameter tables",
-          "requirement_ids": [
-            "HLA1516.2-PARAM-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata"
-          ],
-          "clause": "Annex D and standard MIM handling",
-          "implementation_areas": [
-            "hla2010/resources/foms/HLAstandardMIM.xml"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Standard MIM representation",
-          "requirement_ids": [
-            "HLA1516.2-MIM-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_extracts_switch_table_settings_and_merge_summary"
-          ],
-          "clause": "4.12",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Switch metadata",
-          "requirement_ids": [
-            "HLA1516.2-SWITCH-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_extracts_synchronization_table_and_merge_summary"
-          ],
-          "clause": "4.9",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Synchronization tables",
-          "requirement_ids": [
-            "HLA1516.2-SYNC-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables"
-          ],
-          "clause": "4.10",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Transportation tables",
-          "requirement_ids": [
-            "HLA1516.2-TRANS-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables"
-          ],
-          "clause": "4.11",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Update rate designators",
-          "requirement_ids": [
-            "HLA1516.2-URATE-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        }
-      ],
-      "statuses": {
-        "partial": 16
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Open IEEE 1516.2 XML and schema-conformance backlog rows.",
       "family": "XML",
-      "kinds": {
-        "SEED": 2
-      },
-      "open_row_count": 2,
-      "queue_item_count": 2,
-      "queue_items": [
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document"
-          ],
-          "clause": "Annex E",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Schema conformance",
-          "requirement_ids": [
-            "HLA1516.2-OMT-002"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document"
-          ],
-          "clause": "Annex E",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "XML interchange",
-          "requirement_ids": [
-            "HLA1516.2-XML-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Promote the remaining partial rows with narrower direct evidence or explicit supported-subset notes."
-        }
-      ],
-      "statuses": {
-        "partial": 2
-      }
+      "kinds": {},
+      "open_row_count": 0,
+      "queue_item_count": 0,
+      "queue_items": [],
+      "statuses": {}
     },
     {
       "description": "Cross-cutting native/gRPC/REST transport-equivalence and transportation-type backlog rows.",
@@ -4019,12 +3588,11 @@
         "EFF": 22,
         "EXC": 86,
         "PRE": 104,
-        "SEED": 1,
         "SEM": 2,
         "SVC": 8
       },
-      "open_row_count": 227,
-      "queue_item_count": 136,
+      "open_row_count": 226,
+      "queue_item_count": 135,
       "queue_items": [
         {
           "acceptance_tests": [
@@ -5004,27 +4572,6 @@
           "queue_item": "Synchronization Point Registration callbacks",
           "requirement_ids": [
             "HLA1516.1-FM-4.12-EFF-001"
-          ],
-          "statuses": {
-            "partial": 1
-          },
-          "suggested_next_action": "Add native/gRPC/REST parity coverage or carve out the supported subset explicitly."
-        },
-        {
-          "acceptance_tests": [
-            "test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables"
-          ],
-          "clause": "4.10",
-          "implementation_areas": [
-            "hla2010/fom.py"
-          ],
-          "kinds": {
-            "SEED": 1
-          },
-          "open_row_count": 1,
-          "queue_item": "Transportation tables",
-          "requirement_ids": [
-            "HLA1516.2-TRANS-001"
           ],
           "statuses": {
             "partial": 1
@@ -7228,11 +6775,11 @@
         }
       ],
       "statuses": {
-        "partial": 227
+        "partial": 226
       }
     }
   ],
   "generated_from": "harmonized requirements ledgers + imported HLA packet v1.0",
-  "total_open_rows": 544,
-  "total_queue_items": 297
+  "total_open_rows": 523,
+  "total_queue_items": 276
 }

@@ -50,8 +50,8 @@ register because they are now classified explicitly in
 [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 as:
 
-- `5` `pass` OMT area rows
-- `7` bounded `partial` OMT/XML area rows
+- `7` `pass` OMT area rows
+- `5` bounded `partial` OMT/XML area rows
 - `1` `implemented-slice` Annex E schema witness
 
 Use that worklist when the question is whether to tighten those bounded rows

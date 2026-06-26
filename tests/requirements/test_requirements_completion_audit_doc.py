@@ -29,19 +29,17 @@ def test_requirements_completion_audit_keeps_owner_vs_presentation_split_explici
     assert "current direct coverage on that active denominator: `645 / 645 = 100%`" in text
     assert "backend-compliance packet denominator: `934` matrix rows" in text
     assert "do not collapse those two denominators into one cross-edition completion" in text
-    assert "`94` `partial`" in text
-    assert "`25` `partial` rows with Python still `vendor-divergent`" in text
+    assert "`85` `partial`" in text
+    assert "`23` `partial` rows with Python still `vendor-divergent`" in text
     assert "`14` OMT or 1516.2 family breadth rows" in text
     assert "`4` federation-management effect-vector rows" in text
     assert "`3` framework or architecture rows owned by" in text
-    assert "`REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`" in text
-    assert "`REQ-RTI-SS-10_44-getRegionHandleFactory`" in text
     assert "hla1516_framework_detailed_reconciliation.csv" in text
     assert "the `2010` packet no longer contains any `planned` inventory rows" in text
-    assert "`5` `pass` OMT area rows" in text
-    assert "`7` bounded `partial` OMT/XML area rows" in text
+    assert "`7` `pass` OMT area rows" in text
+    assert "`5` bounded `partial` OMT/XML area rows" in text
     assert "`1` `implemented-slice` Annex E schema witness" in text
-    assert "current bounded reading is already explicit for the `113` remaining rows" in text
+    assert "current bounded reading is already explicit for the `109` remaining rows" in text
     assert "No separate `2010` `planned` inventory remains in the current packet." in text
     assert "whether the repo wants to tighten the remaining bounded" in text
     assert "the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class" in text

@@ -12,8 +12,8 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
 
     for token in (
         "`934` matrix rows",
-        "`799` `pass`",
-        "`94` `partial`",
+        "`808` `pass`",
+        "`85` `partial`",
         "`0` `planned`",
         "`40` `implemented-slice`",
         "mixed_backend_priority_boundaries.md",
@@ -33,8 +33,8 @@ def test_2010_bounded_family_execution_worklist_lists_current_bounded_buckets() 
     assert "`CAP-OM`: `103 partial`" in text
     assert "`CAP-FM`: `109 partial`" in text
     assert "`CAP-OMT`: `2 partial`" in text
-    assert "`5` `pass` OMT area rows" in text
-    assert "`7` bounded `partial` OMT/XML area rows" in text
+    assert "`7` `pass` OMT area rows" in text
+    assert "`5` bounded `partial` OMT/XML area rows" in text
     assert "`1` `implemented-slice` schema-conformance row" in text
 
     for token in (
@@ -62,7 +62,7 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "`43 PRE`, `43 EXC`, and `43 EXC_API` rows" in text
     assert "`REQ-RTI-SS-10_44-getMessageRetractionHandleFactory`" in text
     assert "`REQ-RTI-SS-10_44-getRegionHandleFactory`" in text
-    assert "`analysis/compliance/service_conformance.json`" in text
+    assert "`status=pass` with `python_runtime_disposition=verified`" in text
     assert "keep the `CAP-DM` family as canonical `partial`" in text
     assert "`12 PRE`, `12 EXC`, and `14 EXC_API` rows" in text
     assert "isolated per-row precondition or" in text
@@ -90,7 +90,6 @@ def test_2010_bounded_family_execution_worklist_keeps_owner_and_tightening_rules
     assert "Annex B normalization rows" in text
     assert "there is no remaining hidden `planned` inventory in the `2010` packet" in text
     assert "do not describe the `2010` lane as if every remaining non-`pass` row were" in text
-    assert "Recommended Planned-Row Burn-Down Order" in text
     assert "the remaining OMT/XML rows are no longer planned inventory" in text
     assert "hosted transport connect overload bug" in text
     assert "verification/shard_registry.md" in text

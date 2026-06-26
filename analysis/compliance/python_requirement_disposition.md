@@ -17,11 +17,11 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 37 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §8 | 61 | 59 | 0 | 0 | 0 | 2 | 0 |
 | IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
-| IEEE 1516.2-2010 (2010 edition) unknown | 18 | 14 | 0 | 2 | 0 | 2 | 0 |
-| IEEE 1516.2-2010 (2010 edition) §4 | 112 | 86 | 0 | 11 | 0 | 15 | 0 |
+| IEEE 1516.2-2010 (2010 edition) unknown | 18 | 16 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.2-2010 (2010 edition) §4 | 112 | 97 | 0 | 0 | 0 | 15 | 0 |
 | IEEE 1516.2-2010 (2010 edition) §5 | 2 | 1 | 0 | 0 | 0 | 1 | 0 |
 | IEEE 1516.2-2010 (2010 edition) §6 | 2 | 1 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.2-2010 (2010 edition) §7 | 15 | 13 | 0 | 1 | 0 | 1 | 0 |
+| IEEE 1516.2-2010 (2010 edition) §7 | 15 | 14 | 0 | 0 | 0 | 1 | 0 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 6 | 0 |
 | multi-section §12 | 5 | 0 | 0 | 0 | 0 | 5 | 0 |
@@ -62,39 +62,25 @@ This audit projects the shared HLA 2010 requirements matrix onto `python` so eve
 | IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | extracted-requirement | The RTI shall implement MOM behavior for tables, reports, service actions, observer reconstruction, and service-reporting state |
 | IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-ID-001 | vendor-divergent | extracted-requirement | OMT parser shall capture object model identification metadata sufficient to distinguish the module and preserve provenance |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4-omt_components | not-applicable | omt-area | HLA OMT components |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_1-object_model_identification | not-applicable | omt-area | Object model identification |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-TRANS-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve transportation-type declarations and resolve attribute and interaction references to valid transportation types |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_10-transportation_type_table | not-applicable | omt-area | Transportation type table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-URATE-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve update-rate designators and validate references to them from object-model metadata |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_11-update_rate_table | not-applicable | omt-area | Update rate table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-SWITCH-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve switch declarations and resolve switch references used by MOM and support services |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_12-switches_table | not-applicable | omt-area | Switches table |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_13-datatype_table | not-applicable | omt-area | Datatype tables |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-NOTE-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve note content through parse and serialization |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_14-notes_table | not-applicable | omt-area | Notes table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-OC-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve the object-class hierarchy and inheritance relationships |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_2-object_class_structure | not-applicable | omt-area | Object class structure table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-IC-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve the interaction-class hierarchy and inheritance relationships |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_3-interaction_class_structure | not-applicable | omt-area | Interaction class structure table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-ATTR-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve attribute declarations and make them available for object-class lookup |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_4-attribute_table | not-applicable | omt-area | Attribute table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-PARAM-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve interaction-parameter declarations and make them available for interaction-class lookup |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_5-parameter_table | not-applicable | omt-area | Parameter table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-DIM-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve routing-space dimension names for DDM and region use |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_6-dimension_table | not-applicable | omt-area | Dimension table |
-| IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-DT-001 | vendor-divergent | extracted-requirement | OMT parser shall preserve logical-time and datatype metadata used by the active catalog |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_7-time_representation_table | not-applicable | omt-area | Time representation table |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_8-user_supplied_tag_table | not-applicable | omt-area | User-supplied tag table |
 | IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_9-synchronization_table | not-applicable | omt-area | Synchronization table |
 | IEEE 1516.2-2010 (2010 edition) | 5 | REQ-OMT-5-lexicon | not-applicable | omt-area | FOM/SOM lexicon |
 | IEEE 1516.2-2010 (2010 edition) | 6 | REQ-OMT-6-conformance | not-applicable | omt-area | Conformance |
-| IEEE 1516.2-2010 (2010 edition) | 7 | HLA1516.2-OMT-001 | vendor-divergent | extracted-requirement | OMT merge shall apply the supported merge rules and reject conflicts that would produce an inconsistent merged model |
 | IEEE 1516.2-2010 (2010 edition) | 7 | REQ-OMT-7-merging_rules | not-applicable | omt-area | FOM module/SOM module merging rules |
 | IEEE 1516.2-2010 (2010 edition) | unknown | REQ-OMT-Annex_D-dif | not-applicable | omt-area | OMT data interchange format |
-| IEEE 1516.2-2010 (2010 edition) | unknown | HLA1516.2-MIM-001 | vendor-divergent | extracted-requirement | The standard MIM shall load as part of the effective federation model and expose its MOM/MIM behavior through the normal request and report paths |
-| IEEE 1516.2-2010 (2010 edition) | unknown | HLA1516.2-OMT-002 | vendor-divergent | extracted-requirement | OMT XML schema validation shall reject XML documents that do not conform to the normative OMT schema |
 | IEEE 1516.2-2010 (2010 edition) | unknown | REQ-OMT-Annex_E-schema | not-applicable | omt-area | OMT conformance XML Schema |
 | multi-section | 4 | REQ-SAVE-RESTORE-001 | not-applicable | verification-slice | Save/restore coordinates with time-state and restores logical-time state |
 | multi-section | 4 | SCENARIO-TARGET-RADAR-001 | not-applicable | verification-slice | Two-federate Target/Radar simulation runs over Python RTI and Java shim profiles |

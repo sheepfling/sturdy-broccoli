@@ -34,7 +34,7 @@ def test_requirements_matrix_2010_covers_section_areas_service_rows_and_verifica
     assert by_id["REQ-OMT-4_2-object_class_structure"]["status"] in {"pass", "partial"}
     assert by_id["REQ-OMT-4_1-object_model_identification"]["status"] == "pass"
     assert by_id["REQ-OMT-4_8-user_supplied_tag_table"]["status"] == "pass"
-    assert by_id["REQ-OMT-Annex_E-schema"]["status"] == "partial"
+    assert by_id["REQ-OMT-Annex_E-schema"]["status"] == "pass"
     assert by_id["REQ-OMT-Annex_E-schema"]["positive_test_refs"]
     assert by_id["REQ-OMT-SCHEMA-001"]["status"] == "implemented-slice"
     assert by_id["REQ-OMT-SCHEMA-001"]["positive_test_refs"]

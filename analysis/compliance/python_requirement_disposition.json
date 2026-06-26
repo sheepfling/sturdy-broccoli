@@ -11561,7 +11561,7 @@
       "matrix_id": "HLA1516.2-ID-001",
       "notes": "verification_method=parser verification; omt.model_identification",
       "requirement_id": "HLA1516.2-ID-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74",
       "title": "OMT parser shall capture object model identification metadata sufficient to distinguish the module and preserve provenance"
@@ -11704,7 +11704,7 @@
       "matrix_id": "HLA1516.2-TRANS-001",
       "notes": "verification_method=parser plus validation tests; omt.transportation",
       "requirement_id": "HLA1516.2-TRANS-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.10",
       "title": "OMT parser shall preserve transportation-type declarations and resolve attribute and interaction references to valid transportation types"
@@ -11808,7 +11808,7 @@
       "matrix_id": "HLA1516.2-URATE-001",
       "notes": "verification_method=parser plus validation tests; omt.update_rates",
       "requirement_id": "HLA1516.2-URATE-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.11",
       "title": "OMT parser shall preserve update-rate designators and validate references to them from object-model metadata"
@@ -11899,7 +11899,7 @@
       "matrix_id": "HLA1516.2-SWITCH-001",
       "notes": "verification_method=parser plus validation tests; omt.switches",
       "requirement_id": "HLA1516.2-SWITCH-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.12",
       "title": "OMT parser shall preserve switch declarations and resolve switch references used by MOM and support services"
@@ -12371,7 +12371,7 @@
       "matrix_id": "HLA1516.2-NOTE-001",
       "notes": "verification_method=parser and serializer tests; omt.notes",
       "requirement_id": "HLA1516.2-NOTE-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.14",
       "title": "OMT parser shall preserve note content through parse and serialization"
@@ -12436,7 +12436,7 @@
       "matrix_id": "HLA1516.2-OC-001",
       "notes": "verification_method=parser plus integration tests; omt.object_classes",
       "requirement_id": "HLA1516.2-OC-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.2",
       "title": "OMT parser shall preserve the object-class hierarchy and inheritance relationships"
@@ -12553,7 +12553,7 @@
       "matrix_id": "HLA1516.2-IC-001",
       "notes": "verification_method=parser plus integration tests; omt.interaction_classes",
       "requirement_id": "HLA1516.2-IC-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.3",
       "title": "OMT parser shall preserve the interaction-class hierarchy and inheritance relationships"
@@ -12670,7 +12670,7 @@
       "matrix_id": "HLA1516.2-ATTR-001",
       "notes": "verification_method=parser plus integration tests; omt.attributes",
       "requirement_id": "HLA1516.2-ATTR-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.4",
       "title": "OMT parser shall preserve attribute declarations and make them available for object-class lookup"
@@ -12709,7 +12709,7 @@
       "matrix_id": "HLA1516.2-PARAM-001",
       "notes": "verification_method=parser plus integration tests; omt.parameters",
       "requirement_id": "HLA1516.2-PARAM-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.5",
       "title": "OMT parser shall preserve interaction-parameter declarations and make them available for interaction-class lookup"
@@ -12748,7 +12748,7 @@
       "matrix_id": "HLA1516.2-DIM-001",
       "notes": "verification_method=parser plus integration tests; omt.dimensions",
       "requirement_id": "HLA1516.2-DIM-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.6",
       "title": "OMT parser shall preserve routing-space dimension names for DDM and region use"
@@ -12800,7 +12800,7 @@
       "matrix_id": "HLA1516.2-DT-001",
       "notes": "verification_method=parser plus integration tests; omt.time_representation",
       "requirement_id": "HLA1516.2-DT-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a74.7",
       "title": "OMT parser shall preserve logical-time and datatype metadata used by the active catalog"
@@ -13123,7 +13123,7 @@
       "matrix_id": "HLA1516.2-OMT-001",
       "notes": "verification_method=merge tests; omt.merge",
       "requirement_id": "HLA1516.2-OMT-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a77",
       "title": "OMT merge shall apply the supported merge rules and reject conflicts that would produce an inconsistent merged model"
@@ -13368,7 +13368,7 @@
       "matrix_id": "HLA1516.2-MIM-001",
       "notes": "verification_method=parser plus MOM observer tests; mom.mim",
       "requirement_id": "HLA1516.2-MIM-001",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a7Annex D and standard MIM handling",
       "title": "The standard MIM shall load as part of the effective federation model and expose its MOM/MIM behavior through the normal request and report paths"
@@ -13381,7 +13381,7 @@
       "matrix_id": "HLA1516.2-OMT-002",
       "notes": "verification_method=schema validation tests; omt.xml_schema.validation",
       "requirement_id": "HLA1516.2-OMT-002",
-      "runtime_disposition": "vendor-divergent",
+      "runtime_disposition": "verified",
       "runtime_status": "",
       "section_ref": "IEEE 1516.2-2010 (2010 edition) \u00a7Annex E",
       "title": "OMT XML schema validation shall reject XML documents that do not conform to the normative OMT schema"
@@ -14199,14 +14199,12 @@
       "IEEE 1516.2-2010 (2010 edition) unknown": {
         "not-applicable": 2,
         "total": 18,
-        "vendor-divergent": 2,
-        "verified": 14
+        "verified": 16
       },
       "IEEE 1516.2-2010 (2010 edition) \u00a74": {
         "not-applicable": 15,
         "total": 112,
-        "vendor-divergent": 11,
-        "verified": 86
+        "verified": 97
       },
       "IEEE 1516.2-2010 (2010 edition) \u00a75": {
         "not-applicable": 1,
@@ -14221,8 +14219,7 @@
       "IEEE 1516.2-2010 (2010 edition) \u00a77": {
         "not-applicable": 1,
         "total": 15,
-        "vendor-divergent": 1,
-        "verified": 13
+        "verified": 14
       },
       "multi-section unknown": {
         "not-applicable": 1,
@@ -14259,8 +14256,8 @@
     },
     "disposition_counts": {
       "not-applicable": 79,
-      "vendor-divergent": 23,
-      "verified": 832
+      "vendor-divergent": 9,
+      "verified": 846
     },
     "row_count": 934,
     "source_artifact": "analysis/compliance/requirements_matrix_2010.json"

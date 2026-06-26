@@ -55,28 +55,27 @@ presentation packet.
 
 - backend-compliance packet denominator: `934` matrix rows
 - canonical status split in that packet:
-  - `799` `pass`
+  - `808` `pass`
   - `40` `implemented-slice`
   - `1` `implemented-smoke`
-  - `94` `partial`
+  - `85` `partial`
 - current Python runtime resolution in that packet:
-  - `830` `verified`
-  - `25` `vendor-divergent`
+  - `832` `verified`
+  - `23` `vendor-divergent`
   - `79` `not-applicable`
 - defended policy-parent packet:
   - `12` intentionally bounded broad partial parents
   - `26` passing supported-subset child proofs
 - exact `partial` shape inside the packet:
-  - `40` `partial` rows with Python already `verified`
-  - `25` `partial` rows with Python still `vendor-divergent`
-  - `29` `partial` rows with Python `not-applicable`
-  - `5` of the `94` `partial` rows are section or area scaffolding rows with no standalone requirement ID
+  - `36` `partial` rows with Python already `verified`
+  - `23` `partial` rows with Python still `vendor-divergent`
+  - `26` `partial` rows with Python `not-applicable`
+  - `4` of the `85` `partial` rows are section or area scaffolding rows with no standalone requirement ID
 - current `vendor-divergent` composition inside the `2010` packet:
   - `14` OMT or 1516.2 family breadth rows from `requirements/2010/hla1516_2_omt.csv`
   - `4` federation-management effect-vector rows from `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
   - `3` framework or architecture rows owned by `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
   - `2` supported-subset policy parents from `curated-clause5-6`
-  - `2` support-service factory helper rows for `getMessageRetractionHandleFactory` and `getRegionHandleFactory`
 
 Interpretation rule:
 
@@ -196,8 +195,8 @@ Current reading:
    - current evidence source:
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
    - former packet placeholders are now settled explicitly as:
-     - `5` `pass` OMT area rows
-     - `7` bounded `partial` OMT/XML area rows
+     - `7` `pass` OMT area rows
+     - `5` bounded `partial` OMT/XML area rows
      - `1` `implemented-slice` Annex E schema witness
    - this means the remaining 2010 work is no longer about clearing hidden
      planning placeholders
@@ -217,7 +216,7 @@ Current reading:
      recorded in
      [`2010_python_rti_bounded_family_execution_worklist.md`](2010_python_rti_bounded_family_execution_worklist.md)
 4. the remaining `2010` Python `vendor-divergent` packet rows are no longer one undifferentiated blocker class
-   - the `25` rows now fall into explicit owner buckets:
+   - the `23` rows now fall into explicit owner buckets:
      - `14` OMT or 1516.2 breadth rows already covered by
        [`../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md`](../../docs/requirements/ieee-1516-2010/omt_xml_bounded_family.md)
      - `4` Clause 4 FM effect-vector rows already covered by
@@ -225,9 +224,6 @@ Current reading:
      - `3` framework or architecture rows owned by
        [`../../requirements/2010/hla1516_framework_detailed_reconciliation.csv`](../../requirements/2010/hla1516_framework_detailed_reconciliation.csv)
      - `2` supported-subset policy parents already exposed in the `policy_parents` export
-     - `2` support-service factory-helper rows that still remain narrow Clause 10 negative-path breadth boundaries:
-       `REQ-RTI-SS-10_44-getMessageRetractionHandleFactory` and
-       `REQ-RTI-SS-10_44-getRegionHandleFactory`
    - that means the remaining `vendor-divergent` label is mostly an ownership classification fact, not a sign of unresolved documentation ambiguity
 5. one large 2010 family is now structurally settled as a bounded owner surface
    even though its row-level ledger remains `partial`
@@ -312,8 +308,8 @@ have explicit bounded owner readings.
 No separate `2010` `planned` inventory remains in the current packet.
 The former placeholder rows are now explicitly classified as:
 
-- `5` `pass` OMT area rows
-- `7` bounded `partial` OMT/XML area rows
+- `7` `pass` OMT area rows
+- `5` bounded `partial` OMT/XML area rows
 - `1` `implemented-slice` Annex E schema witness
 
 It is not a fully `mapped` requirement-by-requirement edition, but it no longer
