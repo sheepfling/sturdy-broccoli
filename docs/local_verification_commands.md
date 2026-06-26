@@ -2,6 +2,26 @@
 
 These are the commands captured in the latest local verification note.
 
+## Testing Ladder
+
+Use this order when you want the shortest answer to "what should I run?":
+
+1. `./tools/test-surface recommend`
+2. `./tools/python verify-smoke`
+3. `./tools/python verify-fast`
+4. `./tools/test-surface run repo-green-units`
+5. `./tools/python verify`
+6. `./tools/python verify-main-2025`
+7. `./tools/python verify-routes`
+8. `./tools/python verify-routes-2025`
+9. `./tools/vendor-green matrix`
+10. `./tools/test-surface run matrix`
+
+Use `matrix` when you need the broader compliance and generated-artifact lane,
+not just the normal repo-green testing lanes.
+
+## Exact Commands
+
 ```bash
 ./tools/test-surface recommend
 ./tools/test-surface run repo-green-units
@@ -27,6 +47,9 @@ python3 -m pytest -q tests/runtime/test_real_rti.py
 ```
 
 Use this page when you want the exact local commands, not the broader status.
+
+For the lane descriptions, shard map, and alias-friendly rerun paths, use
+[`test_surface.md`](test_surface.md).
 
 For the primary 2025 Python RTI lane, interpret these commands through the
 audited `hla-backend-python1516-2025` runtime. `hla-backend-shim` is only a

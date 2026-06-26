@@ -21,7 +21,7 @@ The current layout is:
 
 `requirements/imports/...` -> imported packet source material
 
-`requirements/*.csv` -> curated harmonized working set
+`requirements/2010/*.csv` -> curated harmonized 2010 working set
 
 `tests/verification/*` and focused runtime tests -> executable proof
 
@@ -52,7 +52,7 @@ baseline.
 
 ## Harmonized catalog layer
 
-The curated working set lives in top-level `requirements/*.csv`.
+The curated 2010 working set lives in `requirements/2010/*.csv`.
 
 The layout is not one giant flat standards dump. It is split into requirement
 families that match how this repo can honestly verify behavior:
@@ -81,10 +81,10 @@ harmonized.
 
 Examples:
 
-- `requirements/hla1516_framework_rules.csv`
-- `requirements/hla1516_1_clause_4_fm_service_decomposition.csv`
-- `requirements/hla1516_1_clause_5_declaration_management.csv`
-- `requirements/hla1516_1_clause_6_object_management.csv`
+- `requirements/2010/hla1516_framework_rules.csv`
+- `requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv`
+- `requirements/2010/hla1516_1_clause_5_declaration_management.csv`
+- `requirements/2010/hla1516_1_clause_6_object_management.csv`
 
 These files are narrower than the imported packet. They are built to drive
 implementation and test design.
@@ -97,20 +97,20 @@ repo's current evidence vocabulary and mark each row `mapped`, `partial`, or
 
 Examples:
 
-- `requirements/hla1516_1_fm_detailed_reconciliation.csv`
-- `requirements/hla1516_1_dm_detailed_reconciliation.csv`
-- `requirements/hla1516_1_om_detailed_reconciliation.csv`
-- `requirements/hla1516_1_own_detailed_reconciliation.csv`
-- `requirements/hla1516_1_tm_detailed_reconciliation.csv`
-- `requirements/hla1516_1_ddm_detailed_reconciliation.csv`
-- `requirements/hla1516_1_sup_detailed_reconciliation.csv`
-- `requirements/hla1516_1_mom_detailed_reconciliation.csv`
-- `requirements/hla1516_1_api_detailed_reconciliation.csv`
-- `requirements/hla1516_1_conf_detailed_reconciliation.csv`
-- `requirements/hla1516_xml_detailed_reconciliation.csv`
-- `requirements/hla1516_2_omt_detailed_reconciliation.csv`
-- `requirements/hla1516_2_omt_xml_detailed_reconciliation.csv`
-- `requirements/hla1516_framework_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_om_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_own_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_mom_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_api_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_xml_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv`
+- `requirements/2010/hla1516_framework_detailed_reconciliation.csv`
 
 This is the real working center of gravity.
 
@@ -118,8 +118,8 @@ This is the real working center of gravity.
 
 These give the current program state from the packet's point of view.
 
-- `requirements/hla_1516_master_harmonization_index_v1_0.csv`
-- `requirements/hla_1516_packet_hookup_status_v1_0.csv`
+- `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv`
+- `requirements/2010/hla_1516_packet_hookup_status_v1_0.csv`
 
 The master harmonization index answers:
 
@@ -172,7 +172,7 @@ The practical rule is simple:
 
 Federation Management is the clearest example of the layout strategy.
 
-`requirements/hla1516_1_clause_4_fm_service_decomposition.csv` decomposes the
+`requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv` decomposes the
 family into implementation-driving row kinds:
 
 - `SIG`
@@ -183,7 +183,7 @@ family into implementation-driving row kinds:
 - `MOM`
 - `TEST`
 
-Then `requirements/hla1516_1_fm_detailed_reconciliation.csv` maps the imported
+Then `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` maps the imported
 packet's finer row kinds such as `SVC`, `ARG`, `PRE`, `EFF`, `EXC`, `RTI_API`,
 `FED_CB`, and related callback or observer slices onto that decomposition and
 onto the runtime tests that actually exist.
@@ -214,7 +214,7 @@ Use these entry points in this order:
    hierarchy
 3. `requirements/imports/.../HARMONIZATION_NOTES.md` for the packet pin and
    imported-versus-curated split
-4. `requirements/hla_1516_master_harmonization_index_v1_0.csv` for current
+4. `requirements/2010/hla_1516_master_harmonization_index_v1_0.csv` for current
    packet-wide status
 5. the relevant `*_detailed_reconciliation.csv` file for actual row-level work
 

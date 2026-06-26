@@ -21,6 +21,9 @@ MIN_PYTHON = (3, 10)
 
 
 def _bootstrap_source_checkout() -> None:
+    scripts_dir = str(SCRIPT_REPO_ROOT / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
     pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
     for root in reversed(source_roots):
@@ -30,6 +33,8 @@ def _bootstrap_source_checkout() -> None:
 
 
 _bootstrap_source_checkout()
+
+from detect_workspace_duplicates import build_duplicate_audit, strict_duplicate_candidates
 
 
 def local_state_path(*parts: str) -> Path:
@@ -123,6 +128,25 @@ def check_repo_root() -> Check:
     if missing:
         return Check("repo_root", "fail", "repo layout incomplete", f"missing: {', '.join(missing)}")
     return Check("repo_root", "ok", "repo layout looks correct", str(REPO_ROOT))
+
+
+def check_workspace_duplicates() -> Check:
+    report = build_duplicate_audit(Path(os.environ.get("HLA2010_DUPLICATE_AUDIT_ROOT", str(REPO_ROOT))))
+    strict_rows = strict_duplicate_candidates(report)
+    if not strict_rows:
+        return Check("workspace_duplicates", "ok", "no iCloud-style duplicate workspace files detected")
+    detail = (
+        f"found {len(strict_rows)} strict duplicate candidate(s): "
+        + ", ".join(
+            f"{row.path} -> {row.canonical_path} ({row.status})"
+            for row in strict_rows[:5]
+        )
+    )
+    if len(strict_rows) > 5:
+        detail += "; run ./tools/duplicate-audit worklist --allow-findings for the cleanup queue"
+    else:
+        detail += "; run ./tools/duplicate-audit worklist --allow-findings for the full report"
+    return Check("workspace_duplicates", "fail", "duplicate workspace files detected", detail)
 
 
 def check_python_runtime(python_bin: Path) -> Check:
@@ -274,11 +298,41 @@ def check_pitch_state() -> Check:
     return Check("pitch", "warn", "Pitch runtime and Docker are unavailable", "optional; only needed for Pitch routes")
 
 
+def check_cpp_toolchain() -> Check:
+    from hla.backends.cpp_shim import discover_cpp_toolchain
+
+    inventory = discover_cpp_toolchain(SCRIPT_REPO_ROOT)
+    tool_bits: list[str] = []
+    if inventory.cxx:
+        tool_bits.append(f"c++={inventory.cxx}")
+    if inventory.ar:
+        tool_bits.append(f"ar={inventory.ar}")
+    if inventory.cmake:
+        tool_bits.append(f"cmake={inventory.cmake}")
+    if inventory.ok:
+        return Check("cpp_toolchain", "ok", "C++ toolchain and standard shim archives are ready", "; ".join(tool_bits))
+
+    missing_artifacts = [artifact.key for artifact in inventory.artifacts if not artifact.exists]
+    detail_parts = tool_bits[:]
+    if missing_artifacts:
+        detail_parts.append("missing artifacts: " + ", ".join(missing_artifacts))
+    detail_parts.append("run ./tools/shim-routes cpp doctor")
+    return Check(
+        "cpp_toolchain",
+        "warn",
+        "C++ routes are not fully prepared",
+        "; ".join(part for part in detail_parts if part),
+    )
+
+
 def next_steps(checks: list[Check]) -> list[str]:
     by_name = {check.name: check for check in checks}
     steps: list[str] = []
     if by_name["python_runtime"].status == "fail":
         steps.append(f"install or select Python >= {format_version_info(MIN_PYTHON)}")
+        return steps
+    if by_name["workspace_duplicates"].status == "fail":
+        steps.append("./tools/duplicate-audit")
         return steps
     if by_name["venv"].status == "fail" or by_name["workspace_imports"].status == "fail":
         steps.append("./tools/bootstrap python")
@@ -293,6 +347,8 @@ def next_steps(checks: list[Check]) -> list[str]:
         steps.append("./tools/certi-easy preflight")
     if by_name["pitch"].status != "ok":
         steps.append("./tools/pitch preflight")
+    if by_name["cpp_toolchain"].status != "ok":
+        steps.append("./tools/shim-routes cpp doctor")
     return steps
 
 
@@ -310,6 +366,7 @@ def main() -> int:
     venv_python = REPO_ROOT / ".venv/bin/python"
     checks = [
         check_repo_root(),
+        check_workspace_duplicates(),
         check_python_runtime(python_bin),
         check_venv(),
         check_workspace_imports(venv_python),
@@ -317,6 +374,7 @@ def main() -> int:
         check_java_bridge_extras(venv_python),
         check_certi_state(),
         check_pitch_state(),
+        check_cpp_toolchain(),
     ]
     payload = {
         "repo_root": str(REPO_ROOT),

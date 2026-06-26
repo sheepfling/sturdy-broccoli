@@ -81,8 +81,8 @@ def _curated_service_group(row: dict[str, Any]) -> str:
 
 def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, Any]]:
     repo_root = Path(project_root).resolve()
-    traceability_path = repo_root / "requirements" / "traceability_matrix.csv"
-    requirements_dir = repo_root / "requirements"
+    requirements_dir = repo_root / "requirements" / "2010"
+    traceability_path = requirements_dir / "traceability_matrix.csv"
     if not requirements_dir.exists() or not traceability_path.exists():
         return []
     excluded_sources = {
@@ -148,12 +148,13 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
                 "positive_test_refs": list(direct_refs.get("positive_test_refs", test_refs)),
                 "negative_test_refs": list(direct_refs.get("negative_test_refs", ())),
                 "artifact_refs": sorted(
-                    set(_split_semicolon_list(trace.get("artifact_refs"))) | {f"requirements/{source_path.name}"}
+                    set(_split_semicolon_list(trace.get("artifact_refs")))
+                    | {f"requirements/2010/{source_path.name}"}
                 ),
                 "linked_methods": _split_scalar_list(row.get("linked_methods")),
                 "linked_assets": linked_assets,
                 "notes": "; ".join(part for part in note_parts if part),
-                "source": f"requirements/{source_path.name}",
+                "source": f"requirements/2010/{source_path.name}",
             }
             seen.add(requirement_id)
 
@@ -175,7 +176,7 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
             "artifact_refs": _split_semicolon_list(trace.get("artifact_refs")),
             "linked_assets": [item for item in [trace.get("current_artifact_id", "").strip()] if item],
             "notes": trace.get("notes", "").strip(),
-            "source": "requirements/traceability_matrix.csv",
+            "source": "requirements/2010/traceability_matrix.csv",
         }
     return [curated_rows_by_id[key] for key in sorted(curated_rows_by_id)]
 

@@ -57,6 +57,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/fom-roundtrip` canonical FOM round-trip packet flow with `Edition Scope`
 - `./tools/fom-stress` canonical public-baseline parser stress and refresh flow
 - `./tools/download-siso` canonical authenticated SISO DataFiles download flow
+- `./tools/duplicate-audit` canonical iCloud-style duplicate workspace file detector for `* 2.ext`, `* 3.ext`, and similar copy suffixes; use `worklist --allow-findings` for the grouped cleanup queue and `clean-same-content` for the safe auto-delete pass
 - `scripts/generate_siso_inventory.py`: optional local SISO DataFiles corpus extractor and inventory generator
 - `scripts/generate_fom_corpus_classification.py`: validation-oriented corpus bucketing report generator with `Edition Scope`
 - `scripts/generate_fom_schema_baseline.py`: dedicated positive XML/XSD baseline report generator with `Edition Scope` in the surrounding report stack

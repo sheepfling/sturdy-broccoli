@@ -103,6 +103,16 @@ If the repo-green unit phase is too broad, use:
 ./tools/test-surface run repo-green-units
 ```
 
+If you do not want to remember the canonical shard ids, use the alias forms:
+
+```bash
+./tools/test-surface run foundation
+./tools/test-surface run onboarding
+./tools/test-surface run shim-tooling
+./tools/test-surface run transport
+./tools/test-surface run scenarios
+```
+
 If you need to maintain that sweep:
 
 - reorder shards in `testing/test_surface_manifest.json` under `repo-green-units.include_lanes`
@@ -223,6 +233,36 @@ Treat these as the normal package/theme restart surface.
 ```bash
 ./tools/java smoke --bridge jpype --edition 2010 --real-shim
 ./tools/java smoke --bridge py4j --edition 2025 --real-shim
+```
+
+### Pitch Docker onboarding path
+
+```bash
+./tools/pitch doctor
+./tools/pitch preflight
+./tools/test-surface run unit-vendor-onboarding
+./tools/pitch smoke-best-effort
+```
+
+The shorter alias form is:
+
+```bash
+./tools/test-surface run onboarding
+```
+
+Use [`pitch_docker_first_run.md`](pitch_docker_first_run.md) when the blocker is
+Pitch bundle placement, Docker readiness, or the managed CRC/FedPro path.
+
+### Test-surface shard aliases
+
+Use these when the full `unit-*` names are harder to remember than the job:
+
+```bash
+./tools/test-surface run foundation
+./tools/test-surface run onboarding
+./tools/test-surface run shim-tooling
+./tools/test-surface run transport
+./tools/test-surface run scenarios
 ```
 
 ## How To Tell Which Package Owns A Failure

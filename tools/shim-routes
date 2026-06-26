@@ -17,6 +17,7 @@ Commands:
   ./tools/shim-routes evidence shim-routes
   ./tools/shim-routes java discover --edition 2010 --bridge jpype --classpath /path/to/rti.jar
   ./tools/shim-routes java doctor
+  ./tools/shim-routes cpp doctor
   ./tools/shim-routes java certify-core --edition 2010 --bridges jpype,py4j --classpath /path/to/rti.jar
   ./tools/shim-routes cpp discover --profile /path/to/vendor-cpp-2010.cpp-sdk.yaml
   ./tools/shim-routes cpp build-capsule --profile /path/to/vendor-cpp-2010.cpp-sdk.yaml --transport grpc

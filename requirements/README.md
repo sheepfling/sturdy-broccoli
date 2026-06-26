@@ -2,12 +2,33 @@
 
 This directory is the source side of the verification package.
 
+Use this page when the question is:
+
+- where do repo-native requirement sources live?
+- how does the source-side requirements tree relate to docs and proof notes?
+- where should I start before diving into CSV ledgers?
+
+Start here, in order:
+
+1. [`../docs/requirements/ieee-1516-2010/README.md`](../docs/requirements/ieee-1516-2010/README.md) for the 2010 edition front door
+2. [`../docs/requirements/ieee-1516-2025/README.md`](../docs/requirements/ieee-1516-2025/README.md) for the 2025 edition front door
+3. [`../docs/verification/README.md`](../docs/verification/README.md)
+4. this source-side `requirements/` tree when you need the raw ledgers and reconciliation material
+
 The layout is intentionally edition-separated:
 
-- `requirements/` is the 2010 working corpus and mapping block.
-- `requirements/2010/` is a folder view of the same 2010 corpus for direct
-  path-based access and review.
+- `requirements/` is the edition index and import front door.
+- `requirements/2010/` is the canonical 2010 working corpus and mapping block.
 - `requirements/2025/` is the 2025 traceability and source-trace block.
+
+## Edition Front Doors
+
+Use one of these, then stay inside that edition:
+
+- `2010` human-facing front door: [`../docs/requirements/ieee-1516-2010/README.md`](../docs/requirements/ieee-1516-2010/README.md)
+- `2010` source-side collected inventory: [`2010/README.md`](2010/README.md)
+- `2025` human-facing front door: [`../docs/requirements/ieee-1516-2025/README.md`](../docs/requirements/ieee-1516-2025/README.md)
+- `2025` source-side collected inventory: [`2025/README.md`](2025/README.md)
 
 Use it to track the three standards as three requirement sources:
 
@@ -67,16 +88,16 @@ the versioned import tree. The import tree remains the source of truth for the
 raw packet version, while these canonical paths are the place to point repo
 tooling, docs, and reviewers when they need the packet asset families.
 
-That import is deliberately not flattened onto the curated top-level
-`requirements/*.csv` files. The top-level files remain the harmonized
-working set for repo-native requirement engineering.
+That import is deliberately not flattened onto the curated edition-specific
+working files. The harmonized 2010 working set now lives under
+`requirements/2010/*.csv`.
 
 Restricted IEEE source inputs from the packet were intentionally not copied
 into the committed import tree; see the import README for the policy note.
 
 Use the files together like this:
 
-`requirements/*.csv -> analysis/compliance/requirements_matrix_2010.* -> tests/verification/*`
+`requirements/2010/*.csv -> analysis/compliance/requirements_matrix_2010.* -> tests/verification/*`
 
 ## Honest Test Rule
 

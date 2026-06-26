@@ -9,6 +9,11 @@ It gives you:
 - vendor, bridge, hosted, and transport-backed RTI routes
 - runnable examples, FOM tooling, and verification lanes
 
+The two other major top-level reading areas are:
+
+- `Testing`: how to get repo green, choose the right lane, and rerun failures cheaply
+- `Requirements`: what is claimed, what is proven, and which evidence packet or bounded proof note supports it
+
 The front door is route-oriented:
 
 - use `./tools/...` commands for operator workflows
@@ -109,6 +114,7 @@ Operator commands that matter from the top level:
 - `./tools/compliance discover --show-backlog`
 - `./tools/certi-easy preflight`
 - `./tools/java verify`
+- `./tools/shim-routes cpp doctor`
 - `./tools/pitch preflight`
 - `./tools/vendor-green matrix`
 
@@ -120,16 +126,67 @@ Start with these:
 - [`docs/onboarding.md`](docs/onboarding.md): choose the right path for your goal
 - [`docs/first_run.md`](docs/first_run.md): shortest fresh-checkout walkthrough
 - [`docs/python_environment.md`](docs/python_environment.md): fuller environment and install story
+- [`docs/test_surface.md`](docs/test_surface.md): lane map and shard selection front door
+- [`docs/requirements/ieee-1516-2010/README.md`](docs/requirements/ieee-1516-2010/README.md): requirements and proof front door for the 2010 requirement surface
+- [`docs/requirements/ieee-1516-2025/README.md`](docs/requirements/ieee-1516-2025/README.md): requirements and proof front door for the 2025 requirement surface
 
 Read [`docs/first_run.md`](docs/first_run.md) for the direct `python1516e`
 bootstrap lane.
+
+## Testing
+
+Treat testing as its own top-level reading surface.
+
+Start here, in order:
+
+1. [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md): shortest path to repo green
+2. [`docs/test_surface.md`](docs/test_surface.md): every named lane and shard, including `matrix`
+3. [`docs/local_verification_commands.md`](docs/local_verification_commands.md): exact commands
+4. [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md): failure restart path
+
+Top-level testing commands that matter:
+
+- `./tools/test-surface recommend`
+- `./tools/test-surface run repo-green-units`
+- `./tools/test-surface run matrix`
+- `./tools/python verify-smoke`
+- `./tools/python verify-fast`
+- `./tools/python verify`
+- `./tools/python verify-main-2025`
+- `./tools/python verify-routes`
+- `./tools/python verify-routes-2025`
+
+Use [`docs/test_surface.md`](docs/test_surface.md) when the question is which
+lane to run. Use [`docs/local_verification_commands.md`](docs/local_verification_commands.md)
+when the question is the exact command list.
+
+## Requirements
+
+Treat requirements and proof as their own top-level reading surface.
+
+Start here, in order:
+
+1. [`docs/requirements/ieee-1516-2025/README.md`](docs/requirements/ieee-1516-2025/README.md): current requirement-facing claim map
+2. [`docs/requirements/ieee-1516-2010/README.md`](docs/requirements/ieee-1516-2010/README.md): 2010 requirement-facing claim map
+3. [`docs/verification/README.md`](docs/verification/README.md): proof and generated-evidence index
+4. [`docs/spec_reading_map.md`](docs/spec_reading_map.md): standards-facing reading order and traceability path
+
+Use this reading surface when the question is:
+
+- what does the repo claim?
+- what is bounded versus out of scope?
+- where is the proof for a capability family?
+- which requirement-facing note should I read first?
 
 ## Common Tasks
 
 If you need a specific lane or deeper task guide:
 
 - three main work surfaces: [`docs/work_surfaces.md`](docs/work_surfaces.md)
+- testing front doors: [`docs/repo_green_quickstart.md`](docs/repo_green_quickstart.md), [`docs/test_surface.md`](docs/test_surface.md), [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md)
+- requirements and proof front doors: [`docs/requirements/ieee-1516-2010/README.md`](docs/requirements/ieee-1516-2010/README.md), [`docs/requirements/ieee-1516-2025/README.md`](docs/requirements/ieee-1516-2025/README.md), [`docs/verification/README.md`](docs/verification/README.md), [`docs/spec_reading_map.md`](docs/spec_reading_map.md)
 - repo-green failure diagnosis: [`docs/junior_test_diagnosis_runbook.md`](docs/junior_test_diagnosis_runbook.md)
+- Pitch + Docker first-run path: [`docs/pitch_docker_first_run.md`](docs/pitch_docker_first_run.md)
 - lane and focused-target map: [`docs/test_surface.md`](docs/test_surface.md)
 - repo mental model: [`docs/repo_mental_model.md`](docs/repo_mental_model.md)
 - runtime editing: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
@@ -137,6 +194,7 @@ If you need a specific lane or deeper task guide:
 - FOM tooling: [`docs/fom_workbench.md`](docs/fom_workbench.md)
 - transport options and extension: [`docs/extending_ambassador_transports.md`](docs/extending_ambassador_transports.md), [`docs/transport_extension_playbook.md`](docs/transport_extension_playbook.md)
 - two-federate flow: [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md)
+- standard Java/C++ shim route setup: [`docs/java_toolchain.md`](docs/java_toolchain.md), [`docs/cpp_toolchain.md`](docs/cpp_toolchain.md), [`docs/language_shim_routes.md`](docs/language_shim_routes.md)
 - Java bridge work: [`docs/java_bridge_minimal_protocol_recipe.md`](docs/java_bridge_minimal_protocol_recipe.md), [`docs/java_bridge_wrapping_guide.md`](docs/java_bridge_wrapping_guide.md), [`docs/java_bridge_overload_resolution.md`](docs/java_bridge_overload_resolution.md), [`docs/java_rti_adaptation_architecture.md`](docs/java_rti_adaptation_architecture.md)
 - package inventory: [`packages/README.md`](packages/README.md)
 - full docs index: [`docs/README.md`](docs/README.md)
@@ -171,9 +229,10 @@ Pick one of these and stay in it:
 
 1. run an example
 2. edit one package
-3. trace one service
-4. work on FOM tooling
-5. run one verification lane
+3. run one verification lane
+4. read one requirements or proof packet
+5. trace one service
+6. work on FOM tooling
 
 The repo becomes manageable once the scope is that small.
 

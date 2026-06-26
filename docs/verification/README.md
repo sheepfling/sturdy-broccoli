@@ -9,6 +9,12 @@ Use it for anything that answers:
 - what is still partial
 - what artifact records the proof
 
+If you are entering from the top level, pair this page with:
+
+1. [`../requirements/ieee-1516-2010/README.md`](../requirements/ieee-1516-2010/README.md) for the 2010 requirement/proof surface
+2. [`../requirements/ieee-1516-2025/README.md`](../requirements/ieee-1516-2025/README.md) for the 2025 requirement/proof surface
+3. [`../spec_reading_map.md`](../spec_reading_map.md)
+
 ## Canonical Order
 
 Keep verification docs in this order:
@@ -21,7 +27,9 @@ Keep verification docs in this order:
 
 ## Primary Entry Points
 
-- [../../requirements/README.md](../../requirements/README.md): seeded requirement sources and ID registry
+- [../requirements/ieee-1516-2010/README.md](../requirements/ieee-1516-2010/README.md): 2010 requirement-facing front door
+- [../requirements/ieee-1516-2025/README.md](../requirements/ieee-1516-2025/README.md): 2025 requirements-facing claim map and bounded proof-note index
+- [../../requirements/README.md](../../requirements/README.md): edition index for the source-side requirement surfaces
 - [requirements_structure_packet.md](requirements_structure_packet.md): current packet explaining the requirements layout, bridge strategy, and pinned harmonization state
 - [requirements_hierarchy.md](requirements_hierarchy.md): L1/L2/L3 capability-feature-requirement hierarchy with test anchors
 - [callback_model_compliance.md](callback_model_compliance.md): callback delivery behavior, compliance boundary, and test evidence
@@ -42,6 +50,14 @@ Keep verification docs in this order:
 - [../evidence/README.md](../evidence/README.md): promoted evidence packets
 - [../specs/README.md](../specs/README.md): planned spec/evidence artifact family
 - [run_sequence.md](run_sequence.md): documented full verification sequence
+
+## Simple Reading Rule
+
+Use this flow:
+
+1. open the requirements-facing README when you need the claim or boundary
+2. open this verification index when you need the proof artifact family
+3. open the focused proof or comparison document only after the first two
 
 ## What Belongs Here
 

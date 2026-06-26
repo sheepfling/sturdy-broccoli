@@ -8,7 +8,9 @@ Java exception translation.
 """
 from __future__ import annotations
 
+import os
 from abc import ABC, abstractmethod
+from collections.abc import Iterable as CollectionsIterable
 from collections.abc import Mapping as CollectionsMapping
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol, Sequence, cast
@@ -283,9 +285,13 @@ def _maybe_call_noarg(obj: Any, *names: str) -> Any:
 def _sequence_for_java_array(value: Any) -> list[Any]:
     if isinstance(value, (str, bytes, bytearray, memoryview)):
         return [value]
-    if isinstance(value, Iterable):
+    if isinstance(value, CollectionsIterable):
         return list(value)
     return [value]
+
+
+def _is_url_like(value: Any) -> bool:
+    return isinstance(value, (str, os.PathLike)) or hasattr(value, "uri")
 
 
 class JavaValueConverter(ValueConverter):
@@ -340,6 +346,11 @@ class JavaValueConverter(ValueConverter):
         except BackendConversionError:
             return None
 
+    def _conversion_error(self, expected_type_name: str, value: Any, detail: str) -> BackendConversionError:
+        return BackendConversionError(
+            f"Expected Java {expected_type_name} for bridge conversion; got {type(value).__name__}: {detail}"
+        )
+
     def to_backend(self, value: Any, *, expected_type_name: str | None = None) -> Any:  # noqa: D401 - inherited contract
         handle_type = self.python_binding.python_type_or_none("Handle")
         range_bounds_type = self.python_binding.python_type("RangeBounds")
@@ -353,14 +364,37 @@ class JavaValueConverter(ValueConverter):
 
         expected = _clean_java_type(expected_type_name)
 
+        if expected == "String":
+            if not isinstance(value, str):
+                raise self._conversion_error("String", value, "only exact Python str values are accepted")
+            return value
         if expected == "byte[]":
             encoded = self._encode_data_element_with_java_factory(value)
             if encoded is not None:
                 return self.to_backend_bytes(encoded)
+            if not isinstance(value, (bytes, bytearray, memoryview)):
+                raise self._conversion_error(
+                    "byte[]",
+                    value,
+                    "expected bytes, bytearray, memoryview, or an encodable HLA data element",
+                )
         if expected == "URL":
+            if not _is_url_like(value):
+                raise self._conversion_error(
+                    "URL",
+                    value,
+                    "expected str, os.PathLike, or an object with a uri attribute",
+                )
             return self.bridge.fom_url(value)
         if expected == "URL[]":
             values = _sequence_for_java_array(value)
+            for index, item in enumerate(values):
+                if not _is_url_like(item):
+                    raise self._conversion_error(
+                        "URL[]",
+                        value,
+                        f"item {index}={type(item).__name__} is not URL-like; expected str, os.PathLike, or an object with a uri attribute",
+                    )
             return self.bridge.fom_url_array(values)
         if expected == "RtiConfiguration":
             return self.bridge.rti_configuration(value)
@@ -371,6 +405,26 @@ class JavaValueConverter(ValueConverter):
         if credentials_type is not None and isinstance(value, credentials_type):
             return self.bridge.credentials(value)
 
+        if expected in _JAVA_HANDLE_SET_TYPES:
+            if not isinstance(value, CollectionsIterable) or isinstance(value, (str, bytes, bytearray, memoryview, os.PathLike)):
+                raise self._conversion_error(expected, value, "expected an iterable of handle values")
+            values = [self.to_backend(item) for item in _sequence_for_java_array(value)]
+            return self.bridge.new_handle_set(expected, values, rti_ambassador=self.rti_ambassador)
+
+        if expected in _JAVA_HANDLE_VALUE_MAP_TYPES:
+            if not isinstance(value, Mapping):
+                raise self._conversion_error(expected, value, "expected a mapping of handle keys to byte[] values")
+            items = [(self.to_backend(k), self.to_backend(v, expected_type_name="byte[]")) for k, v in value.items()]
+            return self.bridge.new_handle_value_map(expected, items, rti_ambassador=self.rti_ambassador)
+
+        if expected == "AttributeSetRegionSetPairList":
+            if not isinstance(value, CollectionsIterable) or isinstance(value, (str, bytes, bytearray, memoryview, os.PathLike)):
+                raise self._conversion_error(expected, value, "expected an iterable of AttributeRegionAssociation values")
+            return self.bridge.new_attribute_set_region_set_pair_list(
+                [self.to_backend(item) for item in _sequence_for_java_array(value)],
+                rti_ambassador=self.rti_ambassador,
+            )
+
         if handle_type is not None and isinstance(value, handle_type):
             return self.handle_registry.to_native(value)
         if isinstance(value, Enum):
@@ -379,20 +433,6 @@ class JavaValueConverter(ValueConverter):
             return self.to_backend_bytes(value)
         if isinstance(value, bytearray):
             return self.to_backend_bytes(bytes(value))
-
-        if expected in _JAVA_HANDLE_SET_TYPES:
-            values = [self.to_backend(item) for item in _sequence_for_java_array(value)]
-            return self.bridge.new_handle_set(expected, values, rti_ambassador=self.rti_ambassador)
-
-        if expected in _JAVA_HANDLE_VALUE_MAP_TYPES and isinstance(value, Mapping):
-            items = [(self.to_backend(k), self.to_backend(v, expected_type_name="byte[]")) for k, v in value.items()]
-            return self.bridge.new_handle_value_map(expected, items, rti_ambassador=self.rti_ambassador)
-
-        if expected == "AttributeSetRegionSetPairList":
-            return self.bridge.new_attribute_set_region_set_pair_list(
-                [self.to_backend(item) for item in _sequence_for_java_array(value)],
-                rti_ambassador=self.rti_ambassador,
-            )
 
         if isinstance(value, range_bounds_type):
             return self.bridge.range_bounds(value)

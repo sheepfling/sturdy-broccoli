@@ -74,8 +74,10 @@ def test_tools_python_verify_smoke_validates_manifest_before_pytest(tmp_path: Pa
 
     assert result.returncode == 0, result.stdout or result.stderr
     lines = [line.strip() for line in log_path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    assert lines[0].endswith("scripts/validate_test_surface_manifest.py")
-    assert lines[1].startswith("-m pytest -q ")
+    assert lines[0].endswith("scripts/detect_workspace_duplicates.py clean-same-content")
+    assert lines[1].endswith("scripts/detect_workspace_duplicates.py")
+    assert lines[2].endswith("scripts/validate_test_surface_manifest.py")
+    assert lines[3].startswith("-m pytest -q ")
 
 
 def test_tools_python_smoke_examples_all_dry_run_lists_both_editions() -> None:

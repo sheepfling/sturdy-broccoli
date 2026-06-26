@@ -41,6 +41,7 @@ Core operator entrypoints:
 - `./tools/fom-roundtrip`
 - `./tools/fom-stress`
 - `./tools/download-siso`
+- `./tools/duplicate-audit`
 - `./tools/package-deps`
 - `./tools/section8-gate`
 - `./tools/target-radar`
@@ -60,7 +61,11 @@ Shortest common paths:
 - inspect or extend the repo-green unit sweep: `./tools/test-surface run repo-green-units`
 - discover where unit shard order lives: `testing/test_surface_manifest.json` -> `repo-green-units.include_lanes`
 - rerun the federate examples / walkthrough / TUI shard directly: `./tools/test-surface run unit-federate-examples`
+- rerun the vendor onboarding / Pitch Docker shard directly: `./tools/test-surface run unit-vendor-onboarding`
+- rerun the Java/C++ shim preflight shard directly: `./tools/test-surface run unit-shim-tooling`
+- use junior-friendly shard aliases when you do not remember the canonical ids: `./tools/test-surface run foundation`, `./tools/test-surface run onboarding`, `./tools/test-surface run shim-tooling`, `./tools/test-surface run transport`
 - get the junior-friendly rerun and failure-diagnosis workflow: `docs/junior_test_diagnosis_runbook.md`
+- get the canonical new-machine Pitch + Docker onboarding path: `docs/pitch_docker_first_run.md`
 - run one 2010 example: `python examples/target_radar_simulation.py --backend python1516e --steps 5`
 - run the main 2025 Target/Radar example lane: `python examples/target_radar_simulation.py --backend python1516_2025 --steps 5`
 - run the isolated 2010 direct Python route example: `./tools/python smoke-examples --edition 2010`
@@ -94,6 +99,7 @@ Shortest common paths:
 - discover the canonical verification lanes: `./tools/test-surface recommend`
 - validate the named test-surface manifest without running tests: `./tools/test-surface validate`
 - run the fast-fail repo smoke lane before expensive depth: `./tools/python verify-smoke`
+  - this lane auto-removes only hash-identical source-tree duplicate copies before the strict duplicate gate
 - run the primary 2025 Python RTI main-surface lane, including package-boundary guards plus raw support/decode and callback-control proofs on the direct `python1516_2025` surface: `./tools/python verify-main-2025`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - run bounded hosted 2025 Python/FedPro route checks: `./tools/python verify-routes-2025`
@@ -101,6 +107,7 @@ Shortest common paths:
 - check whether hosted Python gRPC is runnable here: `./tools/python verify-routes-preflight`
 - inspect the language-shim route matrix: `./tools/shim-routes matrix --editions 2010,2025 --routes all`
 - inspect the Java toolchain inventory: `./tools/shim-routes java doctor`
+- inspect the C++ toolchain inventory: `./tools/shim-routes cpp doctor`
 - inspect the Java toolchain inventory via the short front door: `./tools/java`
 - run one isolated Java bridge smoke example without a vendor RTI: `./tools/java smoke --bridge jpype --edition 2010`
 - run the full local 2010/2025 x JPype/Py4J isolated smoke matrix: `./tools/java smoke --all`
@@ -123,6 +130,11 @@ Shortest common paths:
 - download authenticated SISO DataFiles packages: `./tools/download-siso`
 - catalog locally downloaded SISO packages into the shared inventory: `python3 scripts/generate_siso_inventory.py`
 - classify the current corpus into validation buckets: `./tools/fom-corpus-classification` and inspect the `Edition Scope` column in the bucket tables
+- run the strict duplicate gate used by doctor and verify-smoke: `./tools/duplicate-audit`
+- generate the grouped duplicate cleanup worklist for reruns and cleanup sessions: `./tools/duplicate-audit worklist --allow-findings`
+- auto-remove only safe hash-identical source-tree duplicate copies: `./tools/duplicate-audit clean-same-content`
+  - `artifacts/` duplicates are generated-space and can be auto-cleaned freely
+  - `.local/` and other generated trees are reported but do not fail the strict duplicate gate
 
 For 2025 runtime ownership and proof status behind those commands, read:
 

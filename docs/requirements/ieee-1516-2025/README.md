@@ -1,4 +1,24 @@
-# IEEE 1516-2025 Requirements Backlog
+# IEEE 1516-2025 Requirements And Traceability
+
+Use this page when the question is:
+
+- what is the repo's 2025 requirement source surface?
+- where do the 2025 requirement ledgers, proof notes, and traceability packets live?
+- where should someone start reading 2025 requirements-facing material?
+
+Start here, then continue into:
+
+1. [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
+2. [`../../verification/README.md`](../../verification/README.md)
+3. [`../../spec_reading_map.md`](../../spec_reading_map.md)
+4. one bounded proof note or 2025 source packet from the family you care about
+
+Use this reading rule:
+
+- this README is the human-facing front door for the 2025 requirement surface
+- `requirements/2025/README.md` is the collected source-side inventory
+- `verification/README.md` explains where executable or generated proof artifacts live
+- `spec_reading_map.md` tells you which proof note or requirement packet to read first for a concrete standards question
 
 This directory is the first structured extraction tranche for the 2025 HLA
 family:
@@ -19,6 +39,25 @@ Source anchors for modal terms:
 | IEEE 1516-2025 | 1.3 | 11 |
 | IEEE 1516.1-2025 | 1.3 | 16 |
 | IEEE 1516.2-2025 | 1.3 | 12 |
+
+## Edition Inventory
+
+The 2025 requirement surface is intentionally collected through the source-side
+2025 view at [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md).
+That edition inventory covers:
+
+- merge/source-trace and strict-doc reports
+- 2025-vs-2010 differential packets
+- depth-expansion packets
+- harmonization, review, and closure packets
+
+## Practical Flow
+
+Use this order:
+
+1. open the 2025 source-side inventory
+2. pick one requirement packet, bounded proof note, or closure ledger
+3. open `verification/README.md` when you need the proof packet or executable evidence side
 
 ## Files
 
@@ -124,3 +163,9 @@ FOM/OMT validation still matters inside that lane:
 
 But it is now one proof family inside the broader 2025 runtime-evidence closeout
 rather than the next missing implementation frontier by itself.
+
+## Related Docs
+
+- [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
+- [`../../verification/README.md`](../../verification/README.md)
+- [`../../spec_reading_map.md`](../../spec_reading_map.md)

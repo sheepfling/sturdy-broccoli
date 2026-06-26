@@ -35,7 +35,7 @@ CLAUSE13_EVIDENCE_REFS = {
     "object_models": (
         "tests/factories/test_fom_omt_parsing.py",
         "tests/mom/test_mom_catalog_validation_v012.py",
-        "requirements/hla_1516_master_harmonization_index_v1_0.csv",
+        "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv",
     ),
     "rti_services": (
         "analysis/compliance/service_conformance.json",
@@ -52,7 +52,7 @@ def _repo_root(project_root: str | Path | None = None) -> Path:
 
 
 def _load_master_index_capability_counts(repo_root: Path) -> dict[str, dict[str, int]]:
-    path = repo_root / "requirements" / "hla_1516_master_harmonization_index_v1_0.csv"
+    path = repo_root / "requirements" / "2010" / "hla_1516_master_harmonization_index_v1_0.csv"
     counts: dict[str, dict[str, int]] = {}
     with path.open(newline="", encoding="utf-8") as handle:
         for row in csv.DictReader(handle):

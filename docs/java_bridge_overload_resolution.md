@@ -28,6 +28,10 @@ The bridge layer therefore resolves overload intent in Python first and treats
 JPype and Py4J mainly as execution mechanisms after the call shape is already
 known.
 
+For the adjacent question of how raw `byte[]` payloads and encoder outputs are
+preserved once the overload is chosen, read
+[`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md).
+
 ## Short Version
 
 Outbound Java calls work like this:
@@ -64,11 +68,44 @@ The most useful tests are:
 - [`../tests/backends/test_backends.py`](../tests/backends/test_backends.py)
 - [`../tests/backends/test_java_factory_selection_helpers.py`](../tests/backends/test_java_factory_selection_helpers.py)
 - [`../tests/backends/test_standard_java_shim_routes.py`](../tests/backends/test_standard_java_shim_routes.py)
+- [`../tests/factories/test_fom_time_factories.py`](../tests/factories/test_fom_time_factories.py)
+- [`../tests/factories/test_java_overload_audit.py`](../tests/factories/test_java_overload_audit.py)
+- [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
+- [`../tests/vendors/test_java_bridge_vendor_overloads.py`](../tests/vendors/test_java_bridge_vendor_overloads.py)
+
+The human-readable audit packet is:
+
+- [`../artifacts/java_overload_audit/java_overload_audit.json`](../artifacts/java_overload_audit/java_overload_audit.json)
+- [`../artifacts/java_overload_audit/java_overload_audit.md`](../artifacts/java_overload_audit/java_overload_audit.md)
 
 ## Outbound Call Resolution
 
 The shared resolver lives in
 [`invocation.py`](../packages/hla-backend-common/src/hla/backends/common/invocation.py).
+
+Important implementation detail: the repo now routes overload choice through a
+swappable resolver hook rather than baking the current weighted scorer directly
+into every caller.
+
+The current default resolver is still the weighted fail-closed implementation,
+but the hook exists so the repo can replace it later without rewriting the
+bridge call sites.
+
+The current default implementation is the internal weighted resolver in
+[`invocation.py`](../packages/hla-backend-common/src/hla/backends/common/invocation.py):
+
+- `_resolve_java_invocation_weighted(...)`
+
+The public hook surface is:
+
+- `resolve_java_invocation(...)`
+- `get_java_invocation_resolver()`
+- `set_java_invocation_resolver(...)`
+- `reset_java_invocation_resolver()`
+
+The regression proof that the hook is actually swappable lives in:
+
+- [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
 
 The main steps are:
 
@@ -76,7 +113,8 @@ The main steps are:
 2. map Python kwargs onto Java parameter names
 3. reject candidates whose total parameter count does not match
 4. score remaining candidates using expected Java parameter types
-5. return one resolved overload plus an ordered argument tuple
+5. reject the call if multiple candidates tie for top score
+6. return one resolved overload plus an ordered argument tuple
 
 This means the bridge can accept Python-facing calls such as:
 
@@ -105,6 +143,18 @@ Important special cases include:
 
 That is the main reason the shared bridge layer exists as a policy layer
 instead of a thin `getattr(...)(*args)` wrapper.
+
+Important detail: the resolver now fails closed on true ambiguity.
+
+If two Java overloads survive arity/name matching and receive the same top
+score, the call raises an explicit `BackendConversionError` instead of picking
+the first metadata row by accident.
+
+That protects the repo from silent overload drift when:
+
+- new overloads are added to the API metadata
+- a bridge route exposes a value shape that matches multiple families
+- a caller passes a value that is underspecified for the Java surface
 
 ## Callback Resolution
 
@@ -202,15 +252,184 @@ The awkward classes of calls this policy exists to protect include:
 - time-management calls that require RTI-owned logical-time objects
 - callback families with multiple Java signatures but one normalized Python callback surface
 
+The currently known same-arity outbound RTI collision groups are:
+
+- `createFederationExecution` arity 2
+  - `String federationExecutionName, URL[] fomModules`
+  - `String federationExecutionName, URL fomModule`
+- `createFederationExecution` arity 3
+  - `String federationExecutionName, URL[] fomModules, String logicalTimeImplementationName`
+  - `String federationExecutionName, URL[] fomModules, URL mimModule`
+- `joinFederationExecution` arity 3
+  - `String federateType, String federationExecutionName, URL[] additionalFomModules`
+  - `String federateName, String federateType, String federationExecutionName`
+- `requestAttributeValueUpdate` arity 3
+  - `ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag`
+  - `ObjectClassHandle theClass, AttributeHandleSet theAttributes, byte[] userSuppliedTag`
+
+These are now explicitly audited and regression-tested.
+
+## Caching
+
+The repo does cache the static parts of overload resolution, but it does not
+cache resolved call outcomes.
+
+Cached:
+
+- Python/Java binding profile loading via `@lru_cache`
+- parsed Java overload parameter strings
+  - parameter-name tuples
+  - parameter-type tuples
+
+Not cached:
+
+- chosen overload for a specific runtime call
+- scored call result for a specific argument tuple
+
+That split is intentional.
+
+Caching immutable metadata makes the hot path cheap without risking stale or
+incorrect overload choices for dynamic Python values.
+
+## Swappable Resolver
+
+The resolver entry point is intentionally replaceable.
+
+The current hook surface lives in
+[`../packages/hla-backend-common/src/hla/backends/common/invocation.py`](../packages/hla-backend-common/src/hla/backends/common/invocation.py):
+
+- `resolve_java_invocation(...)`
+- `get_java_invocation_resolver()`
+- `set_java_invocation_resolver(...)`
+- `reset_java_invocation_resolver()`
+
+That keeps the current bridge code stable while allowing future resolver work
+to swap in a different implementation behind one shared seam.
+
+The current regression proof for that seam is:
+
+- [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
+
+## Candidate Replacement Schemes
+
+If the current weighted resolver becomes too hard to maintain or explain, these
+are the preferred upgrade paths.
+
+### Semantic-Kind Resolver
+
+Classify Python inputs into explicit semantic kinds first, then match overloads
+against those kinds.
+
+Examples:
+
+- `exact-string`
+- `url-like`
+- `url-list`
+- `bytes-like`
+- `logical-time`
+- `handle:ObjectInstanceHandle`
+- `handle:ObjectClassHandle`
+
+This is the clearest likely replacement because it is easier to explain, test,
+and fail closed than a larger weighted heuristic set.
+
+### Rule-Table Resolver
+
+Define explicit resolution rules for only the risky overload families.
+
+This is attractive when a small number of RTI services carry most of the
+ambiguity risk:
+
+- `createFederationExecution`
+- `joinFederationExecution`
+- `requestAttributeValueUpdate`
+
+This is maximally deterministic but more manual.
+
+### Profile-Driven Resolver
+
+Store resolution policy in generated profile data keyed by API profile or
+vendor route.
+
+That would allow future differences between:
+
+- 2010 standard Java routes
+- 2025 standard Java routes
+- vendor-specific Java surfaces
+
+This is the strongest long-term architecture if the repo needs different
+resolver policies across editions or vendor families.
+
+### Explicit Adapter Methods
+
+Bypass generic overload resolution for the small set of dangerous methods and
+implement those routes directly in adapter code.
+
+This is less elegant, but it is straightforward and sometimes the easiest route
+to prove against real vendor runtimes.
+
+## Current Recommendation
+
+If the repo needs to replace the current resolver later, prefer this order:
+
+1. semantic-kind resolver
+2. rule-table resolver for only the risky families
+3. profile-driven resolver if vendor/profile divergence becomes real
+4. explicit adapter methods as a bounded fallback
+
+The repo should avoid moving toward broader scalar duck typing or more
+complicated score tuning unless a concrete real-runtime need forces it.
+
+## Live Vendor Proof
+
+The optional live vendor lane now also checks bridge-boundary argument shapes on
+real JPype and Py4J vendor routes.
+
+That proof is intentionally narrower than the generated shim audit:
+
+- it does not introspect vendor-private overload tables
+- it does verify the real backend argument families emitted by the Python bridge
+- it exercises the exact overloaded call families that have caused drift risk
+
+The current live vendor proof covers:
+
+- `createFederationExecution`
+  - verifies the live vendor call uses the URL-array create path for FOM-module lists
+- `joinFederationExecution`
+  - verifies the normal named join path stays on the three-string route
+- `requestAttributeValueUpdate`
+  - verifies object-instance and object-class requests emit distinct handle families on the real vendor bridge path
+
+## Negative Policy
+
+The resolver and converter intentionally fail closed for off-shape inputs.
+
+That includes cases such as:
+
+- string-like impostors that are not exact `str`
+- wrong handle families for overloaded handle routes
+- non-URL-like values passed to `URL` or `URL[]` targets
+- non-bytes-like values passed to `byte[]` targets
+- non-mapping values passed to handle-value-map targets
+
+The current negative-path regression coverage is:
+
+- [`../tests/factories/test_java_overload_negative_inputs.py`](../tests/factories/test_java_overload_negative_inputs.py)
+
+Those tests assert on message quality as well as exception type, so the repo
+keeps useful diagnostics when callers or agents pass bad shapes into the Java
+bridge.
+
 ## Reading Order
 
 If you want the shortest path through this topic:
 
 1. [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
 2. [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
-3. this page
-4. [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
-5. [`language_shim_routes.md`](language_shim_routes.md)
+3. [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md)
+4. this page
+5. [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
+6. [`language_shim_routes.md`](language_shim_routes.md)
 
 If you want the implementation path:
 

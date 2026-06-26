@@ -6,12 +6,14 @@ import re
 from collections.abc import Iterable as CollectionsIterable
 from collections.abc import Mapping as CollectionsMapping
 from dataclasses import dataclass
-from typing import Any, Mapping
+from functools import lru_cache
+from typing import Any, Callable, Mapping
 
 from .base import BackendConversionError, Invocation, lower_camel_to_snake
+from hla.rti1516e.handles import Handle
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 
-from .conversion import clean_java_type_name
+from .conversion import clean_java_type_name, handle_type_from_java_class_name, handle_type_from_java_type_name
 
 _JAVA_HANDLE_SET_TYPES = {
     "AttributeHandleSet",
@@ -49,12 +51,22 @@ def _param_type(param_decl: str) -> str:
     return _clean_java_type(" ".join(pieces[:-1])) or ""
 
 
+@lru_cache(maxsize=None)
+def _parsed_java_params(params: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    parts = tuple(_split_java_params(params))
+    names = tuple(_param_name(part) for part in parts)
+    types = tuple(_param_type(part) for part in parts)
+    return names, types
+
+
 def java_parameter_names(overload: Mapping[str, Any]) -> tuple[str, ...]:
-    return tuple(_param_name(part) for part in _split_java_params(str(overload.get("params", ""))))
+    names, _types = _parsed_java_params(str(overload.get("params", "")))
+    return names
 
 
 def java_parameter_types(overload: Mapping[str, Any]) -> tuple[str, ...]:
-    return tuple(_param_type(part) for part in _split_java_params(str(overload.get("params", ""))))
+    _names, types = _parsed_java_params(str(overload.get("params", "")))
+    return types
 
 
 def _keyword_matches(name: str, parameter_name: str) -> bool:
@@ -100,47 +112,84 @@ def _is_sequence_not_text(value: Any) -> bool:
     return not isinstance(value, (str, bytes, bytearray, memoryview, os.PathLike)) and isinstance(value, CollectionsIterable)
 
 
-def _score_value_for_java_type(param_type: str, param_name: str, value: Any) -> int:
+def _looks_like_python_data_element(value: Any) -> bool:
+    type_name = type(value).__name__
+    return type_name.startswith("HLA") and (
+        callable(getattr(value, "getValue", None)) or hasattr(value, "value") or callable(getattr(value, "toByteArray", None))
+    )
+
+
+def _score_value_for_java_type(param_type: str, param_name: str, value: Any) -> int | None:
     t = _clean_java_type(param_type) or ""
     score = 0
 
+    handle_type = handle_type_from_java_type_name(t)
+    if handle_type is not None:
+        value_type_name = None
+        value_type = type(value)
+        module_name = getattr(value_type, "__module__", None)
+        class_name = getattr(value_type, "__name__", None)
+        if isinstance(module_name, str) and isinstance(class_name, str):
+            value_type_name = f"{module_name}.{class_name}"
+        inferred_handle_type = handle_type_from_java_class_name(value_type_name)
+        if inferred_handle_type is handle_type:
+            return 10
+        if inferred_handle_type is not None:
+            return None
+        if isinstance(value, handle_type):
+            return 10
+        if isinstance(value, Handle):
+            return None
+        return None
+
     if t == "String":
-        score += 4 if isinstance(value, str) else -6
+        if not isinstance(value, str):
+            return None
+        score += 4
         if param_name == "logicalTimeImplementationName":
             score += 8 if _looks_like_time_factory_name(value) else -3
         return score
 
     if t == "URL":
         if _looks_like_time_factory_name(value):
-            return -8
+            return None
         if _is_sequence_not_text(value):
-            return -5
-        return 5 if isinstance(value, (str, os.PathLike)) or hasattr(value, "uri") else 1
+            return None
+        if isinstance(value, (str, os.PathLike)) or hasattr(value, "uri"):
+            return 5
+        return None
 
     if t == "URL[]":
         if _is_sequence_not_text(value):
             return 6
         if _looks_like_time_factory_name(value):
-            return -8
-        return 1 if isinstance(value, (str, os.PathLike)) or hasattr(value, "uri") else 0
+            return None
+        if isinstance(value, (str, os.PathLike)) or hasattr(value, "uri"):
+            return 1
+        return None
 
     if t in _JAVA_HANDLE_SET_TYPES:
-        return 6 if _is_sequence_not_text(value) else -4
+        return 6 if _is_sequence_not_text(value) else None
 
     if t in _JAVA_HANDLE_VALUE_MAP_TYPES:
-        return 6 if _is_mapping(value) else -4
+        return 6 if _is_mapping(value) else None
 
     if t == "AttributeSetRegionSetPairList":
-        return 6 if _is_sequence_not_text(value) else -4
+        return 6 if _is_sequence_not_text(value) else None
 
     if t == "byte[]":
-        return 6 if isinstance(value, (bytes, bytearray, memoryview)) else -2
+        if isinstance(value, (bytes, bytearray, memoryview)):
+            return 6
+        if _looks_like_python_data_element(value):
+            return 3
+        return None
 
     if t in {"LogicalTime", "LogicalTimeInterval"}:
         if isinstance(value, (HLAinteger64Time, HLAinteger64Interval, HLAfloat64Time, HLAfloat64Interval)):
             return 8
         if isinstance(value, (int, float)):
             return 2
+        return None
 
     return score
 
@@ -152,7 +201,10 @@ class ResolvedJavaInvocation:
     overload: Mapping[str, Any] | None = None
 
 
-def resolve_java_invocation(invocation: Invocation) -> ResolvedJavaInvocation:
+JavaInvocationResolver = Callable[[Invocation], ResolvedJavaInvocation]
+
+
+def _resolve_java_invocation_weighted(invocation: Invocation) -> ResolvedJavaInvocation:
     java_overloads = [o for o in invocation.overloads if o.get("language") == "java"]
     if not java_overloads:
         if invocation.kwargs:
@@ -166,11 +218,31 @@ def resolve_java_invocation(invocation: Invocation) -> ResolvedJavaInvocation:
             continue
         names = java_parameter_names(overload)
         types = java_parameter_types(overload)
-        score = sum(_score_value_for_java_type(types[idx], names[idx], value) for idx, value in enumerate(ordered))
+        param_scores: list[int] = []
+        incompatible = False
+        for idx, value in enumerate(ordered):
+            param_score = _score_value_for_java_type(types[idx], names[idx], value)
+            if param_score is None:
+                incompatible = True
+                break
+            param_scores.append(param_score)
+        if incompatible:
+            continue
+        score = sum(param_scores)
         candidates.append((score, -source_index, ordered, types, overload))
 
     if candidates:
         candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+        if len(candidates) > 1:
+            top_score = candidates[0][0]
+            ambiguous = [candidate for candidate in candidates if candidate[0] == top_score]
+            if len(ambiguous) > 1:
+                overload_names = [java_parameter_names(candidate[4]) for candidate in ambiguous]
+                raise BackendConversionError(
+                    f"Ambiguous Java overload resolution for {invocation.method_name}. "
+                    f"Provided args={invocation.args!r} kwargs={invocation.kwargs!r}; "
+                    f"matching overload parameters={overload_names}"
+                )
         _, _, ordered, types, overload = candidates[0]
         return ResolvedJavaInvocation(args=ordered, param_types=tuple(types), overload=overload)
 
@@ -181,14 +253,41 @@ def resolve_java_invocation(invocation: Invocation) -> ResolvedJavaInvocation:
     )
 
 
+_JAVA_INVOCATION_RESOLVER: JavaInvocationResolver = _resolve_java_invocation_weighted
+
+
+def get_java_invocation_resolver() -> JavaInvocationResolver:
+    return _JAVA_INVOCATION_RESOLVER
+
+
+def set_java_invocation_resolver(resolver: JavaInvocationResolver) -> JavaInvocationResolver:
+    global _JAVA_INVOCATION_RESOLVER
+    previous = _JAVA_INVOCATION_RESOLVER
+    _JAVA_INVOCATION_RESOLVER = resolver
+    return previous
+
+
+def reset_java_invocation_resolver() -> None:
+    global _JAVA_INVOCATION_RESOLVER
+    _JAVA_INVOCATION_RESOLVER = _resolve_java_invocation_weighted
+
+
+def resolve_java_invocation(invocation: Invocation) -> ResolvedJavaInvocation:
+    return _JAVA_INVOCATION_RESOLVER(invocation)
+
+
 def resolve_java_arguments(invocation: Invocation) -> tuple[Any, ...]:
     return resolve_java_invocation(invocation).args
 
 
 __all__ = [
+    "JavaInvocationResolver",
     "ResolvedJavaInvocation",
+    "get_java_invocation_resolver",
     "java_parameter_names",
     "java_parameter_types",
+    "reset_java_invocation_resolver",
     "resolve_java_arguments",
     "resolve_java_invocation",
+    "set_java_invocation_resolver",
 ]

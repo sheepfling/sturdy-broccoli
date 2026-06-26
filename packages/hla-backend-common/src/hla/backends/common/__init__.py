@@ -27,11 +27,15 @@ from .conversion import (
     handle_type_from_java_type_name,
 )
 from .invocation import (
+    JavaInvocationResolver,
     ResolvedJavaInvocation,
+    get_java_invocation_resolver,
     java_parameter_names,
     java_parameter_types,
+    reset_java_invocation_resolver,
     resolve_java_arguments,
     resolve_java_invocation,
+    set_java_invocation_resolver,
 )
 from .plugin_api import (
     BACKEND_ENTRY_POINT_GROUP,
@@ -107,11 +111,15 @@ __all__ = [
     "handle_type_from_java_type_name",
     "lower_camel_to_snake",
     "make_rti_ambassador",
+    "JavaInvocationResolver",
     "ResolvedJavaInvocation",
+    "get_java_invocation_resolver",
     "java_parameter_names",
     "java_parameter_types",
+    "reset_java_invocation_resolver",
     "resolve_java_arguments",
     "resolve_java_invocation",
+    "set_java_invocation_resolver",
     "snake_to_lower_camel",
     "BACKEND_ENTRY_POINT_GROUP",
     "CallbackRecord",

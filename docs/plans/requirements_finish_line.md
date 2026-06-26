@@ -5,9 +5,13 @@ This note is the handoff point for the requirements program in this repo.
 Use it when you return later and want the shortest route back to a clean,
 honest finish.
 
+For the concrete remaining `2010` and `2025` closeout buckets, use
+[`requirements_remaining_closure.md`](requirements_remaining_closure.md).
+
 ## What is already in place
 
-- a harmonized requirements catalog in `requirements/*.csv`
+- a harmonized `2010` requirements catalog in `requirements/2010/*.csv`
+- a bounded `2025` requirements surface in `requirements/2025/`
 - generated compliance artifacts under `analysis/compliance/`
 - requirement-to-test traceability
 - vendor and backend discovery artifacts
@@ -37,7 +41,9 @@ and document the narrower behavior rather than inflating the claim.
 ## Recommended finish order
 
 1. Start from the generated backlog in `analysis/compliance/vendor_discovery_backlog.*`
-2. Open the requirement row in `requirements/*.csv`
+2. Open the requirement row in the correct edition surface:
+   `requirements/2010/*.csv` for the 2010 standards or
+   `requirements/2025/` for the 2025 surface
 3. Add or tighten the exact focused test
 4. Update the traceability row with the evidence anchor
 5. Regenerate compliance artifacts

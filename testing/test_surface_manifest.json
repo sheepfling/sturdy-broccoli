@@ -100,6 +100,8 @@
         "unit-foundation",
         "unit-python-core",
         "unit-federate-examples",
+        "unit-vendor-onboarding",
+        "unit-shim-tooling",
         "unit-fom-tooling",
         "unit-python-2025-core",
         "unit-transport-local",
@@ -213,6 +215,99 @@
       "preflight": {
         "kind": "always-ready",
         "reason": "Pure repo-owned operator/examples shard."
+      }
+    },
+    {
+      "id": "unit-vendor-onboarding",
+      "title": "Unit vendor onboarding shard",
+      "description": "Pitch and CERTI onboarding docs, preflight/report contracts, and vendor wrapper front-door shard for Docker and runtime setup guidance.",
+      "owner_command": ["./tools/test-surface", "run", "unit-vendor-onboarding"],
+      "commands": [
+        [
+          "./tools/certi-easy",
+          "preflight"
+        ],
+        [
+          "./tools/pitch",
+          "doctor"
+        ],
+        [
+          "./tools/pitch",
+          "preflight"
+        ],
+        [
+          "./tools/test",
+          "tests/test_pitch_docker_first_run_doc.py",
+          "tests/scenarios/test_easy_preflight_reports.py",
+          "tests/scenarios/test_preflight_contracts.py",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_root_vendor_wrappers_removed_and_tools_wrappers_present",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_duplicate_audit_top_level_wrapper_bootstraps_source_checkout",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_bootstrap_top_level_wrapper_doctor_bootstraps_source_checkout",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_certi_easy_top_level_wrapper_runs_preflight",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_certi_easy_top_level_wrapper_preflight_is_reachable_from_outside_repo",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_runs_preflight",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_preflight_is_reachable_from_outside_repo",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_help_lists_best_effort_routes",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_crc_macos_repro_is_reachable_from_outside_repo",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_crc_docker_repro_is_reachable_from_outside_repo",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_runs_smoke",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_runs_verify_best_effort",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_verify_best_effort_is_reachable_from_outside_repo",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_verify_is_reachable_from_outside_repo",
+          "tests/scenarios/test_top_level_vendor_wrappers.py::test_pitch_top_level_wrapper_runs_probe_route",
+          "tests/scenarios/test_pitch_tool_router.py",
+          "tests/test_documentation_policy.py",
+          "tests/test_operator_surface_policy.py"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/pitch_docker_first_run.md",
+        "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+        "tools/README.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned vendor onboarding shard."
+      }
+    },
+    {
+      "id": "unit-shim-tooling",
+      "title": "Unit shim tooling shard",
+      "description": "Java and C++ shim route docs, doctor inventories, preflight wrappers, and standard-shim operator surface shard.",
+      "owner_command": ["./tools/test-surface", "run", "unit-shim-tooling"],
+      "commands": [
+        [
+          "./tools/test",
+          "tests/runtime/test_java_toolchain.py",
+          "tests/runtime/test_cpp_toolchain.py",
+          "tests/test_tools_java_wrapper.py",
+          "tests/test_tools_shim_routes_wrapper.py",
+          "tests/test_documentation_policy.py",
+          "tests/test_operator_surface_policy.py",
+          "tests/backends/test_standard_shim_artifacts.py"
+        ]
+      ],
+      "docs": [
+        "docs/test_surface.md",
+        "docs/java_toolchain.md",
+        "docs/cpp_toolchain.md",
+        "docs/language_shim_routes.md",
+        "tools/README.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure repo-owned shim tooling shard."
       }
     },
     {

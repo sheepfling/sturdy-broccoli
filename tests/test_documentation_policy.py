@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -8,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ICLOUD_DUPLICATE_SUFFIX = " 2.md"
+SUFFIXED_DUPLICATE_FILE = re.compile(r" 2(?=\.[^.]+$)")
 KEY_PUBLIC_DOCS = (
     ROOT / "README.md",
     ROOT / "docs/README.md",
@@ -123,6 +125,54 @@ def test_repo_does_not_keep_duplicate_markdown_copies() -> None:
         and not path.name.endswith(ICLOUD_DUPLICATE_SUFFIX)
     )
     assert duplicates == [], f"duplicate markdown copies remain: {duplicates}"
+
+
+def test_requirement_surfaces_do_not_keep_suffixed_duplicate_files() -> None:
+    duplicates = sorted(
+        path.relative_to(ROOT).as_posix()
+        for base in (ROOT / "requirements", ROOT / "docs" / "requirements")
+        for path in base.glob("**/*")
+        if path.is_file() and SUFFIXED_DUPLICATE_FILE.search(path.name)
+    )
+    assert duplicates == [], f"duplicate requirement surface files remain: {duplicates}"
+
+
+def test_top_level_requirements_tree_stays_as_an_edition_index() -> None:
+    top_level_files = sorted(
+        path.name
+        for path in (ROOT / "requirements").iterdir()
+        if path.is_file()
+    )
+    assert top_level_files == ["README.md"]
+
+
+def test_each_requirement_edition_has_a_single_source_side_inventory_front_door() -> None:
+    inventory_markers = {
+        ROOT / "requirements" / "2010" / "README.md": "## Canonical 2010 Inventory",
+        ROOT / "requirements" / "2025" / "README.md": "## Canonical 2025 Inventory",
+    }
+    for path, marker in inventory_markers.items():
+        text = _read(path)
+        assert marker in text, f"{path.relative_to(ROOT)} missing {marker}"
+
+
+def test_each_human_facing_requirement_front_door_points_to_source_inventory_and_verification() -> None:
+    expectations = {
+        ROOT / "docs" / "requirements" / "ieee-1516-2010" / "README.md": (
+            "../../../requirements/2010/README.md",
+            "../../verification/README.md",
+            "../../spec_reading_map.md",
+        ),
+        ROOT / "docs" / "requirements" / "ieee-1516-2025" / "README.md": (
+            "../../../requirements/2025/README.md",
+            "../../verification/README.md",
+            "../../spec_reading_map.md",
+        ),
+    }
+    for path, refs in expectations.items():
+        text = _read(path)
+        for ref in refs:
+            assert ref in text, f"{path.relative_to(ROOT)} missing {ref}"
 
 
 def test_python_api_spec_matches_split_package_reality() -> None:

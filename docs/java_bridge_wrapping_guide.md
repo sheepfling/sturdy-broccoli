@@ -12,6 +12,10 @@ read `docs/java_rti_adaptation_architecture.md` next.
 If your main question is how the repo chooses the correct Java overload across
 JPype and Py4J, read `docs/java_bridge_overload_resolution.md`.
 
+If your question is specifically about Java encoders, raw `byte[]` payloads,
+`userSuppliedTag`, or JPype versus Py4J byte-preservation quirks, read
+`docs/java_bridge_encoding_and_bytes.md`.
+
 If you need the shortest possible "how do I minimally wrap this?" teaching
 version, start with `docs/java_bridge_minimal_protocol_recipe.md`.
 
@@ -98,6 +102,11 @@ Java overload intent in Python first, then hands the chosen call shape to
 JPype or Py4J. That policy is described in
 [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md).
 
+Binary payload handling is also shared policy. JPype and Py4J have different
+mechanics for Java `byte[]`, but both are required to preserve the same Python
+`bytes` contract. That policy is described in
+[`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md).
+
 ## Edition Differences
 
 2010 and 2025 share the same wrapper strategy, but 2025 adds a broader spec
@@ -130,6 +139,7 @@ rti = implementation.create_rti_ambassador()
 3. `packages/hla-bridge-java-jpype/README.md`
 4. `packages/hla-bridge-java-py4j/README.md`
 5. `docs/java_bridge_minimal_protocol_recipe.md`
-6. `docs/java_bridge_overload_resolution.md`
-7. `docs/java_rti_adaptation_architecture.md`
-8. `docs/language_shim_routes.md`
+6. `docs/java_bridge_encoding_and_bytes.md`
+7. `docs/java_bridge_overload_resolution.md`
+8. `docs/java_rti_adaptation_architecture.md`
+9. `docs/language_shim_routes.md`

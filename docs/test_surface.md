@@ -37,6 +37,17 @@ The matching discovery commands are:
 ./tools/test-surface preflight --lane vendor --json
 ```
 
+For junior-friendly reruns, `./tools/test-surface run` also accepts a few
+intent aliases:
+
+```bash
+./tools/test-surface run foundation
+./tools/test-surface run onboarding
+./tools/test-surface run shim-tooling
+./tools/test-surface run transport
+./tools/test-surface run scenarios
+```
+
 ## What Each Lane Means
 
 | Lane | Primary command | Purpose |
@@ -48,6 +59,8 @@ The matching discovery commands are:
 | `unit-foundation` | `./tools/test-surface run unit-foundation` | cheap policy, package-boundary, import-hygiene, and operator-wrapper shard |
 | `unit-python-core` | `./tools/test-surface run unit-python-core` | direct Python example and RTI-core shard |
 | `unit-federate-examples` | `./tools/test-surface run unit-federate-examples` | interactive federate CLI, walkthrough, TUI, and change-map shard for the examples/help surface |
+| `unit-vendor-onboarding` | `./tools/test-surface run unit-vendor-onboarding` | Pitch/CERTI onboarding docs, preflight/report contracts, and vendor wrapper front-door shard |
+| `unit-shim-tooling` | `./tools/test-surface run unit-shim-tooling` | Java/C++ shim route docs, doctor/preflight wrappers, and standard-shim artifact surface shard |
 | `unit-fom-tooling` | `./tools/test-surface run unit-fom-tooling` | FOM parsing, validation, workbench, and packaged-factory shard |
 | `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | primary `python1516_2025` unit shard for direct runtime semantics and validation |
 | `unit-transport-local` | `./tools/test-surface run unit-transport-local` | hosted transport shard for gRPC and REST tests without vendor-runtime lanes |
@@ -57,6 +70,28 @@ The matching discovery commands are:
 | `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and the README-advertised `python1516_2025` Target/Radar example path |
 | `vendor` | `./tools/vendor-green matrix` | strict real-runtime lane after vendor preflight |
 | `matrix` | `./tools/test-surface run matrix` | regenerate compliance artifacts, refresh the checked-in 2025 finish-line bundle, and rerun matrix gates |
+
+## Which Shard To Run
+
+Use this table when you want one small rerun instead of `repo-green-units`.
+
+| If you changed or broke... | Run this | Alias | Why this shard exists | Common failure meaning | Not for |
+|---|---|---|---|---|---|
+| wrapper inventory, doc links, manifest structure, or top-level policy | `./tools/test-surface run unit-foundation` | `./tools/test-surface run foundation` | cheapest structural first signal | operator surface, path policy, or manifest drift | runtime semantics |
+| pure Python examples or shared RTI core helpers | `./tools/test-surface run unit-python-core` | `./tools/test-surface run python-core` | core Python behavior before broader scenario depth | example wiring or shared RTI core regression | vendor setup or transport |
+| federate CLI, walkthrough help, or TUI flows | `./tools/test-surface run unit-federate-examples` | `./tools/test-surface run examples` | interactive operator surface for examples | CLI contract or walkthrough drift | deep backend/runtime proof |
+| Pitch/CERTI first-run docs, vendor preflight contracts, or onboarding guidance | `./tools/test-surface run unit-vendor-onboarding` | `./tools/test-surface run onboarding` | newcomer vendor setup front door | onboarding docs or preflight contract drift | standard shim or core Python runtime |
+| Java/C++ shim route setup, doctors, or standard-shim wrapper surface | `./tools/test-surface run unit-shim-tooling` | `./tools/test-surface run shim-tooling` | language-binding setup and artifact readiness | Java/C++ preflight, toolchain, or shim route drift | vendor runtime provisioning |
+| FOM parsing, validation, packaged factories, or workbench surface | `./tools/test-surface run unit-fom-tooling` | `./tools/test-surface run fom` | FOM tooling isolation | parser, validation, or workbench regression | transport or vendor setup |
+| direct `python1516_2025` runtime semantics or validation helpers | `./tools/test-surface run unit-python-2025-core` | `./tools/test-surface run python-2025` | main 2025 runtime unit slice | direct 2025 runtime regression | onboarding/docs-only changes |
+| hosted gRPC/REST route plumbing without vendor runtime | `./tools/test-surface run unit-transport-local` | `./tools/test-surface run transport` | hosted route boundary checks | transport adapter or hosted route regression | direct runtime-only behavior |
+| Target/Radar or higher-level backend scenario behavior | `./tools/test-surface run unit-scenarios-light` | `./tools/test-surface run scenarios` | scenario-level signal before vendor lanes | scenario composition or backend integration regression | simple policy/docs failures |
+
+Current shape guidance:
+
+- keep `unit-foundation`, `unit-vendor-onboarding`, and `unit-shim-tooling` separate because they serve different newcomer/debug stories
+- keep `unit-python-core` and `unit-python-2025-core` separate because they protect different runtime ownership lanes
+- review `unit-federate-examples` and `unit-scenarios-light` together when future shard simplification comes up, because they are the closest overlap point today
 
 ## Python 2025 Main Surface
 
@@ -160,10 +195,23 @@ If you need a smaller bite than that, run the named shards directly:
 ./tools/test-surface run unit-foundation
 ./tools/test-surface run unit-python-core
 ./tools/test-surface run unit-federate-examples
+./tools/test-surface run unit-vendor-onboarding
+./tools/test-surface run unit-shim-tooling
 ./tools/test-surface run unit-fom-tooling
 ./tools/test-surface run unit-python-2025-core
 ./tools/test-surface run unit-transport-local
 ./tools/test-surface run unit-scenarios-light
+```
+
+If the canonical lane names are too much to remember, use the alias forms
+instead:
+
+```bash
+./tools/test-surface run foundation
+./tools/test-surface run onboarding
+./tools/test-surface run shim-tooling
+./tools/test-surface run transport
+./tools/test-surface run scenarios
 ```
 
 The junior rule is simple:

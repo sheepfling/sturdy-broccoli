@@ -59,6 +59,7 @@ machine/workspace readiness check.
 - If you only need to read or modify the API surface, do not install vendor runtimes.
 - If you need Java-backed routes, install bridge extras before touching vendor runtimes.
 - If you need CERTI or Pitch, treat them as a second phase after Python setup, not as the starting point.
+- If Pitch + Docker setup is the pain point, use [`pitch_docker_first_run.md`](pitch_docker_first_run.md) as the canonical sequence.
 - When you need the strict real-runtime matrix lane after vendor preflight, use `./tools/vendor-green ...`.
 - When you need local or sandbox-friendly vendor diagnostics first, use the `*-best-effort` top-level routes before moving on to the strict vendor-green lane.
 
@@ -71,3 +72,4 @@ machine/workspace readiness check.
 - [`rti_options_and_test_matrix.md`](rti_options_and_test_matrix.md)
 - [`../packages/hla-backend-certi/docs/certi_section8_runbook.md`](../packages/hla-backend-certi/docs/certi_section8_runbook.md)
 - [`../packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md)
+- [`pitch_docker_first_run.md`](pitch_docker_first_run.md)

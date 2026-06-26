@@ -14,6 +14,10 @@ If your real question is overload choice rather than bootstrap shape, read
 [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
 after this page.
 
+If your real question is exact byte preservation across JPype or Py4J, read
+[`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md) after
+this page.
+
 ## The Core Idea
 
 For both JPype and Py4J, the minimum protocol shape is:
@@ -88,6 +92,10 @@ What Py4J is doing:
 - Java lives behind a gateway
 - Python reaches Java through that gateway
 - Python exposes callbacks through a Py4J callback object
+
+The byte-preservation rules across those two routes are the same even though
+the mechanics differ. For the explicit `byte[]` and encoder story, read
+[`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md).
 
 ## The 2025 Delta
 
@@ -188,5 +196,6 @@ Choose Py4J when you specifically need:
 3. `examples/jpype_java_rti_2025.py`
 4. `examples/py4j_java_rti_2025.py`
 5. `docs/java_bridge_wrapping_guide.md`
-6. `docs/java_bridge_overload_resolution.md`
-7. `docs/java_rti_adaptation_architecture.md`
+6. `docs/java_bridge_encoding_and_bytes.md`
+7. `docs/java_bridge_overload_resolution.md`
+8. `docs/java_rti_adaptation_architecture.md`

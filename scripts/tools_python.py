@@ -185,6 +185,12 @@ def verify_smoke(args: list[str]) -> int:
     if delegate_status is not None:
         return delegate_status
     python_bin = _workspace_python_bin()
+    status = _run_workspace_python(python_bin, ["scripts/detect_workspace_duplicates.py", "clean-same-content"])
+    if status != 0:
+        return status
+    status = _run_workspace_python(python_bin, ["scripts/detect_workspace_duplicates.py"])
+    if status != 0:
+        return status
     status = _run_workspace_python(python_bin, ["scripts/validate_test_surface_manifest.py"])
     if status != 0:
         return status

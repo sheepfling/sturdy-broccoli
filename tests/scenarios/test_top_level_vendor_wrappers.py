@@ -308,6 +308,96 @@ def test_fom_stress_top_level_wrapper_writes_artifacts(tmp_path: Path) -> None:
     assert (output_dir / "fom_stress_report.md").exists()
 
 
+def test_duplicate_audit_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "duplicate-audit"
+    workspace = tmp_path / "workspace"
+    workspace.mkdir(parents=True, exist_ok=True)
+    (workspace / "demo.py").write_text("print('ok')\n", encoding="utf-8")
+    (workspace / "demo 2.py").write_text("print('ok')\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "duplicate-audit"),
+            "--root",
+            str(workspace),
+            "--output-dir",
+            str(output_dir),
+            "--allow-findings",
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert (output_dir / "workspace_duplicate_audit.json").exists()
+    assert (output_dir / "workspace_duplicate_audit.md").exists()
+
+
+def test_duplicate_audit_worklist_mode_writes_grouped_cleanup_artifacts(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "duplicate-audit"
+    workspace = tmp_path / "workspace"
+    (workspace / "docs").mkdir(parents=True, exist_ok=True)
+    (workspace / "docs" / "demo.md").write_text("print('ok')\n", encoding="utf-8")
+    (workspace / "docs" / "demo 2.md").write_text("print('ok')\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "duplicate-audit"),
+            "worklist",
+            "--root",
+            str(workspace),
+            "--output-dir",
+            str(output_dir),
+            "--allow-findings",
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert (output_dir / "workspace_duplicate_worklist.json").exists()
+    assert (output_dir / "workspace_duplicate_worklist.md").exists()
+
+
+def test_duplicate_audit_clean_same_content_mode_removes_safe_source_copies(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "duplicate-audit"
+    workspace = tmp_path / "workspace"
+    (workspace / "docs").mkdir(parents=True, exist_ok=True)
+    (workspace / "docs" / "demo.md").write_text("same\n", encoding="utf-8")
+    duplicate = workspace / "docs" / "demo 2.md"
+    duplicate.write_text("same\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "duplicate-audit"),
+            "clean-same-content",
+            "--root",
+            str(workspace),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert not duplicate.exists()
+    assert (output_dir / "workspace_duplicate_audit.json").exists()
+    assert (output_dir / "workspace_duplicate_worklist.json").exists()
+
+
 def test_rti_options_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
     doc_path = ROOT / "docs" / "rti_options_and_test_matrix.md"

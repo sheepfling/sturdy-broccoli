@@ -55,7 +55,7 @@
         "evidence_refs": [
           "tests/factories/test_fom_omt_parsing.py",
           "tests/mom/test_mom_catalog_validation_v012.py",
-          "requirements/hla_1516_master_harmonization_index_v1_0.csv"
+          "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv"
         ],
         "name": "object_models"
       },
@@ -629,7 +629,7 @@
         "evidence_refs": [
           "tests/factories/test_fom_omt_parsing.py",
           "tests/mom/test_mom_catalog_validation_v012.py",
-          "requirements/hla_1516_master_harmonization_index_v1_0.csv"
+          "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv"
         ],
         "name": "mom_mim_behavior"
       },
@@ -664,7 +664,7 @@
         "evidence_refs": [
           "tests/factories/test_fom_omt_parsing.py",
           "tests/mom/test_mom_catalog_validation_v012.py",
-          "requirements/hla_1516_master_harmonization_index_v1_0.csv"
+          "requirements/2010/hla_1516_master_harmonization_index_v1_0.csv"
         ],
         "name": "omt_fdd_handling"
       }

@@ -22,6 +22,18 @@ _PRESERVE_DRY_RUN_FRONT_DOORS = {
     "./tools/section8-gate",
     "./tools/test",
 }
+LANE_ALIASES = {
+    "repo-units": "repo-green-units",
+    "foundation": "unit-foundation",
+    "python-core": "unit-python-core",
+    "examples": "unit-federate-examples",
+    "onboarding": "unit-vendor-onboarding",
+    "shim-tooling": "unit-shim-tooling",
+    "fom": "unit-fom-tooling",
+    "python-2025": "unit-python-2025-core",
+    "transport": "unit-transport-local",
+    "scenarios": "unit-scenarios-light",
+}
 
 
 @dataclass(frozen=True)
@@ -62,6 +74,14 @@ def lane_by_id() -> dict[str, Lane]:
     return {lane.lane_id: lane for lane in load_manifest()}
 
 
+def aliases_for_lane(lane_id: str) -> tuple[str, ...]:
+    return tuple(alias for alias, canonical in LANE_ALIASES.items() if canonical == lane_id)
+
+
+def resolve_lane_id(lane_id: str) -> str:
+    return LANE_ALIASES.get(lane_id, lane_id)
+
+
 def _json_dump(payload: Any) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
@@ -86,7 +106,7 @@ def _display_command_argv(argv: tuple[str, ...]) -> tuple[str, ...]:
     return _normalize_command_argv(argv)
 
 
-def manifest_validation_payload() -> dict[str, Any]:
+def manifest_structure_payload() -> dict[str, Any]:
     path = validator_manifest_path()
     errors = validate_manifest(path)
     return {
@@ -96,8 +116,41 @@ def manifest_validation_payload() -> dict[str, Any]:
     }
 
 
-def ensure_manifest_valid() -> None:
-    payload = manifest_validation_payload()
+def manifest_validation_payload() -> dict[str, Any]:
+    from detect_workspace_duplicates import build_duplicate_audit, strict_duplicate_candidates
+
+    payload = manifest_structure_payload()
+    duplicate_report = build_duplicate_audit()
+    strict_rows = [
+        {
+            "path": row.path,
+            "canonical_path": row.canonical_path,
+            "status": row.status,
+            "copy_index": row.copy_index,
+        }
+        for row in strict_duplicate_candidates(duplicate_report)
+    ]
+    duplicate_errors = [
+        f"workspace duplicate candidate: {row['path']} -> {row['canonical_path']} ({row['status']})"
+        for row in strict_rows
+    ]
+    return {
+        "status": "passed" if payload["status"] == "passed" and not duplicate_errors else "failed",
+        "manifest": payload["manifest"],
+        "errors": [*payload["errors"], *duplicate_errors],
+        "duplicate_audit": {
+            "duplicate_count": duplicate_report.duplicate_count,
+            "strict_duplicate_count": len(strict_rows),
+            "same_content_count": duplicate_report.same_content_count,
+            "different_content_count": duplicate_report.different_content_count,
+            "orphan_count": duplicate_report.orphan_count,
+            "duplicates": strict_rows,
+        },
+    }
+
+
+def ensure_manifest_structure_valid() -> None:
+    payload = manifest_structure_payload()
     errors = payload["errors"]
     if errors:
         message = "\n".join(
@@ -239,6 +292,11 @@ def print_usage() -> None:
                 "  ./tools/test-surface run unit-foundation",
                 "  ./tools/test-surface run unit-python-core",
                 "  ./tools/test-surface run unit-federate-examples",
+                "  ./tools/test-surface run unit-vendor-onboarding",
+                "  ./tools/test-surface run unit-shim-tooling",
+                "  ./tools/test-surface run onboarding        # alias for unit-vendor-onboarding",
+                "  ./tools/test-surface run shim-tooling      # alias for unit-shim-tooling",
+                "  ./tools/test-surface run transport         # alias for unit-transport-local",
                 "  ./tools/test-surface run unit-fom-tooling",
                 "  ./tools/test-surface run unit-python-2025-core",
                 "  ./tools/test-surface run unit-transport-local",
@@ -296,6 +354,7 @@ def command_inventory(*, as_json: bool) -> int:
                 "title": lane.title,
                 "description": lane.description,
                 "owner_command": " ".join(lane.owner_command),
+                "aliases": list(aliases_for_lane(lane.lane_id)),
                 "estimated_cost": lane.estimated_cost,
                 "docs": list(lane.docs),
                 "audience": list(lane.audience),
@@ -320,7 +379,7 @@ def command_validate(*, as_json: bool) -> int:
 
 def command_preflight(*, as_json: bool, lane_id: str | None) -> int:
     lanes = lane_by_id()
-    selected = [lanes[lane_id]] if lane_id else list(lanes.values())
+    selected = [lanes[resolve_lane_id(lane_id)]] if lane_id else list(lanes.values())
     payload = [evaluate_lane_preflight(lane) for lane in selected]
     _emit(payload if lane_id is None else payload[0], as_json=as_json)
     return 0
@@ -341,7 +400,7 @@ def command_recommend(*, as_json: bool) -> int:
 
 def command_run(*, lane_id: str, as_json: bool, dry_run: bool) -> int:
     lanes = lane_by_id()
-    lane = lanes[lane_id]
+    lane = lanes[resolve_lane_id(lane_id)]
     steps: list[dict[str, Any]] = []
     status = "passed"
 
@@ -416,7 +475,7 @@ def main(argv: list[str]) -> int:
     if len(argv) < 2 or argv[1] in {"help", "-h", "--help"}:
         print_usage()
         return 0
-    ensure_manifest_valid()
+    ensure_manifest_structure_valid()
 
     args = list(argv[1:])
     as_json = False

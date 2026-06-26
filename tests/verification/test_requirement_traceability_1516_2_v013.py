@@ -6,7 +6,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIREMENTS_DIR = REPO_ROOT / "requirements"
-REFERENCE_REQUIREMENTS_DIR = REQUIREMENTS_DIR
+REFERENCE_REQUIREMENTS_DIR = REQUIREMENTS_DIR / "2010"
 DOCS_DIR = REPO_ROOT / "docs" / "verification"
 
 
@@ -30,7 +30,7 @@ def test_1516_2_priority_rows_have_traceability_entries_with_matching_status():
     priority_rows = _rows(REFERENCE_REQUIREMENTS_DIR / "hla1516_2_priority_omt.csv")
     trace_rows = {
         row["requirement_id"]: row
-        for row in _rows(REQUIREMENTS_DIR / "traceability_matrix.csv")
+        for row in _rows(REFERENCE_REQUIREMENTS_DIR / "traceability_matrix.csv")
         if row["requirement_id"].startswith("HLA1516.2-")
     }
 
@@ -41,7 +41,7 @@ def test_1516_2_priority_rows_have_traceability_entries_with_matching_status():
         trace = trace_rows[row["requirement_id"]]
         assert trace["status"] == row["status"]
         assert trace["implementation_refs"]
-        assert "requirements/hla1516_2_priority_omt.csv" in trace["artifact_refs"]
+        assert "requirements/2010/hla1516_2_priority_omt.csv" in trace["artifact_refs"]
         if row["status"] == "mapped":
             assert row["test_id"]
             assert trace["test_refs"]

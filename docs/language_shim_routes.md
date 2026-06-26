@@ -121,3 +121,23 @@ Use it to confirm:
 - whether `java`, `javac`, and `jar` are available
 - whether the 2010 and 2025 Java shim jars already exist
 - which `./tools/shim-routes build ...` command to run next
+
+## C++ Toolchain Inventory
+
+Before building the C++ standard API shim artifacts or certifying profile-based
+C++ capsules, run:
+
+```sh
+./tools/shim-routes cpp doctor
+```
+
+That command prints a machine-readable inventory and writes:
+
+- `docs/evidence/shim_routes/cpp-toolchain.json`
+- `docs/evidence/shim_routes/cpp-toolchain.md`
+
+Use it to confirm:
+
+- whether `c++`, `ar`, and `cmake` are available
+- whether the 2010 and 2025 C++ shim archives already exist
+- which `./tools/shim-routes build ...` command to run next

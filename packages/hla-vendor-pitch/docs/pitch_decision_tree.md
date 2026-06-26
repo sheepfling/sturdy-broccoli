@@ -2,6 +2,9 @@
 
 This is the single-page guide for Pitch in this repo.
 
+If you need the canonical new-machine Docker-backed setup walkthrough, start
+with [`../../../docs/pitch_docker_first_run.md`](../../../docs/pitch_docker_first_run.md).
+
 Use it when you need to decide:
 
 - how to install Pitch

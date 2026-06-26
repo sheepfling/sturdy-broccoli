@@ -9,6 +9,14 @@ Use this rule:
 - read one short guide
 - move to reference only when blocked
 
+## Top-Level Reading Areas
+
+If you are not sure where to start, use one of these first:
+
+- `Testing`: [`repo_green_quickstart.md`](repo_green_quickstart.md), [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md)
+- `Requirements`: [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md), [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md), [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md)
+- `Backend | Transport | FOM`: [`work_surfaces.md`](work_surfaces.md), [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
+
 ## Docs By Task
 
 | If you need to... | Start here |
@@ -23,6 +31,9 @@ Use this rule:
 | decide whether a change belongs to FOM shape, transport wiring, or adapter dialect | `Runtime` -> [`federate_cli_change_map.md`](federate_cli_change_map.md) |
 | work on FOM validation, inspection, or UI/tooling | `FOM` -> [`fom_tooling_front_door.md`](fom_tooling_front_door.md) |
 | run focused tests, rerun failures, or pick a restart lane | `Testing` -> [`test_surface.md`](test_surface.md) -> [`local_verification_commands.md`](local_verification_commands.md) |
+| understand what the repo claims, what is proven, and where the evidence lives | `Requirements` -> [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) -> [`verification/README.md`](verification/README.md) -> [`spec_reading_map.md`](spec_reading_map.md) |
+| get Pitch + Docker running on a new machine with the least painful path | `Backend` -> [`pitch_docker_first_run.md`](pitch_docker_first_run.md) |
+| verify Java/C++ shim route prerequisites and standard-shim build state | `Backend` -> [`java_toolchain.md`](java_toolchain.md) -> [`cpp_toolchain.md`](cpp_toolchain.md) -> [`language_shim_routes.md`](language_shim_routes.md) |
 | understand orchestration, callback pumping, and performance limits | `Runtime` -> [`federation_orchestration.md`](federation_orchestration.md) |
 
 ## Start Here
@@ -42,6 +53,7 @@ Use `./tools/python verify-main-2025` as the normal direct `python1516_2025` pro
 Read [`networked_rti_python.md`](networked_rti_python.md) only if you need the bounded hosted 2025 route or its parity/hygiene lane.
 Use `./tools/python verify-routes-2025` when you need the bounded hosted `python1516_2025-fedpro-grpc` hygiene lane.
 Read [`verification/time_model_compliance.md`](verification/time_model_compliance.md) when the question is time, lookahead, GALT/LITS, or save/restore window proof.
+Read [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) when the question is edition-specific requirements, bounded claims, or proof-note coverage.
 
 If you already know what you need, pick a lane:
 
@@ -78,9 +90,21 @@ If you already know what you need, pick a lane:
 - `Testing` -> get to repo-green and diagnose failures as a junior:
   [`repo_green_quickstart.md`](repo_green_quickstart.md),
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+- `Requirements` -> start at the claim and proof map:
+  [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md),
+  [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md),
+  [`verification/README.md`](verification/README.md),
+  [`spec_reading_map.md`](spec_reading_map.md)
+- `Requirements` -> inspect requirement-facing bounded proof notes for the main 2025 lane:
+  [`requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`](requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md),
+  [`requirements/ieee-1516-2025/save_restore_bounded_proof.md`](requirements/ieee-1516-2025/save_restore_bounded_proof.md),
+  [`requirements/ieee-1516-2025/callback_bounded_proof.md`](requirements/ieee-1516-2025/callback_bounded_proof.md)
 - `Backend` -> understand Java/vendor/runtime support:
   [`java_toolchain.md`](java_toolchain.md),
+  [`cpp_toolchain.md`](cpp_toolchain.md),
+  [`language_shim_routes.md`](language_shim_routes.md),
   [`vendor_runtime_runner_guide.md`](vendor_runtime_runner_guide.md),
+  [`pitch_docker_first_run.md`](pitch_docker_first_run.md),
   [`backend_conformance_matrix.md`](backend_conformance_matrix.md),
   [`../packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md),
   [`../packages/hla-vendor-pitch/docs/pitch_behavior_matrix.md`](../packages/hla-vendor-pitch/docs/pitch_behavior_matrix.md),
@@ -88,6 +112,7 @@ If you already know what you need, pick a lane:
 - `Backend` -> minimally wrap Java RTIs through JPype or Py4J:
   [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md),
   [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md),
+  [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md),
   [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md),
   [`java_rti_adaptation_architecture.md`](java_rti_adaptation_architecture.md)
 - `Backend` -> investigate a native Pitch HLA4/202X route beyond the current adapter-backed 2025 path:
@@ -118,8 +143,12 @@ Use these when you need structure, not onboarding:
 - [python_rti_reading_map.md](python_rti_reading_map.md): shortest editing path for the main `python1516_2025` RTI lane
 - [../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`
 - [verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, GALT/LITS, and radar-window proof front door for the primary 2025 Python RTI lane
+- [verification/README.md](verification/README.md): verification and proof index
 - [../tools/pitch](../tools/pitch): narrow vendor-runtime operator path when you need the Pitch-safe two-federate `time-window-probe` or `time-window-restore-state-probe` bounded credence routes without widening the main `python1516_2025` claim
+- [pitch_docker_first_run.md](pitch_docker_first_run.md): canonical new-machine Docker-backed Pitch setup and diagnosis path
+- [requirements/ieee-1516-2010/README.md](requirements/ieee-1516-2010/README.md): 2010 requirements index and source/proof front door
 - [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python1516_2025` lane
+- [spec_reading_map.md](spec_reading_map.md): standards-facing reading order and traceability front door
 - [requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md): tracked proto2025 and Target/Radar example/FOM-backed scenario boundary for the bounded `python1516_2025` claim
 - [requirements/ieee-1516-2025/save_restore_bounded_proof.md](requirements/ieee-1516-2025/save_restore_bounded_proof.md): explicit save/restore rollback-family boundary for lifecycle control, routing/policy rollback, ownership rollback, and time-window rollback on the bounded `python1516_2025` claim
 - [requirements/ieee-1516-2025/callback_bounded_proof.md](requirements/ieee-1516-2025/callback_bounded_proof.md): explicit callback-delivery family boundary for direct/hosted `python1516_2025` callback proofs, callback-control hygiene, and callback surface limits on the bounded `python1516_2025` claim
@@ -131,6 +160,7 @@ Use these when you need structure, not onboarding:
 - [transport_extension_playbook.md](transport_extension_playbook.md): concrete implementation playbook for variant `grpc` layers, new transport kinds, and hosted route adapters
 - [java_bridge_minimal_protocol_recipe.md](java_bridge_minimal_protocol_recipe.md): shortest JPype/Py4J wrapping recipe for standard Java RTIs
 - [java_bridge_wrapping_guide.md](java_bridge_wrapping_guide.md): fuller JPype/Py4J wrapping guide
+- [java_bridge_encoding_and_bytes.md](java_bridge_encoding_and_bytes.md): Java encoder, `byte[]`, `userSuppliedTag`, and JPype/Py4J byte-preservation guide
 - [java_bridge_overload_resolution.md](java_bridge_overload_resolution.md): how shared Python-side overload selection and callback signature handling keep JPype and Py4J aligned
 - [java_rti_adaptation_architecture.md](java_rti_adaptation_architecture.md): management-readable Java RTI adaptation architecture
 - [python_route_wrapping_guide.md](python_route_wrapping_guide.md): keep 2010 and 2025 Python wrapper examples aligned at the factory/import edge

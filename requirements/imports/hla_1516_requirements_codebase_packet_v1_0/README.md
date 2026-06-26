@@ -2,9 +2,10 @@
 
 This directory is a committed intake copy of the external HLA 1516 requirements packet received in `INBOX/REQTS`.
 
-It is intentionally separate from the curated top-level `requirements/*.csv` files:
+It is intentionally separate from the curated edition-specific requirements surfaces:
 
-- `requirements/*.csv` stays as the hand-harmonized engineering working set used for repo-native traceability.
+- `requirements/2010/*.csv` stays as the hand-harmonized 2010 engineering working set used for repo-native traceability.
+- `requirements/2025/` stays as the collected 2025 source-trace and harmonization surface.
 - `requirements/imports/hla_1516_requirements_codebase_packet_v1_0/*` preserves the packet-provided v1.0 dump, workpacket, history, and manifest as imported source material.
 
 ## Imported structure

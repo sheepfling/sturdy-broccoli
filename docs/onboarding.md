@@ -43,11 +43,18 @@ Pick the closest match:
    - then read [`local_verification_commands.md`](local_verification_commands.md)
    - then read [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
    - then use [`../tools/python`](../tools/python) or [`../tools/test`](../tools/test)
-8. I need vendor or Java routes
+8. I need to understand requirements, claims, or proof coverage
+   - read [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md)
+   - then read [`verification/README.md`](verification/README.md)
+   - then read [`spec_reading_map.md`](spec_reading_map.md)
+   - then branch to one bounded proof note such as [`requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`](requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md) or [`requirements/ieee-1516-2025/save_restore_bounded_proof.md`](requirements/ieee-1516-2025/save_restore_bounded_proof.md)
+9. I need vendor or Java routes
    - read [`work_surfaces.md`](work_surfaces.md)
    - read [`java_toolchain.md`](java_toolchain.md)
+   - read [`cpp_toolchain.md`](cpp_toolchain.md)
    - read [`java_bridge_minimal_protocol_recipe.md`](java_bridge_minimal_protocol_recipe.md)
    - then read [`java_bridge_wrapping_guide.md`](java_bridge_wrapping_guide.md)
+   - then read [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md) if the issue involves encoders, `userSuppliedTag`, or raw bytes
    - then read [`vendor_runtime_runner_guide.md`](vendor_runtime_runner_guide.md)
 
 ## What To Ignore At First
@@ -87,6 +94,11 @@ For the cleaner version of that model, use
   [`repo_green_quickstart.md`](repo_green_quickstart.md),
   [`local_verification_commands.md`](local_verification_commands.md),
   [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
+- requirements / proof reader:
+  [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md),
+  [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md),
+  [`verification/README.md`](verification/README.md),
+  [`spec_reading_map.md`](spec_reading_map.md)
 - runtime engineer:
   [`python_rti_edit_one_service.md`](python_rti_edit_one_service.md),
   [`package_layout.md`](package_layout.md)

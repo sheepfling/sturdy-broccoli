@@ -2660,7 +2660,7 @@ _PITCH_REQUIREMENT_EVIDENCE["HLA1516.2-OMT-6-001"] = (
     "verified",
     (
         "docs/verification/requirements_hierarchy.md",
-        "requirements/hla1516_2_priority_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv",
         "tests/verification/test_requirement_traceability_1516_2_v013.py",
     ),
     "Pitch parity for this 1516.2 conformance row is satisfied by repo-level artifact evidence that explicitly distinguishes supported versus unsupported OMT behavior in the requirements hierarchy and verifies that traceability contract.",
@@ -2670,7 +2670,7 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-OMT-6-conformance"] = (
     "not-applicable",
     (
         "docs/verification/requirements_hierarchy.md",
-        "requirements/hla1516_2_priority_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv",
         "tests/verification/test_requirement_traceability_1516_2_v013.py",
     ),
     "This OMT area row is a planning umbrella rather than an executable backend-parity requirement. The concrete extracted 1516.2 conformance requirement is tracked separately as HLA1516.2-OMT-6-001.",

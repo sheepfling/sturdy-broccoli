@@ -11,9 +11,8 @@ Use the hierarchy in this order:
 
 `L1 capability -> L2 feature -> L3 requirement -> positive test, negative test, or planned proof`
 
-The source-of-truth rows still live in `requirements/*.csv`. The path-stable
-2010 block is mirrored under `requirements/2010/`, and the 2025 traceability
-block lives under `requirements/2025/`. This page is the reader-facing index
+The source-of-truth rows for the 2010 editions live in `requirements/2010/`,
+and the 2025 traceability block lives under `requirements/2025/`. This page is the reader-facing index
 that groups them into capability trees.
 
 This page is primarily a 2010 hierarchy view. For the current IEEE 1516.1-2025
@@ -76,7 +75,7 @@ and out-of-scope OMT extension semantics.
 | OMT schema language | Datatype system | `HLA1516.2-DT-4.13-001` through `-054` | Planned `fom_parser` / `fom_validator` / `fom_merger` / `xml_serializer` slice |
 | OMT schema language | Notes tables | `HLA1516.2-NOTE-4.14-001` through `-003` | Planned parser and serializer fidelity slice |
 | FOM and MIM interchange | Standard MIM inclusion and MOM exposure | `HLA1516.2-MIM-D-001` | `tests/time/test_mom_mim_time_v10.py`, `tests/time/test_mom_mim_and_time_semantics_v010.py` |
-| FOM module merging | Supported merge subset | `HLA1516.2-OMT-7-001`, `HLA1516.2-OMT-7-002` | Current coarse merge rows in `requirements/hla1516_2_priority_omt.csv` |
+| FOM module merging | Supported merge subset | `HLA1516.2-OMT-7-001`, `HLA1516.2-OMT-7-002` | Current coarse merge rows in `requirements/2010/hla1516_2_priority_omt.csv` |
 | FOM module merging | Detailed merge rules | `HLA1516.2-MERGE-7.0-001` through `-008` | `tests/scenarios/test_startup_sync_fom_java_translation_v09.py`, `tests/backends/test_python_backend_federation_extended.py`, remaining rows planned |
 | XML interchange | Schema and semantic round-trip conformance | `HLA1516.2-XML-ANNEX-001` through `-005` | Planned schema validation and serializer slice |
 
@@ -107,8 +106,8 @@ and out-of-scope OMT extension semantics.
 - `planned` rows are still useful: they tell you which package should own the work
   next (`fom_parser`, `fom_validator`, `fom_merger`, `mim_loader`,
   `xml_serializer`) and what proof shape is expected.
-- The detailed clause rows are in [`requirements/hla1516_2_priority_omt.csv`](../../requirements/hla1516_2_priority_omt.csv).
-- The bridge from requirement rows to code and tests is in [`requirements/traceability_matrix.csv`](../../requirements/traceability_matrix.csv).
+- The detailed clause rows are in [`requirements/2010/hla1516_2_priority_omt.csv`](../../requirements/2010/hla1516_2_priority_omt.csv).
+- The bridge from requirement rows to code and tests is in [`requirements/2010/traceability_matrix.csv`](../../requirements/2010/traceability_matrix.csv).
 
 ## OMT Lexicon
 

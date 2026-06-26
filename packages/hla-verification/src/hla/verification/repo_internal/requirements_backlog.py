@@ -177,7 +177,7 @@ def _build_family(family: str, description: str, rows: list[BacklogRow]) -> Back
 
 def _open_omt_rows(project_root: Path) -> list[BacklogRow]:
     rows: list[BacklogRow] = []
-    source_file = "requirements/hla1516_2_omt.csv"
+    source_file = "requirements/2010/hla1516_2_omt.csv"
     for raw in _read_csv_dicts(project_root / source_file):
         status = raw["status"].strip().lower()
         if status not in OPEN_STATUSES:
@@ -229,9 +229,9 @@ def _resolve_project_root(project_root: Path | None = None) -> Path:
     if project_root is not None:
         return project_root.resolve()
     required_files = (
-        "requirements/hla1516_1_clause_4_fm_service_decomposition.csv",
-        "requirements/hla1516_1_clause_10_sup_detailed_reconciliation.csv",
-        "requirements/hla1516_2_omt.csv",
+        "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
+        "requirements/2010/hla1516_1_clause_10_sup_detailed_reconciliation.csv",
+        "requirements/2010/hla1516_2_omt.csv",
     )
     for candidate in _candidate_project_roots():
         if all((candidate / relative_path).is_file() for relative_path in required_files):
@@ -249,7 +249,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Federation Management",
             "Clause 4 decomposition backlog for federation lifecycle and synchronization services.",
-            "requirements/hla1516_1_clause_4_fm_service_decomposition.csv",
+            "requirements/2010/hla1516_1_clause_4_fm_service_decomposition.csv",
             "status",
             "requirement_id",
             "clause",
@@ -263,7 +263,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Declaration Management",
             "Clause 5 packet-to-curated backlog for declaration services.",
-            "requirements/hla1516_1_clause_5_dm_detailed_reconciliation.csv",
+            "requirements/2010/hla1516_1_clause_5_dm_detailed_reconciliation.csv",
             "current_status",
             "packet_requirement_id",
             "clause",
@@ -277,7 +277,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Object Management",
             "Clause 6 packet-to-curated backlog for object-management services.",
-            "requirements/hla1516_1_clause_6_om_detailed_reconciliation.csv",
+            "requirements/2010/hla1516_1_clause_6_om_detailed_reconciliation.csv",
             "current_status",
             "packet_requirement_id",
             "clause",
@@ -291,7 +291,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Ownership Management",
             "Clause 7 packet-to-curated backlog for ownership-management services.",
-            "requirements/hla1516_1_clause_7_own_detailed_reconciliation.csv",
+            "requirements/2010/hla1516_1_clause_7_own_detailed_reconciliation.csv",
             "current_status",
             "packet_requirement_id",
             "clause",
@@ -305,7 +305,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Time Management",
             "Clause 8 packet-to-curated backlog for time-management services.",
-            "requirements/hla1516_1_clause_8_tm_detailed_reconciliation.csv",
+            "requirements/2010/hla1516_1_clause_8_tm_detailed_reconciliation.csv",
             "current_status",
             "packet_requirement_id",
             "clause",
@@ -319,7 +319,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Data Distribution Management",
             "Clause 9 packet-to-curated backlog for DDM services.",
-            "requirements/hla1516_1_clause_9_ddm_detailed_reconciliation.csv",
+            "requirements/2010/hla1516_1_clause_9_ddm_detailed_reconciliation.csv",
             "current_status",
             "packet_requirement_id",
             "clause",
@@ -333,7 +333,7 @@ def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, ob
         (
             "Support Services",
             "Clause 10 packet-to-curated backlog for support services.",
-            "requirements/hla1516_1_clause_10_sup_detailed_reconciliation.csv",
+            "requirements/2010/hla1516_1_clause_10_sup_detailed_reconciliation.csv",
             "current_status",
             "packet_requirement_id",
             "clause",

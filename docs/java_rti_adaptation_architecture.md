@@ -203,6 +203,9 @@ calling the normalized Python callback method.
 Read [`java_bridge_overload_resolution.md`](java_bridge_overload_resolution.md)
 for the concrete JPype versus Py4J comparison at that boundary.
 
+Read [`java_bridge_encoding_and_bytes.md`](java_bridge_encoding_and_bytes.md)
+for the byte-preservation and Java encoder proof story across both routes.
+
 ## Where Edition Selection Happens
 
 Edition selection is carried as one explicit field:
@@ -848,4 +851,5 @@ order:
 3. `packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/implementation.py`
 4. `packages/hla-bridge-java-jpype/src/hla/bridges/java/jpype/runtime.py`
 5. `packages/hla-bridge-java-py4j/src/hla/bridges/java/py4j/runtime.py`
-6. `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py`
+6. `docs/java_bridge_encoding_and_bytes.md`
+7. `packages/hla-bridge-java-common/src/hla/bridges/java/common/java_common.py`

@@ -21,6 +21,7 @@ SHIM_ROUTE_REPORTS = {
 JAVA_INTAKE_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/java-intake"
 CPP_INTAKE_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/cpp-intake"
 JAVA_TOOLCHAIN_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/shim_routes"
+CPP_TOOLCHAIN_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/shim_routes"
 
 
 def _bootstrap_source_checkout() -> None:
@@ -290,6 +291,28 @@ def _java_certify_core(args: argparse.Namespace) -> int:
     return 2 if failed else 0
 
 
+def _cpp_doctor(args: argparse.Namespace) -> int:
+    _bootstrap_source_checkout()
+    from hla.backends.cpp_shim import discover_cpp_toolchain, write_cpp_toolchain_reports
+
+    inventory = discover_cpp_toolchain(SCRIPT_REPO_ROOT)
+    output_dir = Path(args.output_dir)
+    json_path, md_path = write_cpp_toolchain_reports(inventory, output_dir)
+    payload = inventory.to_json_dict()
+    payload["evidence_json"] = str(json_path)
+    payload["evidence_markdown"] = str(md_path)
+    payload["recommended_commands"] = []
+    if inventory.status != "ready":
+        if not inventory.cxx_ok or not inventory.ar_ok or not inventory.cmake_ok:
+            payload["recommended_commands"].append("./tools/shim-routes cpp doctor")
+    if any(not artifact.exists for artifact in inventory.artifacts):
+        payload["recommended_commands"].extend(
+            artifact.build_command for artifact in inventory.artifacts if not artifact.exists
+        )
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0 if inventory.ok else 2
+
+
 def _cpp_discover(args: argparse.Namespace) -> int:
     _bootstrap_source_checkout()
     from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest, discover_cpp_sdk, write_cpp_intake_reports
@@ -495,6 +518,14 @@ def main(argv: list[str] | None = None) -> int:
 
     cpp = subparsers.add_parser("cpp")
     cpp_subparsers = cpp.add_subparsers(dest="cpp_command", required=True)
+
+    cpp_doctor = cpp_subparsers.add_parser("doctor")
+    cpp_doctor.add_argument(
+        "--output-dir",
+        default=str(CPP_TOOLCHAIN_REPORT_DIR),
+        help="Directory for the machine-readable C++ toolchain inventory",
+    )
+    cpp_doctor.set_defaults(func=_cpp_doctor)
 
     cpp_discover = cpp_subparsers.add_parser("discover")
     cpp_discover.add_argument("--profile", required=True, help="C++ SDK intake profile path")

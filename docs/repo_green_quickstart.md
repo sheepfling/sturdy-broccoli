@@ -81,8 +81,16 @@ Use:
 ./tools/python verify-fast
 ```
 
-`verify-smoke` now validates `testing/test_surface_manifest.json` before pytest
-starts, so broken shard definitions fail immediately.
+`verify-smoke` now auto-removes only hash-identical source-tree duplicate copies,
+then validates `testing/test_surface_manifest.json` before pytest starts, so
+broken shard definitions fail immediately.
+
+Generated-space note:
+
+- `artifacts/` duplicate files are treated as disposable generated output
+- `.local/` duplicate files are treated as machine-local generated state
+- those generated-tree duplicates are reported in duplicate audits but do not
+  fail the strict repo-green duplicate gate by themselves
 
 That validation also writes front-door proof artifacts to:
 
@@ -101,10 +109,23 @@ you rerun full repo-green:
 ```bash
 ./tools/test-surface run unit-foundation
 ./tools/test-surface run unit-python-core
+./tools/test-surface run unit-vendor-onboarding
+./tools/test-surface run unit-shim-tooling
 ./tools/test-surface run unit-fom-tooling
 ./tools/test-surface run unit-python-2025-core
 ./tools/test-surface run unit-transport-local
 ./tools/test-surface run unit-scenarios-light
+```
+
+If you do not want to remember the canonical shard names, use the short alias
+forms:
+
+```bash
+./tools/test-surface run foundation
+./tools/test-surface run onboarding
+./tools/test-surface run shim-tooling
+./tools/test-surface run transport
+./tools/test-surface run scenarios
 ```
 
 Use this when:
@@ -127,6 +148,18 @@ Agent discovery rule:
 - inspect `testing/test_surface_manifest.json`
 - edit `repo-green-units.include_lanes` for shard order or membership
 - edit the matching `unit-*` lane for shard contents
+
+## Which Shard Should I Run?
+
+Use this quick map:
+
+- changed wrapper docs, path policy, or shard wiring: `./tools/test-surface run foundation`
+- changed Pitch/CERTI first-run docs or vendor preflight flow: `./tools/test-surface run onboarding`
+- changed Java/C++ shim setup, toolchain doctors, or standard-shim docs: `./tools/test-surface run shim-tooling`
+- changed hosted gRPC/REST route wiring: `./tools/test-surface run transport`
+- changed Target/Radar or higher-level backend scenarios: `./tools/test-surface run scenarios`
+- changed FOM parsing/validation/workbench: `./tools/test-surface run unit-fom-tooling`
+- changed direct `python1516_2025` runtime behavior: `./tools/test-surface run unit-python-2025-core`
 
 ## What "Green" Means Here
 
