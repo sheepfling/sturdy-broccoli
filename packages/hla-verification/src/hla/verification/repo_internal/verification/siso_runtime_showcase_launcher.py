@@ -16,6 +16,7 @@ class SisoRuntimeShowcaseLauncherPaths:
     summary_json: Path
     results_csv: Path
     selected_manifest_json: Path
+    listener_root: Path
     report_markdown: Path
 
 
@@ -67,6 +68,7 @@ def run_siso_runtime_showcase_launcher(
     topologies: Sequence[str] | None = None,
     scenarios: Sequence[str] | None = None,
     backend: str | None = None,
+    listener_output_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     manifest = load_siso_runtime_showcase_manifest(manifest_path)
     selected = _select_rows(
@@ -76,7 +78,14 @@ def run_siso_runtime_showcase_launcher(
         topologies=topologies,
         scenarios=scenarios,
     )
-    results = [run_siso_runtime_showcase_scenario(str(row["scenario"]), backend=backend) for row in selected]
+    results = [
+        run_siso_runtime_showcase_scenario(
+            str(row["scenario"]),
+            backend=backend,
+            listener_output_dir=listener_output_dir,
+        )
+        for row in selected
+    ]
     return {
         "suite_name": "siso-runtime-showcase-launcher",
         "manifest_path": str(manifest_path) if manifest_path is not None else None,
@@ -129,6 +138,7 @@ def _render_markdown(summary: Mapping[str, Any], paths: SisoRuntimeShowcaseLaunc
         f"- summary json: `{paths.summary_json}`",
         f"- results csv: `{paths.results_csv}`",
         f"- selected manifest json: `{paths.selected_manifest_json}`",
+        f"- listener root: `{paths.listener_root}`",
         "",
         "## Results",
         "",
@@ -172,6 +182,7 @@ def write_siso_runtime_showcase_launcher_artifacts(
         summary_json=out / "siso_runtime_showcase_launcher_summary.json",
         results_csv=out / "siso_runtime_showcase_launcher_results.csv",
         selected_manifest_json=out / "siso_runtime_showcase_launcher_manifest.json",
+        listener_root=out / "listener",
         report_markdown=out / "siso_runtime_showcase_launcher_report.md",
     )
     summary = run_siso_runtime_showcase_launcher(
@@ -181,6 +192,7 @@ def write_siso_runtime_showcase_launcher_artifacts(
         topologies=topologies,
         scenarios=scenarios,
         backend=backend,
+        listener_output_dir=paths.listener_root,
     )
     paths.summary_json.write_text(json.dumps(_jsonable(summary), indent=2, sort_keys=True) + "\n", encoding="utf-8")
     paths.selected_manifest_json.write_text(

@@ -85,6 +85,7 @@ def test_siso_runtime_showcase_manifest_is_explicit() -> None:
         "originator-1",
         "observer-1",
     ]
+    assert by_scenario["link16-rpr2-integrated-2010-micro-2"]["participant_profiles"][0]["federate"] == "Link16Federate1"
     assert by_scenario["rpr-runtime-2025-squad-5"]["participant_roles"] == [
         "bridge-owner",
         "shooter-1",
@@ -102,6 +103,8 @@ def test_siso_runtime_showcase_can_run_one_named_scenario() -> None:
     assert result["scenario"] == "space-fom-core-2010-micro-2"
     assert result["execution_complete"] is True
     assert result["status"] == "lifecycle-green"
+    assert result["listener_event_count"] >= 1
+    assert result["participant_profiles"][-1]["role"] == "observer"
 
 
 def test_link16_integrated_packet_paths_include_rpr_parent_modules() -> None:
@@ -163,12 +166,29 @@ def test_siso_runtime_showcase_artifacts_are_generated(tmp_path: Path) -> None:
     manifest = json.loads(paths.scenario_manifest_json.read_text(encoding="utf-8"))
     assert manifest["scenario_count"] == 18
     assert "participant_roles" in manifest["scenarios"][0]
+    assert paths.listener_index_json.exists()
+    assert paths.listener_index_html.exists()
+    listener_index = json.loads(paths.listener_index_json.read_text(encoding="utf-8"))
+    assert listener_index["scenario_count"] == 18
+    assert all(row["listener_event_count"] >= 1 for row in listener_index["listeners"])
+
+    listener_root = tmp_path / "listener"
+    listener_summary = listener_root / "link16-rpr2-integrated-2010-micro-2" / "listener_summary.json"
+    listener_trace = listener_root / "link16-rpr2-integrated-2010-micro-2" / "listener_trace.ndjson"
+    listener_report = listener_root / "link16-rpr2-integrated-2010-micro-2" / "listener_report.html"
+    assert listener_summary.exists()
+    assert listener_trace.exists()
+    assert listener_report.exists()
+    listener_payload = json.loads(listener_summary.read_text(encoding="utf-8"))
+    assert listener_payload["participants"][0]["federate"] == "Link16Federate1"
+    assert listener_payload["statistics"]["callbacks"]["receiveInteraction"] >= 2
 
     report = paths.report_markdown.read_text(encoding="utf-8")
     assert "SISO FOM Runtime Showcase" in report
     assert "Backend Eligibility Matrix" in report
     assert "bounded vendor-credence only" in report
     assert "scenario manifest json" in report
+    assert "listener index html" in report
     assert "link16-rpr2-integrated-2010-micro-2" in report
     assert "rpr-runtime-2025-squad-5" in report
     assert "space-fom-core-2025-constellation-10" in report

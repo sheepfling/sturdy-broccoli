@@ -51,6 +51,7 @@ def main(argv: list[str] | None = None) -> int:
     print(paths.summary_json)
     print(paths.results_csv)
     print(paths.selected_manifest_json)
+    print(paths.listener_root)
     print(paths.report_markdown)
     return 0
 

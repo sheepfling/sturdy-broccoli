@@ -36,6 +36,8 @@ def main(argv: list[str] | None = None) -> int:
     print(paths.scenario_csv)
     print(paths.backend_matrix_csv)
     print(paths.scenario_manifest_json)
+    print(paths.listener_index_json)
+    print(paths.listener_index_html)
     print(paths.report_markdown)
     return 0
 

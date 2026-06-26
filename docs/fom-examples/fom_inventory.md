@@ -1,6 +1,7 @@
 # FOM Inventory
 
 Generated from `docs/fom-examples/fom_inventory.json`.
+Double-check with `bash scripts/ci/check_generated_docs.sh`.
 
 This inventory is the human-readable edition and load-classification view
 for repo-owned and third-party FOM XML modules.

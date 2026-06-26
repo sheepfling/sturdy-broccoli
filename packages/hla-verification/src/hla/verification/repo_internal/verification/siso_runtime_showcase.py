@@ -17,6 +17,7 @@ from hla.rti1516e.enums import CallbackModel as CallbackModel2010, ResignAction 
 from hla.rti1516_2025.enums import CallbackModel as CallbackModel2025, ResignAction as ResignAction2025
 from hla.verification.scenario_support import register_named_object_instance, wait_for_callback_count_pair
 from hla.verification.repo_internal.fom_inventory import default_load_set_for_family
+from hla.verification.repo_internal.verification.runtime_listener import RuntimeListenerFederate, RuntimeListenerSession
 from hla.verification.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
 
 
@@ -27,6 +28,8 @@ class ShowcasePaths:
     scenario_csv: Path
     backend_matrix_csv: Path
     scenario_manifest_json: Path
+    listener_index_json: Path
+    listener_index_html: Path
     report_markdown: Path
 
 
@@ -298,6 +301,77 @@ def _story_for_family(family: str, topology: TopologySpec) -> str:
     raise KeyError(f"Unknown family {family!r}")
 
 
+def _participant_profiles(family: str, topology: TopologySpec, federate_prefix: str) -> list[dict[str, Any]]:
+    roles = _participant_roles(family, topology)
+    profiles: list[dict[str, Any]] = []
+    for idx, role in enumerate(roles, start=1):
+        publishes: list[str] = []
+        subscribes: list[str] = []
+        posture = "observer"
+        if family == "link16":
+            if role.startswith("originator"):
+                posture = "publisher"
+                publishes = [
+                    "HLAobjectRoot.EmbeddedSystem.RadioTransmitter",
+                    "JTIDSMessageRadioSignal",
+                    "RTTABRadioSignal",
+                ]
+            else:
+                subscribes = [
+                    "HLAobjectRoot.EmbeddedSystem.RadioTransmitter",
+                    "JTIDSMessageRadioSignal",
+                    "RTTABRadioSignal",
+                ]
+        elif family == "rpr":
+            if role == "bridge-owner-shooter":
+                posture = "bridge-owner + shooter"
+                publishes = [
+                    "HLAobjectRoot.EnvironmentObject.PointObject.BridgeObject",
+                    "WeaponFire",
+                    "MunitionDetonation",
+                ]
+            elif role == "bridge-owner":
+                posture = "bridge-owner"
+                publishes = ["HLAobjectRoot.EnvironmentObject.PointObject.BridgeObject"]
+            elif role.startswith("shooter"):
+                posture = "shooter"
+                publishes = ["WeaponFire", "MunitionDetonation"]
+            else:
+                subscribes = [
+                    "HLAobjectRoot.EnvironmentObject.PointObject.BridgeObject",
+                    "WeaponFire",
+                    "MunitionDetonation",
+                ]
+        elif family == "space":
+            if role == "frame-authority-producer":
+                posture = "frame-authority + producer"
+                publishes = [
+                    "HLAobjectRoot.ReferenceFrame",
+                    "HLAobjectRoot.PhysicalEntity.DynamicalEntity",
+                ]
+            elif role == "frame-authority":
+                posture = "frame-authority"
+                publishes = ["HLAobjectRoot.ReferenceFrame"]
+            elif role.startswith("producer"):
+                posture = "producer"
+                publishes = ["HLAobjectRoot.PhysicalEntity.DynamicalEntity"]
+            else:
+                subscribes = [
+                    "HLAobjectRoot.ReferenceFrame",
+                    "HLAobjectRoot.PhysicalEntity.DynamicalEntity",
+                ]
+        profiles.append(
+            {
+                "federate": f"{federate_prefix}{idx}",
+                "role": role,
+                "posture": posture,
+                "publishes": publishes,
+                "subscribes": subscribes,
+            }
+        )
+    return profiles
+
+
 def _participant_roles(family: str, topology: TopologySpec) -> list[str]:
     count = topology.federate_count
     sender_count = _sender_count(count)
@@ -375,6 +449,12 @@ def _rpr_fixed_tag(sequence: int) -> bytes:
     return int(sequence).to_bytes(8, byteorder="big", signed=True) + b"\x01"
 
 
+def _default_backend_name(runtime: RuntimeSpec, backend: str | None) -> str:
+    if backend:
+        return backend
+    return "python1516e" if runtime.edition == "2010" else "python1516_2025"
+
+
 def _startup(
     runtime: RuntimeSpec,
     rtis: list[Any],
@@ -450,11 +530,16 @@ def _subscriber_feds(
     return federates[reserved_front + sender_count :]
 
 
-def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: str | None = None) -> dict[str, Any]:
+def _run_link16_scenario(
+    runtime: RuntimeSpec,
+    topology: TopologySpec,
+    *,
+    backend: str | None = None,
+    listener_output_dir: str | Path | None = None,
+) -> dict[str, Any]:
     packet_id = "link16-rpr2-integrated"
     foms = _packet_paths(packet_id)
     rtis = _create_rtis(runtime, topology.federate_count, backend=backend)
-    federates = [RecordingFederateAmbassador() for _ in rtis]
     federation_name = f"SisoLink16-{runtime.edition}-{topology.slug}-{uuid.uuid4().hex[:8]}"
     lifecycle: list[str] = []
     operation_attempts = {
@@ -463,6 +548,21 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
         "interactions_sent": 0,
     }
     sender_count = _sender_count(topology.federate_count)
+    participants = _participant_profiles("link16", topology, "Link16Federate")
+    listener = RuntimeListenerSession(
+        scenario=f"link16-rpr2-integrated-{runtime.edition}-{topology.slug}",
+        family="link16",
+        runtime_edition=runtime.edition,
+        topology=topology.slug,
+        federation_name=federation_name,
+        backend=_default_backend_name(runtime, backend),
+        fom_modules=[Path(path).name for path in foms],
+        participants=participants,
+        story=_story_for_family("link16", topology),
+        output_root=listener_output_dir,
+    )
+    federates = [RecordingFederateAmbassador() for _ in rtis]
+    federates[-1] = RuntimeListenerFederate(listener, federate_name=participants[-1]["federate"], role=participants[-1]["role"])
     monitor = federates[-1]
     jtids_signal = "HLAinteractionRoot.RadioSignal.RawBinaryRadioSignal.TDLBinaryRadioSignal.Link16RadioSignal.JTIDSMessageRadioSignal"
     rttab_signal = "HLAinteractionRoot.RadioSignal.RawBinaryRadioSignal.TDLBinaryRadioSignal.Link16RadioSignal.RTTABRadioSignal"
@@ -476,6 +576,7 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
             federate_type_prefix="Link16Federate",
             lifecycle=lifecycle,
         )
+        listener.mark_phase("ready-to-run-synchronized")
         discover_baseline = len(monitor.callbacks_named("discoverObjectInstance"))
         reflect_baseline = len(monitor.callbacks_named("reflectAttributeValues"))
         interaction_baseline = len(monitor.callbacks_named("receiveInteraction"))
@@ -514,6 +615,7 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
             _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", jtids_classes[rti])
             _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", rttab_classes[rti])
         lifecycle.append("publication-ready")
+        listener.mark_phase("publication-ready")
 
         for idx, rti in enumerate(rtis[:sender_count], start=1):
             attrs = attrs_by_rti[rti]
@@ -526,6 +628,12 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 f"Link16Radio-{idx}",
             )
             operation_attempts["object_registrations"] += 1
+            listener.record_operation(
+                "register-object",
+                actor=participants[idx - 1]["federate"],
+                target=f"Link16Radio-{idx}",
+                details={"object_class": "HLAobjectRoot.EmbeddedSystem.RadioTransmitter"},
+            )
             _call_service(
                 rti,
                 "update_attribute_values",
@@ -539,6 +647,13 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 _rpr_tag_bytes(f"link16-transmitter-state-{idx}"),
             )
             operation_attempts["attribute_updates"] += 1
+            listener.record_operation(
+                "update-object",
+                actor=participants[idx - 1]["federate"],
+                target=f"Link16Radio-{idx}",
+                tag=_rpr_tag_bytes(f"link16-transmitter-state-{idx}"),
+                details={"attributes": ["RadioIndex", "Frequency", "WorldLocation"]},
+            )
             _call_service(
                 rti,
                 "send_interaction",
@@ -554,6 +669,13 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 _rpr_tag_bytes(f"link16-jtids-message-{idx}"),
             )
             operation_attempts["interactions_sent"] += 1
+            listener.record_operation(
+                "send-interaction",
+                actor=participants[idx - 1]["federate"],
+                target=jtids_signal,
+                tag=_rpr_tag_bytes(f"link16-jtids-message-{idx}"),
+                details={"message_type": "JTIDS"},
+            )
             _call_service(
                 rti,
                 "send_interaction",
@@ -568,6 +690,13 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 _rpr_tag_bytes(f"link16-rttab-{idx}"),
             )
             operation_attempts["interactions_sent"] += 1
+            listener.record_operation(
+                "send-interaction",
+                actor=participants[idx - 1]["federate"],
+                target=rttab_signal,
+                tag=_rpr_tag_bytes(f"link16-rttab-{idx}"),
+                details={"message_type": "RTTAB"},
+            )
         _drain(runtime, *rtis)
         if topology.federate_count == 2:
             _wait_pair_delivery(
@@ -579,6 +708,14 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 interaction_expected=interaction_baseline + (sender_count * 2),
             )
         lifecycle.append("message-traffic-observed")
+        listener.mark_phase(
+            "message-traffic-observed",
+            metrics={
+                "discoveries": len(monitor.callbacks_named("discoverObjectInstance")),
+                "reflections": len(monitor.callbacks_named("reflectAttributeValues")),
+                "interactions": len(monitor.callbacks_named("receiveInteraction")),
+            },
+        )
 
         discoveries = monitor.callbacks_named("discoverObjectInstance")
         reflections = monitor.callbacks_named("reflectAttributeValues")
@@ -596,6 +733,12 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
             and len(reflections) >= sender_count
             and set(expected_tags).issubset(set(delivered_tags))
         )
+        listener_summary = listener.finalize(
+            lifecycle=lifecycle,
+            operation_attempts=operation_attempts,
+            execution_complete=execution_complete,
+            status="lifecycle-green" if execution_complete else "failed",
+        )
         return {
             "scenario": f"link16-rpr2-integrated-{runtime.edition}-{topology.slug}",
             "family": "link16",
@@ -607,6 +750,7 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
             "federation_name": federation_name,
             "fom_modules": [Path(path).name for path in foms],
             "federates": [f"Link16Federate{idx + 1}" for idx in range(topology.federate_count)],
+            "participant_profiles": participants,
             "lifecycle": lifecycle,
             "object_class": "HLAobjectRoot.EmbeddedSystem.RadioTransmitter",
             "interaction_classes": [jtids_signal, rttab_signal],
@@ -619,6 +763,9 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
                 for idx, federate in enumerate(federates)
             },
             "delivered_tags": [_jsonable(tag) for tag in delivered_tags],
+            "listener_summary": listener_summary["statistics"],
+            "listener_artifacts": listener_summary["artifacts"],
+            "listener_event_count": listener_summary["event_count"],
             "key_outcome": "multiple Link 16 radio publishers reflected state and delivered JTIDS/RTTAB traffic to shared observers",
             "execution_complete": execution_complete,
         }
@@ -626,11 +773,10 @@ def _run_link16_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backen
         _shutdown(runtime, federation_name, rtis)
 
 
-def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: str | None = None) -> dict[str, Any]:
+def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: str | None = None, listener_output_dir: str | Path | None = None) -> dict[str, Any]:
     packet_id = "rpr3-annex-a-normative" if runtime.edition == "2025" else "rpr3-merged-informative-1516-2010"
     foms = _packet_paths(packet_id)
     rtis = _create_rtis(runtime, topology.federate_count, backend=backend)
-    federates = [RecordingFederateAmbassador() for _ in rtis]
     federation_name = f"SisoRpr-{runtime.edition}-{topology.slug}-{uuid.uuid4().hex[:8]}"
     lifecycle: list[str] = []
     operation_attempts = {
@@ -640,6 +786,21 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
     }
     shooter_count = _sender_count(topology.federate_count) if topology.federate_count > 2 else 0
     bridge_owner = rtis[0]
+    participants = _participant_profiles("rpr", topology, "RprFederate")
+    listener = RuntimeListenerSession(
+        scenario=f"rpr-runtime-{runtime.edition}-{topology.slug}",
+        family="rpr",
+        runtime_edition=runtime.edition,
+        topology=topology.slug,
+        federation_name=federation_name,
+        backend=_default_backend_name(runtime, backend),
+        fom_modules=[Path(path).name for path in foms],
+        participants=participants,
+        story=_story_for_family("rpr", topology),
+        output_root=listener_output_dir,
+    )
+    federates = [RecordingFederateAmbassador() for _ in rtis]
+    federates[-1] = RuntimeListenerFederate(listener, federate_name=participants[-1]["federate"], role=participants[-1]["role"])
     monitor = federates[-1]
     object_class_name = "HLAobjectRoot.EnvironmentObject.PointObject.BridgeObject"
     fire_name = "HLAinteractionRoot.Fire.WeaponFire"
@@ -654,6 +815,7 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             federate_type_prefix="RprFederate",
             lifecycle=lifecycle,
         )
+        listener.mark_phase("ready-to-run-synchronized")
         discover_baseline = len(monitor.callbacks_named("discoverObjectInstance"))
         reflect_baseline = len(monitor.callbacks_named("reflectAttributeValues"))
         interaction_baseline = len(monitor.callbacks_named("receiveInteraction"))
@@ -692,6 +854,7 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", fire_classes[rti])
             _call_service(rti, "subscribe_interaction_class", "subscribeInteractionClass", detonation_classes[rti])
         lifecycle.append("engagement-publication-ready")
+        listener.mark_phase("engagement-publication-ready")
 
         attrs = attrs_by_rti[bridge_owner]
         bridge = register_named_object_instance(
@@ -701,6 +864,12 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             "Bridge-Alpha",
         )
         operation_attempts["object_registrations"] += 1
+        listener.record_operation(
+            "register-object",
+            actor=participants[0]["federate"],
+            target="Bridge-Alpha",
+            details={"object_class": object_class_name},
+        )
         _call_service(
             bridge_owner,
             "update_attribute_values",
@@ -714,6 +883,13 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             _rpr_fixed_tag(0),
         )
         operation_attempts["attribute_updates"] += 1
+        listener.record_operation(
+            "update-object",
+            actor=participants[0]["federate"],
+            target="Bridge-Alpha",
+            tag=_rpr_fixed_tag(0),
+            details={"attributes": ["ObjectIdentifier", "Location", "Damage"]},
+        )
         active_shooter_count = len(shooter_rtis)
         for idx, rti in enumerate(shooter_rtis, start=1):
             fire_params = fire_params_by_rti[rti]
@@ -733,6 +909,13 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
                 _rpr_fixed_tag(idx),
             )
             operation_attempts["interactions_sent"] += 1
+            listener.record_operation(
+                "send-interaction",
+                actor=participants[0 if topology.federate_count == 2 else idx]["federate"],
+                target=fire_name,
+                tag=_rpr_fixed_tag(idx),
+                details={"event_identifier": f"engagement-{idx:03d}"},
+            )
             _call_service(
                 rti,
                 "send_interaction",
@@ -748,17 +931,32 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
                 _rpr_fixed_tag(100 + idx),
             )
             operation_attempts["interactions_sent"] += 1
+            listener.record_operation(
+                "send-interaction",
+                actor=participants[0 if topology.federate_count == 2 else idx]["federate"],
+                target=detonation_name,
+                tag=_rpr_fixed_tag(100 + idx),
+                details={"event_identifier": f"engagement-{idx:03d}"},
+            )
         _drain(runtime, *rtis)
         if topology.federate_count == 2:
             _wait_pair_delivery(
                 bridge_owner,
-                monitor_rti := rtis[-1],
+                rtis[-1],
                 monitor,
                 discover_expected=discover_baseline + 1,
                 reflect_expected=reflect_baseline + 1,
                 interaction_expected=interaction_baseline + (active_shooter_count * 2),
             )
         lifecycle.append("engagement-chain-observed")
+        listener.mark_phase(
+            "engagement-chain-observed",
+            metrics={
+                "discoveries": len(monitor.callbacks_named("discoverObjectInstance")),
+                "reflections": len(monitor.callbacks_named("reflectAttributeValues")),
+                "interactions": len(monitor.callbacks_named("receiveInteraction")),
+            },
+        )
 
         discoveries = monitor.callbacks_named("discoverObjectInstance")
         reflections = monitor.callbacks_named("reflectAttributeValues")
@@ -776,6 +974,12 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             and len(reflections) >= 1
             and set(expected_tags).issubset(set(delivered_tags))
         )
+        listener_summary = listener.finalize(
+            lifecycle=lifecycle,
+            operation_attempts=operation_attempts,
+            execution_complete=execution_complete,
+            status="lifecycle-green" if execution_complete else "failed",
+        )
         return {
             "scenario": f"rpr-runtime-{runtime.edition}-{topology.slug}",
             "family": "rpr",
@@ -787,6 +991,7 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
             "federation_name": federation_name,
             "fom_modules": [Path(path).name for path in foms],
             "federates": [f"RprFederate{idx + 1}" for idx in range(topology.federate_count)],
+            "participant_profiles": participants,
             "lifecycle": lifecycle,
             "object_class": object_class_name,
             "interaction_classes": [fire_name, detonation_name],
@@ -799,6 +1004,9 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
                 for idx, federate in enumerate(federates)
             },
             "delivered_tags": [_jsonable(tag) for tag in delivered_tags],
+            "listener_summary": listener_summary["statistics"],
+            "listener_artifacts": listener_summary["artifacts"],
+            "listener_event_count": listener_summary["event_count"],
             "key_outcome": "bridge state and multi-shooter fire/detonation chains reached the tactical observer set",
             "execution_complete": execution_complete,
         }
@@ -806,11 +1014,10 @@ def _run_rpr_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: 
         _shutdown(runtime, federation_name, rtis)
 
 
-def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: str | None = None) -> dict[str, Any]:
+def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend: str | None = None, listener_output_dir: str | Path | None = None) -> dict[str, Any]:
     packet_id = "space-fom-core"
     foms = _packet_paths(packet_id)
     rtis = _create_rtis(runtime, topology.federate_count, backend=backend)
-    federates = [RecordingFederateAmbassador() for _ in rtis]
     federation_name = f"SisoSpace-{runtime.edition}-{topology.slug}-{uuid.uuid4().hex[:8]}"
     lifecycle: list[str] = []
     operation_attempts = {
@@ -820,6 +1027,21 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
     }
     producer_count = _sender_count(topology.federate_count) if topology.federate_count > 2 else 0
     frame_authority = rtis[0]
+    participants = _participant_profiles("space", topology, "SpaceFederate")
+    listener = RuntimeListenerSession(
+        scenario=f"space-fom-core-{runtime.edition}-{topology.slug}",
+        family="space",
+        runtime_edition=runtime.edition,
+        topology=topology.slug,
+        federation_name=federation_name,
+        backend=_default_backend_name(runtime, backend),
+        fom_modules=[Path(path).name for path in foms],
+        participants=participants,
+        story=_story_for_family("space", topology),
+        output_root=listener_output_dir,
+    )
+    federates = [RecordingFederateAmbassador() for _ in rtis]
+    federates[-1] = RuntimeListenerFederate(listener, federate_name=participants[-1]["federate"], role=participants[-1]["role"])
     federate_by_rti = dict(zip(rtis, federates, strict=True))
     monitor = federates[-1]
     reference_frame_class_name = "HLAobjectRoot.ReferenceFrame"
@@ -834,6 +1056,7 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             federate_type_prefix="SpaceFederate",
             lifecycle=lifecycle,
         )
+        listener.mark_phase("ready-to-run-synchronized")
         discover_baseline = len(monitor.callbacks_named("discoverObjectInstance"))
         reflect_baseline = len(monitor.callbacks_named("reflectAttributeValues"))
         frame_classes, frame_attrs_by_rti = _resolve_attribute_handles(rtis, reference_frame_class_name, ("name", "parent_name", "state"))
@@ -875,6 +1098,7 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 set(entity_attrs_by_rti[rti].values()),
             )
         lifecycle.append("space-publication-ready")
+        listener.mark_phase("space-publication-ready")
 
         frame_attrs = frame_attrs_by_rti[frame_authority]
         frame = register_named_object_instance(
@@ -884,6 +1108,12 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             "EarthMJ2000Eq",
         )
         operation_attempts["object_registrations"] += 1
+        listener.record_operation(
+            "register-object",
+            actor=participants[0]["federate"],
+            target="EarthMJ2000Eq",
+            details={"object_class": reference_frame_class_name},
+        )
         _call_service(
             frame_authority,
             "update_attribute_values",
@@ -897,6 +1127,13 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             _tag_bytes("space-reference-frame"),
         )
         operation_attempts["attribute_updates"] += 1
+        listener.record_operation(
+            "update-object",
+            actor=participants[0]["federate"],
+            target="EarthMJ2000Eq",
+            tag=_tag_bytes("space-reference-frame"),
+            details={"attributes": ["name", "parent_name", "state"]},
+        )
         active_producer_count = len(producer_rtis)
         for idx, rti in enumerate(producer_rtis, start=1):
             entity_attrs = entity_attrs_by_rti[rti]
@@ -907,6 +1144,12 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 f"Scout-{idx}",
             )
             operation_attempts["object_registrations"] += 1
+            listener.record_operation(
+                "register-object",
+                actor=participants[0 if topology.federate_count == 2 else idx]["federate"],
+                target=f"Scout-{idx}",
+                details={"object_class": entity_class_name},
+            )
             _call_service(
                 rti,
                 "update_attribute_values",
@@ -922,6 +1165,13 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 _tag_bytes(f"space-dynamics-state-{idx}"),
             )
             operation_attempts["attribute_updates"] += 1
+            listener.record_operation(
+                "update-object",
+                actor=participants[0 if topology.federate_count == 2 else idx]["federate"],
+                target=f"Scout-{idx}",
+                tag=_tag_bytes(f"space-dynamics-state-{idx}"),
+                details={"attributes": ["name", "type", "status", "parent_reference_frame", "state"]},
+            )
             _call_service(
                 rti,
                 "update_attribute_values",
@@ -934,6 +1184,13 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 _tag_bytes(f"space-dynamics-update-{idx}"),
             )
             operation_attempts["attribute_updates"] += 1
+            listener.record_operation(
+                "update-object",
+                actor=participants[0 if topology.federate_count == 2 else idx]["federate"],
+                target=f"Scout-{idx}",
+                tag=_tag_bytes(f"space-dynamics-update-{idx}"),
+                details={"attributes": ["status", "state"]},
+            )
         _drain(runtime, *rtis)
         if topology.federate_count == 2:
             _wait_pair_delivery(
@@ -944,12 +1201,25 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 reflect_expected=reflect_baseline + 1 + (active_producer_count * 2),
             )
         lifecycle.append("space-state-reflected")
+        listener.mark_phase(
+            "space-state-reflected",
+            metrics={
+                "discoveries": len(monitor.callbacks_named("discoverObjectInstance")),
+                "reflections": len(monitor.callbacks_named("reflectAttributeValues")),
+            },
+        )
 
         discoveries = monitor.callbacks_named("discoverObjectInstance")
         reflections = monitor.callbacks_named("reflectAttributeValues")
         execution_complete = (
             len(discoveries) >= 1 + active_producer_count
             and len(reflections) >= 1 + (active_producer_count * 2)
+        )
+        listener_summary = listener.finalize(
+            lifecycle=lifecycle,
+            operation_attempts=operation_attempts,
+            execution_complete=execution_complete,
+            status="lifecycle-green" if execution_complete else "failed",
         )
         return {
             "scenario": f"space-fom-core-{runtime.edition}-{topology.slug}",
@@ -962,6 +1232,7 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
             "federation_name": federation_name,
             "fom_modules": [Path(path).name for path in foms],
             "federates": [f"SpaceFederate{idx + 1}" for idx in range(topology.federate_count)],
+            "participant_profiles": participants,
             "lifecycle": lifecycle,
             "object_classes": [reference_frame_class_name, entity_class_name],
             "discoveries": len(discoveries),
@@ -973,6 +1244,9 @@ def _run_space_scenario(runtime: RuntimeSpec, topology: TopologySpec, *, backend
                 for idx, federate in enumerate(federates)
             },
             "delivered_tags": [],
+            "listener_summary": listener_summary["statistics"],
+            "listener_artifacts": listener_summary["artifacts"],
+            "listener_event_count": listener_summary["event_count"],
             "key_outcome": "reference frame plus multi-entity orbital state updates propagated across the observer set",
             "execution_complete": execution_complete,
         }
@@ -998,6 +1272,11 @@ def build_siso_runtime_showcase_manifest() -> dict[str, Any]:
                     }
                 )
                 roles = _participant_roles(family, topology)
+                profiles = _participant_profiles(
+                    family,
+                    topology,
+                    "Link16Federate" if family == "link16" else "RprFederate" if family == "rpr" else "SpaceFederate",
+                )
                 rows.append(
                     {
                         "scenario": scenario,
@@ -1009,6 +1288,7 @@ def build_siso_runtime_showcase_manifest() -> dict[str, Any]:
                         "fom_modules": [Path(path).name for path in _packet_paths(source_packet)],
                         "story": _story_for_family(family, topology),
                         "participant_roles": roles,
+                        "participant_profiles": profiles,
                         "role_count": len(roles),
                         "python_backend": backend_row["python_backend"],
                         "pitch_2010_profiles": [item for item in backend_row["pitch_2010_profiles"].split(",") if item],
@@ -1040,6 +1320,7 @@ def run_siso_runtime_showcase_scenario(
     scenario: str,
     *,
     backend: str | None = None,
+    listener_output_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     manifest = build_siso_runtime_showcase_manifest()
     selected = next((row for row in manifest["scenarios"] if row["scenario"] == scenario), None)
@@ -1048,16 +1329,16 @@ def run_siso_runtime_showcase_scenario(
     runtime = _runtime_for_edition(str(selected["runtime_edition"]))
     topology = _topology_for_slug(str(selected["topology"]))
     family = str(selected["family"])
-    return _family_runner(family)(runtime, topology, backend=backend)
+    return _family_runner(family)(runtime, topology, backend=backend, listener_output_dir=listener_output_dir)
 
 
-def run_siso_runtime_showcase() -> dict[str, Any]:
+def run_siso_runtime_showcase(*, listener_output_dir: str | Path | None = None) -> dict[str, Any]:
     scenarios: list[dict[str, Any]] = []
     for runtime in (RUNTIME_2010, RUNTIME_2025):
         for topology in TOPOLOGIES:
-            scenarios.append(_run_link16_scenario(runtime, topology))
-            scenarios.append(_run_rpr_scenario(runtime, topology))
-            scenarios.append(_run_space_scenario(runtime, topology))
+            scenarios.append(_run_link16_scenario(runtime, topology, listener_output_dir=listener_output_dir))
+            scenarios.append(_run_rpr_scenario(runtime, topology, listener_output_dir=listener_output_dir))
+            scenarios.append(_run_space_scenario(runtime, topology, listener_output_dir=listener_output_dir))
     backend_matrix = [_backend_matrix_row(row) for row in scenarios]
     scenario_manifest = build_siso_runtime_showcase_manifest()
     return {
@@ -1139,6 +1420,8 @@ def _render_markdown(summary: Mapping[str, Any], paths: ShowcasePaths) -> str:
         f"- scenario csv: `{paths.scenario_csv}`",
         f"- backend matrix csv: `{paths.backend_matrix_csv}`",
         f"- scenario manifest json: `{paths.scenario_manifest_json}`",
+        f"- listener index json: `{paths.listener_index_json}`",
+        f"- listener index html: `{paths.listener_index_html}`",
         "",
         "## Backend Policy",
         "",
@@ -1212,6 +1495,7 @@ def _render_markdown(summary: Mapping[str, Any], paths: ShowcasePaths) -> str:
                 f"- FOM modules: `{', '.join(row['fom_modules'])}`",
                 f"- Federates: `{', '.join(row['federates'])}`",
                 f"- Lifecycle: `{', '.join(row['lifecycle'])}`",
+                f"- Listener events: `{row.get('listener_event_count', 0)}`",
                 f"- Key outcome: {row['key_outcome']}",
             ]
         )
@@ -1230,7 +1514,55 @@ def _render_markdown(summary: Mapping[str, Any], paths: ShowcasePaths) -> str:
             lines.append(f"- Object class: `{row['object_class']}`")
         if row.get("object_classes"):
             lines.append(f"- Object classes: `{', '.join(row['object_classes'])}`")
+        if row.get("listener_artifacts"):
+            lines.append(f"- Listener summary json: `{row['listener_artifacts'].get('summary_json', 'n/a')}`")
+            lines.append(f"- Listener trace ndjson: `{row['listener_artifacts'].get('trace_ndjson', 'n/a')}`")
+            lines.append(f"- Listener report html: `{row['listener_artifacts'].get('report_html', 'n/a')}`")
     return "\n".join(lines) + "\n"
+
+
+def _write_listener_index_json(path: Path, rows: list[Mapping[str, Any]]) -> Path:
+    payload = {
+        "scenario_count": len(rows),
+        "listeners": [
+            {
+                "scenario": row["scenario"],
+                "family": row["family"],
+                "runtime_edition": row["runtime_edition"],
+                "topology": row["topology"],
+                "listener_event_count": row.get("listener_event_count", 0),
+                "listener_artifacts": row.get("listener_artifacts", {}),
+            }
+            for row in rows
+        ],
+    }
+    path.write_text(json.dumps(_jsonable(payload), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def _write_listener_index_html(path: Path, rows: list[Mapping[str, Any]]) -> Path:
+    table_rows = "\n".join(
+        "<tr>"
+        f"<td>{row['scenario']}</td>"
+        f"<td>{row['family']}</td>"
+        f"<td>{row['runtime_edition']}</td>"
+        f"<td>{row['topology']}</td>"
+        f"<td>{row.get('listener_event_count', 0)}</td>"
+        f"<td><code>{row.get('listener_artifacts', {}).get('summary_json', '')}</code></td>"
+        f"<td><code>{row.get('listener_artifacts', {}).get('report_html', '')}</code></td>"
+        "</tr>"
+        for row in rows
+    )
+    path.write_text(
+        "<!doctype html><html lang='en'><head><meta charset='utf-8'><title>SISO runtime listener index</title>"
+        "<style>body{font:15px/1.5 Menlo,Consolas,monospace;background:#f4f1e8;color:#1f2933;padding:24px}"
+        "table{width:100%;border-collapse:collapse;background:#fffdfa}th,td{border:1px solid #d7cbb8;padding:8px;text-align:left}"
+        "h1{color:#9f3a16}</style></head><body><h1>SISO Runtime Listener Index</h1><table><thead><tr>"
+        "<th>Scenario</th><th>Family</th><th>Edition</th><th>Topology</th><th>Events</th><th>Summary JSON</th><th>HTML</th>"
+        f"</tr></thead><tbody>{table_rows}</tbody></table></body></html>",
+        encoding="utf-8",
+    )
+    return path
 
 
 def write_siso_runtime_showcase_artifacts(output_dir: str | Path) -> ShowcasePaths:
@@ -1242,9 +1574,11 @@ def write_siso_runtime_showcase_artifacts(output_dir: str | Path) -> ShowcasePat
         scenario_csv=out / "siso_runtime_showcase_scenarios.csv",
         backend_matrix_csv=out / "siso_runtime_showcase_backend_matrix.csv",
         scenario_manifest_json=out / "siso_runtime_showcase_manifest.json",
+        listener_index_json=out / "siso_runtime_showcase_listener_index.json",
+        listener_index_html=out / "siso_runtime_showcase_listener_index.html",
         report_markdown=out / "siso_runtime_showcase_report.md",
     )
-    summary = run_siso_runtime_showcase()
+    summary = run_siso_runtime_showcase(listener_output_dir=out / "listener")
     paths.summary_json.write_text(json.dumps(_jsonable(summary), indent=2, sort_keys=True) + "\n", encoding="utf-8")
     paths.scenario_manifest_json.write_text(
         json.dumps(_jsonable(summary["scenario_manifest"]), indent=2, sort_keys=True) + "\n",
@@ -1287,6 +1621,8 @@ def write_siso_runtime_showcase_artifacts(output_dir: str | Path) -> ShowcasePat
         ],
         summary["backend_matrix"],
     )
+    _write_listener_index_json(paths.listener_index_json, summary["scenarios"])
+    _write_listener_index_html(paths.listener_index_html, summary["scenarios"])
     paths.report_markdown.write_text(_render_markdown(summary, paths), encoding="utf-8")
     return paths
 

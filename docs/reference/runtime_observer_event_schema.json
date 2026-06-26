@@ -1,0 +1,78 @@
+{
+  "$id": "https://example.invalid/runtime-observer-event-schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Stable normalized event and inspector payloads exposed by the federation subscriber.",
+  "event_types": [
+    "scenario.phase",
+    "scenario.operation",
+    "object.discovered",
+    "object.updated",
+    "interaction.received",
+    "event.raw"
+  ],
+  "family_values": [
+    "generic",
+    "link16",
+    "rpr",
+    "space",
+    "target-radar"
+  ],
+  "interaction_inspector_fields": [
+    "interaction_key",
+    "interaction_class",
+    "class_handle_text",
+    "family",
+    "source",
+    "observer_role",
+    "tag",
+    "parameters"
+  ],
+  "normalized_event_properties": {
+    "attributes": "Reflected attribute map for object.updated events.",
+    "class_handle_text": "Text form of the RTI class handle when available.",
+    "class_name": "Resolved object or interaction class name when available.",
+    "details": "Scenario phase or operation detail payload.",
+    "event_type": "Stable normalized category for subscriber clients.",
+    "family": "Derived or declared FOM family classification.",
+    "interaction_class": "Resolved interaction class name for interaction.received events.",
+    "interaction_key": "Stable interaction row identity key.",
+    "object_handle_text": "Text form of the RTI object-instance handle when available.",
+    "object_key": "Stable object identity key used by the generic object inspector.",
+    "object_name": "Human-readable object instance name when available.",
+    "observer_role": "Role of the observing federate when available.",
+    "operation": "Operation label for scenario.operation events.",
+    "parameters": "Interaction parameter map for interaction.received events.",
+    "payload": "Original raw payload when no stronger normalized field exists.",
+    "phase": "Scenario phase label for scenario.phase events.",
+    "provider": "Scenario provider lane such as siso-runtime, two-federate, or target-radar.",
+    "scenario": "Scenario identifier.",
+    "sequence": "Integer source event sequence from the observer trace.",
+    "source": "Listener or emitting federate identity when available.",
+    "tag": "User-supplied tag or equivalent correlation bytes converted to text/hex.",
+    "target": "Operation target for scenario.operation events."
+  },
+  "normalized_event_required": [
+    "event_type",
+    "provider",
+    "scenario",
+    "family",
+    "sequence"
+  ],
+  "object_inspector_fields": [
+    "object_key",
+    "object_id",
+    "object_name",
+    "object_handle_text",
+    "class_name",
+    "class_handle_text",
+    "family",
+    "attributes",
+    "discovery_count",
+    "update_count",
+    "last_tag",
+    "sources",
+    "aliases"
+  ],
+  "schema_version": "runtime-observer-event-schema-v1",
+  "title": "Runtime Observer Normalized Event Schema"
+}

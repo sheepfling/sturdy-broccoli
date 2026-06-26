@@ -58,6 +58,8 @@ def test_siso_runtime_showcase_launcher_artifacts_are_generated(tmp_path: Path) 
 
     manifest = json.loads(paths.selected_manifest_json.read_text(encoding="utf-8"))
     assert manifest["scenario_count"] == 2
+    assert paths.listener_root.exists()
+    assert (paths.listener_root / "rpr-runtime-2010-squad-5" / "listener_summary.json").exists()
 
 
 def test_siso_runtime_showcase_launcher_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
