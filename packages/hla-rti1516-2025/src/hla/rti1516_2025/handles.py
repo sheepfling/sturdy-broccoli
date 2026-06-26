@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Generic, Mapping, NamedTuple, Self, TypeVar
+from typing import Any, Generic, Mapping, NamedTuple, TypeVar, cast
+from typing_extensions import Self
 
 
 class HandleKind(ABC):
@@ -21,10 +22,14 @@ class HandleKind(ABC):
     def encodedLength(self) -> int: ...
 
     @abstractmethod
-    def encode(self, buffer: bytearray, offset: int) -> None: ...
+    def encode(self, buffer: bytearray | None = None, offset: int = 0) -> bytes | bytearray: ...
 
     @abstractmethod
     def __str__(self) -> str: ...
+
+    @classmethod
+    @abstractmethod
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> Self: ...
 
     def toString(self) -> str:
         return str(self)
@@ -40,7 +45,8 @@ class HandleKind(ABC):
         return str(self) < str(other)
 
 
-T = TypeVar("T", bound=HandleKind)
+THandle = TypeVar("THandle", bound=HandleKind)
+TCollection = TypeVar("TCollection")
 
 
 @dataclass(frozen=True, order=True)
@@ -110,11 +116,11 @@ class RegionHandle(_IntegerHandle): ...
 class TransportationTypeHandle(_IntegerHandle): ...
 
 
-class HandleSet(Generic[T], set[T], ABC):
+class HandleSet(Generic[THandle], set[THandle], ABC):
     @abstractmethod
     def clone(self) -> Self: ...
 
-    def _validate(self, value: Any) -> T:
+    def _validate(self, value: Any) -> THandle:
         return value
 
 
@@ -136,11 +142,11 @@ class DimensionHandleSet(HandleSet[DimensionHandle], ABC): ...
 class RegionHandleSet(HandleSet[RegionHandle], ABC): ...
 
 
-class HandleMap(Generic[T], Mapping[T, bytes], ABC):
+class HandleMap(Generic[THandle], Mapping[THandle, bytes], ABC):
     @abstractmethod
     def clone(self) -> Self: ...
 
-    def getValueReference(self, handle: T) -> bytes:
+    def getValueReference(self, handle: THandle) -> bytes:
         """C++ map affordance; for Python this aliases normal mapping access."""
         return self[handle]
 
@@ -161,20 +167,20 @@ class AttributeSetRegionSetPairList(list[AttributeRegionAssociation], ABC):
     def clone(self) -> Self: ...
 
 
-class HandleFactory(Generic[T]):
+class HandleFactory(Generic[THandle]):
     """Factory for decoding a specific 2025 handle type."""
 
-    def __init__(self, handle_type: type[T]):
+    def __init__(self, handle_type: type[THandle]):
         self.handle_type = handle_type
 
-    def decode(self, data: bytes | bytearray | memoryview, offset: int = 0) -> T:
+    def decode(self, data: bytes | bytearray | memoryview, offset: int = 0) -> THandle:
         return self.handle_type.decode(data, offset)
 
-    def make(self, value: int) -> T:
-        return self.handle_type(value)
+    def make(self, value: int) -> THandle:
+        return cast(THandle, cast(Any, self.handle_type)(value))
 
 
-class CollectionFactory(Generic[T]):
+class CollectionFactory(Generic[TCollection]):
     """Small Java-style collection factory with a ``create`` helper."""
 
     def __init__(self, collection_type: type[Any]):

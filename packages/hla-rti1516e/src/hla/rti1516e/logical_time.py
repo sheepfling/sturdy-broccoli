@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from functools import total_ordering
-from typing import Generic, Literal, Protocol, Self, TypeVar, runtime_checkable
+from typing import Generic, Literal, Protocol, TypeVar, runtime_checkable
+from typing_extensions import Self
 
 T = TypeVar("T", bound="LogicalTime")
 U = TypeVar("U", bound="LogicalTimeInterval")

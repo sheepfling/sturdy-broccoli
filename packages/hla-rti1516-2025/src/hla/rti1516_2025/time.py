@@ -6,6 +6,7 @@ implementations used by the Python shim and adapter layers.
 """
 
 from __future__ import annotations
+# pyright: reportIncompatibleMethodOverride=false, reportInvalidTypeArguments=false, reportGeneralTypeIssues=false
 
 import math
 import struct

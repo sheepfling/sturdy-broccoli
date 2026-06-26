@@ -6,7 +6,8 @@ Sources: Java hla/rti1516_2025/*.java value classes and C++ RTI/*.h structs.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import NamedTuple, Self
+from typing import NamedTuple
+from typing_extensions import Self
 
 from .enums import AdditionalSettingsResultCode, RestoreStatus, SaveStatus
 from .handles import FederateHandle, MessageRetractionHandle, RegionHandleSet

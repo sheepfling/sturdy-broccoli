@@ -2,12 +2,11 @@
   "pythonVersion": "3.10",
   "typeCheckingMode": "standard",
   "include": [
-    "packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py",
-    "packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py",
-    "packages/hla-rti1516e/src/hla/rti1516e/ambassadors.py",
-    "packages/hla-rti-core/src/hla/rti/plugin_api.py",
-    "packages/hla-rti-core/src/hla/rti/factory.py",
-    "packages/hla-transport-grpc/src/hla/transports/grpc/transport.py"
+    "packages/hla-rti1516e/src/hla/rti1516e",
+    "packages/hla-rti1516-2025/src/hla/rti1516_2025",
+    "packages/hla-rti-core/src/hla/rti",
+    "packages/hla-backend-common/src/hla/backends/common",
+    "packages/hla-bridge-java-common/src/hla/bridges/java/common"
   ],
   "exclude": [
     "**/__pycache__",

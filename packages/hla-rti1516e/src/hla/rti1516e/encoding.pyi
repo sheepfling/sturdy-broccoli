@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from typing import Generic, TypeVar
+
+TScalar = TypeVar("TScalar")
+
 class EncoderException(Exception): ...
 class DecoderException(Exception): ...
 
@@ -8,68 +12,68 @@ class DataElement:
     def decode(self, data: bytes) -> None: ...
     def encoded_length(self) -> int: ...
 
-class _Scalar(DataElement):
-    value: object
+class _Scalar(DataElement, Generic[TScalar]):
+    value: TScalar
     _fmt: str
-    def __init__(self, value: object = 0, _fmt: str = "") -> None: ...
+    def __init__(self, value: TScalar, _fmt: str = "") -> None: ...
 
-class HLAboolean(_Scalar):
+class HLAboolean(_Scalar[bool]):
     value: bool
     def __init__(self, value: bool = False) -> None: ...
 
-class HLAbyte(_Scalar):
+class HLAbyte(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAoctet(_Scalar):
+class HLAoctet(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAinteger16BE(_Scalar):
+class HLAinteger16BE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAinteger16LE(_Scalar):
+class HLAinteger16LE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAinteger32BE(_Scalar):
+class HLAinteger32BE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAinteger32LE(_Scalar):
+class HLAinteger32LE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAinteger64BE(_Scalar):
+class HLAinteger64BE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAinteger64LE(_Scalar):
+class HLAinteger64LE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAfloat32BE(_Scalar):
+class HLAfloat32BE(_Scalar[float]):
     value: float
     def __init__(self, value: float = 0.0) -> None: ...
 
-class HLAfloat32LE(_Scalar):
+class HLAfloat32LE(_Scalar[float]):
     value: float
     def __init__(self, value: float = 0.0) -> None: ...
 
-class HLAfloat64BE(_Scalar):
+class HLAfloat64BE(_Scalar[float]):
     value: float
     def __init__(self, value: float = 0.0) -> None: ...
 
-class HLAfloat64LE(_Scalar):
+class HLAfloat64LE(_Scalar[float]):
     value: float
     def __init__(self, value: float = 0.0) -> None: ...
 
-class HLAoctetPairBE(_Scalar):
+class HLAoctetPairBE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 
-class HLAoctetPairLE(_Scalar):
+class HLAoctetPairLE(_Scalar[int]):
     value: int
     def __init__(self, value: int = 0) -> None: ...
 

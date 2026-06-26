@@ -6,6 +6,7 @@ adapters a single Python value model to convert from.
 
 """
 from __future__ import annotations
+# pyright: reportInvalidTypeVarUse=false
 
 import math
 import struct

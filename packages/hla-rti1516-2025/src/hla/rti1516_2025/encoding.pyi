@@ -4,6 +4,7 @@ Sources: Java hla/rti1516_2025/encoding/*.java, C++ RTI/encoding/*.h, and HLAsta
 """
 
 from __future__ import annotations
+# pyright: reportInvalidTypeVarUse=false
 
 from typing import Generic, Iterable, Iterator, Protocol, Sequence, TypeVar, overload, runtime_checkable
 

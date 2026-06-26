@@ -1,4 +1,5 @@
 # ruff: noqa: E501,F811
+# pyright: reportRedeclaration=false, reportInconsistentOverload=false, reportInvalidTypeVarUse=false, reportArgumentType=false, reportReturnType=false, reportCallIssue=false, reportAttributeAccessIssue=false, reportIncompatibleMethodOverride=false
 """Encoding protocols for IEEE 1516.1-2025.
 
 Sources: Java hla/rti1516_2025/encoding/*.java, C++ RTI/encoding/*.h, and HLAstandardMIM-2025 XML for HLAtransportationTypeHandle.

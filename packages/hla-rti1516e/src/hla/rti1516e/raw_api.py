@@ -15,7 +15,7 @@ from typing import Any
 
 
 def _load_api_metadata() -> dict[str, dict[str, list[dict[str, Any]]]]:
-    metadata = resources.files(__package__).joinpath("api_metadata.json").read_text(encoding="utf-8")
+    metadata = resources.files("hla.rti1516e").joinpath("api_metadata.json").read_text(encoding="utf-8")
     return json.loads(metadata)
 
 

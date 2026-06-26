@@ -9,7 +9,7 @@ like ``dict``.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Generic, Iterable, Mapping, TypeVar
+from typing import Any, Generic, Iterable, Mapping, TypeVar, cast
 
 @dataclass(frozen=True, order=True)
 class Handle:
@@ -57,20 +57,21 @@ class Handle:
             raise ValueError(f"Need 8 bytes to decode {cls.__name__}; got {len(raw)}")
         return cls(int.from_bytes(raw, byteorder="big", signed=False))
 
-T = TypeVar("T", bound=Handle)
+THandle = TypeVar("THandle", bound=Handle)
+TCollection = TypeVar("TCollection")
 
 HandleKind = Handle
 
-class HandleFactory(Generic[T]):
+class HandleFactory(Generic[THandle]):
     """Factory for decoding a specific handle type."""
 
-    def __init__(self, handle_type: type[T]):
+    def __init__(self, handle_type: type[THandle]):
         self.handle_type = handle_type
 
-    def decode(self, data: bytes | bytearray | memoryview, offset: int = 0) -> T:
+    def decode(self, data: bytes | bytearray | memoryview, offset: int = 0) -> THandle:
         return self.handle_type.decode(data, offset)  # type: ignore[return-value]
 
-    def make(self, value: int) -> T:
+    def make(self, value: int) -> THandle:
         return self.handle_type(value)
 
 @dataclass(frozen=True, order=True)
@@ -160,12 +161,10 @@ class HandleValueMap(dict):
 
     key_type: type[Handle] = Handle
 
-    def __init__(self, initial: Mapping[Handle, bytes] | Iterable[tuple[Handle, bytes]] | None = None, **kwargs: bytes) -> None:
+    def __init__(self, initial: Mapping[Handle, bytes] | Iterable[tuple[Handle, bytes]] | None = None) -> None:
         super().__init__()
         if initial is not None:
             self.update(initial)
-        if kwargs:
-            self.update(kwargs)  # type: ignore[arg-type]
 
     def _validate_key(self, key: Any) -> Handle:
         if not isinstance(key, self.key_type):
@@ -183,12 +182,10 @@ class HandleValueMap(dict):
     def __setitem__(self, key: Handle, value: bytes) -> None:  # type: ignore[override]
         super().__setitem__(self._validate_key(key), self._validate_value(value))
 
-    def update(self, other: Mapping[Handle, bytes] | Iterable[tuple[Handle, bytes]] = (), **kwargs: bytes) -> None:  # type: ignore[override]
-        items = other.items() if isinstance(other, Mapping) else other
+    def update(self, other: Mapping[Handle, bytes] | Iterable[tuple[Handle, bytes]] = ()) -> None:  # type: ignore[override]
+        items = cast(Iterable[tuple[Handle, bytes]], other.items()) if isinstance(other, Mapping) else other
         for key, value in items:
             self[key] = value
-        for key, value in kwargs.items():
-            self[key] = value  # type: ignore[index]
 
     def clone(self):
         return type(self)(self)
@@ -215,7 +212,7 @@ class AttributeSetRegionSetPairList(list):
     def clone(self):
         return type(self)(self)
 
-class CollectionFactory(Generic[T]):
+class CollectionFactory(Generic[TCollection]):
     """Small Java-style factory with a ``create`` method."""
 
     collection_type: type[Any]

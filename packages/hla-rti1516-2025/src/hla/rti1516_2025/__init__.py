@@ -1,4 +1,5 @@
 # ruff: noqa: I001
+# pyright: reportAttributeAccessIssue=false
 """Best-of Python typing model for IEEE 1516.1-2025 HLA APIs.
 
 This package root exposes the canonical standard-facing type surface. Runtime
