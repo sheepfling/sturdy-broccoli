@@ -20,6 +20,16 @@
     "bytes": 24792
   },
   {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_pitch_202x_group_resolution.csv",
+    "sha256": "fbbaefd04a239e85d16866068ad27cda92cbda9540b86f45be0c8a9ef204ccbc",
+    "bytes": 34102
+  },
+  {
+    "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_pitch_202x_row_resolution.csv",
+    "sha256": "8f4a9d63be404d1c55e4571b26ef201f7b3bf4bf8fd153396f6453d87fbd7230",
+    "bytes": 359643
+  },
+  {
     "path": "/mnt/data/hla_2025_requirement_harmonization_packet/hla_2025_review_queue.csv",
     "sha256": "b33bfc2d8d5d555d0e3ea676d3f3babfdef4b00d0855d8941ff7444f608de7f4",
     "bytes": 443753

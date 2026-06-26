@@ -8112,6 +8112,30 @@ def _evidence_slices_by_requirement() -> dict[str, list[str]]:
     return anchors
 
 
+def _slice_backend_scope(slice_: Mapping[str, Any]) -> str:
+    slice_id = str(slice_["id"])
+    status = str(slice_["status"])
+    if status == "legacy-only":
+        return "explicit legacy-only exclusion; not active backend support"
+    if "java-binding" in slice_id or "cpp-binding" in slice_id or "standard-route" in slice_id:
+        return "Java/C++ binding or standard-route evidence over python1516_2025"
+    if "fedpro" in slice_id:
+        return "hosted FedPro route slice over python1516_2025"
+    return "direct python1516_2025 slice; widen to hosted or bindings only through linked route evidence"
+
+
+def _backlog_backend_scope(row: Mapping[str, str]) -> str:
+    binding_scope = row.get("binding_scope", "").strip()
+    if binding_scope:
+        return binding_scope
+    status = row.get("current_status", "").strip()
+    if status == "legacy-only":
+        return "explicit legacy-only exclusion; not active backend support"
+    if status == "unsupported-boundary":
+        return "unsupported-boundary owner note; not active backend support"
+    return "see canonical owner doc plus linked backend-resolution artifacts"
+
+
 def _executable_tests_by_requirement(executable_rows: list[dict[str, str]]) -> dict[str, list[str]]:
     anchors: dict[str, list[str]] = {}
     for row in executable_rows:
@@ -8234,6 +8258,7 @@ def _build_spec2025_finish_line_snapshot_cached(project_root_text: str) -> dict[
                 "area": row["area"],
                 "priority": row["priority"],
                 "current_status": row["current_status"],
+                "binding_scope": row["binding_scope"],
                 "acceptance_criteria": row["acceptance_criteria"],
                 "verification_work": row["verification_work"],
             }
@@ -8717,6 +8742,20 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             f"- Ready for binding traceability claim: {binding_audit['ready_for_binding_traceability_claim']}",
             f"- Ready for full binding conformance claim: {binding_audit['ready_for_full_binding_conformance_claim']}",
             f"- Assessment: {binding_audit['current_assessment']}",
+            "",
+            "Canonical boundary owner reading order:",
+            "",
+            "1. `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`",
+            "2. `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`",
+            "3. `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md`",
+            "4. `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`",
+            "5. `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`",
+            "",
+            "Use the owner docs above for the boundary narrative, and use the linked grouped or row-level backend-resolution ledgers only for the backend split details:",
+            "",
+            "- `requirements/2025/harmonization/hla_2025_harmonization_worklist.csv`",
+            "- `requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`",
+            "- `requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`",
             "",
             "## OMT Requirement Proof Audit",
             "",
@@ -10204,17 +10243,21 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
     lines.extend(
         [
             "",
-        "## Implemented Evidence Slices",
-        "",
-        "| Slice | Status | Requirements | Evidence |",
-        "|---|---|---|---|",
+            "## Implemented Evidence Slices",
+            "",
+            "These are slice-level implementation readings, not canonical requirement-status rows.",
+            "Use the slice disposition column for the local proof-unit state and the backend-scope column for route or adapter reading.",
+            "",
+            "| Slice | Slice disposition | Backend or route scope | Requirements | Evidence |",
+            "|---|---|---|---|---|",
         ]
     )
     for slice_ in snapshot["implemented_evidence_slices"]:
         lines.append(
-            "| {id} | {status} | {requirements} | {evidence} |".format(
+            "| {id} | {status} | {scope} | {requirements} | {evidence} |".format(
                 id=slice_["id"],
                 status=slice_["status"],
+                scope=_slice_backend_scope(slice_),
                 requirements=", ".join(slice_["requirements"]),
                 evidence=", ".join(slice_["evidence"]),
             )
@@ -10224,12 +10267,23 @@ def build_spec2025_finish_line_markdown(project_root: Path) -> list[str]:
             "",
             "## Highest-Priority Open Work",
             "",
-            "| ID | Area | Priority | Status | Verification work |",
-            "|---|---|---|---|---|",
+            "These are backlog rows. Keep canonical backlog disposition separate from backend or binding scope.",
+            "",
+            "| ID | Area | Priority | Canonical backlog disposition | Backend or binding scope | Verification work |",
+            "|---|---|---|---|---|---|",
         ]
     )
     for row in backlog["high_priority_open"]:
-        lines.append(f"| {row['id']} | {row['area']} | {row['priority']} | {row['current_status']} | {row['verification_work']} |")
+        lines.append(
+            "| {id} | {area} | {priority} | {status} | {scope} | {verification_work} |".format(
+                id=row["id"],
+                area=row["area"],
+                priority=row["priority"],
+                status=row["current_status"],
+                scope=_backlog_backend_scope(row),
+                verification_work=row["verification_work"],
+            )
+        )
     lines.extend(
         [
             "",

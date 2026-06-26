@@ -1075,7 +1075,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.1-005",
-      "notes": "verification_method=integration test",
+      "notes": "verification_method=backend matrix scenario",
       "requirement_id": "HLA1516.1-FM-4.1-005",
       "runtime_disposition": "verified",
       "runtime_status": "",
@@ -1092,7 +1092,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.1-006",
-      "notes": "verification_method=integration test",
+      "notes": "verification_method=backend matrix scenario",
       "requirement_id": "HLA1516.1-FM-4.1-006",
       "runtime_disposition": "verified",
       "runtime_status": "",
@@ -1126,7 +1126,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.1.2-002",
-      "notes": "verification_method=integration test",
+      "notes": "verification_method=backend matrix scenario",
       "requirement_id": "HLA1516.1-FM-4.1.2-002",
       "runtime_disposition": "verified",
       "runtime_status": "",
@@ -1211,7 +1211,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.1.4.1-002",
-      "notes": "verification_method=negative integration test",
+      "notes": "verification_method=negative backend matrix scenario",
       "requirement_id": "HLA1516.1-FM-4.1.4.1-002",
       "runtime_disposition": "verified",
       "runtime_status": "",
@@ -1249,12 +1249,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.1.5-001",
-      "notes": "A shared lost-federate MOM scenario now exists, the Python backend executes it directly, `pitch-py4j` has a gateway-process fault-injection wrapper, and `pitch-jpype` has a child-process probe path through the shared external-victim harness. The canonical `./tools/pitch lost-federate-probe` lane currently stops at preflight on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are blocked, and earlier executed real-runtime Pitch probes still failed to produce observer-visible lost-federate evidence: the JPype path auto-resumed its dropped session and the Py4J path did not surface the report, so the family remains blocked. verification_method=observer verification slice",
+      "notes": "A shared lost-federate MOM scenario now exists, the Python backend executes it directly, `pitch-py4j` has a gateway-process fault-injection wrapper, and `pitch-jpype` has a child-process probe path through the shared external-victim harness. The canonical `./tools/pitch lost-federate-probe` lane currently stops at preflight on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are blocked, and earlier executed real-runtime Pitch probes still failed to produce observer-visible lost-federate evidence: the JPype path auto-resumed its dropped session and the Py4J path did not surface the report, so the family remains blocked. Canonical status stays partial because the runtime split is mixed. See hla1516_1_priority_backend_resolution.csv for the explicit Python/CERTI/Pitch/Portico dispositions and owning shard command.",
       "requirement_id": "HLA1516.1-FM-4.1.5-001",
       "runtime_disposition": "blocked",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.1.5",
-      "title": "RTI shall detect lost federates and report them through MOM"
+      "title": "HLA1516.1-FM-4.1.5-001"
     },
     {
       "clause_root": "4",
@@ -1270,12 +1270,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.1.5-002",
-      "notes": "A shared lost-federate MOM scenario now exists, the Python backend executes it directly, `pitch-py4j` has a gateway-process fault-injection wrapper, and `pitch-jpype` has a child-process probe path through the shared external-victim harness. The canonical `./tools/pitch lost-federate-probe` lane currently stops at preflight on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are blocked, and earlier executed real-runtime Pitch probes still failed to produce observer-visible lost-federate evidence: the JPype path auto-resumed its dropped session and the Py4J path did not surface the report, so the family remains blocked. verification_method=integration test",
+      "notes": "A shared lost-federate MOM scenario now exists, the Python backend executes it directly, `pitch-py4j` has a gateway-process fault-injection wrapper, and `pitch-jpype` has a child-process probe path through the shared external-victim harness. The canonical `./tools/pitch lost-federate-probe` lane currently stops at preflight on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are blocked, and earlier executed real-runtime Pitch probes still failed to produce observer-visible lost-federate evidence: the JPype path auto-resumed its dropped session and the Py4J path did not surface the report, so the family remains blocked. Canonical status stays partial because the runtime split is mixed. See hla1516_1_priority_backend_resolution.csv for the explicit Python/CERTI/Pitch/Portico dispositions and owning shard command.",
       "requirement_id": "HLA1516.1-FM-4.1.5-002",
       "runtime_disposition": "blocked",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.1.5",
-      "title": "RTI shall resign lost federates using the current automatic resign directive"
+      "title": "HLA1516.1-FM-4.1.5-002"
     },
     {
       "clause_root": "4",
@@ -4597,7 +4597,7 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-FM-4.3-MOM-001",
-      "notes": "verification_method=observer verification slice; Current tests cover resign-time MOM behavior more than disconnect-time cleanup.",
+      "notes": "verification_method=observer verification slice; Shared disconnect-MOM cleanup scenarios now prove the disconnected ambassador no longer has an active MOM-visible federate session.",
       "requirement_id": "HLA1516.1-FM-4.3-MOM-001",
       "runtime_disposition": "verified",
       "runtime_status": "",
@@ -9498,12 +9498,12 @@
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-TM-8.1.2-003",
-      "notes": "verification_method=integration test",
+      "notes": "Canonical status stays partial because the runtime split is mixed. See hla1516_1_priority_backend_resolution.csv for the explicit Python/CERTI/Pitch/Portico dispositions and owning shard command.",
       "requirement_id": "HLA1516.1-TM-8.1.2-003",
       "runtime_disposition": "vendor-divergent",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.1.2",
-      "title": "RTI shall never convert RO messages into received TSO messages"
+      "title": "HLA1516.1-TM-8.1.2-003"
     },
     {
       "clause_root": "8",
@@ -13983,7 +13983,7 @@
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "evidence_refs": [
         "docs/verification/requirements_hierarchy.md",
-        "requirements/hla1516_2_priority_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv",
         "tests/verification/test_requirement_traceability_1516_2_v013.py"
       ],
       "kind": "extracted-requirement",
@@ -14000,7 +14000,7 @@
       "document": "IEEE 1516.2-2010 (2010 edition)",
       "evidence_refs": [
         "docs/verification/requirements_hierarchy.md",
-        "requirements/hla1516_2_priority_omt.csv",
+        "requirements/2010/hla1516_2_priority_omt.csv",
         "tests/verification/test_requirement_traceability_1516_2_v013.py"
       ],
       "kind": "omt-area",

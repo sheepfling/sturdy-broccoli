@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import csv
 import importlib
 import inspect
@@ -6327,6 +6328,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
     requirements_json_path = OUTPUT_DIR / "requirements_matrix_2010.json"
     requirements_csv_path = OUTPUT_DIR / "requirements_matrix_2010.csv"
     pitch_disposition_path = OUTPUT_DIR / "pitch_requirement_disposition.json"
+    priority_backend_resolution_path = REPO_ROOT / "requirements" / "2010" / "hla1516_1_priority_backend_resolution.csv"
     if not (requirements_json_path.exists() and requirements_csv_path.exists() and pitch_disposition_path.exists()):
         return
 
@@ -6339,6 +6341,14 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         (str(row.get("requirement_id") or ""), str(row.get("matrix_id") or "")): row
         for row in disposition_rows
     }
+    priority_backend_rows: dict[str, dict[str, str]] = {}
+    if priority_backend_resolution_path.exists():
+        with priority_backend_resolution_path.open(newline="", encoding="utf-8") as handle:
+            for row in csv.DictReader(handle):
+                requirement_id = str(row.get("requirement_id", "")).strip()
+                if requirement_id:
+                    priority_backend_rows[requirement_id] = row
+
     python_requirement_overrides = {
         "HLA1516.1-FM-4.3-MOM-001": "verified",
         "HLA1516.1-FM-4.1.5-001": "verified",
@@ -6380,6 +6390,31 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         "HLA1516.1-FM-4.32-001": "verified",
     }
     certi_requirement_overrides.update(_CERTI_DISPOSITION_OVERRIDES)
+
+    def _normalized_artifact_refs(value: Any) -> list[str]:
+        if isinstance(value, (list, tuple, set)):
+            return [str(item).strip() for item in value if str(item).strip()]
+        text = str(value).strip()
+        if not text:
+            return []
+        refs: list[str] = []
+        remaining = text
+        if text.startswith("[") and "]" in text:
+            prefix, _, suffix = text.partition("]")
+            try:
+                parsed = ast.literal_eval(prefix + "]")
+            except (SyntaxError, ValueError):
+                parsed = None
+            if isinstance(parsed, list):
+                refs.extend(str(item).strip() for item in parsed if str(item).strip())
+                remaining = suffix.lstrip("; ").strip()
+        if remaining:
+            refs.extend(part.strip() for part in remaining.split(";") if part.strip())
+        deduped: list[str] = []
+        for ref in refs:
+            if ref not in deduped:
+                deduped.append(ref)
+        return deduped
 
     def _normalized_runtime_disposition(
         row: dict[str, Any],
@@ -6448,6 +6483,19 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
     py4j_counts: dict[str, int] = defaultdict(int)
 
     for row in rows:
+        requirement_id = str(row.get("requirement_id") or row.get("matrix_id") or "")
+        priority_backend_row = priority_backend_rows.get(requirement_id)
+        if priority_backend_row is not None:
+            row["status"] = str(priority_backend_row.get("canonical_status", row.get("status", "")))
+            existing_refs = _normalized_artifact_refs(row.get("artifact_refs", ""))
+            for ref in (
+                "requirements/2010/hla1516_1_priority_clauses_4_8_11.csv",
+                "requirements/2010/hla1516_1_priority_backend_resolution.csv",
+                "requirements/2010/traceability_matrix.csv",
+            ):
+                if ref not in existing_refs:
+                    existing_refs.append(ref)
+            row["artifact_refs"] = "; ".join(existing_refs)
         row["python_runtime_disposition"] = _normalized_runtime_disposition(
             row,
             backend="python1516e",

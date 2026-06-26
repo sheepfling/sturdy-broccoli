@@ -3,6 +3,9 @@
 This note explains how the requirements program is laid out in this repo so
 far, why the files are split the way they are, and where to look next.
 
+This page explains structure. It is not the canonical owner map for
+requirement-family closure.
+
 ## Purpose
 
 The repo tracks three different things at once:
@@ -33,6 +36,19 @@ That split avoids two common failure modes:
 
 - treating imported packet rows as if they were already repo-native proof
 - flattening narrow executable coverage into broader standard claims
+
+## Canonical 2010 Owner Surfaces
+
+This packet explains structure, but it is not the canonical owner map.
+
+For the owner surfaces behind each 2010 family bucket, use:
+
+- `docs/requirements/ieee-1516-2010/README.md`
+- `requirements/2010/README.md`
+- `docs/verification/requirements_hierarchy.md`
+
+If a family-level status changes, update the canonical owner file first and use
+this packet only to explain how the source, bridge, and proof layers relate.
 
 ## Imported packet layer
 
@@ -70,6 +86,14 @@ The practical pattern is:
    narrower repo-native structure
 3. roll those reconciliations back up into the imported master index
 
+Use the shared shard-versus-view rule alongside that layout:
+
+- `shards` own executable pass/fail proof
+- `views` are overlapping audit or reading cuts
+- canonical owner rows change status only through the narrowest owning shard
+- broader views may summarize that result, but they do not replace shard
+  ownership
+
 ## Core file families
 
 These file families matter most.
@@ -92,8 +116,9 @@ implementation and test design.
 ### 2. Detailed reconciliation files
 
 These are the main bridge files. They translate imported packet rows into the
-repo's current evidence vocabulary and mark each row `mapped`, `partial`, or
-`planned`.
+repo's current evidence vocabulary and carry the canonical requirement
+judgment, while backend-specific support stays in separate columns or linked
+artifacts.
 
 Examples:
 
@@ -152,21 +177,51 @@ not:
 
 `broad packet row -> optimistic claim -> later search for evidence`
 
-## Status vocabulary
+## Canonical Status Versus Backend Resolution
 
-The harmonized catalog uses a narrow vocabulary:
+Do not overload one field to mean both:
+
+- the canonical requirement judgment
+- backend-by-backend or route-by-route support
+
+Good shape:
+
+- canonical status: `partial`
+- backend resolution: `python=verified`, `pitch=vendor-divergent`,
+  `certi=not-yet-tested`
+- primary shard: the exact command or lane that justified the requirement-level
+  status change
+
+The harmonized catalogs use a narrow canonical-status vocabulary:
 
 - `mapped`: direct executable or generated proof exists for the exact claim
 - `partial`: the repo proves a narrower supported subset than the standard row
 - `planned`: accepted scope, but direct proof is still missing
-- `unreconciled`: used in the imported master index when no detailed bridge has
-  closed the row yet
+- `covered`: used in the newer 2025 harmonization packet when a row-level audit
+  plus explicit evidence anchors close the repo-native claim
+- `duplicate/umbrella`: grouping or normalization row, not a standalone proof
+  row
+- `retired/legacy-only`: explicit exclusion or migration-boundary row
+- `unreconciled`: used in imported rollups only when no detailed bridge has yet
+  closed the row
 
 The practical rule is simple:
 
 - if a test proves only a subset, keep the broad row `partial`
 - if a negative test defines the boundary, keep that boundary explicit
 - do not promote rows based on implementation proximity alone
+- if backend support diverges, keep that divergence in separate backend columns
+  or linked backend-resolution artifacts rather than flattening it into the
+  canonical status cell
+
+For the 2025 grouped harmonization surface specifically:
+
+- the grouped worklist is now fully dispositioned:
+  - `57 covered`
+  - `5 duplicate/umbrella`
+  - `2 retired/legacy-only`
+- that removes stale grouped `planned` and `partial` bucket debt
+- it does not erase row-level bounded-scope limits or make umbrella and retired rows behave like standalone runtime proof
 
 ## Clause 4 as the model
 
@@ -190,6 +245,22 @@ onto the runtime tests that actually exist.
 
 That two-step shape is why the repo can tighten evidence in small tranches
 without rewriting the whole catalog every time.
+
+## Preferred Closeout Shape
+
+When you add or revise a requirement-closeout table, prefer these columns:
+
+| Column | Meaning |
+| --- | --- |
+| `Requirement family` | clause, capability family, or grouped bucket |
+| `Requirement IDs` | exact IDs or grouped row identifiers |
+| `Canonical status` | `planned`, `partial`, `mapped`, `covered`, `duplicate/umbrella`, or `retired/legacy-only` |
+| `Backend resolution` | separate backend columns or a linked backend-resolution artifact |
+| `Primary shard` | first canonical shard that owns the proof |
+| `Widen to` | broader shard or route only if the claim crosses that boundary |
+| `View tags` | overlapping audit cuts such as `time`, `ownership`, or `fom-omt` |
+| `Evidence artifact` | CSV, packet, JSON, or proof note that records the result |
+| `Boundary note` | honest supported-scope or exclusion note |
 
 ## Current pinned state
 

@@ -13,7 +13,8 @@ Start here, in order:
 1. [`../docs/requirements/ieee-1516-2010/README.md`](../docs/requirements/ieee-1516-2010/README.md) for the 2010 edition front door
 2. [`../docs/requirements/ieee-1516-2025/README.md`](../docs/requirements/ieee-1516-2025/README.md) for the 2025 edition front door
 3. [`../docs/verification/README.md`](../docs/verification/README.md)
-4. this source-side `requirements/` tree when you need the raw ledgers and reconciliation material
+4. [`../docs/plans/requirements_completion_audit.md`](../docs/plans/requirements_completion_audit.md) when the question is whether the closeout is actually finished yet
+5. this source-side `requirements/` tree when you need the raw ledgers and reconciliation material
 
 The layout is intentionally edition-separated:
 
@@ -114,9 +115,50 @@ If the proof only covers a narrower supported subset, keep the broad row
 name the vendor divergence or supported subset in the traceability row rather
 than flattening it into an implied parity statement.
 
+## Status Versus Backend Support
+
+Keep these separate:
+
+- the canonical row `status` says what the requirement owner ledger claims
+- backend support or route support says which backend actually closes that row
+
+Do not try to encode both in one field.
+
+Use the row `status` for the requirement-level judgment:
+
+- `planned`
+- `partial`
+- `mapped`
+- `covered`
+- `duplicate/umbrella`
+- `retired/legacy-only`
+
+Put backend-by-backend answers in separate columns or linked artifacts such as:
+
+- `python_runtime_disposition`
+- `pitch_runtime_disposition`
+- `certi_runtime_disposition`
+- `portico_runtime_disposition`
+- route-parity ledgers
+- vendor gap profiles
+
+Example:
+
+- canonical row status: `partial`
+- backend resolution: `python=verified`, `pitch=blocked`, `certi=not-yet-tested`
+
+That shape is easier to scan and avoids pretending one backend's result is the
+whole requirement result.
+
 If you need to resume this work later, start from
 [`docs/plans/requirements_finish_line.md`](../docs/plans/requirements_finish_line.md).
 That note is the pinned handoff for the remaining rows and the stop condition.
+For the current-state answer to what still blocks an honest cross-edition
+completion claim, use
+[`docs/plans/requirements_completion_audit.md`](../docs/plans/requirements_completion_audit.md).
+For the shared shard-versus-view matrix shape that should drive closure tables
+and proof notes, use
+[`docs/plans/requirements_remaining_closure.md`](../docs/plans/requirements_remaining_closure.md).
 
 The family seed rows are placeholders for requirement extraction.
 
@@ -200,7 +242,7 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 
 `hla1516_xml_detailed_reconciliation.csv` is the whole-family companion bridge for imported XML master rows. It maps the two XML seed rows and the normative OMT XSD clause row directly onto the repo's current Annex D/E parser and schema-validation evidence, while keeping the per-element and per-type XML schema atom rows `partial` to reflect that the repo currently validates XML conformance at the schema-family level rather than as one curated requirement per XML element or type.
 
-`hla1516_2_omt_detailed_reconciliation.csv` is the whole-family companion bridge for imported IEEE 1516.2 OMT master rows. It lifts the current 1516.2 clause, parser, merge, lexicon, conformance-boundary, and annex evidence onto the imported OMT-family seeds and clause-detail rows. Rows with direct parser, merge, or fixture evidence are `mapped`, broad introductory and documentation-heavy rows are intentionally `partial`, and Annex B normalization remains explicitly `planned` because the repo still lacks a direct normalization requirement and executable witness.
+`hla1516_2_omt_detailed_reconciliation.csv` is the whole-family companion bridge for imported IEEE 1516.2 OMT master rows. It lifts the current 1516.2 clause, parser, merge, lexicon, conformance-boundary, and annex evidence onto the imported OMT-family seeds and clause-detail rows. Rows with direct parser, merge, or fixture evidence are `mapped`, broad introductory and documentation-heavy rows are intentionally `partial`, and the remaining Annex B normalization rows are intentionally bounded `partial` rows because the repo proves parser and metadata-preservation handling but does not claim broader executable runtime normalization semantics.
 
 `hla1516_2_omt_xml_detailed_reconciliation.csv` applies that same bridge pattern to the imported IEEE 1516.2 OMT/XML detailed packet. It maps the clause-level `omt_clause_detail` rows directly onto the current curated 1516.2 parser, merge, MIM, and schema-conformance requirements where the repo already has clause-specific evidence, while keeping the imported per-element and per-type `xsd_element_detail` and `xsd_type_detail` rows `partial` to reflect that the repo currently validates Annex D/E behavior at the schema-family and round-trip level rather than as one repo-native requirement per XSD atom.
 

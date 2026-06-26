@@ -460,7 +460,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     md_text = md_path.read_text(encoding="utf-8")
 
     assert (
-        "scenario,route,status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
+        "scenario,route,parity_status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
         "runtime_provider,implementation_lane,counts_as_python_2025_rti,wrapper_only,notes"
     ) in csv_text
     assert "object_exchange,java-standard-2025-jpype,parity-covered,scenario-parity" in csv_text
@@ -476,7 +476,8 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules" in md_text
     assert "Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python1516-2025`" in md_text
     assert "hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner" in md_text
-    assert "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
+    assert "Use `Parity status` as a route-evidence reading only. It is not the canonical requirement disposition." in md_text
+    assert "| Scenario | Route | Parity status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
     assert "direct ambassador, hosted server, and hosted client all identify python1516_2025 / hla-backend-python1516-2025 as the primary 2025 Python RTI implementation lane" in md_text
     assert "Treat remaining hosted FedPro proof here as transport-seam evidence over hla-backend-python1516-2025" in md_text
     assert "Treat Java/C++ route parity here as binding/adaptation-seam evidence over the main hla-backend-python1516-2025 runtime" in md_text
@@ -487,7 +488,7 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
     md_text = (ROOT / "docs" / "plans" / "spec2025_route_parity_matrix.md").read_text(encoding="utf-8")
 
     assert (
-        "scenario,route,status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
+        "scenario,route,parity_status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
         "runtime_provider,implementation_lane,counts_as_python_2025_rti,wrapper_only,notes"
     ) in csv_text
     assert "federation_lifecycle,python1516_2025,parity-covered,scenario-parity" in csv_text
@@ -495,7 +496,8 @@ def test_2025_checked_in_route_parity_plan_artifacts_preserve_python2025_identit
     assert ",python1516_2025,hla-backend-python1516-2025,true,false," in csv_text
     assert "docs/plans/spec2025_finish_line_snapshot.json" in csv_text
 
-    assert "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
+    assert "Use `Parity status` as a route-evidence reading only. It is not the canonical requirement disposition." in md_text
+    assert "| Scenario | Route | Parity status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |" in md_text
     assert "`hla-backend-shim` is a compatibility-maintained wrapper package that delegates runtime semantics to `hla-backend-python1516-2025`" in md_text
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime" in md_text
     assert "Hosted FedPro rows are transport-seam evidence over that same runtime" in md_text

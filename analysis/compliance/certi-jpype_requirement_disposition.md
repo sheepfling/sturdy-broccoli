@@ -13,7 +13,7 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) §10 | 86 | 0 | 0 | 0 | 0 | 2 | 84 |
 | IEEE 1516.1-2010 (2010 edition) §11 | 37 | 0 | 0 | 0 | 0 | 2 | 35 |
 | IEEE 1516.1-2010 (2010 edition) §12 | 10 | 0 | 0 | 0 | 0 | 1 | 9 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 70 | 0 | 0 | 142 | 2 | 67 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 70 | 0 | 0 | 135 | 2 | 74 |
 | IEEE 1516.1-2010 (2010 edition) §5 | 52 | 0 | 0 | 0 | 0 | 2 | 50 |
 | IEEE 1516.1-2010 (2010 edition) §6 | 110 | 12 | 0 | 0 | 94 | 2 | 2 |
 | IEEE 1516.1-2010 (2010 edition) §7 | 39 | 12 | 0 | 8 | 16 | 2 | 1 |
@@ -87,18 +87,18 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-002 | classification-required | extracted-requirement | A federate shall connect before creating or joining a federation execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-003 | classification-required | extracted-requirement | A federate shall disconnect when it has resigned and has no further intent to create or join federation executions |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-004 | classification-required | extracted-requirement | RTI shall support callback delivery according to the selected callback model |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-005 | not-yet-tested | extracted-requirement | RTI shall allow one application to participate as multiple joined federates |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-006 | not-yet-tested | extracted-requirement | RTI shall allow one application to participate in multiple federation executions |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-005 | classification-required | extracted-requirement | RTI shall allow one application to participate as multiple joined federates |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-006 | classification-required | extracted-requirement | RTI shall allow one application to participate in multiple federation executions |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.2-001 | classification-required | extracted-requirement | RTI shall support federation save and restore coordination |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.2-002 | not-yet-tested | extracted-requirement | RTI shall preserve queued messages required for federation save restore |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.2-002 | classification-required | extracted-requirement | RTI shall preserve queued messages required for federation save restore |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.3-001 | classification-required | extracted-requirement | RTI shall track each synchronization point independently |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4-001 | classification-required | extracted-requirement | RTI shall retain and combine FOM Document Data from FOM modules |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4-002 | classification-required | extracted-requirement | RTI shall provide the standard MIM automatically when required |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.1-001 | classification-required | extracted-requirement | RTI shall reject invalid or incompatible FOM modules |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.1-002 | not-yet-tested | extracted-requirement | If a FOM module or MIM definition is rejected the RTI shall reject it in entirety |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.1-002 | classification-required | extracted-requirement | If a FOM module or MIM definition is rejected the RTI shall reject it in entirety |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.2-001 | classification-required | extracted-requirement | RTI shall provide access to the current FDD individual FOM modules and the MIM |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-001 | not-yet-tested | extracted-requirement | RTI shall detect lost federates and report them through MOM |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-002 | not-yet-tested | extracted-requirement | RTI shall resign lost federates using the current automatic resign directive |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-001 | classification-required | extracted-requirement | HLA1516.1-FM-4.1.5-001 |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-002 | classification-required | extracted-requirement | HLA1516.1-FM-4.1.5-002 |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-001 | classification-required | extracted-requirement | RTI shall provide Resign Federation Execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-CB-001 | classification-required | extracted-requirement | After successful resignation, the resigned federate shall no longer receive federation-participation callbacks as a joined member. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-EFF-001 | classification-required | extracted-requirement | Successful Resign Federation Execution shall remove the federate from federation membership, remove or divest owned objects as directed by the resign action, remove synchronization-point participation, refresh time advancement processing, and clear local publication and subscription state. |
@@ -223,7 +223,7 @@ This profile currently inherits the CERTI family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-CB-001 | classification-required | extracted-requirement | After Disconnect, the RTI shall cease callback delivery to the disconnected ambassador. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-EFF-001 | classification-required | extracted-requirement | Successful Disconnect shall clear connected state, clear the bound ambassador reference, and clear queued callbacks for the disconnected ambassador. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-EXC-001 | classification-required | extracted-requirement | Disconnect shall report FederateIsExecutionMember when a joined federate attempts to disconnect before resigning. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-MOM-001 | not-yet-tested | extracted-requirement | Disconnect should leave no active MOM-visible federate session associated with the disconnected ambassador. |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-MOM-001 | classification-required | extracted-requirement | Disconnect should leave no active MOM-visible federate session associated with the disconnected ambassador. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-PRE-001 | classification-required | extracted-requirement | Disconnect shall require a connected ambassador that is no longer a federation execution member. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Disconnect service. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-TEST-001 | classification-required | extracted-requirement | Disconnect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points. |

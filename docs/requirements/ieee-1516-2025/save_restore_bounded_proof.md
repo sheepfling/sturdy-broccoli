@@ -12,7 +12,11 @@ finish-line bundle or inside the broader federation-management note.
 
 ## Current Proof Families
 
-| Family | Rows | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
 | Lifecycle control | `HLA2025-FI-SVC-018`, `HLA2025-FI-SVC-019`, `HLA2025-FI-SVC-020`, `HLA2025-FI-SVC-021`, `HLA2025-FI-SVC-022`, `HLA2025-FI-SVC-023`, `HLA2025-FI-SVC-026`, `HLA2025-FI-SVC-027`, `HLA2025-FI-SVC-028`, `HLA2025-FI-SVC-029`, `HLA2025-FI-SVC-030`, `HLA2025-FI-SVC-031`, `HLA2025-FI-SVC-032` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for request, initiate, begun, complete, failure, abort, and precondition/status control flow for federation save and restore across the direct `python1516_2025` lane and hosted FedPro replay. |
 | Shared scenario rollback | `HLA2025-REQ-002` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof that a saved federation returns to the saved baseline rather than preserving dirty post-save state across shared backend-neutral save/restore scenarios. |

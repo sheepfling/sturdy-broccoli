@@ -8,6 +8,38 @@ schema-tolerant parsing, and serializer round-trip of those foreign XML
 fragments. It does not claim arbitrary third-party extension execution
 semantics or interpretation as native HLA metadata.
 
+## Owner Surface
+
+- canonical owner doc:
+  `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
+- owner companion:
+  `requirements/2025/harmonization/hla_2025_requirement_disposition_ledger.csv`
+- primary shard: `unit-fom-tooling`
+- widen to: only when a future change deliberately introduces executable
+  third-party extension semantics
+- typical view tags: `2025-core`, `fom-omt`, `finish-line`
+
+## Final Claim Rule
+
+- these rows are bounded parser or serializer tolerance claims, not arbitrary
+  third-party extension execution claims
+- count them as foreign-payload preservation, schema-tolerant parse, and
+  serializer round-trip evidence only
+- do not reinterpret foreign extension payloads as native repo-owned HLA
+  metadata or runtime semantics
+- only widen these rows beyond tolerance when direct executable semantics
+  evidence exists for the exact broader claim
+
+Default final stance:
+
+- this bucket is already in its intended final repo-owned state as a bounded
+  OMT extension-tolerance owner surface
+- no additional proof is required to keep these rows explicit as payload
+  preservation and round-trip tolerance rather than third-party execution
+  semantics
+- future work is optional and should happen only if the repo deliberately opens
+  a broader extension-execution program with its own bounded claim and tests
+
 ## Current Bounded Claim
 
 - Foreign-namespace `xs:any` extension elements are accepted at the tracked
@@ -74,3 +106,18 @@ semantics or interpretation as native HLA metadata.
 - The repo does not claim that foreign `xs:any` extension payloads become
   repo-native HLA object, interaction, datatype, or runtime semantics.
 - The repo does not claim arbitrary third-party extension execution semantics.
+
+## Exit Condition
+
+Treat this bucket as closed for current closeout purposes when all of these are
+true:
+
+1. all 45 `xs:any` extension rows remain anchored to this owner doc and the
+   row-level disposition ledger
+2. the final claim language keeps them explicit as payload-preserving tolerance
+   rather than native extension execution semantics
+3. no generated packet, audit note, or grouped worklist reclassifies them as
+   broad third-party extension behavior claims
+
+Only reopen this bucket if the repo intentionally starts a broader extension
+execution or interpretation program.

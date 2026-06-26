@@ -13,7 +13,11 @@ exhaustive cross-binding equivalence.
 
 ## Service Families
 
-| Family | Rows | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
 | Time mode enable/disable | `HLA2025-FI-SVC-101`, `HLA2025-FI-SVC-102`, `HLA2025-FI-SVC-103`, `HLA2025-FI-SVC-104`, `HLA2025-FI-SVC-105`, `HLA2025-FI-SVC-106` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for regulation/constrained enablement and disablement, selected logical-time factory handling, and the corresponding callbacks on the direct and hosted `python1516_2025` routes. |
 | Advance request modes | `HLA2025-FI-SVC-107`, `HLA2025-FI-SVC-108`, `HLA2025-FI-SVC-109`, `HLA2025-FI-SVC-110`, `HLA2025-FI-SVC-111` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py` | Closed as bounded runtime proof for time-advance request state, next-message request stepping, flush-queue request behavior, queued timestamp-order delivery, and hosted FedPro replay of the same request surfaces. |

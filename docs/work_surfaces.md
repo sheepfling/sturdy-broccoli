@@ -14,6 +14,7 @@ Two other top-level reading surfaces sit across those engineering lanes:
 
 4. `Testing` -> repo-green entrypoints, shard selection, focused reruns, and failure diagnosis
 5. `Requirements` -> bounded claims, proof notes, traceability, and requirement-facing evidence packets
+6. `Requirements exports | status` -> spreadsheet handoff packets and honest closeout audit surfaces
 
 ## One-Page Summary
 
@@ -24,6 +25,7 @@ Two other top-level reading surfaces sit across those engineering lanes:
 | `FOM` -> FOM families, validation, workbench/UI, baselines, or authoring | [`fom_tooling_front_door.md`](fom_tooling_front_door.md) | [`fom_reading_map.md`](fom_reading_map.md), [`fom_validate.md`](fom_validate.md), [`fom_workbench.md`](fom_workbench.md) |
 | `Testing` -> repo green, lane choice, shard reruns, or junior failure diagnosis | [`repo_green_quickstart.md`](repo_green_quickstart.md) | [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md) |
 | `Requirements` -> claims, proofs, traceability, or requirement-facing evidence | [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) | [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md), [`requirements_trace_one_method.md`](requirements_trace_one_method.md) |
+| `Requirements exports | status` -> boss-facing spreadsheets, closeout truth, or remaining bucket audit | [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) or [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) | [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md), [`spec_reading_map.md`](spec_reading_map.md) |
 
 ## Surface 1: Backends And Route Wrapping
 
@@ -137,6 +139,9 @@ Then read:
 Practical rule:
 
 - treat testing as an operator work surface, not just a pile of pytest selectors
+- use shards as the canonical runnable ownership units
+- use views only as overlapping analysis or restart cuts
+- do not let a view replace shard ownership or requirement status ownership
 
 ## Surface 5: Requirements And Proof
 
@@ -160,7 +165,35 @@ Then read:
 
 Practical rule:
 
-- requirements docs explain claims and proof boundaries; verification docs explain where executable or generated evidence lives
+- requirements docs explain claims and proof boundaries
+- verification docs explain where executable or generated evidence lives
+- backend resolution belongs in separate backend-specific columns or linked owner artifacts
+- do not overload one status-like field to imply both canonical requirement disposition and backend support
+
+## Surface 6: Requirements Exports And Honest Closeout
+
+Use this when the question is:
+
+- can I hand a manager a spreadsheet?
+- what is the current honest answer to whether requirements closeout is done?
+- where are the remaining buckets, shard owners, or view overlaps recorded?
+
+Start here:
+
+- [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) for CSV/XLSX handoff packets
+- [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) for the current honest closeout answer
+
+Then read:
+
+1. [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md)
+2. [`spec_reading_map.md`](spec_reading_map.md)
+3. [`test_surface.md`](test_surface.md)
+
+Practical rule:
+
+- spreadsheets are presentation surfaces, not canonical owner ledgers
+- the audit and remaining-closure docs are the truth surfaces for whether the repo can honestly claim completion
+- shard ownership should be named before broader views, finish-line packets, or matrix cuts
 
 ## Simple Decision Rule
 
@@ -176,6 +209,8 @@ If the main noun in the problem is:
   use `Testing`
 - requirement, claim, proof, bounded note, traceability, or evidence packet:
   use `Requirements`
+- spreadsheet, compliance export, audit, remaining bucket, or closeout truth:
+  use `Requirements exports | status`
 
 ## Read Next
 
@@ -185,3 +220,5 @@ If the main noun in the problem is:
 4. [`repo_green_quickstart.md`](repo_green_quickstart.md)
 5. [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md)
 6. [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md)
+7. [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md)
+8. [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md)

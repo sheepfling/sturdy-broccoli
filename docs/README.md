@@ -13,9 +13,20 @@ Use this rule:
 
 If you are not sure where to start, use one of these first:
 
-- `Testing`: [`repo_green_quickstart.md`](repo_green_quickstart.md), [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md)
+- `Testing`: [`repo_green_quickstart.md`](repo_green_quickstart.md), [`test_surface.md`](test_surface.md), [`local_verification_commands.md`](local_verification_commands.md), [`junior_test_diagnosis_runbook.md`](junior_test_diagnosis_runbook.md)
 - `Requirements`: [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md), [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md), [`verification/README.md`](verification/README.md), [`spec_reading_map.md`](spec_reading_map.md)
+- `Requirements exports`: [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md)
+- `Requirements status`: [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md), [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md)
 - `Backend | Transport | FOM`: [`work_surfaces.md`](work_surfaces.md), [`backend_transport_fom_selection_guide.md`](backend_transport_fom_selection_guide.md)
+
+Practical routing rule:
+
+- use `Requirements` for claim ownership, bounded proof notes, and traceability
+- use `Testing` for shard choice, reruns, and repo-green execution
+- use `Requirements exports` only for boss-facing CSV/XLSX handoff packets
+- use `Requirements status` when the question is whether closeout is honestly done
+- do not use one overloaded status reading to imply both canonical requirement
+  disposition and backend support
 
 ## Docs By Task
 
@@ -31,7 +42,11 @@ If you are not sure where to start, use one of these first:
 | decide whether a change belongs to FOM shape, transport wiring, or adapter dialect | `Runtime` -> [`federate_cli_change_map.md`](federate_cli_change_map.md) |
 | work on FOM validation, inspection, or UI/tooling | `FOM` -> [`fom_tooling_front_door.md`](fom_tooling_front_door.md) |
 | run focused tests, rerun failures, or pick a restart lane | `Testing` -> [`test_surface.md`](test_surface.md) -> [`local_verification_commands.md`](local_verification_commands.md) |
+| understand which shard owns a requirement status change and which views may overlap it | `Testing` -> [`test_surface.md`](test_surface.md) -> `Requirements` -> [`verification/README.md`](verification/README.md) |
 | understand what the repo claims, what is proven, and where the evidence lives | `Requirements` -> [`requirements/ieee-1516-2010/README.md`](requirements/ieee-1516-2010/README.md) or [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md) -> [`verification/README.md`](verification/README.md) -> [`spec_reading_map.md`](spec_reading_map.md) |
+| understand backend-specific support without confusing it with canonical requirement status | `Requirements` -> [`spec_reading_map.md`](spec_reading_map.md) -> [`requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`](requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md) or [`requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`](requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md) |
+| generate a boss-facing CSV or XLSX compliance packet for 2010 and 2025 | `Requirements exports` -> [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md) |
+| find the honest current answer to whether requirements closeout is actually complete | `Requirements status` -> [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md) -> [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md) |
 | get Pitch + Docker running on a new machine with the least painful path | `Backend` -> [`pitch_docker_first_run.md`](pitch_docker_first_run.md) |
 | verify Java/C++ shim route prerequisites and standard-shim build state | `Backend` -> [`java_toolchain.md`](java_toolchain.md) -> [`cpp_toolchain.md`](cpp_toolchain.md) -> [`language_shim_routes.md`](language_shim_routes.md) |
 | understand orchestration, callback pumping, and performance limits | `Runtime` -> [`federation_orchestration.md`](federation_orchestration.md) |
@@ -95,6 +110,16 @@ If you already know what you need, pick a lane:
   [`requirements/ieee-1516-2025/README.md`](requirements/ieee-1516-2025/README.md),
   [`verification/README.md`](verification/README.md),
   [`spec_reading_map.md`](spec_reading_map.md)
+- `Requirements` -> answer backend-resolution questions without overloading canonical status:
+  [`spec_reading_map.md`](spec_reading_map.md),
+  [`requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`](requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md),
+  [`requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`](requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md),
+  [`requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`](requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md)
+- `Requirements exports` -> generate spreadsheet handoff packets:
+  [`verification/requirement_compliance_exports.md`](verification/requirement_compliance_exports.md)
+- `Requirements status` -> inspect whether closeout is actually finished and what still blocks it:
+  [`plans/requirements_completion_audit.md`](plans/requirements_completion_audit.md),
+  [`plans/requirements_remaining_closure.md`](plans/requirements_remaining_closure.md)
 - `Requirements` -> inspect requirement-facing bounded proof notes for the main 2025 lane:
   [`requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md`](requirements/ieee-1516-2025/python1516_2025_direct_bounded_proof.md),
   [`requirements/ieee-1516-2025/save_restore_bounded_proof.md`](requirements/ieee-1516-2025/save_restore_bounded_proof.md),
@@ -144,11 +169,15 @@ Use these when you need structure, not onboarding:
 - [../tools/python](../tools/python): operator entrypoint for `verify-main-2025` and `verify-routes-2025`
 - [verification/time_model_compliance.md](verification/time_model_compliance.md): time-management, lookahead, GALT/LITS, and radar-window proof front door for the primary 2025 Python RTI lane
 - [verification/README.md](verification/README.md): verification and proof index
+- [test_surface.md](test_surface.md): canonical shard catalog and shard-vs-view terminology
 - [../tools/pitch](../tools/pitch): narrow vendor-runtime operator path when you need the Pitch-safe two-federate `time-window-probe` or `time-window-restore-state-probe` bounded credence routes without widening the main `python1516_2025` claim
 - [pitch_docker_first_run.md](pitch_docker_first_run.md): canonical new-machine Docker-backed Pitch setup and diagnosis path
 - [requirements/ieee-1516-2010/README.md](requirements/ieee-1516-2010/README.md): 2010 requirements index and source/proof front door
 - [requirements/ieee-1516-2025/README.md](requirements/ieee-1516-2025/README.md): 2025 requirements index, bounded proof notes, and requirement-facing evidence map for the main `python1516_2025` lane
 - [spec_reading_map.md](spec_reading_map.md): standards-facing reading order and traceability front door
+- [verification/requirement_compliance_exports.md](verification/requirement_compliance_exports.md): generated CSV/XLSX boss-facing handoff packets for the separate `2010 / 1516e` and `2025 / 1516_2025` compliance surfaces
+- [plans/requirements_completion_audit.md](plans/requirements_completion_audit.md): current honest answer to "are we actually done?"
+- [plans/requirements_remaining_closure.md](plans/requirements_remaining_closure.md): exact remaining buckets plus shard-vs-view ownership rules
 - [requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md](requirements/ieee-1516-2025/fom_backed_scenario_bounded_proof.md): tracked proto2025 and Target/Radar example/FOM-backed scenario boundary for the bounded `python1516_2025` claim
 - [requirements/ieee-1516-2025/save_restore_bounded_proof.md](requirements/ieee-1516-2025/save_restore_bounded_proof.md): explicit save/restore rollback-family boundary for lifecycle control, routing/policy rollback, ownership rollback, and time-window rollback on the bounded `python1516_2025` claim
 - [requirements/ieee-1516-2025/callback_bounded_proof.md](requirements/ieee-1516-2025/callback_bounded_proof.md): explicit callback-delivery family boundary for direct/hosted `python1516_2025` callback proofs, callback-control hygiene, and callback surface limits on the bounded `python1516_2025` claim
@@ -185,6 +214,7 @@ Use these when you need structure, not onboarding:
 - [`fom_workbench.md`](fom_workbench.md): FOM workbench scope and operator path
 - [`fom_tooling_front_door.md`](fom_tooling_front_door.md): one-page routing for FOM inspection, validation, UI/workbench, and authoring
 - [`fom_reading_map.md`](fom_reading_map.md): FOM inventory, baseline, and inspection front door
+- [`fom_siso_family_map.md`](fom_siso_family_map.md): one-page explanation of how Link 16, RPR, Space, edition scope, parser quirks, and Pitch eligibility relate
 - [`fom_validate.md`](fom_validate.md): FOM validation front door and command guide
 - [`fom_siso_quirks.md`](fom_siso_quirks.md): short explanation of SISO family load order, main-vs-add-on structure, and common quirks
 - [`fom_siso_showcase.md`](fom_siso_showcase.md): standards-backed SISO showcase packet front door

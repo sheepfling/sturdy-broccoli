@@ -59,6 +59,79 @@ Use this order:
 2. pick one requirement packet, bounded proof note, or closure ledger
 3. open `verification/README.md` when you need the proof packet or executable evidence side
 
+## Shards And Views
+
+Use the shared matrix model from
+[`../../plans/requirements_remaining_closure.md`](../../plans/requirements_remaining_closure.md):
+
+- `shards` are the executable ownership units
+- `views` are overlapping audit, harmonization, or finish-line cuts across shards
+- every 2025 requirement bucket should have one narrowest primary shard first
+- widen to hosted or broader lanes only when the requirement claim actually crosses that boundary
+
+For 2025 work, the usual ownership pattern is:
+
+- source packet or harmonization row in [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
+- canonical claim or boundary note in one bounded proof note under this directory
+- primary proof shard or lane from [`../../test_surface.md`](../../test_surface.md)
+- generated or executable proof artifact from [`../../verification/README.md`](../../verification/README.md)
+
+Preferred closure-table columns:
+
+| Column | Meaning |
+| --- | --- |
+| `Requirement family` | grouped FI, OMT, framework, binding, or harmonization bucket |
+| `Requirement IDs` | exact 2025 IDs or grouped worklist rows |
+| `Canonical status` | `planned`, `partial`, `covered`, `duplicate/umbrella`, or `retired/legacy-only` |
+| `Backend resolution` | separate backend-resolution columns or a linked backend-resolution artifact such as the harmonization ledger, FI binding matrix, hosted-route boundary note, or `pitch_202x_resolution` field for Pitch's vendor-branded proto HLA 4 / `202X` surface |
+| `Primary shard` | first canonical owning shard |
+| `Widen to` | broader lane only if hosted parity, finish-line, or cross-surface proof is required |
+| `View tags` | overlapping audit cuts such as `transport`, `ownership`, `time`, `java-shim`, `cpp-shim`, `setup-preflight`, or `finish-line` |
+| `Evidence artifact` | bounded proof note, ledger, packet, JSON, or generated route-parity artifact |
+| `Boundary note` | honest supported-scope note when the proof is narrower than the full standard wording |
+
+Practical rule:
+
+- keep 2025 closeout owned by shards
+- use views to answer cross-bucket questions such as transport, bindings, setup, or finish-line coverage
+- do not let a view replace shard ownership in repo-green, route parity, or requirements status changes
+- keep canonical requirement closure separate from backend or route-specific support
+- when a vendor labels its surface differently, such as Pitch proto HLA 4 / `202X`,
+  treat that as backend-resolution terminology and document it in the linked
+  owner artifact rather than folding it into canonical status
+
+Current grouped harmonization result:
+
+- `57 covered`
+- `5 duplicate/umbrella`
+- `2 retired/legacy-only`
+
+Use that grouped result carefully:
+
+- it means the grouped 2025 worklist is fully dispositioned
+- it does not mean every 2025 row is an unconditional all-covered conformance claim
+- the remaining blockers are boundary-doc and supported-scope questions such as umbrella rows, retired rows, hosted/binding bounded claims, and other intentionally narrow claim surfaces
+
+## Boundary Bucket Owners
+
+Use this index when the question is not "what service row proves this?" but
+"which single document owns this boundary or umbrella bucket?"
+
+| Bucket | Canonical owner doc | Primary shard | Typical view tags |
+| --- | --- | --- | --- |
+| framework umbrella rows | `framework_rules.md` | `unit-python-2025-core` | `2025-core`, `finish-line`, `scenarios` |
+| callback/configuration/binding delta umbrellas | `callback_binding_deltas.md` | `unit-shim-tooling` | `2025-core`, `java-shim`, `cpp-shim`, `transport` |
+| binding and hosted-route boundary rows | `binding_and_hosted_route_boundaries.md` | `unit-transport-local` | `2025-core`, `transport`, `finish-line` |
+| Pitch proto HLA 4 / `202X` backend-resolution lane | `pitch_202x_bounded_comparison.md` | `unit-transport-local` | `2025-core`, `transport`, `java-shim`, `finish-line` |
+| legacy-alias and non-claim perimeter around the main runtime lane | `python1516_2025_exclusion_boundaries.md` | `unit-foundation` | `2025-core`, `setup-preflight`, `finish-line` |
+| retired and legacy-only mapping rows | `retired_legacy_mapping.md` | `unit-foundation` | `2025-core`, `setup-preflight` |
+
+Reading rule:
+
+1. start with the owner doc above
+2. then open the linked bounded proof or harmonization ledger
+3. only after that widen to route parity, finish-line, or generated packet artifacts
+
 ## Files
 
 - `requirements.json`: machine-readable tranche registry.
@@ -80,6 +153,7 @@ Use this order:
 - `standard_binding_runtime_capability_bounded_proof.md`: bounded requirement-facing proof note for Java/C++ standard-route artifact-gated runtime-capability traces over the main `python1516_2025` runtime.
 - `hosted_fedpro_bounded_proof.md`: bounded requirement-facing proof note for the hosted `python1516_2025-fedpro-grpc` transport/runtime slice over the main `python1516_2025` RTI lane.
 - `binding_and_hosted_route_boundaries.md`: bounded requirement-facing note for Java, C++, and hosted FedPro binding/route boundaries over the main `python1516_2025` runtime.
+- `pitch_202x_bounded_comparison.md`: bounded requirement-facing note for the Pitch proto HLA 4 / `202X` adapter-route comparison packet over the main `python1516_2025` runtime.
 - `python1516_2025_exclusion_boundaries.md`: explicit exclusion map for legacy aliases, Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows, and out-of-scope OMT extension semantics around the main `python1516_2025` claim.
 - `callback_bounded_proof.md`: bounded requirement-facing proof note for callback-delivery families, callback-control hygiene, and direct-versus-hosted callback surface boundaries over the main `python1516_2025` runtime.
 - `callback_binding_deltas.md`: bounded requirement-facing note for callback/configuration/binding delta rows.
@@ -87,7 +161,7 @@ Use this order:
 - `executable_tests/`: imported v3 executable-test backlog with 1117 candidate test rows.
 - `encoding_auth_work_packet/`: imported encoding/auth requirements, vectors, schemas, smoke FOM, and contract-test skeletons.
 - `../../../requirements/2025/depth/`: imported 691-row requirement-depth expansion used as a harmonization candidate for FI service, SOM/FOM service usage, OMT component/schema, validator-negative, framework, binding/configuration, and retired/replacement rows.
-- `../../../requirements/2025/harmonization/`: imported provisional disposition layer over the 691-row depth packet, including FI binding surface accounting, worklist, review queue, coverage rollup, and promotion guardrails.
+- `../../../requirements/2025/harmonization/`: imported provisional disposition layer over the 691-row depth packet, including FI binding surface accounting, grouped and row-level Pitch proto HLA 4 / `202X` backend-resolution ledgers, worklist, review queue, coverage rollup, and promotion guardrails.
 
 ## Conformance Language
 
@@ -168,4 +242,7 @@ rather than the next missing implementation frontier by itself.
 
 - [`../../../requirements/2025/README.md`](../../../requirements/2025/README.md)
 - [`../../verification/README.md`](../../verification/README.md)
+- [`../../verification/requirement_compliance_exports.md`](../../verification/requirement_compliance_exports.md)
+- [`../../plans/requirements_remaining_closure.md`](../../plans/requirements_remaining_closure.md)
+- [`../../test_surface.md`](../../test_surface.md)
 - [`../../spec_reading_map.md`](../../spec_reading_map.md)

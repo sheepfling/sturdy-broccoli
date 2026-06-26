@@ -21,9 +21,46 @@ the bounded 2025 working-surface statement, especially for legacy aliases,
 Java/C++ bindings, hosted transport boundaries, duplicate/umbrella rows,
 retired rows, and out-of-scope OMT extension semantics.
 
+For the current truthful answer to whether requirements closeout is actually
+finished, pair this plan with:
+
+- [`../plans/requirements_completion_audit.md`](../plans/requirements_completion_audit.md)
+- [`../plans/requirements_remaining_closure.md`](../plans/requirements_remaining_closure.md)
+
+For spreadsheet handoff packets generated from the canonical requirement
+artifacts, use:
+
+- [`requirement_compliance_exports.md`](requirement_compliance_exports.md)
+
 ## Goal
 
 Produce defensible evidence that `hla2010` implements the IEEE 1516.1-2010 federate interface correctly enough to support explicit clause-level claims.
+
+## Canonical 2010 Owner Surfaces
+
+Use this plan for proof shape and verification depth, not as the canonical
+owner map for 2010 requirement families.
+
+For the owner surfaces behind each 2010 bucket, use:
+
+- [`../requirements/ieee-1516-2010/README.md`](../requirements/ieee-1516-2010/README.md)
+- [`../../requirements/2010/README.md`](../../requirements/2010/README.md)
+- [`requirements_hierarchy.md`](requirements_hierarchy.md)
+
+When a 2010 requirement family changes status, update the canonical owner file
+and traceability row first, then use this plan to decide the right proof depth.
+
+## Shards And Views
+
+Use the same ownership model as
+[`../plans/requirements_remaining_closure.md`](../plans/requirements_remaining_closure.md):
+
+- `shards` own executable pass or fail meaning
+- `views` are overlapping requirement, backend, or audit cuts across shards
+- this verification plan helps choose proof depth, but it does not replace the
+  owning shard, source ledger, or backend-resolution companion artifact
+- when backend truth differs, keep it in separate backend-resolution columns or
+  linked artifacts instead of collapsing it into one conformance label
 
 ## Master Traceability Model
 
@@ -40,7 +77,9 @@ Minimum fields for every row:
 - `positive_tests`
 - `negative_tests`
 - `artifact_refs`
-- `status`
+- `canonical_status`
+- `backend_resolution`
+- `primary_shard`
 - `notes`
 
 The repo already has part of this machinery in:
@@ -50,6 +89,14 @@ The repo already has part of this machinery in:
 - `analysis/compliance/*`
 
 The requirement IDs should be explicit and stable, rather than only relying on service/method names.
+
+Keep these meanings separate:
+
+- `canonical_status` is the requirement-level judgment
+- `backend_resolution` records which backend, route, or vendor actually closes
+  that row
+- `primary_shard` is the narrowest executable owner that justified the current
+  requirement-level status
 
 Current generated ledger format:
 

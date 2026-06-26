@@ -15,7 +15,11 @@ equivalence.
 
 ## Service Families
 
-| Family | Rows | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
 | Name reservation and basic object exchange | `HLA2025-FI-SVC-051`, `HLA2025-FI-SVC-052`, `HLA2025-FI-SVC-053`, `HLA2025-FI-SVC-054`, `HLA2025-FI-SVC-055`, `HLA2025-FI-SVC-056`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-058`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-061`, `HLA2025-FI-SVC-062` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_object_management_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for single and multi-name reservation or release, plain object registration and discovery, attribute update/reflect flows, and basic interaction send/receive behavior on the direct and hosted `python1516_2025` routes. |
 | Directed interaction routing | `HLA2025-FI-SVC-063`, `HLA2025-FI-SVC-064` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `packages/hla-rti1516-2025/src/hla/rti1516_2025/federate_ambassador.py` | Closed as bounded runtime proof for directed interaction send/receive, selective directed routing, timestamped directed delivery, and hosted FedPro callback decode of directed-interaction semantics. |

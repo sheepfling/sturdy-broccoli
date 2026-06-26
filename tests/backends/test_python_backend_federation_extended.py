@@ -3,6 +3,7 @@
 import pytest
 
 import hla.fom.mom as hla_mom
+from hla.backends.common.base import BackendConversionError
 from tests.backends.python_backend_extended_support import *
 from hla.fom import FOMModule
 from hla.backends.python1516e import PythonRTIConfig
@@ -563,7 +564,7 @@ def test_request_federation_save_rejects_past_and_invalid_time():
     with pytest.raises(LogicalTimeAlreadyPassed):
         r1.request_federation_save("PAST-SAVE", factory.make_time(4.0))
 
-    with pytest.raises(InvalidLogicalTime):
+    with pytest.raises(BackendConversionError):
         r1.request_federation_save("BAD-SAVE", object())
 
     r1.resign_federation_execution(ResignAction.NO_ACTION)

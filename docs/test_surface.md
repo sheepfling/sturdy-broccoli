@@ -91,7 +91,7 @@ intent aliases:
 | `unit-python-2025-core` | `./tools/test-surface run unit-python-2025-core` | primary `python1516_2025` unit shard for direct runtime semantics and validation |
 | `unit-transport-local` | `./tools/test-surface run unit-transport-local` | hosted transport shard for gRPC and REST tests without vendor-runtime lanes |
 | `unit-scenarios-light` | `./tools/test-surface run unit-scenarios-light` | repo-owned backend and Target/Radar scenario-light shard |
-| `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime views, and OMT evidence |
+| `python1516_2025-main` | `./tools/python verify-main-2025` | primary `python1516_2025` main-surface proof lane for package-boundary guards, raw support/decode plus callback-control proofs on the direct runtime surface, explicit federation/object/DDM runtime proofs, explicit support/ownership/MOM runtime proofs, the explicit Target/Radar time-window gauntlet and restore-window ladder, the explicit save/restore gauntlet and rollback ladder, broader direct runtime slices, and OMT evidence |
 | `python-routes` | `./tools/python verify-routes` | hosted 2010 Python RTI parity, transport-route semantics, and hosted example checks |
 | `python1516_2025-routes` | `./tools/python verify-routes-2025` | bounded `python1516_2025` plus hosted FedPro 2025 route checks, explicit hosted federation/object/DDM runtime proofs, explicit hosted support/ownership/MOM runtime proofs, explicit hosted Target/Radar time-window ladder replay, explicit hosted save/restore gauntlet and rollback replay, direct time-window, save/restore, ownership, callback, support-service, and MOM proofs, the checked-in 2025 finish-line bundle, and the README-advertised `python1516_2025` Target/Radar example path |
 | `vendor` | `./tools/vendor-green matrix` | strict real-runtime lane after vendor preflight |
@@ -152,7 +152,7 @@ when you change:
 
 This lane is intentionally broader than hosted-route hygiene and intentionally
 separate from it. It is the shortest operator path that combines the direct
-`python1516_2025` runtime views, the package/runtime boundary guardrails that keep
+`python1516_2025` runtime slices, the package/runtime boundary guardrails that keep
 `shim` wrapper-only, the requirement-facing bounded proof-note registry, and
 the dedicated OMT evidence surface.
 

@@ -24,6 +24,27 @@ That means:
 - the architecture should still preserve a clean enough seam that the shim can
   continue shrinking toward wrapper-only responsibilities
 
+Canonical boundary owner reading order for the remaining 2025 closeout limits:
+
+1. `docs/requirements/ieee-1516-2025/README.md`
+2. `docs/requirements/ieee-1516-2025/framework_rules.md`
+3. `docs/requirements/ieee-1516-2025/callback_binding_deltas.md`
+4. `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md`
+5. `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md`
+6. `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
+7. `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md`
+8. `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
+
+Use this backend audit as a bounded runtime-lane rollup over those owner docs,
+not as a replacement for them.
+
+When you need canonical row status or backend-resolution detail behind those
+boundaries, read the linked harmonization companions such as
+`hla_2025_requirement_disposition_ledger.csv`,
+`hla_2025_fi_binding_surface_matrix.csv`,
+`hla_2025_pitch_202x_group_resolution.csv`, and
+`hla_2025_pitch_202x_row_resolution.csv`.
+
 ## Current Repo Reality
 
 The repo is not building two duplicate Python 2025 RTIs.

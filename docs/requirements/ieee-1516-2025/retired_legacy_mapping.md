@@ -9,6 +9,32 @@ miscounted as missing 2025 functionality. The current runtime owner for the
 native 2025 behavior is `hla-backend-python1516-2025`. `hla-backend-shim` remains a
 compatibility wrapper and is not the runtime owner for these retired rows.
 
+## Owner Surface
+
+- canonical owner doc: `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md`
+- primary shard: `unit-foundation`
+- widen to: only when the retired mapping changes generated audits or
+  harmonization ledgers
+- typical view tags: `2025-core`, `setup-preflight`
+
+## Final Claim Rule
+
+- these rows stay `retired/legacy-only`, not active 2025 support obligations
+- do not count candidate 2025 replacements as proof that the retired row itself
+  is implemented
+- do not promote a retired row to `covered` unless the repo deliberately adds a
+  compatibility or migration mode and proves that exact scope directly
+- the purpose of this doc is exclusion discipline, not runtime proof expansion
+
+Default final stance:
+
+- this bucket is already in its intended final repo-owned state as an explicit
+  exclusion boundary
+- no additional runtime proof is required for the repo to keep these rows out
+  of active 2025 normative coverage
+- future work is optional and should happen only if the repo deliberately opens
+  a new compatibility or migration program with its own bounded claim and tests
+
 ## Federate Interface Legacy API Rows
 
 | ID | Legacy 2010 spelling | Candidate 2025 replacement |
@@ -55,3 +81,18 @@ compatibility wrapper and is not the runtime owner for these retired rows.
 - The current Python 2025 RTI may reject these legacy spellings as unsupported
   2025 service or schema names rather than aliasing them silently into native
   conformance.
+
+## Exit Condition
+
+Treat this bucket as closed for current closeout purposes when all of these are
+true:
+
+1. all 24 retired rows remain anchored to this owner doc and the row-level
+   disposition ledger
+2. the final claim language keeps them explicit as exclusions rather than
+   accidental coverage gaps
+3. no generated packet, audit note, or grouped worklist reclassifies them as
+   active 2025 support obligations
+
+Only reopen this bucket if the repo intentionally starts a compatibility or
+migration program for one or more retired rows.

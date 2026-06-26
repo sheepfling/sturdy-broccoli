@@ -6,6 +6,26 @@ the main IEEE 1516.1-2025 Python RTI implementation statement.
 Use it when you need the short list of boundaries around the current
 `hla-backend-python1516-2025` working-surface claim.
 
+## Owner Surface
+
+- canonical owner doc:
+  `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md`
+- primary shard: `unit-foundation`
+- widen to: finish-line or route-parity artifacts only when the exclusion
+  statement itself changes
+- typical view tags: `2025-core`, `setup-preflight`, `finish-line`
+
+## Final Claim Rule
+
+- this doc records what is intentionally outside the main `python1516_2025`
+  implementation-owner claim
+- exclusions do not transfer ownership away from `hla-backend-python1516-2025`
+- do not use excluded, wrapper-only, umbrella, retired, or tolerance-only areas
+  to inflate the current repo claim
+- if one of these excluded areas becomes in scope later, give it its own
+  narrower owner row and direct proof rather than silently weakening the
+  boundary
+
 ## Main Rule
 
 `hla-backend-python1516-2025` is the sole repo-owned Python RTI implementation lane

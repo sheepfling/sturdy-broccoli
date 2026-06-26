@@ -26,7 +26,10 @@ unqualified conformance claim.
 
 ## Tracked Direct Scenario Families
 
-| Scenario family | Status | Evidence anchors | Current direct reading |
+Use `Direct runtime coverage` here as the bounded direct-lane reading. It is
+not a canonical requirement disposition field.
+
+| Scenario family | Direct runtime coverage | Evidence anchors | Current direct reading |
 | --- | --- | --- | --- |
 | `federation_lifecycle` | `direct-runtime-covered` | `tests/test_rti1516_2025_python1516_2025_runtime.py` | Direct lifecycle covers connect/create/join/list/resign/destroy/disconnect, synchronization, and save/restore control over the primary `python1516_2025` lane. |
 | `object_exchange` | `direct-runtime-covered` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_target_radar_scenario.py` | Direct object exchange covers discovery, reflection, interaction delivery, directed routing, and package-owned FOM-backed scenario replay. |

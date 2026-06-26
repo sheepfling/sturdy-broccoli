@@ -14,7 +14,11 @@ exhaustive cross-binding behavior equivalence.
 
 ## Service Families
 
-| Family | Rows | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
 | Connect, create, destroy, and catalog control | `HLA2025-FI-SVC-001`, `HLA2025-FI-SVC-002`, `HLA2025-FI-SVC-004`, `HLA2025-FI-SVC-005`, `HLA2025-FI-SVC-006`, `HLA2025-FI-SVC-007` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/test_hla_factory_composition.py`, `packages/hla-rti-core/src/hla/rti/factory.py` | Closed as bounded runtime proof for connect or disconnect state, create or destroy federation control, federation listing and reporting, duplicate-create rejection, callback-model validation, and FOM-validation preconditions on the direct and hosted `python1516_2025` routes. |
 | Join, membership, and name-precondition control | `HLA2025-FI-SVC-008`, `HLA2025-FI-SVC-009`, `HLA2025-FI-SVC-010` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_federation_management_backend_matrix.py` | Closed as bounded runtime proof for join preconditions, federation-execution member reporting, multi-participation visibility, and joined-state or federate-name uniqueness constraints across the main `python1516_2025` lane and hosted FedPro replay. |

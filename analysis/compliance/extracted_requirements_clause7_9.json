@@ -10,8 +10,8 @@
   "rows": [
     {
       "artifact_refs": [
-        "requirements/hla1516_1_federate_interface.csv",
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_federate_interface.csv",
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -36,7 +36,7 @@
       "requirement_id": "HLA1516.1-DDM-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79",
       "service_group": "Data Distribution Management",
-      "source": "requirements/hla1516_1_federate_interface.csv",
+      "source": "requirements/2010/hla1516_1_federate_interface.csv",
       "status": "planned",
       "title": "The RTI shall implement DDM services for region creation",
       "vendor_evidence_refs": [],
@@ -49,7 +49,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -73,7 +73,7 @@
       "requirement_id": "HLA1516.1-DDM-9.1-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support region-based data distribution management",
       "vendor_evidence_refs": [
@@ -89,7 +89,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -113,7 +113,7 @@
       "requirement_id": "HLA1516.1-DDM-9.1-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall use FOM-defined dimensions for DDM routing",
       "vendor_evidence_refs": [
@@ -129,7 +129,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -154,7 +154,7 @@
       "requirement_id": "HLA1516.1-DDM-9.1-003",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall determine relevance from subscription regions and update/send regions",
       "vendor_evidence_refs": [
@@ -170,7 +170,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -194,7 +194,7 @@
       "requirement_id": "HLA1516.1-DDM-9.10-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support subscribing to interaction classes with regions",
       "vendor_evidence_refs": [
@@ -213,7 +213,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -237,7 +237,7 @@
       "requirement_id": "HLA1516.1-DDM-9.11-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.11",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support unsubscribing interaction classes with regions",
       "vendor_evidence_refs": [
@@ -255,7 +255,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -280,7 +280,7 @@
       "requirement_id": "HLA1516.1-DDM-9.12-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall route attribute updates based on region overlap",
       "vendor_evidence_refs": [
@@ -295,7 +295,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -319,7 +319,7 @@
       "requirement_id": "HLA1516.1-DDM-9.13-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall route interactions based on region overlap where dimensions apply",
       "vendor_evidence_refs": [
@@ -338,7 +338,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -361,7 +361,7 @@
       "requirement_id": "HLA1516.1-DDM-9.2-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.2",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide Create Region",
       "vendor_evidence_refs": [
@@ -381,7 +381,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -404,7 +404,7 @@
       "requirement_id": "HLA1516.1-DDM-9.3-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.3",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide Commit Region Modifications",
       "vendor_evidence_refs": [
@@ -419,7 +419,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -442,7 +442,7 @@
       "requirement_id": "HLA1516.1-DDM-9.4-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.4",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide Delete Region",
       "vendor_evidence_refs": [
@@ -460,7 +460,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -483,7 +483,7 @@
       "requirement_id": "HLA1516.1-DDM-9.5-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.5",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support registering object instances with associated regions where applicable",
       "vendor_evidence_refs": [
@@ -502,7 +502,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -525,7 +525,7 @@
       "requirement_id": "HLA1516.1-DDM-9.6-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.6",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support associating regions with object instance attributes",
       "vendor_evidence_refs": [
@@ -544,7 +544,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -567,7 +567,7 @@
       "requirement_id": "HLA1516.1-DDM-9.7-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.7",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support unassociating regions from object instance attributes",
       "vendor_evidence_refs": [
@@ -586,7 +586,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -610,7 +610,7 @@
       "requirement_id": "HLA1516.1-DDM-9.8-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support subscribing to object-class attributes with regions",
       "vendor_evidence_refs": [
@@ -629,7 +629,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -653,7 +653,7 @@
       "requirement_id": "HLA1516.1-DDM-9.9-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.9",
       "service_group": "DDM",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support unsubscribing object-class attributes with regions",
       "vendor_evidence_refs": [
@@ -671,8 +671,8 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_federate_interface.csv",
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_federate_interface.csv",
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -696,7 +696,7 @@
       "requirement_id": "HLA1516.1-OWN-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77",
       "service_group": "Ownership Management",
-      "source": "requirements/hla1516_1_federate_interface.csv",
+      "source": "requirements/2010/hla1516_1_federate_interface.csv",
       "status": "planned",
       "title": "The RTI shall implement ownership-management services for unconditional",
       "vendor_evidence_refs": [],
@@ -711,7 +711,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -735,7 +735,7 @@
       "requirement_id": "HLA1516.1-OWN-7.1-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall track ownership of object instance attributes",
       "vendor_evidence_refs": [
@@ -753,7 +753,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -776,7 +776,7 @@
       "requirement_id": "HLA1516.1-OWN-7.1-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "At most one federate may own a given attribute of a given object instance at a time",
       "vendor_evidence_refs": [
@@ -794,7 +794,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -818,7 +818,7 @@
       "requirement_id": "HLA1516.1-OWN-7.1-003",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "A federate shall update only attributes it owns",
       "vendor_evidence_refs": [
@@ -836,7 +836,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -859,7 +859,7 @@
       "requirement_id": "HLA1516.1-OWN-7.10-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support cancellation of ownership acquisition attempts",
       "vendor_evidence_refs": [
@@ -877,7 +877,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -900,7 +900,7 @@
       "requirement_id": "HLA1516.1-OWN-7.11-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.11",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall report cancellation confirmation where required",
       "vendor_evidence_refs": [
@@ -924,7 +924,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -948,7 +948,7 @@
       "requirement_id": "HLA1516.1-OWN-7.12-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.12",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support ownership query for object instance attributes",
       "vendor_evidence_refs": [
@@ -966,7 +966,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -990,7 +990,7 @@
       "requirement_id": "HLA1516.1-OWN-7.13-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.13",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall notify whether an attribute is owned unowned or owned by another federate",
       "vendor_evidence_refs": [
@@ -1008,7 +1008,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1031,7 +1031,7 @@
       "requirement_id": "HLA1516.1-OWN-7.2-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide unconditional attribute ownership divestiture",
       "vendor_evidence_refs": [
@@ -1057,7 +1057,7 @@
         "docs/certi_negotiated_ownership_findings.md",
         "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
         "docs/rti_options_and_test_matrix.md",
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1080,7 +1080,7 @@
       "requirement_id": "HLA1516.1-OWN-7.3-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide negotiated attribute ownership divestiture",
       "vendor_evidence_refs": [
@@ -1103,7 +1103,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1126,7 +1126,7 @@
       "requirement_id": "HLA1516.1-OWN-7.4-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall notify federates when ownership divestiture is requested",
       "vendor_evidence_refs": [
@@ -1150,7 +1150,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1173,7 +1173,7 @@
       "requirement_id": "HLA1516.1-OWN-7.5-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.5",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide attribute ownership acquisition",
       "vendor_evidence_refs": [
@@ -1191,7 +1191,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1214,7 +1214,7 @@
       "requirement_id": "HLA1516.1-OWN-7.6-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.6",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall provide attribute ownership acquisition if available",
       "vendor_evidence_refs": [
@@ -1232,7 +1232,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1255,7 +1255,7 @@
       "requirement_id": "HLA1516.1-OWN-7.7-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall notify a federate when ownership acquisition succeeds",
       "vendor_evidence_refs": [
@@ -1273,7 +1273,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1296,7 +1296,7 @@
       "requirement_id": "HLA1516.1-OWN-7.7-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall not invoke attributeOwnershipAcquisitionNotification when the owning federate denies release and acquisition does not complete",
       "vendor_evidence_refs": [
@@ -1314,7 +1314,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1337,7 +1337,7 @@
       "requirement_id": "HLA1516.1-OWN-7.8-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.8",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall notify a federate when ownership acquisition fails",
       "vendor_evidence_refs": [
@@ -1355,7 +1355,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1378,7 +1378,7 @@
       "requirement_id": "HLA1516.1-OWN-7.9-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall allow a federate to release ownership in response to acquisition requests",
       "vendor_evidence_refs": [
@@ -1400,7 +1400,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_priority_clauses_7_9_10.csv"
+        "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -1423,7 +1423,7 @@
       "requirement_id": "HLA1516.1-OWN-7.9-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "OWN",
-      "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
+      "source": "requirements/2010/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall not invoke requestAttributeOwnershipRelease when acquisition-if-available cannot proceed immediately and ownership remains with the current owner",
       "vendor_evidence_refs": [

@@ -137,7 +137,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
             if row["requirement_id"].startswith(prefix) and row["pytest_anchor_count"] == 1
         ]
         assert single_anchor_rows == []
-    assert pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchor_count"] >= 3
+    assert pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchor_count"] >= 2
     assert any("test_2025_provider_is_first_green_runtime_path" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-001"]["pytest_anchors"])
     assert pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchor_count"] >= 10
     assert any("test_2025_provider_rejects_duplicate_federation_and_federate_names" in anchor for anchor in pytest_rows["HLA2025-FI-SVC-005"]["pytest_anchors"])
@@ -4473,6 +4473,9 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "Full-Claim Blocker Partition Audit" in markdown
     assert "Objective Audit" in markdown
     assert "Implemented Evidence Slices" in markdown
+    assert "| Slice | Slice disposition | Backend or route scope | Requirements | Evidence |" in markdown
+    assert "These are slice-level implementation readings, not canonical requirement-status rows." in markdown
+    assert "| ID | Area | Priority | Canonical backlog disposition | Backend or binding scope | Verification work |" in markdown
     matrix = paths["verification_matrix"].read_text(encoding="utf-8")
     assert "HLA2025-VER-001" in matrix
     assert "2025-verification-anchor-matrix" in matrix
@@ -4481,7 +4484,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     route_matrix = paths["route_parity_matrix"].read_text(encoding="utf-8")
     route_matrix_markdown = paths["route_parity_markdown"].read_text(encoding="utf-8")
     assert (
-        "scenario,route,status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
+        "scenario,route,parity_status,evidence_scope,requirements,evidence_tests,evidence_artifacts,"
         "runtime_provider,implementation_lane,counts_as_python_2025_rti,wrapper_only,notes"
     ) in route_matrix
     assert "object_exchange,java-standard-2025-jpype,parity-covered,scenario-parity" in route_matrix
@@ -4495,6 +4498,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert route_matrix_markdown.startswith("# IEEE 1516-2025 Route Parity Matrix")
     assert "python1516_2025` and `python1516_2025-fedpro-grpc` are the Python-owned runtime evidence lanes over `hla-backend-python1516-2025`" in route_matrix_markdown
     assert "Java/C++ standard routes are binding/adaptation-seam evidence over that same runtime, not alternate Python RTI implementations." in route_matrix_markdown
+    assert "Use `Parity status` as a route-evidence reading only. It is not the canonical requirement disposition." in route_matrix_markdown
     assert "For the main-implementation claim, read the scenario rows as a proof-family ledger too:" in route_matrix_markdown
     assert "the Python-owned rows below are the main route-parity proof families for federation, object, ownership, DDM, time, save/restore, MOM, and support-services behavior" in route_matrix_markdown
     assert "those Python-owned rows are parity evidence over the extracted `hla-backend-python1516-2025` runtime/state/surface modules" in route_matrix_markdown

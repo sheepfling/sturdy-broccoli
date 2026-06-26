@@ -116,8 +116,8 @@ This profile currently inherits the Portico family-level requirement disposition
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.1-001 | classification-required | extracted-requirement | RTI shall reject invalid or incompatible FOM modules |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.1-002 | classification-required | extracted-requirement | If a FOM module or MIM definition is rejected the RTI shall reject it in entirety |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.4.2-001 | classification-required | extracted-requirement | RTI shall provide access to the current FDD individual FOM modules and the MIM |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-001 | classification-required | extracted-requirement | RTI shall detect lost federates and report them through MOM |
-| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-002 | classification-required | extracted-requirement | RTI shall resign lost federates using the current automatic resign directive |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-001 | classification-required | extracted-requirement | HLA1516.1-FM-4.1.5-001 |
+| IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-002 | classification-required | extracted-requirement | HLA1516.1-FM-4.1.5-002 |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-001 | classification-required | extracted-requirement | RTI shall provide Resign Federation Execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-CB-001 | classification-required | extracted-requirement | After successful resignation, the resigned federate shall no longer receive federation-participation callbacks as a joined member. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-EFF-001 | classification-required | extracted-requirement | Successful Resign Federation Execution shall remove the federate from federation membership, remove or divest owned objects as directed by the resign action, remove synchronization-point participation, refresh time advancement processing, and clear local publication and subscription state. |
@@ -574,7 +574,7 @@ This profile currently inherits the Portico family-level requirement disposition
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.1-001 | classification-required | extracted-requirement | RTI shall treat attribute updates interactions object deletes and DDM region messages as HLA messages |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.2-001 | classification-required | extracted-requirement | Each message shall be either timestamp order TSO or receive order RO |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.2-002 | classification-required | extracted-requirement | RTI shall determine sent message order type from preferred order type timestamp presence and federate time status |
-| IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.2-003 | classification-required | extracted-requirement | RTI shall never convert RO messages into received TSO messages |
+| IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.2-003 | classification-required | extracted-requirement | HLA1516.1-TM-8.1.2-003 |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.2-004 | classification-required | extracted-requirement | RTI shall deliver received TSO messages in timestamp order except where flush queue behavior applies |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.3-001 | classification-required | extracted-requirement | Each joined federate shall have a logical time |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.3-002 | classification-required | extracted-requirement | A joined federate logical time shall only advance |

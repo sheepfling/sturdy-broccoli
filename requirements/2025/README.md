@@ -22,7 +22,8 @@ Contents:
   deltas, and retired/replacement mapping candidates
 - `harmonization/`: imported provisional disposition layer over the depth packet,
   with row-level disposition, FI binding surface accounting, review queue,
-  execution worklist, coverage rollup, and promotion guardrails
+  execution worklist with separate canonical-status and backend-resolution
+  fields, coverage rollup, and promotion guardrails
 
 Use this folder when you want to point at "all of the 2025 reqts" or the 2025
 source-trace/data block without mixing it into the 2010 requirements ledgers.
@@ -49,7 +50,9 @@ Treat this as the single source-side list for the 2025 edition:
 - `depth/source_manifest.json`: depth source manifest
 - `harmonization/README.md`: harmonization packet entrypoint
 - `harmonization/hla_2025_fi_binding_surface_matrix.csv`: FI binding surface matrix
-- `harmonization/hla_2025_harmonization_worklist.csv`: grouped harmonization worklist
+- `harmonization/hla_2025_harmonization_worklist.csv`: grouped harmonization worklist with separate canonical-status and backend-resolution columns, including explicit `pitch_202x_resolution`
+- `harmonization/hla_2025_pitch_202x_group_resolution.csv`: grouped companion ledger for `pitch_202x_resolution`
+- `harmonization/hla_2025_pitch_202x_row_resolution.csv`: row-level companion ledger for conservative Pitch proto HLA 4 / `202X` backend-resolution reading across all 691 harmonization rows
 - `harmonization/hla_2025_requirement_coverage_closure_report.md`: human-readable closure report
 - `harmonization/hla_2025_requirement_coverage_rollup.json`: machine-readable coverage rollup
 - `harmonization/hla_2025_requirement_disposition_ledger.csv`: row-level disposition ledger
@@ -83,3 +86,77 @@ The `harmonization/` packet is the next review layer. It assigns row-level
 dispositions and closure tasks to the depth rows, and may promote rows to
 `covered` once concrete repo evidence and executable test or fixture anchors are
 reconciled into the packet.
+
+Current grouped harmonization state:
+
+- `57 covered`
+- `5 duplicate/umbrella`
+- `2 retired/legacy-only`
+
+That means the grouped 2025 worklist is now fully dispositioned.
+The remaining 2025 closeout work is no longer stale grouped `planned` or
+`partial` buckets. The remaining blockers live in:
+
+- explicit umbrella rows that must stay non-standalone
+- retired or legacy-only exclusions that must stay explicit
+- bounded route/binding claim surfaces that should not be overstated
+- row-level supported-scope limits that are intentionally narrower than a
+  blanket all-covered IEEE 1516.1-2025 claim
+
+## Final Claim Reading Rule
+
+Use the grouped result carefully:
+
+- grouped `covered` means the grouped bucket has a settled canonical
+  disposition
+- grouped `duplicate/umbrella` means the bucket is a normalization or parent
+  note, not a standalone runtime-proof row
+- grouped `retired/legacy-only` means the bucket is an explicit exclusion from
+  active 2025 support, not a hidden gap
+- backend or route-specific support still belongs in separate
+  backend-resolution fields, row-level ledgers, or linked owner docs
+
+Do not read the grouped worklist as:
+
+- a blanket all-covered IEEE 1516.1-2025 claim
+- proof that every row is a direct executable runtime witness
+- proof that hosted FedPro, Java, or C++ are alternate full RTI owners
+
+## Canonical Boundary Owners
+
+Use these owner docs when the question is about a bounded or non-claim area
+rather than a service row:
+
+| Bucket | Canonical owner doc | Meaning |
+| --- | --- | --- |
+| framework umbrella rows | `docs/requirements/ieee-1516-2025/framework_rules.md` | umbrella rules stay parent notes, not one-row runtime claims |
+| callback/configuration/binding delta umbrellas | `docs/requirements/ieee-1516-2025/callback_binding_deltas.md` | delta umbrellas stay normalization aids, not standalone proof rows |
+| binding and hosted-route boundaries | `docs/requirements/ieee-1516-2025/binding_and_hosted_route_boundaries.md` | Java/C++ and hosted FedPro stay bounded adaptation or transport evidence over the main runtime |
+| Pitch proto HLA 4 / `202X` backend-resolution lane | `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md` | vendor-branded route naming stays a backend-resolution story, not canonical status |
+| retired and legacy-only rows | `docs/requirements/ieee-1516-2025/retired_legacy_mapping.md` | retired rows stay explicit exclusions unless a compatibility program is added |
+| exclusion perimeter around the main Python lane | `docs/requirements/ieee-1516-2025/python1516_2025_exclusion_boundaries.md` | collects the current non-claim perimeter around `python1516_2025` |
+| OMT `xs:any` extension tolerance | `docs/requirements/ieee-1516-2025/omt_xs_any_extension_tolerance.md` | foreign extension payloads are preserved for round-trip tolerance, not arbitrary runtime semantics |
+
+Keep canonical closeout and backend support separate in that packet:
+
+- use the worklist `canonical_disposition` field for grouped requirement closure
+- keep backend or route-specific support in dedicated backend-resolution columns
+  or the linked row-level FI/binding artifacts
+- use the worklist `pitch_202x_resolution` field when the vendor-branded proto
+  HLA 4 / `202X` surface needs to be called out explicitly
+- use `harmonization/hla_2025_pitch_202x_row_resolution.csv` when you need the
+  same backend-resolution split at per-row granularity rather than grouped
+  bucket granularity
+- for the current concrete bounded packet behind that field, read
+  `artifacts/pitch_202x_micro_certification/` and
+  `packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`
+- for the canonical owner doc behind that field, read
+  `docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md`
+
+Reading rule:
+
+1. use this README for the source-side inventory and grouped worklist meaning
+2. use `docs/requirements/ieee-1516-2025/README.md` for the full human-facing
+   owner map
+3. open the exact owner doc above before widening to finish-line or route-parity
+   summaries

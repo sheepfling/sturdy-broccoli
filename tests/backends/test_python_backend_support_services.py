@@ -24,6 +24,7 @@ from hla.rti1516e.exceptions import (
     NameNotFound,
     NotConnected,
     ObjectInstanceNotKnown,
+    InteractionParameterNotDefined,
     AttributeRelevanceAdvisorySwitchIsOn,
     AttributeRelevanceAdvisorySwitchIsOff,
     AttributeScopeAdvisorySwitchIsOn,
@@ -46,11 +47,13 @@ from hla.rti1516e.handles import (
     DimensionHandleSetFactory,
     FederateHandleFactory,
     FederateHandleSetFactory,
+    InteractionClassHandle,
     InteractionClassHandleFactory,
     ObjectClassHandleFactory,
     ObjectInstanceHandleFactory,
     ParameterHandleFactory,
     ParameterHandleValueMapFactory,
+    RegionHandle,
     RegionHandleSetFactory,
     TransportationTypeHandleFactory,
 )
@@ -340,12 +343,12 @@ def test_support_invalid_inputs_raise_expected_errors():
         owner.get_federate_name(type(h1)(h1.value + 1000))
     with pytest.raises(InvalidFederateHandle):
         owner.normalize_federate_handle(type(h1)(h1.value + 1000))
-    with pytest.raises(InvalidAttributeHandle):
-        owner.get_attribute_name(obj_cls, param)  # type: ignore[arg-type]
-    with pytest.raises(InvalidAttributeHandle):
-        owner.get_available_dimensions_for_class_attribute(obj_cls, param)  # type: ignore[arg-type]
-    with pytest.raises(InvalidParameterHandle):
-        owner.get_parameter_name(inter_cls, attr)  # type: ignore[arg-type]
+    with pytest.raises(AttributeNotDefined):
+        owner.get_attribute_name(obj_cls, type(attr)(999999))
+    with pytest.raises(AttributeNotDefined):
+        owner.get_available_dimensions_for_class_attribute(obj_cls, type(attr)(999999))
+    with pytest.raises(InteractionParameterNotDefined):
+        owner.get_parameter_name(inter_cls, type(param)(999999))
     with pytest.raises(InvalidServiceGroup):
         owner.normalize_service_group("not-a-service-group")
     with pytest.raises(InvalidOrderName):
@@ -408,7 +411,7 @@ def test_support_advisory_switches_toggle_and_reject_duplicates():
 def test_support_dimension_handle_set_and_advisory_switches_cover_runtime_guards():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     unjoined_calls = (
-        lambda: rti.get_dimension_handle_set(object()),
+        lambda: rti.get_dimension_handle_set(RegionHandle(999999)),
         lambda: rti.enable_object_class_relevance_advisory_switch(),
         lambda: rti.disable_object_class_relevance_advisory_switch(),
         lambda: rti.enable_attribute_relevance_advisory_switch(),
@@ -495,11 +498,11 @@ def test_support_interaction_dimension_lookup_requires_active_membership():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
 
     with pytest.raises(NotConnected):
-        rti.get_available_dimensions_for_interaction_class(object())
+        rti.get_available_dimensions_for_interaction_class(InteractionClassHandle(999999))
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_available_dimensions_for_interaction_class(object())
+        rti.get_available_dimensions_for_interaction_class(InteractionClassHandle(999999))
     rti.disconnect()
 
 

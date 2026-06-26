@@ -14,7 +14,11 @@ equivalence.
 
 ## Service Families
 
-| Family | Rows | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
 | Divestiture and confirmation flows | `HLA2025-FI-SVC-083`, `HLA2025-FI-SVC-084`, `HLA2025-FI-SVC-086`, `HLA2025-FI-SVC-087`, `HLA2025-FI-SVC-095` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_ownership_management_backend_matrix.py`, `tests/backends/test_python_backend_object_ownership_extended.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for unconditional and negotiated divestiture, requestDivestitureConfirmation, confirmDivestiture, cancel-negotiated-offer handling, and hosted FedPro replay of the same ownership state transitions. |
 | Release and if-wanted flows | `HLA2025-FI-SVC-092`, `HLA2025-FI-SVC-093`, `HLA2025-FI-SVC-094` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/scenarios/test_ownership_management_backend_matrix.py`, `tests/backends/test_python_backend_object_ownership_extended.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for requestAttributeOwnershipRelease, attributeOwnershipReleaseDenied, and divestiture-if-wanted transfer behavior on the direct and hosted `python1516_2025` routes. |

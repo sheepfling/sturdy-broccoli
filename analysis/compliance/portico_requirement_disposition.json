@@ -1078,7 +1078,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.1.5",
-      "title": "RTI shall detect lost federates and report them through MOM"
+      "title": "HLA1516.1-FM-4.1.5-001"
     },
     {
       "clause_root": "4",
@@ -1091,7 +1091,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.1.5",
-      "title": "RTI shall resign lost federates using the current automatic resign directive"
+      "title": "HLA1516.1-FM-4.1.5-002"
     },
     {
       "clause_root": "4",
@@ -7062,7 +7062,7 @@
       "runtime_disposition": "classification-required",
       "runtime_status": "",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.1.2",
-      "title": "RTI shall never convert RO messages into received TSO messages"
+      "title": "HLA1516.1-TM-8.1.2-003"
     },
     {
       "clause_root": "8",

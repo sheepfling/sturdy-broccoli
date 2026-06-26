@@ -789,7 +789,7 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
             fieldnames=[
                 "scenario",
                 "route",
-                "status",
+                "parity_status",
                 "evidence_scope",
                 "requirements",
                 "evidence_tests",
@@ -807,7 +807,7 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
                 {
                     "scenario": row.scenario,
                     "route": row.route,
-                    "status": row.status,
+                    "parity_status": row.status,
                     "evidence_scope": row.evidence_scope,
                     "requirements": "; ".join(row.requirements),
                     "evidence_tests": "; ".join(row.evidence_tests),
@@ -841,7 +841,9 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "- Java/C++ rows show binding/adaptation seam coverage without transferring implementation ownership away from `hla-backend-python1516-2025`",
         "- hosted FedPro rows show transport-seam replay of those same runtime families rather than a different 2025 RTI owner",
         "",
-        "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |",
+        "Use `Parity status` as a route-evidence reading only. It is not the canonical requirement disposition.",
+        "",
+        "| Scenario | Route | Parity status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Runtime provider | Implementation lane | Counts as primary Python 2025 RTI | Wrapper only | Notes |",
         "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in SPEC2025_ROUTE_PARITY_ROWS:

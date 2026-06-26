@@ -48,6 +48,7 @@ def test_ieee_1516_2025_requirements_markdown_views_exist() -> None:
         "omt_xs_any_extension_tolerance.md",
         "omt.md",
         "ownership_management_bounded_proof.md",
+        "pitch_202x_bounded_comparison.md",
         "python1516_2025_direct_bounded_proof.md",
         "python1516_2025_exclusion_boundaries.md",
         "save_restore_bounded_proof.md",
@@ -80,6 +81,7 @@ def test_ieee_1516_2025_requirements_readme_indexes_bounded_proof_notes() -> Non
         "time_management_bounded_proof.md",
         "hosted_fedpro_bounded_proof.md",
         "binding_and_hosted_route_boundaries.md",
+        "pitch_202x_bounded_comparison.md",
         "python1516_2025_exclusion_boundaries.md",
         "callback_binding_deltas.md",
         "omt_xs_any_extension_tolerance.md",
@@ -279,7 +281,12 @@ def test_traceability_and_worklists_name_python2025_as_runtime_owner_not_shim_ro
     assert "| HLA2025-FI-004 | binding/intake routes |" in traceability_text
     assert "language shim routes" not in traceability_normalized
     assert "language shim intake" not in traceability_normalized
-    assert "Map service to the primary python1516_2025 runtime lane, Java surface, C++ surface, and FedPro/vendor route" in worklist_text
+    assert (
+        "Map service to the primary python1516_2025 runtime lane, Java surface, C++ surface, and FedPro/vendor route"
+        in worklist_text
+        or "grouped row set already has direct python1516_2025 evidence; keep per-service truth in the harmonization ledger"
+        in worklist_text
+    )
     assert "Map service to Python shim route" not in worklist_text
     assert "python1516_2025-plus-binding route scenario" in executable_text
     assert "route-matrix scenario runner can produce normalized route traces and requirement-tagged evidence across the primary python1516_2025 runtime lane" in executable_text
@@ -302,6 +309,8 @@ def test_framework_rules_markdown_maps_umbrella_rows_to_child_evidence() -> None
     assert "The primary implementation lane behind the executable anchors above is `hla-backend-python1516-2025`." in normalized
     assert "`hla-backend-shim` is not a runtime owner for these framework rules." in normalized
     assert "Each rule closes only through linked child FI, OMT, and runtime evidence" in normalized
+    assert "this bucket is already in its intended final repo-owned state as a non-standalone parent or normalization surface" in normalized
+    assert "Treat this bucket as closed for current closeout purposes" in text
 
 
 @pytest.mark.requirements("HLA2025-FI-SVC-107", "HLA2025-FI-SVC-116", "HLA2025-FI-SVC-121", "HLA2025-MOD-006")
@@ -347,6 +356,8 @@ def test_callback_binding_delta_markdown_maps_umbrella_rows_to_runtime_and_bindi
     assert "The primary runtime owner behind the executable anchors above is `hla-backend-python1516-2025`." in normalized
     assert "`hla-backend-shim`, `hla-backend-cpp-shim`, and the Java bridge packages are wrapper/binding surfaces over that runtime lane;" in normalized
     assert "Each row closes only through the linked child FI/binding rows" in normalized
+    assert "this bucket is already in its intended final repo-owned state as a non-standalone delta or normalization surface" in normalized
+    assert "Treat this bucket as closed for current closeout purposes" in text
 
 
 @pytest.mark.requirements("HLA2025-BND-001", "HLA2025-BND-002", "HLA2025-BND-003")
@@ -361,6 +372,24 @@ def test_binding_and_hosted_boundary_markdown_keeps_python2025_as_main_runtime_l
     assert "`tests/transport/test_grpc_transport_2025.py`" in text
     assert "`packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto`" in text
     assert "`hla-backend-python1516-2025` is the only main 2025 Python RTI implementation lane" in normalized
+    assert "this bucket is already in its intended final repo-owned state as a bounded adaptation and hosted-route owner surface" in normalized
+    assert "Treat this bucket as closed for current closeout purposes" in text
+
+
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-BND-003")
+def test_pitch_202x_bounded_comparison_markdown_keeps_bounded_backend_resolution_explicit() -> None:
+    text = (REGISTRY_DIR / "pitch_202x_bounded_comparison.md").read_text(encoding="utf-8")
+    normalized = " ".join(text.split())
+
+    assert "It is the canonical owner doc for grouped `pitch_202x_resolution` entries" in normalized
+    assert "It does not promote Pitch into a second 2025 RTI owner." in normalized
+    assert "It does not claim IEEE 1516.1-2025 vendor conformance." in normalized
+    assert "`requirements/2025/harmonization/hla_2025_pitch_202x_group_resolution.csv`" in text
+    assert "`requirements/2025/harmonization/hla_2025_pitch_202x_row_resolution.csv`" in text
+    assert "`./tools/pitch 202x-micro-certify`" in text
+    assert "`pitch-202x-jpype`, `pitch-202x-py4j`" in text
+    assert "this bucket is already in its intended final repo-owned state as a bounded backend-resolution owner surface" in normalized
+    assert "Treat this bucket as closed for current closeout purposes" in text
     assert "`hla-backend-shim` remains a compatibility wrapper and is not a runtime owner" in normalized
     assert "Java bridge packages and `hla-backend-cpp-shim` remain wrapper/binding surfaces" in normalized
     assert "Hosted FedPro is a bounded transport/runtime slice over `hla-backend-python1516-2025`;" in normalized
@@ -402,6 +431,8 @@ def test_omt_xs_any_markdown_keeps_bounded_payload_preservation_claim_explicit()
     assert "### `container-table-and-reference-extension-points`" in text
     assert "`tests/test_rti1516_2025_validation.py`" in text
     assert "`packages/hla-rti1516e/src/hla/rti1516e/fom.py`" in text
+    assert "this bucket is already in its intended final repo-owned state as a bounded omt extension-tolerance owner surface" in normalized.lower()
+    assert "Treat this bucket as closed for current closeout purposes" in text
 
 
 @pytest.mark.requirements("HLA2025-REQ-001")

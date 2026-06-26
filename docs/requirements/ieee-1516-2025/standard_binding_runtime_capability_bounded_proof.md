@@ -21,7 +21,10 @@ evidence rather than exhaustive cross-binding behavior-conformance proof.
 
 ## Tracked Standard Binding Scenario Families
 
-| Scenario family | Java standard routes | C++ standard routes | Evidence anchors | Current bounded reading |
+Use these parity columns as binding-route evidence scope only. They are not
+canonical requirement disposition fields.
+
+| Scenario family | Java route parity status | C++ route parity status | Evidence anchors | Current bounded reading |
 | --- | --- | --- | --- | --- |
 | `federation_lifecycle` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py`, `docs/evidence/shim_routes/java-standard-2025.json`, `docs/evidence/shim_routes/cpp-standard-2025.json` | Standard routes cover artifact-gated lifecycle connect/create/join/resign/destroy flows and callback polling over the main `python1516_2025` runtime. |
 | `object_exchange` | `parity-covered` | `parity-covered` | `tests/backends/test_standard_shim_artifacts.py`, `docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json`, `docs/evidence/shim_routes/route_traces/cpp-standard-2025-pybind.json` | Standard routes cover two-federate publish/subscribe, discovery, reflection, interaction receive, and unsubscribe suppression. |

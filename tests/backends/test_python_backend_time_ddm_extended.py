@@ -2,6 +2,7 @@
 
 import pytest
 
+from hla.backends.common.base import BackendConversionError
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
 from hla.rti1516e.exceptions import (
     AttributeNotDefined,
@@ -23,9 +24,13 @@ from hla.rti1516e.exceptions import (
     SaveInProgress,
 )
 from hla.rti1516e.handles import (
+    AttributeHandle,
     AttributeSetRegionSetPairList,
+    InteractionClassHandle,
     MessageRetractionHandle,
+    ObjectClassHandle,
     ObjectInstanceHandle,
+    RegionHandle,
     TransportationTypeHandle,
 )
 from hla.rti1516e.datatypes import (
@@ -55,6 +60,10 @@ def _joined_group(name: str, count: int):
         for index, rti in enumerate(rtis)
     ]
     return engine, rtis, feds, handles
+
+
+def _region_pairs(attribute: AttributeHandle, region: RegionHandle) -> list[AttributeRegionAssociation]:
+    return [AttributeRegionAssociation(AttributeHandleSet({attribute}), RegionHandleSet({region}))]
 
 
 def test_flush_queue_request_delivers_only_grant_bound_tso_messages_and_grants_earliest_tso():
@@ -161,7 +170,7 @@ def test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_
 
     _, r1, r2, _f1, _f2, _h1, _h2 = joined_pair(f"{method_name}-negative-fed")
     bound_method = getattr(r1, method_name)
-    with pytest.raises(InvalidLogicalTime):
+    with pytest.raises(BackendConversionError):
         bound_method(object())
 
     factory = r1.get_time_factory()
@@ -277,7 +286,7 @@ def test_ddm_region_subscription_update_and_unsubscribe_lifecycle():
     tx.associate_regions_for_updates(obj, update_pairs)
     assert tx.backend.state.update_regions[obj][attr] == {tx_region}
 
-    rx.request_attribute_value_update_with_regions(obj, subscription_pairs, b"refresh-ddm")
+    rx.request_attribute_value_update_with_regions(cls, subscription_pairs, b"refresh-ddm")
     drain(tx, rx)
     provide = tx_fed.last_callback("provideAttributeValueUpdate")
     assert provide is not None
@@ -608,12 +617,14 @@ def test_request_attribute_value_update_routes_only_to_relevant_object_owners():
 
 def test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
+    invalid_interaction = InteractionClassHandle(999999)
+    invalid_regions = {RegionHandle(999999)}
     with pytest.raises(NotConnected):
-        rti.send_interaction_with_regions(object(), {}, set(), b"tag")
+        rti.send_interaction_with_regions(invalid_interaction, {}, invalid_regions, b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.send_interaction_with_regions(object(), {}, set(), b"tag")
+        rti.send_interaction_with_regions(invalid_interaction, {}, invalid_regions, b"tag")
     rti.disconnect()
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("ddm-send-negative-fed")
@@ -732,12 +743,13 @@ def test_strict_publication_gates_registration_update_and_interaction_sends():
 
 def test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
+    invalid_pairs = _region_pairs(AttributeHandle(999999), RegionHandle(999999))
     with pytest.raises(NotConnected):
-        rti.request_attribute_value_update_with_regions(object(), [], b"tag")
+        rti.request_attribute_value_update_with_regions(ObjectClassHandle(999999), invalid_pairs, b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.request_attribute_value_update_with_regions(object(), [], b"tag")
+        rti.request_attribute_value_update_with_regions(ObjectClassHandle(999999), invalid_pairs, b"tag")
     rti.disconnect()
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("ddm-ravu-negative-fed")
@@ -895,19 +907,21 @@ def test_unassociate_regions_for_updates_rejects_not_connected_not_joined_unknow
 def test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_region(method_name, kind):
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     if kind == "object":
+        invalid_pairs = _region_pairs(AttributeHandle(999999), RegionHandle(999999))
         with pytest.raises(NotConnected):
-            getattr(rti, method_name)(object(), [])
+            getattr(rti, method_name)(ObjectClassHandle(999999), invalid_pairs)
     else:
+        invalid_regions = {RegionHandle(999999)}
         with pytest.raises(NotConnected):
-            getattr(rti, method_name)(object(), set())
+            getattr(rti, method_name)(InteractionClassHandle(999999), invalid_regions)
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     if kind == "object":
         with pytest.raises(FederateNotExecutionMember):
-            getattr(rti, method_name)(object(), [])
+            getattr(rti, method_name)(ObjectClassHandle(999999), invalid_pairs)
     else:
         with pytest.raises(FederateNotExecutionMember):
-            getattr(rti, method_name)(object(), set())
+            getattr(rti, method_name)(InteractionClassHandle(999999), invalid_regions)
     rti.disconnect()
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair(f"{method_name}-negative-fed")
@@ -967,12 +981,13 @@ def test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_re
 
 def test_register_object_instance_with_regions_rejects_not_connected_not_joined_and_invalid_region():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
+    invalid_pairs = _region_pairs(AttributeHandle(999999), RegionHandle(999999))
     with pytest.raises(NotConnected):
-        rti.register_object_instance_with_regions(object(), [], "bad")
+        rti.register_object_instance_with_regions(ObjectClassHandle(999999), invalid_pairs, "bad")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.register_object_instance_with_regions(object(), [], "bad")
+        rti.register_object_instance_with_regions(ObjectClassHandle(999999), invalid_pairs, "bad")
     rti.disconnect()
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("register-with-regions-negative-fed")
@@ -1011,12 +1026,13 @@ def test_register_object_instance_with_regions_rejects_not_connected_not_joined_
 
 def test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
+    invalid_pairs = _region_pairs(AttributeHandle(999999), RegionHandle(999999))
     with pytest.raises(NotConnected):
-        rti.unsubscribe_object_class_attributes_with_regions(object(), [])
+        rti.unsubscribe_object_class_attributes_with_regions(ObjectClassHandle(999999), invalid_pairs)
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.unsubscribe_object_class_attributes_with_regions(object(), [])
+        rti.unsubscribe_object_class_attributes_with_regions(ObjectClassHandle(999999), invalid_pairs)
     rti.disconnect()
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("unsubscribe-ocar-negative-fed")
@@ -1062,16 +1078,18 @@ def test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_
 
 def test_unsubscribe_interaction_class_with_regions_and_delete_region_reject_not_connected_not_joined_invalid_region_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
+    invalid_regions = {RegionHandle(999999)}
+    invalid_region = RegionHandle(999999)
     with pytest.raises(NotConnected):
-        rti.unsubscribe_interaction_class_with_regions(object(), set())
+        rti.unsubscribe_interaction_class_with_regions(InteractionClassHandle(999999), invalid_regions)
     with pytest.raises(NotConnected):
-        rti.delete_region(object())
+        rti.delete_region(invalid_region)
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.unsubscribe_interaction_class_with_regions(object(), set())
+        rti.unsubscribe_interaction_class_with_regions(InteractionClassHandle(999999), invalid_regions)
     with pytest.raises(FederateNotExecutionMember):
-        rti.delete_region(object())
+        rti.delete_region(invalid_region)
     rti.disconnect()
 
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("unsub-icwr-delete-region-negative-fed")

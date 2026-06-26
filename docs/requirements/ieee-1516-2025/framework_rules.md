@@ -6,7 +6,39 @@ These rows remain `duplicate/umbrella` in the harmonization ledger. They are
 not claimed as standalone runtime slices. Each rule closes only through linked
 child FI, OMT, and runtime evidence that already carries the executable proof.
 
-| ID | Clause | Page | Summary | Linked child rows | Current repo evidence anchors | Current bounded reading |
+## Owner Surface
+
+- canonical owner doc: `docs/requirements/ieee-1516-2025/framework_rules.md`
+- primary shard: `unit-python-2025-core`
+- widen to: `./tools/python verify-routes-2025` only when a framework umbrella
+  row is being restated as a hosted-route-backed claim
+- typical view tags: `2025-core`, `finish-line`, `scenarios`
+
+## Final Claim Rule
+
+- these rows stay `duplicate/umbrella`, not standalone runtime proof rows
+- a framework row is only as strong as the linked child FI, OMT, or runtime
+  owner rows beneath it
+- do not count a framework umbrella row as a separate covered implementation
+  bucket on top of the child evidence it summarizes
+- if a future change needs a standalone framework claim, split that claim into
+  a narrower executable child row rather than silently widening the umbrella row
+
+Default final stance:
+
+- this bucket is already in its intended final repo-owned state as a
+  non-standalone parent or normalization surface
+- no additional runtime proof is required to keep these rows out of standalone
+  `covered` status
+- future work is optional and should happen only if the repo deliberately
+  introduces narrower executable child claims that justify changing the
+  umbrella structure
+
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe umbrella-row evidence scope, not canonical child-row
+disposition.
+
+| ID | Clause | Page | Summary | Linked child rows | Evidence anchors | Bounded claim reading |
 | --- | ---: | ---: | --- | --- | --- | --- |
 | HLA2025-FR-001 | 5.1 | 31 | A federation shall have an HLA FOM documented according to the OMT. | `HLA2025-REQ-001`, `HLA2025-OMT-001`, `HLA2025-OMT-005`, `HLA2025-OMT-006` | `tests/test_rti1516_2025_validation.py`, `tests/factories/test_proto2025_fom_resources.py`, `tests/scenarios/test_proto2025_fom_showcase.py` | Closed through OMT validation, FOM resource packaging, and FOM-backed scenario proof rather than as a separate runtime rule. |
 | HLA2025-FR-002 | 5.2 | 32 | Simulation-associated object instance representation shall be in federates, not in the RTI. | `HLA2025-FI-001`, `HLA2025-FI-SVC-057`, `HLA2025-FI-SVC-059`, `HLA2025-FI-SVC-060`, `HLA2025-FI-SVC-065`, `HLA2025-FI-SVC-066` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `docs/plans/spec2025_finish_line.md` | Closed through object-exchange, delete/remove, and save/restore rollback evidence showing that RTI state is routing state while semantic object state remains federate-owned. |
@@ -30,6 +62,21 @@ child FI, OMT, and runtime evidence that already carries the executable proof.
 - The primary implementation lane behind the executable anchors above is
   `hla-backend-python1516-2025`. `hla-backend-shim` is not a runtime owner for these
   framework rules.
+
+## Exit Condition
+
+Treat this bucket as closed for current closeout purposes when all of these are
+true:
+
+1. all framework umbrella rows remain anchored to this owner doc and the
+   row-level disposition ledger
+2. the final claim language keeps them explicit as parent or normalization rows
+   rather than accidental standalone runtime proof
+3. no generated packet, audit note, or grouped worklist reclassifies them as
+   standalone `covered` implementation buckets
+
+Only reopen this bucket if the repo intentionally introduces narrower child
+claims or changes the framework-to-child ownership map.
 
 ## Cross-Standard Backlog
 

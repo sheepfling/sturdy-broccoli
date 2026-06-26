@@ -29,6 +29,56 @@ claim plus the explicit excluded-area map for legacy aliases, Java/C++
 bindings, hosted transport boundaries, duplicate/umbrella rows, retired rows,
 and out-of-scope OMT extension semantics.
 
+For the current closeout answer, also pair this hierarchy view with:
+
+- [`../plans/requirements_completion_audit.md`](../plans/requirements_completion_audit.md)
+- [`../plans/requirements_remaining_closure.md`](../plans/requirements_remaining_closure.md)
+- [`requirement_compliance_exports.md`](requirement_compliance_exports.md) when
+  you need the generated spreadsheet summaries rather than the canonical owner
+  ledgers
+
+This hierarchy is a view, not a closure ledger:
+
+- use it to understand capability-to-feature-to-requirement shape
+- use the canonical owner surfaces below when a row or family actually changes
+  status
+- keep backend divergence in owner artifacts, not in the hierarchy labels
+- keep spreadsheet or manager-facing rollups downstream of the owner artifacts,
+  not as the primary source of requirement truth
+
+## Canonical 2010 Owner Map
+
+Treat these as the canonical 2010 owner surfaces behind the hierarchy view:
+
+| Bucket | Canonical owner doc |
+| --- | --- |
+| framework and architecture reconciliation | `requirements/2010/hla1516_framework_detailed_reconciliation.csv` |
+| federation management | `requirements/2010/hla1516_1_fm_detailed_reconciliation.csv` |
+| declaration management | `requirements/2010/hla1516_1_dm_detailed_reconciliation.csv` |
+| declaration-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/declaration_management_bounded_family.md` |
+| object management | `requirements/2010/hla1516_1_om_detailed_reconciliation.csv` |
+| ownership management | `requirements/2010/hla1516_1_own_detailed_reconciliation.csv` |
+| ownership-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/ownership_management_bounded_family.md` |
+| time management | `requirements/2010/hla1516_1_tm_detailed_reconciliation.csv` |
+| time-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/time_management_bounded_family.md` |
+| data distribution management | `requirements/2010/hla1516_1_ddm_detailed_reconciliation.csv` |
+| data-distribution-management bounded partial-family reading | `docs/requirements/ieee-1516-2010/data_distribution_management_bounded_family.md` |
+| support services | `requirements/2010/hla1516_1_sup_detailed_reconciliation.csv` |
+| MOM/MIM | `requirements/2010/hla1516_1_mom_detailed_reconciliation.csv` |
+| API binding and Clause 13 conformance | `requirements/2010/hla1516_1_conf_detailed_reconciliation.csv` |
+| OMT family | `requirements/2010/hla1516_2_omt_detailed_reconciliation.csv` |
+| OMT clause-detail and OMT/XML bridge | `requirements/2010/hla1516_2_omt_xml_detailed_reconciliation.csv` |
+| XML family | `requirements/2010/hla1516_xml_detailed_reconciliation.csv` |
+| broad bridge and status rollup | `requirements/2010/traceability_matrix.csv` |
+
+Use this page as a reader-facing hierarchy, but update the canonical owner row
+first when a 2010 requirement family changes canonical status.
+
+When backend support differs, record that in separate backend-resolution
+columns or linked owner artifacts such as `requirements_matrix_2010.*` or
+backend disposition ledgers rather than compressing it into one hierarchy
+status word.
+
 ## Verification Features
 
 | L1 capability | L2 feature | L3 requirement scope | Test or proof anchor |
@@ -97,6 +147,7 @@ and out-of-scope OMT extension semantics.
 
 ## Implementation Notes
 
+- this hierarchy should track canonical requirement closure, not backend parity
 - `mapped` rows are intentionally narrow. They only claim the current
   `hla2010/fom.py` subset and the executable tests that actually exist.
 - If a requirement is only defensible through a boundary test, keep that
@@ -154,6 +205,10 @@ The current requirements-harmonization labels used in this repo are:
 - `mapped`: directly implemented and backed by executable or generated proof.
 - `partial`: intentionally narrower than the full standard statement, but backed by current parser, merge, runtime, or documentation evidence.
 - `planned`: accepted catalog scope with no direct current proof yet.
+
+When a future 2010 or 2025 view needs backend-specific answers, keep those in
+separate backend-resolution columns or companion artifacts instead of extending
+this hierarchy with overloaded mixed meaning.
 
 The OMT verification suite currently includes these proof shapes:
 

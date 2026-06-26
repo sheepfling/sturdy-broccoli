@@ -11,7 +11,7 @@
   "rows": [
     {
       "artifact_refs": [
-        "requirements/hla1516_1_federate_interface.csv"
+        "requirements/2010/hla1516_1_federate_interface.csv"
       ],
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -30,7 +30,7 @@
       "requirement_id": "HLA1516.1-DM-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
       "service_group": "Declaration Management",
-      "source": "requirements/hla1516_1_federate_interface.csv",
+      "source": "requirements/2010/hla1516_1_federate_interface.csv",
       "status": "planned",
       "title": "The RTI shall implement declaration-management services for publication",
       "vendor_evidence_refs": [],
@@ -43,7 +43,7 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_federate_interface.csv"
+        "requirements/2010/hla1516_1_federate_interface.csv"
       ],
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010 (2010 edition)",
@@ -62,7 +62,7 @@
       "requirement_id": "HLA1516.1-OM-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
       "service_group": "Object Management",
-      "source": "requirements/hla1516_1_federate_interface.csv",
+      "source": "requirements/2010/hla1516_1_federate_interface.csv",
       "status": "planned",
       "title": "The RTI shall implement object-management services for registration",
       "vendor_evidence_refs": [],

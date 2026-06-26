@@ -11,7 +11,11 @@ generated finish-line bundle or the more general callback-model explainer.
 
 ## Current Proof Families
 
-| Family | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Evidence anchors | Bounded claim reading |
 | --- | --- | --- |
 | Declaration relevance and interest advisories | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for `startRegistrationForObjectClass`, `stopRegistrationForObjectClass`, `turnInteractionsOn`, and `turnInteractionsOff` callback delivery across direct and hosted `python1516_2025` routes. |
 | Federation sync, save/restore, and reporting callbacks | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_federation_management_backend_matrix.py`, `tests/scenarios/test_save_restore_backend_matrix.py` | Closed as bounded runtime proof for synchronization registration/announce flow, `federationSynchronized`, save/restore lifecycle callbacks, connection-lost teardown, and federation reporting callbacks. |

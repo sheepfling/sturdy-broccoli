@@ -14,7 +14,11 @@ clause 2025 conformance or exhaustive cross-binding behavior equivalence.
 
 ## Service Families
 
-| Family | Rows | Current repo evidence anchors | Current bounded reading |
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe bounded evidence scope, not canonical requirement
+disposition.
+
+| Family | Rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- |
 | Lookup and default-policy control | `HLA2025-FI-SVC-126`, `HLA2025-FI-SVC-127`, `HLA2025-FI-SVC-130` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/backends/test_python_backend_time_ddm_extended.py`, `tests/scenarios/test_ddm_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py` | Closed as bounded runtime proof for createRegion, commitRegionModifications, associateRegionsForUpdates, FOM-backed dimension lookup, and default order/transport policy control across the direct and hosted `python1516_2025` routes. |
 | Object-region routing and scope advisories | `HLA2025-FI-SVC-128`, `HLA2025-FI-SVC-129`, `HLA2025-FI-SVC-131`, `HLA2025-FI-SVC-132`, `HLA2025-FI-SVC-133`, `HLA2025-FI-SVC-137` | `tests/backends/test_python_backend_time_ddm_extended.py`, `tests/scenarios/test_ddm_backend_matrix.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/test_rti1516_2025_python1516_2025_runtime.py` | Closed as bounded runtime proof for region deletion, object registration with regions, associate/unassociate flows, subscribe/unsubscribe object-class attributes with regions, requestAttributeValueUpdateWithRegions, and `attributesInScope`/`attributesOutOfScope` transitions. |

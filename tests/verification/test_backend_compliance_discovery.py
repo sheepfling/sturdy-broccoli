@@ -344,18 +344,20 @@ def test_pitch_clause4_lost_federate_rows_pin_current_blocked_operator_evidence(
     payload = json.loads((project_root / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
     rows = {row["requirement_id"]: row for row in payload["rows"] if row.get("requirement_id")}
 
-    for requirement_id, verification_method in (
-        ("HLA1516.1-FM-4.1.5-001", "verification_method=observer verification slice"),
-        ("HLA1516.1-FM-4.1.5-002", "verification_method=integration test"),
+    for requirement_id in (
+        "HLA1516.1-FM-4.1.5-001",
+        "HLA1516.1-FM-4.1.5-002",
     ):
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "blocked"
         assert row["pitch_jpype_disposition"] == "blocked"
         assert row["pitch_py4j_disposition"] == "blocked"
+        assert "A shared lost-federate MOM scenario now exists" in row["notes"]
         assert "The canonical `./tools/pitch lost-federate-probe` lane currently stops at preflight on this surface" in row["notes"]
         assert "Docker is unreachable and the required CRC/FedPro loopback ports are blocked" in row["notes"]
         assert "the JPype path auto-resumed its dropped session and the Py4J path did not surface the report" in row["notes"]
-        assert verification_method in row["notes"]
+        assert "Canonical status stays partial because the runtime split is mixed" in row["notes"]
+        assert "hla1516_1_priority_backend_resolution.csv" in row["notes"]
         assert "artifacts/preflight_artifacts/pitch-preflight.json" in row["evidence_refs"]
         assert (
             "artifacts/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json"
@@ -4119,6 +4121,12 @@ def test_requirements_matrix_projects_pitch_dispositions_into_canonical_artifact
     assert rows["HLA1516.1-FM-4.1.5-001"]["python_runtime_disposition"] == "verified"
     assert rows["HLA1516.1-FM-4.1.5-002"]["python_runtime_disposition"] == "verified"
     assert rows["HLA1516.1-FM-4.1.2-002"]["python_runtime_disposition"] == "verified"
+    assert rows["HLA1516.1-FM-4.1.5-001"]["status"] == "partial"
+    assert rows["HLA1516.1-FM-4.1.5-002"]["status"] == "partial"
+    assert rows["HLA1516.1-TM-8.1.2-003"]["status"] == "partial"
+    assert "requirements/2010/hla1516_1_priority_backend_resolution.csv" in rows["HLA1516.1-FM-4.1.5-001"]["artifact_refs"]
+    assert "requirements/2010/traceability_matrix.csv" in rows["HLA1516.1-TM-8.1.2-003"]["artifact_refs"]
+    assert not rows["HLA1516.1-FM-4.1.5-001"]["artifact_refs"].startswith("[")
 
 
 def test_python_and_certi_requirement_disposition_artifacts_are_generated() -> None:

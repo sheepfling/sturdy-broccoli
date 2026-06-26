@@ -12,7 +12,11 @@ repo currently executes and keeps the remaining boundary explicit.
 
 ## Current Proof Ladder
 
-| Proof level | Current route / evidence anchors | Current bounded reading |
+Use `Route / evidence anchors` and `Bounded claim reading` here as owner-facing
+proof vocabulary. They describe bounded evidence scope, not canonical
+requirement disposition.
+
+| Proof level | Route / evidence anchors | Bounded claim reading |
 | --- | --- | --- |
 | `time-window-core` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Proves pending timestamped inputs are not skipped and the Target/Radar window does not close before known `< window_end` inputs are delivered on the direct `python1516_2025` lane plus hosted replay. |
 | `time-window-future-exclusion` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py`, `./tools/pitch time-window-probe` | Proves closure is blocked while another regulating federate could still legally send into the closing window; this is the current Pitch-safe two-federate vendor-credence route. |

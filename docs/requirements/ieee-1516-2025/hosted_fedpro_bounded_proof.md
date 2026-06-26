@@ -23,7 +23,10 @@ full remote-RTI semantics claim.
 
 ## Tracked Hosted Scenario Families
 
-| Scenario family | Status | Evidence anchors | Current hosted reading |
+Use `Hosted route parity status` here as route-evidence scope only. It is not a
+canonical requirement disposition field.
+
+| Scenario family | Hosted route parity status | Evidence anchors | Current hosted reading |
 | --- | --- | --- | --- |
 | `federation_lifecycle` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted lifecycle covers connect/create/join/list/resign/destroy/disconnect and typed callback replay over the main `python1516_2025` lane. |
 | `object_exchange` | `parity-covered` | `tests/transport/test_grpc_transport_2025.py`, `tests/scenarios/test_python_route_parity.py` | Hosted object exchange covers discovery, reflection, interaction delivery, callback backlog hygiene, and FOM-backed object/interaction replay. |

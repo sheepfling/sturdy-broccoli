@@ -7,7 +7,38 @@ not standalone runtime claims. Each row closes only through the linked child
 FI/binding rows plus executable evidence on the main `hla-backend-python1516-2025`
 runtime lane and the bounded route artifacts that sit above it.
 
-| ID | Summary | Linked child rows | Current repo evidence anchors | Current bounded reading |
+## Owner Surface
+
+- canonical owner doc: `docs/requirements/ieee-1516-2025/callback_binding_deltas.md`
+- primary shard: `unit-shim-tooling`
+- widen to: `./tools/python verify-routes-2025` only when an umbrella row is
+  being converted into a route-backed proof claim
+- typical view tags: `2025-core`, `java-shim`, `cpp-shim`, `transport`
+
+## Final Claim Rule
+
+- these rows stay `duplicate/umbrella`, not standalone runtime proof rows
+- the real requirement closure lives in the linked child FI, callback-control,
+  auth, configuration, binding, and route rows
+- do not treat wrapper or route evidence here as proof of an alternate RTI owner
+- if a future change needs a standalone callback or binding claim, split it
+  into a narrower executable child row instead of widening this umbrella layer
+
+Default final stance:
+
+- this bucket is already in its intended final repo-owned state as a
+  non-standalone delta or normalization surface
+- no additional runtime proof is required to keep these rows out of standalone
+  `covered` status
+- future work is optional and should happen only if the repo deliberately
+  introduces narrower executable child claims that justify changing the
+  umbrella structure
+
+Use `Evidence anchors` and `Bounded claim reading` here as owner-facing proof
+vocabulary. They describe umbrella-row evidence scope, not canonical child-row
+disposition.
+
+| ID | Summary | Linked child rows | Evidence anchors | Bounded claim reading |
 | --- | --- | --- | --- | --- |
 | HLA2025-FI-CB-001 | Callback model selection | `HLA2025-FI-005`, `HLA2025-MOD-001` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/test_hla_factory_composition.py`, `tests/transport/test_grpc_transport_2025.py` | Closed through connect/auth/configuration coverage that proves IMMEDIATE and EVOKED model selection on the direct `python1516_2025` lane and the hosted FedPro route. |
 | HLA2025-FI-CB-002 | Evoke Callback | `HLA2025-FI-SVC-193` | `tests/test_rti1516_2025_python1516_2025_runtime.py`, `tests/backends/test_python_backend_support_services.py`, `docs/evidence/shim_routes/java-standard-2025.json` | Closed through explicit EVOKED callback dispatch behavior on the runtime lane plus bounded route-surface evidence for Java/C++ wrapper methods. |
@@ -34,3 +65,25 @@ runtime lane and the bounded route artifacts that sit above it.
 - `hla-backend-shim`, `hla-backend-cpp-shim`, and the Java bridge packages are
   wrapper/binding surfaces over that runtime lane; they are not alternate 2025
   Python RTI implementations.
+- Where Pitch appears in this family, the vendor may label the surface as proto
+  HLA 4 / `202X` in jar names or namespaces. Keep that naming explicit in
+  backend-resolution notes, but do not use the vendor label by itself as a
+  substitute for row-level 2025 closure or parity evidence.
+- The concrete bounded Pitch 202X comparison packet for these rows currently
+  lives in `artifacts/pitch_202x_micro_certification/`, with operator-facing
+  interpretation in `packages/hla-vendor-pitch/docs/pitch_vs_python_baseline.md`.
+
+## Exit Condition
+
+Treat this bucket as closed for current closeout purposes when all of these are
+true:
+
+1. all callback/configuration/binding umbrella rows remain anchored to this
+   owner doc and the row-level disposition ledger
+2. the final claim language keeps them explicit as parent or normalization rows
+   rather than accidental standalone runtime proof
+3. no generated packet, audit note, or grouped worklist reclassifies them as
+   standalone `covered` implementation buckets
+
+Only reopen this bucket if the repo intentionally introduces narrower child
+claims or changes the callback or binding ownership map.

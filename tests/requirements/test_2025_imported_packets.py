@@ -104,6 +104,8 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     json_path = (REQ_DIR / packet["json_path"]).resolve()
     matrix_path = (REQ_DIR / packet["fi_binding_surface_matrix_path"]).resolve()
     worklist_path = (REQ_DIR / packet["worklist_path"]).resolve()
+    pitch_group_path = (REQ_DIR / packet["pitch_202x_group_path"]).resolve()
+    pitch_row_path = (REQ_DIR / packet["pitch_202x_row_path"]).resolve()
     review_queue_path = (REQ_DIR / packet["review_queue_path"]).resolve()
     rollup_path = (REQ_DIR / packet["rollup_path"]).resolve()
     manifest_path = (REQ_DIR / packet["manifest_path"]).resolve()
@@ -111,15 +113,21 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     rows = list(csv.DictReader(csv_path.open(newline="", encoding="utf-8")))
     matrix_rows = list(csv.DictReader(matrix_path.open(newline="", encoding="utf-8")))
     worklist_rows = list(csv.DictReader(worklist_path.open(newline="", encoding="utf-8")))
+    pitch_group_rows = list(csv.DictReader(pitch_group_path.open(newline="", encoding="utf-8")))
+    pitch_row_rows = list(csv.DictReader(pitch_row_path.open(newline="", encoding="utf-8")))
     review_rows = list(csv.DictReader(review_queue_path.open(newline="", encoding="utf-8")))
     rollup = json.loads(rollup_path.read_text(encoding="utf-8"))
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert csv_path == HARMONIZATION_DIR / "hla_2025_requirement_disposition_ledger.csv"
     assert json_path == HARMONIZATION_DIR / "hla_2025_requirement_disposition_ledger.json"
+    assert pitch_group_path == HARMONIZATION_DIR / "hla_2025_pitch_202x_group_resolution.csv"
+    assert pitch_row_path == HARMONIZATION_DIR / "hla_2025_pitch_202x_row_resolution.csv"
     assert packet["status"] == "repo-reconciled-disposition"
     assert len(rows) == packet["row_count"] == rollup["total_rows"] == 691
     assert len(matrix_rows) == rollup["fi_binding_surface"]["fi_rows"] == 196
+    assert pitch_group_rows
+    assert len(pitch_row_rows) == packet["row_count"] == 691
     assert len(review_rows) == 691
     assert worklist_rows
     assert rollup["by_disposition"] == {
@@ -133,6 +141,22 @@ def test_imported_requirement_disposition_packet_tracks_repo_reconciled_coverage
     assert rollup["fi_binding_surface"]["fedpro_present"] == 192
     assert rollup["fi_binding_surface"]["fedpro_alias_or_split_route"] == 1
     assert rollup["fi_binding_surface"]["fedpro_route_boundary_or_missing_review"] == 4
+    assert {row["pitch_202x_row_resolution"] for row in pitch_row_rows} == {
+        "bounded-fi-overlap-only",
+        "framework-umbrella-child-owned",
+        "legacy-only-no-active-pitch-claim",
+        "mirrored-fi-cross-check-only",
+        "not-a-pitch-runtime-owner",
+        "umbrella-only-child-fi-owned",
+    }
+    assert sum(
+        1 for row in pitch_row_rows
+        if row["pitch_202x_row_resolution"] == "bounded-fi-overlap-only"
+    ) == 196
+    assert all(
+        row["pitch_202x_owner_doc"] == "docs/requirements/ieee-1516-2025/pitch_202x_bounded_comparison.md"
+        for row in pitch_row_rows
+    )
     assert "coverage_risk_addressed" in rows[0]
     legacy_field = _ascii_token(
         97, 103, 101, 110, 116, 95, 102, 101, 97, 114,
